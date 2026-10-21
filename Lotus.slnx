@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Lotus.App/Lotus.App.csproj" />
+    <Project Path="src/Lotus.Core/Lotus.Core.csproj" />
+    <Project Path="src/Lotus.Infrastructure/Lotus.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Lotus.Tests/Lotus.Tests.csproj" />
+  </Folder>
+</Solution>

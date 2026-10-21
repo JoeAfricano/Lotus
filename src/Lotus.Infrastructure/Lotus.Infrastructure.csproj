@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework></PropertyGroup><ItemGroup><ProjectReference Include="../Lotus.Core/Lotus.Core.csproj"/><PackageReference Include="Serilog" Version="4.3.0"/><PackageReference Include="Serilog.Sinks.File" Version="7.0.0"/></ItemGroup></Project>
