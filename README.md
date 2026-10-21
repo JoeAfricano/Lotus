@@ -1,4 +1,4 @@
-# Lotus 2.0 — Fundação 0.1
+# Lotus — Fundação 0.1
 
 Aplicativo nativo Windows em C# e WinUI 3. Esta entrega contém somente o shell, a navegação e a base técnica. Não coleta hardware, calcula score, executa benchmark, limpa arquivos ou altera configurações do Windows.
 
