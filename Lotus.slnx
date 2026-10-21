@@ -1,10 +1,22 @@
 <Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
   <Folder Name="/src/">
-    <Project Path="src/Lotus.App/Lotus.App.csproj" />
-    <Project Path="src/Lotus.Core/Lotus.Core.csproj" />
-    <Project Path="src/Lotus.Infrastructure/Lotus.Infrastructure.csproj" />
+    <Project Path="src/Lotus.App/Lotus.App.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/Lotus.Core/Lotus.Core.csproj">
+      <Platform Project="Any CPU" />
+    </Project>
+    <Project Path="src/Lotus.Infrastructure/Lotus.Infrastructure.csproj">
+      <Platform Project="Any CPU" />
+    </Project>
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Lotus.Tests/Lotus.Tests.csproj" />
+    <Project Path="tests/Lotus.Tests/Lotus.Tests.csproj">
+      <Platform Project="Any CPU" />
+    </Project>
   </Folder>
 </Solution>
