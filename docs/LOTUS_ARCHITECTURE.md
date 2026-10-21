@@ -2,6 +2,8 @@
 
 Revisão: 21/10/2026. Inspeção sobre o commit `92c895d` e a árvore de trabalho existente. Este documento distingue implementação de proposta; não autoriza implementar os próximos módulos.
 
+Atualização Etapa 00: a configuração atual foi validada com restore, clean, build e testes em Debug/x64 e Release/x64; ambos sem erros/avisos e com seis testes aprovados. As duas janelas foram iniciadas e fechadas normalmente. Navegação básica foi observada em Debug. Não houve correção funcional necessária. O rodapé do menu compacto apresenta corte visual não bloqueante. Evidências, estado do Git e limitações constam no [relatório da Etapa 00](LOTUS_STAGE00_AUDIT.md), que prevalece sobre os limites de validação registrados anteriormente.
+
 ## Estado comprovado
 
 | Área | Evidência local | Estado |

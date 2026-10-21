@@ -2,6 +2,8 @@
 
 Revisão: 21/10/2026. “Adotado” descreve o código atual; “Diretriz” orienta trabalho futuro; “Proposto” exige validação antes de implementação.
 
+Auditoria Etapa 00 concluída no escopo de fundação: configuração, build limpo e testes aprovados em Debug e Release; inicialização/encerramento visual confirmados nas duas configurações. Nenhuma correção de código foi necessária. Alterações de plataforma que já existiam localmente nos três projetos gerenciados foram preservadas e registradas no checkpoint. Corte do rodapé no menu compacto é uma pendência visual não crítica. Ver [relatório verificável](LOTUS_STAGE00_AUDIT.md).
+
 | ID | Estado | Decisão e consequência |
 | --- | --- | --- |
 | ADR-001 | Adotado | Preservar solução e UI WinUI 3/.NET 10. x64 no aplicativo, Any CPU nas bibliotecas pela solução. Sem migração para web. |

@@ -1,5 +1,7 @@
 # Lotus — Fundação 0.1
 
+Auditoria atual: [Etapa 00 — resultados e limitações](docs/LOTUS_STAGE00_AUDIT.md). Builds limpos Debug/x64 e Release/x64 aprovados, seis testes aprovados em cada configuração e execução visual confirmada em ambas. Os registros históricos e checklists abaixo devem ser lidos junto desse relatório atualizado.
+
 Aplicativo nativo Windows em C# e WinUI 3. Esta entrega contém somente o shell, a navegação e a base técnica. Não coleta hardware, calcula score, executa benchmark, limpa arquivos ou altera configurações do Windows.
 
 ## Abrir e executar

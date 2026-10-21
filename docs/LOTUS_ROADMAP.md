@@ -2,6 +2,8 @@
 
 Revisão: 21/10/2026. Somente planejamento. Aguardar instrução de implementação após esta entrega. A preferência por alternativas gratuitas e código próprio não autoriza antecipar todos os módulos.
 
+Pré-requisito Etapa 00: auditoria de fundação aprovada; [resultados e pendências](LOTUS_STAGE00_AUDIT.md). Isso não conclui todos os gates de localização, DPI, consumo e acessibilidade da etapa 1 abaixo. Aguardar instrução para o próximo incremento; nenhum módulo novo implementado na auditoria.
+
 ## Etapas e gates
 
 | Ordem | Entrega limitada | Dependência | Critério de aceitação |

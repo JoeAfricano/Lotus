@@ -2,6 +2,8 @@
 
 Revisão: 21/10/2026. Protocolo proposto, ainda não implementado. Os resultados de build/test ao final são reais; não foi executado benchmark de jogo nesta auditoria.
 
+Atualização da fundação: a [Etapa 00](LOTUS_STAGE00_AUDIT.md) acrescentou builds limpos e seis testes aprovados tanto em Debug/x64 quanto Release/x64, com execução visual nas duas configurações e encerramento normal. Zero registros Fatal nas sessões auditadas. Nenhuma medição de desempenho de jogo ou consumo foi realizada; esses critérios continuam propostos, não aprovados.
+
 ## Contrato de captura
 
 Salvar versão Lotus, regra/estatística/provedor, processo e início do processo, executável e versão do jogo, cenário/replay, início e duração efetiva, contagem de frames válidos e eventos perdidos. Registrar CPU/GPU/RAM, Windows/build, drivers, resolução, preset, modo de janela, API gráfica, monitor/Hz, cap, VRR, V-Sync, Reflex/alternativa quando disponível, frame generation, upscaling, energia AC/bateria e estado térmico observável. Campo desconhecido permanece desconhecido e reduz comparabilidade.
