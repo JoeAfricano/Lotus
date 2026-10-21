@@ -12,6 +12,10 @@ public sealed partial class MainWindow : Window
     {
         ViewModel = viewModel;
         InitializeComponent();
+        ExtendsContentIntoTitleBar = true;
+        SetTitleBar(DragRegion);
+        AppWindow.TitleBar.ButtonBackgroundColor = Windows.UI.Color.FromArgb(255, 16, 16, 22);
+        AppWindow.TitleBar.ButtonForegroundColor = Windows.UI.Color.FromArgb(255, 240, 232, 238);
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 820));
         foreach (var section in ViewModel.Items)
             Navigation.MenuItems.Add(new NavigationViewItem { Content = section.Title, Tag = section.Id, Icon = new FontIcon { Glyph = section.Glyph } });
