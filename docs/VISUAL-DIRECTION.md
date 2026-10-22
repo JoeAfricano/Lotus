@@ -26,3 +26,7 @@ Próximos refinamentos visuais serão guiados pelas instruções do usuário. Ne
 Dois temas escuros e idiomas mudam ao selecionar. Marca Lotus com pulsação discreta de opacidade/escala (1 a 1,015; 4,4 s), entrada de páginas com fade e deslocamento curto. Reduzir animações desativa os efeitos. Sem timer de aplicação por frame.
 
 Conteúdo centralizado em telas amplas, cards em coluna nas estreitas, rodapé compacto sem texto cortado. Recorte após maximizar/restaurar reproduzido e corrigido retirando largura vinculada e centralização do conteúdo do ScrollViewer. Inspecionados tamanho inicial, estreito, mínimo 600 × 480 e maximizado no monitor local. Outras escalas e avaliação subjetiva da fluidez pendentes. [Resultados](LOTUS_STAGE01_VALIDATION.md).
+
+## Etapa 02 — neon e monitoramento
+
+Marca Lotus com faixa luminosa rosa/branca atravessando as letras em 3,2 s e brilho nativo, sem timer de UI. Gradiente via XamlCompositionBrushBase no Foreground; GetAlphaMask emprestado apenas para DropShadow. A tentativa anterior de CompositionMaskBrush falhou ao recriar a sidebar após resize, foi substituída e tem seu erro registrado no relatório. Movimento reduzido conserva neon estático; alto contraste evita o efeito. CPU/RAM têm status, números reais, dois gráficos sem dependência externa e layout empilhado em janela estreita. [Validação atual](LOTUS_STAGE02_VALIDATION.md).

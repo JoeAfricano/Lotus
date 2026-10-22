@@ -13,6 +13,7 @@ public sealed partial class SectionPage : Page
     public bool ShowDashboard { get; private set; }
     public bool ShowSettings { get; private set; }
     public bool ShowModule { get; private set; }
+    public bool ShowMonitoring { get; private set; }
     public SectionPage()
     {
         InitializeComponent();
@@ -26,7 +27,8 @@ public sealed partial class SectionPage : Page
         Language = viewModel.Text.Language;
         ShowDashboard = viewModel.Section.Id == "dashboard";
         ShowSettings = viewModel.Section.Id == "settings";
-        ShowModule = !ShowDashboard && !ShowSettings;
+        ShowMonitoring = viewModel.Section.Id == "monitoring";
+        ShowModule = !ShowDashboard && !ShowSettings && !ShowMonitoring;
         Bindings.Update();
         if (LogLocation is not null)
         {

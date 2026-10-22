@@ -1,0 +1,52 @@
+<UserControl x:Class="Lotus.App.Controls.MonitoringPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:Lotus.App.Controls">
+ <StackPanel Spacing="16">
+  <TextBlock Text="{Binding Text[MonitoringIntro]}" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}"/>
+  <TextBlock Text="{Binding LastUpdate}" AutomationProperties.AutomationId="monitor-updated" Foreground="{ThemeResource RoseBrush}"/>
+  <Grid x:Name="Cards" ColumnSpacing="18" RowSpacing="18" SizeChanged="OnCardsSizeChanged">
+   <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <ContentControl x:Name="CpuCard" Style="{StaticResource CardControlStyle}">
+    <StackPanel Spacing="12">
+     <TextBlock Text="CPU" Style="{StaticResource EyebrowStyle}"/>
+     <TextBlock Text="{Binding CpuName}" FontSize="19" FontWeight="SemiBold" TextWrapping="Wrap" IsTextSelectionEnabled="True" AutomationProperties.AutomationId="monitor-cpu-name"/>
+     <TextBlock Text="{Binding CpuPercent}" FontSize="42" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AutomationId="monitor-cpu-percent"/>
+     <TextBlock Text="{Binding CpuStatus}" TextWrapping="Wrap" AutomationProperties.AutomationId="monitor-cpu-status"/>
+     <TextBlock Text="{Binding CoreCounts}" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}"/>
+     <TextBlock Text="{Binding Text[History60]}" Foreground="{ThemeResource MutedBrush}" FontSize="12"/>
+     <local:TelemetryChart x:Name="CpuChart" Height="140" AutomationProperties.Name="{Binding Text[CpuChart]}"/>
+     <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="−60 s" FontSize="11" Foreground="{ThemeResource MutedBrush}"/><TextBlock Grid.Column="1" Text="−30 s" HorizontalAlignment="Center" FontSize="11" Foreground="{ThemeResource MutedBrush}"/><TextBlock Grid.Column="2" Text="{Binding Text[AxisNow]}" HorizontalAlignment="Right" FontSize="11" Foreground="{ThemeResource MutedBrush}"/></Grid>
+     <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{Binding Text[LotusCpu]}" TextWrapping="Wrap"/><TextBlock Grid.Column="1" Text="{Binding ProcessCpu}" AutomationProperties.AutomationId="monitor-process-cpu"/></Grid>
+     <TextBlock Text="{Binding Text[FrequencyUnavailable]}" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
+     <TextBlock Text="{Binding CpuSource}" TextWrapping="Wrap" FontSize="11" Foreground="{ThemeResource MutedBrush}"/>
+    </StackPanel>
+   </ContentControl>
+   <ContentControl x:Name="MemoryCard" Grid.Column="1" Style="{StaticResource CardControlStyle}">
+    <StackPanel Spacing="12">
+     <TextBlock Text="{Binding Text[Memory]}" Style="{StaticResource EyebrowStyle}"/>
+     <TextBlock Text="{Binding Text[PhysicalMemory]}" FontSize="19" FontWeight="SemiBold" TextWrapping="Wrap"/>
+     <TextBlock Text="{Binding MemoryPercent}" FontSize="42" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AutomationId="monitor-memory-percent"/>
+     <TextBlock Text="{Binding MemoryStatus}" TextWrapping="Wrap" AutomationProperties.AutomationId="monitor-memory-status"/>
+     <Grid ColumnSpacing="12" RowSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <TextBlock Text="{Binding Text[PhysicalTotal]}"/><TextBlock Grid.Column="1" Text="{Binding TotalMemory}" AutomationProperties.AutomationId="monitor-memory-total"/>
+      <TextBlock Grid.Row="1" Text="{Binding Text[PhysicalUsed]}"/><TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding UsedMemory}" AutomationProperties.AutomationId="monitor-memory-used"/>
+      <TextBlock Grid.Row="2" Text="{Binding Text[PhysicalAvailable]}"/><TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding AvailableMemory}" AutomationProperties.AutomationId="monitor-memory-available"/>
+     </Grid>
+     <TextBlock Text="{Binding Text[History60]}" Foreground="{ThemeResource MutedBrush}" FontSize="12"/>
+     <local:TelemetryChart x:Name="MemoryChart" Height="140" AutomationProperties.Name="{Binding Text[MemoryChart]}"/>
+     <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="−60 s" FontSize="11" Foreground="{ThemeResource MutedBrush}"/><TextBlock Grid.Column="1" Text="−30 s" HorizontalAlignment="Center" FontSize="11" Foreground="{ThemeResource MutedBrush}"/><TextBlock Grid.Column="2" Text="{Binding Text[AxisNow]}" HorizontalAlignment="Right" FontSize="11" Foreground="{ThemeResource MutedBrush}"/></Grid>
+     <TextBlock Text="{Binding Text[PhysicalDefinition]}" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
+     <TextBlock Text="{Binding MemorySource}" FontSize="11" Foreground="{ThemeResource MutedBrush}"/>
+    </StackPanel>
+   </ContentControl>
+  </Grid>
+  <ContentControl Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12">
+   <TextBlock Text="{Binding Text[LotusProcess]}" Style="{StaticResource EyebrowStyle}"/>
+   <Grid ColumnSpacing="12" RowSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <TextBlock Text="{Binding Text[WorkingSet]}" TextWrapping="Wrap"/><TextBlock Grid.Column="1" Text="{Binding WorkingSet}" AutomationProperties.AutomationId="monitor-working-set"/>
+    <TextBlock Grid.Row="1" Text="{Binding Text[PrivateCommit]}" TextWrapping="Wrap"/><TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding PrivateCommit}" AutomationProperties.AutomationId="monitor-private-commit"/>
+   </Grid>
+   <TextBlock Text="{Binding Text[ProcessMemoryDefinition]}" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}"/>
+  </StackPanel></ContentControl>
+  <TextBlock Text="{Binding Text[MonitoringLimitations]}" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
+ </StackPanel>
+</UserControl>

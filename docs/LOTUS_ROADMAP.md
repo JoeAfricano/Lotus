@@ -22,11 +22,11 @@ Pré-requisito Etapa 00: auditoria de fundação aprovada; [resultados e pendên
 
 Uma função pode ficar indisponível se requisitos não forem atendidos. A aprovação de detecção não aprova instalação, escrita de perfil, ajuste de hardware ou aplicação de otimizações. RTSS/Afterburner são opcionais: o núcleo deverá iniciar sem eles. Escritas experimentais de perfil na etapa 5 não serão anunciadas como ganho comprovado antes da etapa 7.
 
-## Situação após a Etapa 01
+## Situação após a Etapa 02
 
-Implementados: dez rotas, templates compartilhados, preferências JSON, idioma/tema em tempo real e animações nativas. [Evidências e limites](LOTUS_STAGE01_VALIDATION.md). DPI 125/150/200%, leitor de tela, alto contraste completo e custos ainda exigem homologação.
+CPU e RAM somente leitura implementados, com fonte identificada, aquecimento de CPU, histórico de 60 s, pausa por demanda e testes de falha/cancelamento. [Validação local e custo medido](LOTUS_STAGE02_VALIDATION.md). Não há GPU, sensores, frequência efetiva, processos externos, diagnóstico ou benchmark implementado.
 
-Próxima fatia proposta, somente após instrução: monitoramento de CPU total e RAM em leitura, com contratos independentes, aquecimento de amostra, indisponibilidades e medição de custo. Nenhum módulo de hardware foi adicionado nesta etapa.
+Próxima fatia recomendada após instrução: diagnóstico inicial de memória com critérios, cobertura e evidências usando os snapshots atuais, sem concluir gargalo de jogo ou prometer ganho de FPS. Antes de mais fontes, ampliar a homologação de hardware/DPI e as medições prolongadas de custo/estabilidade. A implementação não antecipa autorização de módulos seguintes.
 
 ## Política de avanço
 

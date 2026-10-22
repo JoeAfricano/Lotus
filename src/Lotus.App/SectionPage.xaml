@@ -1,4 +1,4 @@
-<Page x:Class="Lotus.App.SectionPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Foreground="{ThemeResource MainTextBrush}">
+<Page x:Class="Lotus.App.SectionPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Lotus.App.Controls" Foreground="{ThemeResource MainTextBrush}">
  <ScrollViewer x:Name="PageScroll" SizeChanged="OnViewportSizeChanged" HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top">
   <StackPanel x:Name="PageContent" Padding="24" Spacing="22" HorizontalAlignment="Stretch" SizeChanged="OnContentSizeChanged">
    <ContentControl Content="{Binding}" ContentTemplate="{StaticResource PageHeaderTemplate}" HorizontalContentAlignment="Stretch"/>
@@ -49,6 +49,7 @@
     </Grid>
     <ContentControl Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><TextBlock Text="{Binding Text[WorkflowTitle]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Text[Workflow]}" FontSize="14" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[WorkflowDescription]}" FontSize="13" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap"/></StackPanel></ContentControl>
    </StackPanel>
+   <controls:MonitoringPanel x:Name="MonitoringContent" x:Load="{x:Bind ShowMonitoring}" DataContext="{Binding Monitoring}"/>
    <ContentControl x:Name="ModuleCard" x:Load="{x:Bind ShowModule}" Style="{StaticResource CardControlStyle}">
     <StackPanel Spacing="20"><ContentControl Content="{Binding}" ContentTemplate="{StaticResource SectionEmptyStateTemplate}" HorizontalContentAlignment="Stretch"/><TextBlock x:Name="LogLocation" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}" Visibility="Collapsed" IsTextSelectionEnabled="True"/></StackPanel>
    </ContentControl>

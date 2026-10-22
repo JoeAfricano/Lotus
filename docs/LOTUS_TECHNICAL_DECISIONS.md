@@ -69,3 +69,14 @@ Este registro prevalece sobre os achados históricos acima.
 - Rodapé compacto, localização e conteúdo oculto tratados. DPI, leitor de tela, alto contraste completo, concorrência e consumo permanecem pendentes.
 
 Ver [relatório atual](LOTUS_STAGE01_VALIDATION.md). Não avançar automaticamente para hardware.
+
+## Atualização Etapa 02
+
+- ADR-020: GetSystemTimes/GetProcessTimes, GlobalMemoryStatusEx, K32GetProcessMemoryInfo e topologia oficial do Windows. Nenhuma dependência nova, WMI por amostra, driver ou elevação.
+- ADR-021: um serviço singleton com leases, coleta serial a 1 s fora da UI, cancelamento sem consumidor e await antes do fechamento. A UI tem no máximo uma entrega pendente.
+- ADR-022: percentuais por deltas e capacidade explícita; primeira CPU é WarmingUp. Ausência null/status, nunca zero substituto; CPU global Unsupported em múltiplos grupos para evitar resultado parcial.
+- ADR-023: working set físico e commit privado separados; RAM usada é total utilizável menos disponível. GiB/MiB binários; frequência efetiva sem fonte fica indisponível.
+- ADR-024: dois gráficos XAML com até 60 pontos/60 s; lacunas e pausas não são interpoladas. Sem biblioteca de gráficos adicional.
+- ADR-025: neon com GetAlphaMask, gradiente móvel e DropShadow; iniciado após tamanho válido. Reduzir animações mantém neon estático. Substitui a pulsação sutil que o usuário não percebeu na etapa anterior.
+
+[Contrato e referências](LOTUS_TELEMETRY.md), [verificações e limitações](LOTUS_STAGE02_VALIDATION.md). Monitoramento não interpreta gargalos, score ou ganhos em jogos.

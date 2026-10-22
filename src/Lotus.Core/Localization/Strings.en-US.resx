@@ -16,7 +16,7 @@
     <value>YOUR GAME. YOUR PACE.</value>
   </data>
   <data name="FooterNotice" xml:space="preserve">
-    <value>LOTUS / VISUAL FOUNDATION · No metrics collected or Windows settings changed.</value>
+    <value>LOTUS / On-demand CPU and RAM in Monitoring. No Windows settings changed.</value>
   </data>
   <data name="FooterVersion" xml:space="preserve">
     <value>FOUNDATION 0.1 / IN DEVELOPMENT</value>
@@ -226,5 +226,89 @@ Get in the game.</value>
   </data>
   <data name="settingsTitle" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="MonitoringIntro" xml:space="preserve">
+    <value>Real CPU and RAM • updates about once per second while this page is visible.</value>
+  </data>
+  <data name="WaitingSample" xml:space="preserve">
+    <value>Waiting for the first sample…</value>
+  </data>
+  <data name="LastUpdate" xml:space="preserve">
+    <value>Last updated: {0}</value>
+  </data>
+  <data name="CoreCounts" xml:space="preserve">
+    <value>{0} physical cores • {1} logical processors</value>
+  </data>
+  <data name="StatusAvailable" xml:space="preserve">
+    <value>Reading available</value>
+  </data>
+  <data name="StatusWarmingUp" xml:space="preserve">
+    <value>Warming up • two samples required</value>
+  </data>
+  <data name="StatusUnavailable" xml:space="preserve">
+    <value>Unavailable</value>
+  </data>
+  <data name="StatusInvalid" xml:space="preserve">
+    <value>Invalid sample • waiting for another reading</value>
+  </data>
+  <data name="StatusAccessDenied" xml:space="preserve">
+    <value>Access denied</value>
+  </data>
+  <data name="StatusUnsupported" xml:space="preserve">
+    <value>Not supported by the current source</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Collection failed • retrying automatically</value>
+  </data>
+  <data name="History60" xml:space="preserve">
+    <value>Real history • up to 60 seconds • 0–100% scale</value>
+  </data>
+  <data name="GraphAxis" xml:space="preserve">
+    <value>−60 s                         −30 s                         now</value>
+  </data>
+  <data name="CpuChart" xml:space="preserve">
+    <value>Total CPU usage history; current values in the text above.</value>
+  </data>
+  <data name="MemoryChart" xml:space="preserve">
+    <value>Physical RAM usage history; current values in the text above.</value>
+  </data>
+  <data name="LotusCpu" xml:space="preserve">
+    <value>Lotus CPU (total machine capacity)</value>
+  </data>
+  <data name="FrequencyUnavailable" xml:space="preserve">
+    <value>Effective frequency: unavailable. Nominal frequency is not an instantaneous reading.</value>
+  </data>
+  <data name="PhysicalMemory" xml:space="preserve">
+    <value>Windows physical memory</value>
+  </data>
+  <data name="PhysicalTotal" xml:space="preserve">
+    <value>Usable total</value>
+  </data>
+  <data name="PhysicalUsed" xml:space="preserve">
+    <value>Used</value>
+  </data>
+  <data name="PhysicalAvailable" xml:space="preserve">
+    <value>Available</value>
+  </data>
+  <data name="PhysicalDefinition" xml:space="preserve">
+    <value>Used = usable physical total − available. Available includes reusable pages; it is not only free RAM.</value>
+  </data>
+  <data name="LotusProcess" xml:space="preserve">
+    <value>LOTUS PROCESS</value>
+  </data>
+  <data name="WorkingSet" xml:space="preserve">
+    <value>Working set (physical)</value>
+  </data>
+  <data name="PrivateCommit" xml:space="preserve">
+    <value>Private commit (virtual)</value>
+  </data>
+  <data name="ProcessMemoryDefinition" xml:space="preserve">
+    <value>Working set includes private and shared resident pages. Private commit is committed virtual memory; do not add it to physical RAM. Source: K32GetProcessMemoryInfo.</value>
+  </data>
+  <data name="MonitoringLimitations" xml:space="preserve">
+    <value>CPU: active-time deltas from GetSystemTimes; may differ from Task Manager frequency-adjusted utility. Low total usage does not rule out a single-core bottleneck. Gaps are not filled. Collection pauses when leaving this page or minimizing. No GPU, sensors or memory cleaning in this stage.</value>
+  </data>
+  <data name="AxisNow" xml:space="preserve">
+    <value>now</value>
   </data>
 </root>

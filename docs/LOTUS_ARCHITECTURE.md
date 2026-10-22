@@ -1,8 +1,8 @@
 # Lotus — Arquitetura
 
-Revisão: 21/10/2026. Inspeção sobre o commit `92c895d` e a árvore de trabalho existente. Este documento distingue implementação de proposta; não autoriza implementar os próximos módulos.
+Revisão: 21/10/2026. Etapa 02 sobre o checkpoint `408cfd0` e a árvore de trabalho existente. Este documento distingue implementação de proposta; não autoriza implementar os próximos módulos.
 
-Atualização Etapa 01: localização e temas em tempo real, preferências JSON, componentes compartilhados e animações nativas implementados. O [relatório da Etapa 01](LOTUS_STAGE01_VALIDATION.md) prevalece sobre os resultados históricos da Etapa 00.
+Atualização Etapa 02: CPU e RAM reais sob demanda, gráficos de 60 segundos e neon animado implementados. [Contrato de telemetria](LOTUS_TELEMETRY.md) e [resultados locais](LOTUS_STAGE02_VALIDATION.md) prevalecem sobre as observações históricas das etapas anteriores.
 
 ## Estado comprovado
 
@@ -14,11 +14,12 @@ Atualização Etapa 01: localização e temas em tempo real, preferências JSON,
 | DI e ciclo de vida | `src/Lotus.App/App.xaml.cs` | ServiceCollection, janela e serviços singleton, descarte no fechamento |
 | Logging | `App.xaml.cs`, `src/Lotus.Infrastructure/AppEvents.cs` | JSONL local: início, navegação, encerramento e exceções de UI |
 | Persistência de preferências | PreferencesService e JsonPreferencesStore | JSON local versionado e backup; SQLite e histórico pendentes |
-| Monitoramento e score | XAML com “Sem leitura” e “NÃO AVALIADO” | Somente apresentação, sem coleta nem cálculo |
+| Monitoramento | IHardwareTelemetryProvider, HardwareMonitoringService e MonitoringViewModel | CPU/RAM reais na seção Monitoramento; Dashboard sem consumidor, GPU e sensores ainda ausentes |
+| Score | XAML com “NÃO AVALIADO” | Sem cálculo ou equivalência com FPS |
 | Diagnóstico, benchmark, otimização, restauração, jogos e manutenção | Catálogo de seções e avisos | Planejados |
 | RTSS e Afterburner | Nenhum adaptador na solução | Ferramentas presentes no computador, sem integração implementada |
 | Preferências e idiomas | TextCatalog e PreferencesViewModel | PT-BR inicial e EN-US; idioma/tema imediatos; sidebar e movimento persistidos. Perfil editável pendente |
-| Testes | NavigationTests, PreferencesTests e LocalizationTests | 24 resultados por configuração; testes unitários e de arquivo/logging |
+| Testes | NavigationTests, PreferencesTests e LocalizationTests | 42 resultados por configuração; inclui telemetria, concorrência, cancelamento e integração Windows real |
 
 Solução válida: `C:\Projetos\Lotus\Lotus.slnx`. A pasta preexistente `Lotus/` não integra esta solução e permanece preservada. Alterações preexistentes nos três `.csproj` de biblioteca/testes e backup da solução não foram descartados.
 
@@ -57,7 +58,7 @@ Hoje Core também contém o ViewModel e glifos de navegação: é uma base compa
 
 ### Contratos futuros, ainda não existentes
 
-- `ITelemetryProvider`: descoberta de capacidades, coleta assíncrona cancelável e encerramento. Amostra com identificador estável, unidade, valor nullable, instante monotônico, UTC, provedor/versão e status Available/Unsupported/AccessDenied/Stale/Error.
+- `IHardwareTelemetryProvider` implementado para CPU/RAM: snapshots imutáveis, unidades explícitas, UTC/monotônico, fonte e status. Capacidades adicionais e identidade/versionamento de sensores serão ampliados quando houver novos provedores.
 - `IFrameCaptureProvider`: iniciar, parar e recuperar captura; identidade do processo inclui PID e instante de início. Manter swap chain e semântica da métrica.
 - `IDiagnosticRule`: entradas observadas e regra versionada produzem evidências, limitações, confiança e recomendação. Ausência de dado nunca significa estado saudável.
 - `IExternalToolBridge`: descoberta, versão, estado e capabilities explícitas. Detecção, execução, leitura, overlay e escrita de perfil são permissões distintas.
@@ -66,7 +67,7 @@ Hoje Core também contém o ViewModel e glifos de navegação: é uma base compa
 
 ### Telemetria e baixo consumo
 
-Coleta fora da thread UI, fila limitada, sem sobreposição de polling, cancelamento no fechamento e isolamento de falha por provedor. Proposta inicial: sistema a 1 Hz, inventário sob demanda, UI até 2 Hz, buffers circulares limitados. Cadências são hipóteses a medir. Não persistir sensores a cada atualização visual. Captura de frames usa fluxo próprio; perda de eventos fica explícita.
+Implementado: um singleton HardwareMonitoringService com worker de coleta serial fora da UI, PeriodicTimer de 1 s e leases por consumidor. Sem consumidor, cancela; reinício não sobrepõe o anterior. Dispatcher coalesce amostras para não enfileirar atualizações sem limite. Monitoramento é o único consumidor; sair da página ou minimizar cancela. Fechamento aguarda o worker. Histórico em memória limitado por tempo e por 60 pontos. Sem persistência por amostra. Critérios de frames continuam futuros. APIs, cálculos e limites no contrato de telemetria; custo real no relatório da Etapa 02.
 
 Preferir APIs Windows documentadas para CPU, RAM, capacidade de disco e processos. Sensores térmicos e GPU exigem avaliação separada. Não elevar a UI inteira para resolver uma leitura opcional. Um helper restrito só será considerado quando necessário e autorizado; IPC deve validar usuário, operação, esquema e tamanho.
 
@@ -90,7 +91,7 @@ Troca imediata sem reiniciar: atualiza cultura e menu, preserva ID selecionado e
 
 Dez IDs de navegação, sem repetição e sem acúmulo de backstack. Menu compacto abaixo de 1050 DIP não sobrescreve a preferência da janela ampla. Estado inicial restaurado após carregar o controle. Mínimo 600 × 480 DIP escalado pelo XamlRoot. Conteúdo com largura natural e margens para centralizar em até 1200 DIP; sem binding de Width ao ScrollViewer.
 
-`BrandPulse` usa compositor: opacidade e escala discreta; pausa quando janela inativa, marca oculta, redução de movimento ou animações do sistema desabilitadas. Páginas: fade 180 ms e translação vertical 220 ms. Não há timer por frame nem medição que comprove FPS/consumo da interface.
+`BrandPulse` usa máscara das letras, gradiente luminoso móvel e DropShadow no compositor. Neon estático se movimento reduzido/sistema sem animação/janela inativa; marca oculta descarta a composição. Páginas: fade 180 ms e translação vertical 220 ms. Não há timer por frame nem medição que comprove FPS/consumo da interface.
 
 ## Riscos e critérios de saída da fundação
 

@@ -70,3 +70,7 @@ Cobertura efetiva: estado inicial, dez rotas no ViewModel/notificação, navega�
 ## Fundação visual — Etapa 01
 
 Builds Debug/Release e 24 testes por configuração executados. Navegação, maximização/restauração, rolagem, idioma e tema imediatos inspecionados no Windows. [Comandos e limites](LOTUS_STAGE01_VALIDATION.md). Uso do compositor não equivale a ganho comprovado de FPS/consumo. Não houve benchmark de jogo, captura ETW ou medição de GPU/CPU nesta etapa.
+
+## CPU/RAM — Etapa 02 (21/10/2026)
+
+CPU/RAM reais e demanda implementados; [definições](LOTUS_TELEMETRY.md) e [relatório com evidências](LOTUS_STAGE02_VALIDATION.md). Release final: duas capturas sequenciais de aproximadamente 60 s/60 amostras, CPU do processo normalizada por 12 lógicos. Dashboard: média 0,129% CPU e 156,4 MiB working set. Monitoramento: 0,274% CPU e 179,0 MiB. Picos por intervalo 1,154% e 1,803%. Commit privado separado: 173,8 e 191,4 MiB. Tema Grafite/Rosê, pt-BR, animações habilitadas, janela inicial visível, sem debugger. O observador é externo. Uma rodada por condição, não um ensaio causal de otimização ou benchmark de jogo. Custo de GPU/DWM e estabilidade de horas não foram medidos.

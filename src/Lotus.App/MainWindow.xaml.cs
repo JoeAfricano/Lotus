@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media;
 using System.ComponentModel;
 using System.Globalization;
+using Lotus.Core.Telemetry;
 
 namespace Lotus.App;
 
@@ -24,14 +25,17 @@ public sealed partial class MainWindow : Window
     private bool windowActive;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
+    private readonly MonitoringViewModel monitoring;
+    private bool? brandAnimated;
 
-    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette)
+    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring)
     {
         ViewModel = viewModel;
         this.text = text;
         this.preferences = preferences;
         this.preferencesViewModel = preferencesViewModel;
         this.palette = palette;
+        this.monitoring = monitoring;
         InitializeComponent();
         ShellRoot.DataContext = ViewModel;
         ShellRoot.Language = text.Language;
@@ -61,6 +65,8 @@ public sealed partial class MainWindow : Window
         preferences.PropertyChanged += OnPreferencesChanged;
         Closed += (_, _) =>
         {
+            initialized = false;
+            monitoring.SetActive(false);
             StopBrandMotion();
             preferences.PropertyChanged -= OnPreferencesChanged;
         };
@@ -68,7 +74,11 @@ public sealed partial class MainWindow : Window
         {
             windowActive = args.WindowActivationState != WindowActivationState.Deactivated;
             UpdateBrandMotion();
+            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, UpdateMonitoringDemand);
         };
+        AppWindow.Changed += (_, _) => UpdateMonitoringDemand();
+        TitleLogo.SizeChanged += (_, _) => UpdateBrandMotion();
+        BrandLogo.SizeChanged += (_, _) => UpdateBrandMotion();
         ShellRoot.Loaded += (_, _) =>
         {
             UpdateNavigationMode(ShellRoot.ActualWidth);
@@ -89,6 +99,7 @@ public sealed partial class MainWindow : Window
         CultureInfo.CurrentUICulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo(text.Language);
         ShellRoot.Language = text.Language;
         ViewModel.RefreshLanguage();
+        monitoring.RefreshLanguage();
         foreach (NavigationViewItem item in Navigation.MenuItems)
         {
             var section = ViewModel.Items.Single(s => s.Id == (string)item.Tag);
@@ -100,7 +111,7 @@ public sealed partial class MainWindow : Window
         // Replace only the current visual page, retaining the same destination and preferences VM.
         DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
         {
-            ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel, false), new SuppressNavigationTransitionInfo());
+            ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel, false, monitoring), new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear();
         });
     }
@@ -145,17 +156,16 @@ public sealed partial class MainWindow : Window
         CompactFooter.Visibility = open ? Visibility.Collapsed : Visibility.Visible;
         UpdateToggleAccessibility(Navigation, text[open ? "CloseNavigation" : "OpenNavigation"]);
         UpdateBrandMotion();
+        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, UpdateBrandMotion);
     }
     private void UpdateBrandMotion()
     {
         if (!initialized || ShellRoot.XamlRoot is null) return;
-        if (!windowActive || preferences.Current.ReduceMotion || !new Windows.UI.ViewManagement.UISettings().AnimationsEnabled)
-        {
-            StopBrandMotion();
-            return;
-        }
-        titlePulse ??= new BrandPulse(TitleLogo);
-        if (Navigation.IsPaneOpen) sidebarPulse ??= new BrandPulse(BrandLogo);
+        var animate = windowActive && !preferences.Current.ReduceMotion && new Windows.UI.ViewManagement.UISettings().AnimationsEnabled;
+        if (brandAnimated != animate) { StopBrandMotion(); brandAnimated = animate; }
+        if (new Windows.UI.ViewManagement.AccessibilitySettings().HighContrast) { StopBrandMotion(); return; }
+        titlePulse ??= BrandPulse.TryCreate(TitleLogo, animate);
+        if (Navigation.IsPaneOpen) sidebarPulse ??= BrandPulse.TryCreate(BrandLogo, animate);
         else { sidebarPulse?.Dispose(); sidebarPulse = null; }
     }
     private void StopBrandMotion()
@@ -187,9 +197,22 @@ public sealed partial class MainWindow : Window
         if (args.SelectedItem is not NavigationViewItem { Tag: string id } || displayedSectionId == id) return;
         ViewModel.NavigateCommand.Execute(id);
         if (ViewModel.SelectedSection.Id != id) return;
-        ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel, !preferences.Current.ReduceMotion), new SuppressNavigationTransitionInfo());
+        ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel, !preferences.Current.ReduceMotion, monitoring), new SuppressNavigationTransitionInfo());
         ContentFrame.BackStack.Clear();
         displayedSectionId = id;
+        UpdateMonitoringDemand();
         if (narrow == true) Navigation.IsPaneOpen = false;
+    }
+    private void UpdateMonitoringDemand()
+    {
+        if (!initialized) return;
+        var minimized = AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized };
+        monitoring.SetActive(displayedSectionId == "monitoring" && !minimized && AppWindow.IsVisible);
+    }
+    public void PrepareForClose()
+    {
+        initialized = false;
+        monitoring.SetActive(false);
+        StopBrandMotion();
     }
 }

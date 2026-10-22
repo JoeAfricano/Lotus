@@ -16,7 +16,7 @@
     <value>SEU JOGO. SEU RITMO.</value>
   </data>
   <data name="FooterNotice" xml:space="preserve">
-    <value>LOTUS / FUNDAÇÃO VISUAL · Nenhuma métrica coletada ou configuração do Windows alterada.</value>
+    <value>LOTUS / CPU e RAM sob demanda em Monitoramento. Nenhuma configuração do Windows alterada.</value>
   </data>
   <data name="FooterVersion" xml:space="preserve">
     <value>FUNDAÇÃO 0.1 / EM DESENVOLVIMENTO</value>
@@ -226,5 +226,89 @@ Entre no jogo.</value>
   </data>
   <data name="settingsTitle" xml:space="preserve">
     <value>Configurações</value>
+  </data>
+  <data name="MonitoringIntro" xml:space="preserve">
+    <value>CPU e RAM reais • atualização de aproximadamente 1 segundo enquanto esta página estiver visível.</value>
+  </data>
+  <data name="WaitingSample" xml:space="preserve">
+    <value>Aguardando a primeira amostra…</value>
+  </data>
+  <data name="LastUpdate" xml:space="preserve">
+    <value>Última atualização: {0}</value>
+  </data>
+  <data name="CoreCounts" xml:space="preserve">
+    <value>{0} núcleos físicos • {1} processadores lógicos</value>
+  </data>
+  <data name="StatusAvailable" xml:space="preserve">
+    <value>Leitura disponível</value>
+  </data>
+  <data name="StatusWarmingUp" xml:space="preserve">
+    <value>Preparando leitura • requer duas amostras</value>
+  </data>
+  <data name="StatusUnavailable" xml:space="preserve">
+    <value>Indisponível</value>
+  </data>
+  <data name="StatusInvalid" xml:space="preserve">
+    <value>Amostra inválida • aguardando nova leitura</value>
+  </data>
+  <data name="StatusAccessDenied" xml:space="preserve">
+    <value>Acesso negado</value>
+  </data>
+  <data name="StatusUnsupported" xml:space="preserve">
+    <value>Não suportado pela fonte atual</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Falha na coleta • nova tentativa automática</value>
+  </data>
+  <data name="History60" xml:space="preserve">
+    <value>Histórico real • até 60 segundos • escala 0–100%</value>
+  </data>
+  <data name="GraphAxis" xml:space="preserve">
+    <value>−60 s                         −30 s                         agora</value>
+  </data>
+  <data name="CpuChart" xml:space="preserve">
+    <value>Histórico de utilização total da CPU; valores atuais nos textos acima.</value>
+  </data>
+  <data name="MemoryChart" xml:space="preserve">
+    <value>Histórico de utilização da RAM física; valores atuais nos textos acima.</value>
+  </data>
+  <data name="LotusCpu" xml:space="preserve">
+    <value>CPU do Lotus (capacidade total)</value>
+  </data>
+  <data name="FrequencyUnavailable" xml:space="preserve">
+    <value>Frequência efetiva: indisponível. Frequência nominal não é uma leitura instantânea.</value>
+  </data>
+  <data name="PhysicalMemory" xml:space="preserve">
+    <value>Memória física do Windows</value>
+  </data>
+  <data name="PhysicalTotal" xml:space="preserve">
+    <value>Total utilizável</value>
+  </data>
+  <data name="PhysicalUsed" xml:space="preserve">
+    <value>Utilizada</value>
+  </data>
+  <data name="PhysicalAvailable" xml:space="preserve">
+    <value>Disponível</value>
+  </data>
+  <data name="PhysicalDefinition" xml:space="preserve">
+    <value>Utilizada = total físico utilizável − disponível. Disponível inclui páginas reaproveitáveis; não é apenas RAM livre.</value>
+  </data>
+  <data name="LotusProcess" xml:space="preserve">
+    <value>PROCESSO LOTUS</value>
+  </data>
+  <data name="WorkingSet" xml:space="preserve">
+    <value>Memória de trabalho (física)</value>
+  </data>
+  <data name="PrivateCommit" xml:space="preserve">
+    <value>Commit privado (virtual)</value>
+  </data>
+  <data name="ProcessMemoryDefinition" xml:space="preserve">
+    <value>Working set inclui páginas privadas e compartilhadas residentes. Commit privado é uma reserva comprometida de memória virtual; não deve ser somado à RAM física. Fonte: K32GetProcessMemoryInfo.</value>
+  </data>
+  <data name="MonitoringLimitations" xml:space="preserve">
+    <value>CPU: variação de tempos ativos em GetSystemTimes; pode diferir do Gerenciador de Tarefas, que pode exibir utilidade ajustada por frequência. Utilização total baixa não exclui gargalo em um núcleo. Lacunas não são preenchidas. Ao sair da página ou minimizar, a coleta é suspensa. Sem GPU, sensores ou limpeza de memória nesta etapa.</value>
+  </data>
+  <data name="AxisNow" xml:space="preserve">
+    <value>agora</value>
   </data>
 </root>
