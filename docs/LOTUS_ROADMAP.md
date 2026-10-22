@@ -1,6 +1,6 @@
 # Lotus — Roadmap verificável
 
-Revisão: 21/10/2026. Somente planejamento. Aguardar instrução de implementação após esta entrega. A preferência por alternativas gratuitas e código próprio não autoriza antecipar todos os módulos.
+Revisão: 21/10/2026. Roadmap dos módulos futuros, com fundação implementada na Etapa 01. A preferência por alternativas gratuitas e código próprio não autoriza antecipar todos os módulos.
 
 Pré-requisito Etapa 00: auditoria de fundação aprovada; [resultados e pendências](LOTUS_STAGE00_AUDIT.md). Isso não conclui todos os gates de localização, DPI, consumo e acessibilidade da etapa 1 abaixo. Aguardar instrução para o próximo incremento; nenhum módulo novo implementado na auditoria.
 
@@ -22,16 +22,11 @@ Pré-requisito Etapa 00: auditoria de fundação aprovada; [resultados e pendên
 
 Uma função pode ficar indisponível se requisitos não forem atendidos. A aprovação de detecção não aprova instalação, escrita de perfil, ajuste de hardware ou aplicação de otimizações. RTSS/Afterburner são opcionais: o núcleo deverá iniciar sem eles. Escritas experimentais de perfil na etapa 5 não serão anunciadas como ganho comprovado antes da etapa 7.
 
-## Próximo incremento recomendado: etapa 1
+## Situação após a Etapa 01
 
-1. Confirmar o ponto de partida e preservar as alterações locais existentes dos `.csproj`.
-2. Migrar textos para pt-BR/en-US e garantir que a marca exibida seja apenas Lotus. Manter códigos de diagnóstico e logs invariantes.
-3. Exercitar todas as rotas, foco, janela mínima, menu compacto, restauração/maximização e DPI 100/125/150/200%.
-4. Testar inicialização com diretório de logs indisponível, encerramento e múltiplas instâncias; corrigir somente falhas reproduzidas.
-5. Medir inicialização fria/quente, CPU e memória em repouso; guardar condições e amostras. Metas propostas estão no documento de validação.
-6. Compilar Debug e Release, executar testes e fechar instâncias de validação antes de recompilar. Registrar checkpoint e relatório objetivo.
+Implementados: dez rotas, templates compartilhados, preferências JSON, idioma/tema em tempo real e animações nativas. [Evidências e limites](LOTUS_STAGE01_VALIDATION.md). DPI 125/150/200%, leitor de tela, alto contraste completo e custos ainda exigem homologação.
 
-Não inclui monitoramento nem SQLite nessa primeira fatia. O usuário não precisa escrever código: o Codex executará edição, build e testes após autorização da etapa. Solicitar interação apenas para consentimentos de sistema ou avaliação subjetiva que não possa ser automatizada.
+Próxima fatia proposta, somente após instrução: monitoramento de CPU total e RAM em leitura, com contratos independentes, aquecimento de amostra, indisponibilidades e medição de custo. Nenhum módulo de hardware foi adicionado nesta etapa.
 
 ## Política de avanço
 

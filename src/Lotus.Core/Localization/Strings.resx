@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <data name="CPU" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="CloseNavigation" xml:space="preserve">
+    <value>Recolher navegação</value>
+  </data>
+  <data name="Eyebrow" xml:space="preserve">
+    <value>SEU JOGO. SEU RITMO.</value>
+  </data>
+  <data name="FooterNotice" xml:space="preserve">
+    <value>LOTUS / FUNDAÇÃO VISUAL · Nenhuma métrica coletada ou configuração do Windows alterada.</value>
+  </data>
+  <data name="FooterVersion" xml:space="preserve">
+    <value>FUNDAÇÃO 0.1 / EM DESENVOLVIMENTO</value>
+  </data>
+  <data name="GPU" xml:space="preserve">
+    <value>GPU</value>
+  </data>
+  <data name="Graphite" xml:space="preserve">
+    <value>Grafite / Rosê</value>
+  </data>
+  <data name="Greeting" xml:space="preserve">
+    <value>Olá, Player.</value>
+  </data>
+  <data name="HeroDescription" xml:space="preserve">
+    <value>Diagnóstico claro. Mudanças conscientes.
+Evolução que você poderá medir.</value>
+  </data>
+  <data name="HeroEyebrow" xml:space="preserve">
+    <value>FOCO NO QUE IMPORTA</value>
+  </data>
+  <data name="HeroTitle" xml:space="preserve">
+    <value>Prepare o sistema.
+Entre no jogo.</value>
+  </data>
+  <data name="InDevelopment" xml:space="preserve">
+    <value>Interface em construção</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="LoadWarning" xml:space="preserve">
+    <value>As preferências estavam inválidas ou indisponíveis. O Lotus iniciou com padrões seguros.</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Carregando…</value>
+  </data>
+  <data name="LogLocation" xml:space="preserve">
+    <value>Os registros técnicos são gravados em: {0}</value>
+  </data>
+  <data name="LotusFlower" xml:space="preserve">
+    <value>Flor de lótus</value>
+  </data>
+  <data name="LotusScore" xml:space="preserve">
+    <value>LOTUS SCORE</value>
+  </data>
+  <data name="Memory" xml:space="preserve">
+    <value>MEMÓRIA</value>
+  </data>
+  <data name="Midnight" xml:space="preserve">
+    <value>Preto / Rosê</value>
+  </data>
+  <data name="Navigation" xml:space="preserve">
+    <value>Navegação principal</value>
+  </data>
+  <data name="NextSteps" xml:space="preserve">
+    <value>PRÓXIMOS PASSOS</value>
+  </data>
+  <data name="NoReading" xml:space="preserve">
+    <value>Sem leitura</value>
+  </data>
+  <data name="NotEvaluated" xml:space="preserve">
+    <value>NÃO AVALIADO</value>
+  </data>
+  <data name="OpenNavigation" xml:space="preserve">
+    <value>Abrir navegação</value>
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value>Planejado · Ainda não implementado</value>
+  </data>
+  <data name="ProfileAccessible" xml:space="preserve">
+    <value>Perfil Player, ainda não configurável</value>
+  </data>
+  <data name="ProfileSubtitle" xml:space="preserve">
+    <value>Seu espaço de jogo</value>
+  </data>
+  <data name="ReduceMotion" xml:space="preserve">
+    <value>Reduzir animações</value>
+  </data>
+  <data name="ImmediateHint" xml:space="preserve">
+    <value>As alterações são aplicadas e salvas imediatamente.</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Salvar preferências</value>
+  </data>
+  <data name="SaveFailed" xml:space="preserve">
+    <value>Não foi possível salvar. Suas preferências anteriores foram preservadas.</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Preferências aplicadas e salvas.</value>
+  </data>
+  <data name="ScoreDescription" xml:space="preserve">
+    <value>Diagnóstico disponível em uma próxima etapa.</value>
+  </data>
+  <data name="SectionAccessible" xml:space="preserve">
+    <value>Seção {0}</value>
+  </data>
+  <data name="SettingsPanel" xml:space="preserve">
+    <value>Preferências da interface</value>
+  </data>
+  <data name="SidebarSaveFailed" xml:space="preserve">
+    <value>A preferência do menu não pôde ser salva.</value>
+  </data>
+  <data name="Storage" xml:space="preserve">
+    <value>ARMAZENAMENTO</value>
+  </data>
+  <data name="SystemOverview" xml:space="preserve">
+    <value>VISÃO DO SISTEMA</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Tema visual</value>
+  </data>
+  <data name="Workflow" xml:space="preserve">
+    <value>Analisar › Recomendar › Confirmar › Aplicar › Verificar › Comparar</value>
+  </data>
+  <data name="WorkflowDescription" xml:space="preserve">
+    <value>Cada etapa será construída com você. As ferramentas de diagnóstico e otimização ainda não estão disponíveis.</value>
+  </data>
+  <data name="WorkflowTitle" xml:space="preserve">
+    <value>EVOLUÇÃO COM CONTROLE</value>
+  </data>
+  <data name="analysisDescription" xml:space="preserve">
+    <value>Entenda o sistema antes de decidir o que mudar.</value>
+  </data>
+  <data name="analysisNext" xml:space="preserve">
+    <value>Diagnóstico com critérios objetivos e fontes identificadas.</value>
+  </data>
+  <data name="analysisTitle" xml:space="preserve">
+    <value>Análise</value>
+  </data>
+  <data name="benchmarkDescription" xml:space="preserve">
+    <value>Compare resultados, não promessas.</value>
+  </data>
+  <data name="benchmarkNext" xml:space="preserve">
+    <value>Sessões reais de FPS, frametime e comparação antes/depois.</value>
+  </data>
+  <data name="benchmarkTitle" xml:space="preserve">
+    <value>Benchmark</value>
+  </data>
+  <data name="dashboardDescription" xml:space="preserve">
+    <value>Seu ponto de partida para uma experiência melhor em jogos.</value>
+  </data>
+  <data name="dashboardNext" xml:space="preserve">
+    <value>Visão geral do computador e resultados verificados.</value>
+  </data>
+  <data name="dashboardTitle" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="gamesDescription" xml:space="preserve">
+    <value>Um espaço para sua biblioteca e seus perfis.</value>
+  </data>
+  <data name="gamesNext" xml:space="preserve">
+    <value>Detecção autorizada de instalações e perfis individuais.</value>
+  </data>
+  <data name="gamesTitle" xml:space="preserve">
+    <value>Jogos</value>
+  </data>
+  <data name="historyDescription" xml:space="preserve">
+    <value>Saiba o que mudou e o que foi medido.</value>
+  </data>
+  <data name="historyNext" xml:space="preserve">
+    <value>Registro de alterações e resultados anteriores.</value>
+  </data>
+  <data name="historyTitle" xml:space="preserve">
+    <value>Histórico</value>
+  </data>
+  <data name="logsDescription" xml:space="preserve">
+    <value>Transparência desde a primeira execução.</value>
+  </data>
+  <data name="logsNext" xml:space="preserve">
+    <value>Um visualizador de registros técnicos será adicionado nesta seção.</value>
+  </data>
+  <data name="logsTitle" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="monitoringDescription" xml:space="preserve">
+    <value>Observe o comportamento do computador.</value>
+  </data>
+  <data name="monitoringNext" xml:space="preserve">
+    <value>Leituras reais de hardware, com indisponibilidades explícitas.</value>
+  </data>
+  <data name="monitoringTitle" xml:space="preserve">
+    <value>Monitoramento</value>
+  </data>
+  <data name="optimizationsDescription" xml:space="preserve">
+    <value>Cada mudança começa com uma decisão informada.</value>
+  </data>
+  <data name="optimizationsNext" xml:space="preserve">
+    <value>Recomendações com benefício esperado, riscos e confirmação.</value>
+  </data>
+  <data name="optimizationsTitle" xml:space="preserve">
+    <value>Otimizações</value>
+  </data>
+  <data name="restoreDescription" xml:space="preserve">
+    <value>Controle também significa poder voltar.</value>
+  </data>
+  <data name="restoreNext" xml:space="preserve">
+    <value>Reversão baseada no estado anterior de cada alteração.</value>
+  </data>
+  <data name="restoreTitle" xml:space="preserve">
+    <value>Restaurar</value>
+  </data>
+  <data name="settingsDescription" xml:space="preserve">
+    <value>O Lotus com suas preferências.</value>
+  </data>
+  <data name="settingsNext" xml:space="preserve">
+    <value>Personalização e preferências persistentes.</value>
+  </data>
+  <data name="settingsTitle" xml:space="preserve">
+    <value>Configurações</value>
+  </data>
+</root>

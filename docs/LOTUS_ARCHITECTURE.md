@@ -2,7 +2,7 @@
 
 Revisão: 21/10/2026. Inspeção sobre o commit `92c895d` e a árvore de trabalho existente. Este documento distingue implementação de proposta; não autoriza implementar os próximos módulos.
 
-Atualização Etapa 00: a configuração atual foi validada com restore, clean, build e testes em Debug/x64 e Release/x64; ambos sem erros/avisos e com seis testes aprovados. As duas janelas foram iniciadas e fechadas normalmente. Navegação básica foi observada em Debug. Não houve correção funcional necessária. O rodapé do menu compacto apresenta corte visual não bloqueante. Evidências, estado do Git e limitações constam no [relatório da Etapa 00](LOTUS_STAGE00_AUDIT.md), que prevalece sobre os limites de validação registrados anteriormente.
+Atualização Etapa 01: localização e temas em tempo real, preferências JSON, componentes compartilhados e animações nativas implementados. O [relatório da Etapa 01](LOTUS_STAGE01_VALIDATION.md) prevalece sobre os resultados históricos da Etapa 00.
 
 ## Estado comprovado
 
@@ -10,15 +10,15 @@ Atualização Etapa 00: a configuração atual foi validada com restore, clean, 
 | --- | --- | --- |
 | Shell nativo e tema neon japonês | `src/Lotus.App/MainWindow.xaml`, `App.xaml`, `SectionPage.xaml` | Implementados em WinUI 3/XAML |
 | Navegação | `src/Lotus.Core/Navigation.cs`, `MainWindow.xaml.cs` | Dez destinos; uma página reutilizada, sem dez módulos funcionais |
-| MVVM | `ShellViewModel`, ObservableObject e RelayCommand | Seleção testável; textos e composição de páginas ainda no code-behind/XAML |
+| MVVM | `ShellViewModel`, ObservableObject e RelayCommand | Seleção, preferências e textos testáveis; composição visual em XAML |
 | DI e ciclo de vida | `src/Lotus.App/App.xaml.cs` | ServiceCollection, janela e serviços singleton, descarte no fechamento |
 | Logging | `App.xaml.cs`, `src/Lotus.Infrastructure/AppEvents.cs` | JSONL local: início, navegação, encerramento e exceções de UI |
-| Persistência de produto | Nenhum pacote SQLite, repositório ou migração | Ausente; arquivos de log não são banco de histórico |
+| Persistência de preferências | PreferencesService e JsonPreferencesStore | JSON local versionado e backup; SQLite e histórico pendentes |
 | Monitoramento e score | XAML com “Sem leitura” e “NÃO AVALIADO” | Somente apresentação, sem coleta nem cálculo |
 | Diagnóstico, benchmark, otimização, restauração, jogos e manutenção | Catálogo de seções e avisos | Planejados |
 | RTSS e Afterburner | Nenhum adaptador na solução | Ferramentas presentes no computador, sem integração implementada |
-| Perfil, preferências e idiomas | “Player” e textos literais | Sem perfil editável, configurações persistentes ou localização |
-| Testes | `tests/Lotus.Tests/NavigationTests.cs` | Cinco casos unitários e uma integração de logging; seis resultados |
+| Preferências e idiomas | TextCatalog e PreferencesViewModel | PT-BR inicial e EN-US; idioma/tema imediatos; sidebar e movimento persistidos. Perfil editável pendente |
+| Testes | NavigationTests, PreferencesTests e LocalizationTests | 24 resultados por configuração; testes unitários e de arquivo/logging |
 
 Solução válida: `C:\Projetos\Lotus\Lotus.slnx`. A pasta preexistente `Lotus/` não integra esta solução e permanece preservada. Alterações preexistentes nos três `.csproj` de biblioteca/testes e backup da solução não foram descartados.
 
@@ -76,15 +76,25 @@ Microsoft.Data.Sqlite é candidato, ainda não instalado. Banco por usuário em 
 
 SQLite e alterações externas não compartilham transação: registrar Prepared/Confirmed/BackedUp/Applying/Applied/Verified/Measured/Reverted/Failed/RecoveryRequired de forma durável. Após falha, consultar estado real antes de repetir. Reversão só restaura campos que o Lotus mudou; detectar edição posterior do usuário e pedir resolução de conflito. Testar disco cheio, lock, corrupção e migração interrompida. WAL e política de checkpoint dependem de ensaio local, não são padrão adotado nesta entrega.
 
-### Português e inglês
+### Português e inglês — implementado
 
-Nome de produto: **Lotus**, sem sufixo. Idioma principal `pt-BR`; segundo idioma `en-US`. Recursos WinUI `.resw` e `x:Uid` para controles; serviço de localização para textos do ViewModel/diagnóstico. Persistir chaves e argumentos tipados, nunca a frase traduzida. Logs técnicos têm IDs invariantes. Números, unidades, datas e plurais respeitam a cultura de apresentação; formatos de captura e banco usam convenções invariantes.
+Nome público **Lotus**. `TextCatalog` usa ResourceManager e `.resx` no Core, com bindings XAML observáveis `Text[Chave]`; não usa `.resw`/`x:Uid` nesta etapa. Português brasileiro é padrão e fallback; inglês americano é opção. Testes verificam paridade de chaves, conteúdo e identidade das dez rotas.
 
-Proposta de seleção: pt-BR no primeiro uso e seleção explícita de inglês em Configurações; fallback pt-BR para recurso ausente. Definir troca com reinicialização inicialmente, com aviso claro. Testar todas as chaves em ambos os idiomas, Unicode, textos longos, acessibilidade e arredondamento. Código próprio deve nascer localizável; os textos literais atuais serão migrados em etapa autorizada.
+Troca imediata sem reiniciar: atualiza cultura e menu, preserva ID selecionado e recria apenas a página atual depois de fechar o seletor. Temas Preto/Rosê e Grafite/Rosê alteram brushes compartilhados sem recriar a janela. Logs e chaves persistidas são invariantes.
+
+### Preferências e composição visual — implementado
+
+`PreferencesViewModel` e `PreferencesService` dependem de `IPreferencesStore`; `JsonPreferencesStore` implementa leitura/gravação. Arquivo `%LOCALAPPDATA%/Lotus/preferences.json`, schema 1, máximo de leitura 64 KiB. Guarda idioma, tema, sidebar e redução de movimento. Primeiro uso: pt-BR, Midnight, sidebar expandida, movimento habilitado. Arquivo ausente/inválido não bloqueia início. A gravação usa temporário exclusivo, flush e replace/move; `.bak` guarda a versão anterior. Falha preserva o último estado e retorna o seletor ao valor salvo. Concorrência entre instâncias ainda não homologada. SQLite permanece futuro para métricas/histórico.
+
+`Controls/Foundation.xaml`: cards, cabeçalhos, status, estado vazio, botão, painel de preferências e template de carregamento (sem operação consumidora ainda). `SectionPage` usa `x:Load` para instanciar somente o conteúdo necessário. Code-behind trata controles, Frame, layout e animações; seleção e persistência ficam fora da página.
+
+Dez IDs de navegação, sem repetição e sem acúmulo de backstack. Menu compacto abaixo de 1050 DIP não sobrescreve a preferência da janela ampla. Estado inicial restaurado após carregar o controle. Mínimo 600 × 480 DIP escalado pelo XamlRoot. Conteúdo com largura natural e margens para centralizar em até 1200 DIP; sem binding de Width ao ScrollViewer.
+
+`BrandPulse` usa compositor: opacidade e escala discreta; pausa quando janela inativa, marca oculta, redução de movimento ou animações do sistema desabilitadas. Páginas: fade 180 ms e translação vertical 220 ms. Não há timer por frame nem medição que comprove FPS/consumo da interface.
 
 ## Riscos e critérios de saída da fundação
 
-- Há um único teste de integração e nenhum teste automatizado de UI, migração, captura ou hardware.
+- Há testes de recursos e de arquivo/logging; nenhum teste automatizado de UI, migração, captura ou hardware. Validações visuais assistidas usam screenshots e árvore de acessibilidade.
 - Logging síncrono serve à baixa frequência atual; não usar o caminho existente por frame. Falhas de escrita, inicialização e multi-instância ainda precisam de ensaio.
 - Recursos neon não substituem contraste, alto contraste, teclado, leitor de tela e DPI. Regras adaptativas existem, mas ainda carecem de validação dedicada.
 - Arquitetura de extensão significa adaptadores internos opcionais; não carregar DLLs arbitrárias de terceiros.

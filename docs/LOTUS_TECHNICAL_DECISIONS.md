@@ -54,3 +54,18 @@ Não se afirma que todos esses riscos já causem falhas. São limites constatado
 - Há alterações preexistentes em `Lotus.Core.csproj`, `Lotus.Infrastructure.csproj` e `Lotus.Tests.csproj`, além do backup da solução; ficam fora deste checkpoint documental.
 
 As bases e pendências de licença estão em [integrações](LOTUS_EXTERNAL_INTEGRATIONS.md). O próximo passo é a etapa 1 do [roadmap](LOTUS_ROADMAP.md), mediante instrução do usuário. Não iniciar implementação dos novos módulos nesta entrega.
+
+## Atualização Etapa 01 — decisões adotadas
+
+Este registro prevalece sobre os achados históricos acima.
+
+- ADR-002 implementado: `.resx`/ResourceManager no Core, bindings observáveis e idioma imediato. Nome público Lotus.
+- ADR-005 refinado: preferências JSON agora; SQLite quando sessões/histórico/journal justificarem. Nenhuma dependência nova.
+- ADR-016: autosave após seleção. Só confirmar após gravar; backup e retorno ao estado anterior em falha. Botão Salvar redundante removido.
+- ADR-017: templates compartilhados e `x:Load`; não criar Dashboard oculto em outras seções.
+- ADR-018: movimento do compositor, redução de animações e pausa da marca em janela inativa; custo não quantificado.
+- ADR-019: menu compacto restaurado após carregamento; largura natural do conteúdo evita recorte ao restaurar janela.
+- O evento HighContrastChanged causou COM 0x80070490 nesta aplicação sem pacote e foi retirado. Consulta de alto contraste ocorre no início/aplicação do tema; mudança dinâmica do sistema não garantida.
+- Rodapé compacto, localização e conteúdo oculto tratados. DPI, leitor de tela, alto contraste completo, concorrência e consumo permanecem pendentes.
+
+Ver [relatório atual](LOTUS_STAGE01_VALIDATION.md). Não avançar automaticamente para hardware.

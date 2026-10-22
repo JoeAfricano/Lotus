@@ -1,65 +1,42 @@
-# Lotus — Fundação 0.1
+# Lotus
 
-Auditoria atual: [Etapa 00 — resultados e limitações](docs/LOTUS_STAGE00_AUDIT.md). Builds limpos Debug/x64 e Release/x64 aprovados, seis testes aprovados em cada configuração e execução visual confirmada em ambas. Os registros históricos e checklists abaixo devem ser lidos junto desse relatório atualizado.
+Aplicativo nativo Windows em C#/.NET 10 e WinUI 3, com MVVM, injeção de dependências e logging estruturado. Fundação visual em preto, grafite e rosê. Não coleta hardware, calcula score, executa benchmark, limpa arquivos ou altera configurações do Windows nesta etapa.
 
-Aplicativo nativo Windows em C# e WinUI 3. Esta entrega contém somente o shell, a navegação e a base técnica. Não coleta hardware, calcula score, executa benchmark, limpa arquivos ou altera configurações do Windows.
+Estado atual: [Etapa 01 — resultados e limitações](docs/LOTUS_STAGE01_VALIDATION.md). Builds Debug/x64 e Release/x64 sem erros/avisos; 24 testes aprovados em cada configuração. Navegação nas dez áreas, preferências, idiomas e temas em tempo real inspecionados no Windows. DPI adicional, leitor de tela, alto contraste completo e consumo continuam pendentes. [Etapa 00](docs/LOTUS_STAGE00_AUDIT.md) preservada como histórico.
 
 ## Abrir e executar
 
-Abra **C:\Projetos\Lotus\Lotus.slnx** no Visual Studio com suporte a WinUI. A pasta `Lotus/` existente foi preservada e não pertence a esta solução: nenhum código ou recurso visual dela foi copiado.
+Abra `C:/Projetos/Lotus/Lotus.slnx` no Visual Studio. Defina Lotus.App como projeto inicial, Debug/x64 e F5. A pasta antiga `Lotus/` foi preservada e não pertence à solução atual.
 
-No PowerShell, a partir de `C:\Projetos\Lotus`:
+Na raiz do projeto, com a instância da mesma configuração fechada:
 
 ```powershell
-dotnet build src/Lotus.App/Lotus.App.csproj -p:Platform=x64
+dotnet restore Lotus.slnx -p:Platform=x64
+dotnet build Lotus.slnx -c Debug -p:Platform=x64 --no-restore
 & .\src\Lotus.App\bin\x64\Debug\net10.0-windows10.0.26100.0\win-x64\Lotus.App.exe
 ```
 
-Para executar os testes:
+Testes:
 
 ```powershell
-dotnet test tests/Lotus.Tests/Lotus.Tests.csproj --logger trx
+dotnet test tests/Lotus.Tests/Lotus.Tests.csproj -c Debug --logger trx
 ```
 
-O primeiro restore precisa de internet. Requisitos desta entrega: Windows x64, SDK .NET 10.0.401, Windows SDK 10.0.26100.0. O Windows App SDK é incluído na saída; o runtime .NET 10 precisa estar instalado. Execute sem privilégios administrativos. Esta pasta de build não é um instalador.
+Requisitos: Windows x64, SDK .NET 10.0.401, Windows SDK 10.0.26100.0 e runtime .NET 10. Windows App SDK incluído na saída. Executar sem privilégios administrativos. Build não equivale a instalador; o primeiro restore precisa de acesso ao NuGet.
 
-## Estrutura
+## Componentes existentes
 
-- `src/Lotus.App`: aplicação WinUI, composição por injeção de dependências, recursos XAML e navegação com Frame.
-- `src/Lotus.Core`: catálogo imutável das dez seções e ShellViewModel com CommunityToolkit.Mvvm, sem dependência de WinUI.
-- `src/Lotus.Infrastructure`: implementação de eventos com Serilog e propriedades estruturadas.
-- `tests/Lotus.Tests`: testes unitários da navegação e integração de gravação JSON em arquivo temporário exclusivo.
+- `Lotus.App`: shell WinUI, Frame, templates compartilhados, layout adaptativo e animações do compositor.
+- `Lotus.Core`: navegação, localização pt-BR/en-US, preferências e ViewModels testáveis.
+- `Lotus.Infrastructure`: JSON de preferências e eventos com Serilog.
+- `Lotus.Tests`: navegação, recursos, autosave, falhas de arquivo, backup e logging.
 
-As dez rotas usam uma página básica reutilizável, com título, descrição e próximo passo próprios. Quando cada módulo for desenvolvido, poderá receber sua página especializada. O code-behind limita-se à adaptação dos controles WinUI; a seleção pertence ao ViewModel.
+Configurações: português inicial e inglês; temas Preto/Rosê e Grafite/Rosê; redução de movimento; sidebar persistente na janela ampla. Aplicação e gravação imediatas, sem botão Salvar ou reinício. Arquivo `%LOCALAPPDATA%/Lotus/preferences.json`; versão anterior `.bak`. SQLite é futuro para sessões/histórico, sem dependência adicionada agora.
 
-SQLite está previsto para a etapa de persistência. Ainda não há preferências editáveis ou histórico de medições para armazenar, portanto esta entrega não cria um banco vazio nem inclui um serviço sem uso. Não há implementação de domínio de otimizações nesta fase.
+Logs: `%LOCALAPPDATA%/Lotus/Logs/lotus-AAAAMMDD.jsonl`, rotação diária/5 MB/sete arquivos. A página Logs informa o local; visualizador ainda planejado. Perfil Player não editável. Demais módulos exibem sua condição de planejados, sem métricas simuladas.
 
-## Interface
+Mínimo de janela 600 × 480 DIP com rolagem; menu compacto em telas estreitas. Marca Lotus com pulsação discreta; páginas com entrada curta. Reduzir animações desativa os efeitos. Não há alegação de ganho de FPS/consumo.
 
-Tema escuro com rosê, símbolo vetorial original em XAML, cards reutilizáveis, navegação adaptativa e conteúdo com rolagem. Todas as funções futuras aparecem como **Planejado · Funcionalidade ainda não implementada**. Não existem botões que alegam realizar essas funções.
+Veja [arquitetura](docs/LOTUS_ARCHITECTURE.md), [decisões](docs/LOTUS_TECHNICAL_DECISIONS.md) e [roadmap](docs/LOTUS_ROADMAP.md). Não avançar automaticamente para a próxima etapa.
 
-Os eventos de abertura, navegação e encerramento são registrados em `%LOCALAPPDATA%\Lotus\Logs\lotus-AAAAMMDD.jsonl`, com rotação diária, limite de 5 MB por arquivo e retenção de sete arquivos. A página Logs informa o caminho; o visualizador ainda não foi implementado. Exceções da UI são registradas sem serem ocultadas.
-
-## Validação realizada em 21/10/2026
-
-- Restore NuGet concluído.
-- Build Debug x64: zero erros, zero avisos.
-- Seis testes aprovados: início no Dashboard; dez rotas e notificações MVVM; entrada nula, desconhecida e repetida; integração Serilog/JSON em disco.
-- Executável aberto e janela real inspecionada: Dashboard, menu com dez entradas, tema e textos renderizados.
-- Uma observação posterior da janela confirmou conteúdo da seção Jogos. Os cliques automatizados adicionais foram interrompidos por mudança de posição/minimização da janela; isso não foi contado como aprovação de teste de interação.
-
-### Checklist manual pendente
-
-1. Clicar nas dez seções e conferir título e descrição, inclusive voltando ao Dashboard.
-2. Redimensionar a janela: conferir menu compacto, rolagem e ausência de cortes.
-3. Navegar com Tab, setas e Enter; avaliar leitor de tela, foco e escalas de 125%, 150% e 200%.
-4. Fechar e reabrir; conferir os eventos JSON no diretório de logs.
-5. Validar em outro computador Windows x64. ARM64, x86, Release e empacotamento ainda não foram validados.
-
-Não avançar para monitoramento e alterações do Windows antes da aceitação desta fundação.
-
-## Referência técnica
-
-[Distribuição WinUI sem MSIX — Microsoft](https://learn.microsoft.com/windows/apps/package-and-deploy/unpackage-winui-app). As versões NuGet estão fixadas nos projetos; o SDK estável é selecionado por `global.json`.
-
-O checkpoint inicial usa a identidade técnica local `Lotus Development <lotus@localhost>` apenas no comando de commit, pois não havia identidade Git configurada. Nenhuma configuração global Git é alterada.
+Checkpoints usam a identidade técnica local Lotus Development <lotus@localhost> apenas no comando de commit; configuração global Git permanece intacta.
