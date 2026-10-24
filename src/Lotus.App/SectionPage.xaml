@@ -59,6 +59,7 @@
      <ComboBox Header="{Binding Text[Language]}" AutomationProperties.AutomationId="settings-language" AutomationProperties.Name="{Binding Text[Language]}" SelectedIndex="{Binding Preferences.LanguageIndex, Mode=TwoWay}" HorizontalAlignment="Stretch" MinWidth="230" ItemsSource="{Binding Preferences.LanguageOptions}"/>
      <ComboBox Header="{Binding Text[Theme]}" AutomationProperties.AutomationId="settings-theme" AutomationProperties.Name="{Binding Text[Theme]}" SelectedIndex="{Binding Preferences.ThemeIndex, Mode=TwoWay}" HorizontalAlignment="Stretch" ItemsSource="{Binding Preferences.ThemeOptions}"/>
      <CheckBox Content="{Binding Text[ReduceMotion]}" IsChecked="{Binding Preferences.ReduceMotion, Mode=TwoWay}" AutomationProperties.AutomationId="settings-motion"/>
+     <TextBlock Text="{Binding Text[BrandMotionPolicy]}" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
      <TextBlock Text="{Binding Text[ImmediateHint]}" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}" FontSize="13"/>
      <TextBlock Text="{Binding Preferences.Message}" TextWrapping="Wrap" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite" AutomationProperties.AutomationId="settings-result"/>
     </StackPanel>

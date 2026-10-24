@@ -125,3 +125,8 @@ Artefatos de ensaio e TRX ficam locais/ignorados no Git. Backup preexistente Lot
 ## Próximo passo
 
 Concluir a conferência visual desta etapa. Depois, somente com nova autorização, ampliar homologação e decidir o próximo incremento. Não iniciar diagnóstico, RTSS, benchmark ou otimizações automaticamente.
+
+
+## Correção posterior da marca — 23/10/2026
+
+Causa estática confirmada: política global do Windows bloqueava as animações. Prova ampliada da flor confirmada visualmente pelo usuário. Correção nativa e varredura do nome implementadas; Debug/Release com zero avisos/erros e 62 testes aprovados em cada configuração. Essa rodada não substitui conferência visual do nome/estados da janela, ainda pendente por falha da ferramenta de captura. [Evidências, política local, medição e limites](LOTUS_BRAND_MOTION_DIAGNOSIS.md). Nenhuma alteração nos coletores ou controles do hardware.

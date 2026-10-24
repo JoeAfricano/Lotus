@@ -26,8 +26,12 @@ public sealed partial class MainWindow : Window
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
     private BrandPulse? flowerPulse;
+    private BrandPulse? compactFlowerPulse;
     private readonly MonitoringViewModel monitoring;
     private bool? brandAnimated;
+    private readonly bool brandProofRequested = Environment.GetCommandLineArgs().Contains("--brand-motion-proof");
+    private BrandMotionProof? brandProof;
+    private bool brandProofShown;
 
     public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring)
     {
@@ -81,6 +85,7 @@ public sealed partial class MainWindow : Window
         TitleLogo.SizeChanged += (_, _) => UpdateBrandMotion();
         BrandLogo.SizeChanged += (_, _) => UpdateBrandMotion();
         BrandFlower.SizeChanged += (_, _) => UpdateBrandMotion();
+        CompactBrandFlower.SizeChanged += (_, _) => UpdateBrandMotion();
         ShellRoot.Loaded += (_, _) =>
         {
             UpdateNavigationMode(ShellRoot.ActualWidth);
@@ -88,6 +93,23 @@ public sealed partial class MainWindow : Window
             UpdatePaneChrome();
             UpdateBrandMotion();
             ShellRoot.XamlRoot.Changed += (_, _) => UpdateMinimumSize();
+            if (brandProofRequested && !brandProofShown)
+            {
+                brandProofShown = true;
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    try
+                    {
+                        brandProof = new(ShellRoot.XamlRoot, BrandFlower,
+                            () => initialized && AppWindow.IsVisible && !preferences.Current.ReduceMotion &&
+                                AppWindow.Presenter is not OverlappedPresenter { State: OverlappedPresenterState.Minimized } &&
+                                !new Windows.UI.ViewManagement.AccessibilitySettings().HighContrast, text);
+                        await brandProof.ShowAsync();
+                    }
+                    catch (Exception ex) { Serilog.Log.Error(ex, "Brand scale proof failed"); }
+                    finally { brandProof?.Dispose(); brandProof = null; }
+                });
+            }
         };
     }
     private void OnPreferencesChanged(object? sender, PropertyChangedEventArgs args)
@@ -163,23 +185,36 @@ public sealed partial class MainWindow : Window
     private void UpdateBrandMotion()
     {
         if (!initialized || ShellRoot.XamlRoot is null) return;
-        var animate = AppWindow.IsVisible && AppWindow.Presenter is not OverlappedPresenter { State: OverlappedPresenterState.Minimized }
-            && !preferences.Current.ReduceMotion && new Windows.UI.ViewManagement.UISettings().AnimationsEnabled;
-        if (brandAnimated != animate) { StopBrandMotion(); brandAnimated = animate; }
+        var systemAnimations = new Windows.UI.ViewManagement.UISettings().AnimationsEnabled;
+        var animate = !brandProofRequested && AppWindow.IsVisible && AppWindow.Presenter is not OverlappedPresenter { State: OverlappedPresenterState.Minimized }
+            && !preferences.Current.ReduceMotion;
+        if (brandAnimated != animate)
+        {
+            StopBrandMotion(); brandAnimated = animate;
+            Serilog.Log.Information("Brand motion policy {Animate} WindowsAnimations {WindowsAnimations} ReduceMotion {ReduceMotion} Proof {Proof}",
+                animate, systemAnimations, preferences.Current.ReduceMotion, brandProofRequested);
+        }
+        brandProof?.Refresh();
         if (new Windows.UI.ViewManagement.AccessibilitySettings().HighContrast) { StopBrandMotion(); return; }
         titlePulse ??= BrandPulse.TryCreate(TitleLogo, animate);
         if (Navigation.IsPaneOpen)
         {
             sidebarPulse ??= BrandPulse.TryCreate(BrandLogo, animate);
             flowerPulse ??= BrandPulse.TryCreate(BrandFlower, animate, flower: true);
+            compactFlowerPulse?.Dispose(); compactFlowerPulse = null;
         }
-        else { sidebarPulse?.Dispose(); sidebarPulse = null; flowerPulse?.Dispose(); flowerPulse = null; }
+        else
+        {
+            sidebarPulse?.Dispose(); sidebarPulse = null; flowerPulse?.Dispose(); flowerPulse = null;
+            compactFlowerPulse ??= BrandPulse.TryCreate(CompactBrandFlower, animate, flower: true);
+        }
     }
     private void StopBrandMotion()
     {
         titlePulse?.Dispose(); titlePulse = null;
         sidebarPulse?.Dispose(); sidebarPulse = null;
         flowerPulse?.Dispose(); flowerPulse = null;
+        compactFlowerPulse?.Dispose(); compactFlowerPulse = null;
     }
     private static void UpdateToggleAccessibility(DependencyObject parent, string label)
     {
@@ -220,6 +255,7 @@ public sealed partial class MainWindow : Window
     public void PrepareForClose()
     {
         initialized = false;
+        brandProof?.Dispose(); brandProof = null;
         monitoring.SetActive(false);
         StopBrandMotion();
     }

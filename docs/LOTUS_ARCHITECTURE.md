@@ -91,7 +91,7 @@ Troca imediata sem reiniciar: atualiza cultura e menu, preserva ID selecionado e
 
 Dez IDs de navegação, sem repetição e sem acúmulo de backstack. Menu compacto abaixo de 1050 DIP não sobrescreve a preferência da janela ampla. Estado inicial restaurado após carregar o controle. Mínimo 600 × 480 DIP escalado pelo XamlRoot. Conteúdo com largura natural e margens para centralizar em até 1200 DIP; sem binding de Width ao ScrollViewer.
 
-`BrandPulse` usa gradiente, DropShadow, esmaecimento da palavra e formas vetoriais pixeladas, superfície do tamanho do elemento e 12 partículas por marca visível no compositor. Neon estático com movimento reduzido/sistema sem animação/janela minimizada; marca oculta descarta a composição. Perda de foco por si só não suspende mais o efeito. Páginas: fade 180 ms e translação vertical 220 ms. Não há timer por frame nem medição que comprove FPS/consumo da interface.
+`BrandPulse` usa geometria pixelada própria, ShapeVisual e CompositionVisualSurface no tamanho do elemento. A flor pulsa por Scale (4,4 s) e o nome recebe varredura de gradiente independente, com seis partículas por marca. Reduzir animações do Lotus, minimização e invisibilidade interrompem os efeitos; alto contraste usa o fallback XAML. A política global do Windows é registrada, mas o efeito solicitado segue a preferência local sem alterar o Windows. Não há timer por frame. A prova ampliada foi confirmada pelo usuário; varredura e estados da sidebar aguardam validação visual. Ver [diagnóstico e consumo](LOTUS_BRAND_MOTION_DIAGNOSIS.md). Páginas: fade 180 ms e translação vertical 220 ms.
 
 ## Riscos e critérios de saída da fundação
 

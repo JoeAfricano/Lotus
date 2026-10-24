@@ -338,4 +338,11 @@ Entre no jogo.</value>
   <data name="TemperatureShort" xml:space="preserve"><value>Temperatura</value></data>
   <data name="PowerShort" xml:space="preserve"><value>Potência</value></data>
   <data name="VramAllocatedShort" xml:space="preserve"><value>Alocada / capacidade reportada</value></data>
+<data name="BrandProofTitle" xml:space="preserve"><value>Lotus · prova de movimento</value></data>
+<data name="BrandProofDescription" xml:space="preserve"><value>Somente a escala da mesma flor é animada. Observe as bordas em relação à moldura fixa. O teste explícito ignora apenas o bloqueio de animação do Windows; não altera o sistema nem as preferências do Lotus.</value></data>
+<data name="BrandProofClose" xml:space="preserve"><value>Fechar diagnóstico</value></data>
+<data name="BrandProofFailed" xml:space="preserve"><value>Falha ao criar a composição. Consulte os logs; não considerar o teste aprovado.</value></data>
+<data name="BrandProofRunning" xml:space="preserve"><value>Escala iniciada no compositor. A validação visual ainda é necessária.</value></data>
+<data name="BrandProofStopped" xml:space="preserve"><value>Pausado: janela invisível/minimizada, alto contraste ou redução de movimento.</value></data>
+<data name="BrandMotionPolicy" xml:space="preserve"><value>A marca segue “Reduzir animações” do Lotus. As configurações de animação do Windows permanecem inalteradas.</value></data>
 </root>

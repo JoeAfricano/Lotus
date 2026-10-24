@@ -25,6 +25,7 @@ internal sealed class BrandPulse : IDisposable
     private readonly List<CompositionColorBrush> inks = [];
     private readonly List<CompositionRectangleGeometry> rectangles = [];
     private readonly List<CompositionSpriteShape> shapes = [];
+    private CompositionLinearGradientBrush? highlight;
 
     private static readonly string[][] Letters =
     [
@@ -82,15 +83,6 @@ internal sealed class BrandPulse : IDisposable
             var color = fraction < 0.22f ? Color.FromArgb(255,255,175,216)
                 : fraction > 0.84f ? Color.FromArgb(255,255,103,180) : Color.FromArgb(255,232,25,126);
             var ink = compositor.CreateColorBrush(color); inks.Add(ink);
-            if (animate)
-            {
-                using var energy = compositor.CreateColorKeyFrameAnimation();
-                energy.InsertKeyFrame(0, color); energy.InsertKeyFrame(0.3f, Color.FromArgb(255,255,226,242));
-                energy.InsertKeyFrame(0.58f, Color.FromArgb(140,194,14,102)); energy.InsertKeyFrame(1, color);
-                energy.Duration = TimeSpan.FromSeconds(6); energy.DelayTime = TimeSpan.FromMilliseconds(y * 35);
-                energy.IterationBehavior = AnimationIterationBehavior.Forever;
-                ink.StartAnimation("Color", energy);
-            }
             for (var x = 0; x < pattern[y].Length; x++)
             {
                 if (pattern[y][x] != '1') continue;
@@ -104,6 +96,29 @@ internal sealed class BrandPulse : IDisposable
                 shapes.Add(shape); artwork.Shapes.Add(shape);
             }
         }
+        if (animate && !flower)
+        {
+            // Geometry itself clips the sweep. No mask brush or glyph alpha mask.
+            highlight = compositor.CreateLinearGradientBrush();
+            highlight.MappingMode = CompositionMappingMode.Absolute;
+            highlight.StartPoint = new Vector2(-size.X * 0.4f, 0); highlight.EndPoint = Vector2.Zero;
+            highlight.ColorStops.Add(compositor.CreateColorGradientStop(0, Color.FromArgb(0, 255, 240, 249)));
+            highlight.ColorStops.Add(compositor.CreateColorGradientStop(0.5f, Color.FromArgb(225, 255, 245, 251)));
+            highlight.ColorStops.Add(compositor.CreateColorGradientStop(1, Color.FromArgb(0, 255, 240, 249)));
+            foreach (var rectangle in rectangles)
+            {
+                var overlay = compositor.CreateSpriteShape(rectangle); overlay.FillBrush = highlight;
+                shapes.Add(overlay); artwork.Shapes.Add(overlay);
+            }
+            using var start = compositor.CreateVector2KeyFrameAnimation();
+            start.InsertKeyFrame(0, new Vector2(-size.X * 0.4f, 0)); start.InsertKeyFrame(1, new Vector2(size.X, 0));
+            start.Duration = TimeSpan.FromSeconds(4.4); start.IterationBehavior = AnimationIterationBehavior.Forever;
+            highlight.StartAnimation("StartPoint", start);
+            using var end = compositor.CreateVector2KeyFrameAnimation();
+            end.InsertKeyFrame(0, Vector2.Zero); end.InsertKeyFrame(1, new Vector2(size.X * 1.4f, 0));
+            end.Duration = start.Duration; end.IterationBehavior = AnimationIterationBehavior.Forever;
+            highlight.StartAnimation("EndPoint", end);
+        }
         // The surface is only the size of the displayed mark, never a large reference image.
         surface = compositor.CreateVisualSurface(); surface.SourceVisual = artwork; surface.SourceSize = size;
         surfaceBrush = compositor.CreateSurfaceBrush(surface);
@@ -113,21 +128,25 @@ internal sealed class BrandPulse : IDisposable
         root.Children.InsertAtBottom(image);
         ElementCompositionPreview.SetElementChildVisual(element, root);
         if (!animate) return;
-        using var breathing = compositor.CreateScalarKeyFrameAnimation();
-        breathing.InsertKeyFrame(0, 0.95f); breathing.InsertKeyFrame(0.35f, 1);
-        breathing.InsertKeyFrame(0.64f, 0.52f); breathing.InsertKeyFrame(1, 0.95f);
-        breathing.Duration = TimeSpan.FromSeconds(6); breathing.IterationBehavior = AnimationIterationBehavior.Forever;
-        image.StartAnimation("Opacity", breathing);
+        if (flower)
+        {
+            root.CenterPoint = new Vector3(size / 2, 0);
+            using var scale = compositor.CreateVector3KeyFrameAnimation();
+            using var easing = compositor.CreateCubicBezierEasingFunction(new Vector2(0.42f, 0), new Vector2(0.58f, 1));
+            scale.InsertKeyFrame(0, Vector3.One); scale.InsertKeyFrame(0.5f, new Vector3(1.035f, 1.035f, 1), easing);
+            scale.InsertKeyFrame(1, Vector3.One, easing); scale.Duration = TimeSpan.FromSeconds(4.4);
+            scale.IterationBehavior = AnimationIterationBehavior.Forever; root.StartAnimation("Scale", scale);
+        }
         using var bloom = compositor.CreateScalarKeyFrameAnimation();
-        bloom.InsertKeyFrame(0, 0.4f); bloom.InsertKeyFrame(0.35f, 0.95f); bloom.InsertKeyFrame(0.68f, 0.25f); bloom.InsertKeyFrame(1, 0.4f);
-        bloom.Duration = breathing.Duration; bloom.IterationBehavior = AnimationIterationBehavior.Forever;
+        bloom.InsertKeyFrame(0, 0.45f); bloom.InsertKeyFrame(0.5f, 0.75f); bloom.InsertKeyFrame(1, 0.45f);
+        bloom.Duration = TimeSpan.FromSeconds(4.4); bloom.IterationBehavior = AnimationIterationBehavior.Forever;
         glow.StartAnimation("Opacity", bloom);
-        for (var i = 0; i < 12; i++)
+        for (var i = 0; i < 6; i++)
         {
             var pixel = compositor.CreateSpriteVisual(); owned.Add(pixel);
             var sparkBrush = compositor.CreateColorBrush(i % 4 == 0 ? Color.FromArgb(255,255,235,246) : Color.FromArgb(255,255,42,139)); owned.Add(sparkBrush);
             pixel.Brush = sparkBrush; pixel.Size = new Vector2(Math.Clamp(cell * 0.65f, 1, 2.5f));
-            var position = new Vector3(size.X * (i + 0.5f) / 12, size.Y * (i % 3 + 1) / 4, 0);
+            var position = new Vector3(size.X * (i + 0.5f) / 6, size.Y * (i % 3 + 1) / 4, 0);
             pixel.Offset = position; pixel.Opacity = 0;
             using var opacity = compositor.CreateScalarKeyFrameAnimation();
             opacity.InsertKeyFrame(0, 0); opacity.InsertKeyFrame(0.25f, 0);
@@ -141,6 +160,8 @@ internal sealed class BrandPulse : IDisposable
             drift.Duration = opacity.Duration; drift.DelayTime = opacity.DelayTime; drift.IterationBehavior = AnimationIterationBehavior.Forever;
             pixel.StartAnimation("Offset", drift); root.Children.InsertAtTop(pixel);
         }
+        Serilog.Log.Information("Brand animation started {Element} {Kind} {Width} {Height}", element.Name,
+            flower ? "Scale" : "HorizontalSweep", size.X, size.Y);
     }
     public static BrandPulse? TryCreate(FrameworkElement element, bool animate, bool flower = false)
     {
@@ -161,6 +182,8 @@ internal sealed class BrandPulse : IDisposable
     {
         ElementCompositionPreview.SetElementChildVisual(element, null);
         image.StopAnimation("Opacity"); glow.StopAnimation("Opacity");
+        root.StopAnimation("Scale");
+        highlight?.StopAnimation("StartPoint"); highlight?.StopAnimation("EndPoint");
         root.Children.RemoveAll(); artwork.Shapes.Clear(); image.Brush = null; image.Shadow = null;
         glow.Mask = null; surface.SourceVisual = null;
         foreach (var ink in inks) { ink.StopAnimation("Color"); ink.Dispose(); }
@@ -171,6 +194,7 @@ internal sealed class BrandPulse : IDisposable
         }
         foreach (var shape in shapes) shape.Dispose();
         foreach (var rectangle in rectangles) rectangle.Dispose();
+        highlight?.Dispose();
         image.Dispose(); glow.Dispose(); surfaceBrush.Dispose(); surface.Dispose(); artwork.Dispose(); root.Dispose();
         if (element is TextBlock text) text.Foreground = originalForeground;
         if (element is Viewbox { Child: { } child }) child.Opacity = originalChildOpacity;

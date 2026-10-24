@@ -338,4 +338,11 @@ Get in the game.</value>
   <data name="TemperatureShort" xml:space="preserve"><value>Temperature</value></data>
   <data name="PowerShort" xml:space="preserve"><value>Power</value></data>
   <data name="VramAllocatedShort" xml:space="preserve"><value>Allocated / reported capacity</value></data>
+<data name="BrandProofTitle" xml:space="preserve"><value>Lotus · motion proof</value></data>
+<data name="BrandProofDescription" xml:space="preserve"><value>Only the same flower’s scale is animated. Compare its edges with the fixed frame. This explicit test bypasses only the Windows animation policy; it changes neither Windows nor Lotus preferences.</value></data>
+<data name="BrandProofClose" xml:space="preserve"><value>Close diagnostic</value></data>
+<data name="BrandProofFailed" xml:space="preserve"><value>Composition could not be created. Check the logs; do not consider this test passed.</value></data>
+<data name="BrandProofRunning" xml:space="preserve"><value>Scale started on the compositor. Visual verification is still required.</value></data>
+<data name="BrandProofStopped" xml:space="preserve"><value>Paused: window hidden/minimized, high contrast or reduced motion.</value></data>
+<data name="BrandMotionPolicy" xml:space="preserve"><value>The brand follows Lotus’s “Reduce animations” setting. Windows animation settings remain unchanged.</value></data>
 </root>

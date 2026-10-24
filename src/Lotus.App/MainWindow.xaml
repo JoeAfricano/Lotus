@@ -6,8 +6,8 @@
   <NavigationView Grid.Row="2" x:Name="Navigation" Background="{ThemeResource PaneBrush}" IsBackButtonVisible="Collapsed" IsSettingsVisible="False" PaneDisplayMode="Left" OpenPaneLength="240" CompactPaneLength="56" SelectionChanged="OnSelectionChanged" IsPaneOpen="True" AutomationProperties.Name="{Binding Text[Navigation]}">
    <NavigationView.PaneHeader>
     <StackPanel x:Name="BrandHeader" Orientation="Horizontal" Spacing="12" Margin="16,20,12,24">
-     <Viewbox x:Name="BrandFlower" Width="36" Height="36" AutomationProperties.Name="{Binding Text[LotusFlower]}"><Canvas Width="64" Height="64"><Path Fill="#4A1631" Stroke="#FF91B5" StrokeThickness="2" Data="M32,51 C14,39 19,22 32,7 C45,22 50,39 32,51 M32,51 C8,51 4,33 5,20 C21,24 28,34 32,51 M32,51 C56,51 60,33 59,20 C43,24 36,34 32,51 M12,56 L52,56"/></Canvas></Viewbox>
-     <StackPanel><TextBlock x:Name="BrandLogo" Width="128" Height="30" Text="LOTUS" Foreground="{ThemeResource RoseBrush}" FontSize="25" FontWeight="Bold" CharacterSpacing="180"/><TextBlock Text="PLAY BETTER." FontSize="9" CharacterSpacing="170" Foreground="{ThemeResource RoseBrush}"/></StackPanel>
+     <Viewbox x:Name="BrandFlower" Width="38" Height="38" AutomationProperties.Name="{Binding Text[LotusFlower]}"><Canvas Width="64" Height="64"><Path Fill="#4A1631" Stroke="#FF91B5" StrokeThickness="2" Data="M32,51 C14,39 19,22 32,7 C45,22 50,39 32,51 M32,51 C8,51 4,33 5,20 C21,24 28,34 32,51 M32,51 C56,51 60,33 59,20 C43,24 36,34 32,51 M12,56 L52,56"/></Canvas></Viewbox>
+     <StackPanel><TextBlock x:Name="BrandLogo" Width="100" Height="30" Text="LOTUS" Foreground="{ThemeResource RoseBrush}" FontSize="25" FontWeight="Bold" CharacterSpacing="180"/><TextBlock Text="PLAY BETTER." FontSize="9" CharacterSpacing="170" Foreground="{ThemeResource RoseBrush}"/></StackPanel>
     </StackPanel>
    </NavigationView.PaneHeader>
    <NavigationView.PaneFooter>
@@ -17,7 +17,7 @@
       <StackPanel Orientation="Horizontal" Spacing="12"><FontIcon Glyph="&#xE77B;" FontSize="20" Width="32" Foreground="{ThemeResource RoseBrush}"/><StackPanel><TextBlock Text="Player" FontWeight="SemiBold" FontSize="13"/><TextBlock Text="{Binding Text[ProfileSubtitle]}" FontSize="11" Foreground="{ThemeResource MutedBrush}"/></StackPanel></StackPanel>
       <TextBlock Text="{Binding Text[FooterVersion]}" FontSize="10" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap"/>
      </StackPanel>
-     <Grid x:Name="CompactFooter" Width="40" Height="40" Visibility="Collapsed" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Text[ProfileAccessible]}" AutomationProperties.Name="{Binding Text[ProfileAccessible]}"><FontIcon Glyph="&#xE77B;" FontSize="20" Foreground="{ThemeResource RoseBrush}"/></Grid>
+     <Grid x:Name="CompactFooter" Width="40" Height="40" Visibility="Collapsed" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Text[ProfileAccessible]}" AutomationProperties.Name="{Binding Text[ProfileAccessible]}"><Viewbox x:Name="CompactBrandFlower" Width="30" Height="30" AutomationProperties.Name="{Binding Text[LotusFlower]}"><Canvas Width="64" Height="64"><Path Fill="#4A1631" Stroke="#FF91B5" StrokeThickness="2" Data="M32,51 C14,39 19,22 32,7 C45,22 50,39 32,51 M32,51 C8,51 4,33 5,20 C21,24 28,34 32,51 M32,51 C56,51 60,33 59,20 C43,24 36,34 32,51 M12,56 L52,56"/></Canvas></Viewbox></Grid>
     </Grid>
    </NavigationView.PaneFooter>
    <Frame x:Name="ContentFrame" HorizontalContentAlignment="Stretch"/>

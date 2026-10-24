@@ -88,3 +88,6 @@ ADR-030: adaptação NVML do driver instalado por caminho absoluto, sem distribu
 
 
 ADR-036 (refinamento solicitado durante a Etapa 03): quatro gráficos compactos com eixos numéricos explícitos, métricas centrais em destaque e fontes/horários/clocks/reservas em expanders. O usuário confirmou presença dos cards e preferiu a apresentação compacta; eixos foram adicionados após esse retorno. Marca redesenhada em geometria própria com ShapeVisual + CompositionVisualSurface e partículas, inspirada nas referências da palavra/flor fornecidas pelo usuário. Nenhum PNG grande é decodificado por quadro. O ensaio de 15 minutos antecede essa última revisão visual; a medição final curta fica identificada separadamente.
+
+
+ADR-037 — Correção da animação estática: UISettings.AnimationsEnabled=false bloqueava StartAnimation apesar de ReduceMotion=false. Após prova nativa de Scale confirmada pelo usuário, a marca passou a seguir a preferência local explícita, sem alterar o Windows. Flor em Visual próprio e varredura independente por CompositionLinearGradientBrush sobre a geometria existente; sem CompositionMaskBrush/GetAlphaMask, sem Lottie ou pacote novo. Substitui os mecanismos descritos historicamente em ADR-025/035. Redução de movimento, minimização e alto contraste continuam tratados. Evidências, consumo e pendências em [diagnóstico](LOTUS_BRAND_MOTION_DIAGNOSIS.md).
