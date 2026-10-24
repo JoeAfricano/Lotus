@@ -91,3 +91,6 @@ ADR-036 (refinamento solicitado durante a Etapa 03): quatro gráficos compactos 
 
 
 ADR-037 — Correção da animação estática: UISettings.AnimationsEnabled=false bloqueava StartAnimation apesar de ReduceMotion=false. Após prova nativa de Scale confirmada pelo usuário, a marca passou a seguir a preferência local explícita, sem alterar o Windows. Flor em Visual próprio e varredura independente por CompositionLinearGradientBrush sobre a geometria existente; sem CompositionMaskBrush/GetAlphaMask, sem Lottie ou pacote novo. Substitui os mecanismos descritos historicamente em ADR-025/035. Redução de movimento, minimização e alto contraste continuam tratados. Evidências, consumo e pendências em [diagnóstico](LOTUS_BRAND_MOTION_DIAGNOSIS.md).
+
+
+ADR-038 — Primeiro diagnóstico: RAM-AVAIL-001 v1. Disponibilidade física sustentada (limites absoluto e relativo combinados, 30 s), sem inferência de gargalo, vazamento ou ganho em jogos. Regra pura no Core; VM observa o stream existente e não cria novo coletor. Amostras inválidas, pausas e gaps reiniciam a evidência. Commit, paginação, atribuição por processo e correlação com frametimes permanecem futuros. Sem limpeza de RAM, serviços ou pagefile. Critérios são heurísticas publicadas do produto, não recomendações universais da Microsoft. [Evidências](LOTUS_RAM_DIAGNOSTICS.md).

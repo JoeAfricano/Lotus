@@ -16,7 +16,7 @@
     <value>YOUR GAME. YOUR PACE.</value>
   </data>
   <data name="FooterNotice" xml:space="preserve">
-    <value>LOTUS / Read-only monitoring. No Windows settings changed.</value>
+    <value>LOTUS · Read-only telemetry and diagnosis. No Windows settings changed.</value>
   </data>
   <data name="FooterVersion" xml:space="preserve">
     <value>FOUNDATION 0.1 / IN DEVELOPMENT</value>
@@ -138,10 +138,10 @@ Get in the game.</value>
     <value>PROGRESS WITH CONTROL</value>
   </data>
   <data name="analysisDescription" xml:space="preserve">
-    <value>Understand your system before deciding what to change.</value>
+    <value>Evidence and initial RAM diagnosis.</value>
   </data>
   <data name="analysisNext" xml:space="preserve">
-    <value>Diagnostics with objective criteria and identified sources.</value>
+    <value>Assess sustained availability before recommending changes.</value>
   </data>
   <data name="analysisTitle" xml:space="preserve">
     <value>Analysis</value>
@@ -345,4 +345,23 @@ Get in the game.</value>
 <data name="BrandProofRunning" xml:space="preserve"><value>Scale started on the compositor. Visual verification is still required.</value></data>
 <data name="BrandProofStopped" xml:space="preserve"><value>Paused: window hidden/minimized, high contrast or reduced motion.</value></data>
 <data name="BrandMotionPolicy" xml:space="preserve"><value>The brand follows Lotus’s “Reduce animations” setting. Windows animation settings remain unchanged.</value></data>
+  <data name="RamAnalysisTitle" xml:space="preserve"><value>RAM diagnosis</value></data>
+  <data name="RamFindingUnavailable" xml:space="preserve"><value>Waiting for valid data</value></data>
+  <data name="RamFindingObserving" xml:space="preserve"><value>Observing availability</value></data>
+  <data name="RamFindingNoSustainedLowAvailability" xml:space="preserve"><value>No sustained low availability in this window</value></data>
+  <data name="RamFindingLowAvailability" xml:space="preserve"><value>Sustained low availability</value></data>
+  <data name="RamFindingVeryLowAvailability" xml:space="preserve"><value>Sustained very low availability</value></data>
+  <data name="RamAvailableLabel" xml:space="preserve"><value>Available for new demand</value></data>
+  <data name="RamCapacityLabel" xml:space="preserve"><value>Usable physical RAM</value></data>
+  <data name="RamMinimumLabel" xml:space="preserve"><value>Lowest availability in window</value></data>
+  <data name="RamEvidence" xml:space="preserve"><value>Observed window: {0} s (up to 60 s) · Continuous low availability: {1} s</value></data>
+  <data name="RamAdviceLow" xml:space="preserve"><value>Little RAM remained available for at least 30 seconds. Review open applications and compare the same situation with your game running. This signal alone does not demonstrate stuttering or identify its cause.</value></data>
+  <data name="RamAdviceUnavailable" xml:space="preserve"><value>Waiting for valid capacity and availability readings. Observation restarts after failures, pauses or gaps longer than 2.5 seconds.</value></data>
+  <data name="RamAdviceObserve" xml:space="preserve"><value>Keep this page open for at least 30 seconds during the situation you want to investigate. The finding applies only to the observed window; it neither predicts a game’s demand nor proves waste.</value></data>
+  <data name="RamConfidenceObserved" xml:space="preserve"><value>Direct evidence of low availability under the local rule. Confidence about its cause and gaming impact: insufficient.</value></data>
+  <data name="RamConfidenceLimited" xml:space="preserve"><value>Scope: observed physical availability. There is not enough evidence to recommend changes to Windows.</value></data>
+  <data name="RamMethodTitle" xml:space="preserve"><value>Criteria, source and limitations</value></data>
+  <data name="RamMethod" xml:space="preserve"><value>Local rule RAM-AVAIL-001 v1: low availability requires at most 10% of RAM and at most 1 GiB available continuously for 30 s. Very low: at most 5% and 512 MiB for 30 s. These are Lotus triage criteria, not official Windows limits. Missing readings never become zero.</value></data>
+  <data name="RamCacheExplanation" xml:space="preserve"><value>Available does not mean only free RAM. Windows can repurpose standby/cache pages; cache occupancy does not prove mismanagement. Forcibly emptying working sets can cause new page faults when data is accessed again.</value></data>
+  <data name="RamLimits" xml:space="preserve"><value>This version does not measure system commit, disk paging, compressed memory or per-application usage. It does not identify leaks or gaming bottlenecks. No page file, cache, process or Windows setting is changed.</value></data>
 </root>

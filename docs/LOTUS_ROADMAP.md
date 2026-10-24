@@ -1,5 +1,11 @@
 # Lotus — Roadmap verificável
 
+## Prioridade atual — 23/10/2026
+
+Por solicitação do usuário, o refinamento da marca animada está em standby. O checkpoint c2ca0ce permanece como base; há um ajuste local posterior de duração/ritmo em BrandPulse.cs, preservado sem aprovação visual. Compilações posteriores Debug/Release passaram com esse ajuste local, mas isso não homologa o ritmo da marca. As pendências visuais anteriores continuam registradas, sem bloquear a escolha do próximo incremento pelo usuário.
+
+CPU/RAM e GPU NVIDIA já possuem implementação real e 62 testes aprovados por configuração no checkpoint anterior. Escopo posteriormente autorizado e implementado: primeira regra explicável na página Análise sobre disponibilidade de RAM ao longo do tempo, reaproveitando o coletor sob demanda. Não concluir gargalo ou ganho em jogos apenas pelo percentual de uso. Diagnóstico inicial implementado e validado com 77 testes por configuração; dados e reinício da observação confirmados pelo usuário. Não representa autorização para aplicar otimizações. Ver [diagnóstico de RAM](LOTUS_RAM_DIAGNOSTICS.md).
+
 Revisão: 21/10/2026. Roadmap dos módulos futuros, com fundação implementada na Etapa 01. A preferência por alternativas gratuitas e código próprio não autoriza antecipar todos os módulos.
 
 Pré-requisito Etapa 00: auditoria de fundação aprovada; [resultados e pendências](LOTUS_STAGE00_AUDIT.md). Isso não conclui todos os gates de localização, DPI, consumo e acessibilidade da etapa 1 abaixo. Aguardar instrução para o próximo incremento; nenhum módulo novo implementado na auditoria.

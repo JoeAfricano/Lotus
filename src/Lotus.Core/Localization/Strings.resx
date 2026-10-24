@@ -16,7 +16,7 @@
     <value>SEU JOGO. SEU RITMO.</value>
   </data>
   <data name="FooterNotice" xml:space="preserve">
-    <value>LOTUS / Monitoramento somente leitura. Nenhuma configuração do Windows alterada.</value>
+    <value>LOTUS · Telemetria e diagnóstico somente leitura. Nenhuma configuração do Windows alterada.</value>
   </data>
   <data name="FooterVersion" xml:space="preserve">
     <value>FUNDAÇÃO 0.1 / EM DESENVOLVIMENTO</value>
@@ -138,10 +138,10 @@ Entre no jogo.</value>
     <value>EVOLUÇÃO COM CONTROLE</value>
   </data>
   <data name="analysisDescription" xml:space="preserve">
-    <value>Entenda o sistema antes de decidir o que mudar.</value>
+    <value>Evidências e diagnóstico inicial da memória RAM.</value>
   </data>
   <data name="analysisNext" xml:space="preserve">
-    <value>Diagnóstico com critérios objetivos e fontes identificadas.</value>
+    <value>Avalie a disponibilidade sustentada antes de recomendar mudanças.</value>
   </data>
   <data name="analysisTitle" xml:space="preserve">
     <value>Análise</value>
@@ -345,4 +345,23 @@ Entre no jogo.</value>
 <data name="BrandProofRunning" xml:space="preserve"><value>Escala iniciada no compositor. A validação visual ainda é necessária.</value></data>
 <data name="BrandProofStopped" xml:space="preserve"><value>Pausado: janela invisível/minimizada, alto contraste ou redução de movimento.</value></data>
 <data name="BrandMotionPolicy" xml:space="preserve"><value>A marca segue “Reduzir animações” do Lotus. As configurações de animação do Windows permanecem inalteradas.</value></data>
+  <data name="RamAnalysisTitle" xml:space="preserve"><value>Diagnóstico de RAM</value></data>
+  <data name="RamFindingUnavailable" xml:space="preserve"><value>Aguardando dados válidos</value></data>
+  <data name="RamFindingObserving" xml:space="preserve"><value>Observando a disponibilidade</value></data>
+  <data name="RamFindingNoSustainedLowAvailability" xml:space="preserve"><value>Sem baixa disponibilidade sustentada nesta janela</value></data>
+  <data name="RamFindingLowAvailability" xml:space="preserve"><value>Baixa disponibilidade sustentada</value></data>
+  <data name="RamFindingVeryLowAvailability" xml:space="preserve"><value>Disponibilidade muito baixa e sustentada</value></data>
+  <data name="RamAvailableLabel" xml:space="preserve"><value>Disponível para novas demandas</value></data>
+  <data name="RamCapacityLabel" xml:space="preserve"><value>RAM física utilizável</value></data>
+  <data name="RamMinimumLabel" xml:space="preserve"><value>Menor disponibilidade na janela</value></data>
+  <data name="RamEvidence" xml:space="preserve"><value>Janela observada: {0} s (até 60 s) · Baixa disponibilidade contínua: {1} s</value></data>
+  <data name="RamAdviceLow" xml:space="preserve"><value>Pouca RAM permaneceu disponível por pelo menos 30 segundos. Verifique os aplicativos abertos e compare a mesma situação com seu jogo em execução. Este sinal sozinho não demonstra travamentos nem identifica o responsável.</value></data>
+  <data name="RamAdviceUnavailable" xml:space="preserve"><value>Aguardando uma leitura válida de capacidade e disponibilidade. A observação recomeça após falhas, pausas ou intervalos maiores que 2,5 segundos.</value></data>
+  <data name="RamAdviceObserve" xml:space="preserve"><value>Mantenha esta página aberta por pelo menos 30 segundos durante a situação que deseja investigar. A conclusão vale somente para a janela observada; não prevê a demanda de um jogo nem comprova desperdício.</value></data>
+  <data name="RamConfidenceObserved" xml:space="preserve"><value>Evidência direta de baixa disponibilidade pela regra local. Confiança sobre a causa e o impacto em jogos: insuficiente.</value></data>
+  <data name="RamConfidenceLimited" xml:space="preserve"><value>Escopo: disponibilidade física observada. Ainda não há evidência suficiente para recomendar alterações no Windows.</value></data>
+  <data name="RamMethodTitle" xml:space="preserve"><value>Critérios, fonte e limites</value></data>
+  <data name="RamMethod" xml:space="preserve"><value>Regra local RAM-AVAIL-001 v1: baixa disponibilidade exige no máximo 10% da RAM e no máximo 1 GiB disponíveis continuamente por 30 s. Muito baixa: no máximo 5% e 512 MiB por 30 s. São critérios de triagem do Lotus, não limites oficiais do Windows. Leituras ausentes não viram zero.</value></data>
+  <data name="RamCacheExplanation" xml:space="preserve"><value>Disponível não significa apenas RAM livre. O Windows pode reutilizar páginas em standby/cache; ocupar RAM com cache não comprova uso errado. Esvaziar working sets à força pode provocar novas faltas de página quando os dados forem reutilizados.</value></data>
+  <data name="RamLimits" xml:space="preserve"><value>Esta versão não mede commit global, paginação em disco, memória comprimida nem consumo por aplicativo. Não identifica vazamento ou gargalo de jogo. Nenhum arquivo de paginação, cache, processo ou configuração do Windows é alterado.</value></data>
 </root>

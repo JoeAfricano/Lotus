@@ -28,12 +28,13 @@ public sealed partial class MainWindow : Window
     private BrandPulse? flowerPulse;
     private BrandPulse? compactFlowerPulse;
     private readonly MonitoringViewModel monitoring;
+    private readonly Lotus.Core.Diagnostics.MemoryAnalysisViewModel memoryAnalysis;
     private bool? brandAnimated;
     private readonly bool brandProofRequested = Environment.GetCommandLineArgs().Contains("--brand-motion-proof");
     private BrandMotionProof? brandProof;
     private bool brandProofShown;
 
-    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring)
+    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring, Lotus.Core.Diagnostics.MemoryAnalysisViewModel memoryAnalysis)
     {
         ViewModel = viewModel;
         this.text = text;
@@ -41,6 +42,7 @@ public sealed partial class MainWindow : Window
         this.preferencesViewModel = preferencesViewModel;
         this.palette = palette;
         this.monitoring = monitoring;
+        this.memoryAnalysis = memoryAnalysis;
         InitializeComponent();
         ShellRoot.DataContext = ViewModel;
         ShellRoot.Language = text.Language;
@@ -71,6 +73,7 @@ public sealed partial class MainWindow : Window
         Closed += (_, _) =>
         {
             initialized = false;
+            memoryAnalysis.SetActive(false);
             monitoring.SetActive(false);
             StopBrandMotion();
             preferences.PropertyChanged -= OnPreferencesChanged;
@@ -135,7 +138,7 @@ public sealed partial class MainWindow : Window
         // Replace only the current visual page, retaining the same destination and preferences VM.
         DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
         {
-            ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel, false, monitoring), new SuppressNavigationTransitionInfo());
+            ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel, false, monitoring, memoryAnalysis), new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear();
         });
     }
@@ -240,7 +243,7 @@ public sealed partial class MainWindow : Window
         if (args.SelectedItem is not NavigationViewItem { Tag: string id } || displayedSectionId == id) return;
         ViewModel.NavigateCommand.Execute(id);
         if (ViewModel.SelectedSection.Id != id) return;
-        ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel, !preferences.Current.ReduceMotion, monitoring), new SuppressNavigationTransitionInfo());
+        ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel, !preferences.Current.ReduceMotion, monitoring, memoryAnalysis), new SuppressNavigationTransitionInfo());
         ContentFrame.BackStack.Clear();
         displayedSectionId = id;
         UpdateMonitoringDemand();
@@ -250,12 +253,15 @@ public sealed partial class MainWindow : Window
     {
         if (!initialized) return;
         var minimized = AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized };
-        monitoring.SetActive(displayedSectionId == "monitoring" && !minimized && AppWindow.IsVisible);
+        var visible = !minimized && AppWindow.IsVisible;
+        memoryAnalysis.SetActive(displayedSectionId == "analysis" && visible);
+        monitoring.SetActive(displayedSectionId is "monitoring" or "analysis" && visible);
     }
     public void PrepareForClose()
     {
         initialized = false;
         brandProof?.Dispose(); brandProof = null;
+        memoryAnalysis.SetActive(false);
         monitoring.SetActive(false);
         StopBrandMotion();
     }

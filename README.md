@@ -1,6 +1,8 @@
 # Lotus
 
-Aplicativo nativo Windows em C#/.NET 10 e WinUI 3, com MVVM, injeção de dependências e logging estruturado. Fundação visual em preto, grafite e rosê. Coleta CPU/RAM e GPU NVIDIA somente na página Monitoramento. Não calcula score, executa benchmark, limpa memória/arquivos ou altera configurações do Windows.
+Aplicativo nativo Windows em C#/.NET 10 e WinUI 3, com MVVM, injeção de dependências e logging estruturado. Fundação visual em preto, grafite e rosê. Coleta CPU/RAM e GPU NVIDIA sob demanda nas páginas Monitoramento e Análise. Análise avalia disponibilidade sustentada de RAM, com critérios e limitações explícitos. Não calcula score, executa benchmark, limpa memória/arquivos ou altera configurações do Windows.
+
+Diagnóstico inicial de RAM: [regra, evidências, 77 testes por configuração e plano de jogos](docs/LOTUS_RAM_DIAGNOSTICS.md). Dados e reinício da contagem confirmados pelo usuário; não comprova gargalo de jogo.
 
 Estado atual: [Etapa 03 — resultados e verificações pendentes](docs/LOTUS_STAGE03_VALIDATION.md). CPU/RAM preservados e GPU NVIDIA por NVML do driver instalado, somente leitura. Interface compacta com detalhes expansíveis e gráficos reais dos últimos 60 s. Ausência aparece como travessão/status; nenhum dado simulado no aplicativo. Não há driver adicional ou novo pacote NuGet. [Fontes, unidades e limitações de GPU](docs/LOTUS_GPU_TELEMETRY.md). A validação visual atual depende de conferência manual porque a ferramenta de inspeção Windows não iniciou nesta sessão. [Etapa 02](docs/LOTUS_STAGE02_VALIDATION.md) e [Etapa 00](docs/LOTUS_STAGE00_AUDIT.md) preservadas como histórico.
 

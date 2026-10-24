@@ -107,3 +107,8 @@ Ver [roadmap](LOTUS_ROADMAP.md), [metodologia](LOTUS_PERFORMANCE_VALIDATION.md),
 ## Atualização Etapa 03 — GPU e sensores
 
 O pipeline existente agora compõe CPU/RAM e um adaptador NVIDIA NVML somente leitura. Contratos de sensores carregam unidade, fonte, horário e estado. Um único loop sob demanda; encerramento libera NVML. Cards/gráficos GPU e VRAM e sensores localizados foram adicionados. Nenhuma dependência nova. Ver [contrato GPU](LOTUS_GPU_TELEMETRY.md) e [validação Etapa 03](LOTUS_STAGE03_VALIDATION.md); pendências de validação prevalecem sobre descrições históricas. AMD/Intel e temperatura de CPU não estão implementados.
+
+
+## Diagnóstico inicial de RAM — 23/10/2026
+
+`Core/Diagnostics/MemoryAvailabilityAnalyzer` avalia disponibilidade física por regra temporal versionada; `MemoryAnalysisViewModel` apresenta estado, evidência, recomendação e limites. Reutiliza `MonitoringViewModel.Updated` e o serviço singleton. Análise ou Monitoramento demandam coleta; apenas Análise processa a regra, com reset ao sair/minimizar. Sem timer, pacote ou escrita no Windows. A análise não possui histórico persistente e ainda não inclui commit global/paginação. [Critérios, validação e plano de jogos](LOTUS_RAM_DIAGNOSTICS.md).

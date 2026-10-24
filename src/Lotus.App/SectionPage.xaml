@@ -49,6 +49,26 @@
     </Grid>
     <ContentControl Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><TextBlock Text="{Binding Text[WorkflowTitle]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Text[Workflow]}" FontSize="14" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[WorkflowDescription]}" FontSize="13" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap"/></StackPanel></ContentControl>
    </StackPanel>
+   <ContentControl x:Name="AnalysisContent" x:Load="{x:Bind ShowAnalysis}" Style="{StaticResource CardControlStyle}" DataContext="{Binding MemoryAnalysis}">
+    <StackPanel Spacing="16">
+     <TextBlock Text="{Binding Text[RamAnalysisTitle]}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.HeadingLevel="Level2"/>
+     <ContentControl Content="{Binding Status}" Style="{StaticResource StatusBadgeStyle}" AutomationProperties.AutomationId="ram-analysis-status"/>
+     <TextBlock Text="{Binding Text[RamAvailableLabel]}" Foreground="{ThemeResource MutedBrush}"/>
+     <TextBlock Text="{Binding Available}" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AutomationId="ram-analysis-available"/>
+     <Grid ColumnSpacing="20" RowSpacing="8">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+      <StackPanel Spacing="4"><TextBlock Text="{Binding Text[RamCapacityLabel]}" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}"/><TextBlock Text="{Binding Capacity}" TextWrapping="Wrap"/></StackPanel>
+      <StackPanel Grid.Column="1" Spacing="4"><TextBlock Text="{Binding Text[RamMinimumLabel]}" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}"/><TextBlock Text="{Binding MinimumAvailable}" TextWrapping="Wrap"/></StackPanel>
+     </Grid>
+     <TextBlock Text="{Binding Evidence}" TextWrapping="Wrap"/>
+     <TextBlock Text="{Binding Recommendation}" TextWrapping="Wrap"/>
+     <TextBlock Text="{Binding Confidence}" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
+     <TextBlock Text="{Binding LastUpdate}" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
+     <Expander Header="{Binding Text[RamMethodTitle]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+      <StackPanel Spacing="12"><TextBlock Text="{Binding Text[RamMethod]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[RamCacheExplanation]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[RamLimits]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Source}" TextWrapping="Wrap" IsTextSelectionEnabled="True"/><TextBlock Text="{Binding Rule}"/></StackPanel>
+     </Expander>
+    </StackPanel>
+   </ContentControl>
    <controls:MonitoringPanel x:Name="MonitoringContent" x:Load="{x:Bind ShowMonitoring}" DataContext="{Binding Monitoring}"/>
    <ContentControl x:Name="ModuleCard" x:Load="{x:Bind ShowModule}" Style="{StaticResource CardControlStyle}">
     <StackPanel Spacing="20"><ContentControl Content="{Binding}" ContentTemplate="{StaticResource SectionEmptyStateTemplate}" HorizontalContentAlignment="Stretch"/><TextBlock x:Name="LogLocation" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}" Visibility="Collapsed" IsTextSelectionEnabled="True"/></StackPanel>
