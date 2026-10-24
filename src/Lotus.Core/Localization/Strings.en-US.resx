@@ -503,4 +503,10 @@ Original CSV: {9}</value></data>
 <data name="BenchLossUnknown" xml:space="preserve"><value>ETW loss could not be verified. Use these results as an initial comparison, not proof of a performance gain.</value></data>
 <data name="BenchComparedConditions" xml:space="preserve"><value>Baseline conditions: {0}
 Current conditions: {1}</value></data>
+  <data name="BenchIntegrityUnknown" xml:space="preserve"><value>ETW integrity unknown.</value></data>
+  <data name="BenchIntegrityVerified" xml:space="preserve"><value>ETW integrity verified.</value></data>
+  <data name="BenchIntegrityLossDetected" xml:space="preserve"><value>Event loss detected.</value></data>
+  <data name="BenchIntegrityInvalid" xml:space="preserve"><value>Invalid capture.</value></data>
+  <data name="BenchIntegrityNoGain" xml:space="preserve"><value>Descriptive comparison: capture integrity does not support a proven gain.</value></data>
+  <data name="BenchExperimentalUnknown" xml:space="preserve"><value>Integrity verified; equivalent conditions and gains still require validation.</value></data>
 </root>

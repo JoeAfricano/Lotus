@@ -3,6 +3,8 @@
 - Responder em português brasileiro, preservando nomes técnicos originais. Usar sempre o nome Lotus.
 - Inspecionar primeiro somente arquivos relacionados à tarefa; ampliar a investigação quando houver necessidade concreta.
 - Reutilizar arquitetura, documentação, serviços, ferramentas locais e testes existentes. Priorizar execução local e alterações mínimas, corretas e verificáveis.
+- Priorizar funcionalidades utilizáveis; manter refinamentos decorativos e investigações sem impacto imediato suspensos. Criar checkpoints por incremento estável, sem incluir alterações locais não relacionadas.
+- Operações que alterem Windows, dados do usuário ou hardware exigem confirmação, verificação e reversão quando viável; não reduzir testes críticos.
 - Preservar funcionalidades, histórico Git e alterações locais existentes. Não ampliar o escopo nem implementar funcionalidades futuras sem autorização.
 - Aproveitar evidências ainda válidas; não repetir pesquisas, auditorias, builds ou testes sem motivo. Uma alteração que afete sua validade exige nova verificação.
 - Durante o desenvolvimento, executar testes direcionados aos componentes modificados. Ao concluir incrementos relevantes, executar validação completa em Debug/x64 e Release/x64, proporcional ao risco e aos critérios da tarefa.

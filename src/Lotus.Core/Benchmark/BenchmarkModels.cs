@@ -16,7 +16,35 @@ public sealed record BenchmarkSession(Guid Id, CaptureTarget Target, DateTimeOff
     string Conditions, string HardwareJson, ParsedCapture? Data, string Diagnostics)
 {
     public CaptureResourceUsage? ResourceUsage { get; init; }
+    public int? CollectorExitCode { get; init; }
+    // Optional for backward-compatible JSON payloads. Missing evidence never means zero loss.
+    public EtwIntegrityEvidence? EtwEvidence { get; init; }
+    public bool MathematicallyValid => Data is { Statistics: not null, InvalidRows: 0, Truncated: false };
+    public CaptureIntegrity Integrity => BenchmarkQuality.Classify(this);
     public string Label => $"{Path.GetFileName(Target.Executable)} · {StartedUtc.ToLocalTime():g} · {Status}";
+}
+public enum CaptureIntegrity { Unknown, Verified, LossDetected, Invalid }
+public sealed record EtwIntegrityEvidence(long? EventsLost, long? BuffersLost, long? OverflowedPresents,
+    string Source, bool CompleteFinalCounters);
+public static class BenchmarkQuality
+{
+    public static CaptureIntegrity Classify(BenchmarkSession session)
+    {
+        if (!session.MathematicallyValid || session.Status is not ("Completed" or "EventLoss") ||
+            session.CollectorExitCode is not (null or 0)) return CaptureIntegrity.Invalid;
+        var e = session.EtwEvidence;
+        if (e?.EventsLost > 0 || e?.BuffersLost > 0 || e?.OverflowedPresents > 0 ||
+            session.Data?.LostEvents > 0 || session.Data?.LostBuffers > 0 || session.Data?.OverflowedPresents > 0 ||
+            session.Status == "EventLoss") return CaptureIntegrity.LossDetected;
+        if (e is { EventsLost: 0, BuffersLost: 0, OverflowedPresents: 0, CompleteFinalCounters: true } &&
+            !string.IsNullOrWhiteSpace(e.Source) && session.CollectorExitCode == 0 &&
+            session.Data?.LostEvents is null or 0 && session.Data?.LostBuffers is null or 0 &&
+            session.Data?.OverflowedPresents is null or 0) return CaptureIntegrity.Verified;
+        return CaptureIntegrity.Unknown;
+    }
+    // Necessary only: even this cannot establish experimental comparability or a causal gain.
+    public static bool IntegrityAllowsGainAssessment(BenchmarkSession a, BenchmarkSession b) =>
+        BenchmarkMath.Comparable(a, b) && a.Integrity == CaptureIntegrity.Verified && b.Integrity == CaptureIntegrity.Verified;
 }
 public sealed record CaptureResourceUsage(double SampleSeconds, int Samples, double? LotusCpuPercent,
     double LotusWorkingSetMiB, double? CollectorCpuPercent, double? CollectorWorkingSetMiB);

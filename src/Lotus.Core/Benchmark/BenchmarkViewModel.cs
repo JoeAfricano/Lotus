@@ -43,7 +43,7 @@ public sealed class BenchmarkViewModel : ObservableObject
     public string Details => SelectedSession is not { } s ? "" : Text.Format("BenchDetails", s.Status, s.Data?.Statistics?.Count ?? s.Data?.Frames.Count ?? 0,
         s.Data?.Statistics?.DurationSeconds.ToString("F2", Culture) ?? "—", Metric(s.Data?.Statistics?.P95Ms, " ms"),
         s.Data?.Statistics?.SpikeCount.ToString(Culture) ?? "—", s.Data?.SwapChain ?? "—", s.Data?.OtherSwapChains ?? 0,
-        s.Data?.InvalidRows ?? 0, s.Data?.FrameTypes ?? "—", s.RawPath) + "\n" + s.Diagnostics + "\n" + s.HardwareJson;
+        s.Data?.InvalidRows ?? 0, s.Data?.FrameTypes ?? "—", s.RawPath) + "\n" + Text["BenchIntegrity" + s.Integrity] + "\n" + s.Diagnostics + "\n" + s.HardwareJson;
     public string Comparison
     {
         get
@@ -57,7 +57,9 @@ public sealed class BenchmarkViewModel : ObservableObject
                 return d.Absolute.ToString("+0.00;-0.00;0.00", Culture) + unit + " (" + d.Percent.ToString("+0.0;-0.0;0.0", Culture) + "%)";
             }
             return Text.Format("BenchComparison", Delta(a.AverageFps, b.AverageFps, " FPS"), Delta(a.Low1Fps, b.Low1Fps, " FPS"),
-                Delta(a.P95Ms, b.P95Ms, " ms"), Delta(a.P99Ms, b.P99Ms, " ms")) + "\n" + Text.Format("BenchComparedConditions", before.Conditions, current.Conditions);
+                Delta(a.P95Ms, b.P95Ms, " ms"), Delta(a.P99Ms, b.P99Ms, " ms")) + "\n" +
+                Text[BenchmarkQuality.IntegrityAllowsGainAssessment(before, current) ? "BenchExperimentalUnknown" : "BenchIntegrityNoGain"] + "\n" +
+                Text.Format("BenchComparedConditions", before.Conditions, current.Conditions);
         }
     }
     private CultureInfo Culture => CultureInfo.GetCultureInfo(Text.Language);

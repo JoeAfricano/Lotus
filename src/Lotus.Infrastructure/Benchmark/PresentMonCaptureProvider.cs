@@ -28,6 +28,7 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
         var directory = Path.Combine(root, id.ToString("N")); Directory.CreateDirectory(directory);
         var raw = Path.Combine(directory, "frames.csv"); var diagnostics = new StringBuilder();
         var status = "Failed"; ParsedCapture? parsed = null; var hash = ""; CaptureResourceUsage? usage = null;
+        int? exitCode = null;
         // Durable intent survives application crashes; raw files remain reprocessable even if DB save fails.
         await File.WriteAllTextAsync(Path.Combine(directory, "request.json"), JsonSerializer.Serialize(request));
         try
@@ -91,6 +92,7 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
                 lotusWs / samples, collectorSamples > 0 ? 100 * collectorCpu / sampleSeconds / Environment.ProcessorCount : null,
                 collectorSamples > 0 ? collectorWs / collectorSamples : null);
             logger.Information("Benchmark collector exited {Session} {ExitCode}", id, collector.ExitCode);
+            exitCode = collector.ExitCode;
             diagnostics.AppendLine($"ExitCode={collector.ExitCode}; StopRequested={stop.IsCancellationRequested}; TargetExited={targetExited}; SizeLimit={limitExceeded}");
             diagnostics.AppendLine("ETW loss counters unavailable in validated 2.6.0 CSV. Results are conditional on capture integrity.");
             if (request.Elevated) diagnostics.AppendLine("Elevated collector: console diagnostics unavailable.");
@@ -103,7 +105,7 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
             var reportedLoss = parsed?.LostEvents > 0 || parsed?.LostBuffers > 0 || parsed?.OverflowedPresents > 0;
             status = limitExceeded || parsed?.Truncated == true ? "LimitExceeded" : collector.ExitCode != 0 ? "Failed" :
                 reportedLoss ? "EventLoss" : parsed?.Statistics is not null ? "Completed" : "InsufficientData";
-            if (status != "Completed" && parsed is not null) parsed = parsed with { Statistics = null };
+            if (status is not ("Completed" or "EventLoss") && parsed is not null) parsed = parsed with { Statistics = null };
         }
         catch (OperationCanceledException) { status = "Cancelled"; }
         catch (Exception ex)
@@ -114,7 +116,12 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
         }
         if (diagnostics.ToString().Contains("access denied", StringComparison.OrdinalIgnoreCase)) status = "AccessDenied";
         var result = new BenchmarkSession(id, request.Target, started, watch.Elapsed.TotalSeconds, status, Version, BenchmarkMath.Version,
-            raw, hash, request.Conditions, request.HardwareJson, parsed, diagnostics.ToString()) { ResourceUsage = usage };
+            raw, hash, request.Conditions, request.HardwareJson, parsed, diagnostics.ToString())
+        {
+            ResourceUsage = usage, CollectorExitCode = exitCode,
+            EtwEvidence = new(parsed?.LostEvents, parsed?.LostBuffers, parsed?.OverflowedPresents,
+                "PresentMon 2.6.0 CSV; final console counters unavailable", false)
+        };
         await File.WriteAllTextAsync(Path.Combine(directory, "result.json"), JsonSerializer.Serialize(SqliteBenchmarkRepository.Preview(result)));
         return SqliteBenchmarkRepository.Preview(result);
     }
