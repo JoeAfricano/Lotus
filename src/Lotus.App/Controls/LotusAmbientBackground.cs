@@ -73,10 +73,10 @@ public sealed class LotusAmbientBackground : FrameworkElement, IDisposable
         var compositor = ElementCompositionPreview.GetElementVisual(this).Compositor;
         root = compositor.CreateContainerVisual();
         root.Clip = Own(compositor.CreateInsetClip());
-        AddAurora(compositor, new(0.93f, 0.08f), new(0.67f, 0.56f), 0.085f, Color.FromArgb(255, 159, 66, 121));
-        AddAurora(compositor, new(0.06f, 0.92f), new(0.59f, 0.66f), 0.065f, Color.FromArgb(255, 199, 91, 146));
+        AddAurora(compositor, new(0.93f, 0.08f), new(0.67f, 0.56f), 0.12f, Color.FromArgb(255, 199, 91, 146));
+        AddAurora(compositor, new(0.06f, 0.92f), new(0.59f, 0.66f), 0.10f, Color.FromArgb(255, 229, 132, 177));
         flowerPlacement = Own(compositor.CreateContainerVisual());
-        flowerMotion = Own(compositor.CreateContainerVisual()); flowerMotion.Size = new(512); flowerMotion.CenterPoint = new(256, 256, 0); flowerMotion.Opacity = 0.04f;
+        flowerMotion = Own(compositor.CreateContainerVisual()); flowerMotion.Size = new(512); flowerMotion.CenterPoint = new(256, 256, 0); flowerMotion.Opacity = 0.065f;
         petals = Own(compositor.CreateShapeVisual()); petals.Size = new(512);
         var ink = Own(compositor.CreateColorBrush(Color.FromArgb(255, 229, 132, 177)));
         Vector2[][] outlines = [
@@ -93,7 +93,7 @@ public sealed class LotusAmbientBackground : FrameworkElement, IDisposable
                 var from = new Vector2(16, 40) + outline[index] * 15;
                 var to = new Vector2(16, 40) + outline[(index + 1) % outline.Length] * 15;
                 var delta = to - from;
-                var rectangle = Own(compositor.CreateRectangleGeometry()); rectangle.Size = new(delta.Length(), 1.2f);
+                var rectangle = Own(compositor.CreateRectangleGeometry()); rectangle.Size = new(delta.Length(), 1.8f);
                 var line = Own(compositor.CreateSpriteShape(rectangle)); line.FillBrush = ink;
                 line.TransformMatrix = Matrix3x2.CreateRotation(MathF.Atan2(delta.Y, delta.X)) * Matrix3x2.CreateTranslation(from);
                 petals.Shapes.Add(line);
@@ -101,14 +101,14 @@ public sealed class LotusAmbientBackground : FrameworkElement, IDisposable
         }
         flowerMotion.Children.InsertAtTop(petals); flowerPlacement.Children.InsertAtTop(flowerMotion); root.Children.InsertAtTop(flowerPlacement);
         Resize(); ElementCompositionPreview.SetElementChildVisual(this, root);
-        Serilog.Log.Information("Ambient resources created {Objects} {Auroras} {Contours}", owned.Count + 1, auroras.Count, petals.Shapes.Count);
+        Serilog.Log.Information("Ambient resources created {Objects} {Auroras} {Contours} Viewport {Width}x{Height}", owned.Count + 1, auroras.Count, petals.Shapes.Count, ActualWidth, ActualHeight);
     }
     private void AddAurora(Compositor compositor, Vector2 center, Vector2 radius, float opacity, Color color)
     {
         var brush = Own(compositor.CreateRadialGradientBrush()); brush.MappingMode = CompositionMappingMode.Relative;
         brush.EllipseCenter = center; brush.EllipseRadius = radius;
         brush.ColorStops.Add(Own(compositor.CreateColorGradientStop(0, color)));
-        brush.ColorStops.Add(Own(compositor.CreateColorGradientStop(0.5f, Color.FromArgb(105, 199, 91, 146))));
+        brush.ColorStops.Add(Own(compositor.CreateColorGradientStop(0.55f, Color.FromArgb(220, 159, 66, 121))));
         brush.ColorStops.Add(Own(compositor.CreateColorGradientStop(1, Color.FromArgb(0, 229, 132, 177))));
         var light = Own(compositor.CreateSpriteVisual()); light.Brush = brush; light.Opacity = opacity;
         light.RelativeSizeAdjustment = Vector2.One;
@@ -130,7 +130,7 @@ public sealed class LotusAmbientBackground : FrameworkElement, IDisposable
         for (var index = 0; index < auroras.Count; index++)
         {
             using var drift = compositor.CreateVector2KeyFrameAnimation();
-            var center = centers[index]; var shift = index == 0 ? new Vector2(-0.09f, 0.08f) : new Vector2(0.08f, -0.06f);
+            var center = centers[index]; var shift = index == 0 ? new Vector2(-0.14f, 0.12f) : new Vector2(0.12f, -0.10f);
             drift.InsertKeyFrame(0, center); drift.InsertKeyFrame(0.5f, center + shift, ease); drift.InsertKeyFrame(1, center, ease);
             drift.Duration = TimeSpan.FromSeconds(index == 0 ? 18 : 23); drift.IterationBehavior = AnimationIterationBehavior.Forever;
             auroras[index].StartAnimation("EllipseCenter", drift);
@@ -140,7 +140,7 @@ public sealed class LotusAmbientBackground : FrameworkElement, IDisposable
         scale.Duration = TimeSpan.FromSeconds(14); scale.IterationBehavior = AnimationIterationBehavior.Forever;
         flowerMotion!.StartAnimation("Scale", scale);
         using var light = compositor.CreateScalarKeyFrameAnimation();
-        light.InsertKeyFrame(0, 0.035f); light.InsertKeyFrame(0.5f, 0.055f, ease); light.InsertKeyFrame(1, 0.035f, ease);
+        light.InsertKeyFrame(0, 0.05f); light.InsertKeyFrame(0.5f, 0.07f, ease); light.InsertKeyFrame(1, 0.05f, ease);
         light.Duration = scale.Duration; light.IterationBehavior = AnimationIterationBehavior.Forever;
         flowerMotion.StartAnimation("Opacity", light); running = true;
     }
@@ -150,7 +150,7 @@ public sealed class LotusAmbientBackground : FrameworkElement, IDisposable
         if (flowerMotion is not null)
         {
             flowerMotion.StopAnimation("Scale"); flowerMotion.StopAnimation("Opacity");
-            flowerMotion.Scale = Vector3.One; flowerMotion.Opacity = 0.04f;
+            flowerMotion.Scale = Vector3.One; flowerMotion.Opacity = 0.065f;
         }
         running = false;
     }
