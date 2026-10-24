@@ -94,3 +94,6 @@ ADR-037 — Correção da animação estática: UISettings.AnimationsEnabled=fal
 
 
 ADR-038 — Primeiro diagnóstico: RAM-AVAIL-001 v1. Disponibilidade física sustentada (limites absoluto e relativo combinados, 30 s), sem inferência de gargalo, vazamento ou ganho em jogos. Regra pura no Core; VM observa o stream existente e não cria novo coletor. Amostras inválidas, pausas e gaps reiniciam a evidência. Commit, paginação, atribuição por processo e correlação com frametimes permanecem futuros. Sem limpeza de RAM, serviços ou pagefile. Critérios são heurísticas publicadas do produto, não recomendações universais da Microsoft. [Evidências](LOTUS_RAM_DIAGNOSTICS.md).
+
+
+ADR-039 — Catálogo futuro: separar declaração de regra, evidência, detecção, plano aprovado e executor permitido. Reutilizar journal durável e compensação já previstos; Windows/SQLite não formam transação ACID conjunta. Compatibilidade, classificação de risco e benefício devem ser independentes; alterações gerenciadas por política ou estado desconhecido bloqueiam escrita. Ações irreversíveis não podem integrar lote com promessa de rollback exato. Análise competitiva é fonte de requisitos, não prova de FPS ou licença de código. [Contrato, prioridades e fontes](LOTUS_OPTIMIZATION_CATALOG_PLAN.md). Apenas documentação nesta decisão.

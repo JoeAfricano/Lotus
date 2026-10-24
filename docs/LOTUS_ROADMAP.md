@@ -44,3 +44,17 @@ Para cada etapa: problema → escopo → implementação → build → teste →
 A numeração das entregas atuais separa Etapa 02 (CPU/RAM) de Etapa 03 (GPU/sensores). A ordem conceitual da tabela acima não autoriza implementar diagnóstico nesta entrega.
 
 NVIDIA NVML, VRAM, clocks, temperatura GPU, potência, ventoinha percentual e eventos de clock implementados com estados de capacidade. Ver [contrato](LOTUS_GPU_TELEMETRY.md) e [validação](LOTUS_STAGE03_VALIDATION.md). Conclusão depende dos gates registrados no relatório. Futuro diagnóstico/RTSS/benchmark/otimizações continuam pendentes e exigem nova instrução.
+
+
+## Complemento documental — catálogo e análise competitiva (23/10/2026)
+
+[Relatório priorizado e fontes](LOTUS_OPTIMIZATION_CATALOG_PLAN.md). A comparação com Carpi/Toptimizer e os READMEs fornecidos não comprova ganhos dos concorrentes, não autoriza copiar código nem executar ajustes. Categorias já existentes ficam nas etapas atuais; não criar uma nova etapa por ferramenta ou quantidade de tweaks.
+
+| Incremento ainda não especificado nesse nível | Onde entra | Gate adicional |
+| --- | --- | --- |
+| Elegibilidade por proprietário/política e custo atribuível de inicialização | Diagnóstico, refinando inicialização já prevista | Identificar contexto usuário/máquina, GPO/MDM, origem e impacto observado; ausência de domínio não libera política. Sem desativação por contagem de itens. |
+| Diagnóstico de rede antes de ajustes | Diagnóstico inteligente, antes das otimizações reversíveis | Interface, erros, perda/jitter e DNS separados; destino e custo do ensaio explícitos; respeitar VPN/NRPT/IPv6; não prometer ping menor pela troca de DNS. |
+| Lotus Optimization Catalog declarativo, com conflitos e compensações | Score/histórico/journal e futuras otimizações reversíveis | Manifesto tipado/versionado, handlers permitidos, plano com hash/consentimento, revalidação de estado, dry-run, recuperação após crash, rollback testado e detecção de edição externa. Reutiliza a persistência já planejada. |
+| Viabilidade de recuperação antes de debloat individual | Perfis/manutenção, sem antecipar remoções | Dependências/essenciais protegidos, recuperação de pacote e limites de dados/licença conhecidos; exclusão não integra lote que promete reversão exata. |
+
+Energia, CPU/GPU, Clean/TRIM e integridade foram avaliados como refinamentos dos itens existentes, não acréscimos duplicados. EcoQoS/prioridade de app opcional fica como hipótese experimental, sem compromisso de implementação. Timer/parking/serviços/limpeza forçada de RAM em lote permanecem excluídos. Nenhuma implementação ou comando de otimização foi executado nessa análise documental.

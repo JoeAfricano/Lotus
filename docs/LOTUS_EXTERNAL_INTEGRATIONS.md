@@ -87,3 +87,8 @@ Gate de distribuição: inventário de artefatos e versões, termos por arquivo/
 ## NVIDIA NVML — Etapa 03
 
 Integração de consulta ao componente NVML já instalado com o driver. Nenhum binário, SDK ou código de terceiros foi incorporado. NVML é proprietária; disponibilidade com o driver não significa licença aberta de redistribuição. Os bindings C# foram escritos no Lotus. Fontes e funções em [LOTUS_GPU_TELEMETRY.md](LOTUS_GPU_TELEMETRY.md). Não foi necessário adicionar NVAPI ou LibreHardwareMonitor. Não há taxa/API cloud nessa integração local; não se presume licença para empacotar DLLs NVIDIA.
+
+
+## Referências competitivas — 23/10/2026
+
+Carpi Ultimate/Toptimizer: somente páginas públicas/indexadas, com divergência entre oferta antiga indexada e redirecionamento atual; nenhuma instalação, binário ou inspeção de implementação. Não copiar assets/código proprietário nem inferir licença gratuita pela publicidade. Nos dois repositórios sugeridos, os READMEs declaram MIT; o arquivo LICENSE do primeiro não foi recuperado, e a URL LICENSE do segundo retornou 404. Nenhuma cópia realizada. Antes de eventual reutilização, obter commit, texto integral e notices de todos os arquivos/dependências. A existência de interfaces públicas do Windows permite planejar implementação própria, sem contornar licenças. [Escopo, limitações e links consultados](LOTUS_OPTIMIZATION_CATALOG_PLAN.md).
