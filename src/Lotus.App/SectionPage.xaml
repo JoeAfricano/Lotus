@@ -1,90 +1,66 @@
 <Page x:Class="Lotus.App.SectionPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Lotus.App.Controls" Foreground="{ThemeResource MainTextBrush}">
  <ScrollViewer x:Name="PageScroll" SizeChanged="OnViewportSizeChanged" HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top">
-  <StackPanel x:Name="PageContent" Padding="24" Spacing="22" HorizontalAlignment="Stretch" SizeChanged="OnContentSizeChanged">
+  <StackPanel x:Name="PageContent" Padding="24" Spacing="24" HorizontalAlignment="Stretch" SizeChanged="OnContentSizeChanged">
    <ContentControl Content="{Binding}" ContentTemplate="{StaticResource PageHeaderTemplate}" HorizontalContentAlignment="Stretch"/>
-   <StackPanel x:Name="DashboardContent" x:Load="{x:Bind ShowDashboard}" Spacing="20">
-    <Border BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="14">
-     <Grid MinHeight="260" CornerRadius="14">
-      <Grid.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0.6"><GradientStop Color="#281122"/><GradientStop Offset="0.5" Color="#15101B"/><GradientStop Offset="1" Color="#40142B"/></LinearGradientBrush></Grid.Background>
-      <Viewbox x:Name="HeroArt" Width="430" HorizontalAlignment="Right" VerticalAlignment="Bottom" Opacity="0.5" IsHitTestVisible="False" AutomationProperties.AccessibilityView="Raw"><Canvas Width="480" Height="260">
-        <Ellipse Width="186" Height="186" Canvas.Left="235" Canvas.Top="12" Fill="#44182F" Stroke="#B83465" StrokeThickness="1"/>
-        <Ellipse Width="156" Height="156" Canvas.Left="250" Canvas.Top="27" Fill="#94284F"/>
-        <Path Fill="#211321" Data="M0,223 L100,112 L160,170 L213,106 L300,211 L358,151 L480,230 L480,260 L0,260 Z"/>
-        <Path Fill="#0C0B13" Data="M0,250 L80,186 L130,215 L217,157 L291,240 L365,198 L480,244 L480,260 L0,260 Z"/>
-        <Path Fill="#0C0B13" Data="M331,245 L331,155 L323,155 L323,149 L340,144 L340,114 L332,114 L332,107 L350,101 L350,78 L346,78 L346,73 L369,65 L392,73 L392,78 L388,78 L388,101 L406,107 L406,114 L398,114 L398,144 L415,149 L415,155 L407,155 L407,245 Z"/>
-        <Path Stroke="#BD3B6B" StrokeThickness="2" Data="M317,150 Q369,140 422,150 M328,108 Q370,98 412,108 M341,74 Q369,66 397,74"/>
-        <Path Stroke="#66233F" StrokeThickness="4" Data="M480,8 Q420,35 429,102 M460,18 Q400,5 378,23 M437,39 Q401,54 395,75"/>
-        <Ellipse Canvas.Left="405" Canvas.Top="27" Width="9" Height="5" Fill="#FF6B9D"/><Ellipse Canvas.Left="435" Canvas.Top="48" Width="7" Height="11" Fill="#F43F7E"/><Ellipse Canvas.Left="390" Canvas.Top="65" Width="12" Height="6" Fill="#FF6B9D"/><Ellipse Canvas.Left="465" Canvas.Top="84" Width="9" Height="5" Fill="#FF6B9D"/>
-       </Canvas></Viewbox>
-      <StackPanel Padding="26" Spacing="15" MaxWidth="510" HorizontalAlignment="Left">
-       <TextBlock Text="{Binding Text[HeroEyebrow]}" Style="{StaticResource EyebrowStyle}"/>
-       <TextBlock Text="{Binding Text[HeroTitle]}" FontSize="32" FontWeight="Bold" Foreground="#FFF5FA" TextWrapping="Wrap"/>
-       <TextBlock Text="{Binding Text[HeroDescription]}" TextWrapping="Wrap" Foreground="#E2CFDB" FontSize="14"/>
-       <ContentControl Content="{Binding Text[InDevelopment]}" Style="{StaticResource StatusBadgeStyle}"/>
-      </StackPanel>
-     </Grid>
-    </Border>
-    <Grid x:Name="OverviewGrid" ColumnSpacing="18" RowSpacing="18">
-     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="1.6*"/></Grid.ColumnDefinitions>
-     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-     <ContentControl x:Name="ScoreCard" Style="{StaticResource CardControlStyle}">
-      <StackPanel Spacing="14"><TextBlock Text="{Binding Text[LotusScore]}" Style="{StaticResource EyebrowStyle}"/>
-       <Grid Width="144" Height="144" HorizontalAlignment="Center" Margin="0,4"><Ellipse Stroke="{ThemeResource CardBorderBrush}" StrokeThickness="9"/>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="6"><TextBlock Text="—" FontSize="42" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Center"/><TextBlock Text="{Binding Text[NotEvaluated]}" Foreground="{ThemeResource MutedBrush}" FontSize="11"/></StackPanel>
-       </Grid>
-       <TextBlock Text="{Binding Text[ScoreDescription]}" FontSize="13" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}" TextAlignment="Center"/>
-      </StackPanel>
-     </ContentControl>
-     <ContentControl x:Name="TelemetryCard" Grid.Column="1" Style="{StaticResource CardControlStyle}">
-      <StackPanel Spacing="16"><TextBlock Text="{Binding Text[SystemOverview]}" Style="{StaticResource EyebrowStyle}"/>
-       <Grid ColumnSpacing="12" RowSpacing="12">
-        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-        <ContentControl Content="{Binding Metrics[0]}" ContentTemplate="{StaticResource MetricCardTemplate}" HorizontalContentAlignment="Stretch"/>
-        <ContentControl Grid.Column="1" Content="{Binding Metrics[1]}" ContentTemplate="{StaticResource MetricCardTemplate}" HorizontalContentAlignment="Stretch"/>
-        <ContentControl Grid.Row="1" Content="{Binding Metrics[2]}" ContentTemplate="{StaticResource MetricCardTemplate}" HorizontalContentAlignment="Stretch"/>
-        <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding Metrics[3]}" ContentTemplate="{StaticResource MetricCardTemplate}" HorizontalContentAlignment="Stretch"/>
-       </Grid>
-      </StackPanel>
-     </ContentControl>
+   <StackPanel x:Name="HomeContent" x:Load="{x:Bind ShowHome}" Spacing="20">
+    <controls:PrimaryActionCard DataContext="{Binding Experience}"/>
+    <TextBlock Text="{Binding Text[UxYourComputer]}" Style="{StaticResource SectionTitleStyle}"/>
+    <Grid x:Name="SummaryGrid" ColumnSpacing="16" RowSpacing="12">
+     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+     <Border x:Name="CpuSummary" Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="8"><TextBlock Text="{Binding Text[UxProcessor]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Experience.CpuModel}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
+     <Border x:Name="GpuSummary" Grid.Column="1" Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="8"><TextBlock Text="{Binding Text[UxGraphics]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Experience.GpuModel}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
+     <Border x:Name="RamSummary" Grid.Column="2" Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="8"><TextBlock Text="{Binding Text[Memory]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Experience.RamCapacity}" FontSize="20" FontWeight="SemiBold"/></StackPanel></Border>
     </Grid>
-    <ContentControl Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><TextBlock Text="{Binding Text[WorkflowTitle]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Text[Workflow]}" FontSize="14" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[WorkflowDescription]}" FontSize="13" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap"/></StackPanel></ContentControl>
+    <TextBlock Text="{Binding Experience.SummaryTime}" Style="{StaticResource CaptionStyle}"/>
    </StackPanel>
-   <ContentControl x:Name="AnalysisContent" x:Load="{x:Bind ShowAnalysis}" Style="{StaticResource CardControlStyle}" DataContext="{Binding MemoryAnalysis}">
-    <StackPanel Spacing="16">
-     <TextBlock Text="{Binding Text[RamAnalysisTitle]}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.HeadingLevel="Level2"/>
-     <ContentControl Content="{Binding Status}" Style="{StaticResource StatusBadgeStyle}" AutomationProperties.AutomationId="ram-analysis-status"/>
-     <TextBlock Text="{Binding Text[RamAvailableLabel]}" Foreground="{ThemeResource MutedBrush}"/>
-     <TextBlock Text="{Binding Available}" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AutomationId="ram-analysis-available"/>
-     <Grid ColumnSpacing="20" RowSpacing="8">
-      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-      <StackPanel Spacing="4"><TextBlock Text="{Binding Text[RamCapacityLabel]}" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}"/><TextBlock Text="{Binding Capacity}" TextWrapping="Wrap"/></StackPanel>
-      <StackPanel Grid.Column="1" Spacing="4"><TextBlock Text="{Binding Text[RamMinimumLabel]}" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}"/><TextBlock Text="{Binding MinimumAvailable}" TextWrapping="Wrap"/></StackPanel>
-     </Grid>
-     <TextBlock Text="{Binding Evidence}" TextWrapping="Wrap"/>
-     <TextBlock Text="{Binding Recommendation}" TextWrapping="Wrap"/>
-     <TextBlock Text="{Binding Confidence}" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
-     <TextBlock Text="{Binding LastUpdate}" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
-     <Expander Header="{Binding Text[RamMethodTitle]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
-      <StackPanel Spacing="12"><TextBlock Text="{Binding Text[RamMethod]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[RamCacheExplanation]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[RamLimits]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Source}" TextWrapping="Wrap" IsTextSelectionEnabled="True"/><TextBlock Text="{Binding Rule}"/></StackPanel>
-     </Expander>
-    </StackPanel>
-   </ContentControl>
-   <controls:MonitoringPanel x:Name="MonitoringContent" x:Load="{x:Bind ShowMonitoring}" DataContext="{Binding Monitoring}"/>
-   <ContentControl x:Name="ModuleCard" x:Load="{x:Bind ShowModule}" Style="{StaticResource CardControlStyle}">
-    <StackPanel Spacing="20"><ContentControl Content="{Binding}" ContentTemplate="{StaticResource SectionEmptyStateTemplate}" HorizontalContentAlignment="Stretch"/><TextBlock x:Name="LogLocation" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}" Visibility="Collapsed" IsTextSelectionEnabled="True"/></StackPanel>
-   </ContentControl>
-   <ContentControl x:Name="SettingsCard" x:Load="{x:Bind ShowSettings}" Style="{StaticResource CardControlStyle}">
-    <StackPanel Style="{StaticResource SettingsPanelStyle}">
-     <TextBlock Text="{Binding Text[SettingsPanel]}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.HeadingLevel="Level2"/>
-     <ComboBox Header="{Binding Text[Language]}" AutomationProperties.AutomationId="settings-language" AutomationProperties.Name="{Binding Text[Language]}" SelectedIndex="{Binding Preferences.LanguageIndex, Mode=TwoWay}" HorizontalAlignment="Stretch" MinWidth="230" ItemsSource="{Binding Preferences.LanguageOptions}"/>
-     <ComboBox Header="{Binding Text[Theme]}" AutomationProperties.AutomationId="settings-theme" AutomationProperties.Name="{Binding Text[Theme]}" SelectedIndex="{Binding Preferences.ThemeIndex, Mode=TwoWay}" HorizontalAlignment="Stretch" ItemsSource="{Binding Preferences.ThemeOptions}"/>
+   <StackPanel x:Name="OptimizeContent" x:Load="{x:Bind ShowOptimize}" Spacing="20">
+    <SelectorBar x:Name="OptimizeTabs" SelectionChanged="OnOptimizeTabChanged" AutomationProperties.Name="{Binding Text[UxOptimizeSections]}">
+     <SelectorBarItem Text="{Binding Text[UxResultsTab]}"/><SelectorBarItem Text="{Binding Text[UxRestoreTab]}"/>
+    </SelectorBar>
+    <ContentControl x:Name="DiagnosisContent" x:Load="{x:Bind ShowDiagnosis}" Style="{StaticResource CardControlStyle}">
+     <StackPanel Spacing="16">
+      <TextBlock Text="{Binding Text[UxResultsTitle]}" Style="{StaticResource SectionTitleStyle}"/>
+      <ContentControl Content="{Binding Experience.Finding}" Style="{StaticResource StatusBadgeStyle}"/>
+      <controls:OperationProgress DataContext="{Binding Experience}" Visibility="{Binding Experience.IsAnalyzing, Converter={StaticResource BooleanVisibility}}"/>
+      <TextBlock Text="{Binding Experience.Advice}" FontSize="17" TextWrapping="Wrap"/>
+      <TextBlock Text="{Binding Experience.LastAnalysis}" Style="{StaticResource CaptionStyle}"/>
+      <TextBlock Text="{Binding Text[UxAdviceInformational]}" Style="{StaticResource CaptionStyle}"/>
+      <Expander Visibility="{Binding Experience.HasResult, Converter={StaticResource BooleanVisibility}}" Header="{Binding Text[UxTechnicalDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+       <StackPanel Spacing="12"><TextBlock Text="{Binding Text[RamAvailableLabel]}"/><TextBlock Text="{Binding Experience.Available}" FontSize="28" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[RamCapacityLabel]}"/><TextBlock Text="{Binding Experience.Capacity}"/><TextBlock Text="{Binding Text[RamMinimumLabel]}"/><TextBlock Text="{Binding Experience.MinimumAvailable}"/><TextBlock Text="{Binding Experience.Evidence}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[RamMethod]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[RamCacheExplanation]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[RamLimits]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Experience.Source}" TextWrapping="Wrap"/></StackPanel>
+      </Expander>
+     </StackPanel>
+    </ContentControl>
+    <ContentControl x:Name="RestoreContent" x:Load="{x:Bind ShowRestore}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><FontIcon Glyph="&#xE777;" Style="{StaticResource EmptyIconStyle}"/><TextBlock Text="{Binding Text[UxNoChangesTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxNoChangesDescription]}" TextWrapping="Wrap"/></StackPanel></ContentControl>
+   </StackPanel>
+   <StackPanel x:Name="PerformanceContent" x:Load="{x:Bind ShowPerformance}" Spacing="20">
+    <SelectorBar x:Name="PerformanceTabs" SelectionChanged="OnPerformanceTabChanged" AutomationProperties.Name="{Binding Text[UxPerformanceSections]}"><SelectorBarItem Text="{Binding Text[UxLiveTab]}"/><SelectorBarItem Text="{Binding Text[UxCompareTab]}"/><SelectorBarItem Text="{Binding Text[UxHistoryTab]}"/></SelectorBar>
+    <controls:MonitoringPanel x:Name="MonitoringContent" x:Load="{x:Bind ShowLive}" DataContext="{Binding Monitoring}"/>
+    <ContentControl x:Name="CompareContent" x:Load="{x:Bind ShowCompare}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><FontIcon Glyph="&#xE9D9;" Style="{StaticResource EmptyIconStyle}"/><TextBlock Text="{Binding Text[UxCompareEmptyTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxCompareEmptyDescription]}" TextWrapping="Wrap"/></StackPanel></ContentControl>
+    <ContentControl x:Name="HistoryContent" x:Load="{x:Bind ShowHistory}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><FontIcon Glyph="&#xE81C;" Style="{StaticResource EmptyIconStyle}"/><TextBlock Text="{Binding Text[UxHistoryEmptyTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxHistoryEmptyDescription]}" TextWrapping="Wrap"/></StackPanel></ContentControl>
+   </StackPanel>
+   <ContentControl x:Name="GamesContent" x:Load="{x:Bind ShowGames}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="16"><FontIcon Glyph="&#xE7FC;" Style="{StaticResource EmptyIconStyle}"/><TextBlock Text="{Binding Text[UxGamesEmptyTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxGamesEmptyDescription]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[UxGamesFuture]}" Style="{StaticResource CaptionStyle}"/></StackPanel></ContentControl>
+   <StackPanel x:Name="SettingsContent" x:Load="{x:Bind ShowSettings}" Spacing="20">
+    <ComboBox Header="{Binding Text[UxSettingsCategory]}" ItemsSource="{Binding Shell.SettingsCategories}" SelectedIndex="{Binding Shell.SettingsCategoryIndex, Mode=TwoWay}" HorizontalAlignment="Stretch" MaxWidth="440" SelectionChanged="OnSettingsCategoryChanged" AutomationProperties.AutomationId="settings-category"/>
+    <ContentControl x:Name="AppearanceContent" x:Load="{x:Bind ShowAppearance}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="20">
+     <TextBlock Text="{Binding Text[AppearanceCategory]}" Style="{StaticResource SectionTitleStyle}"/>
+     <ComboBox Header="{Binding Text[Theme]}" SelectedIndex="{Binding Preferences.ThemeIndex, Mode=TwoWay}" ItemsSource="{Binding Preferences.ThemeOptions}" HorizontalAlignment="Stretch" MaxWidth="440" AutomationProperties.AutomationId="settings-theme" AutomationProperties.Name="{Binding Text[Theme]}"/>
+     <ComboBox Header="{Binding Text[Language]}" SelectedIndex="{Binding Preferences.LanguageIndex, Mode=TwoWay}" ItemsSource="{Binding Preferences.LanguageOptions}" HorizontalAlignment="Stretch" MaxWidth="440" AutomationProperties.AutomationId="settings-language" AutomationProperties.Name="{Binding Text[Language]}"/>
      <CheckBox Content="{Binding Text[ReduceMotion]}" IsChecked="{Binding Preferences.ReduceMotion, Mode=TwoWay}" AutomationProperties.AutomationId="settings-motion"/>
-     <TextBlock Text="{Binding Text[BrandMotionPolicy]}" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
-     <TextBlock Text="{Binding Text[ImmediateHint]}" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}" FontSize="13"/>
-     <TextBlock Text="{Binding Preferences.Message}" TextWrapping="Wrap" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite" AutomationProperties.AutomationId="settings-result"/>
+     <TextBlock Text="{Binding Text[ImmediateHint]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Preferences.Message}" Foreground="{ThemeResource RoseBrush}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
+     <Expander Header="{Binding Text[UxMotionDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[BrandMotionPolicy]}" TextWrapping="Wrap"/></Expander>
+    </StackPanel></ContentControl>
+    <ContentControl x:Name="MonitoringSettingsContent" x:Load="{x:Bind ShowMonitoringSettings}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="16"><TextBlock Text="{Binding Text[MonitoringCategory]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Experience.CollectorStatus}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[UxMonitoringSettings]}" TextWrapping="Wrap"/></StackPanel></ContentControl>
+    <ContentControl x:Name="IntegrationsContent" x:Load="{x:Bind ShowIntegrations}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><TextBlock Text="{Binding Text[IntegrationsCategory]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxIntegrationsEmpty]}" TextWrapping="Wrap"/></StackPanel></ContentControl>
+    <ContentControl x:Name="SafetyContent" x:Load="{x:Bind ShowSafety}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><TextBlock Text="{Binding Text[SafetyCategory]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxNoChangesDescription]}" TextWrapping="Wrap"/></StackPanel></ContentControl>
+    <StackPanel x:Name="FaqContent" x:Load="{x:Bind ShowFaq}" Spacing="12">
+     <TextBlock Text="{Binding Text[FaqTitle]}" Style="{StaticResource SectionTitleStyle}"/>
+     <Expander Header="{Binding Text[UxProgressDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[UxProgressExplanation]}" TextWrapping="Wrap"/></Expander>
+     <Expander Header="{Binding Text[FaqSafetyQuestion]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[FaqSafetyAnswer]}" TextWrapping="Wrap"/></Expander>
+     <Expander Header="{Binding Text[FaqScopeQuestion]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[UxScope]}" TextWrapping="Wrap"/></Expander>
+     <Expander Header="{Binding Text[FaqSolutionsQuestion]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[FaqSolutionsAnswer]}" TextWrapping="Wrap"/></Expander>
     </StackPanel>
-   </ContentControl>
-   <Border BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="0,1,0,0" Padding="0,16,0,0"><TextBlock Text="{Binding Text[FooterNotice]}" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource MutedBrush}"/></Border>
+    <ContentControl x:Name="AdvancedContent" x:Load="{x:Bind ShowAdvanced}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="16"><TextBlock Text="{Binding Text[AdvancedCategory]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding AppVersion}"/><TextBlock Text="{Binding Text[UxLogExplanation]}" TextWrapping="Wrap"/><TextBlock Text="{Binding LogLocation}" IsTextSelectionEnabled="True" TextWrapping="Wrap" AutomationProperties.AutomationId="settings-log-path"/><TextBlock Text="{Binding Experience.CollectorStatus}" TextWrapping="Wrap"/><Expander Header="{Binding Text[UxDataSources]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><StackPanel Spacing="12"><TextBlock Text="{Binding Text[UxDataSourcesDescription]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Monitoring.LastUpdate}" TextWrapping="Wrap"/><TextBlock Text="{Binding Monitoring.GpuStatus}" TextWrapping="Wrap"/></StackPanel></Expander></StackPanel></ContentControl>
+   </StackPanel>
   </StackPanel>
  </ScrollViewer>
 </Page>

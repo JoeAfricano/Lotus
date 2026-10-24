@@ -22,7 +22,8 @@ public sealed partial class MainWindow : Window
     private bool updatingLayout;
     private bool? narrow;
     private string? displayedSectionId;
-    private bool windowActive;
+    private bool updatingNavigation;
+    private readonly ExperienceViewModel experience;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
     private BrandPulse? flowerPulse;
@@ -34,7 +35,7 @@ public sealed partial class MainWindow : Window
     private BrandMotionProof? brandProof;
     private bool brandProofShown;
 
-    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring, Lotus.Core.Diagnostics.MemoryAnalysisViewModel memoryAnalysis)
+    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring, Lotus.Core.Diagnostics.MemoryAnalysisViewModel memoryAnalysis, ExperienceViewModel experience)
     {
         ViewModel = viewModel;
         this.text = text;
@@ -43,6 +44,7 @@ public sealed partial class MainWindow : Window
         this.palette = palette;
         this.monitoring = monitoring;
         this.memoryAnalysis = memoryAnalysis;
+        this.experience = experience;
         InitializeComponent();
         ShellRoot.DataContext = ViewModel;
         ShellRoot.Language = text.Language;
@@ -68,7 +70,10 @@ public sealed partial class MainWindow : Window
         initialized = true;
         UpdatePaneChrome();
         if (preferences.LoadStatus is not ("Loaded" or "Missing")) ShowWarning(text["LoadWarning"]);
+        ViewModel.PropertyChanged += OnRouteChanged;
+        experience.DemandChanged += OnExperienceDemandChanged;
         Navigation.SelectedItem = Navigation.MenuItems[0];
+        ShowRoute();
         preferences.PropertyChanged += OnPreferencesChanged;
         Closed += (_, _) =>
         {
@@ -77,10 +82,12 @@ public sealed partial class MainWindow : Window
             monitoring.SetActive(false);
             StopBrandMotion();
             preferences.PropertyChanged -= OnPreferencesChanged;
+            ViewModel.PropertyChanged -= OnRouteChanged;
+            experience.DemandChanged -= OnExperienceDemandChanged;
         };
         Activated += (_, args) =>
         {
-            windowActive = args.WindowActivationState != WindowActivationState.Deactivated;
+            // Deactivation alone does not interrupt an explicit analysis.
             UpdateBrandMotion();
             DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, UpdateMonitoringDemand);
         };
@@ -127,6 +134,7 @@ public sealed partial class MainWindow : Window
         ShellRoot.Language = text.Language;
         ViewModel.RefreshLanguage();
         monitoring.RefreshLanguage();
+        experience.RefreshLanguage();
         foreach (NavigationViewItem item in Navigation.MenuItems)
         {
             var section = ViewModel.Items.Single(s => s.Id == (string)item.Tag);
@@ -138,8 +146,7 @@ public sealed partial class MainWindow : Window
         // Replace only the current visual page, retaining the same destination and preferences VM.
         DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
         {
-            ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel, false, monitoring, memoryAnalysis), new SuppressNavigationTransitionInfo());
-            ContentFrame.BackStack.Clear();
+            ShowRoute(force: true);
         });
     }
     private void UpdateMinimumSize()
@@ -240,26 +247,42 @@ public sealed partial class MainWindow : Window
     }
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
-        if (args.SelectedItem is not NavigationViewItem { Tag: string id } || displayedSectionId == id) return;
+        if (updatingNavigation || args.SelectedItem is not NavigationViewItem { Tag: string id }) return;
         ViewModel.NavigateCommand.Execute(id);
-        if (ViewModel.SelectedSection.Id != id) return;
-        ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel, !preferences.Current.ReduceMotion, monitoring, memoryAnalysis), new SuppressNavigationTransitionInfo());
-        ContentFrame.BackStack.Clear();
-        displayedSectionId = id;
-        UpdateMonitoringDemand();
         if (narrow == true) Navigation.IsPaneOpen = false;
     }
+    private void OnRouteChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == nameof(ShellViewModel.CurrentRoute)) ShowRoute();
+    }
+    private void ShowRoute(bool force = false)
+    {
+        var group = ViewModel.SelectedSection.Id;
+        updatingNavigation = true;
+        Navigation.SelectedItem = Navigation.MenuItems.Cast<NavigationViewItem>().First(item => (string)item.Tag == group);
+        updatingNavigation = false;
+        if (force || displayedSectionId != group)
+        {
+            ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience), new SuppressNavigationTransitionInfo());
+            ContentFrame.BackStack.Clear(); displayedSectionId = group;
+        }
+        UpdateMonitoringDemand();
+    }
+    private void OnExperienceDemandChanged(object? sender, EventArgs args) => UpdateMonitoringDemand();
     private void UpdateMonitoringDemand()
     {
         if (!initialized) return;
-        var minimized = AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized };
-        var visible = !minimized && AppWindow.IsVisible;
-        memoryAnalysis.SetActive(displayedSectionId == "analysis" && visible);
-        monitoring.SetActive(displayedSectionId is "monitoring" or "analysis" && visible);
+        var visible = AppWindow.IsVisible && AppWindow.Presenter is not OverlappedPresenter { State: OverlappedPresenterState.Minimized };
+        if (!visible) experience.Interrupt();
+        var demand = MonitoringDemand.For(ViewModel.CurrentRoute, visible, experience.IsAnalyzing);
+        memoryAnalysis.SetActive(demand.Analyze);
+        monitoring.SetActive(demand.Collect);
     }
     public void PrepareForClose()
     {
         initialized = false;
+        experience.Interrupt();
         brandProof?.Dispose(); brandProof = null;
         memoryAnalysis.SetActive(false);
         monitoring.SetActive(false);

@@ -97,3 +97,6 @@ ADR-038 — Primeiro diagnóstico: RAM-AVAIL-001 v1. Disponibilidade física sus
 
 
 ADR-039 — Catálogo futuro: separar declaração de regra, evidência, detecção, plano aprovado e executor permitido. Reutilizar journal durável e compensação já previstos; Windows/SQLite não formam transação ACID conjunta. Compatibilidade, classificação de risco e benefício devem ser independentes; alterações gerenciadas por política ou estado desconhecido bloqueiam escrita. Ações irreversíveis não podem integrar lote com promessa de rollback exato. Análise competitiva é fonte de requisitos, não prova de FPS ou licença de código. [Contrato, prioridades e fontes](LOTUS_OPTIMIZATION_CATALOG_PLAN.md). Apenas documentação nesta decisão.
+
+
+ADR-040 — UX com cinco grupos e aliases internos; análise iniciada somente em Início e resultado automático em Otimizar, sem aba intermediária de orientações. Provedores e regra RAM preservados; ExperienceViewModel é orquestração visual. Nenhum botão de aplicação sem backend. Progresso indica 30 s de leituras válidas; relógio total independente a 1 Hz somente na operação, sem estimativa fictícia. Explicações ficam em FAQ, detalhes técnicos em expander. Soluções futuras exigem plano/consentimento/verificação já previstos. [Validação UX](LOTUS_UX_REDESIGN.md).

@@ -58,3 +58,12 @@ NVIDIA NVML, VRAM, clocks, temperatura GPU, potência, ventoinha percentual e ev
 | Viabilidade de recuperação antes de debloat individual | Perfis/manutenção, sem antecipar remoções | Dependências/essenciais protegidos, recuperação de pacote e limites de dados/licença conhecidos; exclusão não integra lote que promete reversão exata. |
 
 Energia, CPU/GPU, Clean/TRIM e integridade foram avaliados como refinamentos dos itens existentes, não acréscimos duplicados. EcoQoS/prioridade de app opcional fica como hipótese experimental, sem compromisso de implementação. Timer/parking/serviços/limpeza forçada de RAM em lote permanecem excluídos. Nenhuma implementação ou comando de otimização foi executado nessa análise documental.
+
+
+## UX e soluções após análise — 23/10/2026
+
+Redesign autorizado: cinco destinos (Início, Otimizar, Meus Jogos, Desempenho, Configurações), marca preservada, textos revisados e ações sem duplicação. Análise explícita de RAM com tempo real/progresso e conclusão em Otimizar > Resultado. Explicações em Configurações > FAQ. [Implementação, evidência manual e limites](LOTUS_UX_REDESIGN.md).
+
+Requisito guardado para os próximos módulos: apresentar soluções na mesma área de resultado, priorizar por evidência, permitir seleção e confirmação, aplicar apenas ações implementadas e verificar/reverter quando possível. Nenhuma aplicação automática ao terminar uma análise e nenhuma limpeza forçada de RAM. O usuário confirmou que as soluções automáticas ficam para as próximas etapas.
+
+Próximo incremento visual autorizado: fundo Lótus + Aurora, independente da telemetria e do catálogo. Não antecipar módulos de hardware/otimização.

@@ -9,17 +9,18 @@ CPU/RAM e GPU NVIDIA reais sob demanda. [Contrato CPU/RAM](LOTUS_TELEMETRY.md), 
 | Área | Evidência local | Estado |
 | --- | --- | --- |
 | Shell nativo e tema neon japonês | `src/Lotus.App/MainWindow.xaml`, `App.xaml`, `SectionPage.xaml` | Implementados em WinUI 3/XAML |
-| Navegação | `src/Lotus.Core/Navigation.cs`, `MainWindow.xaml.cs` | Dez destinos; uma página reutilizada, sem dez módulos funcionais |
+| Navegação | `src/Lotus.Core/Navigation.cs`, `MainWindow.xaml.cs` | Cinco destinos principais; rotas antigas agrupadas e preservadas; uma página reutilizada |
 | MVVM | `ShellViewModel`, ObservableObject e RelayCommand | Seleção, preferências e textos testáveis; composição visual em XAML |
 | DI e ciclo de vida | `src/Lotus.App/App.xaml.cs` | ServiceCollection, janela e serviços singleton, descarte no fechamento |
 | Logging | `App.xaml.cs`, `src/Lotus.Infrastructure/AppEvents.cs` | JSONL local: início, navegação, encerramento e exceções de UI |
 | Persistência de preferências | PreferencesService e JsonPreferencesStore | JSON local versionado e backup; SQLite e histórico pendentes |
-| Monitoramento | IHardwareTelemetryProvider, HardwareMonitoringService e MonitoringViewModel | CPU/RAM e NVIDIA NVML na seção Monitoramento; Dashboard sem consumidor; demais fabricantes pendentes |
-| Score | XAML com “NÃO AVALIADO” | Sem cálculo ou equivalência com FPS |
-| Diagnóstico, benchmark, otimização, restauração, jogos e manutenção | Catálogo de seções e avisos | Planejados |
+| Monitoramento | IHardwareTelemetryProvider, HardwareMonitoringService e MonitoringViewModel | CPU/RAM e NVIDIA NVML em Ao vivo ou análise explicitamente iniciada; Início sem coleta decorativa; demais fabricantes pendentes |
+| Score | Score não exibido no novo Início | Sem cálculo ou equivalência com FPS |
+| Diagnóstico RAM | Regra temporal e ExperienceViewModel | Implementado, com resultado direto e progresso real |
+| Benchmark, aplicação/reversão, jogos e manutenção | Estados vazios e roadmap | Backend planejado, sem controles fictícios |
 | RTSS e Afterburner | Nenhum adaptador na solução | Ferramentas presentes no computador, sem integração implementada |
 | Preferências e idiomas | TextCatalog e PreferencesViewModel | PT-BR inicial e EN-US; idioma/tema imediatos; sidebar e movimento persistidos. Perfil editável pendente |
-| Testes | NavigationTests, PreferencesTests e LocalizationTests | 62 resultados por configuração; inclui GPU, CPU/RAM, concorrência, cancelamento e integração Windows/NVIDIA real |
+| Testes | NavigationTests, PreferencesTests e LocalizationTests | 102 resultados no incremento UX/FAQ; inclui GPU, CPU/RAM, concorrência, cancelamento e integração Windows/NVIDIA real |
 
 Solução válida: `C:\Projetos\Lotus\Lotus.slnx`. A pasta preexistente `Lotus/` não integra esta solução e permanece preservada. Alterações preexistentes nos três `.csproj` de biblioteca/testes e backup da solução não foram descartados.
 
@@ -112,3 +113,8 @@ O pipeline existente agora compõe CPU/RAM e um adaptador NVIDIA NVML somente le
 ## Diagnóstico inicial de RAM — 23/10/2026
 
 `Core/Diagnostics/MemoryAvailabilityAnalyzer` avalia disponibilidade física por regra temporal versionada; `MemoryAnalysisViewModel` apresenta estado, evidência, recomendação e limites. Reutiliza `MonitoringViewModel.Updated` e o serviço singleton. Análise ou Monitoramento demandam coleta; apenas Análise processa a regra, com reset ao sair/minimizar. Sem timer, pacote ou escrita no Windows. A análise não possui histórico persistente e ainda não inclui commit global/paginação. [Critérios, validação e plano de jogos](LOTUS_RAM_DIAGNOSTICS.md).
+
+
+## UX orientada ao usuário — revisão atual
+
+Cinco grupos, rotas internas compatíveis, SelectorBar e x:Load. ExperienceViewModel mantém estado da análise e a última leitura de hardware sem solicitar coleta no Início. MonitoringDemand centraliza Ao vivo + operação explícita; não muda providers ou a frequência do serviço. OperationProgress usa o progresso temporal da regra e um relógio de apresentação somente enquanto a operação está ativa. Resultado e próximos passos ficam juntos em Otimizar; explicações foram concentradas em Configurações > FAQ. [Contrato, testes e limites da revisão](LOTUS_UX_REDESIGN.md). Esta seção prevalece sobre a descrição histórica de dez destinos e score visual.

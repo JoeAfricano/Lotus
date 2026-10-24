@@ -12,46 +12,78 @@ public static class Sections
         new Section(item.Id, text[item.Id + "Title"], item.Glyph, text[item.Id + "Description"], text[item.Id + "Next"])).ToArray());
     private static IEnumerable<(string Id, string Glyph)> Definitions => new[]
     {
-        ("dashboard", "\uE80F"), ("analysis", "\uE9D9"), ("optimizations", "\uE713"),
-        ("monitoring", "\uE9D2"), ("benchmark", "\uE9D9"), ("games", "\uE7FC"),
-        ("history", "\uE81C"), ("restore", "\uE777"), ("settings", "\uE115"), ("logs", "\uE8A5")
+        ("home", "\uE80F"), ("optimize", "\uE945"), ("games", "\uE7FC"),
+        ("performance", "\uE9D2"), ("settings", "\uE713")
     };
 }
 
 public interface IAppEvents { void Navigated(string sectionId); }
 
+// Legacy destinations remain addressable; only five groups appear in the sidebar.
+public sealed record AppRoute(string Id, string Group);
+public static class AppRoutes
+{
+    public static AppRoute? Resolve(string? id) => id switch
+    {
+        "home" or "dashboard" => new("home", "home"),
+        "optimize" or "optimizations" or "analysis" => new("analysis", "optimize"),
+        "advice" => new("analysis", "optimize"), "restore" => new("restore", "optimize"),
+        "games" => new("games", "games"),
+        "performance" or "monitoring" => new("monitoring", "performance"),
+        "benchmark" => new("benchmark", "performance"), "history" => new("history", "performance"),
+        "settings" => new("settings", "settings"), "settings-monitoring" => new("settings-monitoring", "settings"),
+        "settings-integrations" => new("settings-integrations", "settings"),
+        "settings-security" => new("settings-security", "settings"), "logs" => new("logs", "settings"), "faq" => new("faq", "settings"),
+        _ => null
+    };
+}
+
 public sealed class ShellViewModel : ObservableObject
 {
     private readonly IAppEvents events;
     private Section selectedSection;
+    public string CurrentRoute { get; private set; } = "home";
     public ITextCatalog Text { get; }
     public IReadOnlyList<Section> Items { get; private set; }
-    public Section SelectedSection
-    {
-        get => selectedSection;
-        private set => SetProperty(ref selectedSection, value);
-    }
+    public Section SelectedSection => selectedSection;
     public IRelayCommand<string> NavigateCommand { get; }
+    public int PerformanceTabIndex => CurrentRoute == "benchmark" ? 1 : CurrentRoute == "history" ? 2 : 0;
+    public int OptimizeTabIndex => CurrentRoute == "restore" ? 1 : 0;
+    public int SettingsCategoryIndex
+    {
+        get => CurrentRoute switch { "settings-monitoring" => 1, "settings-integrations" => 2, "settings-security" => 3, "logs" => 4, "faq" => 5, _ => 0 };
+        set { if (value is >= 0 and <= 5) Navigate(new[] { "settings", "settings-monitoring", "settings-integrations", "settings-security", "logs", "faq" }[value]); }
+    }
+    public IReadOnlyList<string> SettingsCategories => new[] { "AppearanceCategory", "MonitoringCategory", "IntegrationsCategory", "SafetyCategory", "AdvancedCategory", "FaqCategory" }.Select(key => Text[key]).ToArray();
     public ShellViewModel(IAppEvents events, ITextCatalog? text = null)
     {
-        this.events = events;
-        Text = text ?? new TextCatalog();
-        Items = Sections.Create(Text);
-        selectedSection = Items[0];
+        this.events = events; Text = text ?? new TextCatalog();
+        Items = Sections.Create(Text); selectedSection = Items[0];
         NavigateCommand = new RelayCommand<string>(Navigate);
     }
     public void RefreshLanguage()
     {
-        var id = SelectedSection.Id;
-        Items = Sections.Create(Text);
-        OnPropertyChanged(nameof(Items));
-        SelectedSection = Items.Single(section => section.Id == id);
+        var group = selectedSection.Id; Items = Sections.Create(Text);
+        selectedSection = Items.Single(section => section.Id == group);
+        NotifyNavigation(); OnPropertyChanged(nameof(Items)); OnPropertyChanged(nameof(SettingsCategories));
     }
     private void Navigate(string? id)
     {
-        var section = Items.FirstOrDefault(item => item.Id == id);
-        if (section is null || section == SelectedSection) return;
-        SelectedSection = section;
-        events.Navigated(section.Id);
+        var route = AppRoutes.Resolve(id);
+        if (route is null || route.Id == CurrentRoute) return;
+        CurrentRoute = route.Id; selectedSection = Items.Single(section => section.Id == route.Group);
+        NotifyNavigation(); events.Navigated(CurrentRoute);
     }
+    private void NotifyNavigation()
+    {
+        OnPropertyChanged(nameof(CurrentRoute)); OnPropertyChanged(nameof(SelectedSection));
+        OnPropertyChanged(nameof(PerformanceTabIndex)); OnPropertyChanged(nameof(OptimizeTabIndex)); OnPropertyChanged(nameof(SettingsCategoryIndex));
+    }
+}
+
+
+public readonly record struct MonitoringDemand(bool Collect, bool Analyze)
+{
+    public static MonitoringDemand For(string route, bool visible, bool analysisRequested) =>
+        new(visible && (route == "monitoring" || analysisRequested), visible && analysisRequested);
 }

@@ -5,20 +5,25 @@ public sealed record MetricPlaceholder(string Title, string Status);
 public sealed class SectionViewModel
 {
     public Section Section { get; }
+    public ShellViewModel? Shell { get; }
+    public ExperienceViewModel? Experience { get; }
     public ITextCatalog Text { get; }
     public PreferencesViewModel Preferences { get; }
     public Telemetry.MonitoringViewModel? Monitoring { get; }
     public Diagnostics.MemoryAnalysisViewModel? MemoryAnalysis { get; }
-    public string Title => Section.Id == "dashboard" ? Text["Greeting"] : Section.Title;
+    public string Title => Section.Id == "home" ? Text["Greeting"] : Section.Title;
     public string Subtitle => Section.Description;
     public string Glyph => Section.Glyph;
     public string NextStep => Section.NextStep;
+    public string LogLocation => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Logs");
+    public string AppVersion => "Lotus · " + (System.Reflection.Assembly.GetEntryAssembly()?.GetName().Version?.ToString(3) ?? "—");
     public string Planned => Text["Planned"];
     public bool MotionEnabled { get; }
     public IReadOnlyList<MetricPlaceholder> Metrics { get; }
-    public SectionViewModel(Section section, ITextCatalog text, PreferencesViewModel preferences, bool motionEnabled = true, Telemetry.MonitoringViewModel? monitoring = null, Diagnostics.MemoryAnalysisViewModel? memoryAnalysis = null)
+    public SectionViewModel(Section section, ITextCatalog text, PreferencesViewModel preferences, bool motionEnabled = true, Telemetry.MonitoringViewModel? monitoring = null, Diagnostics.MemoryAnalysisViewModel? memoryAnalysis = null, ShellViewModel? shell = null, ExperienceViewModel? experience = null)
     {
         Section = section;
+        Shell = shell; Experience = experience;
         Text = text;
         Preferences = preferences;
         Monitoring = monitoring;

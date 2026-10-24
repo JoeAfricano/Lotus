@@ -19,7 +19,7 @@
     <value>LOTUS · Read-only telemetry and diagnosis. No Windows settings changed.</value>
   </data>
   <data name="FooterVersion" xml:space="preserve">
-    <value>FOUNDATION 0.1 / IN DEVELOPMENT</value>
+    <value>LOTUS · 0.1 · READ ONLY</value>
   </data>
   <data name="GPU" xml:space="preserve">
     <value>GPU</value>
@@ -165,13 +165,13 @@ Get in the game.</value>
     <value>Dashboard</value>
   </data>
   <data name="gamesDescription" xml:space="preserve">
-    <value>A space for your library and profiles.</value>
+    <value>A space for your games, profiles and results.</value>
   </data>
   <data name="gamesNext" xml:space="preserve">
     <value>Authorized discovery of installations and individual profiles.</value>
   </data>
   <data name="gamesTitle" xml:space="preserve">
-    <value>Games</value>
+    <value>My Games</value>
   </data>
   <data name="historyDescription" xml:space="preserve">
     <value>See what changed and what was measured.</value>
@@ -364,4 +364,98 @@ Get in the game.</value>
   <data name="RamMethod" xml:space="preserve"><value>Local rule RAM-AVAIL-001 v1: low availability requires at most 10% of RAM and at most 1 GiB available continuously for 30 s. Very low: at most 5% and 512 MiB for 30 s. These are Lotus triage criteria, not official Windows limits. Missing readings never become zero.</value></data>
   <data name="RamCacheExplanation" xml:space="preserve"><value>Available does not mean only free RAM. Windows can repurpose standby/cache pages; cache occupancy does not prove mismanagement. Forcibly emptying working sets can cause new page faults when data is accessed again.</value></data>
   <data name="RamLimits" xml:space="preserve"><value>This version does not measure system commit, disk paging, compressed memory or per-application usage. It does not identify leaks or gaming bottlenecks. No page file, cache, process or Windows setting is changed.</value></data>
+  <data name="homeTitle" xml:space="preserve"><value>Home</value></data>
+  <data name="homeDescription" xml:space="preserve"><value>Know your PC. Focus on your game.</value></data>
+  <data name="homeNext" xml:space="preserve"><value>Start with a read-only analysis.</value></data>
+  <data name="optimizeTitle" xml:space="preserve"><value>Optimize my PC</value></data>
+  <data name="optimizeDescription" xml:space="preserve"><value>From diagnosis to your next step.</value></data>
+  <data name="optimizeNext" xml:space="preserve"><value>Analyze first and understand the guidance.</value></data>
+  <data name="performanceTitle" xml:space="preserve"><value>Performance</value></data>
+  <data name="performanceDescription" xml:space="preserve"><value>See how your PC behaves, in real time.</value></data>
+  <data name="performanceNext" xml:space="preserve"><value>See real measurements, with details when needed.</value></data>
+  <data name="AppearanceCategory" xml:space="preserve"><value>Appearance</value></data>
+  <data name="MonitoringCategory" xml:space="preserve"><value>Monitoring</value></data>
+  <data name="IntegrationsCategory" xml:space="preserve"><value>Integrations</value></data>
+  <data name="SafetyCategory" xml:space="preserve"><value>Safety and restore</value></data>
+  <data name="AdvancedCategory" xml:space="preserve"><value>Advanced</value></data>
+  <data name="UxReadyTitle" xml:space="preserve"><value>Before your next match, check your PC.</value></data>
+  <data name="UxReadyDescription" xml:space="preserve"><value>Check your RAM and find out whether anything needs attention.</value></data>
+  <data name="UxAnalyzingTitle" xml:space="preserve"><value>Analysis in progress</value></data>
+  <data name="UxAnalyzingDescription" xml:space="preserve"><value>We are following RAM availability to see how much room remains.</value></data>
+  <data name="UxCompletedTitle" xml:space="preserve"><value>Your RAM had room during this check.</value></data>
+  <data name="UxCompletedDescription" xml:space="preserve"><value>Your result is ready. See the details and what to watch during your game.</value></data>
+  <data name="UxAttentionTitle" xml:space="preserve"><value>Your RAM is running low on available space.</value></data>
+  <data name="UxAttentionDescription" xml:space="preserve"><value>We found a signal worth checking. The result explains what we observed and the next steps.</value></data>
+  <data name="UxPartialTitle" xml:space="preserve"><value>Shall we try once more?</value></data>
+  <data name="UxPartialDescription" xml:space="preserve"><value>Analysis was interrupted or did not receive enough readings. Try again with the window open.</value></data>
+  <data name="UxAnalyzeNow" xml:space="preserve"><value>Analyze my PC</value></data>
+  <data name="UxAnalyzeAgain" xml:space="preserve"><value>Analyze again</value></data>
+  <data name="UxCancel" xml:space="preserve"><value>Cancel analysis</value></data>
+  <data name="UxViewResult" xml:space="preserve"><value>View result</value></data>
+  <data name="UxCurrentCheck" xml:space="preserve"><value>RAM</value></data>
+  <data name="UxAnalysisSafety" xml:space="preserve"><value>Your Windows settings stay as they are. This analysis only reads information.</value></data>
+  <data name="UxScope" xml:space="preserve"><value>This version checks RAM availability using 30 seconds of continuous readings.</value></data>
+  <data name="UxYourComputer" xml:space="preserve"><value>Your computer</value></data>
+  <data name="UxProcessor" xml:space="preserve"><value>Processor</value></data>
+  <data name="UxGraphics" xml:space="preserve"><value>Graphics card</value></data>
+  <data name="UxUnavailable" xml:space="preserve"><value>Not available yet</value></data>
+  <data name="UxSummaryWaiting" xml:space="preserve"><value>Information appears after an analysis or a visit to Performance.</value></data>
+  <data name="UxSummaryTime" xml:space="preserve"><value>Last reading: {0}.</value></data>
+  <data name="UxLastAnalysis" xml:space="preserve"><value>Last analysis in this session</value></data>
+  <data name="UxNoAnalysis" xml:space="preserve"><value>You have not run an analysis yet.</value></data>
+  <data name="UxWorkflow" xml:space="preserve"><value>Analyze → Recommend → Confirm → Apply → Verify</value></data>
+  <data name="UxReadOnlyFlow" xml:space="preserve"><value>Available now: read-only analysis and guidance. Apply and restore will become available when verifiable actions exist.</value></data>
+  <data name="UxOptimizeSections" xml:space="preserve"><value>Available optimization steps</value></data>
+  <data name="UxDiagnosisTab" xml:space="preserve"><value>Analysis</value></data>
+  <data name="UxAdviceTab" xml:space="preserve"><value>Guidance</value></data>
+  <data name="UxRestoreTab" xml:space="preserve"><value>Restore</value></data>
+  <data name="UxChecksAvailable" xml:space="preserve"><value>What is being checked?</value></data>
+  <data name="UxOtherChecks" xml:space="preserve"><value>Startup, power, network and system integrity are not included in this analysis yet. No results are assumed for those areas.</value></data>
+  <data name="UxAdviceLow" xml:space="preserve"><value>Memory had little room available for at least 30 seconds. Review open applications and observe the PC during your game to investigate the cause. This result alone does not identify the responsible application.</value></data>
+  <data name="UxAdviceNormal" xml:space="preserve"><value>Memory kept some room available during this check. This result does not call for a change. If your game still stutters, the next step is to investigate what happens during play.</value></data>
+  <data name="UxAdviceInformational" xml:space="preserve"><value>No Windows settings were changed.</value></data>
+  <data name="UxTechnicalDetails" xml:space="preserve"><value>Understand your result</value></data>
+  <data name="UxNoChangesTitle" xml:space="preserve"><value>Nothing to undo yet</value></data>
+  <data name="UxNoChangesDescription" xml:space="preserve"><value>When Lotus applies a reversible change, you will find what changed and how to restore the previous state here.</value></data>
+  <data name="UxPerformanceSections" xml:space="preserve"><value>Performance areas</value></data>
+  <data name="UxLiveTab" xml:space="preserve"><value>Live</value></data>
+  <data name="UxCompareTab" xml:space="preserve"><value>Compare</value></data>
+  <data name="UxHistoryTab" xml:space="preserve"><value>History</value></data>
+  <data name="UxCompareEmptyTitle" xml:space="preserve"><value>Every match tells a story.</value></data>
+  <data name="UxCompareEmptyDescription" xml:space="preserve"><value>Game capture is in development. When ready, you will be able to compare smoothness, FPS and frame times using real data.</value></data>
+  <data name="UxHistoryEmptyTitle" xml:space="preserve"><value>Your history starts in the next steps.</value></data>
+  <data name="UxHistoryEmptyDescription" xml:space="preserve"><value>Saved measurements will appear here when session capture is available. For now, your analysis result stays in this Lotus session.</value></data>
+  <data name="UxGamesEmptyTitle" xml:space="preserve"><value>Your library is on its way.</value></data>
+  <data name="UxGamesEmptyDescription" xml:space="preserve"><value>Soon, this will be the place to bring your games together and prepare for each match.</value></data>
+  <data name="UxGamesFuture" xml:space="preserve"><value>Game detection is not available yet. No folders on your PC have been scanned.</value></data>
+  <data name="UxSettingsCategory" xml:space="preserve"><value>Category</value></data>
+  <data name="UxMotionDetails" xml:space="preserve"><value>About brand animation</value></data>
+  <data name="UxMonitoringSettings" xml:space="preserve"><value>Sensors are used in Performance &gt; Live and in analyses you start. Collection pauses when it is not needed. Current interval: approximately 1 second.</value></data>
+  <data name="UxOpenLive" xml:space="preserve"><value>Open live monitoring</value></data>
+  <data name="UxIntegrationsEmpty" xml:space="preserve"><value>RTSS and MSI Afterburner connections will be added in future stages. Current monitoring works without those programs.</value></data>
+  <data name="UxOpenRestore" xml:space="preserve"><value>View restore area</value></data>
+  <data name="UxLogExplanation" xml:space="preserve"><value>Logs help investigate problems. To consult them, select and copy the path below.</value></data>
+  <data name="UxDataSources" xml:space="preserve"><value>Sensor sources and status</value></data>
+  <data name="UxDataSourcesDescription" xml:space="preserve"><value>CPU and RAM use Windows APIs. NVIDIA GPU data uses NVML when supported by the driver. No additional driver is installed.</value></data>
+  <data name="UxCollectorActive" xml:space="preserve"><value>Monitoring active</value></data>
+  <data name="UxCollectorPaused" xml:space="preserve"><value>Monitoring paused</value></data>
+  <data name="UxAdviceNoAnalysis" xml:space="preserve"><value>Start an analysis from Home. Your result and next steps will be brought together here.</value></data>
+  <data name="UxResultsTab" xml:space="preserve"><value>Result</value></data>
+  <data name="UxResultsTitle" xml:space="preserve"><value>Result and next steps</value></data>
+  <data name="UxNotAnalyzed" xml:space="preserve"><value>Waiting for your first analysis</value></data>
+  <data name="UxObservationRunning" xml:space="preserve"><value>Analysis in progress</value></data>
+  <data name="UxPartialBadge" xml:space="preserve"><value>Incomplete analysis</value></data>
+  <data name="UxAttentionBadge" xml:space="preserve"><value>Little RAM available</value></data>
+  <data name="UxNormalBadge" xml:space="preserve"><value>RAM has room available</value></data>
+  <data name="UxElapsedTime" xml:space="preserve"><value>Elapsed time: {0}</value></data>
+  <data name="UxObservationTime" xml:space="preserve"><value>{0} of 30 s of valid readings</value></data>
+  <data name="UxProgressDetails" xml:space="preserve"><value>Why observe for 30 seconds?</value></data>
+  <data name="UxProgressExplanation" xml:space="preserve"><value>A single reading can be misleading. The bar follows the continuous data used for analysis; the clock shows total elapsed time. If readings fail, the valid count restarts. This is not a completion estimate.</value></data>
+  <data name="FaqCategory" xml:space="preserve"><value>FAQ</value></data>
+  <data name="FaqTitle" xml:space="preserve"><value>Frequently asked questions</value></data>
+  <data name="FaqSafetyQuestion" xml:space="preserve"><value>Does Lotus change Windows during analysis?</value></data>
+  <data name="FaqSafetyAnswer" xml:space="preserve"><value>No. Analysis reads sensors and shows the result. Future changes will be presented for your confirmation before anything is applied.</value></data>
+  <data name="FaqScopeQuestion" xml:space="preserve"><value>What does analysis check today?</value></data>
+  <data name="FaqSolutionsQuestion" xml:space="preserve"><value>Why is there no fix-everything button yet?</value></data>
+  <data name="FaqSolutionsAnswer" xml:space="preserve"><value>Each adjustment needs an identified cause, a safe way to apply it and a check of the result. Automatic actions will be added in stages, with confirmation and rollback when possible.</value></data>
 </root>

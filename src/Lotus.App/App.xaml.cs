@@ -38,6 +38,7 @@ public partial class App : Application
             .AddSingleton<IUiDispatcher>(_ => new UiDispatcher(Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()))
             .AddSingleton<MonitoringViewModel>()
             .AddSingleton<Lotus.Core.Diagnostics.MemoryAnalysisViewModel>()
+            .AddSingleton<ExperienceViewModel>()
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);
