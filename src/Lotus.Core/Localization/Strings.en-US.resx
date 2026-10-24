@@ -509,4 +509,22 @@ Current conditions: {1}</value></data>
   <data name="BenchIntegrityInvalid" xml:space="preserve"><value>Invalid capture.</value></data>
   <data name="BenchIntegrityNoGain" xml:space="preserve"><value>Descriptive comparison: capture integrity does not support a proven gain.</value></data>
   <data name="BenchExperimentalUnknown" xml:space="preserve"><value>Integrity verified; equivalent conditions and gains still require validation.</value></data>
+  <data name="OptTitle" xml:space="preserve"><value>Safe optimizer test</value></data>
+  <data name="OptTestDescription" xml:space="preserve"><value>Enables a disposable preference to test application and rollback. No Windows optimizations are available at this stage.</value></data>
+  <data name="OptSafety" xml:space="preserve"><value>Low risk · Lotus test database only · No elevation or restart. Rollback requires the state to remain unchanged externally.</value></data>
+  <data name="OptAnalyze" xml:space="preserve"><value>Analyze test setting</value></data>
+  <data name="OptHistory" xml:space="preserve"><value>Recorded operation</value></data>
+  <data name="OptConfirm" xml:space="preserve"><value>I authorize the next apply or rollback operation on the test setting only.</value></data>
+  <data name="OptApply" xml:space="preserve"><value>Apply in test environment</value></data>
+  <data name="OptRevert" xml:space="preserve"><value>Revert test setting</value></data>
+  <data name="OptRefresh" xml:space="preserve"><value>Check journal and recover state</value></data>
+  <data name="OptReady" xml:space="preserve"><value>Analyze the setting to prepare an action.</value></data>
+  <data name="OptError" xml:space="preserve"><value>Could not complete. Check the journal before retrying; rollback has not been assumed.</value></data>
+  <data name="OptStagePlanned" xml:space="preserve"><value>Plan ready: enable the disposable preference. Confirm to apply.</value></data>
+  <data name="OptStageApplying" xml:space="preserve"><value>Application awaiting verification.</value></data>
+  <data name="OptStageApplied" xml:space="preserve"><value>Setting applied and verified. You can confirm rollback.</value></data>
+  <data name="OptStageReverting" xml:space="preserve"><value>Rollback awaiting verification.</value></data>
+  <data name="OptStageReverted" xml:space="preserve"><value>Previous value restored and verified.</value></data>
+  <data name="OptStageConflict" xml:space="preserve"><value>The state changed. The operation was blocked to preserve the external change.</value></data>
+  <data name="OptStageNoChange" xml:space="preserve"><value>The preference is already enabled. No change is needed.</value></data>
 </root>

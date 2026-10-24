@@ -8,6 +8,7 @@ public sealed class SectionViewModel
     public ShellViewModel? Shell { get; }
     public ExperienceViewModel? Experience { get; }
     public Benchmark.BenchmarkViewModel? Benchmark { get; }
+    public Optimization.OptimizationViewModel? Optimizer { get; }
     public ITextCatalog Text { get; }
     public PreferencesViewModel Preferences { get; }
     public Telemetry.MonitoringViewModel? Monitoring { get; }
@@ -21,10 +22,10 @@ public sealed class SectionViewModel
     public string Planned => Text["Planned"];
     public bool MotionEnabled { get; }
     public IReadOnlyList<MetricPlaceholder> Metrics { get; }
-    public SectionViewModel(Section section, ITextCatalog text, PreferencesViewModel preferences, bool motionEnabled = true, Telemetry.MonitoringViewModel? monitoring = null, Diagnostics.MemoryAnalysisViewModel? memoryAnalysis = null, ShellViewModel? shell = null, ExperienceViewModel? experience = null, Benchmark.BenchmarkViewModel? benchmark = null)
+    public SectionViewModel(Section section, ITextCatalog text, PreferencesViewModel preferences, bool motionEnabled = true, Telemetry.MonitoringViewModel? monitoring = null, Diagnostics.MemoryAnalysisViewModel? memoryAnalysis = null, ShellViewModel? shell = null, ExperienceViewModel? experience = null, Benchmark.BenchmarkViewModel? benchmark = null, Optimization.OptimizationViewModel? optimizer = null)
     {
         Section = section;
-        Shell = shell; Experience = experience; Benchmark = benchmark;
+        Shell = shell; Experience = experience; Benchmark = benchmark; Optimizer = optimizer;
         Text = text;
         Preferences = preferences;
         Monitoring = monitoring;

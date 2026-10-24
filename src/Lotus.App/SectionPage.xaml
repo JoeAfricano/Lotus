@@ -30,7 +30,7 @@
       </Expander>
      </StackPanel>
     </ContentControl>
-    <ContentControl x:Name="RestoreContent" x:Load="{x:Bind ShowRestore}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><FontIcon Glyph="&#xE777;" Style="{StaticResource EmptyIconStyle}"/><TextBlock Text="{Binding Text[UxNoChangesTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxNoChangesDescription]}" TextWrapping="Wrap"/></StackPanel></ContentControl>
+    <controls:OptimizationPanel x:Name="RestoreContent" x:Load="{x:Bind ShowRestore}" DataContext="{Binding Optimizer}"/>
    </StackPanel>
    <StackPanel x:Name="PerformanceContent" x:Load="{x:Bind ShowPerformance}" Spacing="20">
     <SelectorBar x:Name="PerformanceTabs" SelectionChanged="OnPerformanceTabChanged" AutomationProperties.Name="{Binding Text[UxPerformanceSections]}"><SelectorBarItem Text="{Binding Text[UxLiveTab]}"/><SelectorBarItem Text="{Binding Text[UxCompareTab]}"/><SelectorBarItem Text="{Binding Text[UxHistoryTab]}"/></SelectorBar>

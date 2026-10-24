@@ -49,6 +49,14 @@ public partial class App : Application
             .AddSingleton(p => new BenchmarkViewModel(p.GetRequiredService<IFrameCaptureProvider>(),
                 p.GetRequiredService<IBenchmarkRepository>(), p.GetRequiredService<ICaptureTargetSource>(),
                 p.GetRequiredService<MonitoringViewModel>(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Benchmark operation failed")))
+            .AddSingleton(_ => new Lotus.Infrastructure.Optimization.DisposableOptimizationStore(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "OptimizerSandbox", "journal.db")))
+            .AddSingleton(p => new Lotus.Core.Optimization.OptimizationEngine(
+                p.GetRequiredService<Lotus.Infrastructure.Optimization.DisposableOptimizationStore>(),
+                p.GetRequiredService<Lotus.Infrastructure.Optimization.DisposableOptimizationStore>()))
+            .AddSingleton(p => new Lotus.Core.Optimization.OptimizationViewModel(
+                p.GetRequiredService<Lotus.Core.Optimization.OptimizationEngine>(), p.GetRequiredService<ITextCatalog>(),
+                ex => Log.Warning(ex, "Optimizer test operation failed")))
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);
