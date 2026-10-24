@@ -10,6 +10,7 @@
 - Diante de falhas persistentes, interromper repetições improdutivas, registrar a mensagem original e a operação bloqueada e propor alternativa verificável.
 - Preservar segurança, integridade dos dados, precisão estatística e reversibilidade. Respeitar permissões; não realizar reparos administrativos ou mudanças globais sem autorização aplicável.
 - Documentar decisões relevantes sem criar documentação extensa para alterações triviais. Entregar respostas concisas com alterações, testes, resultado e pendências.
+- Para benchmark, jogos e diagnóstico relacionados ao ResetExplode, consultar primeiro `docs/LOTUS_RESETEXPLODE_REFERENCE.md`. Reaproveitar os aprendizados e casos registrados, sem tratar resultados externos como testes aprovados do Lotus; respeitar licença e critérios de segurança.
 
 ## Etapa 04 — Benchmark
 

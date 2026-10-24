@@ -92,3 +92,7 @@ Integração de consulta ao componente NVML já instalado com o driver. Nenhum b
 ## Referências competitivas — 23/10/2026
 
 Carpi Ultimate/Toptimizer: somente páginas públicas/indexadas, com divergência entre oferta antiga indexada e redirecionamento atual; nenhuma instalação, binário ou inspeção de implementação. Não copiar assets/código proprietário nem inferir licença gratuita pela publicidade. Nos dois repositórios sugeridos, os READMEs declaram MIT; o arquivo LICENSE do primeiro não foi recuperado, e a URL LICENSE do segundo retornou 404. Nenhuma cópia realizada. Antes de eventual reutilização, obter commit, texto integral e notices de todos os arquivos/dependências. A existência de interfaces públicas do Windows permite planejar implementação própria, sem contornar licenças. [Escopo, limitações e links consultados](LOTUS_OPTIMIZATION_CATALOG_PLAN.md).
+
+## ResetExplode — referência de código, 24/10/2026
+
+MIT confirmado no commit `ce1d9b30518bbe75bb5e6cb792d1b1e365aaddd6`. Adicionado como referência de implementação/casos de teste, sem dependência ou execução. Fonte WPF/.NET 8 não é substituição direta de WinUI 3/.NET 10; pacotes, assets e drivers exigem análise própria de licença. ZIP do usuário inventariado e hasheado, sem iniciar o EXE. [Aprendizados, limites estatísticos, critérios de reuso e exclusões](LOTUS_RESETEXPLODE_REFERENCE.md). Não foi encontrada suíte automatizada na árvore consultada; resultados externos não dispensam validação do Lotus.
