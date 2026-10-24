@@ -458,4 +458,6 @@ Get in the game.</value>
   <data name="FaqScopeQuestion" xml:space="preserve"><value>What does analysis check today?</value></data>
   <data name="FaqSolutionsQuestion" xml:space="preserve"><value>Why is there no fix-everything button yet?</value></data>
   <data name="FaqSolutionsAnswer" xml:space="preserve"><value>Each adjustment needs an identified cause, a safe way to apply it and a check of the result. Automatic actions will be added in stages, with confirmation and rollback when possible.</value></data>
+  <data name="FaqAmbientQuestion" xml:space="preserve"><value>Why does the background sometimes stop moving?</value></data>
+  <data name="FaqAmbientAnswer" xml:space="preserve"><value>The background follows Lotus’s Reduce animations setting and the Windows motion preference. It also pauses when the window loses focus or is minimized. The brand uses its own motion policy.</value></data>
 </root>

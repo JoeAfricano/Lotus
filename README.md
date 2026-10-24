@@ -2,6 +2,8 @@
 
 Aplicativo nativo Windows em C#/.NET 10 e WinUI 3, com MVVM, injeção de dependências e logging estruturado. Fundação visual em preto, grafite e rosê. Cinco áreas: Início, Otimizar, Meus Jogos, Desempenho e Configurações. CPU/RAM e GPU NVIDIA são coletadas em Desempenho > Ao vivo ou durante uma análise iniciada pelo usuário. Início não mantém sensores ativos. Não calcula score, executa benchmark, limpa memória/arquivos ou altera configurações do Windows.
 
+[Fundo ambiental Lótus + Aurora: política, testes e consumo](docs/LOTUS_AMBIENT_BACKGROUND.md). Em execução normal, respeita as preferências de movimento do Windows e do Lotus.
+
 [Redesign UX, progresso temporal, FAQ e validação](docs/LOTUS_UX_REDESIGN.md). A análise leva diretamente ao resultado; ações automáticas continuam futuras.
 
 Diagnóstico inicial de RAM: [regra, evidências, 77 testes por configuração e plano de jogos](docs/LOTUS_RAM_DIAGNOSTICS.md). Dados e reinício da contagem confirmados pelo usuário; não comprova gargalo de jogo.

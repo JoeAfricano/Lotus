@@ -23,6 +23,7 @@ public sealed partial class MainWindow : Window
     private bool? narrow;
     private string? displayedSectionId;
     private bool updatingNavigation;
+    private bool windowActive;
     private readonly ExperienceViewModel experience;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
@@ -87,11 +88,13 @@ public sealed partial class MainWindow : Window
         };
         Activated += (_, args) =>
         {
+            windowActive = args.WindowActivationState != WindowActivationState.Deactivated;
+            UpdateAmbientState();
             // Deactivation alone does not interrupt an explicit analysis.
             UpdateBrandMotion();
             DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, UpdateMonitoringDemand);
         };
-        AppWindow.Changed += (_, _) => { UpdateMonitoringDemand(); UpdateBrandMotion(); };
+        AppWindow.Changed += (_, _) => { UpdateMonitoringDemand(); UpdateBrandMotion(); UpdateAmbientState(); };
         TitleLogo.SizeChanged += (_, _) => UpdateBrandMotion();
         BrandLogo.SizeChanged += (_, _) => UpdateBrandMotion();
         BrandFlower.SizeChanged += (_, _) => UpdateBrandMotion();
@@ -101,6 +104,7 @@ public sealed partial class MainWindow : Window
             UpdateNavigationMode(ShellRoot.ActualWidth);
             UpdateMinimumSize();
             UpdatePaneChrome();
+            UpdateAmbientState();
             UpdateBrandMotion();
             ShellRoot.XamlRoot.Changed += (_, _) => UpdateMinimumSize();
             if (brandProofRequested && !brandProofShown)
@@ -126,6 +130,7 @@ public sealed partial class MainWindow : Window
     {
         if (args.PropertyName != nameof(PreferencesService.Current)) return;
         palette.Apply(preferences.Current.Theme);
+        UpdateAmbientState();
         UpdateBrandMotion();
         if (text.Language == preferences.Current.Language) return;
         text.SetLanguage(preferences.Current.Language);
@@ -191,6 +196,12 @@ public sealed partial class MainWindow : Window
         UpdateToggleAccessibility(Navigation, text[open ? "CloseNavigation" : "OpenNavigation"]);
         UpdateBrandMotion();
         DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, UpdateBrandMotion);
+    }
+    private void UpdateAmbientState()
+    {
+        if (!initialized) return;
+        var visible = AppWindow.IsVisible && AppWindow.Presenter is not OverlappedPresenter { State: OverlappedPresenterState.Minimized };
+        AmbientBackground.SetWindowState(windowActive, visible, preferences.Current.ReduceMotion);
     }
     private void UpdateBrandMotion()
     {
@@ -283,6 +294,7 @@ public sealed partial class MainWindow : Window
     {
         initialized = false;
         experience.Interrupt();
+        AmbientBackground.Dispose();
         brandProof?.Dispose(); brandProof = null;
         memoryAnalysis.SetActive(false);
         monitoring.SetActive(false);

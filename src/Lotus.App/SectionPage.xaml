@@ -1,4 +1,4 @@
-<Page x:Class="Lotus.App.SectionPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Lotus.App.Controls" Foreground="{ThemeResource MainTextBrush}">
+<Page x:Class="Lotus.App.SectionPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Lotus.App.Controls" Foreground="{ThemeResource MainTextBrush}" Background="Transparent">
  <ScrollViewer x:Name="PageScroll" SizeChanged="OnViewportSizeChanged" HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top">
   <StackPanel x:Name="PageContent" Padding="24" Spacing="24" HorizontalAlignment="Stretch" SizeChanged="OnContentSizeChanged">
    <ContentControl Content="{Binding}" ContentTemplate="{StaticResource PageHeaderTemplate}" HorizontalContentAlignment="Stretch"/>
@@ -55,6 +55,7 @@
     <StackPanel x:Name="FaqContent" x:Load="{x:Bind ShowFaq}" Spacing="12">
      <TextBlock Text="{Binding Text[FaqTitle]}" Style="{StaticResource SectionTitleStyle}"/>
      <Expander Header="{Binding Text[UxProgressDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[UxProgressExplanation]}" TextWrapping="Wrap"/></Expander>
+     <Expander Header="{Binding Text[FaqAmbientQuestion]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[FaqAmbientAnswer]}" TextWrapping="Wrap"/></Expander>
      <Expander Header="{Binding Text[FaqSafetyQuestion]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[FaqSafetyAnswer]}" TextWrapping="Wrap"/></Expander>
      <Expander Header="{Binding Text[FaqScopeQuestion]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[UxScope]}" TextWrapping="Wrap"/></Expander>
      <Expander Header="{Binding Text[FaqSolutionsQuestion]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[FaqSolutionsAnswer]}" TextWrapping="Wrap"/></Expander>

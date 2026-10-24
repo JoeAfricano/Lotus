@@ -67,3 +67,6 @@ Redesign autorizado: cinco destinos (Início, Otimizar, Meus Jogos, Desempenho, 
 Requisito guardado para os próximos módulos: apresentar soluções na mesma área de resultado, priorizar por evidência, permitir seleção e confirmação, aplicar apenas ações implementadas e verificar/reverter quando possível. Nenhuma aplicação automática ao terminar uma análise e nenhuma limpeza forçada de RAM. O usuário confirmou que as soluções automáticas ficam para as próximas etapas.
 
 Próximo incremento visual autorizado: fundo Lótus + Aurora, independente da telemetria e do catálogo. Não antecipar módulos de hardware/otimização.
+
+
+Fundo ambiental Lótus + Aurora implementado como camada independente; validação de movimento/consumo separa produção estática por política do Windows da prova explícita. [Relatório atual](LOTUS_AMBIENT_BACKGROUND.md). Não autoriza avançar para outros módulos.

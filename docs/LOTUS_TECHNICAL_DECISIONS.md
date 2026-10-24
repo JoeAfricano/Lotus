@@ -100,3 +100,6 @@ ADR-039 — Catálogo futuro: separar declaração de regra, evidência, detecç
 
 
 ADR-040 — UX com cinco grupos e aliases internos; análise iniciada somente em Início e resultado automático em Otimizar, sem aba intermediária de orientações. Provedores e regra RAM preservados; ExperienceViewModel é orquestração visual. Nenhum botão de aplicação sem backend. Progresso indica 30 s de leituras válidas; relógio total independente a 1 Hz somente na operação, sem estimativa fictícia. Explicações ficam em FAQ, detalhes técnicos em expander. Soluções futuras exigem plano/consentimento/verificação já previstos. [Validação UX](LOTUS_UX_REDESIGN.md).
+
+
+ADR-041 — Fundo ambiental como camada única fora das páginas, com 2 gradientes radiais e 30 segmentos vetoriais fixos. Sem blur, máscaras, imagens ou loop UI; pulsação em contêiner próprio e resize separado. Política do Windows respeitada na produção; flags explícitas somente para prova/medição sem alterar Windows ou preferências. Foco, minimização, movimento reduzido e alto contraste suspendem/ocultam o efeito. [Evidências e custo](LOTUS_AMBIENT_BACKGROUND.md).

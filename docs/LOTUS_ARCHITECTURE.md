@@ -118,3 +118,8 @@ O pipeline existente agora compõe CPU/RAM e um adaptador NVIDIA NVML somente le
 ## UX orientada ao usuário — revisão atual
 
 Cinco grupos, rotas internas compatíveis, SelectorBar e x:Load. ExperienceViewModel mantém estado da análise e a última leitura de hardware sem solicitar coleta no Início. MonitoringDemand centraliza Ao vivo + operação explícita; não muda providers ou a frequência do serviço. OperationProgress usa o progresso temporal da regra e um relógio de apresentação somente enquanto a operação está ativa. Resultado e próximos passos ficam juntos em Otimizar; explicações foram concentradas em Configurações > FAQ. [Contrato, testes e limites da revisão](LOTUS_UX_REDESIGN.md). Esta seção prevalece sobre a descrição histórica de dez destinos e score visual.
+
+
+## Camada ambiental
+
+LotusAmbientBackground vive uma vez na janela, atrás do Frame, sem dependência dos ViewModels ou coletores. Gradientes radiais e contornos nativos usam animações no compositor, pausam por foco/visibilidade e respeitam movimento local/sistema. Janela redimensiona a mesma raiz; descarte impede recriação tardia. FAQ explica o comportamento estático. [Implementação, consumo e limitações](LOTUS_AMBIENT_BACKGROUND.md).

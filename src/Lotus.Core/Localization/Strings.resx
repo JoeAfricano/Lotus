@@ -458,4 +458,6 @@ Entre no jogo.</value>
   <data name="FaqScopeQuestion" xml:space="preserve"><value>O que a análise verifica hoje?</value></data>
   <data name="FaqSolutionsQuestion" xml:space="preserve"><value>Por que ainda não há um botão para corrigir tudo?</value></data>
   <data name="FaqSolutionsAnswer" xml:space="preserve"><value>Cada ajuste precisa de uma causa identificada, uma forma segura de aplicar e uma verificação do resultado. As ações automáticas serão adicionadas por etapas, com confirmação e reversão quando possível.</value></data>
+  <data name="FaqAmbientQuestion" xml:space="preserve"><value>Por que o fundo fica parado às vezes?</value></data>
+  <data name="FaqAmbientAnswer" xml:space="preserve"><value>O fundo segue Reduzir animações do Lotus e a preferência de movimento do Windows. Ele também pausa quando a janela perde o foco ou é minimizada. A marca possui sua própria política de movimento.</value></data>
 </root>

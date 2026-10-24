@@ -1,4 +1,4 @@
-<Window x:Class="Lotus.App.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Lotus">
+<Window x:Class="Lotus.App.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Lotus.App.Controls" Title="Lotus">
  <Grid x:Name="ShellRoot" Background="{ThemeResource ShellBrush}" RequestedTheme="Dark" SizeChanged="OnShellSizeChanged">
   <Grid.RowDefinitions><RowDefinition Height="40"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
   <Grid x:Name="DragRegion" Background="{ThemeResource PaneBrush}" Padding="20,0,150,0"><StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center"><TextBlock x:Name="TitleLogo" Width="60" Height="18" Text="LOTUS" Foreground="{ThemeResource RoseBrush}" FontSize="11" FontWeight="SemiBold" CharacterSpacing="240"/><TextBlock Text="/" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="PLAY BETTER." Foreground="{ThemeResource RoseBrush}" FontSize="10" CharacterSpacing="120"/></StackPanel></Grid>
@@ -20,7 +20,7 @@
      <Grid x:Name="CompactFooter" Width="40" Height="40" Visibility="Collapsed" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Text[ProfileAccessible]}" AutomationProperties.Name="{Binding Text[ProfileAccessible]}"><Viewbox x:Name="CompactBrandFlower" Width="30" Height="30" AutomationProperties.Name="{Binding Text[LotusFlower]}"><Canvas Width="64" Height="64"><Path Fill="#4A1631" Stroke="#FF91B5" StrokeThickness="2" Data="M32,51 C14,39 19,22 32,7 C45,22 50,39 32,51 M32,51 C8,51 4,33 5,20 C21,24 28,34 32,51 M32,51 C56,51 60,33 59,20 C43,24 36,34 32,51 M12,56 L52,56"/></Canvas></Viewbox></Grid>
     </Grid>
    </NavigationView.PaneFooter>
-   <Frame x:Name="ContentFrame" HorizontalContentAlignment="Stretch"/>
+   <Grid Background="{ThemeResource ShellBrush}"><controls:LotusAmbientBackground x:Name="AmbientBackground"/><Frame x:Name="ContentFrame" Background="Transparent" HorizontalContentAlignment="Stretch"/></Grid>
   </NavigationView>
  </Grid>
 </Window>
