@@ -74,3 +74,8 @@ Builds Debug/Release e 24 testes por configuração executados. Navegação, max
 ## CPU/RAM — Etapa 02 (21/10/2026)
 
 CPU/RAM reais e demanda implementados; [definições](LOTUS_TELEMETRY.md) e [relatório com evidências](LOTUS_STAGE02_VALIDATION.md). Release final: duas capturas sequenciais de aproximadamente 60 s/60 amostras, CPU do processo normalizada por 12 lógicos. Dashboard: média 0,129% CPU e 156,4 MiB working set. Monitoramento: 0,274% CPU e 179,0 MiB. Picos por intervalo 1,154% e 1,803%. Commit privado separado: 173,8 e 191,4 MiB. Tema Grafite/Rosê, pt-BR, animações habilitadas, janela inicial visível, sem debugger. O observador é externo. Uma rodada por condição, não um ensaio causal de otimização ou benchmark de jogo. Custo de GPU/DWM e estabilidade de horas não foram medidos.
+
+
+## Ensaio Etapa 03
+
+Reutilizar tools/Measure-LotusProcess.ps1, agora com duração até 3.600 s e CSV de progresso a cada 60 amostras. CPU do processo: delta TotalProcessorTime / tempo monotônico / processadores lógicos × 100. Registrar working set, commit privado, threads e handles. Não inclui DWM, GPU ou custo dos observadores. Comparação aproximada NVML vs nvidia-smi verifica consistência do adaptador, mas não é uma fonte independente: ambos usam a NVML. Valores e pendências em [relatório Etapa 03](LOTUS_STAGE03_VALIDATION.md). Não concluir ausência de vazamento a partir de amostra curta.

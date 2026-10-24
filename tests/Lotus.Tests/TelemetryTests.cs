@@ -148,7 +148,9 @@ public sealed class TelemetryTests(ITestOutputHelper output)
         var dispatcher = new QueueDispatcher(); var provider = new Provider { OnRead = (_, _) => ValueTask.FromResult(HardwareTelemetrySnapshot.Missing(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1), TelemetryStatus.AccessDenied)) };
         await using var service = new HardwareMonitoringService(provider, TimeSpan.FromMilliseconds(20));
         var vm = new MonitoringViewModel(service, new TextCatalog(), dispatcher); vm.SetActive(true);
-        await Until(() => service.SampleCount > 0); dispatcher.Drain();
+        // A completed read is counted before delivery. Wait for the UI work itself,
+        // otherwise this assertion races the collector's notification.
+        await Until(() => !dispatcher.Actions.IsEmpty); dispatcher.Drain();
         Assert.Equal("—", vm.CpuPercent); Assert.Equal("—", vm.TotalMemory); Assert.Equal("Acesso negado", vm.CpuStatus); Assert.Null(vm.History.Points[0].CpuPercent);
         vm.SetActive(false);
     }

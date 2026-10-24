@@ -25,6 +25,7 @@ public sealed partial class MainWindow : Window
     private bool windowActive;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
+    private BrandPulse? flowerPulse;
     private readonly MonitoringViewModel monitoring;
     private bool? brandAnimated;
 
@@ -76,9 +77,10 @@ public sealed partial class MainWindow : Window
             UpdateBrandMotion();
             DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, UpdateMonitoringDemand);
         };
-        AppWindow.Changed += (_, _) => UpdateMonitoringDemand();
+        AppWindow.Changed += (_, _) => { UpdateMonitoringDemand(); UpdateBrandMotion(); };
         TitleLogo.SizeChanged += (_, _) => UpdateBrandMotion();
         BrandLogo.SizeChanged += (_, _) => UpdateBrandMotion();
+        BrandFlower.SizeChanged += (_, _) => UpdateBrandMotion();
         ShellRoot.Loaded += (_, _) =>
         {
             UpdateNavigationMode(ShellRoot.ActualWidth);
@@ -161,17 +163,23 @@ public sealed partial class MainWindow : Window
     private void UpdateBrandMotion()
     {
         if (!initialized || ShellRoot.XamlRoot is null) return;
-        var animate = windowActive && !preferences.Current.ReduceMotion && new Windows.UI.ViewManagement.UISettings().AnimationsEnabled;
+        var animate = AppWindow.IsVisible && AppWindow.Presenter is not OverlappedPresenter { State: OverlappedPresenterState.Minimized }
+            && !preferences.Current.ReduceMotion && new Windows.UI.ViewManagement.UISettings().AnimationsEnabled;
         if (brandAnimated != animate) { StopBrandMotion(); brandAnimated = animate; }
         if (new Windows.UI.ViewManagement.AccessibilitySettings().HighContrast) { StopBrandMotion(); return; }
         titlePulse ??= BrandPulse.TryCreate(TitleLogo, animate);
-        if (Navigation.IsPaneOpen) sidebarPulse ??= BrandPulse.TryCreate(BrandLogo, animate);
-        else { sidebarPulse?.Dispose(); sidebarPulse = null; }
+        if (Navigation.IsPaneOpen)
+        {
+            sidebarPulse ??= BrandPulse.TryCreate(BrandLogo, animate);
+            flowerPulse ??= BrandPulse.TryCreate(BrandFlower, animate, flower: true);
+        }
+        else { sidebarPulse?.Dispose(); sidebarPulse = null; flowerPulse?.Dispose(); flowerPulse = null; }
     }
     private void StopBrandMotion()
     {
         titlePulse?.Dispose(); titlePulse = null;
         sidebarPulse?.Dispose(); sidebarPulse = null;
+        flowerPulse?.Dispose(); flowerPulse = null;
     }
     private static void UpdateToggleAccessibility(DependencyObject parent, string label)
     {

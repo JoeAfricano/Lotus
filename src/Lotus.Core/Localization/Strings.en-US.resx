@@ -16,7 +16,7 @@
     <value>YOUR GAME. YOUR PACE.</value>
   </data>
   <data name="FooterNotice" xml:space="preserve">
-    <value>LOTUS / On-demand CPU and RAM in Monitoring. No Windows settings changed.</value>
+    <value>LOTUS / Read-only monitoring. No Windows settings changed.</value>
   </data>
   <data name="FooterVersion" xml:space="preserve">
     <value>FOUNDATION 0.1 / IN DEVELOPMENT</value>
@@ -228,7 +228,7 @@ Get in the game.</value>
     <value>Settings</value>
   </data>
   <data name="MonitoringIntro" xml:space="preserve">
-    <value>Real CPU and RAM • updates about once per second while this page is visible.</value>
+    <value>Real CPU, RAM and GPU · updates about once per second while this page is visible.</value>
   </data>
   <data name="WaitingSample" xml:space="preserve">
     <value>Waiting for the first sample…</value>
@@ -306,9 +306,36 @@ Get in the game.</value>
     <value>Working set includes private and shared resident pages. Private commit is committed virtual memory; do not add it to physical RAM. Source: K32GetProcessMemoryInfo.</value>
   </data>
   <data name="MonitoringLimitations" xml:space="preserve">
-    <value>CPU: active-time deltas from GetSystemTimes; may differ from Task Manager frequency-adjusted utility. Low total usage does not rule out a single-core bottleneck. Gaps are not filled. Collection pauses when leaving this page or minimizing. No GPU, sensors or memory cleaning in this stage.</value>
+    <value>CPU: active-time deltas from GetSystemTimes; may differ from Task Manager frequency-adjusted utility. Low usage does not rule out a single-core bottleneck. Gaps are not filled. Collection pauses when leaving this page or minimizing. There is no memory cleaning.</value>
   </data>
   <data name="AxisNow" xml:space="preserve">
     <value>now</value>
   </data>
+  <data name="GpuProviders" xml:space="preserve"><value>GPU · NVIDIA NVML (read only)</value></data>
+  <data name="GpuHistory" xml:space="preserve"><value>GPU utilization history, 0–100%, last 60 seconds</value></data>
+  <data name="VramHistory" xml:space="preserve"><value>Allocated VRAM history, 0–100%, last 60 seconds</value></data>
+  <data name="VramTotal" xml:space="preserve"><value>Reported capacity</value></data>
+  <data name="VramUsed" xml:space="preserve"><value>Driver-reported allocated</value></data>
+  <data name="VramFree" xml:space="preserve"><value>Unallocated</value></data>
+  <data name="VramReserved" xml:space="preserve"><value>System reserved</value></data>
+  <data name="GpuSensors" xml:space="preserve"><value>Sensors and clocks</value></data>
+  <data name="GpuTemperature" xml:space="preserve"><value>GPU temperature</value></data>
+  <data name="GpuCoreClock" xml:space="preserve"><value>Reported graphics clock</value></data>
+  <data name="GpuMemoryClock" xml:space="preserve"><value>Reported memory clock</value></data>
+  <data name="GpuPower" xml:space="preserve"><value>Driver-reported power</value></data>
+  <data name="GpuPowerLimit" xml:space="preserve"><value>Configured power limit (read only)</value></data>
+  <data name="GpuFan" xml:space="preserve"><value>Fan · intended speed (%)</value></data>
+  <data name="GpuClockEventReasons" xml:space="preserve"><value>Reported clock event reasons</value></data>
+  <data name="ThermalLimitReported" xml:space="preserve"><value>Thermal event reported</value></data>
+  <data name="PowerLimitReported" xml:space="preserve"><value>Power event reported</value></data>
+  <data name="NoThermalPowerFlag" xml:space="preserve"><value>No explicit thermal/power flag</value></data>
+  <data name="CpuTemperatureUnavailable" xml:space="preserve"><value>CPU temperature: unavailable. The native APIs used do not provide a reliable Ryzen sensor. No additional driver was installed.</value></data>
+  <data name="GpuDefinitions" xml:space="preserve"><value>Source: NVML installed with the driver. VRAM is reported allocation, not activity or DXGI budget; reserved fields remain separate and the percentage is allocated / capacity. WDDM accounting depends on Windows and the driver. RTX 5060 power is a driver average of approximately 1 s. Memory clock is not effective transfer rate. Fan speed is not RPM; 0% may be fan-stop. Low utilization does not diagnose a bottleneck. Timestamps indicate local acquisition; internal sampling windows may differ.</value></data>
+  <data name="MonitoringFocus" xml:space="preserve"><value>CPU, RAM, GPU and VRAM usage — not FPS. The — symbol means no reading.</value></data>
+  <data name="CompactHistory" xml:space="preserve"><value>60 s · now → · scale 0–100%</value></data>
+  <data name="CollectorDetails" xml:space="preserve"><value>CPU, RAM and Lotus collector details</value></data>
+  <data name="SensorDetails" xml:space="preserve"><value>GPU sensors, sources and details</value></data>
+  <data name="TemperatureShort" xml:space="preserve"><value>Temperature</value></data>
+  <data name="PowerShort" xml:space="preserve"><value>Power</value></data>
+  <data name="VramAllocatedShort" xml:space="preserve"><value>Allocated / reported capacity</value></data>
 </root>

@@ -82,3 +82,8 @@ O launcher exibe detecção, estado, origem e ações permitidas; não hospeda a
 Se uma dependência exigir pagamento ou direitos incompatíveis, excluir essa dependência do caminho obrigatório e implementar a função viável com código original. Não copiar expressão/código protegido nem remover verificações de licença. Não presumir que reproduzir uma interface proprietária concede direito de distribuição. Medir overhead da alternativa; código próprio não garante mais eficiência por definição.
 
 Gate de distribuição: inventário de artefatos e versões, termos por arquivo/pacote, notices, fontes exigidas, dependências nativas/driver, evidência de autorização quando necessária e testes de compatibilidade. Até esse gate, RTSS/Afterburner/Sysinternals/WPT permanecem instalações externas opcionais, sem bundling. Nenhum custo de licença obrigatório foi introduzido nesta análise.
+
+
+## NVIDIA NVML — Etapa 03
+
+Integração de consulta ao componente NVML já instalado com o driver. Nenhum binário, SDK ou código de terceiros foi incorporado. NVML é proprietária; disponibilidade com o driver não significa licença aberta de redistribuição. Os bindings C# foram escritos no Lotus. Fontes e funções em [LOTUS_GPU_TELEMETRY.md](LOTUS_GPU_TELEMETRY.md). Não foi necessário adicionar NVAPI ou LibreHardwareMonitor. Não há taxa/API cloud nessa integração local; não se presume licença para empacotar DLLs NVIDIA.

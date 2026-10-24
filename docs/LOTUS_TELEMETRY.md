@@ -58,3 +58,8 @@ GPU, processos externos e armazenamento poderão adicionar snapshots próprios o
 Fontes e ABI oficiais consultadas; código próprio, sem copiar implementações de terceiros ou instalar bibliotecas pagas. [Resultados locais e custo medido](LOTUS_STAGE02_VALIDATION.md).
 
 A comparação com o Gerenciador de Tarefas deve distinguir tempo de CPU de utilidade; a Microsoft documenta essa diferença em [CPU usage/Processor Utility](https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/cpu-usage-exceeds-100).
+
+
+## Expansão Etapa 03
+
+CPU/RAM preservados. HardwareTelemetrySnapshot ganhou GpuTelemetryResult sem alterar o construtor existente. O serviço passa a encerrar provedores de sessão após o último consumidor. Definições adicionais em [telemetria GPU](LOTUS_GPU_TELEMETRY.md); evidências e limites em [validação](LOTUS_STAGE03_VALIDATION.md).

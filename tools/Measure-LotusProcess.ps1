@@ -1,7 +1,7 @@
 param(
     [Parameter(Mandatory)][int]$LotusProcessId,
     [Parameter(Mandatory)][string]$Label,
-    [ValidateRange(10,300)][int]$DurationSeconds = 60,
+    [ValidateRange(10,3600)][int]$DurationSeconds = 60,
     [string]$OutputDirectory = 'artifacts/etapa02'
 )
 $ErrorActionPreference = 'Stop'
@@ -15,6 +15,7 @@ $clock = [Diagnostics.Stopwatch]::StartNew()
 $previousCpu = $initialCpu
 $previousTime = 0.0
 $samples = [Collections.Generic.List[object]]::new()
+New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
 while ($clock.Elapsed.TotalSeconds -lt $DurationSeconds) {
     Start-Sleep -Milliseconds 1000
     $target.Refresh()
@@ -30,6 +31,9 @@ while ($clock.Elapsed.TotalSeconds -lt $DurationSeconds) {
         Handles = $target.HandleCount
     })
     $previousCpu = $cpu; $previousTime = $elapsed
+    if ($samples.Count % 60 -eq 0) {
+        $samples | Export-Csv -LiteralPath (Join-Path $OutputDirectory "$Label-progress.csv") -NoTypeInformation -Encoding utf8
+    }
 }
 $summary = [pscustomobject]@{
     Label = $Label; ProcessId = $LotusProcessId; Executable = $executable

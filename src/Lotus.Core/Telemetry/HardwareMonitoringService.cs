@@ -98,6 +98,8 @@ public sealed class HardwareMonitoringService : IAsyncDisposable
         catch (Exception ex) { diagnostic?.Invoke("Monitoring worker failed", ex); }
         finally
         {
+            try { (provider as IMonitoringSessionProvider)?.Stop(); }
+            catch (Exception ex) { diagnostic?.Invoke("Monitoring provider cleanup failed", ex); }
             lock (gate)
             {
                 cancellation?.Dispose(); cancellation = null;

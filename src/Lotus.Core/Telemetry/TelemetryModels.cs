@@ -18,6 +18,7 @@ public sealed record MemoryTelemetrySnapshot(Reading<ulong> TotalPhysicalBytes, 
 public sealed record HardwareTelemetrySnapshot(DateTimeOffset CapturedAt, TimeSpan MonotonicTime,
     CpuTelemetrySnapshot Cpu, MemoryTelemetrySnapshot Memory)
 {
+    public GpuTelemetryResult Gpu { get; init; } = GpuTelemetryResult.Missing(TelemetryStatus.Unavailable);
     public static HardwareTelemetrySnapshot Missing(DateTimeOffset utc, TimeSpan monotonic, TelemetryStatus status) => new(utc, monotonic,
         new(null, null, null, Reading<double>.Missing(status, "GetSystemTimes"), Reading<double>.Missing(status, "GetProcessTimes"),
             Reading<double>.Missing(TelemetryStatus.Unsupported, "None")),

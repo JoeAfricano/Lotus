@@ -1,8 +1,8 @@
 # Lotus — Arquitetura
 
-Revisão: 21/10/2026. Etapa 02 sobre o checkpoint `408cfd0` e a árvore de trabalho existente. Este documento distingue implementação de proposta; não autoriza implementar os próximos módulos.
+Revisão: 23/10/2026. Etapa 03 sobre o checkpoint `a3e916a` e a árvore de trabalho existente. Este documento distingue implementação de proposta; não autoriza implementar os próximos módulos.
 
-Atualização Etapa 02: CPU e RAM reais sob demanda, gráficos de 60 segundos e neon animado implementados. [Contrato de telemetria](LOTUS_TELEMETRY.md) e [resultados locais](LOTUS_STAGE02_VALIDATION.md) prevalecem sobre as observações históricas das etapas anteriores.
+CPU/RAM e GPU NVIDIA reais sob demanda. [Contrato CPU/RAM](LOTUS_TELEMETRY.md), [contrato GPU](LOTUS_GPU_TELEMETRY.md) e [validação atual](LOTUS_STAGE03_VALIDATION.md) distinguem implementação e validação pendente.
 
 ## Estado comprovado
 
@@ -14,12 +14,12 @@ Atualização Etapa 02: CPU e RAM reais sob demanda, gráficos de 60 segundos e 
 | DI e ciclo de vida | `src/Lotus.App/App.xaml.cs` | ServiceCollection, janela e serviços singleton, descarte no fechamento |
 | Logging | `App.xaml.cs`, `src/Lotus.Infrastructure/AppEvents.cs` | JSONL local: início, navegação, encerramento e exceções de UI |
 | Persistência de preferências | PreferencesService e JsonPreferencesStore | JSON local versionado e backup; SQLite e histórico pendentes |
-| Monitoramento | IHardwareTelemetryProvider, HardwareMonitoringService e MonitoringViewModel | CPU/RAM reais na seção Monitoramento; Dashboard sem consumidor, GPU e sensores ainda ausentes |
+| Monitoramento | IHardwareTelemetryProvider, HardwareMonitoringService e MonitoringViewModel | CPU/RAM e NVIDIA NVML na seção Monitoramento; Dashboard sem consumidor; demais fabricantes pendentes |
 | Score | XAML com “NÃO AVALIADO” | Sem cálculo ou equivalência com FPS |
 | Diagnóstico, benchmark, otimização, restauração, jogos e manutenção | Catálogo de seções e avisos | Planejados |
 | RTSS e Afterburner | Nenhum adaptador na solução | Ferramentas presentes no computador, sem integração implementada |
 | Preferências e idiomas | TextCatalog e PreferencesViewModel | PT-BR inicial e EN-US; idioma/tema imediatos; sidebar e movimento persistidos. Perfil editável pendente |
-| Testes | NavigationTests, PreferencesTests e LocalizationTests | 42 resultados por configuração; inclui telemetria, concorrência, cancelamento e integração Windows real |
+| Testes | NavigationTests, PreferencesTests e LocalizationTests | 62 resultados por configuração; inclui GPU, CPU/RAM, concorrência, cancelamento e integração Windows/NVIDIA real |
 
 Solução válida: `C:\Projetos\Lotus\Lotus.slnx`. A pasta preexistente `Lotus/` não integra esta solução e permanece preservada. Alterações preexistentes nos três `.csproj` de biblioteca/testes e backup da solução não foram descartados.
 
@@ -56,9 +56,9 @@ flowchart TD
 
 Hoje Core também contém o ViewModel e glifos de navegação: é uma base compartilhada, não um domínio puro. Migrar apresentação para uma camada própria somente quando isso reduzir acoplamento real. Frame e controles WinUI permanecem na UI. Regras de diagnóstico e estatística nunca dependem de controles, registro ou processos diretamente.
 
-### Contratos futuros, ainda não existentes
+### Contratos existentes e futuros
 
-- `IHardwareTelemetryProvider` implementado para CPU/RAM: snapshots imutáveis, unidades explícitas, UTC/monotônico, fonte e status. Capacidades adicionais e identidade/versionamento de sensores serão ampliados quando houver novos provedores.
+- `IHardwareTelemetryProvider` implementado para CPU/RAM e composto com IGpuTelemetryProvider para NVIDIA. Sensores com unidades, UTC/monotônico, fonte, identidade e status. Outros fabricantes permanecem futuros.
 - `IFrameCaptureProvider`: iniciar, parar e recuperar captura; identidade do processo inclui PID e instante de início. Manter swap chain e semântica da métrica.
 - `IDiagnosticRule`: entradas observadas e regra versionada produzem evidências, limitações, confiança e recomendação. Ausência de dado nunca significa estado saudável.
 - `IExternalToolBridge`: descoberta, versão, estado e capabilities explícitas. Detecção, execução, leitura, overlay e escrita de perfil são permissões distintas.
@@ -67,7 +67,7 @@ Hoje Core também contém o ViewModel e glifos de navegação: é uma base compa
 
 ### Telemetria e baixo consumo
 
-Implementado: um singleton HardwareMonitoringService com worker de coleta serial fora da UI, PeriodicTimer de 1 s e leases por consumidor. Sem consumidor, cancela; reinício não sobrepõe o anterior. Dispatcher coalesce amostras para não enfileirar atualizações sem limite. Monitoramento é o único consumidor; sair da página ou minimizar cancela. Fechamento aguarda o worker. Histórico em memória limitado por tempo e por 60 pontos. Sem persistência por amostra. Critérios de frames continuam futuros. APIs, cálculos e limites no contrato de telemetria; custo real no relatório da Etapa 02.
+Implementado: um singleton HardwareMonitoringService com worker de coleta serial fora da UI, PeriodicTimer de 1 s e leases por consumidor. Sem consumidor, cancela; reinício não sobrepõe o anterior. Dispatcher coalesce amostras para não enfileirar atualizações sem limite. Monitoramento é o único consumidor; sair da página ou minimizar cancela. Fechamento aguarda o worker. Histórico em memória limitado por tempo e por 60 pontos. Sem persistência por amostra. Critérios de frames continuam futuros. APIs, cálculos e limites no contrato de telemetria; custo no relatório da Etapa 03, comparado à Etapa 02.
 
 Preferir APIs Windows documentadas para CPU, RAM, capacidade de disco e processos. Sensores térmicos e GPU exigem avaliação separada. Não elevar a UI inteira para resolver uma leitura opcional. Um helper restrito só será considerado quando necessário e autorizado; IPC deve validar usuário, operação, esquema e tamanho.
 
@@ -91,14 +91,19 @@ Troca imediata sem reiniciar: atualiza cultura e menu, preserva ID selecionado e
 
 Dez IDs de navegação, sem repetição e sem acúmulo de backstack. Menu compacto abaixo de 1050 DIP não sobrescreve a preferência da janela ampla. Estado inicial restaurado após carregar o controle. Mínimo 600 × 480 DIP escalado pelo XamlRoot. Conteúdo com largura natural e margens para centralizar em até 1200 DIP; sem binding de Width ao ScrollViewer.
 
-`BrandPulse` usa máscara das letras, gradiente luminoso móvel e DropShadow no compositor. Neon estático se movimento reduzido/sistema sem animação/janela inativa; marca oculta descarta a composição. Páginas: fade 180 ms e translação vertical 220 ms. Não há timer por frame nem medição que comprove FPS/consumo da interface.
+`BrandPulse` usa gradiente, DropShadow, esmaecimento da palavra e formas vetoriais pixeladas, superfície do tamanho do elemento e 12 partículas por marca visível no compositor. Neon estático com movimento reduzido/sistema sem animação/janela minimizada; marca oculta descarta a composição. Perda de foco por si só não suspende mais o efeito. Páginas: fade 180 ms e translação vertical 220 ms. Não há timer por frame nem medição que comprove FPS/consumo da interface.
 
 ## Riscos e critérios de saída da fundação
 
-- Há testes de recursos e de arquivo/logging; nenhum teste automatizado de UI, migração, captura ou hardware. Validações visuais assistidas usam screenshots e árvore de acessibilidade.
+- Há testes de recursos e de arquivo/logging; testes de integração real Windows/NVIDIA; sem teste automatizado de UI, migração ou captura de frames. Validações visuais assistidas usam screenshots e árvore de acessibilidade.
 - Logging síncrono serve à baixa frequência atual; não usar o caminho existente por frame. Falhas de escrita, inicialização e multi-instância ainda precisam de ensaio.
 - Recursos neon não substituem contraste, alto contraste, teclado, leitor de tela e DPI. Regras adaptativas existem, mas ainda carecem de validação dedicada.
 - Arquitetura de extensão significa adaptadores internos opcionais; não carregar DLLs arbitrárias de terceiros.
 - Antes da próxima fase: build/test verdes, ciclo abrir/fechar repetível, navegação completa, janelas pequenas e DPI verificados, estratégia de idioma aplicada quando autorizada, baseline de consumo documentado.
 
 Ver [roadmap](LOTUS_ROADMAP.md), [metodologia](LOTUS_PERFORMANCE_VALIDATION.md), [integrações](LOTUS_EXTERNAL_INTEGRATIONS.md) e [decisões](LOTUS_TECHNICAL_DECISIONS.md).
+
+
+## Atualização Etapa 03 — GPU e sensores
+
+O pipeline existente agora compõe CPU/RAM e um adaptador NVIDIA NVML somente leitura. Contratos de sensores carregam unidade, fonte, horário e estado. Um único loop sob demanda; encerramento libera NVML. Cards/gráficos GPU e VRAM e sensores localizados foram adicionados. Nenhuma dependência nova. Ver [contrato GPU](LOTUS_GPU_TELEMETRY.md) e [validação Etapa 03](LOTUS_STAGE03_VALIDATION.md); pendências de validação prevalecem sobre descrições históricas. AMD/Intel e temperatura de CPU não estão implementados.

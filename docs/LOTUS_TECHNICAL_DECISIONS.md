@@ -80,3 +80,11 @@ Ver [relatório atual](LOTUS_STAGE01_VALIDATION.md). Não avançar automaticamen
 - ADR-025: neon com GetAlphaMask, gradiente móvel e DropShadow; iniciado após tamanho válido. Reduzir animações mantém neon estático. Substitui a pulsação sutil que o usuário não percebeu na etapa anterior.
 
 [Contrato e referências](LOTUS_TELEMETRY.md), [verificações e limitações](LOTUS_STAGE02_VALIDATION.md). Monitoramento não interpreta gargalos, score ou ganhos em jogos.
+
+
+## Decisões Etapa 03
+
+ADR-030: adaptação NVML do driver instalado por caminho absoluto, sem distribuição de DLL/SDK ou instalação de driver. ADR-031: composição serial no worker existente; Stop em finally encerra a sessão antes da próxima. ADR-032: sensores com valor anulável, unidade, status, fonte, horário e erro nativo. ADR-033: memória v2 mantém total/used/free/reserved separados; não misturar orçamento DXGI. ADR-034: sem NVAPI/LHM nesta etapa; temperatura Ryzen permanece indisponível. ADR-035: pixels luminosos e esmaecimento da palavra por Composition, sem timers de UI, respeitando redução de movimento. Ver [detalhes](LOTUS_GPU_TELEMETRY.md) e [verificações](LOTUS_STAGE03_VALIDATION.md).
+
+
+ADR-036 (refinamento solicitado durante a Etapa 03): quatro gráficos compactos com eixos numéricos explícitos, métricas centrais em destaque e fontes/horários/clocks/reservas em expanders. O usuário confirmou presença dos cards e preferiu a apresentação compacta; eixos foram adicionados após esse retorno. Marca redesenhada em geometria própria com ShapeVisual + CompositionVisualSurface e partículas, inspirada nas referências da palavra/flor fornecidas pelo usuário. Nenhum PNG grande é decodificado por quadro. O ensaio de 15 minutos antecede essa última revisão visual; a medição final curta fica identificada separadamente.

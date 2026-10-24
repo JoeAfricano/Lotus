@@ -28,7 +28,11 @@ public partial class App : Application
             .AddSingleton(_ => new ThemePalette(Resources))
             .AddSingleton<ITextCatalog>(provider => new TextCatalog(provider.GetRequiredService<PreferencesService>().Current.Language))
             .AddSingleton<PreferencesViewModel>()
-            .AddSingleton<IHardwareTelemetryProvider, WindowsHardwareTelemetryProvider>()
+            .AddSingleton<WindowsHardwareTelemetryProvider>()
+            .AddSingleton<IGpuTelemetryProvider, NvmlGpuTelemetryProvider>()
+            .AddSingleton<IHardwareTelemetryProvider>(provider => new CompositeHardwareTelemetryProvider(
+                provider.GetRequiredService<WindowsHardwareTelemetryProvider>(), provider.GetRequiredService<IGpuTelemetryProvider>(),
+                error => Log.Warning(error, "Telemetry source failed")))
             .AddSingleton(provider => new HardwareMonitoringService(provider.GetRequiredService<IHardwareTelemetryProvider>(),
                 diagnostic: (message, error) => { if (error is null) Log.Information("{MonitoringEvent}", message); else Log.Warning(error, "{MonitoringEvent}", message); }))
             .AddSingleton<IUiDispatcher>(_ => new UiDispatcher(Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()))

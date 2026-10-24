@@ -31,3 +31,10 @@ Próxima fatia recomendada após instrução: diagnóstico inicial de memória c
 ## Política de avanço
 
 Para cada etapa: problema → escopo → implementação → build → teste → evidência → limitações → checkpoint Git. Medições que falharem não viram zero nem sucesso. Falha de licença bloqueia apenas o adaptador/artefato afetado; escolher alternativa gratuita ou implementação própria com escopo mensurável. Nenhuma etapa tem promessa antecipada de ganho de FPS.
+
+
+## Etapa 03 autorizada — GPU e sensores (23/10/2026)
+
+A numeração das entregas atuais separa Etapa 02 (CPU/RAM) de Etapa 03 (GPU/sensores). A ordem conceitual da tabela acima não autoriza implementar diagnóstico nesta entrega.
+
+NVIDIA NVML, VRAM, clocks, temperatura GPU, potência, ventoinha percentual e eventos de clock implementados com estados de capacidade. Ver [contrato](LOTUS_GPU_TELEMETRY.md) e [validação](LOTUS_STAGE03_VALIDATION.md). Conclusão depende dos gates registrados no relatório. Futuro diagnóstico/RTSS/benchmark/otimizações continuam pendentes e exigem nova instrução.
