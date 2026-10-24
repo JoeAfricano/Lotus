@@ -123,3 +123,7 @@ Cinco grupos, rotas internas compatíveis, SelectorBar e x:Load. ExperienceViewM
 ## Camada ambiental
 
 LotusAmbientBackground vive uma vez na janela, atrás do Frame, sem dependência dos ViewModels ou coletores. Gradientes radiais e contornos nativos usam animações no compositor, pausam por foco/visibilidade e respeitam movimento local/sistema. Janela redimensiona a mesma raiz; descarte impede recriação tardia. FAQ explica o comportamento estático. [Implementação, consumo e limitações](LOTUS_AMBIENT_BACKGROUND.md).
+
+## Etapa 04 — Benchmark real
+
+`IFrameCaptureProvider` e `BenchmarkViewModel` no Core isolam captura e apresentação; Infrastructure implementa PresentMon CLI 2.6.0 verificado, parser CSV limitado e repositório SQLite com migração versionada. BenchmarkPanel/FrametimeChart integram Desempenho > Comparar, preservando provedores de telemetria. Captura explícita continua ao navegar; encerramento da aplicação solicita parada. Raw CSV com hash fica fora do banco; gravação transacional ocorre por sessão. Há testes de migração, cálculos e ciclo de vida, além de captura real e comparação visual. Esta seção atualiza a descrição histórica de ausência de benchmark/SQLite. [Decisões, evidências e limites de ETW](LOTUS_BENCHMARK.md).

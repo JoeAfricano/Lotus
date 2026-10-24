@@ -460,4 +460,47 @@ Get in the game.</value>
   <data name="FaqSolutionsAnswer" xml:space="preserve"><value>Each adjustment needs an identified cause, a safe way to apply it and a check of the result. Automatic actions will be added in stages, with confirmation and rollback when possible.</value></data>
   <data name="FaqAmbientQuestion" xml:space="preserve"><value>Why does the background sometimes stop moving?</value></data>
   <data name="FaqAmbientAnswer" xml:space="preserve"><value>The background follows Lotus’s Reduce animations setting and the Windows motion preference. It also pauses when the window loses focus or is minimized. The brand uses its own motion policy.</value></data>
+  <data name="BenchTitle" xml:space="preserve"><value>Capture your next session</value></data>
+  <data name="BenchIntro" xml:space="preserve"><value>Choose a running game process. Play the same scene when comparing captures.</value></data>
+  <data name="BenchProcess" xml:space="preserve"><value>Running game or application</value></data>
+  <data name="BenchRefresh" xml:space="preserve"><value>Refresh list</value></data>
+  <data name="BenchDuration" xml:space="preserve"><value>Capture limit (10–120 seconds)</value></data>
+  <data name="BenchConditions" xml:space="preserve"><value>Test conditions — scene, resolution and quality</value></data>
+  <data name="BenchElevate" xml:space="preserve"><value>Allow elevation of the collector only</value></data>
+  <data name="BenchElevationNote" xml:space="preserve"><value>If Windows denies capture, authorize the collector. Starting and stopping early may show a Windows confirmation. Lotus remains unelevated.</value></data>
+  <data name="BenchStart" xml:space="preserve"><value>Start benchmark</value></data>
+  <data name="BenchStop" xml:space="preserve"><value>Stop capture</value></data>
+  <data name="BenchSession" xml:space="preserve"><value>Saved captures — latest 100</value></data>
+  <data name="BenchResult" xml:space="preserve"><value>Frame pacing</value></data>
+  <data name="BenchAverage" xml:space="preserve"><value>Average presentation FPS</value></data>
+  <data name="BenchChart" xml:space="preserve"><value>Frametime (ms) over the capture · peaks preserved</value></data>
+  <data name="BenchBaseline" xml:space="preserve"><value>Compare with</value></data>
+  <data name="BenchChooseBaseline" xml:space="preserve"><value>Select another capture to compare.</value></data>
+  <data name="BenchIncompatible" xml:space="preserve"><value>Choose two valid captures of the same executable, with compatible versions.</value></data>
+  <data name="BenchComparison" xml:space="preserve"><value>Change from baseline:
+Average FPS: {0}
+1% low: {1}
+P95: {2}
+P99: {3}</value></data>
+  <data name="BenchComparisonCaution" xml:space="preserve"><value>Higher FPS and lower frametimes may indicate improvement. One capture does not prove a gain: check conditions and duration, then repeat the test.</value></data>
+  <data name="BenchReady" xml:space="preserve"><value>Ready to capture. No settings will be changed.</value></data>
+  <data name="BenchCapturing" xml:space="preserve"><value>Capturing. Return to your game; the benchmark ends at the selected limit.</value></data>
+  <data name="BenchStopping" xml:space="preserve"><value>Stopping and processing frames…</value></data>
+  <data name="BenchCompleted" xml:space="preserve"><value>Capture saved. Review the result below.</value></data>
+  <data name="BenchPermission" xml:space="preserve"><value>Windows denied capture access. You can authorize collector elevation and try again.</value></data>
+  <data name="BenchToolMissing" xml:space="preserve"><value>PresentMon 2.6.0 not found. See tools/Install-PresentMon.ps1 in the project documentation.</value></data>
+  <data name="BenchInsufficient" xml:space="preserve"><value>Not enough valid frames. Capture for longer and keep the game rendering.</value></data>
+  <data name="BenchCancelled" xml:space="preserve"><value>Capture cancelled.</value></data>
+  <data name="BenchFailed" xml:space="preserve"><value>Capture could not be completed or saved. Check details and logs.</value></data>
+  <data name="BenchLoadError" xml:space="preserve"><value>Could not load processes or captures. Try refreshing the list.</value></data>
+  <data name="BenchDetails" xml:space="preserve"><value>Status: {0}
+Valid intervals: {1} · measured duration: {2} s
+P95: {3} · spikes: {4}
+Swap chain: {5} · others: {6}
+Invalid rows: {7} · reported types: {8}
+Original CSV: {9}</value></data>
+  <data name="BenchMethod" xml:space="preserve"><value>PresentMon 2.6.0 / ETW. FPS = 1000 ÷ mean Present() interval; 1% low = 1000 ÷ mean slowest 1%. P95/P99 use nearest rank. Spikes exceed both 50 ms and 3× median. Minimum: 1,000 intervals and 10 s. The swap chain with most samples is used. This is not displayed FPS; generated frames can only be distinguished when identified by the source. The validated CSV does not report ETW loss counters. Generated-frame identification depends on game/driver instrumentation; Application may also mean an unidentified type.</value></data>
+<data name="BenchLossUnknown" xml:space="preserve"><value>ETW loss could not be verified. Use these results as an initial comparison, not proof of a performance gain.</value></data>
+<data name="BenchComparedConditions" xml:space="preserve"><value>Baseline conditions: {0}
+Current conditions: {1}</value></data>
 </root>

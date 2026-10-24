@@ -70,3 +70,9 @@ Próximo incremento visual autorizado: fundo Lótus + Aurora, independente da te
 
 
 Fundo ambiental Lótus + Aurora implementado como camada independente; validação de movimento/consumo separa produção estática por política do Windows da prova explícita. [Relatório atual](LOTUS_AMBIENT_BACKGROUND.md). Não autoriza avançar para outros módulos.
+
+## Etapa 04 — primeira prova funcional (24/10/2026)
+
+Captura real PresentMon, métricas versionadas, CSV preservado, persistência SQLite e comparação inicial integrados em Desempenho > Comparar. Debug/Release e 120 testes por configuração aprovados; resultados reais e comparação conferidos na aplicação. [Relatório e limitações](LOTUS_BENCHMARK.md). Esta atualização prevalece sobre menções históricas a benchmark ainda inexistente.
+
+O escopo reduzido autorizado entrega a prova funcional; permanecem gates de homologação em jogos, medição controlada de overhead e verificação de perda ETW. Não anunciar ganho comprovado com a captura atual. Marca e fundo ficam em standby. Não iniciar otimizações, RTSS/Afterburner, perfis ou outros módulos sem nova instrução.

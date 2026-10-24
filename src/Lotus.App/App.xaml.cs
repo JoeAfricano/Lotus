@@ -1,4 +1,6 @@
 using Lotus.Core;
+using Lotus.Core.Benchmark;
+using Lotus.Infrastructure.Benchmark;
 using Lotus.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
@@ -39,6 +41,14 @@ public partial class App : Application
             .AddSingleton<MonitoringViewModel>()
             .AddSingleton<Lotus.Core.Diagnostics.MemoryAnalysisViewModel>()
             .AddSingleton<ExperienceViewModel>()
+            .AddSingleton<ICaptureTargetSource, WindowsCaptureTargets>()
+            .AddSingleton<IFrameCaptureProvider>(_ => new PresentMonCaptureProvider(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Benchmarks"), Log.Logger))
+            .AddSingleton<IBenchmarkRepository>(_ => new SqliteBenchmarkRepository(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "benchmarks.db")))
+            .AddSingleton(p => new BenchmarkViewModel(p.GetRequiredService<IFrameCaptureProvider>(),
+                p.GetRequiredService<IBenchmarkRepository>(), p.GetRequiredService<ICaptureTargetSource>(),
+                p.GetRequiredService<MonitoringViewModel>(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Benchmark operation failed")))
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);
@@ -57,6 +67,7 @@ public partial class App : Application
             if (closeRequested) return;
             closeRequested = true;
             ((MainWindow)window).PrepareForClose();
+            await services.GetRequiredService<BenchmarkViewModel>().ShutdownAsync();
             await services.GetRequiredService<HardwareMonitoringService>().DisposeAsync();
             readyToClose = true;
             window.Close();
