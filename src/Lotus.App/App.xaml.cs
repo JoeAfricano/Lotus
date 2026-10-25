@@ -33,6 +33,8 @@ public partial class App : Application
     }
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
+        // Short-lived elevated helper for RivaTuner profile edits: no window, no services, fixed allow-list.
+        if (Lotus.Infrastructure.Integrations.RtssElevatedHelper.TryRun(Environment.GetCommandLineArgs()) is { } helperExit) { Environment.Exit(helperExit); return; }
         var logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Logs", "lotus-.jsonl");
         Log.Logger = new LoggerConfiguration().WriteTo.File(new JsonFormatter(), logPath,
             rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, fileSizeLimitBytes: 5_000_000, rollOnFileSizeLimit: true).CreateLogger();
@@ -94,6 +96,8 @@ public partial class App : Application
                 new Lotus.Infrastructure.Games.FileGameSettingsStore(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "GameSettingsBackups")),
                 new Lotus.Infrastructure.Games.WindowsGameProcessCheck(),
                 new Lotus.Infrastructure.Games.RtssPreferredCaptureProvider(p.GetRequiredService<IFrameCaptureProvider>()), new Lotus.Infrastructure.Games.PdhGpuLoadSampler(), new Lotus.Infrastructure.Games.ScsKillerCli()))
+            .AddSingleton(p => new Lotus.Core.Integrations.IntegrationsViewModel(new Lotus.Infrastructure.Integrations.WindowsRtssIntegration(),
+                new Lotus.Infrastructure.Integrations.WindowsToolDetector(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Integration operation failed")))
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);

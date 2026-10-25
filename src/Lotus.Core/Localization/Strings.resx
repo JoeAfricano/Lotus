@@ -432,7 +432,6 @@ Entre no jogo.</value>
   <data name="UxMotionDetails" xml:space="preserve"><value>Sobre a animação da marca</value></data>
   <data name="UxMonitoringSettings" xml:space="preserve"><value>Os sensores são usados em Desempenho &gt; Ao vivo e nas análises que você iniciar. A coleta pausa quando não é necessária. Intervalo atual: cerca de 1 segundo.</value></data>
   <data name="UxOpenLive" xml:space="preserve"><value>Abrir monitoramento ao vivo</value></data>
-  <data name="UxIntegrationsEmpty" xml:space="preserve"><value>As conexões com RTSS e MSI Afterburner serão adicionadas em etapas futuras. O monitoramento atual funciona sem esses programas.</value></data>
   <data name="UxOpenRestore" xml:space="preserve"><value>Ver área de restauração</value></data>
   <data name="UxLogExplanation" xml:space="preserve"><value>Os registros ajudam a investigar problemas. Se precisar consultá-los, selecione e copie o caminho abaixo.</value></data>
   <data name="UxDataSources" xml:space="preserve"><value>Fontes e estado dos sensores</value></data>
@@ -801,4 +800,22 @@ Condições atuais: {1}</value></data>
   <data name="ScsFailed" xml:space="preserve"><value>{0}: o SCSKiller não concluiu o pré-carregamento. Veja os detalhes no próprio SCSKiller.</value></data>
   <data name="ScsOffer" xml:space="preserve"><value>Opcional: instale o SCSKiller (gratuito, código aberto) para pré-carregar shaders e reduzir travadas em muitos jogos. O Lotus passa a usá-lo automaticamente.</value></data>
   <data name="ScsOfferLink" xml:space="preserve"><value>Conhecer o SCSKiller</value></data>
+  <data name="IntIntro" xml:space="preserve"><value>Programas gratuitos que o Lotus usa a seu favor quando estão instalados. Nada é baixado ou instalado pelo Lotus.</value></data>
+  <data name="IntNotInstalled" xml:space="preserve"><value>Não instalado.</value></data>
+  <data name="IntRtssDefault" xml:space="preserve"><value>Instalado ({0}) · overlay com a configuração própria do RivaTuner.</value></data>
+  <data name="IntRtssLotus" xml:space="preserve"><value>Instalado ({0}) · overlay configurado pelo Lotus.</value></data>
+  <data name="IntRtssUnreadable" xml:space="preserve"><value>Instalado ({0}) · não foi possível ler o perfil.</value></data>
+  <data name="IntRtssWhat" xml:space="preserve"><value>O Lotus lê o FPS do RivaTuner para medir sem pedir permissão e pode configurar o overlay: FPS, gráfico de frametime e cores do Lotus no canto superior esquerdo.</value></data>
+  <data name="IntOverlayApply" xml:space="preserve"><value>Configurar overlay do Lotus</value></data>
+  <data name="IntOverlayConfirmTitle" xml:space="preserve"><value>Configurar o overlay do RivaTuner?</value></data>
+  <data name="IntOverlayConfirmBody" xml:space="preserve"><value>O Lotus altera só as opções de overlay do perfil global do RivaTuner e guarda o original para restaurar. O Windows vai pedir permissão de administrador, porque o RivaTuner fica numa pasta protegida. O overlay aparece nos jogos abertos com o RivaTuner ligado.</value></data>
+  <data name="IntRestoreConfirmTitle" xml:space="preserve"><value>Restaurar a configuração original do RivaTuner?</value></data>
+  <data name="IntRestoreConfirmBody" xml:space="preserve"><value>O perfil global volta exatamente como estava antes do Lotus. O Windows vai pedir permissão de administrador.</value></data>
+  <data name="IntOverlayApplied" xml:space="preserve"><value>Overlay do Lotus configurado e conferido. Abra um jogo com o RivaTuner ligado para ver.</value></data>
+  <data name="IntOverlayRestored" xml:space="preserve"><value>Configuração original do RivaTuner restaurada.</value></data>
+  <data name="IntOverlayFailed" xml:space="preserve"><value>Não foi possível alterar o RivaTuner (permissão negada ou cancelada). Nada foi mudado.</value></data>
+  <data name="IntAfterburnerOn" xml:space="preserve"><value>Instalado ({0}).</value></data>
+  <data name="IntAfterburnerWhat" xml:space="preserve"><value>O Lotus usa os sensores dele no diagnóstico. A curva de ventoinha só será sugerida se a GPU perder desempenho por temperatura; overclock e tensão nunca são automáticos.</value></data>
+  <data name="IntScsOn" xml:space="preserve"><value>Instalado ({0}) · use "Pré-carregar shaders" no menu de cada jogo.</value></data>
+  <data name="IntScsOff" xml:space="preserve"><value>Não instalado (opcional): pré-carrega shaders para reduzir travadas.</value></data>
 </root>

@@ -432,7 +432,6 @@ Get in the game.</value>
   <data name="UxMotionDetails" xml:space="preserve"><value>About brand animation</value></data>
   <data name="UxMonitoringSettings" xml:space="preserve"><value>Sensors are used in Performance &gt; Live and in analyses you start. Collection pauses when it is not needed. Current interval: approximately 1 second.</value></data>
   <data name="UxOpenLive" xml:space="preserve"><value>Open live monitoring</value></data>
-  <data name="UxIntegrationsEmpty" xml:space="preserve"><value>RTSS and MSI Afterburner connections will be added in future stages. Current monitoring works without those programs.</value></data>
   <data name="UxOpenRestore" xml:space="preserve"><value>View restore area</value></data>
   <data name="UxLogExplanation" xml:space="preserve"><value>Logs help investigate problems. To consult them, select and copy the path below.</value></data>
   <data name="UxDataSources" xml:space="preserve"><value>Sensor sources and status</value></data>
@@ -801,4 +800,22 @@ Current conditions: {1}</value></data>
   <data name="ScsFailed" xml:space="preserve"><value>{0}: SCSKiller did not finish pre-compiling. See details in SCSKiller itself.</value></data>
   <data name="ScsOffer" xml:space="preserve"><value>Optional: install SCSKiller (free, open source) to pre-compile shaders and reduce stutter in many games. Lotus then uses it automatically.</value></data>
   <data name="ScsOfferLink" xml:space="preserve"><value>Learn about SCSKiller</value></data>
+  <data name="IntIntro" xml:space="preserve"><value>Free programs Lotus uses on your behalf when installed. Lotus never downloads or installs anything.</value></data>
+  <data name="IntNotInstalled" xml:space="preserve"><value>Not installed.</value></data>
+  <data name="IntRtssDefault" xml:space="preserve"><value>Installed ({0}) · overlay with RivaTuner's own settings.</value></data>
+  <data name="IntRtssLotus" xml:space="preserve"><value>Installed ({0}) · overlay configured by Lotus.</value></data>
+  <data name="IntRtssUnreadable" xml:space="preserve"><value>Installed ({0}) · profile could not be read.</value></data>
+  <data name="IntRtssWhat" xml:space="preserve"><value>Lotus reads RivaTuner's FPS to measure without prompts and can configure the overlay: FPS, frametime graph and Lotus colors in the top-left corner.</value></data>
+  <data name="IntOverlayApply" xml:space="preserve"><value>Configure Lotus overlay</value></data>
+  <data name="IntOverlayConfirmTitle" xml:space="preserve"><value>Configure the RivaTuner overlay?</value></data>
+  <data name="IntOverlayConfirmBody" xml:space="preserve"><value>Lotus changes only the overlay options of RivaTuner's global profile and keeps the original for restore. Windows will ask for admin permission because RivaTuner lives in a protected folder. The overlay appears in games started with RivaTuner running.</value></data>
+  <data name="IntRestoreConfirmTitle" xml:space="preserve"><value>Restore RivaTuner's original settings?</value></data>
+  <data name="IntRestoreConfirmBody" xml:space="preserve"><value>The global profile goes back exactly as it was before Lotus. Windows will ask for admin permission.</value></data>
+  <data name="IntOverlayApplied" xml:space="preserve"><value>Lotus overlay configured and verified. Open a game with RivaTuner running to see it.</value></data>
+  <data name="IntOverlayRestored" xml:space="preserve"><value>RivaTuner's original settings restored.</value></data>
+  <data name="IntOverlayFailed" xml:space="preserve"><value>RivaTuner could not be changed (permission denied or cancelled). Nothing was changed.</value></data>
+  <data name="IntAfterburnerOn" xml:space="preserve"><value>Installed ({0}).</value></data>
+  <data name="IntAfterburnerWhat" xml:space="preserve"><value>Lotus uses its sensors in diagnostics. A fan curve is only suggested if the GPU loses performance to heat; overclock and voltage are never automatic.</value></data>
+  <data name="IntScsOn" xml:space="preserve"><value>Installed ({0}) · use "Pre-compile shaders" in each game's menu.</value></data>
+  <data name="IntScsOff" xml:space="preserve"><value>Not installed (optional): pre-compiles shaders to reduce stutter.</value></data>
 </root>
