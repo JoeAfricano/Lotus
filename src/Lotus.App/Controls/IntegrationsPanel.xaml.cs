@@ -22,6 +22,24 @@ public sealed partial class IntegrationsPanel : UserControl
         if (DataContext is IntegrationsViewModel vm && await Confirm(vm.Text["IntRestoreConfirmTitle"], vm.Text["IntRestoreConfirmBody"], vm))
             await vm.RestoreOverlayAsync();
     }
+    private async void OnActivateLayout(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is IntegrationsViewModel vm && await Confirm(vm.Text["IntLayoutConfirmTitle"], vm.Text["IntLayoutConfirmBody"], vm))
+            await vm.ActivateLayoutAsync();
+    }
+    private async void OnRestoreLayout(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is IntegrationsViewModel vm && await Confirm(vm.Text["IntLayoutRestoreTitle"], vm.Text["IntRestoreConfirmBody"], vm))
+            await vm.RestoreLayoutAsync();
+    }
+    // Saves Lotus.ovl (no admin) and opens its folder for manual import in OverlayEditor.
+    private void OnExportLayout(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not IntegrationsViewModel vm) return;
+        var path = vm.ExportLayout();
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe") { ArgumentList = { "/select,", path } })?.Dispose();
+    }
+
     // Opens only the official SCSKiller releases page.
     private async void OnScsLink(object sender, RoutedEventArgs e) =>
         await Windows.System.Launcher.LaunchUriAsync(new Uri(Lotus.Core.Games.GamesViewModel.ScsKillerReleases));

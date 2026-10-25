@@ -818,4 +818,16 @@ Current conditions: {1}</value></data>
   <data name="IntAfterburnerWhat" xml:space="preserve"><value>Lotus uses its sensors in diagnostics. A fan curve is only suggested if the GPU loses performance to heat; overclock and voltage are never automatic.</value></data>
   <data name="IntScsOn" xml:space="preserve"><value>Installed ({0}) · use "Pre-compile shaders" in each game's menu.</value></data>
   <data name="IntScsOff" xml:space="preserve"><value>Not installed (optional): pre-compiles shaders to reduce stutter.</value></data>
+  <data name="IntLayoutWhat" xml:space="preserve"><value>Full Lotus overlay: FPS, average, 1% and 0.1% low, frametime graph and CPU, GPU, VRAM and RAM bars with temperatures and clocks (RivaTuner's OverlayEditor plugin).</value></data>
+  <data name="IntLayoutActive" xml:space="preserve"><value>Active layout: Lotus.</value></data>
+  <data name="IntLayoutInactive" xml:space="preserve"><value>Active layout: another one (yours is kept until you switch).</value></data>
+  <data name="IntLayoutApply" xml:space="preserve"><value>Use the Lotus overlay</value></data>
+  <data name="IntLayoutRestore" xml:space="preserve"><value>Back to previous layout</value></data>
+  <data name="IntLayoutExport" xml:space="preserve"><value>Save overlay file</value></data>
+  <data name="IntLayoutConfirmTitle" xml:space="preserve"><value>Use the full Lotus overlay?</value></data>
+  <data name="IntLayoutConfirmBody" xml:space="preserve"><value>Lotus saves Lotus.ovl in its folder and points RivaTuner's OverlayEditor to it. Your current layout is kept so you can go back with one click. Windows will ask for admin permission. If the overlay does not change, restart RivaTuner.</value></data>
+  <data name="IntLayoutRestoreTitle" xml:space="preserve"><value>Go back to RivaTuner's previous layout?</value></data>
+  <data name="IntLayoutApplied" xml:space="preserve"><value>Lotus overlay activated. Open a game with RivaTuner running (restart RivaTuner if it does not change).</value></data>
+  <data name="IntLayoutRestored" xml:space="preserve"><value>RivaTuner's previous layout restored.</value></data>
+  <data name="IntLayoutExported" xml:space="preserve"><value>File saved to {0}. In RivaTuner: Setup › Plugins › OverlayEditor › Layouts › Load.</value></data>
 </root>

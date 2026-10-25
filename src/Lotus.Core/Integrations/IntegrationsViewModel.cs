@@ -11,6 +11,12 @@ public interface IRtssIntegration
     bool HasBackup();
     Task<bool> ApplyLotusOverlayAsync(); // elevated helper; true only when verified by reading the profile back
     Task<bool> RestoreAsync();
+    // Full Lotus overlay (OverlayEditor layout): export without admin, activate/restore through the elevated helper.
+    string ExportLayout();
+    bool LayoutActive();
+    bool HasLayoutBackup();
+    Task<bool> ActivateLayoutAsync();
+    Task<bool> RestoreLayoutAsync();
 }
 public interface IToolDetector { ToolState Afterburner(); ToolState ScsKiller(); }
 
@@ -23,6 +29,9 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
     public string Message { get; private set; } = "";
     public bool RtssInstalled { get; private set; }
     public bool CanRestoreRtss { get; private set; }
+    public bool CanRestoreLayout { get; private set; }
+    public string LayoutStatus { get; private set; } = "";
+    public string? ExportedPath { get; private set; }
     public bool Busy { get; private set; }
 
     public void Refresh()
@@ -33,15 +42,20 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             RtssStatus = !r.Installed ? Text["IntNotInstalled"]
                 : rtss.OverlayConfigured() switch { true => Text.Format("IntRtssLotus", r.Version ?? "?"), false => Text.Format("IntRtssDefault", r.Version ?? "?"), _ => Text.Format("IntRtssUnreadable", r.Version ?? "?") };
             CanRestoreRtss = r.Installed && rtss.HasBackup();
+            CanRestoreLayout = r.Installed && rtss.HasLayoutBackup();
+            LayoutStatus = !r.Installed ? "" : Text[rtss.LayoutActive() ? "IntLayoutActive" : "IntLayoutInactive"];
             var ab = tools.Afterburner(); AfterburnerStatus = ab.Installed ? Text.Format("IntAfterburnerOn", ab.Version ?? "?") : Text["IntNotInstalled"];
             var scs = tools.ScsKiller(); ScsStatus = scs.Installed ? Text.Format("IntScsOn", scs.Version ?? "?") : Text["IntScsOff"];
         }
         catch (Exception ex) { log(ex); }
-        foreach (var p in new[] { nameof(RtssStatus), nameof(AfterburnerStatus), nameof(ScsStatus), nameof(RtssInstalled), nameof(CanRestoreRtss) }) OnPropertyChanged(p);
+        foreach (var p in new[] { nameof(RtssStatus), nameof(AfterburnerStatus), nameof(ScsStatus), nameof(RtssInstalled), nameof(CanRestoreRtss), nameof(CanRestoreLayout), nameof(LayoutStatus) }) OnPropertyChanged(p);
     }
 
     public Task ApplyOverlayAsync() => Run(async () => Message = Text[await rtss.ApplyLotusOverlayAsync() ? "IntOverlayApplied" : "IntOverlayFailed"]);
     public Task RestoreOverlayAsync() => Run(async () => Message = Text[await rtss.RestoreAsync() ? "IntOverlayRestored" : "IntOverlayFailed"]);
+    public Task ActivateLayoutAsync() => Run(async () => Message = Text[await rtss.ActivateLayoutAsync() ? "IntLayoutApplied" : "IntOverlayFailed"]);
+    public Task RestoreLayoutAsync() => Run(async () => Message = Text[await rtss.RestoreLayoutAsync() ? "IntLayoutRestored" : "IntOverlayFailed"]);
+    public string ExportLayout() { ExportedPath = rtss.ExportLayout(); Message = Text.Format("IntLayoutExported", ExportedPath); OnPropertyChanged(nameof(Message)); return ExportedPath; }
 
     private async Task Run(Func<Task> work)
     {

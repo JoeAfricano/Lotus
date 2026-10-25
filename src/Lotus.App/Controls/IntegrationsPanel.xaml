@@ -14,6 +14,14 @@
      <Button Content="{Binding Text[IntOverlayApply]}" Click="OnApplyOverlay" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="int-rtss-apply"/>
      <Button Content="{Binding Text[GsRestore]}" Click="OnRestoreOverlay" Style="{StaticResource SoftButtonStyle}" Visibility="{Binding CanRestoreRtss, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="int-rtss-restore"/>
     </StackPanel>
+    <Border Height="1" Background="{ThemeResource DividerBrush}" Margin="0,6"/>
+    <TextBlock Text="{Binding Text[IntLayoutWhat]}" Style="{StaticResource CaptionStyle}"/>
+    <TextBlock Text="{Binding LayoutStatus}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" AutomationProperties.AutomationId="int-layout-status"/>
+    <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{Binding RtssInstalled, Converter={StaticResource BooleanVisibility}}">
+     <Button Content="{Binding Text[IntLayoutApply]}" Click="OnActivateLayout" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="int-layout-apply"/>
+     <Button Content="{Binding Text[IntLayoutRestore]}" Click="OnRestoreLayout" Style="{StaticResource SoftButtonStyle}" Visibility="{Binding CanRestoreLayout, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="int-layout-restore"/>
+     <Button Content="{Binding Text[IntLayoutExport]}" Click="OnExportLayout" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="int-layout-export"/>
+    </StackPanel>
    </StackPanel>
   </Border>
   <!-- MSI Afterburner -->

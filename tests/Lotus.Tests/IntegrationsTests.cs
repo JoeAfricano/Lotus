@@ -67,6 +67,8 @@ public sealed class IntegrationsTests : IDisposable
         public ToolState State() => new(installed, installed ? "7.3.7" : null);
         public bool? OverlayConfigured() => configured; public bool HasBackup() => backup;
         public Task<bool> ApplyLotusOverlayAsync() => Task.FromResult(true); public Task<bool> RestoreAsync() => Task.FromResult(false);
+        public string ExportLayout() => @"C:\x\Lotus.ovl"; public bool LayoutActive() => configured == true; public bool HasLayoutBackup() => backup;
+        public Task<bool> ActivateLayoutAsync() => Task.FromResult(true); public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
     }
     private sealed class Tools(bool ab, bool scs) : IToolDetector
     {
@@ -93,6 +95,38 @@ public sealed class IntegrationsTests : IDisposable
         if (!state.Installed) return;
         Assert.False(string.IsNullOrWhiteSpace(state.Version));
         Assert.NotNull(real.OverlayConfigured()); // the installed Global profile must be readable without admin rights
+    }
+
+    [Fact] public void EmbeddedLayoutIsConsistent()
+    {
+        var text = LotusOverlayLayout.Text();
+        var ini = new IniText(text);
+        Assert.Contains("<FR10L>", text); Assert.Contains("<FR01L>", text); Assert.Contains("<G=Frametime", text); Assert.Contains("<S=GPU1 clock>", text);
+        var layers = System.Text.RegularExpressions.Regex.Matches(text, @"^\[Layer\d+\]", System.Text.RegularExpressions.RegexOptions.Multiline).Count;
+        var sources = System.Text.RegularExpressions.Regex.Matches(text, @"^\[Source\d+\]", System.Text.RegularExpressions.RegexOptions.Multiline).Count;
+        Assert.Equal(layers.ToString(), ini.Get("General", "Layers")); Assert.Equal(sources.ToString(), ini.Get("General", "Sources"));
+        // Every <S=name> / <G=name,...> refers to a declared source or a built-in one.
+        var declared = System.Text.RegularExpressions.Regex.Matches(text, @"^Name=(.+)$", System.Text.RegularExpressions.RegexOptions.Multiline).Select(m => m.Groups[1].Value.Trim()).ToHashSet();
+        foreach (System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(text, @"<[SG]=([^,>]+)"))
+            Assert.True(declared.Contains(m.Groups[1].Value) || m.Groups[1].Value == "Frametime", m.Groups[1].Value);
+    }
+
+    [Fact] public async Task LayoutIsExportedActivatedOnlyFromLotusFolderAndRestored()
+    {
+        var overlays = Path.Combine(root, "Overlays"); var config = Path.Combine(root, "OverlayEditor.cfg");
+        const string original = "[Settings]\r\nLayout=C:\\Users\\me\\Desktop\\Riva Overlay.ovl";
+        File.WriteAllText(config, original);
+        Assert.Throws<InvalidOperationException>(() => LotusOverlayLayout.Activate(config, config, Backups, overlays)); // not a Lotus overlay
+        Task<int> Runner(string[] a)
+        {
+            if (a[0] == "--rtss-layout") { LotusOverlayLayout.Activate(a[1], config, Backups, overlays); return Task.FromResult(0); }
+            return Task.FromResult(LotusOverlayLayout.Restore(config, Backups) ? 0 : 4);
+        }
+        var rtss = new WindowsRtssIntegration(Profiles, Backups, Runner, config, overlays);
+        Assert.False(rtss.LayoutActive());
+        Assert.True(await rtss.ActivateLayoutAsync());
+        Assert.True(rtss.LayoutActive()); Assert.True(rtss.HasLayoutBackup()); Assert.True(File.Exists(Path.Combine(overlays, "Lotus.ovl")));
+        Assert.True(await rtss.RestoreLayoutAsync()); Assert.Equal(original, File.ReadAllText(config)); Assert.False(rtss.LayoutActive());
     }
 
     public void Dispose() { if (Directory.Exists(root)) Directory.Delete(root, true); }

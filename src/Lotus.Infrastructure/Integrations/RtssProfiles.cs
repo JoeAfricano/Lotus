@@ -85,11 +85,15 @@ public static class RtssElevatedHelper
 {
     public static int? TryRun(string[] args)
     {
-        var i = Array.FindIndex(args, a => a is "--rtss-apply" or "--rtss-restore");
-        if (i < 0 || i + 1 >= args.Length) return null;
+        var i = Array.FindIndex(args, a => a is "--rtss-apply" or "--rtss-restore" or "--rtss-layout" or "--rtss-layout-restore");
+        if (i < 0 || (args[i] != "--rtss-layout-restore" && i + 1 >= args.Length)) return null;
         try
         {
-            if (args[i] == "--rtss-apply")
+            if (args[i] == "--rtss-layout")
+                LotusOverlayLayout.Activate(args[i + 1], LotusOverlayLayout.DefaultConfig, RtssProfiles.DefaultBackupDir, LotusOverlayLayout.OverlaysDir);
+            else if (args[i] == "--rtss-layout-restore")
+            { if (!LotusOverlayLayout.Restore(LotusOverlayLayout.DefaultConfig, RtssProfiles.DefaultBackupDir)) return 4; }
+            else if (args[i] == "--rtss-apply")
             {
                 var requestPath = Path.GetFullPath(args[i + 1]);
                 var allowedRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Requests") + Path.DirectorySeparatorChar;
@@ -107,8 +111,18 @@ public static class RtssElevatedHelper
 
 // Lotus overlay preset for RivaTuner's Global profile: FPS + frametime graph, rose-gold text on a translucent dark box, top-left.
 [SupportedOSPlatform("windows")]
-public sealed class WindowsRtssIntegration(string? profilesDir = null, string? backupDir = null, Func<string[], Task<int>>? elevatedRunner = null) : Lotus.Core.Integrations.IRtssIntegration
+public sealed class WindowsRtssIntegration(string? profilesDir = null, string? backupDir = null, Func<string[], Task<int>>? elevatedRunner = null,
+    string? overlayConfig = null, string? overlaysDir = null) : Lotus.Core.Integrations.IRtssIntegration
 {
+    private string OverlayConfig => overlayConfig ?? LotusOverlayLayout.DefaultConfig;
+    private string Overlays => overlaysDir ?? LotusOverlayLayout.OverlaysDir;
+    public string ExportLayout() => LotusOverlayLayout.Export(Overlays);
+    public bool LayoutActive() =>
+        LotusOverlayLayout.ActiveLayout(OverlayConfig) is { } active && string.Equals(Path.GetFullPath(active), Path.GetFullPath(Path.Combine(Overlays, "Lotus.ovl")), StringComparison.OrdinalIgnoreCase);
+    public bool HasLayoutBackup() => File.Exists(Path.Combine(Backups, "OverlayEditor.cfg.original"));
+    public async Task<bool> ActivateLayoutAsync() => await RunElevated(["--rtss-layout", ExportLayout()]) == 0 && LayoutActive();
+    public async Task<bool> RestoreLayoutAsync() => await RunElevated(["--rtss-layout-restore"]) == 0 && !HasLayoutBackup();
+
     public static readonly IReadOnlyList<RtssChange> LotusOverlay =
     [
         new("OSD", "EnableOSD", "1"), new("OSD", "EnableBgnd", "1"), new("OSD", "EnableFill", "1"),
@@ -160,4 +174,48 @@ public sealed class WindowsToolDetector : Lotus.Core.Integrations.IToolDetector
         File.Exists(exe) ? new(true, System.Diagnostics.FileVersionInfo.GetVersionInfo(exe).ProductVersion) : new(false, null);
     public Lotus.Core.Integrations.ToolState Afterburner() => Of(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "MSI Afterburner", "MSIAfterburner.exe"));
     public Lotus.Core.Integrations.ToolState ScsKiller() => Of(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SCSKiller.App", "current", "SCSKiller.exe"));
+}
+
+// Lotus overlay layout for RivaTuner's OverlayEditor plugin (FPS, 1%/0.1% low, frametime graph, CPU/GPU/VRAM/RAM rows).
+// Exported to %LOCALAPPDATA%\Lotus\Overlays; activation changes only [Settings] Layout in OverlayEditor.cfg (elevated helper).
+public static class LotusOverlayLayout
+{
+    public static string OverlaysDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Overlays");
+    public static string DefaultConfig => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "RivaTuner Statistics Server", "Plugins", "Client", "OverlayEditor.cfg");
+    public static string Text()
+    {
+        using var stream = typeof(LotusOverlayLayout).Assembly.GetManifestResourceStream("Lotus.ovl") ?? throw new InvalidOperationException("Embedded overlay missing.");
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
+    }
+    public static string Export(string? dir = null)
+    {
+        var target = Path.Combine(dir ?? OverlaysDir, "Lotus.ovl");
+        Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+        File.WriteAllText(target, Text(), new System.Text.UTF8Encoding(false));
+        return target;
+    }
+    // Only a .ovl inside the Lotus overlays folder may be activated.
+    public static void Activate(string layoutPath, string configPath, string backupDir, string overlaysDir)
+    {
+        var full = Path.GetFullPath(layoutPath);
+        if (!full.StartsWith(Path.GetFullPath(overlaysDir) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) || !full.EndsWith(".ovl", StringComparison.OrdinalIgnoreCase) || !File.Exists(full))
+            throw new InvalidOperationException("Layout outside the Lotus overlays folder.");
+        var original = File.Exists(configPath) ? File.ReadAllText(configPath) : null;
+        Directory.CreateDirectory(backupDir);
+        var backup = Path.Combine(backupDir, "OverlayEditor.cfg.original");
+        if (!File.Exists(backup)) File.WriteAllText(backup, original ?? "<absent>");
+        var ini = new IniText(original ?? ""); ini.Set("Settings", "Layout", full);
+        var temp = configPath + ".lotus.tmp"; File.WriteAllText(temp, ini.ToString()); File.Move(temp, configPath, overwrite: true);
+    }
+    public static bool Restore(string configPath, string backupDir)
+    {
+        var backup = Path.Combine(backupDir, "OverlayEditor.cfg.original");
+        if (!File.Exists(backup)) return false;
+        var original = File.ReadAllText(backup);
+        if (original == "<absent>") File.Delete(configPath); else File.WriteAllText(configPath, original);
+        File.Delete(backup);
+        return true;
+    }
+    public static string? ActiveLayout(string configPath) => File.Exists(configPath) ? new IniText(File.ReadAllText(configPath)).Get("Settings", "Layout") : null;
 }
