@@ -37,6 +37,7 @@ public sealed partial class OnboardingView : UserControl
         Animate(Card, "Opacity", 0, 1, 320);
         Animate(CardTransform, "ScaleX", 0.96, 1, 420, Spring()); Animate(CardTransform, "ScaleY", 0.96, 1, 420, Spring());
         Animate(CardTransform, "TranslateY", 16, 0, 420, Spring());
+        if (vm.IsWelcome) UiSound.Play(UiSound.Cue.Welcome);
         StartBreathing(vm.IsWelcome);
     }
 
@@ -126,7 +127,7 @@ public sealed partial class OnboardingView : UserControl
     {
         if (Vm is not { } vm) return;
         var last = vm.IsLast; vm.Next();
-        if (last) Close();
+        if (last) { UiSound.Play(UiSound.Cue.Done); Close(); }
     }
     private void OnBack(object sender, RoutedEventArgs e) => Vm?.Back();
     private void OnSkip(object sender, RoutedEventArgs e) { Vm?.Skip(); Close(); }

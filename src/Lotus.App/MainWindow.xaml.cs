@@ -105,6 +105,7 @@ public sealed partial class MainWindow : Window
         onboarding.AccentPreview += (_, accent) => palette.ApplyAccent(accent);
         Onboarding.Closed += (_, _) => { palette.ApplyAccent(preferences.Current.Accent); ShowProfile(); ShowRoute(force: true); };
         palette.ApplyAccent(preferences.Current.Accent);
+        UiSound.Enabled = preferences.Current.UiSounds;
         ShowProfile();
         if (onboarding.NeedsWelcome) DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => OpenOnboarding(edit: false));
         ShowRoute();
@@ -165,6 +166,7 @@ public sealed partial class MainWindow : Window
         palette.Apply(preferences.Current.Theme);
         palette.ApplyAccent(preferences.Current.Accent);
         Motion.Enabled = !preferences.Current.ReduceMotion;
+        UiSound.Enabled = preferences.Current.UiSounds;
         ApplyStartup();
         UpdateAmbientState();
         UpdateBrandMotion();
@@ -391,11 +393,11 @@ public sealed partial class MainWindow : Window
             });
             var report = await games.DiagnoseAsync(game, seconds, delay);
             stop.Cancel(); await countdown;
-            if (report is null) { osd.Show(text["OsdFailed"]); }
+            if (report is null) { osd.Show(text["OsdFailed"]); UiSound.Play(UiSound.Cue.Fail); }
             else
             {
                 var top = report.Findings[0];
-                osd.Show(string.Format(text["OsdResult"], text[top.Key + "Title"]));
+                osd.Show(string.Format(text["OsdResult"], text[top.Key + "Title"])); UiSound.Play(UiSound.Cue.Done);
                 pendingGame = game; pendingReport = report;
                 tray?.Notify(text["TrayReportTitle"], text[top.Key + "Title"]);
             }

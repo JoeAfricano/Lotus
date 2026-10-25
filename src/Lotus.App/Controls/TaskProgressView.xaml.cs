@@ -24,7 +24,7 @@ public sealed partial class TaskProgressView : UserControl
 
     private void OnChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(TaskState.Done) && State is { Done: true }) { Render(animate: true); return; }
+        if (e.PropertyName == nameof(TaskState.Done) && State is { Done: true }) { Render(animate: true); UiSound.Play(UiSound.Cue.Done); return; }
         Render(animate: false);
     }
 

@@ -79,6 +79,9 @@ public sealed partial class ScorePanel : UserControl
 
     private async void OnToggle(object sender, RoutedEventArgs e)
     {
-        if (DataContext is LotusScoreViewModel vm) await vm.ToggleAsync();
+        if (DataContext is not LotusScoreViewModel vm) return;
+        var starting = vm.Idle;
+        await vm.ToggleAsync();
+        if (starting && vm.HasResult && vm.Idle) UiSound.Play(UiSound.Cue.Score); // finished, not cancelled
     }
 }

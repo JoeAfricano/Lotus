@@ -57,7 +57,13 @@ public sealed class ThemePalette(ResourceDictionary resources)
         {
             (from, to) = (Argb(255, 62, 50, 57), Argb(255, 36, 28, 33));
         }
-        Set("RoseBrush", light); Set("NavigationViewSelectionIndicatorForeground", light);
+        Set("RoseBrush", light);
+        // Menu: selected item filled with the accent, band tinted with it (gold selection line stays).
+        var tint = darkMode ? Argb(255, 120, 96, 108) : main;
+        Set("NavigationViewItemBackgroundSelected", Color.FromArgb(0x73, tint.R, tint.G, tint.B)); Set("NavigationViewItemBackgroundSelectedPointerOver", Color.FromArgb(0x8C, tint.R, tint.G, tint.B));
+        Set("NavigationViewItemBackgroundSelectedPressed", Color.FromArgb(0x66, tint.R, tint.G, tint.B));
+        if (resources["NavigationViewTopPaneBackground"] is LinearGradientBrush band && band.GradientStops.Count >= 3)
+        { band.GradientStops[0].Color = Color.FromArgb(0x4D, dark.R, dark.G, dark.B); band.GradientStops[1].Color = Color.FromArgb(0x2E, (byte)(dark.R / 2), (byte)(dark.G / 2), (byte)(dark.B / 2)); }
         var soft = darkMode ? Argb(0x22, 255, 255, 255) : Color.FromArgb(0x2E, main.R, main.G, main.B);
         Set("AccentSoftBrush", soft); Set("BadgeBrush", soft);
         Set("AccentFillColorDefaultBrush", main); Set("AccentFillColorSecondaryBrush", light); Set("AccentFillColorTertiaryBrush", dark);
