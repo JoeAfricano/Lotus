@@ -2,13 +2,18 @@
 
  <Grid x:Name="ShellRoot" Background="{ThemeResource WindowBrush}" RequestedTheme="Dark" SizeChanged="OnShellSizeChanged">
   <Grid.RowDefinitions><RowDefinition Height="48"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-  <Grid x:Name="DragRegion" Background="Transparent" Padding="18,0,150,0">
+  <Grid x:Name="DragRegion" Background="Transparent" Padding="18,0,0,0">
    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
     <Viewbox Width="20" Height="20" AutomationProperties.AccessibilityView="Raw"><Canvas Width="64" Height="64"><Path Fill="{StaticResource PetalBrush}" Opacity="0.82" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z"/><Path Fill="{StaticResource PetalBrush}" Data="M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z"/><Path Fill="{StaticResource GoldGradientBrush}" Data="M32,0.5 L33.5,3.5 L32,6 L30.5,3.5 Z M32,51 L34,55 L32,62.5 L30,55 Z M9,14 L10.4,16.5 L9,19 L7.6,16.5 Z M55,14 L56.4,16.5 L55,19 L53.6,16.5 Z"/><Path Stroke="{StaticResource GoldGradientBrush}" StrokeThickness="3" StrokeLineJoin="Round" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z M32,17 C36.5,23.5 37.5,31.5 32,39 C26.5,31.5 27.5,23.5 32,17 Z"/></Canvas></Viewbox>
     <TextBlock x:Name="TitleLogo" Text="Lotus" Foreground="{ThemeResource GoldBrush}" FontFamily="Georgia" FontSize="15" FontWeight="SemiBold" CharacterSpacing="60" VerticalAlignment="Center"/>
     <Rectangle Width="1" Height="14" Fill="{ThemeResource CardBorderBrush}" VerticalAlignment="Center" Margin="2,0"/><TextBlock Text="PLAY BETTER." Foreground="{ThemeResource RoseBrush}" FontSize="9.5" FontWeight="SemiBold" CharacterSpacing="220" VerticalAlignment="Center"/>
    </StackPanel>
   </Grid>
+  <!-- Game list: top right, above the profile (outside the drag area so it can be clicked) -->
+  <Button x:Name="GameListButton" Click="OnGameListButton" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,4,150,0" Height="32" Padding="12,0" CornerRadius="16"
+          Background="#2EF27BA8" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="1" SizeChanged="OnGameListButtonSize" ToolTipService.ToolTip="{Binding Text[gamelistDescription]}" AutomationProperties.AutomationId="title-gamelist">
+   <StackPanel Orientation="Horizontal" Spacing="7"><FontIcon x:Name="GameListIcon" Glyph="&#xE8B1;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[gamelistTitle]}" FontSize="12.5" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/></StackPanel>
+  </Button>
   <InfoBar x:Name="PreferenceWarning" Grid.Row="1" Severity="Warning" IsOpen="False" IsClosable="True" Margin="12,0,12,8" CornerRadius="10"/>
   <NavigationView Grid.Row="2" x:Name="Navigation" Background="Transparent" IsBackButtonVisible="Collapsed" IsSettingsVisible="False" PaneDisplayMode="Top" IsPaneToggleButtonVisible="False" SelectionChanged="OnSelectionChanged" IsPaneOpen="True" IsTitleBarAutoPaddingEnabled="False" AutomationProperties.Name="{Binding Text[Navigation]}">
    <NavigationView.PaneHeader>

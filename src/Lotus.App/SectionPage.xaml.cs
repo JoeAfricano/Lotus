@@ -16,6 +16,7 @@ public sealed partial class SectionPage : Page
     public bool ShowOptimize { get; private set; }
     public bool ShowPerformance { get; private set; }
     public bool ShowGames { get; private set; }
+    public bool ShowGameList { get; private set; }
     public bool ShowScore { get; private set; }
     public bool ShowTools { get; private set; }
     public bool ShowSettings { get; private set; }
@@ -34,7 +35,101 @@ public sealed partial class SectionPage : Page
     private void OnEditProfile(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenOnboarding(edit: true);
     // Home game shortcuts: the cover opens My Games (Play on the cover starts the game itself).
     private void OnOpenGames(object sender, RoutedEventArgs e) => shell?.NavigateCommand.Execute("games");
+    private void OnHomeGameList(object sender, RoutedEventArgs e) { if (HomeGameListIcon is not null) Motion.Pop(HomeGameListIcon); shell?.NavigateCommand.Execute("gamelist"); }
+
+    // ---- Home: "Continue playing" + live readiness (no repeats of the menu) ----
+    private async void OnContinueLoaded(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not SectionViewModel vm || ContinueCard is null) return;
+        if (vm.Games is { } games)
+        {
+            // The library may still be scanning (startup): redraw when it fills in.
+            var redraw = DispatcherQueue.CreateTimer(); redraw.Interval = TimeSpan.FromMilliseconds(400); redraw.IsRepeating = false;
+            redraw.Tick += (_, _) => ContinueCard?.Show(vm);
+            games.Games.CollectionChanged += (_, _) => DispatcherQueue.TryEnqueue(() => { redraw.Stop(); redraw.Start(); });
+            await games.EnsureLoadedAsync();
+        }
+        ContinueCard?.Show(vm);
+    }
+    private void OnContinueDetails(object? sender, Lotus.Core.Games.GameEntry game)
+    {
+        if (DataContext is SectionViewModel { GameDetails: { } details }) details.Pending = game;
+        shell?.NavigateCommand.Execute("games");
+    }
+    private void OnReadinessLoaded(object sender, RoutedEventArgs e) { if (DataContext is SectionViewModel vm) ReadinessCard?.Attach(vm); }
+
+    // ---- Meus Jogos banner: big Steam games of the moment, mixed with the player's own games ----
+    private async void OnGamesBannerLoaded(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not SectionViewModel vm || GamesBanner is null) return;
+        var t = vm.Text;
+        GamesBanner.SetSlides([new(t["HbListEyebrow"], t["HbListTitle"], t["HbListBody"], null, 2, t["HbListAction"], () => shell?.NavigateCommand.Execute("gamelist"), "")]);
+        var mine = new List<Controls.HomeBanner.Slide>();
+        if (vm.Games is { } games)
+        {
+            await games.EnsureLoadedAsync();
+            foreach (var g in games.InstalledGames().Where(g => g.Store == Lotus.Core.Games.GameStores.Steam).OrderByDescending(g => g.LastPlayed).Take(3))
+                mine.Add(new(t["HbMineEyebrow"], g.Name, t["HbMineBody"], Lotus.Core.Catalog.CatalogText.Hero(g.Id), 0, t["GiPlay"], () => games.Play(g), ""));
+        }
+        var hot = new List<Controls.HomeBanner.Slide>();
+        if (vm.GameList is { } list)
+            foreach (var (chart, eyebrow, take) in new[] { ("topsellers", "HbHotEyebrow", 4), ("trending", "HbTrendEyebrow", 2) })
+            {
+                var c = await Task.Run(() => list.ChartForBannerAsync(chart));
+                foreach (var item in (c?.Items ?? []).Where(i => !hot.Any(h => h.Title == i.Name)).Take(take))
+                    hot.Add(new(t[eyebrow], item.Name, t["HbHotBody"], Lotus.Core.Catalog.CatalogText.Hero(item.AppId), hot.Count, t["GiDetails"],
+                        () => { list.PendingOpen = item; shell?.NavigateCommand.Execute("gamelist"); }, ""));
+            }
+        if (GamesBanner is null || hot.Count + mine.Count == 0) return;
+        // Steam highlights lead, the player's games in between.
+        var all = new List<Controls.HomeBanner.Slide>(); var extra = new Queue<Controls.HomeBanner.Slide>(mine);
+        foreach (var h in hot) { all.Add(h); if (all.Count % 2 == 0 && extra.Count > 0) all.Add(extra.Dequeue()); }
+        all.AddRange(extra);
+        GamesBanner.SetSlides(all);
+    }
+    // Meus Jogos opened from Home's "Details": go straight to that game's page.
+    private void OnGamesListLoaded(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is SectionViewModel { GameDetails: { Pending: { } game } details, Games: { } games })
+        {
+            details.Pending = null;
+            var card = games.Games.FirstOrDefault(c => c.Game.Key == game.Key);
+            if (card is not null) OnGameDetails(this, card);
+        }
+    }
+
+    // Home's quick rescan (Meus Jogos keeps the full library tools).
+    private async void OnHomeRescan(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not SectionViewModel { Games: { } games } vm || HomeRescan is null) return;
+        HomeRescan.IsEnabled = false; HomeRescanText.Text = vm.Text["HomeRescanning"];
+        var spin = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(HomeRescanIcon);
+        spin.CenterPoint = new System.Numerics.Vector3(6, 6, 0);
+        var a = spin.Compositor.CreateScalarKeyFrameAnimation(); a.InsertKeyFrame(1, 360, spin.Compositor.CreateLinearEasingFunction()); a.Duration = TimeSpan.FromMilliseconds(900); a.IterationBehavior = Microsoft.UI.Composition.AnimationIterationBehavior.Forever;
+        if (Motion.Enabled) spin.StartAnimation("RotationAngleInDegrees", a);
+        try { await games.RefreshAsync(); }
+        finally
+        {
+            spin.StopAnimation("RotationAngleInDegrees"); spin.RotationAngleInDegrees = 0;
+            HomeRescan.IsEnabled = true; HomeRescanText.Text = vm.Text.Format("HomeRescanDone", games.InstalledGames().Count);
+            UiSound.Play(UiSound.Cue.Done);
+        }
+    }
     private void OnGuidedNavigate(object? sender, string id) => shell?.NavigateCommand.Execute(id);
+    // Meus Jogos: a click on a game opens its page in place (data from the stores); Back returns to the library.
+    private async void OnGameDetails(object? sender, Lotus.Core.Games.GameCard card)
+    {
+        if (DataContext is not SectionViewModel { GameDetails: { } details } || GamesList is null || GameDetail is null) return;
+        GamesList.Visibility = Visibility.Collapsed; GameDetail.Visibility = Visibility.Visible; Motion.EnterPage(GameDetail);
+        PageScroll.ChangeView(null, 0, null, true);
+        await details.LoadInstalledAsync(card.Game);
+    }
+    private void OnGameDetailBack(object? sender, EventArgs e)
+    {
+        if (GamesList is null || GameDetail is null) return;
+        GameDetail.Visibility = Visibility.Collapsed; GamesList.Visibility = Visibility.Visible; Motion.EnterPage(GamesList);
+    }
+    private void OnPlayGame(object? sender, Lotus.Core.Games.GameEntry game) { if (DataContext is SectionViewModel { Games: { } games }) games.Play(game); }
     private void OnHomeGameTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
     {
         if (e.OriginalSource is FrameworkElement { DataContext: not null } source && FindButton(source)) return; // the Play button handles its own tap
@@ -103,7 +198,7 @@ public sealed partial class SectionPage : Page
         try
         {
             ShowHome = vm.Section.Id == "home"; ShowOptimize = vm.Section.Id == "optimize";
-            ShowPerformance = vm.Section.Id == "performance"; ShowGames = vm.Section.Id == "games"; ShowScore = vm.Section.Id == "lotusscore"; ShowTools = vm.Section.Id == "tools"; ShowSettings = vm.Section.Id == "settings";
+            ShowPerformance = vm.Section.Id == "performance"; ShowGames = vm.Section.Id == "games"; ShowGameList = vm.Section.Id == "gamelist"; ShowScore = vm.Section.Id == "lotusscore"; ShowTools = vm.Section.Id == "tools"; ShowSettings = vm.Section.Id == "settings";
             ShowDiagnosis = ShowOptimize && shell.OptimizeTabIndex == 0;
             ShowRestore = ShowOptimize && shell.OptimizeTabIndex == 1;
             ShowLive = ShowPerformance && shell.PerformanceTabIndex == 0;
@@ -180,11 +275,13 @@ public sealed partial class SectionPage : Page
     private void OnContentSizeChanged(object sender, SizeChangedEventArgs e)
     {
         PageContent.Padding = e.NewSize.Width < 700 ? new Thickness(16, 20, 16, 32) : new Thickness(32, 28, 32, 40);
-        if (CpuSummary is null || GpuSummary is null || RamSummary is null) return;
-        var stacked = e.NewSize.Width < 720;
-        foreach (var (card, index) in new[] { (CpuSummary, 0), (GpuSummary, 1), (RamSummary, 2) })
+        // Home: continue card + side column side by side; stacked below ~980 px.
+        if (HomeTop is not null && HomeSide is not null && HomeSideColumn is not null)
         {
-            Grid.SetColumn(card, stacked ? 0 : index); Grid.SetRow(card, stacked ? index : 0); Grid.SetColumnSpan(card, stacked ? 3 : 1);
+            var narrow = e.NewSize.Width < 980;
+            HomeSideColumn.Width = narrow ? new GridLength(0) : new GridLength(360);
+            Grid.SetColumn(HomeSide, narrow ? 0 : 1); Grid.SetRow(HomeSide, narrow ? 1 : 0);
+            HomeTop.ColumnSpacing = narrow ? 0 : 20;
         }
     }
 }

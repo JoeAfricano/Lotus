@@ -3,7 +3,7 @@ namespace Lotus.Core.Games;
 // A game found in a launcher or added by the user. Detection is read-only; launching uses only
 // known launcher URI schemes or an existing .exe (validated by IGameLauncher).
 public sealed record GameEntry(string Store, string Id, string Name, string? InstallDir = null, string? ExePath = null,
-    string? LaunchUri = null, string? Args = null, string? CoverPath = null)
+    string? LaunchUri = null, string? Args = null, string? CoverPath = null, DateTimeOffset? LastPlayed = null)
 {
     public string Key => Store + ":" + Id;
     public bool IsManual => Store == GameStores.Manual;

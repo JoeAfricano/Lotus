@@ -40,7 +40,7 @@ public sealed class VdfNode
     }
 }
 
-public sealed record SteamApp(string AppId, string Name, string InstallDir);
+public sealed record SteamApp(string AppId, string Name, string InstallDir, DateTimeOffset? LastPlayed = null);
 public sealed record EpicItem(string AppName, string Name, string InstallLocation, string? LaunchExecutable, string? LaunchUri);
 public sealed record XboxGame(string IdentityName, string Name, string? PackageFamilyName, string? AppId, string? Executable, string? Logo);
 public sealed record EaGame(string Name, IReadOnlyList<string> ContentIds);
@@ -61,7 +61,8 @@ public static class GameParsers
         if (id is null || name is null || dir is null) return null;
         if (long.TryParse(state!.Get("StateFlags"), out var flags) && (flags & 4) == 0) return null; // 4 = fully installed
         if (id is "228980" or "431960" or "1070560" or "1391110" or "1628350" || SteamTools.Any(t => name.StartsWith(t, StringComparison.OrdinalIgnoreCase))) return null;
-        return new(id, name, dir);
+        DateTimeOffset? played = long.TryParse(state.Get("LastPlayed"), out var unix) && unix > 0 ? DateTimeOffset.FromUnixTimeSeconds(unix) : null;
+        return new(id, name, dir, played);
     }
 
     // --- Epic ---

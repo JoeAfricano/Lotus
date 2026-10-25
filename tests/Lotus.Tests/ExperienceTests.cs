@@ -24,7 +24,7 @@ public sealed class ExperienceTests
     public void LegacyDestinationsMapToFiveGroups(string requested, string group, string route)
     {
         var shell = new ShellViewModel(new Events()); shell.NavigateCommand.Execute(requested);
-        Assert.Equal(group, shell.SelectedSection.Id); Assert.Equal(route, shell.CurrentRoute); Assert.Equal(7, shell.Items.Count);
+        Assert.Equal(group, shell.SelectedSection.Id); Assert.Equal(route, shell.CurrentRoute); Assert.Equal(8, shell.Items.Count); // incl. Game list (opened from Home and the title bar)
     }
     [Fact] public void InternalTabsAndLanguageKeepExactRoute()
     {
@@ -37,7 +37,7 @@ public sealed class ExperienceTests
         shell.SettingsCategoryIndex = -1; Assert.Equal("logs", shell.CurrentRoute);
     }
     [Theory]
-    [InlineData("home", true, false, false, false)]
+    [InlineData("home", true, false, true, false)]  // live readiness card
     [InlineData("analysis", true, false, false, false)]
     [InlineData("monitoring", true, false, true, false)]
     [InlineData("benchmark", true, false, false, false)]
@@ -45,7 +45,7 @@ public sealed class ExperienceTests
     [InlineData("home", true, true, true, true)]
     [InlineData("monitoring", false, true, false, false)]
     [InlineData("logs", true, false, false, false)]
-    public void OnlyExplicitAnalysisOrLiveViewDemandSensors(string route, bool visible, bool request, bool collect, bool analyze)
+    public void OnlyLiveViewsOrExplicitAnalysisDemandSensors(string route, bool visible, bool request, bool collect, bool analyze)
         => Assert.Equal(new MonitoringDemand(collect, analyze), MonitoringDemand.For(route, visible, request));
 
     private sealed class Dispatcher : IUiDispatcher

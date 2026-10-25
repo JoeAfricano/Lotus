@@ -1261,4 +1261,161 @@ Condições atuais: {1}</value></data>
   <data name="GdRedoTitle" xml:space="preserve"><value>Análise guiada</value></data>
   <data name="GdRedoHint" xml:space="preserve"><value>Analisa o PC de novo e pergunta o que mudar, como na primeira vez.</value></data>
   <data name="GdRedo" xml:space="preserve"><value>Rodar de novo</value></data>
+  <data name="GiNoSynopsis" xml:space="preserve"><value>Sem sinopse disponível para este jogo.</value></data>
+  <data name="GiRelease" xml:space="preserve"><value>Lançado em {0}</value></data>
+  <data name="GiReleaseSoon" xml:space="preserve"><value>Previsto para {0}</value></data>
+  <data name="GiReviews" xml:space="preserve"><value>{0}% positivas · {1} análises</value></data>
+  <data name="GiRevOverwhelming" xml:space="preserve"><value>Extremamente positivas</value></data>
+  <data name="GiRevVeryPositive" xml:space="preserve"><value>Muito positivas</value></data>
+  <data name="GiRevPositive" xml:space="preserve"><value>Positivas</value></data>
+  <data name="GiRevMixed" xml:space="preserve"><value>Misturadas</value></data>
+  <data name="GiRevNegative" xml:space="preserve"><value>Negativas</value></data>
+  <data name="GiDiffUnknown" xml:space="preserve"><value>Sem dados</value></data>
+  <data name="GiDiffEasy" xml:space="preserve"><value>Fácil</value></data>
+  <data name="GiDiffMedium" xml:space="preserve"><value>Média</value></data>
+  <data name="GiDiffHard" xml:space="preserve"><value>Difícil</value></data>
+  <data name="GiDiffVeryHard" xml:space="preserve"><value>Muito difícil</value></data>
+  <data name="GiDifficulty" xml:space="preserve"><value>Dificuldade</value></data>
+  <data name="GiDifficultyHint" xml:space="preserve"><value>Estimativa pelas tags que a comunidade Steam dá ao jogo.</value></data>
+  <data name="GiMetacritic" xml:space="preserve"><value>Metacritic</value></data>
+  <data name="GiSteamReviews" xml:space="preserve"><value>Análises na Steam</value></data>
+  <data name="GiSynopsis" xml:space="preserve"><value>Sinopse</value></data>
+  <data name="GiTags" xml:space="preserve"><value>A comunidade descreve como</value></data>
+  <data name="GiSource" xml:space="preserve"><value>Dados: {0}. Atualizados a cada poucos dias.</value></data>
+  <data name="GiLoading" xml:space="preserve"><value>Buscando informações do jogo...</value></data>
+  <data name="GiFailed" xml:space="preserve"><value>Não achei este jogo nas bases abertas. Sem internet? Tente de novo depois.</value></data>
+  <data name="GiPlay" xml:space="preserve"><value>Jogar</value></data>
+  <data name="GiStore" xml:space="preserve"><value>Ver na loja</value></data>
+  <data name="GiOpenMetacritic" xml:space="preserve"><value>Ver no Metacritic</value></data>
+  <data name="GiBack" xml:space="preserve"><value>Voltar</value></data>
+  <data name="GiDetails" xml:space="preserve"><value>Detalhes</value></data>
+  <data name="GlTitle" xml:space="preserve"><value>Game list</value></data>
+  <data name="GlSubtitle" xml:space="preserve"><value>Não sabe o que jogar? Listas que se atualizam sozinhas e um sorteio do seu jeito.</value></data>
+  <data name="GlCharttrending" xml:space="preserve"><value>Em alta</value></data>
+  <data name="GlCharttoprated" xml:space="preserve"><value>Mais bem avaliados</value></data>
+  <data name="GlCharttopsellers" xml:space="preserve"><value>Mais vendidos</value></data>
+  <data name="GlChartnew" xml:space="preserve"><value>Lançamentos</value></data>
+  <data name="GlChartupcoming" xml:space="preserve"><value>Em breve</value></data>
+  <data name="GlHinttrending" xml:space="preserve"><value>Os mais jogados na Steam nas últimas duas semanas.</value></data>
+  <data name="GlHinttoprated" xml:space="preserve"><value>Maior porcentagem de análises positivas, entre jogos com muitas análises.</value></data>
+  <data name="GlHinttopsellers" xml:space="preserve"><value>O que mais vende na Steam agora.</value></data>
+  <data name="GlHintnew" xml:space="preserve"><value>Saíram há pouco tempo.</value></data>
+  <data name="GlHintupcoming" xml:space="preserve"><value>Ainda vão sair. Bom para ficar de olho.</value></data>
+  <data name="GlLoading" xml:space="preserve"><value>Atualizando a lista...</value></data>
+  <data name="GlUpdated" xml:space="preserve"><value>Atualizada em {0}. Atualiza sozinha a cada 6 horas.</value></data>
+  <data name="GlOffline" xml:space="preserve"><value>Sem conexão agora. Mostrando a última lista salva, se houver.</value></data>
+  <data name="GlPlayers" xml:space="preserve"><value>{0} jogando</value></data>
+  <data name="GlPositive" xml:space="preserve"><value>{0}% positivas</value></data>
+  <data name="GlInstalled" xml:space="preserve"><value>Instalado</value></data>
+  <data name="GlPickTitle" xml:space="preserve"><value>Não sei o que jogar</value></data>
+  <data name="GlPickBody" xml:space="preserve"><value>Escolha o que combina com você e o Lotus sorteia um jogo das listas.</value></data>
+  <data name="GlGenre" xml:space="preserve"><value>Gênero</value></data>
+  <data name="GlDifficulty" xml:space="preserve"><value>Dificuldade</value></data>
+  <data name="GlDiffany" xml:space="preserve"><value>Qualquer</value></data>
+  <data name="GlDiffeasy" xml:space="preserve"><value>Fácil</value></data>
+  <data name="GlDiffmedium" xml:space="preserve"><value>Média</value></data>
+  <data name="GlDiffhard" xml:space="preserve"><value>Difícil</value></data>
+  <data name="GlOnlyNew" xml:space="preserve"><value>Só jogos que eu não tenho</value></data>
+  <data name="GlOnlyFree" xml:space="preserve"><value>Só gratuitos</value></data>
+  <data name="GlPick" xml:space="preserve"><value>Sortear um jogo</value></data>
+  <data name="GlPickAgain" xml:space="preserve"><value>Sortear outro</value></data>
+  <data name="GlPicking" xml:space="preserve"><value>Procurando um jogo para você...</value></data>
+  <data name="GlPickNone" xml:space="preserve"><value>Não achei nenhum com esses filtros nas listas de agora. Tente afrouxar um pouco.</value></data>
+  <data name="GlPickEmpty" xml:space="preserve"><value>As listas ainda não carregaram. Confira a conexão.</value></data>
+  <data name="GlRefresh" xml:space="preserve"><value>Atualizar agora</value></data>
+  <data name="GlCredits" xml:space="preserve"><value>Inspirado no **MyGameList** (mygamelist.club). Dados abertos da Steam, SteamSpy, Metacritic (via Steam) e GOG.</value></data>
+  <data name="GlCreditsLink" xml:space="preserve"><value>Abrir mygamelist.club</value></data>
+  <data name="GlGenreany" xml:space="preserve"><value>Qualquer</value></data>
+  <data name="GlGenreAction" xml:space="preserve"><value>Ação</value></data>
+  <data name="GlGenreAdventure" xml:space="preserve"><value>Aventura</value></data>
+  <data name="GlGenreRPG" xml:space="preserve"><value>RPG</value></data>
+  <data name="GlGenreStrategy" xml:space="preserve"><value>Estratégia</value></data>
+  <data name="GlGenreIndie" xml:space="preserve"><value>Indie</value></data>
+  <data name="GlGenreRacing" xml:space="preserve"><value>Corrida</value></data>
+  <data name="GlGenreSports" xml:space="preserve"><value>Esportes</value></data>
+  <data name="GlGenreSimulation" xml:space="preserve"><value>Simulação</value></data>
+  <data name="GlGenreCasual" xml:space="preserve"><value>Casual</value></data>
+  <data name="GlSearchPlaceholder" xml:space="preserve"><value>Buscar qualquer jogo de PC...</value></data>
+  <data name="GlSearching" xml:space="preserve"><value>Buscando na loja...</value></data>
+  <data name="GlSearchFound" xml:space="preserve"><value>{0} resultado(s) para "{1}".</value></data>
+  <data name="GlSearchNone" xml:space="preserve"><value>Nada encontrado para "{1}".</value></data>
+  <data name="GlSortBy" xml:space="preserve"><value>Ordenar</value></data>
+  <data name="GlSortrank" xml:space="preserve"><value>Posição na lista</value></data>
+  <data name="GlSortrating" xml:space="preserve"><value>Avaliação dos jogadores</value></data>
+  <data name="GlSortmetacritic" xml:space="preserve"><value>Metacritic</value></data>
+  <data name="GlSortname" xml:space="preserve"><value>Nome (A-Z)</value></data>
+  <data name="GlMinRating" xml:space="preserve"><value>Nota mínima</value></data>
+  <data name="GlMin0" xml:space="preserve"><value>Qualquer nota</value></data>
+  <data name="GlMin70" xml:space="preserve"><value>70 ou mais</value></data>
+  <data name="GlMin80" xml:space="preserve"><value>80 ou mais</value></data>
+  <data name="GlMin90" xml:space="preserve"><value>90 ou mais</value></data>
+  <data name="GlHideOwned" xml:space="preserve"><value>Esconder os que eu tenho</value></data>
+  <data name="GlFreeOnly" xml:space="preserve"><value>Só gratuitos</value></data>
+  <data name="GlMetacritic" xml:space="preserve"><value>Metacritic {0}</value></data>
+  <data name="GlFree" xml:space="preserve"><value>Gratuito</value></data>
+  <data name="GlEmpty" xml:space="preserve"><value>Nenhum jogo com esses filtros.</value></data>
+  <data name="gamelistTitle" xml:space="preserve"><value>Game list</value></data>
+  <data name="gamelistDescription" xml:space="preserve"><value>Não sabe o que jogar? Listas que se atualizam sozinhas e um sorteio do seu jeito.</value></data>
+  <data name="gamelistNext" xml:space="preserve"><value>Listas de jogos de PC e sorteio.</value></data>
+  <data name="HbReadyEyebrow" xml:space="preserve"><value>Lotus</value></data>
+  <data name="HbReadyTitle" xml:space="preserve"><value>Seu PC pronto para cada partida</value></data>
+  <data name="HbReadyBody" xml:space="preserve"><value>Ajuste o Windows para jogar em poucos cliques. Tudo pode ser desfeito.</value></data>
+  <data name="HbReadyAction" xml:space="preserve"><value>Otimizar meu PC</value></data>
+  <data name="HbScoreEyebrow" xml:space="preserve"><value>LOTUS SCORE</value></data>
+  <data name="HbScoreTitle" xml:space="preserve"><value>Quanto seu PC aguenta?</value></data>
+  <data name="HbScoreBody" xml:space="preserve"><value>Teste CPU e GPU e veja onde sua máquina fica perto de outras.</value></data>
+  <data name="HbScoreAction" xml:space="preserve"><value>Fazer o teste</value></data>
+  <data name="HbListEyebrow" xml:space="preserve"><value>Game list</value></data>
+  <data name="HbListTitle" xml:space="preserve"><value>Não sabe o que jogar?</value></data>
+  <data name="HbListBody" xml:space="preserve"><value>Listas que se atualizam sozinhas e um sorteio do seu jeito.</value></data>
+  <data name="HbListAction" xml:space="preserve"><value>Sortear um jogo</value></data>
+  <data name="HbOverlayEyebrow" xml:space="preserve"><value>Overlay de FPS</value></data>
+  <data name="HbOverlayTitle" xml:space="preserve"><value>Seu FPS na tela, do jeito Lotus</value></data>
+  <data name="HbOverlayBody" xml:space="preserve"><value>FPS, 1% low e temperaturas dentro do jogo, pelo RivaTuner.</value></data>
+  <data name="HbOverlayAction" xml:space="preserve"><value>Ver o overlay</value></data>
+  <data name="HbMineEyebrow" xml:space="preserve"><value>Continue jogando</value></data>
+  <data name="HbMineBody" xml:space="preserve"><value>Um clique e o jogo abre.</value></data>
+  <data name="HbHotEyebrow" xml:space="preserve"><value>Destaque na Steam</value></data>
+  <data name="HbTrendEyebrow" xml:space="preserve"><value>Em alta na Steam</value></data>
+  <data name="HbHotBody" xml:space="preserve"><value>Um dos jogos mais procurados agora. Veja nota, dificuldade e sinopse.</value></data>
+  <data name="HomeRescan" xml:space="preserve"><value>Reescanear</value></data>
+  <data name="HomeRescanHint" xml:space="preserve"><value>Procura de novo os jogos instalados nas lojas</value></data>
+  <data name="HomeRescanning" xml:space="preserve"><value>Procurando...</value></data>
+  <data name="HomeRescanDone" xml:space="preserve"><value>{0} jogos</value></data>
+  <data name="QtScore" xml:space="preserve"><value>LOTUS SCORE</value></data>
+  <data name="QtScoreHint" xml:space="preserve"><value>Teste CPU e GPU e compare.</value></data>
+  <data name="QtList" xml:space="preserve"><value>Game list</value></data>
+  <data name="QtListHint" xml:space="preserve"><value>Sorteie o próximo jogo.</value></data>
+  <data name="QtTools" xml:space="preserve"><value>Ferramentas</value></data>
+  <data name="QtToolsHint" xml:space="preserve"><value>Memória, temporários, DNS e drivers.</value></data>
+  <data name="QtPerf" xml:space="preserve"><value>Desempenho</value></data>
+  <data name="QtPerfHint" xml:space="preserve"><value>FPS, relatórios e uso ao vivo.</value></data>
+  <data name="QtGames" xml:space="preserve"><value>Meus Jogos</value></data>
+  <data name="QtGamesHint" xml:space="preserve"><value>Biblioteca, detalhes e overlay.</value></data>
+  <data name="HomeGameListHint" xml:space="preserve"><value>Listas em alta, notas e um sorteio do seu jeito.</value></data>
+  <data name="HcEyebrow" xml:space="preserve"><value>Continue jogando</value></data>
+  <data name="HcEmptyEyebrow" xml:space="preserve"><value>Seus jogos</value></data>
+  <data name="HcEmptyTitle" xml:space="preserve"><value>Nenhum jogo encontrado ainda</value></data>
+  <data name="HcEmptyBody" xml:space="preserve"><value>O Lotus procura nas lojas instaladas. Se o jogo estiver fora delas, adicione em Meus Jogos.</value></data>
+  <data name="HcToday" xml:space="preserve"><value>Jogado hoje</value></data>
+  <data name="HcYesterday" xml:space="preserve"><value>Jogado ontem</value></data>
+  <data name="HcDaysAgo" xml:space="preserve"><value>Jogado há {0} dias</value></data>
+  <data name="HcNeverDate" xml:space="preserve"><value>Pronto para jogar</value></data>
+  <data name="RdEyebrow" xml:space="preserve"><value>Prontidão do PC</value></data>
+  <data name="RdGreat" xml:space="preserve"><value>Tudo pronto para jogar</value></data>
+  <data name="RdGood" xml:space="preserve"><value>Dá para jogar bem</value></data>
+  <data name="RdBusy" xml:space="preserve"><value>Seu PC está ocupado agora</value></data>
+  <data name="RdAllClear" xml:space="preserve"><value>Memória folgada e sistema tranquilo. Bom momento para uma partida.</value></data>
+  <data name="RdMemory" xml:space="preserve"><value>A memória está quase cheia. Fechar programas abertos ajuda o jogo a rodar liso.</value></data>
+  <data name="RdHeavy" xml:space="preserve"><value>O {0} está usando {1} de memória. Fechar antes de jogar ajuda.</value></data>
+  <data name="RdCpu" xml:space="preserve"><value>O processador está trabalhando bastante. Veja o que está pesando em Desempenho.</value></data>
+  <data name="RdGpuHot" xml:space="preserve"><value>A placa de vídeo está quente. Confira as ventoinhas e a temperatura em Desempenho.</value></data>
+  <data name="RdDisk" xml:space="preserve"><value>Pouco espaço livre no disco. Jogos e shaders precisam de folga.</value></data>
+  <data name="RdFreeMemory" xml:space="preserve"><value>Liberar memória</value></data>
+  <data name="RdSeeLive" xml:space="preserve"><value>Ver ao vivo</value></data>
+  <data name="RdCleanDisk" xml:space="preserve"><value>Limpar espaço</value></data>
+  <data name="RdFactMem" xml:space="preserve"><value>Memória {0}%</value></data>
+  <data name="RdFactCpu" xml:space="preserve"><value>CPU {0}%</value></data>
+  <data name="RdFactGpu" xml:space="preserve"><value>GPU {0} °C</value></data>
+  <data name="RdWaiting" xml:space="preserve"><value>Lendo os sensores...</value></data>
 </root>

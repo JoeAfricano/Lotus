@@ -160,6 +160,11 @@ public sealed class GamesViewModel : ObservableObject
         OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(EmptyMessage)); OnPropertyChanged(nameof(HasFeatured));
     }
     public ObservableCollection<GameCard> Featured { get; } = [];
+    // Installed games (not hidden), for the Game list "you have it" marks and the game page Play button.
+    public IReadOnlyList<GameEntry> InstalledGames() => [.. all.Where(g => !hidden.Contains(g.Key))];
+    public void Play(GameEntry game) => Launch(Card(game));
+    // "Continue playing": the most recently played game (Steam keeps the date), else the first one in the library.
+    public GameEntry? LastPlayed() => InstalledGames().OrderByDescending(g => g.LastPlayed ?? DateTimeOffset.MinValue).FirstOrDefault();
     public bool HasFeatured => Featured.Count > 0;
     // The library game that is running now (used by the in-game hotkey), or null.
     public GameEntry? RunningGame() => processCheck is null ? null : all.Where(g => !hidden.Contains(g.Key)).FirstOrDefault(g => processCheck.IsRunning(g));

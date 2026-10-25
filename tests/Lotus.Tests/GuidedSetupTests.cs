@@ -66,3 +66,19 @@ public sealed class GuidedSetupTests
         fresh.Close(); Assert.True(fresh.ShowReady); // "Not now" counts as seen
     }
 }
+
+public sealed class ReadinessTests
+{
+    [Fact] public void ScoreAndTheBiggestIssue()
+    {
+        var calm = PcReadiness.Compute(40, 10, 55, ("Notepad", 50L << 20), false);
+        Assert.Equal(100, calm.Score); Assert.Equal(ReadinessIssue.None, calm.Issue);
+        var full = PcReadiness.Compute(91, 10, 55, ("Chrome", 3L << 30), false);
+        Assert.Equal(ReadinessIssue.Memory, full.Issue); Assert.True(full.Score < 70);
+        var hot = PcReadiness.Compute(40, 10, 90, null, false);
+        Assert.Equal(ReadinessIssue.GpuHot, hot.Issue);
+        var heavy = PcReadiness.Compute(50, 10, null, ("Chrome", 2L << 30), false);
+        Assert.Equal(ReadinessIssue.HeavyApps, heavy.Issue); Assert.Equal("Chrome", heavy.HeavyApp);
+        Assert.InRange(PcReadiness.Compute(null, null, null, null, false).Score, 60, 90); // no sensors yet: neutral, not alarming
+    }
+}

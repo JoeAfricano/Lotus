@@ -4,12 +4,39 @@
    <ContentControl Content="{Binding}" ContentTemplate="{StaticResource PageHeaderTemplate}" HorizontalContentAlignment="Stretch"/>
 
    <StackPanel x:Name="HomeContent" x:Load="{x:Bind ShowHome}" Spacing="20" app:Motion.Stagger="True">
-    <controls:GuidedSetupCard DataContext="{Binding Guided}" NavigateRequested="OnGuidedNavigate"/>
+    <!-- Simple start: the guided setup (or "ready") and the Game list spotlight; stacked when narrow -->
+    <Grid x:Name="HomeTop" ColumnSpacing="20" RowSpacing="16">
+     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition x:Name="HomeSideColumn" Width="360"/></Grid.ColumnDefinitions>
+     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+     <controls:ContinueCard x:Name="ContinueCard" Loaded="OnContinueLoaded" DetailsRequested="OnContinueDetails"/>
+     <StackPanel x:Name="HomeSide" Grid.Column="1" Spacing="16" VerticalAlignment="Top">
+      <controls:GuidedSetupCard DataContext="{Binding Guided}" NavigateRequested="OnGuidedNavigate"/>
+      <controls:ReadinessCard x:Name="ReadinessCard" Loaded="OnReadinessLoaded" NavigateRequested="OnGuidedNavigate" Visibility="{Binding Guided.ShowReady, Converter={StaticResource BooleanVisibility}}"/>
+      <Button x:Name="HomeGameList" Click="OnHomeGameList" Style="{StaticResource CardButtonStyle}" AutomationProperties.AutomationId="home-gamelist" AutomationProperties.Name="{Binding Text[gamelistTitle]}">
+       <Border CornerRadius="18" Padding="18,16" BorderThickness="1" BorderBrush="{ThemeResource GoldGradientBrush}" app:Motion.Hover="1.02" app:Motion.Sheen="True">
+        <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#66C2185B" Offset="0"/><GradientStop Color="#40E7AE93" Offset="1"/></LinearGradientBrush></Border.Background>
+        <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+         <Border Width="44" Height="44" CornerRadius="14" Background="{ThemeResource GoldGradientBrush}"><FontIcon x:Name="HomeGameListIcon" Glyph="&#xE8B1;" FontSize="20" Foreground="#3A0F24"/></Border>
+         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+          <TextBlock Text="{Binding Text[HbListTitle]}" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap"/>
+          <TextBlock Text="{Binding Text[HomeGameListHint]}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap"/>
+         </StackPanel>
+         <FontIcon Grid.Column="2" Glyph="&#xE76C;" FontSize="14" Foreground="{ThemeResource GoldBrush}"/>
+        </Grid>
+       </Border>
+      </Button>
+     </StackPanel>
+    </Grid>
     <!-- Your games: quick shortcuts; the cover opens My Games, Play starts the game -->
     <Grid ColumnSpacing="12" Margin="0,8,0,0" Visibility="{Binding Games.HasFeatured, Converter={StaticResource BooleanVisibility}}">
      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
      <TextBlock Text="{Binding Text[HomeGames]}" Style="{StaticResource SectionTitleStyle}"/>
-     <HyperlinkButton Grid.Column="1" Content="{Binding Text[HomeGamesAll]}" Click="OnOpenGames" AutomationProperties.AutomationId="home-games-all"/>
+     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+      <Button x:Name="HomeRescan" Click="OnHomeRescan" Background="Transparent" BorderThickness="0" Padding="10,6" ToolTipService.ToolTip="{Binding Text[HomeRescanHint]}" AutomationProperties.AutomationId="home-rescan">
+       <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon x:Name="HomeRescanIcon" Glyph="&#xE72C;" FontSize="12" Foreground="{ThemeResource RoseBrush}"/><TextBlock x:Name="HomeRescanText" Text="{Binding Text[HomeRescan]}" FontSize="13" Foreground="{ThemeResource RoseBrush}"/></StackPanel>
+      </Button>
+      <HyperlinkButton Content="{Binding Text[HomeGamesAll]}" Click="OnOpenGames" AutomationProperties.AutomationId="home-games-all"/>
+     </StackPanel>
     </Grid>
     <ItemsControl ItemsSource="{Binding Games.Featured}" Visibility="{Binding Games.HasFeatured, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="home-games">
      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="14"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
@@ -24,58 +51,6 @@
       </Grid>
      </DataTemplate></ItemsControl.ItemTemplate>
     </ItemsControl>
-    <TextBlock Text="{Binding Text[UxYourComputer]}" Style="{StaticResource SectionTitleStyle}" Margin="0,8,0,0"/>
-    <Grid x:Name="SummaryGrid" ColumnSpacing="16" RowSpacing="16">
-     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-     <Border x:Name="CpuSummary" Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="12">
-      <Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE950;" Style="{StaticResource BadgeIconStyle}"/></Border>
-      <TextBlock Text="{Binding Text[UxProcessor]}" Style="{StaticResource EyebrowStyle}"/>
-      <TextBlock Text="{Binding Experience.CpuModel}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"/>
-     </StackPanel></Border>
-     <Border x:Name="GpuSummary" Grid.Column="1" Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="12">
-      <Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE7F4;" Style="{StaticResource BadgeIconStyle}"/></Border>
-      <TextBlock Text="{Binding Text[UxGraphics]}" Style="{StaticResource EyebrowStyle}"/>
-      <TextBlock Text="{Binding Experience.GpuModel}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"/>
-     </StackPanel></Border>
-     <Border x:Name="RamSummary" Grid.Column="2" Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="12">
-      <Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE964;" Style="{StaticResource BadgeIconStyle}"/></Border>
-      <TextBlock Text="{Binding Text[UxMemoryLabel]}" Style="{StaticResource EyebrowStyle}"/>
-      <TextBlock Text="{Binding Experience.RamCapacity}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"/>
-     </StackPanel></Border>
-    </Grid>
-    <TextBlock Text="{Binding Experience.SummaryTime}" Style="{StaticResource CaptionStyle}"/>
-    <!-- Read-only hardware check -->
-    <Border x:Name="HardwareCard" Style="{StaticResource CardStyle}" DataContext="{Binding Hardware}" Loaded="OnHardwareCardLoaded" Margin="0,8,0,0">
-     <StackPanel Spacing="14">
-      <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-       <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE9D9;" Style="{StaticResource BadgeIconStyle}"/></Border>
-       <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[HwCardTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Summary}" Style="{StaticResource CaptionStyle}" AutomationProperties.AutomationId="hw-summary" AutomationProperties.LiveSetting="Polite" app:Motion.Settle="True"/></StackPanel>
-       <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Top">
-        <ProgressRing Width="18" Height="18" IsActive="{Binding IsBusy}"/>
-        <Button Content="{Binding Text[HwCheck]}" Command="{Binding CheckCommand}" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="hw-check"/>
-       </StackPanel>
-      </Grid>
-      <ItemsControl ItemsSource="{Binding Findings}" Visibility="{Binding HasFindings, Converter={StaticResource BooleanVisibility}}">
-       <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-       <ItemsControl.ItemTemplate><DataTemplate>
-        <Border Background="{ThemeResource CardHoverBrush}" CornerRadius="12" Padding="14,12">
-         <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-          <Grid Width="30" Height="30" VerticalAlignment="Top">
-           <Border CornerRadius="9" Background="{ThemeResource AccentSoftBrush}"/>
-           <FontIcon Glyph="{Binding Glyph}" FontSize="14" Foreground="{Binding IsAttention, Converter={StaticResource AttentionBrush}}"/>
-          </Grid>
-          <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}"/></StackPanel>
-          <StackPanel Grid.Column="2" Spacing="6" HorizontalAlignment="Right">
-           <ContentControl Content="{Binding Level}" Style="{StaticResource StatusBadgeStyle}" HorizontalAlignment="Right"/>
-           <HyperlinkButton Content="{Binding DataContext.Text[HwOpenSettings], ElementName=HardwareCard}" Tag="{Binding SettingsUri}" Click="OnOpenSettings" Visibility="{Binding HasSettings, Converter={StaticResource BooleanVisibility}}" Padding="6,2" HorizontalAlignment="Right"/>
-          </StackPanel>
-         </Grid>
-        </Border>
-       </DataTemplate></ItemsControl.ItemTemplate>
-      </ItemsControl>
-      <TextBlock Text="{Binding LastChecked}" Style="{StaticResource CaptionStyle}"/>
-     </StackPanel>
-    </Border>
    </StackPanel>
 
    <StackPanel x:Name="OptimizeContent" x:Load="{x:Bind ShowOptimize}" Spacing="20">
@@ -106,10 +81,15 @@
     <controls:ReportPanel x:Name="HistoryContent" x:Load="{x:Bind ShowHistory}"/>
    </StackPanel>
 
-   <StackPanel x:Name="GamesArea" x:Load="{x:Bind ShowGames}" Spacing="16">
-    <controls:RtssCard DataContext="{Binding Integrations}"/>
-    <controls:GamesPanel x:Name="GamesContent" DataContext="{Binding Games}"/>
-   </StackPanel>
+   <Grid x:Name="GamesArea" x:Load="{x:Bind ShowGames}">
+    <StackPanel x:Name="GamesList" Spacing="16" Loaded="OnGamesListLoaded">
+     <controls:HomeBanner x:Name="GamesBanner" Height="300" Loaded="OnGamesBannerLoaded"/>
+     <controls:RtssCard DataContext="{Binding Integrations}"/>
+     <controls:GamesPanel x:Name="GamesContent" DataContext="{Binding Games}" DetailsRequested="OnGameDetails"/>
+    </StackPanel>
+    <controls:GameDetailView x:Name="GameDetail" Visibility="Collapsed" DataContext="{Binding GameDetails}" BackRequested="OnGameDetailBack" PlayRequested="OnPlayGame"/>
+   </Grid>
+   <controls:GameListPanel x:Name="GameListContent" x:Load="{x:Bind ShowGameList}" DataContext="{Binding GameList}" PlayRequested="OnPlayGame"/>
    <controls:ScorePanel x:Name="ScoreContent" x:Load="{x:Bind ShowScore}" DataContext="{Binding Score}"/>
    <controls:ToolsPanel x:Name="ToolsContent" x:Load="{x:Bind ShowTools}" DataContext="{Binding Tools}"/>
 

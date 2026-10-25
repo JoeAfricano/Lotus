@@ -2,15 +2,15 @@
              xmlns:app="using:Lotus.App" xmlns:controls="using:Lotus.App.Controls">
  <Grid>
   <!-- First run: analyse → questions → apply → result -->
-  <Border Style="{StaticResource HeroCardStyle}" Visibility="{Binding ShowWizard, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="guided">
+  <Border Style="{StaticResource HeroCardStyle}" Padding="22" Visibility="{Binding ShowWizard, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="guided">
    <StackPanel Spacing="16">
-    <Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-     <Border x:Name="Badge" Width="52" Height="52" CornerRadius="16" Background="{ThemeResource AccentGradientBrush}" VerticalAlignment="Top">
-      <FontIcon x:Name="BadgeIcon" Glyph="&#xE9D9;" FontSize="24" Foreground="White" AutomationProperties.AccessibilityView="Raw"/>
+    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+     <Border x:Name="Badge" Width="44" Height="44" CornerRadius="14" Background="{ThemeResource AccentGradientBrush}" VerticalAlignment="Top">
+      <FontIcon x:Name="BadgeIcon" Glyph="&#xE9D9;" FontSize="20" Foreground="White" AutomationProperties.AccessibilityView="Raw"/>
      </Border>
      <StackPanel Grid.Column="1" Spacing="6">
-      <TextBlock Text="{Binding Heading}" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" app:Motion.Settle="True" AutomationProperties.HeadingLevel="Level2"/>
-      <TextBlock app:Rich.Text="{Binding Description}" FontSize="15" LineHeight="23" TextWrapping="Wrap" MaxWidth="720" HorizontalAlignment="Left" Foreground="{ThemeResource MutedBrush}"/>
+      <TextBlock Text="{Binding Heading}" FontSize="21" FontWeight="SemiBold" TextWrapping="Wrap" app:Motion.Settle="True" AutomationProperties.HeadingLevel="Level2"/>
+      <TextBlock app:Rich.Text="{Binding Description}" FontSize="13.5" LineHeight="20" TextWrapping="Wrap" MaxWidth="720" HorizontalAlignment="Left" Foreground="{ThemeResource MutedBrush}"/>
      </StackPanel>
     </Grid>
 
@@ -72,11 +72,11 @@
 
     <!-- Questions footer -->
     <StackPanel Spacing="10" Visibility="{Binding IsQuestions, Converter={StaticResource BooleanVisibility}}">
-     <StackPanel Orientation="Horizontal" Spacing="10">
-      <Button Click="OnApply" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" AutomationProperties.AutomationId="guided-apply">
+     <StackPanel Spacing="8">
+      <Button Click="OnApply" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="guided-apply">
        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE945;" FontSize="14"/><TextBlock Text="{Binding ApplyLabel}"/></StackPanel>
       </Button>
-      <Button Content="{Binding Text[GdLater]}" Click="OnClose" Style="{StaticResource SoftButtonStyle}" MinHeight="44" AutomationProperties.AutomationId="guided-later"/>
+      <Button Content="{Binding Text[GdLater]}" Click="OnClose" Style="{StaticResource SoftButtonStyle}" MinHeight="44" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="guided-later"/>
      </StackPanel>
      <TextBlock app:Rich.Text="{Binding Text[GdUndoHint]}" Style="{StaticResource CaptionStyle}" MaxWidth="720" HorizontalAlignment="Left"/>
     </StackPanel>
@@ -85,27 +85,13 @@
     <controls:TaskProgressView State="{Binding Progress}" MaxWidth="560" HorizontalAlignment="Left" Visibility="{Binding IsApplying, Converter={StaticResource BooleanVisibility}}"/>
 
     <!-- Done: free to edit -->
-    <StackPanel Orientation="Horizontal" Spacing="10" Visibility="{Binding IsDone, Converter={StaticResource BooleanVisibility}}">
-     <Button Content="{Binding Text[GdFinish]}" Click="OnClose" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" AutomationProperties.AutomationId="guided-finish"/>
-     <Button Content="{Binding Text[GdEdit]}" Tag="optimize" Click="OnGo" Style="{StaticResource SoftButtonStyle}" MinHeight="44"/>
-     <Button Content="{Binding Text[GdTools]}" Tag="tools" Click="OnGo" Style="{StaticResource SoftButtonStyle}" MinHeight="44"/>
+    <StackPanel Spacing="8" Visibility="{Binding IsDone, Converter={StaticResource BooleanVisibility}}">
+     <Button Content="{Binding Text[GdFinish]}" Click="OnClose" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="guided-finish"/>
+     <Button Content="{Binding Text[GdEdit]}" Tag="optimize" Click="OnGo" Style="{StaticResource SoftButtonStyle}" MinHeight="44" HorizontalAlignment="Stretch"/>
+     <Button Content="{Binding Text[GdTools]}" Tag="tools" Click="OnGo" Style="{StaticResource SoftButtonStyle}" MinHeight="44" HorizontalAlignment="Stretch"/>
     </StackPanel>
    </StackPanel>
   </Border>
 
-  <!-- Afterwards: a short "ready" card instead of the big button -->
-  <Border Style="{StaticResource HeroCardStyle}" Padding="24" Visibility="{Binding ShowReady, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="guided-ready">
-   <Grid ColumnSpacing="18"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-    <Border Width="52" Height="52" CornerRadius="16" Background="{ThemeResource AccentGradientBrush}"><FontIcon Glyph="&#xE7FC;" FontSize="24" Foreground="White"/></Border>
-    <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
-     <TextBlock Text="{Binding Text[GdReadyTitle]}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap"/>
-     <TextBlock Text="{Binding ReadySummary}" Style="{StaticResource CaptionStyle}" FontSize="13.5"/>
-    </StackPanel>
-    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-     <Button Content="{Binding Text[GdEdit]}" Tag="optimize" Click="OnGo" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="guided-edit"/>
-     <Button Content="{Binding Text[GdTools]}" Tag="tools" Click="OnGo" Style="{StaticResource SoftButtonStyle}"/>
-    </StackPanel>
-   </Grid>
-  </Border>
  </Grid>
 </UserControl>

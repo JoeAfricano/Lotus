@@ -125,7 +125,8 @@ public static class Motion
 
     private static void AttachSheen(FrameworkElement f)
     {
-        var c = ElementCompositionPreview.GetElementVisual(f).Compositor;
+        // Not GetElementVisual: that would clash with the hover lift (implicit Scale/Translation) on the same element.
+        var c = Microsoft.UI.Xaml.Media.CompositionTarget.GetCompositorForCurrentThread();
         var brush = c.CreateLinearGradientBrush(); brush.StartPoint = new Vector2(0, 0); brush.EndPoint = new Vector2(1, 0);
         brush.ColorStops.Add(c.CreateColorGradientStop(0, Windows.UI.Color.FromArgb(0, 255, 255, 255)));
         brush.ColorStops.Add(c.CreateColorGradientStop(0.5f, Windows.UI.Color.FromArgb(22, 255, 236, 244)));

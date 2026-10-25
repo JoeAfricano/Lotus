@@ -24,6 +24,7 @@
   <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent"/><SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent"/>
   <!-- Menu band: its own wine gradient so the navigation stands out from the content. ThemePalette retints it with the accent. -->
   <LinearGradientBrush x:Key="NavigationViewTopPaneBackground" StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#4DA8124F" Offset="0"/><GradientStop Color="#2E6A1240" Offset="0.5"/><GradientStop Color="#1A2A0F24" Offset="1"/></LinearGradientBrush>
+  <Thickness x:Key="TopNavigationViewItemContentPresenterMargin">6,-1,9,-1</Thickness>
   <SolidColorBrush x:Key="TopNavigationViewItemForeground" Color="#E6D2C6"/><SolidColorBrush x:Key="TopNavigationViewItemForegroundPointerOver" Color="#FFFFFF"/>
   <SolidColorBrush x:Key="TopNavigationViewItemForegroundPressed" Color="#F3DCCF"/><SolidColorBrush x:Key="TopNavigationViewItemForegroundSelected" Color="#FFFFFF"/>
   <SolidColorBrush x:Key="TopNavigationViewItemForegroundSelectedPointerOver" Color="#FFFFFF"/><SolidColorBrush x:Key="TopNavigationViewItemForegroundSelectedPressed" Color="#FFFFFF"/>

@@ -1,0 +1,15 @@
+<UserControl x:Class="Lotus.App.Controls.HomeBanner" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             AutomationProperties.AutomationId="home-banner">
+ <Grid x:Name="Root" CornerRadius="22" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1"
+       PointerEntered="OnEnter" PointerExited="OnLeave">
+  <Grid x:Name="LayerA"/>
+  <Grid x:Name="LayerB" Opacity="0"/>
+  <!-- Arrows (appear on hover) -->
+  <Button x:Name="Prev" Canvas.ZIndex="5" Click="OnPrev" Width="40" Height="40" CornerRadius="20" Padding="0" Margin="14,0" HorizontalAlignment="Left" VerticalAlignment="Center" Opacity="0"
+          Background="#8012090F" BorderBrush="#33FFFFFF" AutomationProperties.Name="Anterior"><FontIcon Glyph="&#xE76B;" FontSize="14"/></Button>
+  <Button x:Name="Next" Canvas.ZIndex="5" Click="OnNext" Width="40" Height="40" CornerRadius="20" Padding="0" Margin="14,0" HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0"
+          Background="#8012090F" BorderBrush="#33FFFFFF" AutomationProperties.Name="Próximo"><FontIcon Glyph="&#xE76C;" FontSize="14"/></Button>
+  <!-- Dots + progress of the current slide -->
+  <StackPanel x:Name="Dots" Canvas.ZIndex="5" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,24,22"/>
+ </Grid>
+</UserControl>

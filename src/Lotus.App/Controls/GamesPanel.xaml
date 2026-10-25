@@ -48,7 +48,7 @@
    <StackPanel Spacing="12"><Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE7FC;" Style="{StaticResource BadgeIconStyle}"/></Border><TextBlock Text="{Binding EmptyMessage}" Style="{StaticResource BodyStyle}"/></StackPanel>
   </Border>
   <!-- Library -->
-  <GridView ItemsSource="{Binding Games}" SelectionMode="None" IsItemClickEnabled="False" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0" AutomationProperties.AutomationId="games-grid">
+  <GridView ItemsSource="{Binding Games}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="OnGameClick" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0" AutomationProperties.AutomationId="games-grid">
    <GridView.ItemContainerStyle><Style TargetType="GridViewItem"><Setter Property="Margin" Value="0,0,14,14"/><Setter Property="Padding" Value="0"/></Style></GridView.ItemContainerStyle>
    <GridView.ItemTemplate><DataTemplate>
     <Border Width="184" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="16" app:Motion.Hover="1.035">

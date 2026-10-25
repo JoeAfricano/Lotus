@@ -16,6 +16,8 @@ public sealed class SectionViewModel
     public Score.LotusScoreViewModel? Score { get; }
     public Tools.ToolsViewModel? Tools { get; }
     public GuidedSetupViewModel? Guided { get; init; } // first-run guided setup on Home
+    public Catalog.GameListViewModel? GameList { get; init; }      // Game list tab
+    public Catalog.GameDetailsViewModel? GameDetails { get; init; } // game page in Meus Jogos
     public ITextCatalog Text { get; }
     public PreferencesViewModel Preferences { get; }
     public Telemetry.MonitoringViewModel? Monitoring { get; }

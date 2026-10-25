@@ -60,6 +60,8 @@ public partial class App : Application
         var logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Logs", "lotus-.jsonl");
         Log.Logger = new LoggerConfiguration().WriteTo.File(new JsonFormatter(), logPath,
             rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, fileSizeLimitBytes: 5_000_000, rollOnFileSizeLimit: true).CreateLogger();
+        // XAML errors inside deferred (x:Load) content are swallowed by the framework; keep them visible in the log.
+        AppDomain.CurrentDomain.FirstChanceException += (_, e) => { if (e.Exception is Microsoft.UI.Xaml.Markup.XamlParseException || (e.Exception is UnauthorizedAccessException u && u.Message.Contains("Composition"))) Log.Warning(e.Exception, "XAML/composition error"); };
         services = new ServiceCollection().AddSingleton<Serilog.ILogger>(Log.Logger)
             .AddSingleton<IPreferencesStore>(_ => new JsonPreferencesStore(
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "preferences.json"), Log.Logger))

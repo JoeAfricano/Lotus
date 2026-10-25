@@ -1,0 +1,82 @@
+<UserControl x:Class="Lotus.App.Controls.GameDetailView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="using:Lotus.App" AutomationProperties.AutomationId="game-detail">
+ <StackPanel Spacing="18">
+  <!-- Hero: store art with a plum fade, title and quick facts -->
+  <Grid x:Name="Hero" Height="300" CornerRadius="20" Background="{ThemeResource HeroBrush}">
+   <Image x:Name="HeroArt" Stretch="UniformToFill" VerticalAlignment="Center" Opacity="0"/>
+   <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#1012090F" Offset="0"/><GradientStop Color="#9912090F" Offset="0.55"/><GradientStop Color="#F212090F" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
+   <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#CC12090F" Offset="0"/><GradientStop Color="#0012090F" Offset="0.7"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
+   <Button Click="OnBack" Style="{StaticResource SoftButtonStyle}" Margin="18" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#9912090F" AutomationProperties.AutomationId="detail-back">
+    <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE72B;" FontSize="13"/><TextBlock Text="{Binding Text[GiBack]}"/></StackPanel>
+   </Button>
+   <StackPanel VerticalAlignment="Bottom" Padding="28,0,28,24" Spacing="8">
+    <TextBlock Text="{Binding Genres}" Style="{StaticResource EyebrowStyle}" Foreground="{ThemeResource GoldBrush}"/>
+    <TextBlock Text="{Binding Title}" FontSize="38" FontWeight="SemiBold" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
+    <TextBlock Style="{StaticResource CaptionStyle}" FontSize="13.5"><Run Text="{Binding Release}"/><Run Text="   "/><Run Text="{Binding Studio}"/></TextBlock>
+    <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,6,0,0">
+     <Button Click="OnPlay" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" Visibility="{Binding CanPlay, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="detail-play">
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xF5B0;" FontSize="14"/><TextBlock Text="{Binding Text[GiPlay]}"/></StackPanel>
+     </Button>
+     <Button Click="OnStore" Style="{StaticResource SoftButtonStyle}" MinHeight="44" Visibility="{Binding StoreUrl, Converter={StaticResource PresenceVisibility}}">
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE719;" FontSize="13"/><TextBlock Text="{Binding Text[GiStore]}"/></StackPanel>
+     </Button>
+    </StackPanel>
+   </StackPanel>
+  </Grid>
+
+  <!-- Loading / not found -->
+  <StackPanel Orientation="Horizontal" Spacing="12" Visibility="{Binding Loading, Converter={StaticResource BooleanVisibility}}">
+   <ProgressRing IsActive="{Binding Loading}" Width="20" Height="20"/><TextBlock Text="{Binding Text[GiLoading]}" VerticalAlignment="Center"/>
+  </StackPanel>
+  <TextBlock Text="{Binding Text[GiFailed]}" Style="{StaticResource CaptionStyle}" FontSize="14" Visibility="{Binding Failed, Converter={StaticResource BooleanVisibility}}"/>
+
+  <!-- Scores -->
+  <Grid ColumnSpacing="14" Visibility="{Binding HasInfo, Converter={StaticResource BooleanVisibility}}">
+   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+   <Border Style="{StaticResource CompactCardStyle}" Tapped="OnMetacritic">
+    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+     <Border x:Name="McBadge" Width="56" Height="56" CornerRadius="12" Background="#33FFFFFF"><TextBlock x:Name="McScore" Text="{Binding MetacriticText}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#12090F"/></Border>
+     <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+      <TextBlock Text="{Binding Text[GiMetacritic]}" Style="{StaticResource EyebrowStyle}"/>
+      <HyperlinkButton Content="{Binding Text[GiOpenMetacritic]}" Click="OnMetacriticLink" Padding="0" FontSize="12.5" Visibility="{Binding MetacriticUrl, Converter={StaticResource PresenceVisibility}}"/>
+     </StackPanel>
+    </Grid>
+   </Border>
+   <Border Grid.Column="1" Style="{StaticResource CompactCardStyle}">
+    <StackPanel Spacing="4" VerticalAlignment="Center">
+     <TextBlock Text="{Binding Text[GiSteamReviews]}" Style="{StaticResource EyebrowStyle}"/>
+     <TextBlock Text="{Binding ReviewsLabel}" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
+     <TextBlock Text="{Binding ReviewsText}" Style="{StaticResource CaptionStyle}"/>
+    </StackPanel>
+   </Border>
+   <Border Grid.Column="2" Style="{StaticResource CompactCardStyle}" ToolTipService.ToolTip="{Binding Text[GiDifficultyHint]}">
+    <StackPanel Spacing="6" VerticalAlignment="Center">
+     <TextBlock Text="{Binding Text[GiDifficulty]}" Style="{StaticResource EyebrowStyle}"/>
+     <StackPanel Orientation="Horizontal" Spacing="10">
+      <StackPanel x:Name="DiffBars" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center"/>
+      <TextBlock Text="{Binding DifficultyText}" FontSize="18" FontWeight="SemiBold"/>
+     </StackPanel>
+     <TextBlock Text="{Binding Text[GiDifficultyHint]}" Style="{StaticResource CaptionStyle}" FontSize="11.5"/>
+    </StackPanel>
+   </Border>
+  </Grid>
+
+  <!-- Synopsis + tags -->
+  <Border Style="{StaticResource CardStyle}" Visibility="{Binding HasInfo, Converter={StaticResource BooleanVisibility}}">
+   <StackPanel Spacing="10">
+    <TextBlock Text="{Binding Text[GiSynopsis]}" Style="{StaticResource SectionTitleStyle}"/>
+    <TextBlock Text="{Binding Synopsis}" Style="{StaticResource BodyStyle}" MaxWidth="900" HorizontalAlignment="Left"/>
+    <TextBlock Style="{StaticResource CaptionStyle}" Visibility="{Binding TagsText, Converter={StaticResource PresenceVisibility}}"><Run Text="{Binding Text[GiTags]}"/><Run Text=": "/><Run Text="{Binding TagsText}" Foreground="{ThemeResource MainTextBrush}"/></TextBlock>
+   </StackPanel>
+  </Border>
+
+  <!-- Screenshots -->
+  <ScrollViewer HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" Visibility="{Binding HasInfo, Converter={StaticResource BooleanVisibility}}">
+   <ItemsControl ItemsSource="{Binding Screenshots}">
+    <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="12" Padding="0,0,0,12"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+    <ItemsControl.ItemTemplate><DataTemplate><Border Width="320" Height="180" CornerRadius="12" app:Motion.Hover="1.04"><Border.Background><ImageBrush ImageSource="{Binding}" Stretch="UniformToFill"/></Border.Background></Border></DataTemplate></ItemsControl.ItemTemplate>
+   </ItemsControl>
+  </ScrollViewer>
+  <TextBlock Text="{Binding SourceText}" Style="{StaticResource CaptionStyle}" FontSize="11.5"/>
+ </StackPanel>
+</UserControl>

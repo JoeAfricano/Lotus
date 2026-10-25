@@ -36,6 +36,8 @@ public sealed partial class MainWindow : Window
     private readonly Lotus.Core.Score.LotusScoreViewModel score;
     private readonly Lotus.Core.Tools.ToolsViewModel tools;
     private GuidedSetupViewModel? guided;
+    private Lotus.Core.Catalog.GameListViewModel? gameList;
+    private Lotus.Core.Catalog.GameDetailsViewModel? gameDetails;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
     private BrandPulse? flowerPulse;
@@ -58,6 +60,9 @@ public sealed partial class MainWindow : Window
         this.memoryAnalysis = memoryAnalysis;
         this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer; this.powerProfiles = powerProfiles; this.hardware = hardware; this.games = games; this.integrations = integrations; this.score = score; this.tools = tools;
         guided = new GuidedSetupViewModel(preferences, text, ex => Serilog.Log.Warning(ex, "Guided setup"), powerProfiles, tools, integrations);
+        var catalog = new Lotus.Infrastructure.Catalog.SteamCatalog(language: preferences.Current.Language);
+        gameList = new Lotus.Core.Catalog.GameListViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game list"), games.InstalledGames);
+        gameDetails = new Lotus.Core.Catalog.GameDetailsViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game details"));
         // Preparar e jogar: same Game profile and journal as Otimizar; the game is followed until it closes.
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
         games.Watch = new Lotus.Core.Games.PollingGameWatch(new Lotus.Infrastructure.Games.WindowsGameProcessCheck());
@@ -81,13 +86,13 @@ public sealed partial class MainWindow : Window
         AppWindow.TitleBar.ButtonHoverBackgroundColor = Windows.UI.Color.FromArgb(0x1F, 255, 255, 255);
         AppWindow.TitleBar.ButtonForegroundColor = Windows.UI.Color.FromArgb(255, 245, 239, 243);
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 820));
-        foreach (var section in ViewModel.Items)
+        foreach (var section in ViewModel.Items.Where(s => s.Id != "gamelist")) // Game list opens from Home and the top-right button
         {
             var item = new NavigationViewItem
             {
-                Content = NavLabel(section), Tag = section.Id,
+                Content = section.Id == "settings" ? null : NavLabel(section), Tag = section.Id, // settings: gear only, so every section fits
                 Icon = new FontIcon { Glyph = section.Glyph, FontSize = 17 },
-                MinHeight = 44, Margin = new Thickness(4, 2, 4, 2), CornerRadius = new CornerRadius(10), HorizontalContentAlignment = HorizontalAlignment.Stretch
+                MinHeight = 44, Margin = new Thickness(1, 2, 1, 2), CornerRadius = new CornerRadius(10), HorizontalContentAlignment = HorizontalAlignment.Stretch
             };
             AutomationProperties.SetName(item, section.Title);
             AutomationProperties.SetAutomationId(item, "nav-" + section.Id);
@@ -183,7 +188,7 @@ public sealed partial class MainWindow : Window
         foreach (NavigationViewItem item in Navigation.MenuItems)
         {
             var section = ViewModel.Items.Single(s => s.Id == (string)item.Tag);
-            item.Content = NavLabel(section);
+            item.Content = section.Id == "settings" ? null : NavLabel(section);
             AutomationProperties.SetName(item, section.Title);
             ToolTipService.SetToolTip(item, section.Title);
         }
@@ -300,6 +305,9 @@ public sealed partial class MainWindow : Window
         PreferenceWarning.Message = message;
         PreferenceWarning.IsOpen = true;
     }
+    private void OnGameListButton(object sender, RoutedEventArgs e) { Motion.Pop(GameListIcon); ViewModel.NavigateCommand.Execute("gamelist"); }
+    // The drag area stops where the Game list button begins.
+    private void OnGameListButtonSize(object sender, SizeChangedEventArgs e) => DragRegion.Margin = new Thickness(0, 0, e.NewSize.Width + 160, 0);
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
         if (updatingNavigation || args.SelectedItem is not NavigationViewItem { Tag: string id } item) return;
@@ -315,12 +323,12 @@ public sealed partial class MainWindow : Window
     {
         var group = ViewModel.SelectedSection.Id;
         updatingNavigation = true;
-        Navigation.SelectedItem = Navigation.MenuItems.Cast<NavigationViewItem>().First(item => (string)item.Tag == group);
+        Navigation.SelectedItem = Navigation.MenuItems.Cast<NavigationViewItem>().FirstOrDefault(item => (string)item.Tag == group);
         updatingNavigation = false;
         if (force || displayedSectionId != group)
         {
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
-                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided }, new SuppressNavigationTransitionInfo());
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, GameDetails = gameDetails }, new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
             Motion.EnterPage(ContentFrame); // new section rises and fades in
         }

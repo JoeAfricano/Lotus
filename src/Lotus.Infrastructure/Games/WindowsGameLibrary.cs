@@ -51,7 +51,7 @@ public sealed class WindowsGameLibrary(string? steamPath = null, string? epicMan
                 if (app is null) continue;
                 var dir = Path.Combine(apps, "common", app.InstallDir);
                 if (!Directory.Exists(dir)) continue;
-                yield return new(GameStores.Steam, app.AppId, app.Name, dir, LaunchUri: "steam://rungameid/" + app.AppId, CoverPath: SteamCover(steam, app.AppId));
+                yield return new(GameStores.Steam, app.AppId, app.Name, dir, LaunchUri: "steam://rungameid/" + app.AppId, CoverPath: SteamCover(steam, app.AppId), LastPlayed: app.LastPlayed);
             }
         }
     }
