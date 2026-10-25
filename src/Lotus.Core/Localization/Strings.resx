@@ -16,10 +16,10 @@
     <value>SEU JOGO. SEU RITMO.</value>
   </data>
   <data name="FooterNotice" xml:space="preserve">
-    <value>LOTUS · Telemetria e diagnóstico somente leitura. Nenhuma configuração do Windows alterada.</value>
+    <value>LOTUS · Alterações de energia somente com sua confirmação.</value>
   </data>
   <data name="FooterVersion" xml:space="preserve">
-    <value>LOTUS · 0.1 · SOMENTE LEITURA</value>
+    <value>LOTUS · 0.1</value>
   </data>
   <data name="GPU" xml:space="preserve">
     <value>GPU</value>
@@ -416,7 +416,7 @@ Entre no jogo.</value>
   <data name="UxAdviceInformational" xml:space="preserve"><value>Nenhuma alteração foi feita no Windows.</value></data>
   <data name="UxTechnicalDetails" xml:space="preserve"><value>Entenda o resultado</value></data>
   <data name="UxNoChangesTitle" xml:space="preserve"><value>Nada para desfazer por enquanto</value></data>
-  <data name="UxNoChangesDescription" xml:space="preserve"><value>Quando o Lotus aplicar uma alteração reversível, você encontrará aqui o que mudou e como voltar ao estado anterior.</value></data>
+  <data name="UxNoChangesDescription" xml:space="preserve"><value>Consulte as alterações de energia e a opção Desfazer em Otimizar. A reversão depende do plano atual e da disponibilidade do plano anterior.</value></data>
   <data name="UxPerformanceSections" xml:space="preserve"><value>Áreas de desempenho</value></data>
   <data name="UxLiveTab" xml:space="preserve"><value>Ao vivo</value></data>
   <data name="UxCompareTab" xml:space="preserve"><value>Comparar</value></data>
@@ -527,4 +527,71 @@ Condições atuais: {1}</value></data>
   <data name="OptStageReverted" xml:space="preserve"><value>Valor anterior restaurado e verificado.</value></data>
   <data name="OptStageConflict" xml:space="preserve"><value>O estado mudou. A operação foi bloqueada para preservar a alteração externa.</value></data>
   <data name="OptStageNoChange" xml:space="preserve"><value>A preferência já está ativa. Nenhuma mudança é necessária.</value></data>
+  <data name="PowerProfilegame" xml:space="preserve"><value>Jogo</value></data>
+  <data name="PowerProfiledaily" xml:space="preserve"><value>Diário</value></data>
+  <data name="PowerProfilecustom" xml:space="preserve"><value>Personalizado</value></data>
+  <data name="PowerDescription" xml:space="preserve"><value>Escolha como o Windows gerencia energia. O Lotus troca apenas o plano ativo, mantendo seus parâmetros.</value></data>
+  <data name="PowerSuggestion" xml:space="preserve"><value>Jogo sugere Alto desempenho apenas conectado à energia e se disponível; nos demais casos, Equilibrado. Diário sugere Equilibrado. Suas escolhas salvas têm prioridade.</value></data>
+  <data name="PowerInclude" xml:space="preserve"><value>Incluir plano de energia neste perfil</value></data>
+  <data name="PowerSelect" xml:space="preserve"><value>Plano de energia desejado</value></data>
+  <data name="PowerSelection" xml:space="preserve"><value>Ativo: {0} → Selecionado: {1}</value></data>
+  <data name="PowerDifference" xml:space="preserve"><value>Alteração planejada: {0} → {1}</value></data>
+  <data name="PowerNoActions" xml:space="preserve"><value>Nenhuma ação selecionada. Salvar o perfil não altera o Windows.</value></data>
+  <data name="PowerSave" xml:space="preserve"><value>Salvar perfil</value></data>
+  <data name="PowerAnalyze" xml:space="preserve"><value>Analisar diferenças</value></data>
+  <data name="PowerApply" xml:space="preserve"><value>Aplicar plano</value></data>
+  <data name="PowerUndo" xml:space="preserve"><value>Desfazer</value></data>
+  <data name="PowerConfirm" xml:space="preserve"><value>Confirmo a próxima aplicação ou reversão do plano de energia mostrado acima.</value></data>
+  <data name="PowerRisk" xml:space="preserve"><value>Pode aumentar consumo, calor e ruído ou reduzir autonomia. Não garante mais FPS. Sem reinicialização ou elevação automática.</value></data>
+  <data name="PowerHistory" xml:space="preserve"><value>Histórico e detalhes</value></data>
+  <data name="PowerRefresh" xml:space="preserve"><value>Atualizar planos e recuperar journal</value></data>
+  <data name="PowerLimits" xml:space="preserve"><value>Desfazer só restaura o GUID anterior se o plano ativo ainda for o aplicado. O Windows não oferece troca condicional atômica nem histórico completo de mudanças externas; interrupções ambíguas são bloqueadas. Escolher outro perfil não muda o Windows.</value></data>
+  <data name="PowerReady" xml:space="preserve"><value>Analise antes de confirmar a alteração.</value></data>
+  <data name="PowerSaved" xml:space="preserve"><value>Perfil salvo. Nenhuma alteração aplicada ao Windows.</value></data>
+  <data name="PowerDenied" xml:space="preserve"><value>O Windows negou a operação. As permissões foram preservadas; consulte os detalhes.</value></data>
+  <data name="PowerError" xml:space="preserve"><value>Não foi possível concluir. Atualize os planos e verifique o journal antes de tentar novamente.</value></data>
+  <data name="PowerStagePlanned" xml:space="preserve"><value>Diferença encontrada. Confira o plano e confirme para aplicar.</value></data>
+  <data name="PowerStageApplying" xml:space="preserve"><value>Aplicação aguardando verificação.</value></data>
+  <data name="PowerStageApplied" xml:space="preserve"><value>Plano ativo verificado. Isso não comprova ganho de desempenho.</value></data>
+  <data name="PowerStageReverting" xml:space="preserve"><value>Reversão aguardando verificação.</value></data>
+  <data name="PowerStageReverted" xml:space="preserve"><value>Plano anterior restaurado e verificado.</value></data>
+  <data name="PowerStageConflict" xml:space="preserve"><value>Estado alterado ou recuperação incerta. Nenhuma nova alteração será feita por esta operação.</value></data>
+  <data name="PowerStageNoChange" xml:space="preserve"><value>O plano desejado já está ativo. Nenhuma alteração necessária.</value></data>
+  <data name="PowerStartup" xml:space="preserve"><value>Aplicativos na inicialização · somente leitura</value></data>
+  <data name="PowerStartupRead" xml:space="preserve"><value>Consultar inicialização</value></data>
+  <data name="PowerStartupCount" xml:space="preserve"><value>{0} entradas encontradas; {1} fontes não puderam ser lidas.</value></data>
+  <data name="PowerStartupLimits" xml:space="preserve"><value>Consulta limitada às chaves Run e pastas Inicializar. O status segue a mesma marcação do Gerenciador de Tarefas (StartupApproved); habilitado não garante que o programa ainda exista ou inicie. Nenhum aplicativo será desativado; tarefas e serviços não são incluídos.</value></data>
+  <data name="PowerStartupEnabled" xml:space="preserve"><value>Habilitado</value></data>
+  <data name="PowerStartupDisabled" xml:space="preserve"><value>Desabilitado</value></data>
+  <data name="PowerStartupUnknown" xml:space="preserve"><value>Status indisponível</value></data>
+  <data name="PowerStartupCountState" xml:space="preserve"><value>{0} entradas: {1} habilitadas, {2} desabilitadas, {3} sem status. {4} fontes não puderam ser lidas.</value></data>
+  <data name="PowerUndoDifference" xml:space="preserve"><value>Aplicado: {0}. Ao desfazer, restaurar: {1}.</value></data>
+  <data name="PfEyebrow" xml:space="preserve"><value>PERFIS DE OTIMIZAÇÃO</value></data>
+  <data name="PfIntro" xml:space="preserve"><value>Escolha um perfil para adaptar o Windows ao seu uso.</value></data>
+  <data name="PfGameTitle" xml:space="preserve"><value>Perfil Jogo</value></data>
+  <data name="PfDailyTitle" xml:space="preserve"><value>Perfil Diário</value></data>
+  <data name="PfCustomTitle" xml:space="preserve"><value>Perfil Personalizado</value></data>
+  <data name="PfGameDescription" xml:space="preserve"><value>Prioriza desempenho: sugere Alto desempenho quando o PC está ligado à energia.</value></data>
+  <data name="PfDailyDescription" xml:space="preserve"><value>Equilíbrio entre desempenho e eficiência para o uso do dia a dia.</value></data>
+  <data name="PfCustomDescription" xml:space="preserve"><value>Você escolhe manualmente qual plano de energia existente usar.</value></data>
+  <data name="PfRecommended" xml:space="preserve"><value>Recomendado para desempenho</value></data>
+  <data name="PfChipPower" xml:space="preserve"><value>Energia</value></data>
+  <data name="PfChipStartup" xml:space="preserve"><value>Inicialização (consulta)</value></data>
+  <data name="PfChipBalance" xml:space="preserve"><value>Equilíbrio</value></data>
+  <data name="PfChipManual" xml:space="preserve"><value>Ajustes manuais</value></data>
+  <data name="PfChangesTitle" xml:space="preserve"><value>Alterações previstas</value></data>
+  <data name="PfChangesSubtitle" xml:space="preserve"><value>Resumo do que este perfil faz no seu Windows.</value></data>
+  <data name="PfRowPower" xml:space="preserve"><value>Plano de energia</value></data>
+  <data name="PfRowPowerOff" xml:space="preserve"><value>Não incluído neste perfil</value></data>
+  <data name="PfRowStartup" xml:space="preserve"><value>Aplicativos de inicialização</value></data>
+  <data name="PfRowStartupHint" xml:space="preserve"><value>Somente leitura · nada é desativado</value></data>
+  <data name="PfRowRevert" xml:space="preserve"><value>Ações reversíveis</value></data>
+  <data name="PfRowRevertHint" xml:space="preserve"><value>Histórico e restauração condicional</value></data>
+  <data name="PfApply" xml:space="preserve"><value>Aplicar perfil</value></data>
+  <data name="PfAnalyze" xml:space="preserve"><value>Analisar perfil</value></data>
+  <data name="PfDetails" xml:space="preserve"><value>Ver detalhes</value></data>
+  <data name="PfSafetyTitle" xml:space="preserve"><value>Segurança e reversão</value></data>
+  <data name="PfSafetyText" xml:space="preserve"><value>Cada alteração é registrada e verificada antes e depois. Desfazer restaura o plano anterior se ninguém o trocou nesse meio-tempo. Seus arquivos pessoais não são afetados.</value></data>
+  <data name="PfHowItWorks" xml:space="preserve"><value>Como funciona?</value></data>
+  <data name="UxMemoryLabel" xml:space="preserve"><value>Memória</value></data>
 </root>

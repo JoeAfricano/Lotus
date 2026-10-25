@@ -27,6 +27,7 @@ public sealed partial class MainWindow : Window
     private readonly ExperienceViewModel experience;
     private readonly Lotus.Core.Benchmark.BenchmarkViewModel benchmark;
     private readonly Lotus.Core.Optimization.OptimizationViewModel optimizer;
+    private readonly Lotus.Core.Optimization.PowerProfilesViewModel powerProfiles;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
     private BrandPulse? flowerPulse;
@@ -38,7 +39,7 @@ public sealed partial class MainWindow : Window
     private BrandMotionProof? brandProof;
     private bool brandProofShown;
 
-    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring, Lotus.Core.Diagnostics.MemoryAnalysisViewModel memoryAnalysis, ExperienceViewModel experience, Lotus.Core.Benchmark.BenchmarkViewModel benchmark, Lotus.Core.Optimization.OptimizationViewModel optimizer)
+    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring, Lotus.Core.Diagnostics.MemoryAnalysisViewModel memoryAnalysis, ExperienceViewModel experience, Lotus.Core.Benchmark.BenchmarkViewModel benchmark, Lotus.Core.Optimization.OptimizationViewModel optimizer, Lotus.Core.Optimization.PowerProfilesViewModel powerProfiles)
     {
         ViewModel = viewModel;
         this.text = text;
@@ -47,13 +48,18 @@ public sealed partial class MainWindow : Window
         this.palette = palette;
         this.monitoring = monitoring;
         this.memoryAnalysis = memoryAnalysis;
-        this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer;
+        this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer; this.powerProfiles = powerProfiles;
         InitializeComponent();
         ShellRoot.DataContext = ViewModel;
         ShellRoot.Language = text.Language;
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(DragRegion);
-        AppWindow.TitleBar.ButtonBackgroundColor = Windows.UI.Color.FromArgb(255, 16, 16, 22);
+        var icon = Path.Combine(AppContext.BaseDirectory, "Assets", "Lotus.ico");
+        if (File.Exists(icon)) AppWindow.SetIcon(icon);
+        AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
+        AppWindow.TitleBar.ButtonBackgroundColor = AppWindow.TitleBar.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
+        AppWindow.TitleBar.ButtonInactiveForegroundColor = Windows.UI.Color.FromArgb(255, 150, 130, 142);
+        AppWindow.TitleBar.ButtonHoverBackgroundColor = Windows.UI.Color.FromArgb(0x1F, 255, 255, 255);
         AppWindow.TitleBar.ButtonForegroundColor = Windows.UI.Color.FromArgb(255, 245, 239, 243);
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 820));
         foreach (var section in ViewModel.Items)
@@ -61,8 +67,8 @@ public sealed partial class MainWindow : Window
             var item = new NavigationViewItem
             {
                 Content = section.Title, Tag = section.Id,
-                Icon = new FontIcon { Glyph = section.Glyph, FontSize = 18 },
-                MinHeight = 42, HorizontalContentAlignment = HorizontalAlignment.Stretch
+                Icon = new FontIcon { Glyph = section.Glyph, FontSize = 17 },
+                MinHeight = 44, Margin = new Thickness(4, 2, 4, 2), CornerRadius = new CornerRadius(10), HorizontalContentAlignment = HorizontalAlignment.Stretch
             };
             AutomationProperties.SetName(item, section.Title);
             AutomationProperties.SetAutomationId(item, "nav-" + section.Id);
@@ -141,7 +147,7 @@ public sealed partial class MainWindow : Window
         ShellRoot.Language = text.Language;
         ViewModel.RefreshLanguage();
         monitoring.RefreshLanguage();
-        experience.RefreshLanguage(); benchmark.RefreshLanguage(); optimizer.RefreshLanguage();
+        experience.RefreshLanguage(); benchmark.RefreshLanguage(); optimizer.RefreshLanguage(); powerProfiles.RefreshLanguage();
         foreach (NavigationViewItem item in Navigation.MenuItems)
         {
             var section = ViewModel.Items.Single(s => s.Id == (string)item.Tag);
@@ -277,7 +283,7 @@ public sealed partial class MainWindow : Window
         if (force || displayedSectionId != group)
         {
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
-                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer), new SuppressNavigationTransitionInfo());
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles), new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
         }
         UpdateMonitoringDemand();

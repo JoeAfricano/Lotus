@@ -1,19 +1,27 @@
 namespace Lotus.Core.Optimization;
 
-public enum ActionRisk { Low }
+public enum ActionRisk { Low, Moderate }
 public enum Eligibility { Eligible, Unsupported }
 public enum OperationStage { Planned, Applying, Applied, Reverting, Reverted, Conflict, NoChange }
 public sealed record ActionDefinition(string Id, string DescriptionKey, ActionRisk Risk, string Compatibility, bool Reversible);
 public sealed record ConfigurationState(string? Value, long Revision, Guid? Writer);
 public sealed record OptimizationPlan(Guid Id, string ActionId, ConfigurationState Before, ConfigurationState Desired,
-    OperationStage Stage, DateTimeOffset CreatedUtc, ConfigurationState? RestoreTarget = null);
+    OperationStage Stage, DateTimeOffset CreatedUtc, ConfigurationState? RestoreTarget = null)
+{
+    public string? ProfileId { get; init; }
+}
 public interface IOptimizationAction
 {
     ActionDefinition Definition { get; }
     Eligibility Eligibility { get; }
     ConfigurationState Detect();
     ConfigurationState Plan(ConfigurationState before, Guid operation);
-    // Atomic compare-and-set: never overwrite a state different from expected.
+    ConfigurationState Plan(ConfigurationState before, Guid operation, string? desired) => desired is null
+        ? Plan(before, operation) : throw new NotSupportedException("Explicit desired state unsupported.");
+    ConfigurationState Restore(ConfigurationState before, ConfigurationState applied, Guid operation) =>
+        new(before.Value, checked(applied.Revision + 1), operation);
+    bool CanAttributeRecovery => true;
+    // Implementations must check expected state. External Windows APIs may not offer atomic CAS.
     bool Exchange(ConfigurationState expected, ConfigurationState desired);
 }
 public interface IOptimizationJournal
@@ -29,14 +37,14 @@ public sealed class OptimizationEngine(IOptimizationJournal journal, IOptimizati
 {
     public ActionDefinition Definition => action.Definition;
     private Task<T> Locked<T>(Func<T> work) => Task.Run(() => { using var lease = journal.Acquire(); return work(); });
-    public Task<OptimizationPlan> AnalyzeAsync() => Locked(() =>
+    public Task<OptimizationPlan> AnalyzeAsync(string? desiredState = null, string? profileId = null) => Locked(() =>
     {
         if (action.Eligibility != Eligibility.Eligible) throw new InvalidOperationException("Unsupported action.");
         if (journal.List().Any(p => p.Stage is OperationStage.Applying or OperationStage.Reverting))
             throw new InvalidOperationException("Recovery required.");
-        var before = action.Detect(); var id = Guid.NewGuid(); var desired = action.Plan(before, id);
+        var before = action.Detect(); var id = Guid.NewGuid(); var desired = action.Plan(before, id, desiredState);
         var plan = new OptimizationPlan(id, action.Definition.Id, before, desired,
-            desired == before ? OperationStage.NoChange : OperationStage.Planned, DateTimeOffset.UtcNow);
+            desired == before ? OperationStage.NoChange : OperationStage.Planned, DateTimeOffset.UtcNow) { ProfileId = profileId };
         journal.Save(plan); return plan;
     });
     public Task<OptimizationPlan> ApplyAsync(Guid id, bool confirmed) => Locked(() =>
@@ -60,7 +68,7 @@ public sealed class OptimizationEngine(IOptimizationJournal journal, IOptimizati
         if (p.Stage == OperationStage.Reverted) return p;
         if (p.Stage != OperationStage.Applied || !action.Definition.Reversible) throw new InvalidOperationException("Rollback unavailable.");
         if (action.Detect() != p.Desired) return Save(p with { Stage = OperationStage.Conflict });
-        var target = new ConfigurationState(p.Before.Value, checked(p.Desired.Revision + 1), p.Id);
+        var target = action.Restore(p.Before, p.Desired, p.Id);
         p = Save(p with { Stage = OperationStage.Reverting, RestoreTarget = target });
         if (!action.Exchange(p.Desired, target)) return Save(p with { Stage = OperationStage.Conflict });
         return Save(p with { Stage = action.Detect() == target ? OperationStage.Reverted : OperationStage.Conflict });
@@ -70,7 +78,8 @@ public sealed class OptimizationEngine(IOptimizationJournal journal, IOptimizati
         foreach (var p in journal.List().Where(p => p.Stage is OperationStage.Applying or OperationStage.Reverting))
         {
             var current = action.Detect();
-            var stage = p.ActionId != action.Definition.Id ? OperationStage.Conflict : p.Stage == OperationStage.Applying
+            var stage = p.ActionId != action.Definition.Id ? OperationStage.Conflict : !action.CanAttributeRecovery
+                ? OperationStage.Conflict : p.Stage == OperationStage.Applying
                 ? current == p.Desired ? OperationStage.Applied : current == p.Before ? OperationStage.Planned : OperationStage.Conflict
                 : current == p.RestoreTarget ? OperationStage.Reverted : current == p.Desired ? OperationStage.Applied : OperationStage.Conflict;
             Save(p with { Stage = stage });

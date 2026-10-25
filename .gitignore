@@ -5,3 +5,6 @@
 *.user
 Lotus/
 artifacts/
+
+# Local launcher created by tools/New-LotusShortcut.ps1
+Lotus.lnk

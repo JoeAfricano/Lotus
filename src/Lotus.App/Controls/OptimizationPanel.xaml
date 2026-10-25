@@ -1,18 +1,20 @@
 <UserControl x:Class="Lotus.App.Controls.OptimizationPanel"
  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
  <ContentControl Style="{StaticResource CardControlStyle}">
-  <StackPanel Spacing="12">
-   <TextBlock Text="{Binding Text[OptTitle]}" Style="{StaticResource SectionTitleStyle}"/>
-   <TextBlock Text="{Binding Text[OptTestDescription]}" TextWrapping="Wrap"/>
-   <TextBlock Text="{Binding Text[OptSafety]}" TextWrapping="Wrap"/>
-   <Button Content="{Binding Text[OptAnalyze]}" Command="{Binding AnalyzeCommand}"/>
-   <ComboBox Header="{Binding Text[OptHistory]}" ItemsSource="{Binding Plans}" SelectedItem="{Binding Selected, Mode=TwoWay}" DisplayMemberPath="Id" HorizontalAlignment="Stretch" IsEnabled="{Binding CanEdit}"/>
-   <TextBlock Text="{Binding Status}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
+  <StackPanel Spacing="14">
+   <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+    <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE777;" Style="{StaticResource BadgeIconStyle}"/></Border>
+    <StackPanel Grid.Column="1" Spacing="4"><TextBlock Text="{Binding Text[OptTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[OptTestDescription]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+   </Grid>
+   <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE83D;" FontSize="13" Foreground="{ThemeResource SuccessBrush}" VerticalAlignment="Top" Margin="0,2,0,0"/><TextBlock Text="{Binding Text[OptSafety]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+   <Button Content="{Binding Text[OptAnalyze]}" Command="{Binding AnalyzeCommand}" Style="{StaticResource SoftButtonStyle}"/>
+   <ComboBox Header="{Binding Text[OptHistory]}" ItemsSource="{Binding Plans}" SelectedItem="{Binding Selected, Mode=TwoWay}" DisplayMemberPath="Id" HorizontalAlignment="Left" MinWidth="320" MaxWidth="520" IsEnabled="{Binding CanEdit}"/>
+   <TextBlock Text="{Binding Status}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite"/>
    <CheckBox Content="{Binding Text[OptConfirm]}" IsChecked="{Binding Confirmed, Mode=TwoWay}" IsEnabled="{Binding CanEdit}"/>
-   <StackPanel Spacing="8">
-    <Button Content="{Binding Text[OptApply]}" Command="{Binding ApplyCommand}"/>
-    <Button Content="{Binding Text[OptRevert]}" Command="{Binding RevertCommand}"/>
-    <Button Content="{Binding Text[OptRefresh]}" Command="{Binding RefreshCommand}"/>
+   <StackPanel Orientation="Horizontal" Spacing="8">
+    <Button Content="{Binding Text[OptApply]}" Command="{Binding ApplyCommand}" Style="{StaticResource PrimaryButtonStyle}"/>
+    <Button Content="{Binding Text[OptRevert]}" Command="{Binding RevertCommand}" Style="{StaticResource SoftButtonStyle}"/>
+    <Button Content="{Binding Text[OptRefresh]}" Command="{Binding RefreshCommand}" Style="{StaticResource SoftButtonStyle}"/>
    </StackPanel>
   </StackPanel>
  </ContentControl>

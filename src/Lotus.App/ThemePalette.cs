@@ -6,29 +6,40 @@ using Windows.UI.ViewManagement;
 namespace Lotus.App;
 
 // Update shared brushes in place so existing controls change without restarting or flashing the window.
+// Lotus identity: plum-black surfaces, crimson/magenta accent, rose-gold highlights. "Graphite" keeps the same
+// accents on neutral surfaces. Surfaces stay translucent for Mica; high contrast uses opaque system colors.
 public sealed class ThemePalette(ResourceDictionary resources)
 {
     public void Apply(string theme)
     {
-        var highContrast = new AccessibilitySettings().HighContrast;
+        var hc = new AccessibilitySettings().HighContrast;
         var system = new UISettings();
-        var background = highContrast ? system.GetColorValue(UIColorType.Background)
-            : theme == "Graphite" ? Color.FromArgb(255, 35, 35, 45) : Color.FromArgb(255, 12, 11, 18);
-        var pane = highContrast ? background : theme == "Graphite" ? Color.FromArgb(255, 43, 43, 55) : Color.FromArgb(255, 17, 16, 24);
-        var card = highContrast ? background : theme == "Graphite" ? Color.FromArgb(255, 49, 49, 63) : Color.FromArgb(255, 24, 20, 30);
-        var foreground = highContrast ? system.GetColorValue(UIColorType.Foreground) : Color.FromArgb(255, 247, 241, 246);
+        var graphite = theme == "Graphite";
+        var clear = Argb(0, 0, 0, 0);
+        var background = hc ? system.GetColorValue(UIColorType.Background) : graphite ? Argb(0xEB, 28, 28, 34) : Argb(0xEB, 18, 9, 15);
+        var foreground = hc ? system.GetColorValue(UIColorType.Foreground) : Argb(255, 248, 240, 243);
+        Set("WindowBrush", hc ? background : graphite ? Argb(255, 24, 24, 29) : Argb(255, 23, 11, 19));
         Set("ShellBrush", background); Set("NavigationViewContentBackground", background);
-        Set("PaneBrush", pane); Set("NavigationViewDefaultPaneBackground", pane); Set("NavigationViewExpandedPaneBackground", pane);
-        Set("CardBrush", card); Set("MainTextBrush", foreground);
-        Set("MutedBrush", highContrast ? foreground : Color.FromArgb(255, 189, 177, 188));
-        Set("OnRoseBrush", highContrast ? background : Color.FromArgb(255, 23, 16, 23));
-        Set("RoseBrush", highContrast ? foreground : Color.FromArgb(255, 229, 132, 177));
-        Set("CardBorderBrush", highContrast ? foreground : Color.FromArgb(255, 73, 48, 68));
-        Set("ElevatedBrush", highContrast ? background : theme == "Graphite" ? Color.FromArgb(255, 55, 45, 59) : Color.FromArgb(255, 33, 23, 35));
-        Set("SuccessBrush", highContrast ? foreground : Color.FromArgb(255, 135, 198, 165));
-        Set("WarningBrush", highContrast ? foreground : Color.FromArgb(255, 231, 190, 122));
-        Set("ErrorBrush", highContrast ? foreground : Color.FromArgb(255, 243, 162, 170));
-        Set("BadgeBrush", highContrast ? background : Color.FromArgb(255, 43, 20, 36));
+        Set("PaneBrush", hc ? background : clear);
+        Set("NavigationViewDefaultPaneBackground", hc ? background : clear);
+        Set("NavigationViewExpandedPaneBackground", hc ? background : clear);
+        Set("CardBrush", hc ? background : graphite ? Argb(0xB8, 42, 42, 50) : Argb(0xB8, 31, 15, 25));
+        Set("CardHoverBrush", hc ? background : graphite ? Argb(0xCC, 52, 52, 62) : Argb(0xCC, 42, 21, 33));
+        Set("ElevatedBrush", hc ? background : graphite ? Argb(0xD9, 48, 46, 56) : Argb(0xD9, 38, 19, 32));
+        Set("CardBorderBrush", hc ? foreground : Argb(0x1A, 255, 228, 238));
+        Set("NavigationViewContentGridBorderBrush", hc ? foreground : Argb(0x1A, 255, 228, 238));
+        Set("DividerBrush", hc ? foreground : Argb(0x12, 255, 228, 238));
+        Set("MainTextBrush", foreground);
+        Set("MutedBrush", hc ? foreground : Argb(255, 179, 161, 172));
+        Set("OnRoseBrush", hc ? background : Argb(255, 255, 246, 249));
+        Set("RoseBrush", hc ? foreground : Argb(255, 242, 123, 168));
+        Set("GoldBrush", hc ? foreground : Argb(255, 238, 193, 168));
+        Set("AccentSoftBrush", hc ? background : Argb(0x2E, 214, 48, 111));
+        Set("BadgeBrush", hc ? background : Argb(0x2E, 214, 48, 111));
+        Set("SuccessBrush", hc ? foreground : Argb(255, 127, 209, 168));
+        Set("WarningBrush", hc ? foreground : Argb(255, 240, 194, 125));
+        Set("ErrorBrush", hc ? foreground : Argb(255, 255, 143, 163));
     }
+    private static Color Argb(byte a, byte r, byte g, byte b) => Color.FromArgb(a, r, g, b);
     private void Set(string key, Color color) => ((SolidColorBrush)resources[key]).Color = color;
 }

@@ -73,12 +73,12 @@ public sealed class LotusAmbientBackground : FrameworkElement, IDisposable
         var compositor = ElementCompositionPreview.GetElementVisual(this).Compositor;
         root = compositor.CreateContainerVisual();
         root.Clip = Own(compositor.CreateInsetClip());
-        AddAurora(compositor, new(0.93f, 0.08f), new(0.67f, 0.56f), 0.12f, Color.FromArgb(255, 199, 91, 146));
-        AddAurora(compositor, new(0.06f, 0.92f), new(0.59f, 0.66f), 0.10f, Color.FromArgb(255, 229, 132, 177));
+        AddAurora(compositor, new(0.93f, 0.08f), new(0.67f, 0.56f), 0.12f, Color.FromArgb(255, 194, 24, 91));
+        AddAurora(compositor, new(0.06f, 0.92f), new(0.59f, 0.66f), 0.10f, Color.FromArgb(255, 232, 55, 138));
         flowerPlacement = Own(compositor.CreateContainerVisual());
         flowerMotion = Own(compositor.CreateContainerVisual()); flowerMotion.Size = new(512); flowerMotion.CenterPoint = new(256, 256, 0); flowerMotion.Opacity = 0.065f;
         petals = Own(compositor.CreateShapeVisual()); petals.Size = new(512);
-        var ink = Own(compositor.CreateColorBrush(Color.FromArgb(255, 229, 132, 177)));
+        var ink = Own(compositor.CreateColorBrush(Color.FromArgb(255, 238, 193, 168)));
         Vector2[][] outlines = [
             [new(16,1),new(10,8),new(11,18),new(16,27),new(21,18),new(22,8)],
             [new(4,7),new(10,11),new(13,18),new(16,27),new(8,21),new(4,15)],
@@ -108,8 +108,8 @@ public sealed class LotusAmbientBackground : FrameworkElement, IDisposable
         var brush = Own(compositor.CreateRadialGradientBrush()); brush.MappingMode = CompositionMappingMode.Relative;
         brush.EllipseCenter = center; brush.EllipseRadius = radius;
         brush.ColorStops.Add(Own(compositor.CreateColorGradientStop(0, color)));
-        brush.ColorStops.Add(Own(compositor.CreateColorGradientStop(0.55f, Color.FromArgb(220, 159, 66, 121))));
-        brush.ColorStops.Add(Own(compositor.CreateColorGradientStop(1, Color.FromArgb(0, 229, 132, 177))));
+        brush.ColorStops.Add(Own(compositor.CreateColorGradientStop(0.55f, Color.FromArgb(220, 120, 14, 58))));
+        brush.ColorStops.Add(Own(compositor.CreateColorGradientStop(1, Color.FromArgb(0, 232, 55, 138))));
         var light = Own(compositor.CreateSpriteVisual()); light.Brush = brush; light.Opacity = opacity;
         light.RelativeSizeAdjustment = Vector2.One;
         root!.Children.InsertAtTop(light); auroras.Add(brush); centers.Add(center);

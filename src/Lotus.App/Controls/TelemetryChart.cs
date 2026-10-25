@@ -17,7 +17,7 @@ public sealed class TelemetryChart : Grid
     public TelemetryChart()
     {
         IsHitTestVisible = false;
-        Background = (Brush)Application.Current.Resources["ShellBrush"];
+        Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
         trace.Stroke = (Brush)Application.Current.Resources["RoseBrush"];
         ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(34) });
         ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });

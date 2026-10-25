@@ -6,7 +6,7 @@
    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
    <ContentControl x:Name="GpuCard" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="8">
     <TextBlock Text="GPU" Style="{StaticResource EyebrowStyle}"/>
-    <TextBlock Text="{Binding Utilization}" FontSize="34" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AutomationId="monitor-gpu-utilization"/>
+    <TextBlock Text="{Binding Utilization}" Style="{StaticResource MetricValueStyle}" AutomationProperties.AutomationId="monitor-gpu-utilization"/>
     <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
      <StackPanel><TextBlock Text="{Binding Text[TemperatureShort]}" FontSize="11" Foreground="{ThemeResource MutedBrush}"/><TextBlock Text="{Binding Temperature}" FontSize="16" AutomationProperties.AutomationId="monitor-gpu-temperature"/></StackPanel>
      <StackPanel Grid.Column="1"><TextBlock Text="{Binding Text[PowerShort]}" FontSize="11" Foreground="{ThemeResource MutedBrush}"/><TextBlock Text="{Binding Power}" FontSize="16" AutomationProperties.AutomationId="monitor-gpu-power"/></StackPanel>
@@ -15,7 +15,7 @@
    </StackPanel></ContentControl>
    <ContentControl x:Name="VramCard" Grid.Column="1" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="8">
     <TextBlock Text="VRAM" Style="{StaticResource EyebrowStyle}"/>
-    <TextBlock Text="{Binding MemoryPercent}" FontSize="34" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AutomationId="monitor-vram-percent"/>
+    <TextBlock Text="{Binding MemoryPercent}" Style="{StaticResource MetricValueStyle}" AutomationProperties.AutomationId="monitor-vram-percent"/>
     <TextBlock Text="{Binding MemorySummary}" FontSize="16" AutomationProperties.AutomationId="monitor-vram-summary"/>
     <TextBlock Text="{Binding Text[VramAllocatedShort]}" FontSize="11" Foreground="{ThemeResource MutedBrush}"/>
     <local:TelemetryChart x:Name="VramChart" Height="90" AutomationProperties.Name="{Binding Text[VramHistory]}"/>

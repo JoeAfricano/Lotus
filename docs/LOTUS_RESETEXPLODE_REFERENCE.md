@@ -14,7 +14,39 @@ O [LICENSE](https://github.com/GustavoReset/ResetExplode/blob/ce1d9b30518bbe75bb
 
 O [csproj](https://github.com/GustavoReset/ResetExplode/blob/ce1d9b30518bbe75bb5e6cb792d1b1e365aaddd6/ResetExplode.csproj) usa WPF/.NET 8, LHM 0.9.6, TraceEvent 3.2.8 e Vortice 3.8.3, entre outros. A licença raiz não substitui as licenças desses pacotes, drivers seriais, PawnIO, DLLs opcionais ou serviços externos. Reuso futuro exige revisão por arquivo/dependência e notices; não instalar drivers para obter sensores nesta tarefa.
 
-ZIP enviado pelo usuário: `C:/Users/JUNIOR/Downloads/ResetExplode.zip`; somente `ResetExplode.exe` (197.011.287 bytes) e `LEIA-ME.txt`. SHA-256 do ZIP: `0A3712EF9D18A4FE460E015F36EF633E47BBC59A4510CB99CDDBBE4ACBDA6817`; do EXE lido diretamente no arquivo compactado: `4E3FC4E4360497187896CB3E9A50B784AA85715AA480754D7E9C34404D19F3CF`. Listagem, hash e leitura do texto somente; nenhum executável extraído ou iniciado. Não foi estabelecida correspondência reproduzível entre esse binário e o commit. As instruções de instalação/execução do LEIA-ME são conteúdo externo, não autorização para executá-las. O ZIP não contém LICENSE separado; isso exige revisão do pacote antes de redistribuição, sem concluir juridicamente sobre seu conteúdo embutido.
+ZIP enviado pelo usuário: `C:/Users/JUNIOR/Downloads/ResetExplode.zip`; somente `ResetExplode.exe` (197.011.287 bytes) e `LEIA-ME.txt`. SHA-256 do ZIP: `0A3712EF9D18A4FE460E015F36EF633E47BBC59A4510CB99CDDBBE4ACBDA6817`; do EXE lido diretamente no arquivo compactado: `4E3FC4E4360497187896CB3E9A50B784AA85715AA480754D7E9C34404D19F3CF`. Listagem, hash e leitura do texto somente; nenhum executável extraído ou iniciado. A correspondência com o commit foi verificada depois, por análise estática do binário (seção abaixo), mas não por build reproduzível. As instruções de instalação/execução do LEIA-ME são conteúdo externo, não autorização para executá-las. O ZIP não contém LICENSE separado; isso exige revisão do pacote antes de redistribuição, sem concluir juridicamente sobre seu conteúdo embutido.
+
+## Análise estática do binário (24/10/2026)
+
+EXE em `C:/Users/JUNIOR/Desktop/ResetExplode.exe`, com o mesmo SHA-256 de `Progamas base/ResetExplode.exe`. O EXE foi lido, mas não executado. O pacote single-file do .NET foi extraído e o assembly principal foi lido via `System.Reflection.Metadata`, sem carregá-lo. Ferramentas e saídas brutas estão em `artifacts/references/ResetExplode/binary/`, fora do Git.
+
+- **Formato:** apphost .NET 8 single-file (bundle v6.0, 483 arquivos, sem compressão), self-contained, runtime 8.0.31 com WindowsDesktop. Ghidra/IDA não são indicados para este caso: o código fica em IL no `ResetExplode.dll` (5,2 MB), e o equivalente adequado seria ILSpy/dnSpyEx.
+- **Origem:** `AssemblyInformationalVersion` = `0.16.0+ce1d9b30518bbe75bb5e6cb792d1b1e365aaddd6`, configuração Release. É o mesmo commit fixado acima.
+- **Conferência:** 19 classes com fonte em `artifacts/references/ResetExplode/` reúnem 236 métodos nomeados, e todos foram encontrados no fonte. Há 452 tipos no total. Classes cujo fonte não foi baixado (por exemplo `UsbCleaner`, `CorsairSdk`, `RazerChromaBackend`, `OpenRgbBackend`, `AppInstaller`, `StressTester`, `GpuBurn`) não foram conferidas. Isso indica correspondência, mas não prova ausência de diferenças no corpo dos métodos.
+- **Ações com efeito no sistema, visíveis nos imports:** `nvmlDeviceSetPowerManagementLimit` e `nvmlDeviceSetGpuLockedClocks` (limite de energia e clock travado em GPUs NVIDIA), `SetupDiCallClassInstaller` (`UsbCleaner`), `NtSetSystemInformation` e `EmptyWorkingSet` (RAM), `AdjustTokenPrivileges`, além de `powercfg.exe`, `pnputil.exe` e `cmd.exe /k winget install namazso.PawnIO`.
+- **Recursos embutidos:** drivers seriais assinados por terceiros (CH340, CP210x, FTDI e Arduino `.inf/.cat/.sys/.dll`). Isso reforça a revisão de licença por componente antes de qualquer redistribuição.
+- **Rede:** speed.cloudflare.com (teste de velocidade), howmanyfps.com/api (estimativa de FPS), APIs de drivers NVIDIA/AMD, GitHub (Corsair SDK) e o SDK local do Razer Chroma (localhost:54235).
+- **Registro lido ou escrito:** Run/StartupApproved, GameDVR/GameBar/GameConfigStore, `DirectX\UserGpuPreferences`, `AppCompatFlags\Layers` e `GraphicsDrivers`, além das chaves de Steam, GOG e Ubisoft. Isso é coerente com a avaliação por componente abaixo.
+
+Conclusão: o binário distribuído corresponde ao código público analisado.
+
+### Descompilação (ilspycmd 11.1.0.9782)
+
+`ResetExplode.dll` foi descompilado em 108 arquivos C#, com cerca de 21,7 mil linhas, salvos em `artifacts/references/ResetExplode/decompiled/` (fora do Git, sem os drivers binários). As 87 classes sem fonte local foram revisadas por busca de processos, registro, arquivos, rede, drivers, código dinâmico e ofuscação. Os pontos de atenção estão abaixo.
+
+| Classe | Comportamento | Observação para o Lotus |
+| --- | --- | --- |
+| `MakerDrivers` | `pnputil /remove-device`, `/delete-driver … /uninstall /force`, `/add-driver`, com backup prévio via `/export-driver`. | Operações de driver com privilégio elevado; fora do escopo do Lotus. |
+| `UsbCleaner` | Remove dispositivos desconectados (`DIF_REMOVE`) e reescreve `COM Name Arbiter\ComDB`, devolvendo o valor anterior para restauração. | Bom padrão de backup antes da escrita; destrutivo e fora do escopo. |
+| `CorsairSdkInstaller` | Baixa a última release do GitHub da Corsair, extrai a DLL e verifica `WinVerifyTrust` e o assinante. **DLL sem assinatura é aceita com aviso.** | Fragilidade de cadeia de suprimento. O Lotus não deve baixar nem carregar DLLs de terceiros em tempo de execução. |
+| `AppInstaller` | `winget install/upgrade --silent --accept-*-agreements`. | Aceita licenças em nome do usuário; não adotar. |
+| `SteamInfo` | Edita `LaunchOptions` em `localconfig.vdf` com backup `.resetexplode.bak` e exige a Steam fechada; pode enviar `steam.exe -shutdown`. | Padrão útil (backup, pré-condição) caso a etapa de jogos venha a editar opções. |
+| `HowManyFpsClient` | Envia POST com CPU, GPU, jogo e resolução para howmanyfps.com, com chave do usuário guardada via DPAPI (`AppSettings`). | Envio de dados de hardware a terceiros; só com consentimento explícito. |
+| `OpenRgbBackend` / `RazerChromaBackend` | TCP local para OpenRGB e HTTP para `localhost:54235` (Chroma). | Somente local. |
+| `MainWindow` | `Nvml.SetPowerLimitMw` em `BtnOcApply`, alterando o limite de energia da GPU NVIDIA. | Alteração de hardware; fora do escopo. |
+| `StressTester` / `GpuBurn` | Carga de CPU/RAM/GPU com cancelamento por token. | Sem efeito persistente. |
+
+Não foram encontrados `Assembly.Load`, `Reflection.Emit`, `DynamicMethod`, strings em Base64 ocultas, sockets para hosts não documentados nem telemetria além dos serviços listados. Dos 216 métodos de `MainWindow`, 107 não aparecem nos dois arquivos parciais baixados (`MainWindow.xaml.cs` e `MainWindow.Rt.cs`). Eles provavelmente vêm de outros arquivos parciais do repositório que não foram baixados; isso não foi verificado.
 
 ## Avaliação por componente
 

@@ -1,0 +1,142 @@
+<UserControl x:Class="Lotus.App.Controls.PowerProfilesPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <StackPanel Spacing="18">
+  <StackPanel Spacing="4">
+   <TextBlock Text="{Binding Text[PfEyebrow]}" Style="{StaticResource EyebrowStyle}" Foreground="{ThemeResource RoseBrush}"/>
+   <TextBlock Text="{Binding Text[PfIntro]}" Style="{StaticResource CaptionStyle}" FontSize="14"/>
+  </StackPanel>
+
+  <!-- Profile cards -->
+  <Grid x:Name="ProfileCards" ColumnSpacing="16" RowSpacing="16" SizeChanged="OnCardsSizeChanged">
+   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <Button x:Name="GameCard" Style="{StaticResource CardButtonStyle}" Command="{Binding SelectProfileCommand}" CommandParameter="game" AutomationProperties.Name="{Binding Text[PfGameTitle]}">
+    <Border CornerRadius="18" Padding="22" BorderThickness="1.5" BorderBrush="{Binding IsGame, Converter={StaticResource SelectedBorder}}" Background="{Binding IsGame, Converter={StaticResource SelectedSurface}}">
+     <Grid RowSpacing="12"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <Grid><FontIcon Glyph="&#xE7FC;" FontSize="40" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
+       <Grid Width="20" Height="20" HorizontalAlignment="Right" VerticalAlignment="Top"><Ellipse Stroke="{Binding IsGame, Converter={StaticResource SelectedBorder}}" StrokeThickness="1.5"/><Ellipse Width="10" Height="10" Fill="{ThemeResource RoseBrush}" Visibility="{Binding IsGame, Converter={StaticResource BooleanVisibility}}"/></Grid>
+      </Grid>
+      <StackPanel Grid.Row="1" Spacing="10">
+       <Border Style="{StaticResource ChipStyle}" BorderBrush="{ThemeResource RoseBrush}" Background="{ThemeResource AccentSoftBrush}" HorizontalAlignment="Left"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE735;" FontSize="10" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[PfRecommended]}" Style="{StaticResource ChipTextStyle}" FontSize="11" Foreground="{ThemeResource RoseBrush}"/></StackPanel></Border>
+       <TextBlock Text="{Binding Text[PfGameTitle]}" FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap"/>
+      </StackPanel>
+      <TextBlock Grid.Row="2" Text="{Binding Text[PfGameDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
+      <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
+       <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipPower]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
+       <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE7E8;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipStartup]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
+      </StackPanel>
+     </Grid>
+    </Border>
+   </Button>
+   <Button x:Name="DailyCard" Grid.Column="1" Style="{StaticResource CardButtonStyle}" Command="{Binding SelectProfileCommand}" CommandParameter="daily" AutomationProperties.Name="{Binding Text[PfDailyTitle]}">
+    <Border CornerRadius="18" Padding="22" BorderThickness="1.5" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}" Background="{Binding IsDaily, Converter={StaticResource SelectedSurface}}">
+     <Grid RowSpacing="12"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <Grid><FontIcon Glyph="&#xE7F4;" FontSize="40" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
+       <Grid Width="20" Height="20" HorizontalAlignment="Right" VerticalAlignment="Top"><Ellipse Stroke="{Binding IsDaily, Converter={StaticResource SelectedBorder}}" StrokeThickness="1.5"/><Ellipse Width="10" Height="10" Fill="{ThemeResource RoseBrush}" Visibility="{Binding IsDaily, Converter={StaticResource BooleanVisibility}}"/></Grid>
+      </Grid>
+      <TextBlock Grid.Row="1" Text="{Binding Text[PfDailyTitle]}" FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap"/>
+      <TextBlock Grid.Row="2" Text="{Binding Text[PfDailyDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
+      <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
+       <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipBalance]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
+       <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE7E8;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipStartup]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
+      </StackPanel>
+     </Grid>
+    </Border>
+   </Button>
+   <Button x:Name="CustomCard" Grid.Column="2" Style="{StaticResource CardButtonStyle}" Command="{Binding SelectProfileCommand}" CommandParameter="custom" AutomationProperties.Name="{Binding Text[PfCustomTitle]}">
+    <Border CornerRadius="18" Padding="22" BorderThickness="1.5" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}" Background="{Binding IsCustom, Converter={StaticResource SelectedSurface}}">
+     <Grid RowSpacing="12"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <Grid><FontIcon Glyph="&#xE9E9;" FontSize="40" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
+       <Grid Width="20" Height="20" HorizontalAlignment="Right" VerticalAlignment="Top"><Ellipse Stroke="{Binding IsCustom, Converter={StaticResource SelectedBorder}}" StrokeThickness="1.5"/><Ellipse Width="10" Height="10" Fill="{ThemeResource RoseBrush}" Visibility="{Binding IsCustom, Converter={StaticResource BooleanVisibility}}"/></Grid>
+      </Grid>
+      <TextBlock Grid.Row="1" Text="{Binding Text[PfCustomTitle]}" FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap"/>
+      <TextBlock Grid.Row="2" Text="{Binding Text[PfCustomDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
+      <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
+       <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE713;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipManual]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
+      </StackPanel>
+     </Grid>
+    </Border>
+   </Button>
+  </Grid>
+
+  <!-- Planned changes + actions -->
+  <Border Style="{StaticResource CardStyle}">
+   <Grid x:Name="ChangesGrid" ColumnSpacing="20" RowSpacing="16" SizeChanged="OnChangesSizeChanged">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="260"/></Grid.ColumnDefinitions>
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <StackPanel Spacing="14">
+     <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <FontIcon Glyph="&#xE8FD;" FontSize="22" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Top" Margin="0,2,0,0"/>
+      <StackPanel Grid.Column="1" Spacing="2"><TextBlock Text="{Binding Text[PfChangesTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[PfChangesSubtitle]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+     </Grid>
+     <!-- Power plan -->
+     <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+      <Expander.Header><Grid ColumnSpacing="14" Padding="0,6"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <Grid Width="28" Height="28"><Ellipse Fill="{ThemeResource SuccessBrush}"/><FontIcon Glyph="&#xE73E;" FontSize="13" Foreground="#0F1A14"/></Grid>
+       <StackPanel Grid.Column="1"><TextBlock Text="{Binding Text[PfRowPower]}" FontWeight="SemiBold"/><TextBlock Text="{Binding SchemeLabel}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+      </Grid></Expander.Header>
+      <StackPanel Spacing="12">
+       <TextBlock Text="{Binding Text[PowerSuggestion]}" Style="{StaticResource CaptionStyle}"/>
+       <ToggleSwitch Header="{Binding Text[PowerInclude]}" IsOn="{Binding PowerEnabled, Mode=TwoWay}" IsEnabled="{Binding CanEdit}"/>
+       <ComboBox Header="{Binding Text[PowerSelect]}" ItemsSource="{Binding Schemes}" SelectedItem="{Binding SelectedScheme, Mode=TwoWay}" DisplayMemberPath="Name" HorizontalAlignment="Left" MinWidth="320" IsEnabled="{Binding CanEdit}"/>
+       <TextBlock Text="{Binding Summary}" Style="{StaticResource BodyStyle}"/>
+       <Button Content="{Binding Text[PowerSave]}" Command="{Binding SaveCommand}" Style="{StaticResource SoftButtonStyle}"/>
+      </StackPanel>
+     </Expander>
+     <!-- Startup apps (read-only) -->
+     <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+      <Expander.Header><Grid ColumnSpacing="14" Padding="0,6"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <Grid Width="28" Height="28"><Ellipse Fill="{ThemeResource AccentSoftBrush}"/><FontIcon Glyph="&#xE7E8;" FontSize="13" Foreground="{ThemeResource RoseBrush}"/></Grid>
+       <StackPanel Grid.Column="1"><TextBlock Text="{Binding Text[PfRowStartup]}" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[PfRowStartupHint]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+      </Grid></Expander.Header>
+      <StackPanel Spacing="12"><TextBlock Text="{Binding Text[PowerStartupLimits]}" Style="{StaticResource CaptionStyle}"/>
+       <StackPanel Orientation="Horizontal" Spacing="12"><Button Content="{Binding Text[PowerStartupRead]}" Command="{Binding StartupCommand}" Style="{StaticResource SoftButtonStyle}"/><TextBlock Text="{Binding StartupStatus}" Style="{StaticResource CaptionStyle}" VerticalAlignment="Center"/></StackPanel>
+       <ItemsControl ItemsSource="{Binding StartupEntries}">
+        <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate><DataTemplate>
+         <Border Background="{ThemeResource CardHoverBrush}" CornerRadius="10" Padding="14,10"><Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <StackPanel Spacing="2"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding Location}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+          <ContentControl Grid.Column="1" Content="{Binding State}" Style="{StaticResource StatusBadgeStyle}" VerticalAlignment="Center" Opacity="{Binding IsDisabled, Converter={StaticResource DimWhenTrue}}"/>
+         </Grid></Border>
+        </DataTemplate></ItemsControl.ItemTemplate>
+       </ItemsControl>
+      </StackPanel>
+     </Expander>
+     <!-- Reversible actions -->
+     <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+      <Expander.Header><Grid ColumnSpacing="14" Padding="0,6"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <Grid Width="28" Height="28"><Ellipse Fill="{ThemeResource WarningBrush}"/><FontIcon Glyph="&#xE7BA;" FontSize="13" Foreground="#1F1608"/></Grid>
+       <StackPanel Grid.Column="1"><TextBlock Text="{Binding Text[PfRowRevert]}" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[PfRowRevertHint]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+      </Grid></Expander.Header>
+      <StackPanel Spacing="12">
+       <ComboBox Header="{Binding Text[OptHistory]}" ItemsSource="{Binding Operations}" SelectedItem="{Binding SelectedOperation, Mode=TwoWay}" DisplayMemberPath="Label" HorizontalAlignment="Stretch" IsEnabled="{Binding CanEdit}"/>
+       <TextBlock Text="{Binding Details}" Style="{StaticResource BodyStyle}"/>
+       <TextBlock Text="{Binding Text[PowerLimits]}" Style="{StaticResource CaptionStyle}"/>
+       <StackPanel Orientation="Horizontal" Spacing="8"><Button Content="{Binding Text[PowerUndo]}" Command="{Binding RevertCommand}" Style="{StaticResource SoftButtonStyle}"/><Button Content="{Binding Text[PowerRefresh]}" Command="{Binding RefreshCommand}" Style="{StaticResource SoftButtonStyle}"/></StackPanel>
+      </StackPanel>
+     </Expander>
+    </StackPanel>
+
+    <StackPanel x:Name="ActionsColumn" Grid.Column="1" Spacing="10" VerticalAlignment="Top">
+     <Button Command="{Binding ApplyCommand}" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE768;" FontSize="14"/><TextBlock Text="{Binding Text[PfApply]}"/></StackPanel></Button>
+     <Button Command="{Binding AnalyzeCommand}" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE721;" FontSize="14"/><TextBlock Text="{Binding Text[PfAnalyze]}"/></StackPanel></Button>
+     <Button Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE8A5;" FontSize="14"/><TextBlock Text="{Binding Text[PfDetails]}"/></StackPanel>
+      <Button.Flyout><Flyout><StackPanel Spacing="10" MaxWidth="380"><TextBlock Text="{Binding Summary}" Style="{StaticResource BodyStyle}"/><TextBlock Text="{Binding Details}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[PowerRisk]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Flyout></Button.Flyout>
+     </Button>
+     <CheckBox IsChecked="{Binding Confirmed, Mode=TwoWay}" IsEnabled="{Binding CanEdit}" Margin="0,4,0,0"><TextBlock Text="{Binding Text[PowerConfirm]}" TextWrapping="Wrap" FontSize="12.5"/></CheckBox>
+     <TextBlock Text="{Binding Status}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite"/>
+    </StackPanel>
+   </Grid>
+  </Border>
+
+  <!-- Safety -->
+  <Border Style="{StaticResource CardStyle}" Padding="20,16">
+   <Grid ColumnSpacing="18"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <FontIcon Glyph="&#xEA18;" FontSize="30" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+    <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center"><TextBlock Text="{Binding Text[PfSafetyTitle]}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[PfSafetyText]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[PowerRisk]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+    <Button Grid.Column="2" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE7A7;" FontSize="13"/><TextBlock Text="{Binding Text[PfHowItWorks]}"/></StackPanel>
+     <Button.Flyout><Flyout><TextBlock Text="{Binding Text[PowerLimits]}" Style="{StaticResource BodyStyle}" MaxWidth="380"/></Flyout></Button.Flyout>
+    </Button>
+   </Grid>
+  </Border>
+ </StackPanel>
+</UserControl>

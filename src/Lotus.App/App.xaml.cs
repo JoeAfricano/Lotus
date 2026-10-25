@@ -57,6 +57,15 @@ public partial class App : Application
             .AddSingleton(p => new Lotus.Core.Optimization.OptimizationViewModel(
                 p.GetRequiredService<Lotus.Core.Optimization.OptimizationEngine>(), p.GetRequiredService<ITextCatalog>(),
                 ex => Log.Warning(ex, "Optimizer test operation failed")))
+            .AddSingleton<Lotus.Core.Optimization.IPowerSchemeService, Lotus.Infrastructure.Optimization.WindowsPowerSchemes>()
+            .AddSingleton<Lotus.Core.Optimization.IStartupInventory, Lotus.Infrastructure.Optimization.WindowsStartupInventory>()
+            .AddSingleton(_ => new Lotus.Infrastructure.Optimization.SqliteOptimizationJournal(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Optimizer", "journal.db")))
+            .AddSingleton(p => new Lotus.Core.Optimization.PowerProfilesViewModel(
+                new Lotus.Core.Optimization.OptimizationEngine(p.GetRequiredService<Lotus.Infrastructure.Optimization.SqliteOptimizationJournal>(),
+                    new Lotus.Core.Optimization.PowerSchemeAction(p.GetRequiredService<Lotus.Core.Optimization.IPowerSchemeService>())),
+                p.GetRequiredService<Lotus.Core.Optimization.IPowerSchemeService>(), p.GetRequiredService<Lotus.Infrastructure.Optimization.SqliteOptimizationJournal>(),
+                p.GetRequiredService<Lotus.Core.Optimization.IStartupInventory>(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Power profile operation failed")))
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);

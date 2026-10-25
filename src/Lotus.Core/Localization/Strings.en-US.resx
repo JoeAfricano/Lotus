@@ -16,10 +16,10 @@
     <value>YOUR GAME. YOUR PACE.</value>
   </data>
   <data name="FooterNotice" xml:space="preserve">
-    <value>LOTUS · Read-only telemetry and diagnosis. No Windows settings changed.</value>
+    <value>LOTUS · Power changes only with your confirmation.</value>
   </data>
   <data name="FooterVersion" xml:space="preserve">
-    <value>LOTUS · 0.1 · READ ONLY</value>
+    <value>LOTUS · 0.1</value>
   </data>
   <data name="GPU" xml:space="preserve">
     <value>GPU</value>
@@ -416,7 +416,7 @@ Get in the game.</value>
   <data name="UxAdviceInformational" xml:space="preserve"><value>No Windows settings were changed.</value></data>
   <data name="UxTechnicalDetails" xml:space="preserve"><value>Understand your result</value></data>
   <data name="UxNoChangesTitle" xml:space="preserve"><value>Nothing to undo yet</value></data>
-  <data name="UxNoChangesDescription" xml:space="preserve"><value>When Lotus applies a reversible change, you will find what changed and how to restore the previous state here.</value></data>
+  <data name="UxNoChangesDescription" xml:space="preserve"><value>Review power changes and Undo in Optimize. Restoration depends on the current plan and availability of the previous plan.</value></data>
   <data name="UxPerformanceSections" xml:space="preserve"><value>Performance areas</value></data>
   <data name="UxLiveTab" xml:space="preserve"><value>Live</value></data>
   <data name="UxCompareTab" xml:space="preserve"><value>Compare</value></data>
@@ -527,4 +527,71 @@ Current conditions: {1}</value></data>
   <data name="OptStageReverted" xml:space="preserve"><value>Previous value restored and verified.</value></data>
   <data name="OptStageConflict" xml:space="preserve"><value>The state changed. The operation was blocked to preserve the external change.</value></data>
   <data name="OptStageNoChange" xml:space="preserve"><value>The preference is already enabled. No change is needed.</value></data>
+  <data name="PowerProfilegame" xml:space="preserve"><value>Gaming</value></data>
+  <data name="PowerProfiledaily" xml:space="preserve"><value>Daily</value></data>
+  <data name="PowerProfilecustom" xml:space="preserve"><value>Custom</value></data>
+  <data name="PowerDescription" xml:space="preserve"><value>Choose how Windows manages power. Lotus only switches the active plan, preserving its parameters.</value></data>
+  <data name="PowerSuggestion" xml:space="preserve"><value>Gaming suggests High performance only on AC power and when available; otherwise Balanced. Daily suggests Balanced. Saved choices take priority.</value></data>
+  <data name="PowerInclude" xml:space="preserve"><value>Include power plan in this profile</value></data>
+  <data name="PowerSelect" xml:space="preserve"><value>Desired power plan</value></data>
+  <data name="PowerSelection" xml:space="preserve"><value>Active: {0} → Selected: {1}</value></data>
+  <data name="PowerDifference" xml:space="preserve"><value>Planned change: {0} → {1}</value></data>
+  <data name="PowerNoActions" xml:space="preserve"><value>No action selected. Saving the profile does not change Windows.</value></data>
+  <data name="PowerSave" xml:space="preserve"><value>Save profile</value></data>
+  <data name="PowerAnalyze" xml:space="preserve"><value>Analyze differences</value></data>
+  <data name="PowerApply" xml:space="preserve"><value>Apply plan</value></data>
+  <data name="PowerUndo" xml:space="preserve"><value>Undo</value></data>
+  <data name="PowerConfirm" xml:space="preserve"><value>I confirm the next application or rollback of the power plan shown above.</value></data>
+  <data name="PowerRisk" xml:space="preserve"><value>May increase power use, heat and noise or reduce battery life. No FPS gain is guaranteed. No restart or automatic elevation.</value></data>
+  <data name="PowerHistory" xml:space="preserve"><value>History and details</value></data>
+  <data name="PowerRefresh" xml:space="preserve"><value>Refresh plans and recover journal</value></data>
+  <data name="PowerLimits" xml:space="preserve"><value>Undo restores the previous GUID only while the applied plan is still active. Windows provides neither atomic conditional switching nor a complete external-change history; ambiguous interruptions are blocked. Selecting another profile does not change Windows.</value></data>
+  <data name="PowerReady" xml:space="preserve"><value>Analyze before confirming a change.</value></data>
+  <data name="PowerSaved" xml:space="preserve"><value>Profile saved. No Windows change applied.</value></data>
+  <data name="PowerDenied" xml:space="preserve"><value>Windows denied the operation. Permissions were preserved; check the details.</value></data>
+  <data name="PowerError" xml:space="preserve"><value>Could not complete. Refresh plans and check the journal before retrying.</value></data>
+  <data name="PowerStagePlanned" xml:space="preserve"><value>Difference found. Review the plan and confirm to apply.</value></data>
+  <data name="PowerStageApplying" xml:space="preserve"><value>Application awaiting verification.</value></data>
+  <data name="PowerStageApplied" xml:space="preserve"><value>Active plan verified. This does not prove a performance gain.</value></data>
+  <data name="PowerStageReverting" xml:space="preserve"><value>Rollback awaiting verification.</value></data>
+  <data name="PowerStageReverted" xml:space="preserve"><value>Previous plan restored and verified.</value></data>
+  <data name="PowerStageConflict" xml:space="preserve"><value>Changed state or uncertain recovery. This operation will make no further changes.</value></data>
+  <data name="PowerStageNoChange" xml:space="preserve"><value>The desired plan is already active. No change needed.</value></data>
+  <data name="PowerStartup" xml:space="preserve"><value>Startup applications · read-only</value></data>
+  <data name="PowerStartupRead" xml:space="preserve"><value>Inspect startup</value></data>
+  <data name="PowerStartupCount" xml:space="preserve"><value>{0} entries found; {1} sources could not be read.</value></data>
+  <data name="PowerStartupLimits" xml:space="preserve"><value>Limited to Run keys and Startup folders. Status uses the same StartupApproved marker as Task Manager; enabled does not guarantee the program still exists or starts. No application will be disabled; tasks and services are not included.</value></data>
+  <data name="PowerStartupEnabled" xml:space="preserve"><value>Enabled</value></data>
+  <data name="PowerStartupDisabled" xml:space="preserve"><value>Disabled</value></data>
+  <data name="PowerStartupUnknown" xml:space="preserve"><value>Status unavailable</value></data>
+  <data name="PowerStartupCountState" xml:space="preserve"><value>{0} entries: {1} enabled, {2} disabled, {3} without status. {4} sources could not be read.</value></data>
+  <data name="PowerUndoDifference" xml:space="preserve"><value>Applied: {0}. Undo will restore: {1}.</value></data>
+  <data name="PfEyebrow" xml:space="preserve"><value>OPTIMIZATION PROFILES</value></data>
+  <data name="PfIntro" xml:space="preserve"><value>Choose a profile to adapt Windows to how you use it.</value></data>
+  <data name="PfGameTitle" xml:space="preserve"><value>Game profile</value></data>
+  <data name="PfDailyTitle" xml:space="preserve"><value>Daily profile</value></data>
+  <data name="PfCustomTitle" xml:space="preserve"><value>Custom profile</value></data>
+  <data name="PfGameDescription" xml:space="preserve"><value>Favors performance: suggests High performance while plugged in.</value></data>
+  <data name="PfDailyDescription" xml:space="preserve"><value>Balance between performance and efficiency for everyday use.</value></data>
+  <data name="PfCustomDescription" xml:space="preserve"><value>You choose which existing power plan to use.</value></data>
+  <data name="PfRecommended" xml:space="preserve"><value>Recommended for performance</value></data>
+  <data name="PfChipPower" xml:space="preserve"><value>Power</value></data>
+  <data name="PfChipStartup" xml:space="preserve"><value>Startup (read-only)</value></data>
+  <data name="PfChipBalance" xml:space="preserve"><value>Balance</value></data>
+  <data name="PfChipManual" xml:space="preserve"><value>Manual settings</value></data>
+  <data name="PfChangesTitle" xml:space="preserve"><value>Planned changes</value></data>
+  <data name="PfChangesSubtitle" xml:space="preserve"><value>Summary of what this profile does to Windows.</value></data>
+  <data name="PfRowPower" xml:space="preserve"><value>Power plan</value></data>
+  <data name="PfRowPowerOff" xml:space="preserve"><value>Not included in this profile</value></data>
+  <data name="PfRowStartup" xml:space="preserve"><value>Startup apps</value></data>
+  <data name="PfRowStartupHint" xml:space="preserve"><value>Read-only · nothing is disabled</value></data>
+  <data name="PfRowRevert" xml:space="preserve"><value>Reversible actions</value></data>
+  <data name="PfRowRevertHint" xml:space="preserve"><value>History and conditional restore</value></data>
+  <data name="PfApply" xml:space="preserve"><value>Apply profile</value></data>
+  <data name="PfAnalyze" xml:space="preserve"><value>Analyze profile</value></data>
+  <data name="PfDetails" xml:space="preserve"><value>View details</value></data>
+  <data name="PfSafetyTitle" xml:space="preserve"><value>Safety and rollback</value></data>
+  <data name="PfSafetyText" xml:space="preserve"><value>Each change is journaled and verified before and after. Undo restores the previous plan if nothing else changed it meanwhile. Your personal files are not affected.</value></data>
+  <data name="PfHowItWorks" xml:space="preserve"><value>How does it work?</value></data>
+  <data name="UxMemoryLabel" xml:space="preserve"><value>Memory</value></data>
 </root>

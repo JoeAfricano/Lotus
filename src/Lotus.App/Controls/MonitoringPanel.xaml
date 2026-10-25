@@ -8,14 +8,14 @@
    <ContentControl x:Name="CpuCard" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="8">
     <TextBlock Text="CPU" Style="{StaticResource EyebrowStyle}"/>
     <TextBlock Text="{Binding CpuName}" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.AutomationId="monitor-cpu-name"/>
-    <TextBlock Text="{Binding CpuPercent}" FontSize="34" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AutomationId="monitor-cpu-percent"/>
+    <TextBlock Text="{Binding CpuPercent}" Style="{StaticResource MetricValueStyle}" AutomationProperties.AutomationId="monitor-cpu-percent"/>
     <TextBlock Text="{Binding CpuStatus}" FontSize="11" Foreground="{ThemeResource MutedBrush}" AutomationProperties.AutomationId="monitor-cpu-status"/>
     <local:TelemetryChart x:Name="CpuChart" Height="90" AutomationProperties.Name="{Binding Text[CpuChart]}"/>
    </StackPanel></ContentControl>
    <ContentControl x:Name="MemoryCard" Grid.Column="1" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="8">
     <TextBlock Text="{Binding Text[Memory]}" Style="{StaticResource EyebrowStyle}"/>
     <TextBlock Text="{Binding Text[PhysicalMemory]}" FontSize="16" FontWeight="SemiBold"/>
-    <TextBlock Text="{Binding MemoryPercent}" FontSize="34" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AutomationId="monitor-memory-percent"/>
+    <TextBlock Text="{Binding MemoryPercent}" Style="{StaticResource MetricValueStyle}" AutomationProperties.AutomationId="monitor-memory-percent"/>
     <TextBlock Text="{Binding MemorySummary}" FontSize="13" AutomationProperties.AutomationId="monitor-memory-summary"/>
     <local:TelemetryChart x:Name="MemoryChart" Height="90" AutomationProperties.Name="{Binding Text[MemoryChart]}"/>
    </StackPanel></ContentControl>

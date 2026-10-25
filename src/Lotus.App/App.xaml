@@ -1,19 +1,43 @@
 <Application x:Class="Lotus.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ui="using:Windows.UI" xmlns:local="using:Lotus.App" RequestedTheme="Dark">
  <Application.Resources><ResourceDictionary>
   <ResourceDictionary.MergedDictionaries><XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/><ResourceDictionary Source="Controls/Foundation.xaml"/></ResourceDictionary.MergedDictionaries>
-  <local:BooleanVisibilityConverter x:Key="BooleanVisibility"/>
-  <SolidColorBrush x:Key="ShellBrush" Color="#0C0B12"/><SolidColorBrush x:Key="PaneBrush" Color="#111018"/><SolidColorBrush x:Key="CardBrush" Color="#18141E"/><SolidColorBrush x:Key="CardBorderBrush" Color="#493044"/>
-  <SolidColorBrush x:Key="ElevatedBrush" Color="#211723"/><SolidColorBrush x:Key="SuccessBrush" Color="#87C6A5"/><SolidColorBrush x:Key="WarningBrush" Color="#E7BE7A"/><SolidColorBrush x:Key="ErrorBrush" Color="#F3A2AA"/>
-  <SolidColorBrush x:Key="OnRoseBrush" Color="#171017"/>
-  <SolidColorBrush x:Key="RoseBrush" Color="#E584B1"/><SolidColorBrush x:Key="MutedBrush" Color="#BDB1BC"/><SolidColorBrush x:Key="BadgeBrush" Color="#2B1424"/><SolidColorBrush x:Key="MainTextBrush" Color="#F7F1F6"/>
-  <SolidColorBrush x:Key="NavigationViewContentBackground" Color="#0C0B12"/><SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="#111018"/><SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="#111018"/>
-  <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#E584B1"/><SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#E77FA3"/><SolidColorBrush x:Key="AccentFillColorTertiaryBrush" Color="#C8698B"/><SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush" Color="#171017"/>
+  <local:BooleanVisibilityConverter x:Key="BooleanVisibility"/><local:BooleanOpacityConverter x:Key="DimWhenTrue"/>
+  <!-- Lotus identity: plum-black surfaces, crimson/magenta accent, rose-gold brand and highlights.
+       ThemePalette mutates these brushes in place; translucent values let Mica and the ambient layer show through. -->
+  <SolidColorBrush x:Key="WindowBrush" Color="#FF170B13"/><SolidColorBrush x:Key="ShellBrush" Color="#EB12090F"/><SolidColorBrush x:Key="PaneBrush" Color="#00000000"/>
+  <SolidColorBrush x:Key="CardBrush" Color="#B81F0F19"/><SolidColorBrush x:Key="CardHoverBrush" Color="#CC2A1521"/><SolidColorBrush x:Key="CardBorderBrush" Color="#1AFFE4EE"/>
+  <SolidColorBrush x:Key="ElevatedBrush" Color="#D9261320"/><SolidColorBrush x:Key="DividerBrush" Color="#12FFE4EE"/>
+  <SolidColorBrush x:Key="SuccessBrush" Color="#7FD1A8"/><SolidColorBrush x:Key="WarningBrush" Color="#F0C27D"/><SolidColorBrush x:Key="ErrorBrush" Color="#FF8FA3"/>
+  <SolidColorBrush x:Key="OnRoseBrush" Color="#FFF6F9"/><SolidColorBrush x:Key="RoseBrush" Color="#F27BA8"/><SolidColorBrush x:Key="GoldBrush" Color="#EEC1A8"/>
+  <SolidColorBrush x:Key="AccentSoftBrush" Color="#2ED6306F"/><SolidColorBrush x:Key="BadgeBrush" Color="#2ED6306F"/>
+  <SolidColorBrush x:Key="MutedBrush" Color="#B3A1AC"/><SolidColorBrush x:Key="MainTextBrush" Color="#F8F0F3"/>
+  <LinearGradientBrush x:Key="HeroBrush" StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#55C2185B" Offset="0"/><GradientStop Color="#26E8378A" Offset="0.55"/><GradientStop Color="#101F0F19" Offset="1"/></LinearGradientBrush>
+  <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#E8378A" Offset="0"/><GradientStop Color="#A8124F" Offset="1"/></LinearGradientBrush>
+  <LinearGradientBrush x:Key="GoldGradientBrush" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#F8DDCB" Offset="0"/><GradientStop Color="#E7AE93" Offset="0.6"/><GradientStop Color="#C98468" Offset="1"/></LinearGradientBrush>
+  <LinearGradientBrush x:Key="PetalBrush" StartPoint="0.5,0" EndPoint="0.5,1"><GradientStop Color="#F0479A" Offset="0"/><GradientStop Color="#C2185B" Offset="0.55"/><GradientStop Color="#5E0A2E" Offset="1"/></LinearGradientBrush>
+  <local:BooleanChoiceConverter x:Key="SelectedBorder" TrueValue="{StaticResource GoldBrush}" FalseValue="{StaticResource CardBorderBrush}"/>
+  <local:BooleanChoiceConverter x:Key="SelectedSurface" TrueValue="{StaticResource HeroBrush}" FalseValue="{StaticResource CardBrush}"/>
 
+  <!-- Windows 11 style shell: transparent pane over Mica, rounded content surface. -->
+  <SolidColorBrush x:Key="NavigationViewContentBackground" Color="#EB12090F"/>
+  <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent"/><SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent"/>
+  <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="Transparent"/>
+  <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="#1AFFE4EE"/>
+  <CornerRadius x:Key="NavigationViewContentGridCornerRadius">12,0,0,0</CornerRadius>
+  <SolidColorBrush x:Key="NavigationViewItemBackgroundSelected" Color="#26D6306F"/>
+  <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPointerOver" Color="#36D6306F"/>
+  <SolidColorBrush x:Key="NavigationViewItemBackgroundPointerOver" Color="#0FFFFFFF"/>
+  <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#F27BA8"/>
 
-  <ui:Color x:Key="SystemAccentColor">#E584B1</ui:Color>
-  <SolidColorBrush x:Key="NavigationViewItemBackgroundSelected" Color="#432036"/>
-  <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPointerOver" Color="#54283F"/>
+  <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#D6306F"/><SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#E04C84"/><SolidColorBrush x:Key="AccentFillColorTertiaryBrush" Color="#B8255D"/><SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush" Color="#FFFFFF"/>
+  <ui:Color x:Key="SystemAccentColor">#D6306F</ui:Color>
+  <ui:Color x:Key="SystemAccentColorLight1">#E04C84</ui:Color><ui:Color x:Key="SystemAccentColorLight2">#F27BA8</ui:Color><ui:Color x:Key="SystemAccentColorDark1">#B8255D</ui:Color>
 
-  <Style x:Key="EyebrowStyle" TargetType="TextBlock"><Setter Property="Foreground" Value="{ThemeResource RoseBrush}"/><Setter Property="FontSize" Value="11"/><Setter Property="CharacterSpacing" Value="100"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+  <!-- Softer, rounder controls and translucent expanders. -->
+  <CornerRadius x:Key="ControlCornerRadius">8</CornerRadius><CornerRadius x:Key="OverlayCornerRadius">12</CornerRadius>
+  <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="CardBrush"/><StaticResource x:Key="ExpanderContentBackground" ResourceKey="CardBrush"/>
+  <StaticResource x:Key="ExpanderHeaderBorderBrush" ResourceKey="CardBorderBrush"/><StaticResource x:Key="ExpanderContentBorderBrush" ResourceKey="CardBorderBrush"/>
+
+  <Style x:Key="EyebrowStyle" TargetType="TextBlock"><Setter Property="Foreground" Value="{ThemeResource MutedBrush}"/><Setter Property="FontSize" Value="11"/><Setter Property="CharacterSpacing" Value="80"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
  </ResourceDictionary></Application.Resources>
 </Application>

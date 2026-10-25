@@ -1,10 +1,9 @@
 using Lotus.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Hosting;
 using System.ComponentModel;
-using System.Numerics;
 using Windows.UI.ViewManagement;
 
 namespace Lotus.App;
@@ -29,7 +28,7 @@ public sealed partial class SectionPage : Page
     public bool ShowSafety { get; private set; }
     public bool ShowAdvanced { get; private set; }
     public bool ShowFaq { get; private set; }
-    public SectionPage() { InitializeComponent(); Loaded += (_, _) => AnimateEntrance(); }
+    public SectionPage() => InitializeComponent();
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
@@ -67,8 +66,33 @@ public sealed partial class SectionPage : Page
             Bindings.Update();
             if (ShowOptimize) OptimizeTabs.SelectedItem = OptimizeTabs.Items[shell.OptimizeTabIndex];
             if (ShowPerformance) PerformanceTabs.SelectedItem = PerformanceTabs.Items[shell.PerformanceTabIndex];
+            if (ShowSettings) SyncSettingsTabs(shell);
+            ApplyMotion(vm);
         }
         finally { synchronizing = false; }
+    }
+    private void SyncSettingsTabs(ShellViewModel current)
+    {
+        var categories = current.SettingsCategories;
+        if (SettingsTabs.Items.Count != categories.Count)
+        {
+            SettingsTabs.Items.Clear();
+            foreach (var title in categories) SettingsTabs.Items.Add(new SelectorBarItem { Text = title });
+        }
+        var index = Math.Clamp(current.SettingsCategoryIndex, 0, SettingsTabs.Items.Count - 1);
+        SettingsTabs.SelectedItem = SettingsTabs.Items[index];
+    }
+    // Staggered entrance and smooth reflow; disabled when the user or Windows asks for reduced motion.
+    private void ApplyMotion(SectionViewModel vm)
+    {
+        var enabled = vm.MotionEnabled && new UISettings().AnimationsEnabled;
+        foreach (var panel in new Panel?[] { PageContent, HomeContent, OptimizeContent, PerformanceContent, SettingsContent })
+        {
+            if (panel is null) continue;
+            if (!enabled) { panel.ChildrenTransitions = null; continue; }
+            if (panel.ChildrenTransitions is { Count: > 0 }) continue;
+            panel.ChildrenTransitions = [new EntranceThemeTransition { IsStaggeringEnabled = true, FromVerticalOffset = 28 }, new RepositionThemeTransition()];
+        }
     }
     private void OnOptimizeTabChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
@@ -82,29 +106,19 @@ public sealed partial class SectionPage : Page
         var index = sender.Items.IndexOf(sender.SelectedItem);
         if (index is >= 0 and <= 2) shell.NavigateCommand.Execute(new[] { "monitoring", "benchmark", "history" }[index]);
     }
-    private void OnSettingsCategoryChanged(object sender, SelectionChangedEventArgs args)
+    private void OnSettingsTabChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
-        if (!synchronizing && shell is not null && sender is ComboBox { SelectedIndex: >= 0 } combo) shell.SettingsCategoryIndex = combo.SelectedIndex;
-    }
-    private void AnimateEntrance()
-    {
-        if (DataContext is not SectionViewModel { MotionEnabled: true } || !new UISettings().AnimationsEnabled) return;
-        var compositor = ElementCompositionPreview.GetElementVisual(PageContent).Compositor;
-        using var easing = compositor.CreateCubicBezierEasingFunction(new Vector2(0.2f, 0.8f), new Vector2(0.2f, 1));
-        using var movement = compositor.CreateVector3KeyFrameAnimation();
-        movement.Target = "Translation"; movement.InsertKeyFrame(0, new Vector3(0, 8, 0)); movement.InsertKeyFrame(1, Vector3.Zero, easing);
-        movement.Duration = TimeSpan.FromMilliseconds(200);
-        using var fade = compositor.CreateScalarKeyFrameAnimation(); fade.Target = "Opacity";
-        fade.InsertKeyFrame(0, 0); fade.InsertKeyFrame(1, 1, easing); fade.Duration = TimeSpan.FromMilliseconds(180);
-        PageContent.StartAnimation(movement); PageContent.StartAnimation(fade);
+        if (synchronizing || shell is null || sender.SelectedItem is null) return;
+        var index = sender.Items.IndexOf(sender.SelectedItem);
+        if (index >= 0) shell.SettingsCategoryIndex = index;
     }
     private void OnViewportSizeChanged(object sender, SizeChangedEventArgs e)
     {
-        var inset = Math.Max(0, (e.NewSize.Width - 1120) / 2); PageContent.Margin = new Thickness(inset, 0, inset, 0);
+        var inset = Math.Max(0, (e.NewSize.Width - 1180) / 2); PageContent.Margin = new Thickness(inset, 0, inset, 0);
     }
     private void OnContentSizeChanged(object sender, SizeChangedEventArgs e)
     {
-        PageContent.Padding = new Thickness(e.NewSize.Width < 700 ? 16 : 24);
+        PageContent.Padding = e.NewSize.Width < 700 ? new Thickness(16, 20, 16, 32) : new Thickness(32, 28, 32, 40);
         if (CpuSummary is null || GpuSummary is null || RamSummary is null) return;
         var stacked = e.NewSize.Width < 720;
         foreach (var (card, index) in new[] { (CpuSummary, 0), (GpuSummary, 1), (RamSummary, 2) })
