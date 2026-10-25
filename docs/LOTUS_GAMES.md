@@ -76,3 +76,10 @@ Primeira entrega da versão focada no jogador leigo (ver decisões de produto em
 - Layout `Lotus.ovl` do OverlayEditor (recurso embutido): cartão escuro com borda rosé, FPS grande, AVG, 1% LOW, 0.1% LOW, frametime com gráfico, linhas CPU/GPU/VRAM/RAM (uso, barra, temperatura, clock ou GB) e rodapé API | resolução | ms.
 - **Exportar** (sem admin): salva em `%LOCALAPPDATA%\Lotus\Overlays\Lotus.ovl` e abre a pasta para importar no OverlayEditor. **Ativar** (UAC, com confirmação): o auxiliar só aceita `.ovl` dentro dessa pasta, guarda `OverlayEditor.cfg` original uma vez e define `[Settings] Layout`. **Restaurar** devolve o arquivo original exato.
 - Limitação: a semântica das tags do OverlayEditor foi inferida dos exemplos que acompanham o RTSS; o visual precisa ser conferido dentro de um jogo. 278 testes aprovados.
+
+## LOTUS SCORE (25/10/2026)
+
+- Nova aba **LOTUS SCORE**: teste de ~50 s sem alterar o Windows. CPU 1 núcleo e todos os núcleos (ray tracer determinístico próprio) e GPU (cena 3D ray-marched 1920×1080 fora da tela, Direct3D 11 via Vortice 3.8.3, adaptador de alto desempenho, software/WARP ignorado). Cada teste: 1 aquecimento + 3 passadas de 3 s, mediana; variação acima de 3% é sinalizada como resultado instável.
+- Pontuação total: média geométrica ponderada (GPU 50%, multi 30%, single 20%); 10 000 = PC gamer intermediário. Fatores calibrados no PC de desenvolvimento (Ryzen 5 5500 + RTX 5060 → 1 400 / 10 500 / 11 500).
+- **Offline**: tabela embutida de 6 faixas (entrada a entusiasta) com valores estimados a partir de desempenho relativo público; rotulado como estimativa. **Online**: botões que abrem pc-builds, 3DMark e How Many FPS com as peças do PC; sem raspagem de sites nem envio de dados pelo Lotus.
+- Histórico das últimas 20 execuções em `%LOCALAPPDATA%\Lotus\score-history.json`. 285 testes aprovados em Debug e Release.

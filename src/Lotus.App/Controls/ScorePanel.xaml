@@ -1,0 +1,78 @@
+<UserControl x:Class="Lotus.App.Controls.ScorePanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <StackPanel Spacing="16">
+  <!-- Hero: total score and start/cancel -->
+  <Border Style="{StaticResource CardStyle}" Padding="24">
+   <Grid ColumnSpacing="24" RowSpacing="14">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <StackPanel Spacing="6">
+     <TextBlock Text="{Binding Text[ScoreTotalLabel]}" Style="{StaticResource EyebrowStyle}"/>
+     <TextBlock Text="{Binding Total}" FontSize="64" FontWeight="Bold" Foreground="{ThemeResource GoldGradientBrush}" AutomationProperties.AutomationId="score-total"/>
+     <TextBlock Text="{Binding MachineText}" Style="{StaticResource CaptionStyle}" AutomationProperties.AutomationId="score-machine"/>
+     <TextBlock Text="{Binding Verdict}" Style="{StaticResource BodyStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="score-verdict"/>
+    </StackPanel>
+    <StackPanel Grid.Column="1" Spacing="10" VerticalAlignment="Center" MinWidth="180">
+     <Button Content="{Binding StartLabel}" Click="OnToggle" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="44" AutomationProperties.AutomationId="score-start"/>
+    </StackPanel>
+    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="6">
+     <TextBlock Text="{Binding Text[ScoreIntro]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+     <ProgressBar Value="{Binding Progress}" Maximum="100" Visibility="{Binding Busy, Converter={StaticResource BooleanVisibility}}"/>
+     <TextBlock Text="{Binding Phase}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite" AutomationProperties.AutomationId="score-phase"/>
+     <TextBlock Text="{Binding Reliability}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="score-reliability"/>
+    </StackPanel>
+   </Grid>
+  </Border>
+  <!-- Sub-scores -->
+  <Grid ColumnSpacing="12">
+   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+   <Border Style="{StaticResource CardStyle}"><StackPanel Spacing="4"><TextBlock Text="{Binding Text[ScoreCpu1Label]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Cpu1}" FontSize="28" FontWeight="SemiBold" AutomationProperties.AutomationId="score-cpu1"/></StackPanel></Border>
+   <Border Grid.Column="1" Style="{StaticResource CardStyle}"><StackPanel Spacing="4"><TextBlock Text="{Binding Text[ScoreCpuAllLabel]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding CpuAll}" FontSize="28" FontWeight="SemiBold" AutomationProperties.AutomationId="score-cpuall"/></StackPanel></Border>
+   <Border Grid.Column="2" Style="{StaticResource CardStyle}"><StackPanel Spacing="4"><TextBlock Text="{Binding Text[ScoreGpuLabel]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Gpu}" FontSize="28" FontWeight="SemiBold" AutomationProperties.AutomationId="score-gpu"/></StackPanel></Border>
+  </Grid>
+  <!-- Offline comparison -->
+  <Border Style="{StaticResource CardStyle}">
+   <StackPanel Spacing="10">
+    <TextBlock Text="{Binding Text[ScoreCompareTitle]}" Style="{StaticResource SectionTitleStyle}"/>
+    <ItemsControl ItemsSource="{Binding Compare}" AutomationProperties.AutomationId="score-compare">
+     <ItemsControl.ItemTemplate>
+      <DataTemplate>
+       <Grid ColumnSpacing="12" Margin="0,4">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="220"/><ColumnDefinition/><ColumnDefinition Width="80"/></Grid.ColumnDefinitions>
+        <StackPanel>
+         <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE735;" FontSize="12" Foreground="{ThemeResource GoldBrush}" Visibility="{Binding IsYou, Converter={StaticResource BooleanVisibility}}"/><TextBlock Text="{Binding Label}" FontWeight="SemiBold"/></StackPanel>
+         <TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextTrimming="CharacterEllipsis"/>
+        </StackPanel>
+        <ProgressBar Grid.Column="1" Value="{Binding Percent}" Maximum="100" MinHeight="8" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="2" Text="{Binding Total}" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="SemiBold"/>
+       </Grid>
+      </DataTemplate>
+     </ItemsControl.ItemTemplate>
+    </ItemsControl>
+    <TextBlock Text="{Binding Text[ScoreEstimateNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+   </StackPanel>
+  </Border>
+  <!-- Online comparison -->
+  <Border Style="{StaticResource CardStyle}">
+   <StackPanel Spacing="10">
+    <TextBlock Text="{Binding Text[ScoreOnlineTitle]}" Style="{StaticResource SectionTitleStyle}"/>
+    <TextBlock Text="{Binding Text[ScoreOnlineNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+    <StackPanel x:Name="OnlineLinks" Orientation="Horizontal" Spacing="8"/>
+   </StackPanel>
+  </Border>
+  <!-- History -->
+  <Border Style="{StaticResource CardStyle}">
+   <StackPanel Spacing="8">
+    <TextBlock Text="{Binding Text[ScoreHistoryTitle]}" Style="{StaticResource SectionTitleStyle}"/>
+    <TextBlock Text="{Binding Text[ScoreHistoryEmpty]}" Style="{StaticResource CaptionStyle}" Visibility="{Binding NoHistory, Converter={StaticResource BooleanVisibility}}"/>
+    <ItemsControl ItemsSource="{Binding History}" AutomationProperties.AutomationId="score-history">
+     <ItemsControl.ItemTemplate>
+      <DataTemplate>
+       <Grid ColumnSpacing="12" Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="160"/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <TextBlock Text="{Binding Date}" Style="{StaticResource CaptionStyle}"/><TextBlock Grid.Column="1" Text="{Binding Summary}"/>
+       </Grid>
+      </DataTemplate>
+     </ItemsControl.ItemTemplate>
+    </ItemsControl>
+   </StackPanel>
+  </Border>
+ </StackPanel>
+</UserControl>

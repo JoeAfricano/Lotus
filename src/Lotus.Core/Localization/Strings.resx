@@ -830,4 +830,42 @@ Condições atuais: {1}</value></data>
   <data name="IntLayoutApplied" xml:space="preserve"><value>Overlay do Lotus ativado. Abra um jogo com o RivaTuner ligado (se não mudar, reinicie o RivaTuner).</value></data>
   <data name="IntLayoutRestored" xml:space="preserve"><value>Layout anterior do RivaTuner restaurado.</value></data>
   <data name="IntLayoutExported" xml:space="preserve"><value>Arquivo salvo em {0}. No RivaTuner: Setup › Plugins › OverlayEditor › Layouts › Load.</value></data>
+  <data name="lotusscoreTitle" xml:space="preserve"><value>LOTUS SCORE</value></data>
+  <data name="lotusscoreDescription" xml:space="preserve"><value>Teste o desempenho do seu PC e compare com outras máquinas.</value></data>
+  <data name="lotusscoreNext" xml:space="preserve"><value>Teste de CPU e GPU com pontuação comparável.</value></data>
+  <data name="ScoreIntro" xml:space="preserve"><value>Cerca de 50 segundos de teste. Nada no Windows é alterado. Feche jogos e programas pesados antes para um resultado justo.</value></data>
+  <data name="ScoreStart" xml:space="preserve"><value>Iniciar teste</value></data>
+  <data name="ScoreCancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="ScoreMachine" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ScorePhaseCpu1" xml:space="preserve"><value>CPU · 1 núcleo · {0}</value></data>
+  <data name="ScorePhaseCpuAll" xml:space="preserve"><value>CPU · {0} threads · {1}</value></data>
+  <data name="ScorePhaseGpu" xml:space="preserve"><value>GPU · cena 3D 1080p · {0}</value></data>
+  <data name="ScoreWarmup" xml:space="preserve"><value>aquecimento</value></data>
+  <data name="ScorePass" xml:space="preserve"><value>passada {0} de {1}</value></data>
+  <data name="ScoreDone" xml:space="preserve"><value>Teste concluído.</value></data>
+  <data name="ScoreNoGpu" xml:space="preserve"><value>GPU com Direct3D 11 não encontrada; a nota usa só a CPU.</value></data>
+  <data name="ScoreCancelled" xml:space="preserve"><value>Teste cancelado.</value></data>
+  <data name="ScoreFailed" xml:space="preserve"><value>Não foi possível concluir o teste. Os detalhes ficaram no log.</value></data>
+  <data name="ScoreReliable" xml:space="preserve"><value>Resultado confiável: as passadas variaram {0:0.0}%.</value></data>
+  <data name="ScoreUnstable" xml:space="preserve"><value>As passadas variaram {0:0.0}% (acima de 3%). Algo atrapalhou: programa em segundo plano, temperatura ou limite de energia. Feche outros programas e repita antes de comparar.</value></data>
+  <data name="ScoreVerdictLow" xml:space="preserve"><value>Seu PC ficou abaixo da faixa de entrada. Veja em Otimizar o que pode estar limitando.</value></data>
+  <data name="ScoreVerdict" xml:space="preserve"><value>Seu PC está na faixa {0}: supera {1} de {2} referências.</value></data>
+  <data name="ScoreYou" xml:space="preserve"><value>Seu PC</value></data>
+  <data name="ScoreHistoryLine" xml:space="preserve"><value>{0:N0} pontos · CPU {1:N0} / {2:N0} · GPU {3}</value></data>
+  <data name="ScoreTierEntry" xml:space="preserve"><value>Entrada</value></data>
+  <data name="ScoreTierBudget" xml:space="preserve"><value>Básico gamer</value></data>
+  <data name="ScoreTierMid" xml:space="preserve"><value>Intermediário</value></data>
+  <data name="ScoreTierMidHigh" xml:space="preserve"><value>Intermediário+</value></data>
+  <data name="ScoreTierHigh" xml:space="preserve"><value>Alto desempenho</value></data>
+  <data name="ScoreTierEnthusiast" xml:space="preserve"><value>Entusiasta</value></data>
+  <data name="ScoreTotalLabel" xml:space="preserve"><value>Pontuação Lotus</value></data>
+  <data name="ScoreCpu1Label" xml:space="preserve"><value>CPU · 1 núcleo</value></data>
+  <data name="ScoreCpuAllLabel" xml:space="preserve"><value>CPU · todos os núcleos</value></data>
+  <data name="ScoreGpuLabel" xml:space="preserve"><value>GPU · 3D</value></data>
+  <data name="ScoreCompareTitle" xml:space="preserve"><value>Comparação offline</value></data>
+  <data name="ScoreEstimateNote" xml:space="preserve"><value>Referências estimadas a partir de dados públicos de desempenho relativo, calibradas em um PC real (Ryzen 5 5500 + RTX 5060). Use como orientação, não como medida exata.</value></data>
+  <data name="ScoreOnlineTitle" xml:space="preserve"><value>Comparação online</value></data>
+  <data name="ScoreOnlineNote" xml:space="preserve"><value>Abre sites públicos no navegador já com as peças do seu PC. O Lotus não envia seus dados.</value></data>
+  <data name="ScoreHistoryTitle" xml:space="preserve"><value>Seus testes anteriores</value></data>
+  <data name="ScoreHistoryEmpty" xml:space="preserve"><value>Nenhum teste ainda. Rode o primeiro para ter uma referência antes e depois de otimizar.</value></data>
 </root>

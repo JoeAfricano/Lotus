@@ -12,7 +12,7 @@ public static class Sections
         new Section(item.Id, text[item.Id + "Title"], item.Glyph, text[item.Id + "Description"], text[item.Id + "Next"])).ToArray());
     private static IEnumerable<(string Id, string Glyph)> Definitions => new[]
     {
-        ("home", "\uE80F"), ("optimize", "\uE945"), ("games", "\uE7FC"),
+        ("home", "\uE80F"), ("optimize", "\uE945"), ("games", "\uE7FC"), ("lotusscore", "\uEC4A"),
         ("performance", "\uE9D2"), ("settings", "\uE713")
     };
 }
@@ -28,7 +28,7 @@ public static class AppRoutes
         "home" or "dashboard" => new("home", "home"),
         "optimize" or "optimizations" or "analysis" => new("analysis", "optimize"),
         "advice" => new("analysis", "optimize"), "restore" => new("restore", "optimize"),
-        "games" => new("games", "games"),
+        "games" => new("games", "games"), "score" or "lotusscore" => new("lotusscore", "lotusscore"),
         "performance" or "monitoring" => new("monitoring", "performance"),
         "benchmark" => new("benchmark", "performance"), "history" => new("history", "performance"),
         "settings" => new("settings", "settings"), "settings-monitoring" => new("settings-monitoring", "settings"),

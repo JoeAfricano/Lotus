@@ -16,6 +16,7 @@ public sealed partial class SectionPage : Page
     public bool ShowOptimize { get; private set; }
     public bool ShowPerformance { get; private set; }
     public bool ShowGames { get; private set; }
+    public bool ShowScore { get; private set; }
     public bool ShowSettings { get; private set; }
     public bool ShowDiagnosis { get; private set; }
     public bool ShowRestore { get; private set; }
@@ -53,7 +54,7 @@ public sealed partial class SectionPage : Page
         try
         {
             ShowHome = vm.Section.Id == "home"; ShowOptimize = vm.Section.Id == "optimize";
-            ShowPerformance = vm.Section.Id == "performance"; ShowGames = vm.Section.Id == "games"; ShowSettings = vm.Section.Id == "settings";
+            ShowPerformance = vm.Section.Id == "performance"; ShowGames = vm.Section.Id == "games"; ShowScore = vm.Section.Id == "lotusscore"; ShowSettings = vm.Section.Id == "settings";
             ShowDiagnosis = ShowOptimize && shell.OptimizeTabIndex == 0;
             ShowRestore = ShowOptimize && shell.OptimizeTabIndex == 1;
             ShowLive = ShowPerformance && shell.PerformanceTabIndex == 0;

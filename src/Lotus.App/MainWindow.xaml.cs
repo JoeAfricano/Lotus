@@ -31,6 +31,7 @@ public sealed partial class MainWindow : Window
     private readonly Lotus.Core.Diagnostics.HardwareDiagnosticsViewModel hardware;
     private readonly Lotus.Core.Games.GamesViewModel games;
     private readonly Lotus.Core.Integrations.IntegrationsViewModel integrations;
+    private readonly Lotus.Core.Score.LotusScoreViewModel score;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
     private BrandPulse? flowerPulse;
@@ -42,7 +43,7 @@ public sealed partial class MainWindow : Window
     private BrandMotionProof? brandProof;
     private bool brandProofShown;
 
-    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring, Lotus.Core.Diagnostics.MemoryAnalysisViewModel memoryAnalysis, ExperienceViewModel experience, Lotus.Core.Benchmark.BenchmarkViewModel benchmark, Lotus.Core.Optimization.OptimizationViewModel optimizer, Lotus.Core.Optimization.PowerProfilesViewModel powerProfiles, Lotus.Core.Diagnostics.HardwareDiagnosticsViewModel hardware, Lotus.Core.Games.GamesViewModel games, Lotus.Core.Integrations.IntegrationsViewModel integrations)
+    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring, Lotus.Core.Diagnostics.MemoryAnalysisViewModel memoryAnalysis, ExperienceViewModel experience, Lotus.Core.Benchmark.BenchmarkViewModel benchmark, Lotus.Core.Optimization.OptimizationViewModel optimizer, Lotus.Core.Optimization.PowerProfilesViewModel powerProfiles, Lotus.Core.Diagnostics.HardwareDiagnosticsViewModel hardware, Lotus.Core.Games.GamesViewModel games, Lotus.Core.Integrations.IntegrationsViewModel integrations, Lotus.Core.Score.LotusScoreViewModel score)
     {
         ViewModel = viewModel;
         this.text = text;
@@ -51,7 +52,7 @@ public sealed partial class MainWindow : Window
         this.palette = palette;
         this.monitoring = monitoring;
         this.memoryAnalysis = memoryAnalysis;
-        this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer; this.powerProfiles = powerProfiles; this.hardware = hardware; this.games = games; this.integrations = integrations;
+        this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer; this.powerProfiles = powerProfiles; this.hardware = hardware; this.games = games; this.integrations = integrations; this.score = score;
         InitializeComponent();
         ShellRoot.DataContext = ViewModel;
         ShellRoot.Language = text.Language;
@@ -150,7 +151,7 @@ public sealed partial class MainWindow : Window
         ShellRoot.Language = text.Language;
         ViewModel.RefreshLanguage();
         monitoring.RefreshLanguage();
-        experience.RefreshLanguage(); benchmark.RefreshLanguage(); optimizer.RefreshLanguage(); powerProfiles.RefreshLanguage(); hardware.RefreshLanguage(); games.RefreshLanguage(); integrations.RefreshLanguage();
+        experience.RefreshLanguage(); benchmark.RefreshLanguage(); optimizer.RefreshLanguage(); powerProfiles.RefreshLanguage(); hardware.RefreshLanguage(); games.RefreshLanguage(); integrations.RefreshLanguage(); score.RefreshLanguage();
         foreach (NavigationViewItem item in Navigation.MenuItems)
         {
             var section = ViewModel.Items.Single(s => s.Id == (string)item.Tag);
@@ -290,7 +291,7 @@ public sealed partial class MainWindow : Window
         if (force || displayedSectionId != group)
         {
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
-                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations), new SuppressNavigationTransitionInfo());
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score), new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
         }
         UpdateMonitoringDemand();

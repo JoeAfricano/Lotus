@@ -830,4 +830,42 @@ Current conditions: {1}</value></data>
   <data name="IntLayoutApplied" xml:space="preserve"><value>Lotus overlay activated. Open a game with RivaTuner running (restart RivaTuner if it does not change).</value></data>
   <data name="IntLayoutRestored" xml:space="preserve"><value>RivaTuner's previous layout restored.</value></data>
   <data name="IntLayoutExported" xml:space="preserve"><value>File saved to {0}. In RivaTuner: Setup › Plugins › OverlayEditor › Layouts › Load.</value></data>
+  <data name="lotusscoreTitle" xml:space="preserve"><value>LOTUS SCORE</value></data>
+  <data name="lotusscoreDescription" xml:space="preserve"><value>Test your PC's performance and compare it with other machines.</value></data>
+  <data name="lotusscoreNext" xml:space="preserve"><value>CPU and GPU test with a comparable score.</value></data>
+  <data name="ScoreIntro" xml:space="preserve"><value>About 50 seconds of testing. Nothing in Windows is changed. Close games and heavy apps first for a fair result.</value></data>
+  <data name="ScoreStart" xml:space="preserve"><value>Start test</value></data>
+  <data name="ScoreCancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="ScoreMachine" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ScorePhaseCpu1" xml:space="preserve"><value>CPU · 1 core · {0}</value></data>
+  <data name="ScorePhaseCpuAll" xml:space="preserve"><value>CPU · {0} threads · {1}</value></data>
+  <data name="ScorePhaseGpu" xml:space="preserve"><value>GPU · 3D scene 1080p · {0}</value></data>
+  <data name="ScoreWarmup" xml:space="preserve"><value>warm-up</value></data>
+  <data name="ScorePass" xml:space="preserve"><value>pass {0} of {1}</value></data>
+  <data name="ScoreDone" xml:space="preserve"><value>Test complete.</value></data>
+  <data name="ScoreNoGpu" xml:space="preserve"><value>No Direct3D 11 GPU found; the score uses the CPU only.</value></data>
+  <data name="ScoreCancelled" xml:space="preserve"><value>Test cancelled.</value></data>
+  <data name="ScoreFailed" xml:space="preserve"><value>The test could not finish. Details were written to the log.</value></data>
+  <data name="ScoreReliable" xml:space="preserve"><value>Reliable result: passes varied {0:0.0}%.</value></data>
+  <data name="ScoreUnstable" xml:space="preserve"><value>Passes varied {0:0.0}% (above 3%). Something interfered: background apps, temperature or power limit. Close other apps and repeat before comparing.</value></data>
+  <data name="ScoreVerdictLow" xml:space="preserve"><value>Your PC scored below the entry tier. Check Optimize for what may be holding it back.</value></data>
+  <data name="ScoreVerdict" xml:space="preserve"><value>Your PC is in the {0} tier: it beats {1} of {2} references.</value></data>
+  <data name="ScoreYou" xml:space="preserve"><value>Your PC</value></data>
+  <data name="ScoreHistoryLine" xml:space="preserve"><value>{0:N0} points · CPU {1:N0} / {2:N0} · GPU {3}</value></data>
+  <data name="ScoreTierEntry" xml:space="preserve"><value>Entry</value></data>
+  <data name="ScoreTierBudget" xml:space="preserve"><value>Budget gamer</value></data>
+  <data name="ScoreTierMid" xml:space="preserve"><value>Mid-range</value></data>
+  <data name="ScoreTierMidHigh" xml:space="preserve"><value>Mid-range+</value></data>
+  <data name="ScoreTierHigh" xml:space="preserve"><value>High performance</value></data>
+  <data name="ScoreTierEnthusiast" xml:space="preserve"><value>Enthusiast</value></data>
+  <data name="ScoreTotalLabel" xml:space="preserve"><value>Lotus score</value></data>
+  <data name="ScoreCpu1Label" xml:space="preserve"><value>CPU · 1 core</value></data>
+  <data name="ScoreCpuAllLabel" xml:space="preserve"><value>CPU · all cores</value></data>
+  <data name="ScoreGpuLabel" xml:space="preserve"><value>GPU · 3D</value></data>
+  <data name="ScoreCompareTitle" xml:space="preserve"><value>Offline comparison</value></data>
+  <data name="ScoreEstimateNote" xml:space="preserve"><value>References are estimated from public relative-performance data and calibrated on one real PC (Ryzen 5 5500 + RTX 5060). Use them as guidance, not as exact measurements.</value></data>
+  <data name="ScoreOnlineTitle" xml:space="preserve"><value>Online comparison</value></data>
+  <data name="ScoreOnlineNote" xml:space="preserve"><value>Opens public sites in your browser with your PC's parts. Lotus sends none of your data.</value></data>
+  <data name="ScoreHistoryTitle" xml:space="preserve"><value>Your previous tests</value></data>
+  <data name="ScoreHistoryEmpty" xml:space="preserve"><value>No tests yet. Run the first one to have a before-and-after reference for optimizing.</value></data>
 </root>

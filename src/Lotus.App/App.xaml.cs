@@ -98,6 +98,9 @@ public partial class App : Application
                 new Lotus.Infrastructure.Games.RtssPreferredCaptureProvider(p.GetRequiredService<IFrameCaptureProvider>()), new Lotus.Infrastructure.Games.PdhGpuLoadSampler(), new Lotus.Infrastructure.Games.ScsKillerCli()))
             .AddSingleton(p => new Lotus.Core.Integrations.IntegrationsViewModel(new Lotus.Infrastructure.Integrations.WindowsRtssIntegration(),
                 new Lotus.Infrastructure.Integrations.WindowsToolDetector(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Integration operation failed")))
+            .AddSingleton(p => { var gpu = new Lotus.Infrastructure.Score.D3D11GpuBenchmark(); return new Lotus.Core.Score.LotusScoreViewModel(new Lotus.Infrastructure.Score.CpuRayBenchmark(), gpu,
+                new Lotus.Infrastructure.Score.JsonScoreHistory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "score-history.json")),
+                new Lotus.Infrastructure.Score.WindowsScoreMachine(gpu), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Lotus Score failed")); })
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);
