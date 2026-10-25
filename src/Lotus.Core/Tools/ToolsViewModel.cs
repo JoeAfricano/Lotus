@@ -54,7 +54,7 @@ public sealed partial class AppRow(RunningApp app, string sizeText) : Observable
 }
 public sealed record InfoRow(string Title, string Detail, bool Warning);
 
-public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnectionTester net, IDiskHealth disks, IDriverInfo driver, ITextCatalog text, Action<Exception> log, IDnsService? dns = null, IDriverUpdates? updates = null) : ObservableObject
+public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnectionTester net, IDiskHealth disks, IDriverInfo driver, ITextCatalog text, Action<Exception> log, IDnsService? dns = null, IDriverUpdates? updates = null, UninstallerViewModel? uninstall = null) : ObservableObject
 {
     public ITextCatalog Text { get; } = text;
     public ObservableCollection<AppRow> Apps { get; } = [];
@@ -69,6 +69,7 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
     public string Message { get; private set; } = "";
     public string DiskTip { get; private set; } = "";
     // Progress and completion of each task, shown with a bar, percentage and a "done" check.
+    public UninstallerViewModel? Uninstall { get; } = uninstall;
     public TaskState MemTask { get; } = new(); public TaskState TempTask { get; } = new();
     public TaskState NetTask { get; } = new(); public TaskState DnsTask { get; } = new();
     public bool Busy { get; private set; }

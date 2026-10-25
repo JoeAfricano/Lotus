@@ -1106,4 +1106,22 @@ Condições atuais: {1}</value></data>
   <data name="ToolDrvDoneFound" xml:space="preserve"><value>Verificação concluída: {0} para atualizar.</value></data>
   <data name="ToolDrvOpenNvidia" xml:space="preserve"><value>Baixar na NVIDIA</value></data>
   <data name="ToolDrvOpenWu" xml:space="preserve"><value>Abrir no Windows Update</value></data>
+  <data name="UninTitle" xml:space="preserve"><value>Desinstalar programas</value></data>
+  <data name="UninWhat" xml:space="preserve"><value>Quem remove é o **desinstalador do próprio programa**. Depois, o Lotus procura **pastas que sobraram** com o nome dele e você escolhe o que mandar para a Lixeira.</value></data>
+  <data name="UninSearch" xml:space="preserve"><value>Buscar programa</value></data>
+  <data name="UninCount" xml:space="preserve"><value>{0} programas instalados</value></data>
+  <data name="UninButton" xml:space="preserve"><value>Desinstalar</value></data>
+  <data name="UninConfirmTitle" xml:space="preserve"><value>Desinstalar {0}?</value></data>
+  <data name="UninConfirmBody" xml:space="preserve"><value>O desinstalador do programa vai abrir e pode pedir permissão de administrador. **Siga as etapas dele até o fim.** Depois o Lotus procura o que sobrou.</value></data>
+  <data name="UninRunning" xml:space="preserve"><value>Desinstalando {0}. Siga as etapas na janela do desinstalador.</value></data>
+  <data name="UninCouldNotStart" xml:space="preserve"><value>Não foi possível abrir o desinstalador de {0} (talvez a permissão tenha sido recusada).</value></data>
+  <data name="UninStillThere" xml:space="preserve"><value>{0} ainda aparece como instalado. Se você cancelou o desinstalador, nada foi removido.</value></data>
+  <data name="UninCleanNoLeftovers" xml:space="preserve"><value>{0} foi removido e não sobrou nada.</value></data>
+  <data name="UninLeftoversFound" xml:space="preserve"><value>{0} foi removido. Sobraram {1} pasta(s); confira abaixo.</value></data>
+  <data name="UninDone" xml:space="preserve"><value>{0} desinstalado.</value></data>
+  <data name="UninLeftoversWhat" xml:space="preserve"><value>Pastas que sobraram. As marcadas vão para a **Lixeira**, então dá para recuperar. Pastas que precisam de administrador ficam desmarcadas.</value></data>
+  <data name="UninRecycle" xml:space="preserve"><value>Enviar sobras para a Lixeira</value></data>
+  <data name="UninRecycleConfirm" xml:space="preserve"><value>{0} pasta(s) vão para a Lixeira. Dá para recuperar de lá se precisar.</value></data>
+  <data name="UninLeftoversRecycled" xml:space="preserve"><value>{0} pasta(s) enviadas para a Lixeira.</value></data>
+  <data name="UninLeftoversDone" xml:space="preserve"><value>Concluído: {0} pasta(s) na Lixeira.</value></data>
 </root>

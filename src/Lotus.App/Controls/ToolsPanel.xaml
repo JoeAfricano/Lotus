@@ -35,6 +35,8 @@
     <Button Grid.Column="2" Content="{Binding Text[ToolTempClean]}" Click="OnCleanTemp" IsEnabled="{Binding HasTemp}" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="tools-temp-clean"/>
    </Grid>
   </Border>
+  <!-- Uninstall programs (official uninstaller, then leftovers to the Recycle Bin) -->
+  <controls:UninstallerCard DataContext="{Binding Uninstall}" Visibility="{Binding Uninstall, Converter={StaticResource PresenceVisibility}}"/>
   <!-- Connection test -->
   <Border Style="{StaticResource CardStyle}">
    <StackPanel Spacing="10">

@@ -1106,4 +1106,22 @@ Current conditions: {1}</value></data>
   <data name="ToolDrvDoneFound" xml:space="preserve"><value>Check complete: {0} to update.</value></data>
   <data name="ToolDrvOpenNvidia" xml:space="preserve"><value>Get it from NVIDIA</value></data>
   <data name="ToolDrvOpenWu" xml:space="preserve"><value>Open in Windows Update</value></data>
+  <data name="UninTitle" xml:space="preserve"><value>Uninstall programs</value></data>
+  <data name="UninWhat" xml:space="preserve"><value>The **program's own uninstaller** does the removal. Afterwards Lotus looks for **leftover folders** with its name and you choose what goes to the Recycle Bin.</value></data>
+  <data name="UninSearch" xml:space="preserve"><value>Search program</value></data>
+  <data name="UninCount" xml:space="preserve"><value>{0} programs installed</value></data>
+  <data name="UninButton" xml:space="preserve"><value>Uninstall</value></data>
+  <data name="UninConfirmTitle" xml:space="preserve"><value>Uninstall {0}?</value></data>
+  <data name="UninConfirmBody" xml:space="preserve"><value>The program's uninstaller opens and may ask for admin permission. **Follow its steps to the end.** Then Lotus looks for what was left.</value></data>
+  <data name="UninRunning" xml:space="preserve"><value>Uninstalling {0}. Follow the steps in the uninstaller window.</value></data>
+  <data name="UninCouldNotStart" xml:space="preserve"><value>Couldn't open the uninstaller for {0} (permission may have been declined).</value></data>
+  <data name="UninStillThere" xml:space="preserve"><value>{0} still shows as installed. If you cancelled the uninstaller, nothing was removed.</value></data>
+  <data name="UninCleanNoLeftovers" xml:space="preserve"><value>{0} was removed and nothing was left.</value></data>
+  <data name="UninLeftoversFound" xml:space="preserve"><value>{0} was removed. {1} folder(s) were left; check below.</value></data>
+  <data name="UninDone" xml:space="preserve"><value>{0} uninstalled.</value></data>
+  <data name="UninLeftoversWhat" xml:space="preserve"><value>Leftover folders. Checked ones go to the **Recycle Bin**, so they can be recovered. Folders that need admin stay unchecked.</value></data>
+  <data name="UninRecycle" xml:space="preserve"><value>Send leftovers to Recycle Bin</value></data>
+  <data name="UninRecycleConfirm" xml:space="preserve"><value>{0} folder(s) go to the Recycle Bin. You can restore them from there if needed.</value></data>
+  <data name="UninLeftoversRecycled" xml:space="preserve"><value>{0} folder(s) sent to the Recycle Bin.</value></data>
+  <data name="UninLeftoversDone" xml:space="preserve"><value>Done: {0} folder(s) in the Recycle Bin.</value></data>
 </root>
