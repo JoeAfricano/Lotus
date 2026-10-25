@@ -179,27 +179,31 @@ public sealed partial class MainWindow : Window
     }
     private void UpdateNavigationMode(double width)
     {
+        // Top navigation at every width; NavigationView moves overflow items into its "More" menu by itself.
         var nowNarrow = width < 1050;
         if (narrow == nowNarrow) return;
         updatingLayout = true;
         narrow = nowNarrow;
-        Navigation.PaneDisplayMode = nowNarrow ? NavigationViewPaneDisplayMode.LeftCompact : NavigationViewPaneDisplayMode.Left;
-        Navigation.IsPaneOpen = !nowNarrow && preferences.Current.SidebarExpanded;
+        Navigation.PaneDisplayMode = NavigationViewPaneDisplayMode.Top;
         updatingLayout = false;
         UpdatePaneChrome();
     }
     private void OnPaneStateChanged()
     {
         UpdatePaneChrome();
-        // Overlay transitions on small windows must not overwrite the desktop preference.
+        // The sidebar preference only applies to left navigation; top navigation never overwrites it.
+        if (Navigation.PaneDisplayMode == NavigationViewPaneDisplayMode.Top) return;
         if (!initialized || updatingLayout || narrow != false) return;
         if (!preferences.Update(preferences.Current with { SidebarExpanded = Navigation.IsPaneOpen }))
             ShowWarning(text["SidebarSaveFailed"]);
     }
     private void UpdatePaneChrome()
     {
-        var open = Navigation.IsPaneOpen;
-        BrandHeader.Visibility = ExpandedFooter.Visibility = open ? Visibility.Visible : Visibility.Collapsed;
+        var top = Navigation.PaneDisplayMode == NavigationViewPaneDisplayMode.Top;
+        var open = top || Navigation.IsPaneOpen;
+        // In top mode the brand lives in the title bar; the profile is a compact chip on the right.
+        BrandHeader.Visibility = open && !top ? Visibility.Visible : Visibility.Collapsed;
+        ExpandedFooter.Visibility = open ? Visibility.Visible : Visibility.Collapsed;
         CompactFooter.Visibility = open ? Visibility.Collapsed : Visibility.Visible;
         UpdateToggleAccessibility(Navigation, text[open ? "CloseNavigation" : "OpenNavigation"]);
         UpdateBrandMotion();
@@ -268,7 +272,7 @@ public sealed partial class MainWindow : Window
     {
         if (updatingNavigation || args.SelectedItem is not NavigationViewItem { Tag: string id }) return;
         ViewModel.NavigateCommand.Execute(id);
-        if (narrow == true) Navigation.IsPaneOpen = false;
+        if (narrow == true && Navigation.PaneDisplayMode != NavigationViewPaneDisplayMode.Top) Navigation.IsPaneOpen = false;
     }
     private void OnRouteChanged(object? sender, PropertyChangedEventArgs args)
     {

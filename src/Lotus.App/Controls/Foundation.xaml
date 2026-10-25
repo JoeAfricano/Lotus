@@ -13,7 +13,7 @@
  <Style x:Key="BadgeIconStyle" TargetType="FontIcon"><Setter Property="FontSize" Value="18"/><Setter Property="Foreground" Value="{ThemeResource RoseBrush}"/><Setter Property="HorizontalAlignment" Value="Center"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
  <Style x:Key="StatusBadgeStyle" TargetType="ContentControl">
   <Setter Property="HorizontalAlignment" Value="Left"/>
-  <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ContentControl"><Border Background="{ThemeResource AccentSoftBrush}" CornerRadius="999" Padding="12,5"><TextBlock Text="{TemplateBinding Content}" Foreground="{ThemeResource RoseBrush}" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"/></Border></ControlTemplate></Setter.Value></Setter>
+  <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ContentControl"><Border Background="{ThemeResource AccentSoftBrush}" CornerRadius="6" Padding="8,5,10,5"><Grid ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions><Rectangle Width="3" RadiusX="1.5" RadiusY="1.5" Fill="{ThemeResource RoseBrush}"/><TextBlock Grid.Column="1" Text="{TemplateBinding Content}" Foreground="{ThemeResource MainTextBrush}" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"/></Grid></Border></ControlTemplate></Setter.Value></Setter>
  </Style>
 
  <!-- Controls -->
@@ -39,7 +39,7 @@
    </Grid>
   </ControlTemplate></Setter.Value></Setter>
  </Style>
- <Style x:Key="ChipStyle" TargetType="Border"><Setter Property="Background" Value="#14FFFFFF"/><Setter Property="BorderBrush" Value="{ThemeResource CardBorderBrush}"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="999"/><Setter Property="Padding" Value="10,5"/></Style>
+ <Style x:Key="ChipStyle" TargetType="Border"><Setter Property="Background" Value="#12FFFFFF"/><Setter Property="BorderThickness" Value="0"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="9,5"/></Style>
  <Style x:Key="ChipTextStyle" TargetType="TextBlock"><Setter Property="FontSize" Value="12"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
 
  <!-- Typography -->

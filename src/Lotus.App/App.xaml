@@ -23,7 +23,7 @@
   <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent"/><SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent"/>
   <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="Transparent"/>
   <SolidColorBrush x:Key="NavigationViewContentGridBorderBrush" Color="#1AFFE4EE"/>
-  <CornerRadius x:Key="NavigationViewContentGridCornerRadius">12,0,0,0</CornerRadius>
+  <CornerRadius x:Key="NavigationViewContentGridCornerRadius">16,16,0,0</CornerRadius><Thickness x:Key="TopNavigationViewContentGridBorderThickness">1,1,1,0</Thickness>
   <SolidColorBrush x:Key="NavigationViewItemBackgroundSelected" Color="#26D6306F"/>
   <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPointerOver" Color="#36D6306F"/>
   <SolidColorBrush x:Key="NavigationViewItemBackgroundPointerOver" Color="#0FFFFFFF"/>

@@ -5,7 +5,19 @@ namespace Lotus.App.Controls;
 
 public sealed partial class PowerProfilesPanel : UserControl
 {
-    public PowerProfilesPanel() => InitializeComponent();
+    public PowerProfilesPanel()
+    {
+        InitializeComponent();
+        // Loads power plans, saved profiles and journal history (read-only queries).
+        Loaded += async (_, _) => { if (DataContext is Lotus.Core.Optimization.PowerProfilesViewModel model) await model.RefreshAsync(); };
+    }
+
+    // Opens only Windows Settings pages (ms-settings:); nothing is changed by Lotus.
+    private async void OnOpenSettings(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: string uri } && uri.StartsWith("ms-settings:", StringComparison.OrdinalIgnoreCase))
+            await Windows.System.Launcher.LaunchUriAsync(new Uri(uri));
+    }
 
     // Three columns on wide windows, one stacked column on narrow ones.
     private void OnCardsSizeChanged(object sender, SizeChangedEventArgs e)

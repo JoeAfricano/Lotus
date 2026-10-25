@@ -12,6 +12,8 @@ public sealed class PowerProfilesViewModel : ObservableObject
     private readonly IPowerSchemeService power;
     private readonly IProfileStore store;
     private readonly IStartupInventory startup;
+    private readonly IGameFeatureInventory? featureSource;
+    private IReadOnlyList<GameFeature> features = [];
     private readonly Action<Exception> log;
     private readonly Dictionary<string, OptimizationProfile> profiles = new();
     private string profileId = "game", messageKey = "PowerReady", error = "";
@@ -24,6 +26,8 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public ObservableCollection<OperationChoice> Operations { get; } = [];
     public ObservableCollection<StartupRow> StartupEntries { get; } = [];
     public string StartupStatus { get; private set; } = "";
+    public ObservableCollection<GameFeatureRow> Features { get; } = [];
+    public string FeaturesSummary { get; private set; } = "";
     public bool CanEdit => !busy;
     public bool IsGame => profileId == "game";
     public bool IsDaily => profileId == "daily";
@@ -53,9 +57,9 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public IAsyncRelayCommand RevertCommand { get; }
     public IAsyncRelayCommand StartupCommand { get; }
     public PowerProfilesViewModel(OptimizationEngine engine, IPowerSchemeService power, IProfileStore store,
-        IStartupInventory startup, ITextCatalog text, Action<Exception> log)
+        IStartupInventory startup, ITextCatalog text, Action<Exception> log, IGameFeatureInventory? features = null)
     {
-        this.engine = engine; this.power = power; this.store = store; this.startup = startup; Text = text; this.log = log;
+        this.engine = engine; this.power = power; this.store = store; this.startup = startup; featureSource = features; Text = text; this.log = log;
         SelectProfileCommand = new RelayCommand<string>(SelectProfile, _ => !busy);
         RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !busy);
         SaveCommand = new AsyncRelayCommand(() => Run(async () => { await SaveAsync(); InvalidatePlan(); messageKey = "PowerSaved"; }), () => !busy && (!PowerEnabled || SelectedScheme is not null));
@@ -89,6 +93,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
         Schemes.Clear(); foreach (var s in data.Schemes) Schemes.Add(s);
         active = data.Active; ac = data.Ac == true; profiles.Clear();
         foreach (var p in data.Profiles) profiles[p.Id] = p;
+        if (featureSource is not null) features = await Task.Run(featureSource.Read);
         scheme = null; enabled = true;
         SelectProfile(profileId); await LoadOperations(null);
     });
@@ -101,6 +106,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
         scheme = Schemes.FirstOrDefault(s => s.Id == p.PowerSchemeId); enabled = p.PowerEnabled;
         InvalidatePlan(); OnPropertyChanged(nameof(SelectedScheme)); OnPropertyChanged(nameof(PowerEnabled));
         foreach (var name in new[] { nameof(IsGame), nameof(IsDaily), nameof(IsCustom), nameof(ProfileName) }) OnPropertyChanged(name);
+        BuildFeatureRows();
     }
     private Task SaveAsync()
     {
@@ -123,7 +129,22 @@ public sealed class PowerProfilesViewModel : ObservableObject
         catch (Exception ex) { error = ex.Message; messageKey = ex is Win32Exception { NativeErrorCode: 5 } ? "PowerDenied" : "PowerError"; log(ex); }
         finally { busy = false; Confirmed = false; Notify(); }
     }
-    public void RefreshLanguage() => Notify();
+    public void RefreshLanguage() { BuildFeatureRows(); Notify(); }
+    // Rows reflect the selected profile: what it recommends and whether the current state differs.
+    private void BuildFeatureRows()
+    {
+        Features.Clear();
+        foreach (var f in features)
+        {
+            var desired = GameFeatureRules.Desired(f.Id, profileId);
+            var advice = f.State == FeatureState.Unavailable ? Text["FeatUnavailableAdvice"]
+                : desired is null ? Text["FeatAdvice" + f.Id] : Text[desired == FeatureState.On ? "FeatRecommendOn" : "FeatRecommendOff"] + " " + Text["FeatAdvice" + f.Id];
+            Features.Add(new(f.Id, Text["FeatName" + f.Id], Text["FeatState" + f.State], advice, GameFeatureRules.NeedsAttention(f, profileId), f.SettingsUri));
+        }
+        var attention = Features.Count(r => r.NeedsAttention);
+        FeaturesSummary = Features.Count == 0 ? Text["FeatNotRead"] : attention == 0 ? Text["FeatAllGood"] : Text.Format("FeatAttention", attention);
+        OnPropertyChanged(nameof(FeaturesSummary));
+    }
     private void Notify()
     {
         foreach (var p in new[] { nameof(CanEdit), nameof(Status), nameof(Summary), nameof(Details), nameof(ActiveName), nameof(ProfileName), nameof(SchemeLabel) }) OnPropertyChanged(p);

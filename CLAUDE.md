@@ -28,7 +28,8 @@ Leia `AGENTS.md` e siga suas diretrizes. Responda em português brasileiro. O pr
 - Interface redesenhada e nova identidade (logo vetorial ouro rosé/carmesim, paleta ameixa) — ver `docs/LOTUS_STAGE06_UI.md`. Marca e animação saíram do standby a pedido do usuário.
 - Inicialização: status via StartupApproved (somente leitura) e correção de duplicidade HKCU; 17 entradas reais.
 - ResetExplode: binário conferido e descompilado (`docs/LOTUS_RESETEXPLODE_REFERENCE.md`, fontes em `artifacts/references/ResetExplode/decompiled/`).
-- Validação atual: Debug/Release sem avisos; 161 testes aprovados em cada. Atalho `Lotus.lnk` na raiz (build Release).
+- Navegação superior; recursos de jogos do Windows somente leitura (orientação manual). Validação atual: Debug/Release sem avisos; 173 testes aprovados em cada. Atalho `Lotus.lnk` na raiz (build Release).
+- Plano mestre recebido (Etapas 06–14). Detecção de jogos (Steam/Xbox/GOG/Epic) e estimativa de FPS por especificações ficam para a Etapa 09.
 - Aguardar comandos do usuário antes das próximas etapas.
 
 ## Validação já executada (anterior)

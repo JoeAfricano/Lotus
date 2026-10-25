@@ -594,4 +594,25 @@ Condições atuais: {1}</value></data>
   <data name="PfSafetyText" xml:space="preserve"><value>Cada alteração é registrada e verificada antes e depois. Desfazer restaura o plano anterior se ninguém o trocou nesse meio-tempo. Seus arquivos pessoais não são afetados.</value></data>
   <data name="PfHowItWorks" xml:space="preserve"><value>Como funciona?</value></data>
   <data name="UxMemoryLabel" xml:space="preserve"><value>Memória</value></data>
+  <data name="PfRowFeatures" xml:space="preserve"><value>Recursos do Windows para jogos</value></data>
+  <data name="FeatManual" xml:space="preserve"><value>Ajuste manual: o Lotus mostra o estado e abre a página certa, sem alterar nada.</value></data>
+  <data name="FeatOpenSettings" xml:space="preserve"><value>Abrir nas Configurações</value></data>
+  <data name="FeatNotRead" xml:space="preserve"><value>Ainda não consultado</value></data>
+  <data name="FeatAllGood" xml:space="preserve"><value>Tudo adequado para este perfil</value></data>
+  <data name="FeatAttention" xml:space="preserve"><value>{0} item(ns) podem ser ajustados</value></data>
+  <data name="FeatRecommendOn" xml:space="preserve"><value>Recomendado: ativado.</value></data>
+  <data name="FeatRecommendOff" xml:space="preserve"><value>Recomendado: desativado.</value></data>
+  <data name="FeatUnavailableAdvice" xml:space="preserve"><value>Não foi possível ler este recurso neste PC.</value></data>
+  <data name="FeatStateOn" xml:space="preserve"><value>Ativado</value></data>
+  <data name="FeatStateOff" xml:space="preserve"><value>Desativado</value></data>
+  <data name="FeatStateSystemDefault" xml:space="preserve"><value>Padrão do Windows</value></data>
+  <data name="FeatStateUnavailable" xml:space="preserve"><value>Indisponível</value></data>
+  <data name="FeatNamegamemode" xml:space="preserve"><value>Modo de Jogo</value></data>
+  <data name="FeatNamebackground-recording" xml:space="preserve"><value>Gravação em segundo plano</value></data>
+  <data name="FeatNamewindowed-optimizations" xml:space="preserve"><value>Otimizações para jogos em janela</value></data>
+  <data name="FeatNamehags" xml:space="preserve"><value>Agendamento de GPU acelerado por hardware</value></data>
+  <data name="FeatAdvicegamemode" xml:space="preserve"><value>Prioriza o jogo em foco e evita instalações de drivers pelo Windows Update e notificações durante a partida.</value></data>
+  <data name="FeatAdvicebackground-recording" xml:space="preserve"><value>Grava continuamente os últimos minutos do jogo, usando GPU e disco enquanto você joga.</value></data>
+  <data name="FeatAdvicewindowed-optimizations" xml:space="preserve"><value>Reduz a latência de jogos DirectX 10/11 em janela ou sem bordas.</value></data>
+  <data name="FeatAdvicehags" xml:space="preserve"><value>O efeito depende da GPU e do driver; compare com o benchmark do Lotus. Exige reiniciar.</value></data>
 </root>

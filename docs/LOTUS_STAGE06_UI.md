@@ -10,3 +10,11 @@ Redesenho da interface WinUI 3 e da marca, sem mudar arquitetura MVVM/DI nem fun
 - **Ícone e atalho:** `tools/New-LotusIcon.ps1` gera `src/Lotus.App/Assets/Lotus.ico` a partir do mesmo vetor; `tools/New-LotusShortcut.ps1` cria `Lotus.lnk` (ignorado pelo Git) apontando para o build Release.
 
 Validação: builds Debug/x64 e Release/x64 sem avisos/erros; 161 testes aprovados em cada configuração (154 anteriores + 7 novos de inicialização). Capturas de Início, Otimizar, Desempenho e Configurações verificadas no app real. Pendente: alteração real do plano de energia (aguarda aprovação específica) e checkpoint Git.
+
+## Incremento — navegação superior e recursos de jogos (24/10/2026)
+
+- **Navegação superior** (`PaneDisplayMode=Top`) a pedido do usuário; marca na barra de título, perfil como chip compacto. A preferência da barra lateral fica preservada e não é sobrescrita no modo superior. Pílulas e círculos decorativos foram substituídos por etiquetas com barra de destaque e seleções em quadrado arredondado.
+- **Recursos do Windows para jogos** (somente leitura, `WindowsGameFeatures`): Modo de Jogo (`GameBar\AutoGameModeEnabled`), gravação em segundo plano (`GameDVR\HistoricalCaptureEnabled`), otimizações para jogos em janela (`DirectXUserGlobalSettings`) e HAGS (`GraphicsDrivers\HwSchMode`). Valor ausente aparece como "Padrão do Windows"; só os padrões documentados (Modo de Jogo ligado, gravação desligada) contam como adequados. Recomendações por perfil em `GameFeatureRules`; HAGS sem recomendação (depende de GPU/driver, exige reinício). Orientação manual: botão abre apenas URIs `ms-settings:`; não há gravação por falta de API oficial verificável.
+- **Correção:** o painel de perfis voltou a carregar planos e histórico ao abrir (chamada `RefreshAsync` perdida na reescrita do code-behind), detectada pela validação por UI Automation.
+- **Validação interativa (UIA, sem aplicar):** seleção Jogo/Diário/Personalizado, salvar, analisar ("Diferença encontrada"), Aplicar bloqueado sem confirmação, inicialização (17 entradas), recursos (1 item a ajustar). Plano ativo QuickCpuScheme idêntico antes e depois.
+- Testes: 173 aprovados em Debug e Release (12 novos de recursos/regras/leitura real).

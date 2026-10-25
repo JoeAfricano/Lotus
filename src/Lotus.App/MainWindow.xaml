@@ -6,13 +6,13 @@
    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
     <Viewbox Width="20" Height="20" AutomationProperties.AccessibilityView="Raw"><Canvas Width="64" Height="64"><Path Fill="{StaticResource PetalBrush}" Opacity="0.82" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z"/><Path Fill="{StaticResource PetalBrush}" Data="M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z"/><Path Fill="{StaticResource GoldGradientBrush}" Data="M32,0.5 L33.5,3.5 L32,6 L30.5,3.5 Z M32,51 L34,55 L32,62.5 L30,55 Z M9,14 L10.4,16.5 L9,19 L7.6,16.5 Z M55,14 L56.4,16.5 L55,19 L53.6,16.5 Z"/><Path Stroke="{StaticResource GoldGradientBrush}" StrokeThickness="3" StrokeLineJoin="Round" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z M32,17 C36.5,23.5 37.5,31.5 32,39 C26.5,31.5 27.5,23.5 32,17 Z"/></Canvas></Viewbox>
     <TextBlock x:Name="TitleLogo" Text="Lotus" Foreground="{ThemeResource GoldBrush}" FontFamily="Georgia" FontSize="15" FontWeight="SemiBold" CharacterSpacing="60" VerticalAlignment="Center"/>
-    <Border Background="{ThemeResource AccentSoftBrush}" CornerRadius="999" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="PLAY BETTER." Foreground="{ThemeResource RoseBrush}" FontSize="9.5" FontWeight="SemiBold" CharacterSpacing="120"/></Border>
+    <Rectangle Width="1" Height="14" Fill="{ThemeResource CardBorderBrush}" VerticalAlignment="Center" Margin="2,0"/><TextBlock Text="PLAY BETTER." Foreground="{ThemeResource RoseBrush}" FontSize="9.5" FontWeight="SemiBold" CharacterSpacing="220" VerticalAlignment="Center"/>
    </StackPanel>
   </Grid>
   <InfoBar x:Name="PreferenceWarning" Grid.Row="1" Severity="Warning" IsOpen="False" IsClosable="True" Margin="12,0,12,8" CornerRadius="10"/>
-  <NavigationView Grid.Row="2" x:Name="Navigation" Background="Transparent" IsBackButtonVisible="Collapsed" IsSettingsVisible="False" PaneDisplayMode="Left" OpenPaneLength="248" CompactPaneLength="60" SelectionChanged="OnSelectionChanged" IsPaneOpen="True" IsTitleBarAutoPaddingEnabled="False" AutomationProperties.Name="{Binding Text[Navigation]}">
+  <NavigationView Grid.Row="2" x:Name="Navigation" Background="Transparent" IsBackButtonVisible="Collapsed" IsSettingsVisible="False" PaneDisplayMode="Top" IsPaneToggleButtonVisible="False" SelectionChanged="OnSelectionChanged" IsPaneOpen="True" IsTitleBarAutoPaddingEnabled="False" AutomationProperties.Name="{Binding Text[Navigation]}">
    <NavigationView.PaneHeader>
-    <StackPanel x:Name="BrandHeader" Orientation="Horizontal" Spacing="12" Margin="14,4,12,20">
+    <StackPanel x:Name="BrandHeader" Orientation="Horizontal" Spacing="12" Margin="14,4,12,20" Visibility="Collapsed">
      <Border Width="48" Height="48" CornerRadius="14" Background="{ThemeResource AccentSoftBrush}">
       <Viewbox x:Name="BrandFlower" Width="32" Height="32" AutomationProperties.Name="{Binding Text[LotusFlower]}"><Canvas Width="64" Height="64"><Path Fill="{StaticResource PetalBrush}" Opacity="0.82" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z"/><Path Fill="{StaticResource PetalBrush}" Data="M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z"/><Path Fill="{StaticResource GoldGradientBrush}" Data="M32,0.5 L33.5,3.5 L32,6 L30.5,3.5 Z M32,51 L34,55 L32,62.5 L30,55 Z M9,14 L10.4,16.5 L9,19 L7.6,16.5 Z M55,14 L56.4,16.5 L55,19 L53.6,16.5 Z"/><Path Stroke="{StaticResource GoldGradientBrush}" StrokeThickness="2.2" StrokeLineJoin="Round" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z M32,17 C36.5,23.5 37.5,31.5 32,39 C26.5,31.5 27.5,23.5 32,17 Z"/></Canvas></Viewbox>
      </Border>
@@ -20,14 +20,11 @@
     </StackPanel>
    </NavigationView.PaneHeader>
    <NavigationView.PaneFooter>
-    <Grid Margin="8,8,8,12">
-     <Border x:Name="ExpandedFooter" Style="{StaticResource CompactCardStyle}" Padding="12" Margin="4,0">
-      <StackPanel Spacing="10">
-       <StackPanel Orientation="Horizontal" Spacing="12">
-        <Border Width="36" Height="36" CornerRadius="999" Background="{ThemeResource AccentGradientBrush}"><FontIcon Glyph="&#xE77B;" FontSize="16" Foreground="{ThemeResource OnRoseBrush}"/></Border>
-        <StackPanel VerticalAlignment="Center"><TextBlock Text="Player" FontWeight="SemiBold" FontSize="13"/><TextBlock Text="{Binding Text[ProfileSubtitle]}" FontSize="11" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
-       </StackPanel>
-       <TextBlock Text="{Binding Text[FooterVersion]}" FontSize="10.5" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap"/>
+    <Grid Margin="8,0,16,0" VerticalAlignment="Center">
+     <Border x:Name="ExpandedFooter" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="10" Padding="4,4,14,4" ToolTipService.ToolTip="{Binding Text[FooterVersion]}" AutomationProperties.Name="{Binding Text[ProfileAccessible]}">
+      <StackPanel Orientation="Horizontal" Spacing="10">
+       <Border Width="30" Height="30" CornerRadius="8" Background="{ThemeResource AccentGradientBrush}"><FontIcon Glyph="&#xE77B;" FontSize="14" Foreground="{ThemeResource OnRoseBrush}"/></Border>
+       <StackPanel VerticalAlignment="Center"><TextBlock Text="Player" FontWeight="SemiBold" FontSize="12.5"/><TextBlock Text="{Binding Text[ProfileSubtitle]}" FontSize="10.5" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
       </StackPanel>
      </Border>
      <Grid x:Name="CompactFooter" Width="40" Height="40" Visibility="Collapsed" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Text[ProfileAccessible]}" AutomationProperties.Name="{Binding Text[ProfileAccessible]}"><Viewbox x:Name="CompactBrandFlower" Width="28" Height="28" AutomationProperties.Name="{Binding Text[LotusFlower]}"><Canvas Width="64" Height="64"><Path Fill="{StaticResource PetalBrush}" Opacity="0.82" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z"/><Path Fill="{StaticResource PetalBrush}" Data="M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z"/><Path Fill="{StaticResource GoldGradientBrush}" Data="M32,0.5 L33.5,3.5 L32,6 L30.5,3.5 Z M32,51 L34,55 L32,62.5 L30,55 Z M9,14 L10.4,16.5 L9,19 L7.6,16.5 Z M55,14 L56.4,16.5 L55,19 L53.6,16.5 Z"/><Path Stroke="{StaticResource GoldGradientBrush}" StrokeThickness="2.2" StrokeLineJoin="Round" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z M32,17 C36.5,23.5 37.5,31.5 32,39 C26.5,31.5 27.5,23.5 32,17 Z"/></Canvas></Viewbox></Grid>

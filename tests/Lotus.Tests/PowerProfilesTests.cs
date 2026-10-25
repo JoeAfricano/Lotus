@@ -155,5 +155,42 @@ public sealed class PowerProfilesTests(ITestOutputHelper output) : IDisposable
     public void StartupApprovalFollowsTaskManagerConvention(byte[]? value, bool enabled) => Assert.Equal(enabled, StartupApproval.IsEnabled(value));
     [Fact]
     public void StartupApprovalIgnoresNonBinaryValues() => Assert.True(StartupApproval.IsEnabled("x"));
+    private sealed class FakeFeatures(params GameFeature[] items) : IGameFeatureInventory { public IReadOnlyList<GameFeature> Read() => items; }
+    [Theory]
+    [InlineData("gamemode", FeatureState.Off, "game", true)]
+    [InlineData("gamemode", FeatureState.SystemDefault, "game", false)]
+    [InlineData("background-recording", FeatureState.On, "game", true)]
+    [InlineData("background-recording", FeatureState.SystemDefault, "game", false)]
+    [InlineData("windowed-optimizations", FeatureState.SystemDefault, "game", false)]
+    [InlineData("windowed-optimizations", FeatureState.Off, "game", true)]
+    [InlineData("hags", FeatureState.Off, "game", false)]
+    [InlineData("background-recording", FeatureState.On, "daily", false)]
+    [InlineData("gamemode", FeatureState.Unavailable, "game", false)]
+    [InlineData("gamemode", FeatureState.Off, "custom", false)]
+    public void GameFeatureRulesOnlyFlagKnownDifferences(string id, FeatureState state, string profile, bool attention) =>
+        Assert.Equal(attention, GameFeatureRules.NeedsAttention(new(id, state, "ms-settings:x"), profile));
+    [Fact] public async Task ViewModelRebuildsFeatureRowsPerProfileWithoutWriting()
+    {
+        var power = new FakePower();
+        var features = new FakeFeatures(new("gamemode", FeatureState.Off, "ms-settings:gaming-gamemode"), new("background-recording", FeatureState.On, "ms-settings:gaming-gamedvr"),
+            new("windowed-optimizations", FeatureState.SystemDefault, "ms-settings:display-advancedgraphics"), new("hags", FeatureState.On, "ms-settings:display-advancedgraphics"));
+        var vm = new PowerProfilesViewModel(Engine(power), power, Journal, new EmptyStartup(), new TextCatalog(), _ => { }, features);
+        await vm.RefreshAsync();
+        Assert.Equal(4, vm.Features.Count); Assert.Equal(2, vm.Features.Count(f => f.NeedsAttention));
+        Assert.Equal(vm.Text.Format("FeatAttention", 2), vm.FeaturesSummary);
+        vm.SelectProfileCommand.Execute("daily"); Assert.Equal(1, vm.Features.Count(f => f.NeedsAttention));
+        vm.SelectProfileCommand.Execute("custom"); Assert.Equal(vm.Text["FeatAllGood"], vm.FeaturesSummary);
+        Assert.All(vm.Features, f => Assert.StartsWith("ms-settings:", f.SettingsUri));
+        Assert.Equal(0, power.Writes);
+    }
+    [Fact] public void RealWindowsGameFeaturesAreReadOnlyQueries()
+    {
+        if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+        var before = new WindowsPowerSchemes().Active();
+        var items = new WindowsGameFeatures().Read();
+        Assert.Equal(["gamemode", "background-recording", "windowed-optimizations", "hags"], items.Select(i => i.Id));
+        Assert.Equal(before, new WindowsPowerSchemes().Active());
+        foreach (var i in items) output.WriteLine($"{i.Id}={i.State}");
+    }
     public void Dispose() { if (Directory.Exists(directory)) Directory.Delete(directory, true); }
 }
