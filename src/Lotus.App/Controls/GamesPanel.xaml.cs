@@ -138,6 +138,33 @@ public sealed partial class GamesPanel : UserControl
         await vm.PlayAsync(plan, profile?.IsChecked == true, shaders?.IsChecked == true);
     }
 
+    // "Por que está travando?": measure while playing, then explain the likely causes in plain words.
+    private async void OnWhyStutter(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: GameCard card } || DataContext is not GamesViewModel vm || !vm.CanMeasure) return;
+        if (!vm.IsGameRunning(card.Game))
+        {
+            await Show(vm.Text["WhyMenu"], new TextBlock { Text = vm.Text.Format("WhyNotRunning", card.Name), TextWrapping = TextWrapping.Wrap, MaxWidth = 440 }, null, vm.Text["GsClose"]);
+            return;
+        }
+        if (!await Show(vm.Text.Format("WhyTitle", card.Name), new TextBlock { Text = vm.Text["WhyConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, vm.Text["GsMeasureStart"], vm.Text["UxCancel"])) return;
+        if (await vm.DiagnoseAsync(card.Game) is not { } report) return;
+        var body = new StackPanel { Spacing = 12, MaxWidth = 500 };
+        body.Children.Add(new TextBlock { Text = report.Summary, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
+        var number = 1;
+        foreach (var f in report.Findings)
+        {
+            var item = new StackPanel { Spacing = 3 };
+            var title = report.Findings.Count > 1 && f.Key != "WhyAllGood" ? $"{number++}. {vm.Text[f.Key + "Title"]}" : vm.Text[f.Key + "Title"];
+            item.Children.Add(new TextBlock { Text = title, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["GoldBrush"] });
+            item.Children.Add(new TextBlock { Text = vm.Text.Format(f.Key + "Body", f.Detail ?? ""), TextWrapping = TextWrapping.Wrap, Opacity = 0.85 });
+            body.Children.Add(item);
+        }
+        var canApplyProfile = report.Findings.Any(f => f.Fix == Lotus.Core.Games.StutterFix.PrepareProfile);
+        if (await Show(vm.Text.Format("WhyTitle", card.Name), new ScrollViewer { Content = body, MaxHeight = 480 }, canApplyProfile ? vm.Text["WhyApplyProfile"] : null, vm.Text["GsClose"]))
+            await vm.ApplyGameProfileNowAsync();
+    }
+
     // Optional: opens the user's SCSKiller window to see the details.
     private void OnOpenShaderTool(object sender, RoutedEventArgs e) => (DataContext as GamesViewModel)?.OpenShaderTool();
     private void OnOpenShaderToolButton(object sender, RoutedEventArgs e) => (DataContext as GamesViewModel)?.OpenShaderTool();

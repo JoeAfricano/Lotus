@@ -56,6 +56,7 @@ public sealed partial class MainWindow : Window
         // Preparar e jogar: same Game profile and journal as Otimizar; the game is followed until it closes.
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
         games.Watch = new Lotus.Core.Games.PollingGameWatch(new Lotus.Infrastructure.Games.WindowsGameProcessCheck());
+        games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
         games.SessionEnded += OnGameSessionEnded;
         InitializeComponent();
         ShellRoot.DataContext = ViewModel;

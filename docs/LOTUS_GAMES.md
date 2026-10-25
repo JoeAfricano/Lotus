@@ -103,3 +103,7 @@ Primeira entrega da versão focada no jogador leigo (ver decisões de produto em
 - **Preparar e jogar** (botão principal do cartão do jogo; "Jogar" direto fica no menu): uma confirmação lista as mudanças pendentes do perfil Jogo (mesmo journal e desfazer da tela Otimizar) e, quando houver SCSKiller, oferece pré-carregar shaders (marcado se o driver mudou). Aplica, verifica relendo o estado, abre o jogo e acompanha (até 3 min para iniciar, depois até o último processo fechar). Ao fechar, pergunta se volta ao normal; só desfaz o que o Lotus mudou e ninguém alterou depois.
 - **Overlay oficial = "Lotus Neon Corrigido"** criado pelo usuário (`Lotus.ovl` + `Lotus-Arte-Alpha.png`, embutidos e exportados byte a byte). O gerador anterior foi removido; o Lotus não regrava o layout sozinho. Botão "Ver o overlay agora" abre a cena 3D num processo separado para o RivaTuner desenhar o overlay sobre ela.
 - 295 testes aprovados em Debug e Release.
+
+## "Por que está travando?" (25/10/2026)
+
+- Menu do jogo, com o jogo aberto: mede 30 s (mesma captura de "Medir e ajustar" + carga da GPU) e ordena causas prováveis: shaders não pré-carregados (travadas bruscas + SCSKiller "Ready/Stale"), RAM ≥ 85% (cita os 3 programas que mais usam, sem fechar nada), PC fora do perfil Jogo, GPU no limite (deixa o ajuste de qualidade pronto para depois de fechar) ou processador/segundo plano limitando. Única correção aplicada na hora, com confirmação: o perfil Jogo (reversível). 300 testes aprovados.

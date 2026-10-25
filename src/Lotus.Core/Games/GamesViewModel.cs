@@ -7,7 +7,7 @@ namespace Lotus.Core.Games;
 // Each card carries its own labels and commands, so item templates never depend on the parent DataContext.
 public sealed record GameCard(GameEntry Game, string Name, string Store, string Initials, string? CoverPath,
     string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove, string OptimizeLabel = "", string MeasureLabel = "",
-    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "", string PrepareLabel = "");
+    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "", string PrepareLabel = "", string WhyLabel = "");
 public sealed record StoreFilter(string Id, string Label);
 // Result of "Otimizar configurações": hardware, the recommendation as readable lines, and whether Lotus can apply it.
 public sealed record GameSettingsAnalysis(SettingsRecommendation Recommendation, IReadOnlyList<string> Lines, string Hardware, GameSettingsSupport? Support, bool HasOriginal, int? PendingStep = null);
@@ -156,7 +156,7 @@ public sealed class GamesViewModel : ObservableObject
         {
             var shader = ScsKillerOutput.Match(shaderStatuses, g);
             Games.Add(new(g, g.Name, g.Store, Initials(g.Name), g.CoverPath, Text["GamesPlay"], Text["GamesHide"], LaunchCommand, RemoveCommand, Text["GsMenu"], Text["GsMeasureMenu"],
-                shader is null ? null : Text["ScsState" + shader.State], shader?.State is ShaderState.Ready or ShaderState.Stale, Text["ScsPrecompile"], shader?.Id, Text["ScsOpen"], Text["PlayPrepare"]));
+                shader is null ? null : Text["ScsState" + shader.State], shader?.State is ShaderState.Ready or ShaderState.Stale, Text["ScsPrecompile"], shader?.Id, Text["ScsOpen"], Text["PlayPrepare"], Text["WhyMenu"]));
         }
         OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(EmptyMessage));
     }
@@ -293,6 +293,47 @@ public sealed class GamesViewModel : ObservableObject
     public const string ScsKillerReleases = "https://github.com/BlueHeisenberg/SCSKiller/releases/latest";
     public bool ShaderToolInstalled => shaders?.IsAvailable == true;
     public bool ShowShaderToolOffer => shaders is not null && !ShaderToolInstalled && loaded && all.Count > 0;
+
+    // ---- Por que está travando? ----
+    public IMemoryPressure? Memory { get; set; }
+    public sealed record StutterReport(string Summary, IReadOnlyList<StutterFinding> Findings);
+
+    // Measures the running game, then ranks likely causes. Changes nothing; fixes are offered separately.
+    public async Task<StutterReport?> DiagnoseAsync(GameEntry game, int seconds = 30, int startDelaySeconds = 5, CancellationToken token = default)
+    {
+        if (!CanMeasure || processCheck!.Find(game) is not { } run) { status = Text.Format("GsMeasureNotRunning", game.Name); Notify(); return null; }
+        try
+        {
+            for (var left = startDelaySeconds; left > 0; left--) { status = Text.Format("GsMeasureStartsIn", left); Notify(); await Task.Delay(1000, token); }
+            status = Text.Format("WhyMeasuring", seconds); Notify();
+            var gpu = gpuSampler?.AverageAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<double?>(null);
+            var session = await capture!.CaptureAsync(new(new(run.Pid, run.Executable, run.StartedUtc), seconds, Elevated: true, "Lotus: " + game.Name, "{}"), token);
+            var gpuBusy = await gpu;
+            if (session.Data?.Statistics is not { } s) { status = Text["GsMeasureFailed"]; Notify(); return null; }
+            var (recipe, support) = Recipe(game);
+            var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
+            var canLower = raw is not null && recipe!.StepQuality(raw, -1) is not null;
+            var target = SettingsAdvisor.Recommend(profileSource!.Read()).TargetFps;
+            var pending = GameProfile is null ? 0 : (await GameProfile.PreviewAsync()).Count(p => !p.AlreadyApplied);
+            var (load, apps) = Memory is null ? (0d, (IReadOnlyList<string>)[]) : await Task.Run(() => Memory.Read(game), token);
+            var findings = StutterDiagnosis.Analyze(new(s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds, gpuBusy, target,
+                ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower));
+            if (findings.Any(f => f.Fix == StutterFix.LowerQuality)) pendingSteps[game.Key] = -1; // ready for "Otimizar configurações" after closing
+            var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds);
+            status = summary; Notify();
+            return new(summary, findings);
+        }
+        catch (OperationCanceledException) { status = ""; Notify(); return null; }
+        catch (Exception ex) { log(ex); status = Text["GsMeasureFailed"]; Notify(); return null; }
+    }
+
+    // The only fix applied while the game runs: the Game profile (journaled, reversible).
+    public async Task<bool> ApplyGameProfileNowAsync()
+    {
+        if (GameProfile is null) return false;
+        try { await GameProfile.PreviewAsync(); var ok = await GameProfile.ApplyAsync(); status = Text[ok ? "WhyProfileApplied" : "PlayApplyPartial"]; Notify(); return ok; }
+        catch (Exception ex) { log(ex); status = Text["PlayFailed"]; Notify(); return false; }
+    }
 
     // ---- Preparar e jogar ----
     public IGameProfile? GameProfile { get; set; }

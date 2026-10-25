@@ -935,4 +935,26 @@ Condições atuais: {1}</value></data>
   <data name="PlayKeep" xml:space="preserve"><value>Manter perfil Jogo</value></data>
   <data name="PlayUndone" xml:space="preserve"><value>PC de volta ao normal.</value></data>
   <data name="PlayUndoConflict" xml:space="preserve"><value>Algumas mudanças não foram desfeitas porque algo as alterou depois. Veja em Otimizar › Histórico.</value></data>
+  <data name="WhyMenu" xml:space="preserve"><value>Por que está travando?</value></data>
+  <data name="WhyTitle" xml:space="preserve"><value>Por que {0} está travando?</value></data>
+  <data name="WhyNotRunning" xml:space="preserve"><value>Abra {0}, jogue até a parte que trava e então use esta opção. O Lotus mede o jogo enquanto ele roda.</value></data>
+  <data name="WhyConfirmBody" xml:space="preserve"><value>Volte para o jogo e jogue normalmente, de preferência na parte que trava. Em 5 segundos o Lotus mede por 30 segundos e depois explica o que encontrou. Nada é alterado durante a medição.</value></data>
+  <data name="WhyMeasuring" xml:space="preserve"><value>Medindo por {0} segundos. Continue jogando...</value></data>
+  <data name="WhySummary" xml:space="preserve"><value>{0:0} FPS em média · 1% low {1:0} FPS · {2} travadas em {3:0} s</value></data>
+  <data name="WhyShadersTitle" xml:space="preserve"><value>Shaders sendo compilados durante o jogo</value></data>
+  <data name="WhyShadersBody" xml:space="preserve"><value>As travadas bruscas combinam com o jogo compilando shaders na hora. Feche o jogo e use "Pré-carregar shaders": as próximas partidas ficam mais lisas.</value></data>
+  <data name="WhyMemoryTitle" xml:space="preserve"><value>Memória RAM quase cheia</value></data>
+  <data name="WhyMemoryBody" xml:space="preserve"><value>O Windows está quase sem memória livre, e isso causa travadas. Os programas que mais usam agora: {0}. Feche o que não precisar enquanto joga.</value></data>
+  <data name="WhyProfileTitle" xml:space="preserve"><value>PC fora do perfil Jogo</value></data>
+  <data name="WhyProfileBody" xml:space="preserve"><value>Algumas configurações do Windows não estão no ideal para jogar (plano de energia, Modo de Jogo, gravação em segundo plano ou taxa do monitor). O Lotus pode aplicar o perfil Jogo agora, com desfazer.</value></data>
+  <data name="WhyGpuLimitTitle" xml:space="preserve"><value>Placa de vídeo no limite</value></data>
+  <data name="WhyGpuLimitBody" xml:space="preserve"><value>A placa de vídeo está trabalhando quase 100% e o FPS fica abaixo do ideal. Baixar um nível de qualidade resolve. Feche o jogo e use "Otimizar configurações": o ajuste já está pronto.</value></data>
+  <data name="WhyCpuLimitTitle" xml:space="preserve"><value>Processador ou programas em segundo plano limitando</value></data>
+  <data name="WhyCpuLimitBody" xml:space="preserve"><value>A placa de vídeo tem folga, mas o FPS está baixo: o processador ou outros programas estão segurando o jogo. Feche programas pesados e use o perfil Jogo.</value></data>
+  <data name="WhyUnknownStutterTitle" xml:space="preserve"><value>Travadas sem causa clara</value></data>
+  <data name="WhyUnknownStutterBody" xml:space="preserve"><value>O Lotus viu travadas, mas nenhuma causa comum. Atualizar o driver de vídeo e verificar os arquivos do jogo no launcher costuma ajudar.</value></data>
+  <data name="WhyAllGoodTitle" xml:space="preserve"><value>Nada de errado encontrado</value></data>
+  <data name="WhyAllGoodBody" xml:space="preserve"><value>O jogo rodou estável durante a medição. Se a travada for em outra parte, meça lá.</value></data>
+  <data name="WhyApplyProfile" xml:space="preserve"><value>Aplicar perfil Jogo agora</value></data>
+  <data name="WhyProfileApplied" xml:space="preserve"><value>Perfil Jogo aplicado. Dá para desfazer em Otimizar.</value></data>
 </root>
