@@ -29,3 +29,14 @@ Autorização específica do usuário para mudança temporária com restauraçã
 4. Rede de segurança (restauração por powercfg) não foi necessária. Sem elevação (`asInvoker`), sem reinício.
 
 Critério de conclusão da Etapa 06 atendido: Selecionar perfil → Analisar → Confirmar → Aplicar → Verificar → Desfazer funcionando com uma ação real. Limitações mantidas: sem compare-and-set atômico do Windows; mudança externa entre leituras não é impedida; nenhum ganho de desempenho foi medido. Pendentes para incrementos: desativação seletiva da inicialização e perfis personalizados nomeados.
+
+## Diagnóstico de hardware (somente leitura, 24/10/2026)
+
+Card "Verificação de hardware" no Início, executado automaticamente na primeira visita e sob demanda. Busca configurações que limitam o hardware, sem alterar nada:
+
+- **Monitor:** `EnumDisplaySettings`; atenção quando a taxa atual fica mais de 1 Hz abaixo da máxima na mesma resolução (link para Configurações › Tela).
+- **RAM:** tabela SMBIOS tipo 17 via `GetSystemFirmwareTable('RSMB')` (sem dependência WMI). Canal único, módulos no mesmo canal, velocidade configurada abaixo da nominal (XMP/EXPO/DOCP) e aviso informativo para velocidades JEDEC básicas (DDR4 ≤ 2666, DDR5 ≤ 4800), já que a velocidade nominal do SMBIOS costuma ser JEDEC.
+- **CPU:** `CallNtPowerInformation(ProcessorInformation)`; atenção se `MhzLimit` < 90% do máximo.
+- **GPU:** motivos de limitação NVML da última leitura do monitoramento (sem segunda sessão NVML). Térmica/proteção de hardware = atenção; teto de energia = normal sob carga; ociosa = verificar com jogo aberto. Adaptadores por `EnumDisplayDevices`, com detecção heurística de GPU híbrida (link para Configurações › Gráficos).
+
+Resultado real neste PC: 1920×1080 a 75 Hz (máximo), 2×8 GB DDR4 3200 em dual channel, CPU sem limite, RTX 5060 dedicada; nenhum limitador encontrado. Limitação da GPU depende de uma leitura recente em Desempenho. Testes: 197 aprovados em Debug e Release (24 novos, incluindo parser SMBIOS com bytes sintéticos e leitura real somente leitura).

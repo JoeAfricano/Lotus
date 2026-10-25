@@ -112,6 +112,17 @@ public sealed partial class SectionPage : Page
         var index = sender.Items.IndexOf(sender.SelectedItem);
         if (index >= 0) shell.SettingsCategoryIndex = index;
     }
+    // Runs the read-only hardware check once, the first time Home is shown.
+    private async void OnHardwareCardLoaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { DataContext: Lotus.Core.Diagnostics.HardwareDiagnosticsViewModel { HasFindings: false, IsBusy: false } hw }) await hw.CheckAsync();
+    }
+    // Opens only Windows Settings pages (ms-settings:); nothing is changed by Lotus.
+    private async void OnOpenSettings(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: string uri } && uri.StartsWith("ms-settings:", StringComparison.OrdinalIgnoreCase))
+            await Windows.System.Launcher.LaunchUriAsync(new Uri(uri));
+    }
     private void OnViewportSizeChanged(object sender, SizeChangedEventArgs e)
     {
         var inset = Math.Max(0, (e.NewSize.Width - 1180) / 2); PageContent.Margin = new Thickness(inset, 0, inset, 0);

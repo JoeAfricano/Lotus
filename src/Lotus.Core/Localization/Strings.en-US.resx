@@ -615,4 +615,49 @@ Current conditions: {1}</value></data>
   <data name="FeatAdvicebackground-recording" xml:space="preserve"><value>Continuously records the last minutes of gameplay, using GPU and disk while you play.</value></data>
   <data name="FeatAdvicewindowed-optimizations" xml:space="preserve"><value>Reduces latency for DirectX 10/11 games in windowed or borderless mode.</value></data>
   <data name="FeatAdvicehags" xml:space="preserve"><value>The effect depends on GPU and driver; compare using the Lotus benchmark. Requires a restart.</value></data>
+  <data name="HwCardTitle" xml:space="preserve"><value>Hardware check</value></data>
+  <data name="HwIntro" xml:space="preserve"><value>Looks for settings that hold your hardware back: monitor refresh, memory, CPU and GPU limits. Read-only.</value></data>
+  <data name="HwCheck" xml:space="preserve"><value>Check hardware</value></data>
+  <data name="HwOpenSettings" xml:space="preserve"><value>Open in Settings</value></data>
+  <data name="HwFailed" xml:space="preserve"><value>The check could not be completed. Details in the log.</value></data>
+  <data name="HwLastChecked" xml:space="preserve"><value>Checked at {0}</value></data>
+  <data name="HwSummaryOk" xml:space="preserve"><value>No limiting setting found in this check.</value></data>
+  <data name="HwSummaryAttention" xml:space="preserve"><value>{0} item(s) may be limiting performance.</value></data>
+  <data name="HwLevelAttention" xml:space="preserve"><value>Attention</value></data>
+  <data name="HwLevelInfo" xml:space="preserve"><value>Info</value></data>
+  <data name="HwLevelOk" xml:space="preserve"><value>Good</value></data>
+  <data name="HwLevelUnavailable" xml:space="preserve"><value>Unavailable</value></data>
+  <data name="HwDisplayTitle" xml:space="preserve"><value>Display</value></data>
+  <data name="HwDisplayUnavailable" xml:space="preserve"><value>The current display mode could not be read.</value></data>
+  <data name="HwDisplayNamed" xml:space="preserve"><value>Display · {0}</value></data>
+  <data name="HwDisplayLow" xml:space="preserve"><value>Using {0} Hz, but up to {1} Hz is available at {2}×{3}. Change it in Settings › Display › Advanced display.</value></data>
+  <data name="HwDisplayOk" xml:space="preserve"><value>{0} Hz at {1}×{2}: the highest rate available at this resolution.</value></data>
+  <data name="HwRamTitle" xml:space="preserve"><value>Memory</value></data>
+  <data name="HwRamUnavailable" xml:space="preserve"><value>The firmware did not report memory modules.</value></data>
+  <data name="HwChannelsTitle" xml:space="preserve"><value>Memory channels</value></data>
+  <data name="HwChannelsSingle" xml:space="preserve"><value>A single module ({0} GB): memory runs in single channel. A second matching module enables dual channel, which usually improves 1% lows in CPU-bound games.</value></data>
+  <data name="HwChannelsUnknown" xml:space="preserve"><value>{0} modules ({1} GB). The board does not name the channels; check the manual for the recommended slots.</value></data>
+  <data name="HwChannelsSame" xml:space="preserve"><value>{0} modules on the same channel ({1}). Move them to the slots recommended in the motherboard manual (usually A2 and B2) to enable dual channel.</value></data>
+  <data name="HwChannelsDual" xml:space="preserve"><value>{0} modules ({1} GB) on different channels: dual channel active.</value></data>
+  <data name="HwSpeedTitle" xml:space="preserve"><value>Memory speed</value></data>
+  <data name="HwSpeedUnavailable" xml:space="preserve"><value>The configured speed was not reported.</value></data>
+  <data name="HwSpeedBelowRated" xml:space="preserve"><value>Running at {0} MT/s, below the {1} MT/s reported by the {2} modules. Enable the XMP/EXPO/DOCP profile in the BIOS.</value></data>
+  <data name="HwSpeedJedec" xml:space="preserve"><value>Running at {0} MT/s, the base {1} speed. If your kit is faster (check its label or model), the XMP/EXPO/DOCP profile may be off in the BIOS.</value></data>
+  <data name="HwSpeedOk" xml:space="preserve"><value>Running at {0} MT/s {1}.</value></data>
+  <data name="HwCpuTitle" xml:space="preserve"><value>CPU frequency limit</value></data>
+  <data name="HwCpuUnavailable" xml:space="preserve"><value>Windows did not report processor limits.</value></data>
+  <data name="HwCpuLimited" xml:space="preserve"><value>Active limit of {0} MHz for a maximum of {1} MHz. It may indicate power saving, a restrictive plan or high temperature.</value></data>
+  <data name="HwCpuOk" xml:space="preserve"><value>No active frequency limit (reported maximum: {0} MHz).</value></data>
+  <data name="HwGpuThrottleTitle" xml:space="preserve"><value>GPU limits</value></data>
+  <data name="HwGpuThrottleNoSample" xml:space="preserve"><value>No recent GPU reading. Open Performance › Live (ideally with a game running) and check again.</value></data>
+  <data name="HwGpuThermal" xml:space="preserve"><value>The GPU lowered its clock due to temperature in the last reading. Check airflow, dust and fan curve.</value></data>
+  <data name="HwGpuHwSlowdown" xml:space="preserve"><value>The GPU lowered its clock due to hardware protection or external power in the last reading. Check the PSU and power cables.</value></data>
+  <data name="HwGpuPowerCap" xml:space="preserve"><value>The GPU was at its power limit in the last reading. This is normal at full load and does not indicate a problem.</value></data>
+  <data name="HwGpuIdle" xml:space="preserve"><value>The GPU was idle in the last reading. To evaluate limits, check with a game running.</value></data>
+  <data name="HwGpuNoLimit" xml:space="preserve"><value>No clock limits in the last reading.</value></data>
+  <data name="HwGpuTitle" xml:space="preserve"><value>Graphics adapter</value></data>
+  <data name="HwGpuUnavailable" xml:space="preserve"><value>No graphics adapter identified.</value></data>
+  <data name="HwGpuHybrid" xml:space="preserve"><value>Two GPUs: dedicated ({0}) and integrated ({1}). Check in Settings › Graphics that games use the dedicated one.</value></data>
+  <data name="HwGpuDedicated" xml:space="preserve"><value>Dedicated GPU: {0}.</value></data>
+  <data name="HwGpuIntegratedOnly" xml:space="preserve"><value>Integrated GPU only ({0}). Demanding games may be limited by it.</value></data>
 </root>

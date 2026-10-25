@@ -25,6 +25,38 @@
      </StackPanel></Border>
     </Grid>
     <TextBlock Text="{Binding Experience.SummaryTime}" Style="{StaticResource CaptionStyle}"/>
+    <!-- Read-only hardware check -->
+    <Border x:Name="HardwareCard" Style="{StaticResource CardStyle}" DataContext="{Binding Hardware}" Loaded="OnHardwareCardLoaded" Margin="0,8,0,0">
+     <StackPanel Spacing="14">
+      <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+       <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE9D9;" Style="{StaticResource BadgeIconStyle}"/></Border>
+       <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[HwCardTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Summary}" Style="{StaticResource CaptionStyle}" AutomationProperties.AutomationId="hw-summary" AutomationProperties.LiveSetting="Polite"/></StackPanel>
+       <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Top">
+        <ProgressRing Width="18" Height="18" IsActive="{Binding IsBusy}"/>
+        <Button Content="{Binding Text[HwCheck]}" Command="{Binding CheckCommand}" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="hw-check"/>
+       </StackPanel>
+      </Grid>
+      <ItemsControl ItemsSource="{Binding Findings}" Visibility="{Binding HasFindings, Converter={StaticResource BooleanVisibility}}">
+       <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+       <ItemsControl.ItemTemplate><DataTemplate>
+        <Border Background="{ThemeResource CardHoverBrush}" CornerRadius="12" Padding="14,12">
+         <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <Grid Width="30" Height="30" VerticalAlignment="Top">
+           <Border CornerRadius="9" Background="{ThemeResource AccentSoftBrush}"/>
+           <FontIcon Glyph="{Binding Glyph}" FontSize="14" Foreground="{Binding IsAttention, Converter={StaticResource AttentionBrush}}"/>
+          </Grid>
+          <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+          <StackPanel Grid.Column="2" Spacing="6" HorizontalAlignment="Right">
+           <ContentControl Content="{Binding Level}" Style="{StaticResource StatusBadgeStyle}" HorizontalAlignment="Right"/>
+           <HyperlinkButton Content="{Binding DataContext.Text[HwOpenSettings], ElementName=HardwareCard}" Tag="{Binding SettingsUri}" Click="OnOpenSettings" Visibility="{Binding HasSettings, Converter={StaticResource BooleanVisibility}}" Padding="6,2" HorizontalAlignment="Right"/>
+          </StackPanel>
+         </Grid>
+        </Border>
+       </DataTemplate></ItemsControl.ItemTemplate>
+      </ItemsControl>
+      <TextBlock Text="{Binding LastChecked}" Style="{StaticResource CaptionStyle}"/>
+     </StackPanel>
+    </Border>
    </StackPanel>
 
    <StackPanel x:Name="OptimizeContent" x:Load="{x:Bind ShowOptimize}" Spacing="20">

@@ -16,6 +16,7 @@
   <LinearGradientBrush x:Key="GoldGradientBrush" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#F8DDCB" Offset="0"/><GradientStop Color="#E7AE93" Offset="0.6"/><GradientStop Color="#C98468" Offset="1"/></LinearGradientBrush>
   <LinearGradientBrush x:Key="PetalBrush" StartPoint="0.5,0" EndPoint="0.5,1"><GradientStop Color="#F0479A" Offset="0"/><GradientStop Color="#C2185B" Offset="0.55"/><GradientStop Color="#5E0A2E" Offset="1"/></LinearGradientBrush>
   <local:BooleanChoiceConverter x:Key="SelectedBorder" TrueValue="{StaticResource GoldBrush}" FalseValue="{StaticResource CardBorderBrush}"/>
+  <local:BooleanChoiceConverter x:Key="AttentionBrush" TrueValue="{StaticResource WarningBrush}" FalseValue="{StaticResource RoseBrush}"/>
   <local:BooleanChoiceConverter x:Key="SelectedSurface" TrueValue="{StaticResource HeroBrush}" FalseValue="{StaticResource CardBrush}"/>
 
   <!-- Windows 11 style shell: transparent pane over Mica, rounded content surface. -->
