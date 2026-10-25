@@ -129,5 +129,26 @@ public sealed class IntegrationsTests : IDisposable
         Assert.True(await rtss.RestoreLayoutAsync()); Assert.Equal(original, File.ReadAllText(config)); Assert.False(rtss.LayoutActive());
     }
 
+    [Fact] public void AnsiFilesWithAccentsAreBackedUpAndRestoredByteForByte()
+    {
+        var overlays = Path.Combine(root, "Overlays"); var config = Path.Combine(root, "OverlayEditor.cfg");
+        var original = System.Text.Encoding.Latin1.GetBytes("[Settings]\r\nLayout=C:\\Users\\Jos\u00e9\\Riva Overlay.ovl\r\nOther=\u00e7\u00e3o");
+        File.WriteAllBytes(config, original);
+        LotusOverlayLayout.Activate(LotusOverlayLayout.Export(overlays), config, Backups, overlays);
+        Assert.EndsWith("Other=\u00e7\u00e3o", RtssProfiles.ReadAnsi(config)); // untouched line keeps its ANSI bytes
+        Assert.True(LotusOverlayLayout.Restore(config, Backups));
+        Assert.Equal(original, File.ReadAllBytes(config));
+    }
+
+    [Fact] public void HelperUsesOnlyAnExistingLotusDataFolder()
+    {
+        var data = Path.Combine(root, "Lotus"); Directory.CreateDirectory(data);
+        Assert.Equal(data, RtssElevatedHelper.DataRoot(["--rtss-layout-restore", "--lotus-data", data + "\\"]));
+        var fallback = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus");
+        Assert.Equal(fallback, RtssElevatedHelper.DataRoot(["--rtss-layout-restore", "--lotus-data", root]));         // not named Lotus
+        Assert.Equal(fallback, RtssElevatedHelper.DataRoot(["--rtss-layout-restore", "--lotus-data", data + "-missing\\Lotus"])); // missing
+        Assert.Equal(fallback, RtssElevatedHelper.DataRoot(["--rtss-layout-restore"]));
+    }
+
     public void Dispose() { if (Directory.Exists(root)) Directory.Delete(root, true); }
 }

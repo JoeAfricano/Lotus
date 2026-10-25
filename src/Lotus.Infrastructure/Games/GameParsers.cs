@@ -50,7 +50,7 @@ public static class GameParsers
     // --- Steam ---
     public static IReadOnlyList<string> SteamLibraries(string libraryFoldersVdf) =>
         VdfNode.Parse(libraryFoldersVdf).Child("libraryfolders")?.Children.Values
-            .Select(c => c.Get("path")).Where(p => !string.IsNullOrWhiteSpace(p)).Select(p => p!.Replace("\\\\", "\\").Replace('/', '\\')).ToList() ?? [];
+            .Select(c => c.Get("path")).Where(p => !string.IsNullOrWhiteSpace(p)).Select(p => p!.Replace('/', '\\')).ToList() ?? []; // VdfNode already unescaped "\\"; UNC paths keep their leading "\\"
 
     private static readonly string[] SteamTools = ["Steamworks Common", "Proton", "Steam Linux Runtime", "SteamVR"];
     public static SteamApp? SteamManifest(string acf)

@@ -102,6 +102,17 @@ public sealed class GameSettingsTests(Xunit.Abstractions.ITestOutputHelper outpu
         Assert.Equal("GsNoOriginal", await vm.RestoreSettingsAsync(game));
     }
 
+    [Fact] public async Task WriteFailureBecomesStatusInsteadOfCrash()
+    {
+        var (game, config, local) = FakeUnrealGame(); var errors = 0;
+        var vm = new GamesViewModel(new NoLibrary(), new NoStore(), new NoLauncher(), new TextCatalog(), _ => errors++,
+            new FixedProfile(), [new UnrealEngineRecipe(local)], new FileGameSettingsStore(Path.Combine(root, "Backups")), new Running());
+        var analysis = (await vm.AnalyzeSettingsAsync(game))!;
+        using (File.Open(config, FileMode.Open, FileAccess.Read, FileShare.None)) // locked by another program
+            Assert.Equal("GsWriteFailed", await vm.ApplySettingsAsync(game, analysis.Recommendation));
+        Assert.Equal(1, errors); Assert.Equal(Ini, File.ReadAllText(config));
+    }
+
     [Fact] public async Task GamesWithoutRecipeGetRecommendationOnly()
     {
         var vm = new GamesViewModel(new NoLibrary(), new NoStore(), new NoLauncher(), new TextCatalog(), _ => { }, new FixedProfile(), [new UnrealEngineRecipe(Path.Combine(root, "L"))]);

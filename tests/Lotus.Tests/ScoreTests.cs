@@ -37,7 +37,7 @@ public sealed class ScoreTests
     [Fact] public async Task RunMeasuresWarmupPlusThreePassesSavesHistoryAndCompares()
     {
         var cpu = new FakeCpu(t => t == 1 ? 23330 : 198600); var history = new MemoryHistory();
-        var vm = new LotusScoreViewModel(cpu, new FakeGpu(14260), history, new Machine(), new TextCatalog(), ex => throw ex);
+        var vm = new LotusScoreViewModel(cpu, new FakeGpu(10160), history, new Machine(), new TextCatalog(), ex => throw ex);
         vm.Refresh(); Assert.True(vm.NoHistory); Assert.Equal("—", vm.Total);
         await vm.ToggleAsync();
         Assert.Equal(8, cpu.Calls); // 2 tests x (1 warm-up + 3)

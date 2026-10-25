@@ -73,12 +73,10 @@ public sealed class GamesViewModel : ObservableObject
         busy = true; Notify();
         try
         {
-            var result = await Task.Run(() =>
-            {
-                manual = manualStore.Load().ToList();
-                hidden = new(manualStore.LoadHidden(), StringComparer.OrdinalIgnoreCase);
-                return library.Scan(manual);
-            });
+            var (loadedManual, result) = await Task.Run(() => { var m = manualStore.Load().ToList(); return (m, library.Scan(m)); });
+            // Fields change on the UI thread only; hidden is read after the scan so a removal made meanwhile is kept.
+            manual = loadedManual;
+            hidden = new(manualStore.LoadHidden(), StringComparer.OrdinalIgnoreCase);
             // Optional SCSKiller status; a failure here never blocks the library.
             try { shaderStatuses = shaders is { IsAvailable: true } ? await shaders.StatusAsync(CancellationToken.None) : []; }
             catch (Exception ex) { log(ex); shaderStatuses = []; }
@@ -211,9 +209,7 @@ public sealed class GamesViewModel : ObservableObject
     }
 
     // Writes only with the game closed, after saving the original once, and verifies by reading back.
-    public async Task<string> ApplySettingsAsync(GameEntry game, SettingsRecommendation recommendation)
-    {
-        var key = await Task.Run(() =>
+    public Task<string> ApplySettingsAsync(GameEntry game, SettingsRecommendation recommendation) => SettingsOp(game, () =>
         {
             var (recipe, support) = Recipe(game);
             if (recipe is null || support is not { CanApply: true } || settingsStore is null) return "GsNotSupported";
@@ -226,13 +222,18 @@ public sealed class GamesViewModel : ObservableObject
             recipe.WriteRaw(game, updated);
             return recipe.ReadRaw(game) == updated ? "GsApplied" : "GsVerifyFailed";
         });
+
+    // Runs a settings write off the UI thread; any IO/registry/JSON failure becomes a status message, never a crash.
+    private async Task<string> SettingsOp(GameEntry game, Func<string> work)
+    {
+        string key;
+        try { key = await Task.Run(work); }
+        catch (Exception ex) { log(ex); key = "GsWriteFailed"; }
         status = Text.Format(key, game.Name); Notify();
         return key;
     }
 
-    public async Task<string> RestoreSettingsAsync(GameEntry game)
-    {
-        var key = await Task.Run(() =>
+    public Task<string> RestoreSettingsAsync(GameEntry game) => SettingsOp(game, () =>
         {
             var (recipe, _) = Recipe(game);
             if (recipe is null || settingsStore?.LoadOriginal(game.Key) is not { } original) return "GsNoOriginal";
@@ -242,9 +243,6 @@ public sealed class GamesViewModel : ObservableObject
             settingsStore.ClearOriginal(game.Key);
             return "GsRestored";
         });
-        status = Text.Format(key, game.Name); Notify();
-        return key;
-    }
 
     // Measures the running game with PresentMon while sampling GPU load, then decides one quality step.
     public bool CanMeasure => capture is not null && processCheck is not null && profileSource is not null;
@@ -277,9 +275,7 @@ public sealed class GamesViewModel : ObservableObject
     }
 
     // Applies the step decided by the last measurement (game closed, original saved once, verified).
-    public async Task<string> ApplyStepAsync(GameEntry game)
-    {
-        var key = await Task.Run(() =>
+    public Task<string> ApplyStepAsync(GameEntry game) => SettingsOp(game, () =>
         {
             if (!pendingSteps.TryGetValue(game.Key, out var step)) return "GsNoPendingStep";
             var (recipe, support) = Recipe(game);
@@ -292,9 +288,6 @@ public sealed class GamesViewModel : ObservableObject
             pendingSteps.Remove(game.Key);
             return step > 0 ? "GsStepRaised" : "GsStepLowered";
         });
-        status = Text.Format(key, game.Name); Notify();
-        return key;
-    }
 
     // ---- Optional shader pre-compilation (SCSKiller) ----
     public const string ScsKillerReleases = "https://github.com/BlueHeisenberg/SCSKiller/releases/latest";

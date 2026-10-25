@@ -20,6 +20,7 @@ public sealed class GamesTests(ITestOutputHelper output) : IDisposable
     {
         var libs = GameParsers.SteamLibraries("\"libraryfolders\"\n{\n \"0\" { \"path\" \"C:\\\\Program Files (x86)\\\\Steam\" }\n \"1\" { \"path\" \"D:\\\\SteamLibrary\" \"label\" \"\" }\n}");
         Assert.Equal([@"C:\Program Files (x86)\Steam", @"D:\SteamLibrary"], libs);
+        Assert.Equal([@"\\nas\games"], GameParsers.SteamLibraries("\"libraryfolders\" { \"0\" { \"path\" \"\\\\\\\\nas\\\\games\" } }")); // UNC share
         Assert.Equal(new SteamApp("730", "Counter-Strike 2", "Counter-Strike Global Offensive"), GameParsers.SteamManifest(Acf));
         Assert.Null(GameParsers.SteamManifest(Acf.Replace("\"4\"", "\"1026\"").Replace("StateFlags\"\t\t\"1026", "StateFlags\"\t\t\"2")));
         Assert.Null(GameParsers.SteamManifest(Acf.Replace("Counter-Strike 2", "Steamworks Common Redistributables")));

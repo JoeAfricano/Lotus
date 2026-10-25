@@ -118,8 +118,10 @@ public sealed class PowerProfilesViewModel : ObservableObject
         var disable = entry.Enabled != false;
         string key;
         var lotusDisable = engineFactory(new StartupToggleAction(approval, kind, name, disable: true));
-        if (!disable && LastApplied(await lotusDisable.RecoverAsync()) is { } previous)
-            key = (await lotusDisable.RevertAsync(previous.Id, confirmed: true)).Stage == OperationStage.Reverted ? "StartupEnabledOk" : "StartupConflict";
+        // Exact undo of Lotus's own disable first; if the item changed since (e.g. via Task Manager), fall back to a plain enable.
+        if (!disable && LastApplied(await lotusDisable.RecoverAsync()) is { } previous
+            && (await lotusDisable.RevertAsync(previous.Id, confirmed: true)).Stage == OperationStage.Reverted)
+            key = "StartupEnabledOk";
         else
         {
             var toggle = disable ? lotusDisable : engineFactory(new StartupToggleAction(approval, kind, name, disable: false));

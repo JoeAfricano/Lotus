@@ -150,17 +150,21 @@ public sealed class D3D11GpuBenchmark : IGpuBenchmark
         ctx.OMSetRenderTargets(rtv); ctx.RSSetViewport(0, 0, Width, Height);
         ctx.IASetPrimitiveTopology(PrimitiveTopology.TriangleList);
         ctx.VSSetShader(vs); ctx.PSSetShader(ps); ctx.PSSetConstantBuffer(0, cb);
-        var frames = 0; var sw = Stopwatch.StartNew();
+        // Batches grow until each lasts >= 20 ms, so the sync gap stays small even on very fast GPUs.
+        var frames = 0; var batch = 4; var sw = Stopwatch.StartNew();
         while (sw.Elapsed < duration)
         {
             ct.ThrowIfCancellationRequested();
-            for (var i = 0; i < 4; i++, frames++)
+            var started = sw.Elapsed;
+            for (var i = 0; i < batch; i++, frames++)
             {
                 ctx.UpdateSubresource(new Vector4(frames * 0.016f, 0, 0, 0), cb);
                 ctx.Draw(3, 0);
             }
             ctx.End(fence); ctx.Flush();
-            while (!ctx.IsDataAvailable(fence)) Thread.Yield(); // wait so the GPU queue never runs ahead of the clock
+            var spin = new SpinWait();
+            while (!ctx.IsDataAvailable(fence)) spin.SpinOnce(); // the GPU queue never runs ahead of the clock
+            if ((sw.Elapsed - started).TotalMilliseconds < 20 && batch < 4096) batch *= 2;
         }
         return frames / sw.Elapsed.TotalSeconds * 10;
     }

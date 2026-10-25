@@ -22,7 +22,7 @@ public static class LotusScale
 {
     // Raw-to-points factors. Calibrated once on the development PC (Ryzen 5 5500 + RTX 5060) so its
     // points match the reference row below; the other rows come from public relative-performance data. Estimates.
-    public const double Cpu1Factor = 1400 / 23330.0, CpuAllFactor = 10500 / 198600.0, GpuFactor = 11500 / 14260.0;
+    public const double Cpu1Factor = 1400 / 23330.0, CpuAllFactor = 10500 / 198600.0, GpuFactor = 11500 / 10160.0;
     private const double RefCpu1 = 1500, RefCpuAll = 11000, RefGpu = 9000; // 10 000 points = mid-range gamer PC
 
     public static int Points(double raw, double factor) => (int)Math.Round(raw * factor);
@@ -155,7 +155,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         try
         {
             foreach (var h in history.Load())
-                History.Add(new(h.Date.ToString("g", Culture), Text.Format("ScoreHistoryLine", h.Total, h.Cpu1, h.CpuAll, h.Gpu?.ToString() ?? "—")));
+                History.Add(new(h.Date.ToString("g", Culture), Text.Format("ScoreHistoryLine", h.Total, h.Cpu1, h.CpuAll, h.Gpu is { } hg ? hg.ToString("N0", Culture) : "—")));
         }
         catch (Exception ex) { log(ex); }
         Notify();
@@ -179,5 +179,12 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         foreach (var p in new[] { nameof(Busy), nameof(HasResult), nameof(Progress), nameof(Phase), nameof(Total), nameof(Cpu1), nameof(CpuAll), nameof(Gpu), nameof(Verdict), nameof(Reliability), nameof(MachineText), nameof(StartLabel), nameof(NoHistory) })
             OnPropertyChanged(p);
     }
-    public void RefreshLanguage() { Verdict = last is null ? "" : VerdictFor(last.Total); Refresh(); }
+    public void RefreshLanguage()
+    {
+        if (Busy) return; // phase texts update on the next step
+        Verdict = last is null ? "" : VerdictFor(last.Total);
+        Reliability = last is null || Reliability.Length == 0 ? "" : Text.Format(last.VariationPct < 3 ? "ScoreReliable" : "ScoreUnstable", last.VariationPct);
+        Phase = "";
+        Refresh();
+    }
 }

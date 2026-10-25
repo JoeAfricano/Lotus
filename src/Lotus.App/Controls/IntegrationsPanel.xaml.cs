@@ -36,7 +36,7 @@ public sealed partial class IntegrationsPanel : UserControl
     private void OnExportLayout(object sender, RoutedEventArgs e)
     {
         if (DataContext is not IntegrationsViewModel vm) return;
-        var path = vm.ExportLayout();
+        if (vm.ExportLayout() is not { } path) return;
         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe") { ArgumentList = { "/select,", path } })?.Dispose();
     }
 

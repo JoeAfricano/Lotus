@@ -868,4 +868,5 @@ Condições atuais: {1}</value></data>
   <data name="ScoreOnlineNote" xml:space="preserve"><value>Abre sites públicos no navegador já com as peças do seu PC. O Lotus não envia seus dados.</value></data>
   <data name="ScoreHistoryTitle" xml:space="preserve"><value>Seus testes anteriores</value></data>
   <data name="ScoreHistoryEmpty" xml:space="preserve"><value>Nenhum teste ainda. Rode o primeiro para ter uma referência antes e depois de otimizar.</value></data>
+  <data name="GsWriteFailed" xml:space="preserve"><value>Não foi possível alterar as configurações de {0}. Detalhes no log.</value></data>
 </root>

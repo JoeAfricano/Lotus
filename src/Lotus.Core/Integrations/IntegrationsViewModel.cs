@@ -55,7 +55,14 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
     public Task RestoreOverlayAsync() => Run(async () => Message = Text[await rtss.RestoreAsync() ? "IntOverlayRestored" : "IntOverlayFailed"]);
     public Task ActivateLayoutAsync() => Run(async () => Message = Text[await rtss.ActivateLayoutAsync() ? "IntLayoutApplied" : "IntOverlayFailed"]);
     public Task RestoreLayoutAsync() => Run(async () => Message = Text[await rtss.RestoreLayoutAsync() ? "IntLayoutRestored" : "IntOverlayFailed"]);
-    public string ExportLayout() { ExportedPath = rtss.ExportLayout(); Message = Text.Format("IntLayoutExported", ExportedPath); OnPropertyChanged(nameof(Message)); return ExportedPath; }
+    // null when the file could not be written (locked, disk full); the message explains it.
+    public string? ExportLayout()
+    {
+        try { ExportedPath = rtss.ExportLayout(); Message = Text.Format("IntLayoutExported", ExportedPath); }
+        catch (Exception ex) { log(ex); ExportedPath = null; Message = Text["IntOverlayFailed"]; }
+        OnPropertyChanged(nameof(Message));
+        return ExportedPath;
+    }
 
     private async Task Run(Func<Task> work)
     {

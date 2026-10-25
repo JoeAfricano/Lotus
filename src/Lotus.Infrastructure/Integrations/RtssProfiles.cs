@@ -37,27 +37,42 @@ public static partial class RtssProfiles
     {
         Validate(request);
         var path = Path.Combine(profilesDir, request.Profile);
-        var original = File.Exists(path) ? File.ReadAllText(path) : null;
         Directory.CreateDirectory(backupDir);
-        var backup = Path.Combine(backupDir, request.Profile + ".original");
-        if (!File.Exists(backup)) File.WriteAllText(backup, original ?? "<absent>");
-        var ini = new IniText(original ?? "");
+        BackupOnce(path, Path.Combine(backupDir, request.Profile + ".original"));
+        var ini = new IniText(File.Exists(path) ? ReadAnsi(path) : "");
         foreach (var c in request.Changes) ini.Set(c.Section, c.Key, c.Value);
-        var temp = path + ".lotus.tmp"; File.WriteAllText(temp, ini.ToString()); File.Move(temp, path, overwrite: true);
+        WriteAnsi(path, ini.ToString());
     }
 
     public static bool Restore(string profile, string profilesDir, string backupDir)
     {
         Validate(new(profile, []));
-        var backup = Path.Combine(backupDir, profile + ".original");
+        return RestoreBackup(Path.Combine(backupDir, profile + ".original"), Path.Combine(profilesDir, profile));
+    }
+
+    public static string? Read(string profile, string profilesDir) { var p = Path.Combine(profilesDir, profile); return File.Exists(p) ? ReadAnsi(p) : null; }
+
+    // RTSS files are ANSI. Latin-1 maps every byte to one char, so untouched lines are written back byte for byte.
+    public static string ReadAnsi(string path) => File.ReadAllText(path, System.Text.Encoding.Latin1);
+    public static void WriteAnsi(string path, string text)
+    {
+        var temp = path + ".lotus.tmp"; File.WriteAllText(temp, text, System.Text.Encoding.Latin1); File.Move(temp, path, overwrite: true);
+    }
+    // Backups are exact byte copies (or a marker when the file did not exist); restore writes those bytes back.
+    private static readonly byte[] AbsentMarker = "<absent>"u8.ToArray();
+    public static void BackupOnce(string source, string backup)
+    {
+        if (File.Exists(backup)) return;
+        if (File.Exists(source)) File.Copy(source, backup); else File.WriteAllBytes(backup, AbsentMarker);
+    }
+    public static bool RestoreBackup(string backup, string target)
+    {
         if (!File.Exists(backup)) return false;
-        var original = File.ReadAllText(backup); var path = Path.Combine(profilesDir, profile);
-        if (original == "<absent>") File.Delete(path); else File.WriteAllText(path, original);
+        var bytes = File.ReadAllBytes(backup);
+        if (bytes.AsSpan().SequenceEqual(AbsentMarker)) File.Delete(target); else File.WriteAllBytes(target, bytes);
         File.Delete(backup);
         return true;
     }
-
-    public static string? Read(string profile, string profilesDir) { var p = Path.Combine(profilesDir, profile); return File.Exists(p) ? File.ReadAllText(p) : null; }
 }
 
 // Asks the running RTSS to reload profiles through its documented hooks DLL (same call MSI Afterburner uses).
@@ -87,25 +102,40 @@ public static class RtssElevatedHelper
     {
         var i = Array.FindIndex(args, a => a is "--rtss-apply" or "--rtss-restore" or "--rtss-layout" or "--rtss-layout-restore");
         if (i < 0 || (args[i] != "--rtss-layout-restore" && i + 1 >= args.Length)) return null;
+        // The invoking user's Lotus folder: UAC may elevate as another account, whose %LOCALAPPDATA% differs.
+        var data = DataRoot(args);
+        var backups = Path.Combine(data, "RtssBackups");
         try
         {
             if (args[i] == "--rtss-layout")
-                LotusOverlayLayout.Activate(args[i + 1], LotusOverlayLayout.DefaultConfig, RtssProfiles.DefaultBackupDir, LotusOverlayLayout.OverlaysDir);
+                LotusOverlayLayout.Activate(args[i + 1], LotusOverlayLayout.DefaultConfig, backups, Path.Combine(data, "Overlays"));
             else if (args[i] == "--rtss-layout-restore")
-            { if (!LotusOverlayLayout.Restore(LotusOverlayLayout.DefaultConfig, RtssProfiles.DefaultBackupDir)) return 4; }
+            { if (!LotusOverlayLayout.Restore(LotusOverlayLayout.DefaultConfig, backups)) return 4; }
             else if (args[i] == "--rtss-apply")
             {
                 var requestPath = Path.GetFullPath(args[i + 1]);
-                var allowedRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Requests") + Path.DirectorySeparatorChar;
+                var allowedRoot = Path.Combine(data, "Requests") + Path.DirectorySeparatorChar;
                 if (!requestPath.StartsWith(allowedRoot, StringComparison.OrdinalIgnoreCase)) return 3;
                 var request = JsonSerializer.Deserialize<RtssRequest>(File.ReadAllText(requestPath)) ?? throw new InvalidDataException();
-                RtssProfiles.Apply(request, RtssProfiles.DefaultProfilesDir, RtssProfiles.DefaultBackupDir);
+                RtssProfiles.Apply(request, RtssProfiles.DefaultProfilesDir, backups);
             }
-            else if (!RtssProfiles.Restore(args[i + 1], RtssProfiles.DefaultProfilesDir, RtssProfiles.DefaultBackupDir)) return 4;
+            else if (!RtssProfiles.Restore(args[i + 1], RtssProfiles.DefaultProfilesDir, backups)) return 4;
             RtssReload.TryUpdate();
             return 0;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or JsonException or InvalidDataException) { return 2; }
+    }
+
+    // Accepts only an existing folder named "Lotus"; otherwise uses this account's own %LOCALAPPDATA%\Lotus.
+    public static string DataRoot(string[] args)
+    {
+        var at = Array.IndexOf(args, "--lotus-data");
+        if (at >= 0 && at + 1 < args.Length)
+        {
+            var dir = Path.TrimEndingDirectorySeparator(Path.GetFullPath(args[at + 1]));
+            if (Path.GetFileName(dir).Equals("Lotus", StringComparison.OrdinalIgnoreCase) && Directory.Exists(dir)) return dir;
+        }
+        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus");
     }
 }
 
@@ -162,6 +192,7 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
     {
         var info = new System.Diagnostics.ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute = true, Verb = "runas" };
         foreach (var a in args) info.ArgumentList.Add(a);
+        info.ArgumentList.Add("--lotus-data"); info.ArgumentList.Add(Path.GetDirectoryName(Path.GetFullPath(Backups))!);
         try { using var p = System.Diagnostics.Process.Start(info)!; p.WaitForExit(); return p.ExitCode; }
         catch (System.ComponentModel.Win32Exception) { return 1223; } // user declined the UAC prompt
     });
@@ -192,7 +223,7 @@ public static class LotusOverlayLayout
     {
         var target = Path.Combine(dir ?? OverlaysDir, "Lotus.ovl");
         Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-        File.WriteAllText(target, Text(), new System.Text.UTF8Encoding(false));
+        File.WriteAllText(target, Text(), System.Text.Encoding.Latin1); // OverlayEditor reads layouts as ANSI
         return target;
     }
     // Only a .ovl inside the Lotus overlays folder may be activated.
@@ -201,21 +232,14 @@ public static class LotusOverlayLayout
         var full = Path.GetFullPath(layoutPath);
         if (!full.StartsWith(Path.GetFullPath(overlaysDir) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) || !full.EndsWith(".ovl", StringComparison.OrdinalIgnoreCase) || !File.Exists(full))
             throw new InvalidOperationException("Layout outside the Lotus overlays folder.");
-        var original = File.Exists(configPath) ? File.ReadAllText(configPath) : null;
         Directory.CreateDirectory(backupDir);
-        var backup = Path.Combine(backupDir, "OverlayEditor.cfg.original");
-        if (!File.Exists(backup)) File.WriteAllText(backup, original ?? "<absent>");
-        var ini = new IniText(original ?? ""); ini.Set("Settings", "Layout", full);
-        var temp = configPath + ".lotus.tmp"; File.WriteAllText(temp, ini.ToString()); File.Move(temp, configPath, overwrite: true);
+        RtssProfiles.BackupOnce(configPath, Path.Combine(backupDir, "OverlayEditor.cfg.original"));
+        var ini = new IniText(File.Exists(configPath) ? RtssProfiles.ReadAnsi(configPath) : ""); ini.Set("Settings", "Layout", full);
+        RtssProfiles.WriteAnsi(configPath, ini.ToString());
     }
     public static bool Restore(string configPath, string backupDir)
     {
-        var backup = Path.Combine(backupDir, "OverlayEditor.cfg.original");
-        if (!File.Exists(backup)) return false;
-        var original = File.ReadAllText(backup);
-        if (original == "<absent>") File.Delete(configPath); else File.WriteAllText(configPath, original);
-        File.Delete(backup);
-        return true;
+        return RtssProfiles.RestoreBackup(Path.Combine(backupDir, "OverlayEditor.cfg.original"), configPath);
     }
-    public static string? ActiveLayout(string configPath) => File.Exists(configPath) ? new IniText(File.ReadAllText(configPath)).Get("Settings", "Layout") : null;
+    public static string? ActiveLayout(string configPath) => File.Exists(configPath) ? new IniText(RtssProfiles.ReadAnsi(configPath)).Get("Settings", "Layout") : null;
 }
