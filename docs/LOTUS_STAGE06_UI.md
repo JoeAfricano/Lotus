@@ -53,3 +53,10 @@ Resultado real neste PC: 1920×1080 a 75 Hz (máximo), 2×8 GB DDR4 3200 em dual
 ### Teste real autorizado — jogos em janela (24/10/2026)
 
 Build Release via UI Automation, confirmando no diálogo do Lotus e conferindo o registro a cada passo: antes `SwapEffectUpgradeEnable=0;` → "Ativar pelo Lotus" + Confirmar: "ativadas e verificadas", valor `SwapEffectUpgradeEnable=1;` → "Desfazer" + Confirmar: "Valor anterior restaurado e verificado", valor `SwapEffectUpgradeEnable=0;`. Rede de segurança não usada; sem elevação. Nenhum ganho de desempenho foi medido neste teste.
+
+## Perfil mais completo e inicialização opcional (25/10/2026)
+
+- **Aplicar perfil** agora inclui todas as ações recomendadas pelo perfil, cada uma com journal, verificação e Desfazer: plano de energia; jogos em janela; **gravação em segundo plano desligada** (`GameDVR\HistoricalCaptureEnabled`, padrão desligado) e **Modo de Jogo ligado** (`GameBar\AutoGameModeEnabled`, padrão ligado) via `RegistryDwordAction` (HKCU, restaura valor ou ausência exata); **taxa do monitor principal no máximo** da resolução atual (`DisplayRefreshAction`, `ChangeDisplaySettingsEx` com `CDS_TEST` antes). Diário: plano, Modo de Jogo e monitor.
+- **Inicialização opcional** (nunca no Aplicar perfil): botão Desativar/Reativar por item do usuário (`StartupApproved\Run|StartupFolder` em HKCU, mesma marcação do Gerenciador de Tarefas, 03 + FILETIME). Reativar restaura os bytes exatos quando foi o Lotus que desativou; mudança externa vira conflito. Itens HKLM exigem administrador e só são exibidos.
+- Foco: os ganhos são maiores em PCs mal configurados (monitor abaixo da taxa, gravação ligada, inicialização carregada). Neste PC todos os recursos já estavam adequados.
+- Testes: 234 aprovados (Debug); Release compilado sem avisos. Nenhuma escrita real nova foi feita.

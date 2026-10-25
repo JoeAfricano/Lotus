@@ -65,3 +65,37 @@ public sealed class DisplayRefreshAction(IDisplayModes modes) : IOptimizationAct
     }
     public static string Label(string raw) => raw + " Hz";
 }
+
+// Per-user StartupApproved values (HKCU\...\Explorer\StartupApproved\{Run|StartupFolder}), the same marker Task Manager uses.
+public interface IStartupApprovalStore
+{
+    byte[]? Read(string kind, string name);
+    void Write(string kind, string name, byte[]? value); // null deletes the value (Windows then treats the item as enabled)
+}
+
+// Enables or disables one user startup item without deleting it. Undo restores the exact previous bytes (or absence).
+public sealed class StartupToggleAction(IStartupApprovalStore store, string kind, string name, bool disable, Func<DateTime>? clock = null) : IOptimizationAction
+{
+    private const string Absent = "<absent>";
+    public ActionDefinition Definition => new($"windows.startup.approved.v1:{kind}:{name}:{(disable ? "off" : "on")}", "PowerStartupLimits", ActionRisk.Low, @"HKCU\...\StartupApproved\" + kind, true);
+    public Eligibility Eligibility => kind is "Run" or "StartupFolder" ? Eligibility.Eligible : Eligibility.Unsupported;
+    public bool CanAttributeRecovery => false;
+    public ConfigurationState Detect() => new(store.Read(kind, name) is { } b ? Convert.ToHexString(b) : Absent, 0, null);
+    public ConfigurationState Plan(ConfigurationState before, Guid operation)
+    {
+        var enabled = StartupApproval.IsEnabled(before.Value == Absent ? null : Convert.FromHexString(before.Value!));
+        if (enabled != disable) return before; // already in the requested state
+        // 03 = disabled + FILETIME of the change (as Task Manager writes); 02 = enabled.
+        var bytes = new byte[12];
+        bytes[0] = disable ? (byte)3 : (byte)2;
+        if (disable) BitConverter.GetBytes((clock ?? (() => DateTime.UtcNow))().ToFileTimeUtc()).CopyTo(bytes, 4);
+        return new(Convert.ToHexString(bytes), 0, null);
+    }
+    public ConfigurationState Restore(ConfigurationState before, ConfigurationState applied, Guid operation) => before;
+    public bool Exchange(ConfigurationState expected, ConfigurationState target)
+    {
+        if (Detect() != expected) return false;
+        store.Write(kind, name, target.Value == Absent ? null : Convert.FromHexString(target.Value!));
+        return true;
+    }
+}

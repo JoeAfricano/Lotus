@@ -560,7 +560,6 @@ Current conditions: {1}</value></data>
   <data name="PowerStartup" xml:space="preserve"><value>Startup applications · read-only</value></data>
   <data name="PowerStartupRead" xml:space="preserve"><value>Inspect startup</value></data>
   <data name="PowerStartupCount" xml:space="preserve"><value>{0} entries found; {1} sources could not be read.</value></data>
-  <data name="PowerStartupLimits" xml:space="preserve"><value>Limited to Run keys and Startup folders. Status uses the same StartupApproved marker as Task Manager; enabled does not guarantee the program still exists or starts. No application will be disabled; tasks and services are not included.</value></data>
   <data name="PowerStartupEnabled" xml:space="preserve"><value>Enabled</value></data>
   <data name="PowerStartupDisabled" xml:space="preserve"><value>Disabled</value></data>
   <data name="PowerStartupUnknown" xml:space="preserve"><value>Status unavailable</value></data>
@@ -715,4 +714,13 @@ Current conditions: {1}</value></data>
   <data name="FeatConfirmBody" xml:space="preserve"><value>Lotus will change only this option, the same one found in Windows Settings, without admin rights. The previous value is journaled and can be restored with Undo. More FPS is not guaranteed.</value></data>
   <data name="FeatNamedisplay-refresh" xml:space="preserve"><value>Display refresh rate</value></data>
   <data name="FeatAdvicedisplay-refresh" xml:space="preserve"><value>Using the highest rate your monitor supports makes games visibly smoother. Windows often stays at 60 Hz on 144 Hz monitors.</value></data>
+  <data name="StartupDisable" xml:space="preserve"><value>Disable</value></data>
+  <data name="StartupEnable" xml:space="preserve"><value>Enable</value></data>
+  <data name="StartupNeedsAdmin" xml:space="preserve"><value>changing it requires admin (use Task Manager)</value></data>
+  <data name="StartupDisabledOk" xml:space="preserve"><value>{0} will no longer start with Windows (the app stays installed).</value></data>
+  <data name="StartupEnabledOk" xml:space="preserve"><value>{0} will start with Windows again.</value></data>
+  <data name="StartupConflict" xml:space="preserve"><value>{0}: the setting changed outside Lotus; nothing was overwritten.</value></data>
+  <data name="StartupConfirmTitle" xml:space="preserve"><value>{0}: {1} at startup?</value></data>
+  <data name="StartupConfirmBody" xml:space="preserve"><value>Uses the same marker as Task Manager: nothing is deleted or uninstalled and you can revert here anytime. Takes effect at next sign-in.</value></data>
+  <data name="PowerStartupLimits" xml:space="preserve"><value>Items from Run keys and Startup folders. Status follows Task Manager. Disabling is optional, item by item, and never part of "Apply profile". Scheduled tasks and services are not included.</value></data>
 </root>

@@ -95,7 +95,10 @@
         <ItemsControl.ItemTemplate><DataTemplate>
          <Border Background="{ThemeResource CardHoverBrush}" CornerRadius="10" Padding="14,10"><Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
           <StackPanel Spacing="2"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding Location}" Style="{StaticResource CaptionStyle}"/></StackPanel>
-          <ContentControl Grid.Column="1" Content="{Binding State}" Style="{StaticResource StatusBadgeStyle}" VerticalAlignment="Center" Opacity="{Binding IsDisabled, Converter={StaticResource DimWhenTrue}}"/>
+          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+           <ContentControl Content="{Binding State}" Style="{StaticResource StatusBadgeStyle}" VerticalAlignment="Center" Opacity="{Binding IsDisabled, Converter={StaticResource DimWhenTrue}}"/>
+           <Button Content="{Binding ToggleLabel}" Click="OnToggleStartup" Style="{StaticResource SoftButtonStyle}" MinHeight="30" Padding="10,3" Visibility="{Binding CanToggle, Converter={StaticResource BooleanVisibility}}"/>
+          </StackPanel>
          </Grid></Border>
         </DataTemplate></ItemsControl.ItemTemplate>
        </ItemsControl>

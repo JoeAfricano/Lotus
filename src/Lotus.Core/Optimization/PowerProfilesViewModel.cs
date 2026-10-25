@@ -19,6 +19,8 @@ public sealed class PowerProfilesViewModel : ObservableObject
     // Feature actions keyed by feature id (windowed-optimizations, background-recording, gamemode, display-refresh...).
     private readonly Dictionary<string, OptimizationEngine> featureEngines = new();
     private readonly Dictionary<string, OptimizationPlan?> featureApplied = new();
+    private readonly IStartupApprovalStore? approval;
+    private readonly Func<IOptimizationAction, OptimizationEngine>? engineFactory;
     private readonly Action<Exception> log;
     private readonly Dictionary<string, OptimizationProfile> profiles = new();
     private string profileId = "game", messageKey = "PowerReady", error = "";
@@ -66,9 +68,11 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public IAsyncRelayCommand RevertCommand { get; }
     public IAsyncRelayCommand StartupCommand { get; }
     public PowerProfilesViewModel(OptimizationEngine engine, IPowerSchemeService power, IProfileStore store,
-        IStartupInventory startup, ITextCatalog text, Action<Exception> log, IGameFeatureInventory? features = null, OptimizationEngine? windowedEngine = null, IReadOnlyDictionary<string, OptimizationEngine>? featureEngines = null)
+        IStartupInventory startup, ITextCatalog text, Action<Exception> log, IGameFeatureInventory? features = null, OptimizationEngine? windowedEngine = null, IReadOnlyDictionary<string, OptimizationEngine>? featureEngines = null,
+        IStartupApprovalStore? approval = null, Func<IOptimizationAction, OptimizationEngine>? engineFactory = null)
     {
         this.engine = engine; this.power = power; this.store = store; this.startup = startup; featureSource = features; Text = text; this.log = log;
+        this.approval = approval; this.engineFactory = engineFactory;
         if (windowedEngine is not null) this.featureEngines[WindowedOptimizationsAction.FeatureId] = windowedEngine;
         if (featureEngines is not null) foreach (var (id, e) in featureEngines) this.featureEngines[id] = e;
         SelectProfileCommand = new RelayCommand<string>(SelectProfile, _ => !busy);
@@ -88,16 +92,45 @@ public sealed class PowerProfilesViewModel : ObservableObject
         {
             var plan = await engine.RevertAsync(SelectedOperation!.Plan.Id, Confirmed); await LoadOperations(plan.Id);
         }), () => !busy && Confirmed && SelectedOperation?.Plan.Stage == OperationStage.Applied);
-        StartupCommand = new AsyncRelayCommand(() => Run(async () =>
-        {
-            var result = await Task.Run(startup.Read); StartupEntries.Clear();
-            foreach (var e in result.Entries.OrderBy(e => e.Enabled == false).ThenBy(e => e.Name, StringComparer.CurrentCultureIgnoreCase))
-                StartupEntries.Add(new(e.Name, e.Location, Text[e.Enabled switch { true => "PowerStartupEnabled", false => "PowerStartupDisabled", _ => "PowerStartupUnknown" }], e.Enabled == false));
-            StartupStatus = Text.Format("PowerStartupCountState", result.Entries.Count, result.Entries.Count(e => e.Enabled == true),
-                result.Entries.Count(e => e.Enabled == false), result.Entries.Count(e => e.Enabled is null), result.Errors.Count);
-            OnPropertyChanged(nameof(StartupStatus));
-        }), () => !busy);
+        StartupCommand = new AsyncRelayCommand(() => Run(LoadStartupAsync), () => !busy);
     }
+    // Read-only inventory; user-scope items (HKCU) get an optional Disable/Enable action, the rest need admin.
+    private async Task LoadStartupAsync()
+    {
+        var result = await Task.Run(startup.Read); StartupEntries.Clear();
+        foreach (var e in result.Entries.OrderBy(e => e.Enabled == false).ThenBy(e => e.Name, StringComparer.CurrentCultureIgnoreCase))
+        {
+            var canToggle = approval is not null && engineFactory is not null && e.UserScope && e.Enabled is not null && e.ApprovalKind is not null;
+            var location = e.UserScope || e.Enabled is null ? e.Location : e.Location + " · " + Text["StartupNeedsAdmin"];
+            StartupEntries.Add(new(e.Name, location, Text[e.Enabled switch { true => "PowerStartupEnabled", false => "PowerStartupDisabled", _ => "PowerStartupUnknown" }],
+                e.Enabled == false, e, canToggle, canToggle ? Text[e.Enabled == false ? "StartupEnable" : "StartupDisable"] : null));
+        }
+        StartupStatus = Text.Format("PowerStartupCountState", result.Entries.Count, result.Entries.Count(e => e.Enabled == true),
+            result.Entries.Count(e => e.Enabled == false), result.Entries.Count(e => e.Enabled is null), result.Errors.Count);
+        OnPropertyChanged(nameof(StartupStatus));
+    }
+
+    // Optional, per item (never part of "Apply profile"). Re-enabling restores the exact bytes when Lotus disabled the item.
+    public Task ToggleStartupAsync(StartupRow row) => Run(async () =>
+    {
+        if (!row.CanToggle || row.Entry is not { ApprovalKind: { } kind, ApprovalName: { } name } entry || approval is null || engineFactory is null)
+            throw new InvalidOperationException("Startup item cannot be changed here.");
+        var disable = entry.Enabled != false;
+        string key;
+        var lotusDisable = engineFactory(new StartupToggleAction(approval, kind, name, disable: true));
+        if (!disable && LastApplied(await lotusDisable.RecoverAsync()) is { } previous)
+            key = (await lotusDisable.RevertAsync(previous.Id, confirmed: true)).Stage == OperationStage.Reverted ? "StartupEnabledOk" : "StartupConflict";
+        else
+        {
+            var toggle = disable ? lotusDisable : engineFactory(new StartupToggleAction(approval, kind, name, disable: false));
+            var plan = await toggle.AnalyzeAsync();
+            if (plan.Stage == OperationStage.Planned) plan = await toggle.ApplyAsync(plan.Id, confirmed: true);
+            key = plan.Stage is OperationStage.Applied or OperationStage.NoChange ? (disable ? "StartupDisabledOk" : "StartupEnabledOk") : "StartupConflict";
+        }
+        await LoadStartupAsync();
+        StartupStatus = Text.Format(key, row.Name) + " " + StartupStatus; OnPropertyChanged(nameof(StartupStatus));
+    });
+
     public Task RefreshAsync() => Run(async () =>
     {
         var data = await Task.Run(() => (Schemes: power.List(), Active: power.Active(), Ac: power.OnAcPower(), Profiles: store.LoadProfiles()));

@@ -90,3 +90,22 @@ public sealed class WindowsDisplayModes : IDisplayModes
     }
     private static DevMode NewMode() => new() { dmSize = (short)Marshal.SizeOf<DevMode>() };
 }
+
+// HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\{Run|StartupFolder}. User scope only.
+[SupportedOSPlatform("windows")]
+public sealed class WindowsStartupApprovalStore : IStartupApprovalStore
+{
+    private const string Root = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\";
+    public byte[]? Read(string kind, string name)
+    {
+        using var key = Registry.CurrentUser.OpenSubKey(Root + kind, writable: false);
+        return key?.GetValue(name) as byte[];
+    }
+    public void Write(string kind, string name, byte[]? value)
+    {
+        if (kind is not ("Run" or "StartupFolder")) throw new InvalidOperationException("Unsupported startup approval kind.");
+        if (value is null) { using var existing = Registry.CurrentUser.OpenSubKey(Root + kind, writable: true); existing?.DeleteValue(name, throwOnMissingValue: false); return; }
+        using var key = Registry.CurrentUser.CreateSubKey(Root + kind, writable: true);
+        key.SetValue(name, value, RegistryValueKind.Binary);
+    }
+}

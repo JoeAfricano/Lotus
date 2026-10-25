@@ -29,7 +29,7 @@ public sealed class WindowsStartupInventory : IStartupInventory
                 if (key is null) continue;
                 foreach (var name in key.GetValueNames().Take(200))
                     if (key.GetValue(name, null, RegistryValueOptions.DoNotExpandEnvironmentNames) is string command)
-                        entries.Add(new(name, label, command.Length <= 4096 ? command : command[..4096], Approved(hive, kind, name)));
+                        entries.Add(new(name, label, command.Length <= 4096 ? command : command[..4096], Approved(hive, kind, name), kind, name, hive == RegistryHive.CurrentUser));
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or System.Security.SecurityException or IOException)
             { errors.Add(label + ": " + ex.GetType().Name); }
@@ -43,7 +43,7 @@ public sealed class WindowsStartupInventory : IStartupInventory
                 {
                     var name = Path.GetFileName(file);
                     if (name.Equals("desktop.ini", StringComparison.OrdinalIgnoreCase)) continue;
-                    entries.Add(new(name, folder.ToString(), file, Approved(hive, "StartupFolder", name)));
+                    entries.Add(new(name, folder.ToString(), file, Approved(hive, "StartupFolder", name), "StartupFolder", name, hive == RegistryHive.CurrentUser));
                 }
             }
             catch (Exception ex) when (ex is UnauthorizedAccessException or IOException) { errors.Add(folder + ": " + ex.GetType().Name); }

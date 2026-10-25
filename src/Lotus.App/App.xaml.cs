@@ -81,7 +81,9 @@ public partial class App : Application
                 p.GetRequiredService<Lotus.Core.Optimization.IStartupInventory>(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Power profile operation failed"), new Lotus.Infrastructure.Optimization.WindowsGameFeatures(new Lotus.Infrastructure.Optimization.WindowsDisplayModes()),
                 new Lotus.Core.Optimization.OptimizationEngine(p.GetRequiredService<Lotus.Infrastructure.Optimization.SqliteOptimizationJournal>(),
                     new Lotus.Core.Optimization.WindowedOptimizationsAction(new Lotus.Infrastructure.Optimization.WindowsDirectXUserSettings())),
-                FeatureEngines(p.GetRequiredService<Lotus.Infrastructure.Optimization.SqliteOptimizationJournal>())))
+                FeatureEngines(p.GetRequiredService<Lotus.Infrastructure.Optimization.SqliteOptimizationJournal>()),
+                new Lotus.Infrastructure.Optimization.WindowsStartupApprovalStore(),
+                action => new Lotus.Core.Optimization.OptimizationEngine(p.GetRequiredService<Lotus.Infrastructure.Optimization.SqliteOptimizationJournal>(), action)))
             .AddSingleton(p => new Lotus.Core.Diagnostics.HardwareDiagnosticsViewModel(new Lotus.Infrastructure.Diagnostics.WindowsHardwareFacts(),
                 p.GetRequiredService<MonitoringViewModel>(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Hardware diagnostics failed")))
             .AddSingleton(p => new Lotus.Core.Games.GamesViewModel(new Lotus.Infrastructure.Games.WindowsGameLibrary(),

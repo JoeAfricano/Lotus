@@ -560,7 +560,6 @@ Condições atuais: {1}</value></data>
   <data name="PowerStartup" xml:space="preserve"><value>Aplicativos na inicialização · somente leitura</value></data>
   <data name="PowerStartupRead" xml:space="preserve"><value>Consultar inicialização</value></data>
   <data name="PowerStartupCount" xml:space="preserve"><value>{0} entradas encontradas; {1} fontes não puderam ser lidas.</value></data>
-  <data name="PowerStartupLimits" xml:space="preserve"><value>Consulta limitada às chaves Run e pastas Inicializar. O status segue a mesma marcação do Gerenciador de Tarefas (StartupApproved); habilitado não garante que o programa ainda exista ou inicie. Nenhum aplicativo será desativado; tarefas e serviços não são incluídos.</value></data>
   <data name="PowerStartupEnabled" xml:space="preserve"><value>Habilitado</value></data>
   <data name="PowerStartupDisabled" xml:space="preserve"><value>Desabilitado</value></data>
   <data name="PowerStartupUnknown" xml:space="preserve"><value>Status indisponível</value></data>
@@ -715,4 +714,13 @@ Condições atuais: {1}</value></data>
   <data name="FeatConfirmBody" xml:space="preserve"><value>O Lotus vai alterar só esta opção, a mesma das Configurações do Windows, sem pedir administrador. O valor anterior fica registrado e pode ser restaurado em Desfazer. Não há garantia de mais FPS.</value></data>
   <data name="FeatNamedisplay-refresh" xml:space="preserve"><value>Taxa de atualização do monitor</value></data>
   <data name="FeatAdvicedisplay-refresh" xml:space="preserve"><value>Usar a maior taxa que o monitor suporta deixa o jogo visivelmente mais fluido. É comum o Windows ficar em 60 Hz em monitores de 144 Hz.</value></data>
+  <data name="StartupDisable" xml:space="preserve"><value>Desativar</value></data>
+  <data name="StartupEnable" xml:space="preserve"><value>Reativar</value></data>
+  <data name="StartupNeedsAdmin" xml:space="preserve"><value>alterar exige administrador (use o Gerenciador de Tarefas)</value></data>
+  <data name="StartupDisabledOk" xml:space="preserve"><value>{0} não abrirá mais com o Windows (o programa continua instalado).</value></data>
+  <data name="StartupEnabledOk" xml:space="preserve"><value>{0} voltará a abrir com o Windows.</value></data>
+  <data name="StartupConflict" xml:space="preserve"><value>{0}: a configuração mudou fora do Lotus; nada foi sobrescrito.</value></data>
+  <data name="StartupConfirmTitle" xml:space="preserve"><value>{0}: {1} na inicialização?</value></data>
+  <data name="StartupConfirmBody" xml:space="preserve"><value>Usa a mesma marcação do Gerenciador de Tarefas: nada é apagado ou desinstalado, e você pode reverter aqui a qualquer momento. Vale a partir do próximo login.</value></data>
+  <data name="PowerStartupLimits" xml:space="preserve"><value>Itens das chaves Run e pastas Inicializar. O status segue o Gerenciador de Tarefas. Desativar é opcional, item por item, e nunca faz parte do "Aplicar perfil". Tarefas agendadas e serviços não são incluídos.</value></data>
 </root>

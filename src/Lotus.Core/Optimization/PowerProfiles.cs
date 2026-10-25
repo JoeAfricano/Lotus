@@ -15,13 +15,14 @@ public interface IProfileStore
     void SaveProfile(OptimizationProfile profile);
 }
 // Enabled follows Task Manager's StartupApproved convention; null means the approval value could not be read.
-public sealed record StartupEntry(string Name, string Location, string Command, bool? Enabled = null);
+// ApprovalKind/ApprovalName point to Explorer StartupApproved; only UserScope entries (HKCU) can be changed without admin.
+public sealed record StartupEntry(string Name, string Location, string Command, bool? Enabled = null, string? ApprovalKind = null, string? ApprovalName = null, bool UserScope = false);
 public static class StartupApproval
 {
     // Missing value = enabled; first byte odd (03/07) = disabled, even (02/06) = enabled.
     public static bool IsEnabled(object? value) => value is not byte[] { Length: > 0 } bytes || (bytes[0] & 1) == 0;
 }
-public sealed record StartupRow(string Name, string Location, string State, bool IsDisabled);
+public sealed record StartupRow(string Name, string Location, string State, bool IsDisabled, StartupEntry? Entry = null, bool CanToggle = false, string? ToggleLabel = null);
 public sealed record StartupInventory(IReadOnlyList<StartupEntry> Entries, IReadOnlyList<string> Errors);
 public interface IStartupInventory { StartupInventory Read(); }
 

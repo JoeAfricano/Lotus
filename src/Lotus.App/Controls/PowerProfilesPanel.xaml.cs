@@ -56,6 +56,13 @@ public sealed partial class PowerProfilesPanel : UserControl
         if (vm.RevertCommand.CanExecute(null)) await vm.RevertCommand.ExecuteAsync(null); else vm.Confirmed = false;
     }
 
+    private async void OnToggleStartup(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: Lotus.Core.Optimization.StartupRow row } || DataContext is not Lotus.Core.Optimization.PowerProfilesViewModel vm) return;
+        if (await ConfirmAsync(vm.Text.Format("StartupConfirmTitle", row.Name, row.ToggleLabel ?? ""), vm.Text["StartupConfirmBody"], vm.Text))
+            await vm.ToggleStartupAsync(row);
+    }
+
     // Real feature actions always pass through an explicit confirmation dialog.
     private async void OnApplyFeature(object sender, RoutedEventArgs e)
     {
