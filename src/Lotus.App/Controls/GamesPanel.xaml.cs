@@ -109,6 +109,11 @@ public sealed partial class GamesPanel : UserControl
             await vm.PrecompileAsync(card);
     }
 
+    // Optional: opens the user's SCSKiller window to see the details.
+    private void OnOpenShaderTool(object sender, RoutedEventArgs e) => (DataContext as GamesViewModel)?.OpenShaderTool();
+    private void OnOpenShaderToolButton(object sender, RoutedEventArgs e) => (DataContext as GamesViewModel)?.OpenShaderTool();
+    private void OnCancelPrecompile(object sender, RoutedEventArgs e) => (DataContext as GamesViewModel)?.CancelPrecompile();
+
     // Opens only the official SCSKiller releases page; Lotus never downloads it.
     private async void OnScsOffer(object sender, RoutedEventArgs e) =>
         await Windows.System.Launcher.LaunchUriAsync(new Uri(GamesViewModel.ScsKillerReleases));

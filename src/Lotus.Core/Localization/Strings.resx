@@ -459,15 +459,15 @@ Entre no jogo.</value>
   <data name="FaqSolutionsAnswer" xml:space="preserve"><value>Cada ajuste precisa de uma causa identificada, uma forma segura de aplicar e uma verificação do resultado. As ações automáticas serão adicionadas por etapas, com confirmação e reversão quando possível.</value></data>
   <data name="FaqAmbientQuestion" xml:space="preserve"><value>Por que o fundo fica parado às vezes?</value></data>
   <data name="FaqAmbientAnswer" xml:space="preserve"><value>O fundo segue Reduzir animações do Lotus e a preferência de movimento do Windows. Ele também pausa quando a janela perde o foco ou é minimizada. A marca possui sua própria política de movimento.</value></data>
-  <data name="BenchTitle" xml:space="preserve"><value>Capture sua próxima partida</value></data>
-  <data name="BenchIntro" xml:space="preserve"><value>Escolha o processo do jogo já aberto. Jogue o mesmo trecho ao comparar duas capturas.</value></data>
+  <data name="BenchTitle" xml:space="preserve"><value>Medir o FPS de uma partida</value></data>
+  <data name="BenchIntro" xml:space="preserve"><value>Mede o FPS real do jogo enquanto você joga. Para comparar antes e depois de otimizar, jogue o mesmo trecho nas duas medições.</value></data>
   <data name="BenchProcess" xml:space="preserve"><value>Jogo ou aplicativo aberto</value></data>
   <data name="BenchRefresh" xml:space="preserve"><value>Atualizar lista</value></data>
   <data name="BenchDuration" xml:space="preserve"><value>Limite da captura (10–120 segundos)</value></data>
   <data name="BenchConditions" xml:space="preserve"><value>Condições do teste — cena, resolução e qualidade</value></data>
   <data name="BenchElevate" xml:space="preserve"><value>Autorizar elevação somente do coletor</value></data>
   <data name="BenchElevationNote" xml:space="preserve"><value>Se o Windows negar a captura, autorize o coletor. Iniciar e interromper antes do limite podem abrir a confirmação do Windows. O Lotus continua sem elevação.</value></data>
-  <data name="BenchStart" xml:space="preserve"><value>Iniciar benchmark</value></data>
+  <data name="BenchStart" xml:space="preserve"><value>Medir</value></data>
   <data name="BenchStop" xml:space="preserve"><value>Encerrar captura</value></data>
   <data name="BenchSession" xml:space="preserve"><value>Capturas salvas — últimas 100</value></data>
   <data name="BenchResult" xml:space="preserve"><value>O ritmo dos frames</value></data>
@@ -833,7 +833,7 @@ Condições atuais: {1}</value></data>
   <data name="lotusscoreTitle" xml:space="preserve"><value>LOTUS SCORE</value></data>
   <data name="lotusscoreDescription" xml:space="preserve"><value>Teste o desempenho do seu PC e compare com outras máquinas.</value></data>
   <data name="lotusscoreNext" xml:space="preserve"><value>Teste de CPU e GPU com pontuação comparável.</value></data>
-  <data name="ScoreIntro" xml:space="preserve"><value>Cerca de 50 segundos de teste. Nada no Windows é alterado. Feche jogos e programas pesados antes para um resultado justo.</value></data>
+  <data name="ScoreIntro" xml:space="preserve"><value>Escolha os testes e clique em Iniciar. Cada um leva cerca de 15 segundos e nada no Windows é alterado. O teste de GPU abre uma janela com a cena 3D; fechar a janela cancela. Feche jogos e programas pesados antes.</value></data>
   <data name="ScoreStart" xml:space="preserve"><value>Iniciar teste</value></data>
   <data name="ScoreCancel" xml:space="preserve"><value>Cancelar</value></data>
   <data name="ScoreMachine" xml:space="preserve"><value>{0} · {1}</value></data>
@@ -851,7 +851,7 @@ Condições atuais: {1}</value></data>
   <data name="ScoreVerdictLow" xml:space="preserve"><value>Seu PC ficou abaixo da faixa de entrada. Veja em Otimizar o que pode estar limitando.</value></data>
   <data name="ScoreVerdict" xml:space="preserve"><value>Seu PC está na faixa {0}: supera {1} de {2} referências.</value></data>
   <data name="ScoreYou" xml:space="preserve"><value>Seu PC</value></data>
-  <data name="ScoreHistoryLine" xml:space="preserve"><value>{0:N0} pontos · CPU {1:N0} / {2:N0} · GPU {3}</value></data>
+  <data name="ScoreHistoryLine" xml:space="preserve"><value>{0} pontos · CPU {1} / {2} · GPU {3}</value></data>
   <data name="ScoreTierEntry" xml:space="preserve"><value>Entrada</value></data>
   <data name="ScoreTierBudget" xml:space="preserve"><value>Básico gamer</value></data>
   <data name="ScoreTierMid" xml:space="preserve"><value>Intermediário</value></data>
@@ -869,4 +869,45 @@ Condições atuais: {1}</value></data>
   <data name="ScoreHistoryTitle" xml:space="preserve"><value>Seus testes anteriores</value></data>
   <data name="ScoreHistoryEmpty" xml:space="preserve"><value>Nenhum teste ainda. Rode o primeiro para ter uma referência antes e depois de otimizar.</value></data>
   <data name="GsWriteFailed" xml:space="preserve"><value>Não foi possível alterar as configurações de {0}. Detalhes no log.</value></data>
+  <data name="ScorePartial" xml:space="preserve"><value>Teste parcial: a pontuação Lotus aparece quando CPU (1 núcleo e todos) e GPU são testados juntos.</value></data>
+  <data name="ScorePartHint" xml:space="preserve"><value>Digite o modelo de um processador ou placa de vídeo, por exemplo "RTX 4060" ou "Ryzen 5 5600".</value></data>
+  <data name="ScorePartNone" xml:space="preserve"><value>Nenhuma peça encontrada com esse nome na tabela do Lotus.</value></data>
+  <data name="ScorePartRunFirst" xml:space="preserve"><value>Rode o teste para comparar com o seu PC.</value></data>
+  <data name="ScorePartCpuValues" xml:space="preserve"><value>1 núcleo {0} · todos {1}</value></data>
+  <data name="ScorePartGpuValues" xml:space="preserve"><value>{0} pontos</value></data>
+  <data name="ScorePartYours" xml:space="preserve"><value>Peça do seu PC</value></data>
+  <data name="ScorePartVs" xml:space="preserve"><value>{0:+0;-0;0}% em relação ao seu PC</value></data>
+  <data name="ScoreChooseTests" xml:space="preserve"><value>O que testar</value></data>
+  <data name="ScoreSearchTitle" xml:space="preserve"><value>Pesquisar uma peça</value></data>
+  <data name="ScoreSearchPlaceholder" xml:space="preserve"><value>Ex.: RTX 4060, RX 7600, Ryzen 7 5800X3D, i5-12400</value></data>
+  <data name="ScorePreviewCaption" xml:space="preserve"><value>Cena renderizada pelo processador agora (a GPU abre uma janela própria)</value></data>
+  <data name="ScsJobTitle" xml:space="preserve"><value>Pré-carregando shaders de {0}</value></data>
+  <data name="ScsStageWaiting" xml:space="preserve"><value>Na fila</value></data>
+  <data name="ScsStageIndexing" xml:space="preserve"><value>Lendo os arquivos do jogo</value></data>
+  <data name="ScsStagePlanning" xml:space="preserve"><value>Planejando</value></data>
+  <data name="ScsStageMaterializing" xml:space="preserve"><value>Preparando os shaders</value></data>
+  <data name="ScsStageWarming" xml:space="preserve"><value>Compilando shaders</value></data>
+  <data name="ScsStagePaused" xml:space="preserve"><value>Em pausa</value></data>
+  <data name="ScsStageDone" xml:space="preserve"><value>Concluído</value></data>
+  <data name="ScsStageFailed" xml:space="preserve"><value>Falhou</value></data>
+  <data name="ScsStageStopped" xml:space="preserve"><value>Interrompido</value></data>
+  <data name="ScsJobCount" xml:space="preserve"><value>{0}: {1} de {2} · {3} por segundo</value></data>
+  <data name="ScsJobPackages" xml:space="preserve"><value>{0}: {1} de {2} pacotes</value></data>
+  <data name="ScsJobEta" xml:space="preserve"><value>Faltam cerca de {0} · decorrido {1}</value></data>
+  <data name="DurHours" xml:space="preserve"><value>{0} h {1:00} min</value></data>
+  <data name="DurMinutes" xml:space="preserve"><value>{0} min {1:00} s</value></data>
+  <data name="DurSeconds" xml:space="preserve"><value>{0} s</value></data>
+  <data name="ScsCancelled" xml:space="preserve"><value>Pré-carregamento de {0} cancelado.</value></data>
+  <data name="ScsOpen" xml:space="preserve"><value>Ver no SCSKiller</value></data>
+  <data name="IntOverlayCardTitle" xml:space="preserve"><value>Overlay de FPS no jogo (RivaTuner)</value></data>
+  <data name="IntSimpleOsd" xml:space="preserve"><value>Alternativa: overlay simples (só FPS e gráfico)</value></data>
+  <data name="BenchStep1" xml:space="preserve"><value>Abra o jogo e escolha-o aqui</value></data>
+  <data name="BenchStep2" xml:space="preserve"><value>Por quanto tempo medir</value></data>
+  <data name="BenchStep3" xml:space="preserve"><value>Clique em Medir e volte para o jogo. Jogue normalmente até o tempo acabar.</value></data>
+  <data name="BenchAdvanced" xml:space="preserve"><value>Opções avançadas</value></data>
+  <data name="BenchNoTargets" xml:space="preserve"><value>Nenhum jogo aberto. Abra o jogo, volte aqui e clique em Atualizar lista.</value></data>
+  <data name="BenchPickTarget" xml:space="preserve"><value>Escolha o jogo</value></data>
+  <data name="BenchDurationOption" xml:space="preserve"><value>{0} segundos</value></data>
+  <data name="BenchPrevious" xml:space="preserve"><value>Medição exibida</value></data>
+  <data name="BenchNoSessions" xml:space="preserve"><value>Nenhuma medição ainda</value></data>
 </root>

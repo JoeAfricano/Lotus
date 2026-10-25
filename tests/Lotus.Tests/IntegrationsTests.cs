@@ -101,7 +101,11 @@ public sealed class IntegrationsTests : IDisposable
     {
         var text = LotusOverlayLayout.Text();
         var ini = new IniText(text);
-        Assert.Contains("<FR10L>", text); Assert.Contains("<FR01L>", text); Assert.Contains("<G=Frametime", text); Assert.Contains("<S=GPU1 clock>", text);
+        Assert.Contains("percentile(Frametime,99)", text); Assert.Contains("%FPS low01%", text); Assert.Contains("<G=Frametime", text); Assert.Contains("%GPU1 clock%", text);
+        Assert.DoesNotContain("<S=", text); // OverlayEditor shows data sources as %Name%, not <S=...>
+        // Every %Name% macro refers to a declared source.
+        foreach (System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(text, @"%([A-Za-z][^%\r\n]*?)%"))
+            Assert.Contains($"Name={m.Groups[1].Value}\r\n", text);
         var layers = System.Text.RegularExpressions.Regex.Matches(text, @"^\[Layer\d+\]", System.Text.RegularExpressions.RegexOptions.Multiline).Count;
         var sources = System.Text.RegularExpressions.Regex.Matches(text, @"^\[Source\d+\]", System.Text.RegularExpressions.RegexOptions.Multiline).Count;
         Assert.Equal(layers.ToString(), ini.Get("General", "Layers")); Assert.Equal(sources.ToString(), ini.Get("General", "Sources"));

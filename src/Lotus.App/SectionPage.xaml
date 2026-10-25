@@ -87,7 +87,10 @@
     <ContentControl x:Name="HistoryContent" x:Load="{x:Bind ShowHistory}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE81C;" Style="{StaticResource BadgeIconStyle}"/></Border><TextBlock Text="{Binding Text[UxHistoryEmptyTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxHistoryEmptyDescription]}" Style="{StaticResource CaptionStyle}"/></StackPanel></ContentControl>
    </StackPanel>
 
-   <controls:GamesPanel x:Name="GamesContent" x:Load="{x:Bind ShowGames}" DataContext="{Binding Games}"/>
+   <StackPanel x:Name="GamesArea" x:Load="{x:Bind ShowGames}" Spacing="16">
+    <controls:RtssCard DataContext="{Binding Integrations}"/>
+    <controls:GamesPanel x:Name="GamesContent" DataContext="{Binding Games}"/>
+   </StackPanel>
    <controls:ScorePanel x:Name="ScoreContent" x:Load="{x:Bind ShowScore}" DataContext="{Binding Score}"/>
 
    <StackPanel x:Name="SettingsContent" x:Load="{x:Bind ShowSettings}" Spacing="20">

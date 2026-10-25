@@ -2,7 +2,7 @@
 Implementation=2
 FontFace=Segoe UI
 FontHeight=-13
-FontWeight=700
+FontWeight=600
 ZoomRatio=2
 [Settings]
 Name=Lotus
@@ -11,445 +11,619 @@ LockUserSettings=1
 EmbeddedImage=
 PingAddr=
 [General]
-Sources=13
+Sources=15
 Tables=0
-Layers=37
+Layers=49
 [Source0]
 Name=CPU usage
 Units=%
-Format=%.0f
+Format=
 Formula=
 Provider=HAL
 ID=CPU usage
 [Source1]
 Name=CPU temperature
 Units=°C
-Format=%.0f
+Format=
 Formula=
 Provider=HAL
 ID=CPU temperature
 [Source2]
 Name=CPU clock
-Units= GHz
+Units=GHz
 Format=%.1f
-Formula=x / 1000
+Formula=x/1000
 Provider=HAL
 ID=CPU clock
 [Source3]
 Name=GPU1 usage
 Units=%
-Format=%.0f
+Format=
 Formula=
 Provider=HAL
 ID=GPU1 usage
 [Source4]
 Name=GPU1 temperature
 Units=°C
-Format=%.0f
+Format=
 Formula=
 Provider=HAL
 ID=GPU1 temperature
 [Source5]
 Name=GPU1 clock
-Units= MHz
-Format=%.0f
-Formula=
+Units=GHz
+Format=%.2f
+Formula=x/1000
 Provider=HAL
 ID=GPU1 clock
 [Source6]
 Name=GPU1 memory usage percent
 Units=%
-Format=%.0f
+Format=
 Formula=
 Provider=HAL
 ID=GPU1 memory usage percent
 [Source7]
 Name=GPU1 memory usage
-Units=
+Units=GB
 Format=%.1f
-Formula=x / 1024
+Formula=x/1024
 Provider=HAL
 ID=GPU1 memory usage
 [Source8]
 Name=GPU1 total memory
-Units= GB
+Units=GB
 Format=%.0f
-Formula=x / 1024
+Formula=x/1024
 Provider=HAL
 ID=GPU1 total memory
 [Source9]
 Name=RAM usage percent
 Units=%
-Format=%.0f
+Format=
 Formula=
 Provider=HAL
 ID=RAM usage percent
 [Source10]
 Name=RAM usage
-Units=
+Units=GB
 Format=%.1f
-Formula=x / 1024
+Formula=x/1024
 Provider=HAL
 ID=RAM usage
 [Source11]
 Name=Total RAM
-Units= GB
+Units=GB
 Format=%.0f
-Formula=x / 1024
+Formula=x/1024
 Provider=HAL
 ID=Total RAM
 [Source12]
-Name=Frametime ms
-Units= ms
-Format=%.1f
-Formula=
+Name=FPS avg
+Units=FPS
+Format=%.0f
+Formula=1000/swavg(Frametime,0)
 Provider=HAL
-ID=CPUFrametime
+ID=Stub
+[Source13]
+Name=FPS low1
+Units=FPS
+Format=%.0f
+Formula=1000/percentile(Frametime,99)
+Provider=HAL
+ID=Stub
+[Source14]
+Name=FPS low01
+Units=FPS
+Format=%.0f
+Formula=1000/percentile(Frametime,99.9)
+Provider=HAL
+ID=Stub
 [Layer0]
 Name=Card
-Text=<B=0,0,R12>
+Text=
 PositionX=0
 PositionY=0
-ExtentX=-26
-ExtentY=-21
+ExtentX=-32
+ExtentY=-17
 ExtentOrigin=0
 FixedAlignment=1
-TextColor=E612090F
+BgndColor=E60E0709
 [Layer1]
-Name=Card border
-Text=<B=0,0,R12>
+Name=Header band
+Text=
 PositionX=0
 PositionY=0
-ExtentX=-26
-ExtentY=-21
-ExtentOrigin=0
-FixedAlignment=1
-Size=4
-TextColor=60F27BA8
-[Layer2]
-Name=Brand
-Text=LOTUS · PLAY BETTER
-PositionX=-1
-PositionY=0
-ExtentX=-24
+ExtentX=-32
 ExtentY=-1
 ExtentOrigin=0
-Size=70
-TextColor=EEC1A8
+FixedAlignment=1
+BgndColor=60E8378A
+[Layer2]
+Name=Brand
+Text=LOTUS
+PositionX=-1
+PositionY=0
+ExtentX=-10
+ExtentY=-1
+ExtentOrigin=3
+FixedAlignment=1
+Size=100
+TextColor=F8F0F3
 [Layer3]
-Name=FPS label
+Name=Tagline
+Text=PLAY BETTER
+PositionX=-20
+PositionY=0
+ExtentX=-11
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+Size=75
+TextColor=EEC1A8
+[Layer4]
+Name=FPS caption
 Text=FPS
 PositionX=-1
 PositionY=-1
 ExtentX=-6
 ExtentY=-1
-ExtentOrigin=0
-Size=80
+ExtentOrigin=3
+FixedAlignment=1
+Size=75
 TextColor=F27BA8
-[Layer4]
+[Layer5]
 Name=FPS value
 Text=<FR>
 PositionX=-1
 PositionY=-2
-ExtentX=-11
+ExtentX=-13
 ExtentY=-3
-ExtentOrigin=0
+ExtentOrigin=3
+FixedAlignment=1
 Size=300
 TextColor=F8F0F3
-[Layer5]
-Name=Divider vertical
-Text=<B=0,0>
-PositionX=-13
-PositionY=-2
-ExtentX=-1
-ExtentY=-3
-ExtentOrigin=0
-Size=8
-TextColor=40F27BA8
 [Layer6]
-Name=AVG label
-Text=AVG
-PositionX=-14
-PositionY=-2
-ExtentX=-6
-ExtentY=-1
+Name=Stats panel
+Text=
+PositionX=-15
+PositionY=-1
+ExtentX=-16
+ExtentY=-4
 ExtentOrigin=0
-Size=80
-TextColor=B3A1AC
+FixedAlignment=1
+BgndColor=80281520
 [Layer7]
-Name=AVG value
-Text=<FRAVG>
-PositionX=-21
-PositionY=-2
-ExtentX=-4
+Name=AVG caption
+Text=AVG
+PositionX=-16
+PositionY=-1
+ExtentX=-8
 ExtentY=-1
-ExtentOrigin=0
-TextColor=F8F0F3
+ExtentOrigin=3
+FixedAlignment=1
+Size=75
+TextColor=A88E9C
 [Layer8]
-Name=1% low label
-Text=1% LOW
-PositionX=-14
-PositionY=-3
-ExtentX=-6
-ExtentY=-1
-ExtentOrigin=0
-Size=80
-TextColor=B3A1AC
-[Layer9]
-Name=1% low value
-Text=<FR10L>
-PositionX=-21
-PositionY=-3
-ExtentX=-4
-ExtentY=-1
-ExtentOrigin=0
-TextColor=F8F0F3
-[Layer10]
-Name=0.1% low label
-Text=0.1% LOW
-PositionX=-14
-PositionY=-4
-ExtentX=-6
-ExtentY=-1
-ExtentOrigin=0
-Size=80
-TextColor=B3A1AC
-[Layer11]
-Name=0.1% low value
-Text=<FR01L>
-PositionX=-21
-PositionY=-4
-ExtentX=-4
-ExtentY=-1
-ExtentOrigin=0
-TextColor=F8F0F3
-[Layer12]
-Name=Divider frametime
-Text=<B=0,0>
-PositionX=-1
-PositionY=-6
-ExtentX=-24
-ExtentY=-1
-ExtentOrigin=0
-Size=6
-TextColor=40F27BA8
-[Layer13]
-Name=Frametime label
-Text=FRAMETIME
-PositionX=-1
-PositionY=-7
-ExtentX=-12
-ExtentY=-1
-ExtentOrigin=0
-Size=80
-TextColor=F27BA8
-[Layer14]
-Name=Frametime value
-Text=<FT> ms
-PositionX=-18
-PositionY=-7
+Name=AVG value
+Text=%FPS avg%
+PositionX=-23
+PositionY=-1
 ExtentX=-7
 ExtentY=-1
-ExtentOrigin=0
+ExtentOrigin=5
+FixedAlignment=1
 TextColor=F8F0F3
-[Layer15]
-Name=Frametime graph
-Text=<G=Frametime,0,0,1,0,33,0>
+[Layer9]
+Name=1% LOW caption
+Text=1% LOW
+PositionX=-16
+PositionY=-2
+ExtentX=-8
+ExtentY=-1
+ExtentOrigin=3
+FixedAlignment=1
+Size=75
+TextColor=A88E9C
+[Layer10]
+Name=1% LOW value
+Text=%FPS low1%
+PositionX=-23
+PositionY=-2
+ExtentX=-7
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+TextColor=EEC1A8
+[Layer11]
+Name=0.1% LOW caption
+Text=0.1% LOW
+PositionX=-16
+PositionY=-3
+ExtentX=-8
+ExtentY=-1
+ExtentOrigin=3
+FixedAlignment=1
+Size=75
+TextColor=A88E9C
+[Layer12]
+Name=0.1% LOW value
+Text=%FPS low01%
+PositionX=-23
+PositionY=-3
+ExtentX=-7
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+TextColor=EEC1A8
+[Layer13]
+Name=Stats units
+Text=FPS
+PositionX=-23
+PositionY=-4
+ExtentX=-7
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+Size=50
+TextColor=A88E9C
+[Layer14]
+Name=Frametime caption
+Text=FRAMETIME
 PositionX=-1
-PositionY=-8
-ExtentX=-24
+PositionY=-5
+ExtentX=-10
+ExtentY=-1
+ExtentOrigin=3
+FixedAlignment=1
+Size=75
+TextColor=F27BA8
+[Layer15]
+Name=Frametime value
+Text=<FT> ms
+PositionX=-20
+PositionY=-5
+ExtentX=-11
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+TextColor=F8F0F3
+[Layer16]
+Name=Frametime panel
+Text=
+PositionX=-1
+PositionY=-6
+ExtentX=-30
 ExtentY=-3
 ExtentOrigin=0
-TextColor=F27BA8
-[Layer16]
-Name=Divider sensors
-Text=<B=0,0>
-PositionX=-1
-PositionY=-11
-ExtentX=-24
-ExtentY=-1
-ExtentOrigin=0
-Size=6
-TextColor=40F27BA8
+FixedAlignment=1
+BgndColor=80281520
 [Layer17]
+Name=Frametime graph
+Text=<G=Frametime,0,0,1,0,50,10>
+PositionX=-1
+PositionY=-6
+ExtentX=-30
+ExtentY=-3
+ExtentOrigin=0
+FixedAlignment=1
+TextColor=80F27BA8
+[Layer18]
+Name=Frametime line
+Text=<G=Frametime,0,0,1,0,50,0>
+PositionX=-1
+PositionY=-6
+ExtentX=-30
+ExtentY=-3
+ExtentOrigin=0
+FixedAlignment=1
+TextColor=C0E8378A
+[Layer19]
 Name=CPU label
 Text=CPU
 PositionX=-1
-PositionY=-12
-ExtentX=-4
-ExtentY=-1
-ExtentOrigin=0
-TextColor=F27BA8
-[Layer18]
-Name=CPU usage
-Text=<S=CPU usage>
-PositionX=-5
-PositionY=-12
+PositionY=-10
 ExtentX=-5
 ExtentY=-1
-ExtentOrigin=0
-TextColor=F8F0F3
-[Layer19]
-Name=CPU bar
-Text=<G=CPU usage,0,0,1,0,100,28>
-PositionX=-5
-PositionY=-13
-ExtentX=-9
-ExtentY=-1
-ExtentOrigin=0
-TextColor=E8378A
+ExtentOrigin=3
+FixedAlignment=1
+TextColor=F27BA8
 [Layer20]
-Name=CPU temp clock
-Text=<S=CPU temperature>  <S=CPU clock>
-PositionX=-15
-PositionY=-12
-ExtentX=-10
+Name=CPU usage
+Text=%CPU usage%
+PositionX=-6
+PositionY=-10
+ExtentX=-4
 ExtentY=-1
-ExtentOrigin=0
-TextColor=EEC1A8
+ExtentOrigin=5
+FixedAlignment=1
+TextColor=F8F0F3
 [Layer21]
-Name=GPU label
-Text=GPU
-PositionX=-1
-PositionY=-14
-ExtentX=-4
+Name=CPU usage units
+Text=" %"
+PositionX=-10
+PositionY=-10
+ExtentX=-2
 ExtentY=-1
-ExtentOrigin=0
-TextColor=F27BA8
+ExtentOrigin=3
+FixedAlignment=1
+Size=75
+TextColor=A88E9C
 [Layer22]
-Name=GPU usage
-Text=<S=GPU1 usage>
-PositionX=-5
-PositionY=-14
-ExtentX=-5
-ExtentY=-1
-ExtentOrigin=0
-TextColor=F8F0F3
-[Layer23]
-Name=GPU bar
-Text=<G=GPU1 usage,0,0,1,0,100,28>
-PositionX=-5
-PositionY=-15
-ExtentX=-9
-ExtentY=-1
-ExtentOrigin=0
-TextColor=E8378A
-[Layer24]
-Name=GPU temp clock
-Text=<S=GPU1 temperature>  <S=GPU1 clock>
-PositionX=-15
-PositionY=-14
-ExtentX=-10
-ExtentY=-1
-ExtentOrigin=0
-TextColor=EEC1A8
-[Layer25]
-Name=VRAM label
-Text=VRAM
-PositionX=-1
-PositionY=-16
-ExtentX=-4
-ExtentY=-1
-ExtentOrigin=0
-TextColor=F27BA8
-[Layer26]
-Name=VRAM usage
-Text=<S=GPU1 memory usage percent>
-PositionX=-5
-PositionY=-16
-ExtentX=-5
-ExtentY=-1
-ExtentOrigin=0
-TextColor=F8F0F3
-[Layer27]
-Name=VRAM bar
-Text=<G=GPU1 memory usage percent,0,0,1,0,100,28>
-PositionX=-5
-PositionY=-17
-ExtentX=-9
-ExtentY=-1
-ExtentOrigin=0
-TextColor=E8378A
-[Layer28]
-Name=VRAM amount
-Text=<S=GPU1 memory usage> / <S=GPU1 total memory>
-PositionX=-15
-PositionY=-16
-ExtentX=-10
-ExtentY=-1
-ExtentOrigin=0
-TextColor=EEC1A8
-[Layer29]
-Name=RAM label
-Text=RAM
-PositionX=-1
-PositionY=-18
-ExtentX=-4
-ExtentY=-1
-ExtentOrigin=0
-TextColor=F27BA8
-[Layer30]
-Name=RAM usage
-Text=<S=RAM usage percent>
-PositionX=-5
-PositionY=-18
-ExtentX=-5
-ExtentY=-1
-ExtentOrigin=0
-TextColor=F8F0F3
-[Layer31]
-Name=RAM bar
-Text=<G=RAM usage percent,0,0,1,0,100,28>
-PositionX=-5
-PositionY=-19
-ExtentX=-9
-ExtentY=-1
-ExtentOrigin=0
-TextColor=E8378A
-[Layer32]
-Name=RAM amount
-Text=<S=RAM usage> / <S=Total RAM>
-PositionX=-15
-PositionY=-18
-ExtentX=-10
-ExtentY=-1
-ExtentOrigin=0
-TextColor=EEC1A8
-[Layer33]
-Name=Divider footer
-Text=<B=0,0>
-PositionX=-1
-PositionY=-20
-ExtentX=-24
-ExtentY=-1
-ExtentOrigin=0
-Size=6
-TextColor=40F27BA8
-[Layer34]
-Name=API and resolution
-Text=<API> | <RES>
-PositionX=-1
-PositionY=-20
-ExtentX=-16
-ExtentY=-1
-ExtentOrigin=0
-Size=80
-TextColor=B3A1AC
-[Layer35]
-Name=Footer frametime
-Text=<S=Frametime ms>
-PositionX=-18
-PositionY=-20
+Name=CPU history bg
+Text=
+PositionX=-12
+PositionY=-10
 ExtentX=-7
 ExtentY=-1
 ExtentOrigin=0
-Size=80
+FixedAlignment=1
+BgndColor=80281520
+[Layer23]
+Name=CPU history
+Text=<G=CPU usage,0,0,1,0,100,10>
+PositionX=-12
+PositionY=-10
+ExtentX=-7
+ExtentY=-1
+ExtentOrigin=0
+FixedAlignment=1
+TextColor=C0E8378A
+[Layer24]
+Name=CPU temperature
+Text=%CPU temperature%°C
+PositionX=-19
+PositionY=-10
+ExtentX=-5
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+TextColor=EEC1A8,,80,FF5A5A,80,(CPU temperature,0)
+[Layer25]
+Name=CPU clock
+Text=%CPU clock% GHz
+PositionX=-24
+PositionY=-10
+ExtentX=-7
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+Size=75
+TextColor=A88E9C
+[Layer26]
+Name=GPU label
+Text=GPU
+PositionX=-1
+PositionY=-11
+ExtentX=-5
+ExtentY=-1
+ExtentOrigin=3
+FixedAlignment=1
+TextColor=F27BA8
+[Layer27]
+Name=GPU usage
+Text=%GPU1 usage%
+PositionX=-6
+PositionY=-11
+ExtentX=-4
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
 TextColor=F8F0F3
+[Layer28]
+Name=GPU usage units
+Text=" %"
+PositionX=-10
+PositionY=-11
+ExtentX=-2
+ExtentY=-1
+ExtentOrigin=3
+FixedAlignment=1
+Size=75
+TextColor=A88E9C
+[Layer29]
+Name=GPU history bg
+Text=
+PositionX=-12
+PositionY=-11
+ExtentX=-7
+ExtentY=-1
+ExtentOrigin=0
+FixedAlignment=1
+BgndColor=80281520
+[Layer30]
+Name=GPU history
+Text=<G=GPU1 usage,0,0,1,0,100,10>
+PositionX=-12
+PositionY=-11
+ExtentX=-7
+ExtentY=-1
+ExtentOrigin=0
+FixedAlignment=1
+TextColor=C0E8378A
+[Layer31]
+Name=GPU temperature
+Text=%GPU1 temperature%°C
+PositionX=-19
+PositionY=-11
+ExtentX=-5
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+TextColor=EEC1A8,,80,FF5A5A,80,(GPU1 temperature,0)
+[Layer32]
+Name=GPU clock
+Text=%GPU1 clock% GHz
+PositionX=-24
+PositionY=-11
+ExtentX=-7
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+Size=75
+TextColor=A88E9C
+[Layer33]
+Name=VRAM label
+Text=VRAM
+PositionX=-1
+PositionY=-12
+ExtentX=-5
+ExtentY=-1
+ExtentOrigin=3
+FixedAlignment=1
+TextColor=F27BA8
+[Layer34]
+Name=VRAM usage
+Text=%GPU1 memory usage percent%
+PositionX=-6
+PositionY=-12
+ExtentX=-4
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+TextColor=F8F0F3
+[Layer35]
+Name=VRAM usage units
+Text=" %"
+PositionX=-10
+PositionY=-12
+ExtentX=-2
+ExtentY=-1
+ExtentOrigin=3
+FixedAlignment=1
+Size=75
+TextColor=A88E9C
 [Layer36]
+Name=VRAM history bg
+Text=
+PositionX=-12
+PositionY=-12
+ExtentX=-7
+ExtentY=-1
+ExtentOrigin=0
+FixedAlignment=1
+BgndColor=80281520
+[Layer37]
+Name=VRAM history
+Text=<G=GPU1 memory usage percent,0,0,1,0,100,10>
+PositionX=-12
+PositionY=-12
+ExtentX=-7
+ExtentY=-1
+ExtentOrigin=0
+FixedAlignment=1
+TextColor=C0E8378A
+[Layer38]
+Name=VRAM amount
+Text=%GPU1 memory usage% / %GPU1 total memory% GB
+PositionX=-19
+PositionY=-12
+ExtentX=-12
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+Size=75
+TextColor=EEC1A8
+[Layer39]
+Name=RAM label
+Text=RAM
+PositionX=-1
+PositionY=-13
+ExtentX=-5
+ExtentY=-1
+ExtentOrigin=3
+FixedAlignment=1
+TextColor=F27BA8
+[Layer40]
+Name=RAM usage
+Text=%RAM usage percent%
+PositionX=-6
+PositionY=-13
+ExtentX=-4
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+TextColor=F8F0F3
+[Layer41]
+Name=RAM usage units
+Text=" %"
+PositionX=-10
+PositionY=-13
+ExtentX=-2
+ExtentY=-1
+ExtentOrigin=3
+FixedAlignment=1
+Size=75
+TextColor=A88E9C
+[Layer42]
+Name=RAM history bg
+Text=
+PositionX=-12
+PositionY=-13
+ExtentX=-7
+ExtentY=-1
+ExtentOrigin=0
+FixedAlignment=1
+BgndColor=80281520
+[Layer43]
+Name=RAM history
+Text=<G=RAM usage percent,0,0,1,0,100,10>
+PositionX=-12
+PositionY=-13
+ExtentX=-7
+ExtentY=-1
+ExtentOrigin=0
+FixedAlignment=1
+TextColor=C0E8378A
+[Layer44]
+Name=RAM amount
+Text=%RAM usage% / %Total RAM% GB
+PositionX=-19
+PositionY=-13
+ExtentX=-12
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+Size=75
+TextColor=EEC1A8
+[Layer45]
+Name=Footer line
+Text=
+PositionX=-1
+PositionY=-15
+ExtentX=-30
+ExtentY=-1
+ExtentOrigin=0
+FixedAlignment=1
+BgndColor=30F27BA8
+[Layer46]
+Name=API and resolution
+Text=<API>  |  <RES>
+PositionX=-1
+PositionY=-15
+ExtentX=-20
+ExtentY=-1
+ExtentOrigin=3
+FixedAlignment=1
+Size=75
+TextColor=A88E9C
+[Layer47]
+Name=Footer frametime
+Text=<FT> ms
+PositionX=-22
+PositionY=-15
+ExtentX=-9
+ExtentY=-1
+ExtentOrigin=5
+FixedAlignment=1
+Size=75
+TextColor=A88E9C
+[Layer48]
 Name=Cursor position placeholder
 Text=" \b"
 PositionX=0
-PositionY=-21
+PositionY=-17
 ExtentX=0
 ExtentY=0
 ExtentOrigin=0
+FixedAlignment=1

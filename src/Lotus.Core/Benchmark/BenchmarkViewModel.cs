@@ -7,6 +7,8 @@ using Lotus.Core.Telemetry;
 
 namespace Lotus.Core.Benchmark;
 
+public sealed record DurationOption(int Seconds, string Label);
+
 public sealed class BenchmarkViewModel : ObservableObject
 {
     private readonly IFrameCaptureProvider provider;
@@ -31,8 +33,13 @@ public sealed class BenchmarkViewModel : ObservableObject
     public bool CanEdit => !Busy;
     public bool Elevated { get => elevated; set => SetProperty(ref elevated, value); }
     public int Seconds { get => seconds; set => SetProperty(ref seconds, Math.Clamp(value, 10, 120)); }
+    // Simple duration choice for the page (the NumberBox range stays valid for saved settings).
+    public IReadOnlyList<DurationOption> Durations => [.. new[] { 30, 60, 90, 120 }.Select(s => new DurationOption(s, Text.Format("BenchDurationOption", s)))];
+    public DurationOption? SelectedDuration { get => Durations.FirstOrDefault(d => d.Seconds == seconds); set { if (value is not null) { Seconds = value.Seconds; OnPropertyChanged(); } } }
+    public bool HasTargets => Targets.Count > 0;
+    public string TargetHint => Busy ? "" : !HasTargets ? Text["BenchNoTargets"] : SelectedTarget is null ? Text["BenchPickTarget"] : "";
     public string Conditions { get => conditions; set => SetProperty(ref conditions, value); }
-    public CaptureTarget? SelectedTarget { get => selectedTarget; set { SetProperty(ref selectedTarget, value); StartCommand.NotifyCanExecuteChanged(); } }
+    public CaptureTarget? SelectedTarget { get => selectedTarget; set { SetProperty(ref selectedTarget, value); StartCommand.NotifyCanExecuteChanged(); OnPropertyChanged(nameof(TargetHint)); } }
     public BenchmarkSession? SelectedSession { get => selectedSession; set { SetProperty(ref selectedSession, value); Notify(); } }
     public BenchmarkSession? Baseline { get => baseline; set { SetProperty(ref baseline, value); Notify(); } }
     public string Status => Text[statusKey];
@@ -79,7 +86,8 @@ public sealed class BenchmarkViewModel : ObservableObject
         try
         {
             var list = await targets.ListAsync(); Targets.Clear(); foreach (var target in list) Targets.Add(target);
-            SelectedTarget = null;
+            // One open game: pick it so the user can measure right away.
+            SelectedTarget = Targets.Count == 1 ? Targets[0] : null;
             var sessions = await repository.ListAsync(); Sessions.Clear(); foreach (var session in sessions) Sessions.Add(session);
             if (SelectedSession is { } selected) SelectedSession = Sessions.FirstOrDefault(s => s.Id == selected.Id);
         }
@@ -114,7 +122,7 @@ public sealed class BenchmarkViewModel : ObservableObject
     public void RefreshLanguage() => Notify();
     private void Notify()
     {
-        foreach (var property in new[] { nameof(CanEdit), nameof(Status), nameof(HasResult), nameof(Average), nameof(Low1), nameof(P99), nameof(Details), nameof(Comparison) }) OnPropertyChanged(property);
+        foreach (var property in new[] { nameof(CanEdit), nameof(Status), nameof(HasResult), nameof(Average), nameof(Low1), nameof(P99), nameof(Details), nameof(Comparison), nameof(HasTargets), nameof(TargetHint) }) OnPropertyChanged(property);
         RefreshCommand?.NotifyCanExecuteChanged(); StartCommand?.NotifyCanExecuteChanged(); StopCommand?.NotifyCanExecuteChanged();
     }
 }

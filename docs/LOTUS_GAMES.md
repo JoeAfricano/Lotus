@@ -88,3 +88,12 @@ Primeira entrega da versão focada no jogador leigo (ver decisões de produto em
 
 - Corrigidos: erro de escrita nas configurações de jogo virava travamento (agora mostra mensagem); backup e restauração do RivaTuner/OverlayEditor agora byte a byte (ANSI com acentos preservado; `.ovl` exportado em ANSI); o auxiliar elevado recebe a pasta Lotus do usuário (`--lotus-data`), porque o UAC pode elevar outra conta; exportar overlay sem tratamento de erro; reativar item de inicialização caía em conflito permanente (agora ativa normalmente); corrida entre reescanear e remover jogo; bibliotecas Steam em compartilhamento de rede (UNC); textos do Score ao trocar idioma.
 - GPU do Score com lotes adaptativos (≥ 20 ms por sincronização) para não comprimir GPUs rápidas; fator recalibrado. 288 testes aprovados em Debug e Release.
+
+## Ajustes pedidos após o primeiro teste (25/10/2026)
+
+- **Overlay RivaTuner refeito** com a sintaxe real do OverlayEditor (conferida nos layouts que acompanham o RTSS e no manual): valores como `%Fonte%`; média, 1% e 0.1% low calculados ao vivo por fórmulas (`swavg`/`percentile` sobre os últimos 1024 frametimes), pois `<FRAVG>`/`<FR10L>` só funcionam no modo benchmark; posições em células; minigráfico de uso por linha. Gerado por `tools/Make-LotusOverlay.js`. Se o layout Lotus estiver ativo, o arquivo é atualizado ao abrir a tela.
+- **RivaTuner em Meus Jogos** (cartão reutilizado também em Integrações); overlay completo como opção principal e o simples dentro de "Alternativa".
+- **Pré-carregamento de shaders**: cartão com etapa, barra feitos/total, velocidade e tempo restante (lidos da linha de progresso do SCSKiller), Cancelar e "Ver no SCSKiller" (também no menu do jogo).
+- **LOTUS SCORE**: escolha dos testes (CPU 1 núcleo, CPU todos, GPU); prévia ao vivo da cena da CPU; teste da GPU numa janela própria (lotes medidos, apresentação ~50 Hz, sem limite do monitor; fechar cancela); pontuação total só com o conjunto completo; busca individual de CPU/GPU com pontos estimados e diferença para o seu PC; textos sobrepostos corrigidos. Recalibrado: 1 400 / 10 500 / 11 500 no PC de referência.
+- **Desempenho › Comparar** em 3 passos (jogo, duração, medir), com dica quando nenhum jogo está aberto e opções técnicas recolhidas.
+- 292 testes aprovados em Debug e Release. Validação visual destas telas fica com o usuário.

@@ -7,7 +7,7 @@ namespace Lotus.Core.Games;
 // Each card carries its own labels and commands, so item templates never depend on the parent DataContext.
 public sealed record GameCard(GameEntry Game, string Name, string Store, string Initials, string? CoverPath,
     string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove, string OptimizeLabel = "", string MeasureLabel = "",
-    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null);
+    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "");
 public sealed record StoreFilter(string Id, string Label);
 // Result of "Otimizar configurações": hardware, the recommendation as readable lines, and whether Lotus can apply it.
 public sealed record GameSettingsAnalysis(SettingsRecommendation Recommendation, IReadOnlyList<string> Lines, string Hardware, GameSettingsSupport? Support, bool HasOriginal, int? PendingStep = null);
@@ -156,7 +156,7 @@ public sealed class GamesViewModel : ObservableObject
         {
             var shader = ScsKillerOutput.Match(shaderStatuses, g);
             Games.Add(new(g, g.Name, g.Store, Initials(g.Name), g.CoverPath, Text["GamesPlay"], Text["GamesHide"], LaunchCommand, RemoveCommand, Text["GsMenu"], Text["GsMeasureMenu"],
-                shader is null ? null : Text["ScsState" + shader.State], shader?.State is ShaderState.Ready or ShaderState.Stale, Text["ScsPrecompile"], shader?.Id));
+                shader is null ? null : Text["ScsState" + shader.State], shader?.State is ShaderState.Ready or ShaderState.Stale, Text["ScsPrecompile"], shader?.Id, Text["ScsOpen"]));
         }
         OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(EmptyMessage));
     }
@@ -294,21 +294,56 @@ public sealed class GamesViewModel : ObservableObject
     public bool ShaderToolInstalled => shaders?.IsAvailable == true;
     public bool ShowShaderToolOffer => shaders is not null && !ShaderToolInstalled && loaded && all.Count > 0;
 
+    // Live job card: game, stage, bar (done/total) and time left from SCSKiller's own rate.
+    private CancellationTokenSource? shaderCts;
+    public bool ShaderJobActive { get; private set; }
+    public string ShaderJobTitle { get; private set; } = "";
+    public string ShaderJobDetail { get; private set; } = "";
+    public string ShaderJobEta { get; private set; } = "";
+    public double ShaderJobPercent { get; private set; }
+    public bool ShaderJobIndeterminate { get; private set; } = true;
+
     public async Task<bool> PrecompileAsync(GameCard card, CancellationToken token = default)
     {
-        if (shaders is not { IsAvailable: true } || card.ShaderId is not { } id) return false;
+        if (shaders is not { IsAvailable: true } || card.ShaderId is not { } id || ShaderJobActive) return false;
+        shaderCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+        var started = DateTime.UtcNow;
+        ShaderJobActive = true; ShaderJobTitle = Text.Format("ScsJobTitle", card.Name); ShaderJobDetail = Text["ScsStageWaiting"]; ShaderJobEta = ""; ShaderJobPercent = 0; ShaderJobIndeterminate = true;
+        status = ""; NotifyShaderJob();
         try
         {
-            status = Text.Format("ScsCompiling", card.Name); Notify();
-            var progress = new Progress<string>(line => { status = Text.Format("ScsProgress", card.Name, line.Length > 120 ? line[..120] + "…" : line); Notify(); });
-            var code = await shaders.CompileAsync(id, progress, token);
-            shaderStatuses = await shaders.StatusAsync(token);
+            var progress = new Progress<string>(line => OnShaderLine(line, started));
+            var code = await shaders.CompileAsync(id, progress, shaderCts.Token);
+            shaderStatuses = await shaders.StatusAsync(shaderCts.Token);
             ApplyFilter();
-            status = Text.Format(code == 0 ? "ScsDone" : "ScsFailed", card.Name); Notify();
+            status = Text.Format(code == 0 ? "ScsDone" : "ScsFailed", card.Name);
             return code == 0;
         }
-        catch (OperationCanceledException) { status = ""; Notify(); return false; }
-        catch (Exception ex) { log(ex); status = Text.Format("ScsFailed", card.Name); Notify(); return false; }
+        catch (OperationCanceledException) { status = Text.Format("ScsCancelled", card.Name); return false; }
+        catch (Exception ex) { log(ex); status = Text.Format("ScsFailed", card.Name); return false; }
+        finally { ShaderJobActive = false; shaderCts?.Dispose(); shaderCts = null; NotifyShaderJob(); Notify(); }
+    }
+    public void CancelPrecompile() => shaderCts?.Cancel();
+    public bool OpenShaderTool() { try { return shaders?.OpenApp() == true; } catch (Exception ex) { log(ex); return false; } }
+
+    private void OnShaderLine(string line, DateTime started)
+    {
+        if (ScsKillerOutput.ParseProgress(line) is not { } p) return; // other lines (messages) stay in SCSKiller's own log
+        var stage = p.Stage is "Waiting" or "Indexing" or "Planning" or "Materializing" or "Warming" or "Paused" or "Done" or "Failed" or "Stopped" ? Text["ScsStage" + p.Stage] : p.Stage;
+        ShaderJobIndeterminate = p.Fraction is null;
+        if (p.Fraction is { } f) ShaderJobPercent = f * 100;
+        ShaderJobDetail = p.Total > 0
+            ? Text.Format(p.Stage == "Indexing" ? "ScsJobPackages" : "ScsJobCount", stage, p.Done.ToString("N0", Culture), p.Total.ToString("N0", Culture), p.PerSecond.ToString("N0", Culture))
+            : stage;
+        ShaderJobEta = p.Remaining is { } left ? Text.Format("ScsJobEta", Duration(left), Duration(DateTime.UtcNow - started)) : "";
+        NotifyShaderJob();
+    }
+    private System.Globalization.CultureInfo Culture => System.Globalization.CultureInfo.GetCultureInfo(Text.Language);
+    private string Duration(TimeSpan t) => t.TotalHours >= 1 ? Text.Format("DurHours", (int)t.TotalHours, t.Minutes)
+        : t.TotalMinutes >= 1 ? Text.Format("DurMinutes", (int)t.TotalMinutes, t.Seconds) : Text.Format("DurSeconds", Math.Max(1, (int)t.TotalSeconds));
+    private void NotifyShaderJob()
+    {
+        foreach (var p in new[] { nameof(ShaderJobActive), nameof(ShaderJobTitle), nameof(ShaderJobDetail), nameof(ShaderJobEta), nameof(ShaderJobPercent), nameof(ShaderJobIndeterminate) }) OnPropertyChanged(p);
     }
 
     public void RefreshLanguage() { BuildStores(); ApplyFilter(); Notify(); }

@@ -1,29 +1,8 @@
-<UserControl x:Class="Lotus.App.Controls.IntegrationsPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<UserControl x:Class="Lotus.App.Controls.IntegrationsPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Lotus.App.Controls">
  <StackPanel Spacing="10">
   <TextBlock Text="{Binding Text[IntegrationsCategory]}" Style="{StaticResource SectionTitleStyle}"/>
   <TextBlock Text="{Binding Text[IntIntro]}" Style="{StaticResource CaptionStyle}" Margin="0,0,0,6"/>
-  <!-- RivaTuner -->
-  <Border Style="{StaticResource CardStyle}">
-   <StackPanel Spacing="10">
-    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-     <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE7F4;" Style="{StaticResource BadgeIconStyle}"/></Border>
-     <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="RivaTuner Statistics Server" FontWeight="SemiBold"/><TextBlock Text="{Binding RtssStatus}" Style="{StaticResource CaptionStyle}" AutomationProperties.AutomationId="int-rtss-status"/></StackPanel>
-    </Grid>
-    <TextBlock Text="{Binding Text[IntRtssWhat]}" Style="{StaticResource CaptionStyle}"/>
-    <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{Binding RtssInstalled, Converter={StaticResource BooleanVisibility}}">
-     <Button Content="{Binding Text[IntOverlayApply]}" Click="OnApplyOverlay" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="int-rtss-apply"/>
-     <Button Content="{Binding Text[GsRestore]}" Click="OnRestoreOverlay" Style="{StaticResource SoftButtonStyle}" Visibility="{Binding CanRestoreRtss, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="int-rtss-restore"/>
-    </StackPanel>
-    <Border Height="1" Background="{ThemeResource DividerBrush}" Margin="0,6"/>
-    <TextBlock Text="{Binding Text[IntLayoutWhat]}" Style="{StaticResource CaptionStyle}"/>
-    <TextBlock Text="{Binding LayoutStatus}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" AutomationProperties.AutomationId="int-layout-status"/>
-    <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{Binding RtssInstalled, Converter={StaticResource BooleanVisibility}}">
-     <Button Content="{Binding Text[IntLayoutApply]}" Click="OnActivateLayout" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="int-layout-apply"/>
-     <Button Content="{Binding Text[IntLayoutRestore]}" Click="OnRestoreLayout" Style="{StaticResource SoftButtonStyle}" Visibility="{Binding CanRestoreLayout, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="int-layout-restore"/>
-     <Button Content="{Binding Text[IntLayoutExport]}" Click="OnExportLayout" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="int-layout-export"/>
-    </StackPanel>
-   </StackPanel>
-  </Border>
+  <controls:RtssCard/>
   <!-- MSI Afterburner -->
   <Border Style="{StaticResource CardStyle}">
    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
@@ -39,7 +18,5 @@
     <HyperlinkButton Grid.Column="2" Content="{Binding Text[ScsOfferLink]}" Click="OnScsLink" VerticalAlignment="Center"/>
    </Grid>
   </Border>
-  <ProgressBar IsIndeterminate="True" Visibility="{Binding Busy, Converter={StaticResource BooleanVisibility}}"/>
-  <TextBlock Text="{Binding Message}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource GoldBrush}" AutomationProperties.LiveSetting="Polite" AutomationProperties.AutomationId="int-message"/>
  </StackPanel>
 </UserControl>

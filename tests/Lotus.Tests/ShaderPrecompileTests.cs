@@ -35,7 +35,8 @@ public sealed class ShaderPrecompileTests
         public List<string> Compiled = []; public string Current = Output;
         public bool IsAvailable => installed;
         public Task<IReadOnlyList<ShaderStatus>> StatusAsync(CancellationToken t) => Task.FromResult(ScsKillerOutput.ParseStatus(Current));
-        public Task<int> CompileAsync(string id, IProgress<string> p, CancellationToken t) { Compiled.Add(id); Current = Current.Replace("Ready               steam:1371980", "Compiled            steam:1371980"); return Task.FromResult(0); }
+        public int Opened; public bool OpenApp() { Opened++; return installed; }
+        public Task<int> CompileAsync(string id, IProgress<string> p, CancellationToken t) { Compiled.Add(id); p.Report("10:06:56 steam:1371980 Warming 625/25351 (0 failed) 412/s"); Current = Current.Replace("Ready               steam:1371980", "Compiled            steam:1371980"); return Task.FromResult(0); }
     }
     private sealed class Library : IGameLibrary
     {
@@ -67,5 +68,26 @@ public sealed class ShaderPrecompileTests
         Assert.True(vm.ShowShaderToolOffer); Assert.All(vm.Games, g => Assert.Null(g.ShaderLabel));
         Assert.False(await vm.PrecompileAsync(vm.Games[0])); Assert.Empty(tool.Compiled);
         Assert.Equal("https://github.com/BlueHeisenberg/SCSKiller/releases/latest", GamesViewModel.ScsKillerReleases);
+    }
+
+    [Fact] public void ParsesProgressLinesAndEstimatesTimeLeft()
+    {
+        var p = ScsKillerOutput.ParseProgress("10:06:56 steam:1593500 Warming 625/25351 (0 failed) 412/s, memory limit: 4 of 32 threads")!;
+        Assert.Equal(("steam:1593500", "Warming", 625, 25351, 412.0), (p.Id, p.Stage, p.Done, p.Total, p.PerSecond));
+        Assert.Equal(625.0 / 25351, p.Fraction!.Value, 6); Assert.Equal(60, p.Remaining!.Value.TotalSeconds, 0);
+        var idx = ScsKillerOutput.ParseProgress("10:07:01 steam:1593500 Indexing 3/12 packages")!;
+        Assert.Equal((3, 12, 0.0), (idx.Done, idx.Total, idx.PerSecond)); Assert.Null(idx.Remaining);
+        var wait = ScsKillerOutput.ParseProgress("10:06:50 steam:1593500 Waiting")!;
+        Assert.Null(wait.Fraction); Assert.Null(ScsKillerOutput.ParseProgress("nothing to compile"));
+    }
+
+    [Fact] public async Task OpenToolOnlyWhenInstalledAndJobEnds()
+    {
+        var tool = new FakeTool(true); var vm = Vm(tool);
+        await vm.EnsureLoadedAsync();
+        Assert.True(vm.OpenShaderTool()); Assert.Equal(1, tool.Opened);
+        Assert.True(await vm.PrecompileAsync(vm.Games.Single(g => g.Name == "No Rest for the Wicked")));
+        Assert.False(vm.ShaderJobActive);
+        Assert.False(Vm(new FakeTool(false)).OpenShaderTool());
     }
 }

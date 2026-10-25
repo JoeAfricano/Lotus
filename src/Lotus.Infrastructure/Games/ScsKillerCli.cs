@@ -10,6 +10,14 @@ public sealed class ScsKillerCli(string? cliPath = null) : IShaderPrecompiler
 {
     private string Path => cliPath ?? System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SCSKiller.App", "current", "cli", "scskiller.exe");
     public bool IsAvailable => File.Exists(Path);
+    private static string AppPath => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SCSKiller.App", "SCSKiller.exe");
+
+    public bool OpenApp()
+    {
+        if (!File.Exists(AppPath)) return false;
+        Process.Start(new ProcessStartInfo(AppPath) { UseShellExecute = true })?.Dispose();
+        return true;
+    }
 
     public async Task<IReadOnlyList<ShaderStatus>> StatusAsync(CancellationToken token)
     {

@@ -1,37 +1,74 @@
 <UserControl x:Class="Lotus.App.Controls.BenchmarkPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:Lotus.App.Controls">
  <StackPanel Spacing="16">
-  <Border Style="{StaticResource CardStyle}"><StackPanel Spacing="14">
+  <!-- Measure a match in three steps; technical options stay folded -->
+  <Border Style="{StaticResource CardStyle}" Padding="24"><StackPanel Spacing="18">
    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
     <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE9D2;" Style="{StaticResource BadgeIconStyle}"/></Border>
-    <StackPanel Grid.Column="1" Spacing="4"><TextBlock Text="{Binding Text[BenchTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[BenchIntro]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+    <StackPanel Grid.Column="1" Spacing="4"><TextBlock Text="{Binding Text[BenchTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[BenchIntro]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
    </Grid>
-   <Grid ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-    <ComboBox Header="{Binding Text[BenchProcess]}" ItemsSource="{Binding Targets}" SelectedItem="{Binding SelectedTarget, Mode=TwoWay}" DisplayMemberPath="Label" HorizontalAlignment="Stretch" IsEnabled="{Binding CanEdit}"/>
-    <Button Grid.Column="1" Command="{Binding RefreshCommand}" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Bottom" ToolTipService.ToolTip="{Binding Text[BenchRefresh]}" AutomationProperties.Name="{Binding Text[BenchRefresh]}"><FontIcon Glyph="&#xE72C;" FontSize="14"/></Button>
+   <!-- 1. Game -->
+   <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="32"/><ColumnDefinition/></Grid.ColumnDefinitions>
+    <Border Width="28" Height="28" CornerRadius="14" Background="{ThemeResource AccentSoftBrush}" VerticalAlignment="Top"><TextBlock Text="1" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+    <StackPanel Grid.Column="1" Spacing="8">
+     <TextBlock Text="{Binding Text[BenchStep1]}" FontWeight="SemiBold"/>
+     <Grid ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <ComboBox ItemsSource="{Binding Targets}" SelectedItem="{Binding SelectedTarget, Mode=TwoWay}" DisplayMemberPath="Label" PlaceholderText="{Binding Text[BenchPickTarget]}" HorizontalAlignment="Stretch" IsEnabled="{Binding CanEdit}" AutomationProperties.Name="{Binding Text[BenchStep1]}" AutomationProperties.AutomationId="bench-target"/>
+      <Button Grid.Column="1" Command="{Binding RefreshCommand}" Style="{StaticResource SoftButtonStyle}" AutomationProperties.Name="{Binding Text[BenchRefresh]}">
+       <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE72C;" FontSize="13"/><TextBlock Text="{Binding Text[BenchRefresh]}"/></StackPanel>
+      </Button>
+     </Grid>
+     <TextBlock Text="{Binding TargetHint}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" Visibility="{Binding TargetHint, Converter={StaticResource PresenceVisibility}}"/>
+    </StackPanel>
    </Grid>
-   <NumberBox Header="{Binding Text[BenchDuration]}" Value="{Binding Seconds, Mode=TwoWay}" Minimum="10" Maximum="120" SmallChange="10" SpinButtonPlacementMode="Inline" IsEnabled="{Binding CanEdit}" MaxWidth="240" HorizontalAlignment="Left"/>
-   <TextBox Header="{Binding Text[BenchConditions]}" Text="{Binding Conditions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="2000" TextWrapping="Wrap" AcceptsReturn="True" MinHeight="72" IsEnabled="{Binding CanEdit}"/>
-   <CheckBox Content="{Binding Text[BenchElevate]}" IsChecked="{Binding Elevated, Mode=TwoWay}" IsEnabled="{Binding CanEdit}"/>
-   <TextBlock Text="{Binding Text[BenchElevationNote]}" Style="{StaticResource CaptionStyle}"/>
-   <StackPanel Orientation="Horizontal" Spacing="10"><Button Content="{Binding Text[BenchStart]}" Command="{Binding StartCommand}" Style="{StaticResource PrimaryButtonStyle}"/><Button Content="{Binding Text[BenchStop]}" Command="{Binding StopCommand}" Style="{StaticResource SoftButtonStyle}"/></StackPanel>
-   <ProgressBar IsIndeterminate="True" Visibility="{Binding Busy, Converter={StaticResource BooleanVisibility}}"/>
-   <TextBlock Text="{Binding Status}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite"/>
+   <!-- 2. Duration -->
+   <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="32"/><ColumnDefinition/></Grid.ColumnDefinitions>
+    <Border Width="28" Height="28" CornerRadius="14" Background="{ThemeResource AccentSoftBrush}" VerticalAlignment="Top"><TextBlock Text="2" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+    <StackPanel Grid.Column="1" Spacing="8">
+     <TextBlock Text="{Binding Text[BenchStep2]}" FontWeight="SemiBold"/>
+     <ComboBox ItemsSource="{Binding Durations}" SelectedItem="{Binding SelectedDuration, Mode=TwoWay}" DisplayMemberPath="Label" MinWidth="200" IsEnabled="{Binding CanEdit}" AutomationProperties.Name="{Binding Text[BenchStep2]}" AutomationProperties.AutomationId="bench-duration"/>
+    </StackPanel>
+   </Grid>
+   <!-- 3. Measure -->
+   <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="32"/><ColumnDefinition/></Grid.ColumnDefinitions>
+    <Border Width="28" Height="28" CornerRadius="14" Background="{ThemeResource AccentSoftBrush}" VerticalAlignment="Top"><TextBlock Text="3" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+    <StackPanel Grid.Column="1" Spacing="10">
+     <TextBlock Text="{Binding Text[BenchStep3]}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+     <StackPanel Orientation="Horizontal" Spacing="10">
+      <Button Command="{Binding StartCommand}" Style="{StaticResource PrimaryButtonStyle}" MinHeight="40" AutomationProperties.AutomationId="bench-start">
+       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE768;" FontSize="13"/><TextBlock Text="{Binding Text[BenchStart]}"/></StackPanel>
+      </Button>
+      <Button Content="{Binding Text[BenchStop]}" Command="{Binding StopCommand}" Style="{StaticResource SoftButtonStyle}" MinHeight="40" Visibility="{Binding Busy, Converter={StaticResource BooleanVisibility}}"/>
+     </StackPanel>
+     <ProgressBar IsIndeterminate="True" Visibility="{Binding Busy, Converter={StaticResource BooleanVisibility}}"/>
+     <TextBlock Text="{Binding Status}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
+    </StackPanel>
+   </Grid>
+   <Expander Header="{Binding Text[BenchAdvanced]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+    <StackPanel Spacing="12">
+     <TextBox Header="{Binding Text[BenchConditions]}" Text="{Binding Conditions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="2000" TextWrapping="Wrap" AcceptsReturn="True" MinHeight="60" IsEnabled="{Binding CanEdit}"/>
+     <CheckBox Content="{Binding Text[BenchElevate]}" IsChecked="{Binding Elevated, Mode=TwoWay}" IsEnabled="{Binding CanEdit}"/>
+     <TextBlock Text="{Binding Text[BenchElevationNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+    </StackPanel>
+   </Expander>
   </StackPanel></Border>
-  <ComboBox Header="{Binding Text[BenchSession]}" ItemsSource="{Binding Sessions}" SelectedItem="{Binding SelectedSession, Mode=TwoWay}" DisplayMemberPath="Label" HorizontalAlignment="Stretch"/>
-  <Border Style="{StaticResource CardStyle}" Visibility="{Binding HasResult, Converter={StaticResource BooleanVisibility}}"><StackPanel Spacing="16">
+  <!-- Results: pick a saved measurement, then compare it with an earlier one -->
+  <Border Style="{StaticResource CardStyle}"><StackPanel Spacing="16">
    <TextBlock Text="{Binding Text[BenchResult]}" Style="{StaticResource SectionTitleStyle}"/>
-   <TextBlock Text="{Binding Text[BenchLossUnknown]}" Style="{StaticResource CaptionStyle}"/>
-   <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-    <Border Style="{StaticResource CompactCardStyle}" Background="{ThemeResource AccentSoftBrush}" BorderThickness="0"><StackPanel Spacing="4"><TextBlock Text="{Binding Text[BenchAverage]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Average}" Style="{StaticResource MetricValueStyle}" FontSize="26" TextWrapping="Wrap"/></StackPanel></Border>
-    <Border Grid.Column="1" Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="4"><TextBlock Text="1% LOW" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Low1}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
-    <Border Grid.Column="2" Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="4"><TextBlock Text="P99 · FRAMETIME" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding P99}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
-   </Grid>
-   <TextBlock Text="{Binding Text[BenchChart]}" Style="{StaticResource EyebrowStyle}"/>
-   <local:FrametimeChart x:Name="Chart" Height="160"/>
-   <ComboBox Header="{Binding Text[BenchBaseline]}" ItemsSource="{Binding Sessions}" SelectedItem="{Binding Baseline, Mode=TwoWay}" DisplayMemberPath="Label" HorizontalAlignment="Stretch"/>
-   <TextBlock Text="{Binding Comparison}" Style="{StaticResource BodyStyle}"/>
-   <TextBlock Text="{Binding Text[BenchComparisonCaution]}" Style="{StaticResource CaptionStyle}"/>
-   <Expander Header="{Binding Text[UxTechnicalDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><StackPanel Spacing="12"><TextBlock Text="{Binding Text[BenchMethod]}" Style="{StaticResource BodyStyle}"/><TextBlock Text="{Binding Details}" Style="{StaticResource CaptionStyle}" IsTextSelectionEnabled="True"/></StackPanel></Expander>
+   <ComboBox Header="{Binding Text[BenchPrevious]}" ItemsSource="{Binding Sessions}" SelectedItem="{Binding SelectedSession, Mode=TwoWay}" DisplayMemberPath="Label" PlaceholderText="{Binding Text[BenchNoSessions]}" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="bench-session"/>
+   <StackPanel Spacing="16" Visibility="{Binding HasResult, Converter={StaticResource BooleanVisibility}}">
+    <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+     <Border Style="{StaticResource CompactCardStyle}" Background="{ThemeResource AccentSoftBrush}" BorderThickness="0"><StackPanel Spacing="4"><TextBlock Text="{Binding Text[BenchAverage]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Average}" Style="{StaticResource MetricValueStyle}" FontSize="26" TextWrapping="Wrap"/></StackPanel></Border>
+     <Border Grid.Column="1" Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="4"><TextBlock Text="1% LOW" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Low1}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
+     <Border Grid.Column="2" Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="4"><TextBlock Text="P99 · FRAMETIME" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding P99}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
+    </Grid>
+    <TextBlock Text="{Binding Text[BenchChart]}" Style="{StaticResource EyebrowStyle}"/>
+    <local:FrametimeChart x:Name="Chart" Height="160"/>
+    <ComboBox Header="{Binding Text[BenchBaseline]}" ItemsSource="{Binding Sessions}" SelectedItem="{Binding Baseline, Mode=TwoWay}" DisplayMemberPath="Label" HorizontalAlignment="Stretch"/>
+    <TextBlock Text="{Binding Comparison}" Style="{StaticResource BodyStyle}" TextWrapping="Wrap"/>
+    <TextBlock Text="{Binding Text[BenchComparisonCaution]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+    <TextBlock Text="{Binding Text[BenchLossUnknown]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+    <Expander Header="{Binding Text[UxTechnicalDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><StackPanel Spacing="12"><TextBlock Text="{Binding Text[BenchMethod]}" Style="{StaticResource BodyStyle}" TextWrapping="Wrap"/><TextBlock Text="{Binding Details}" Style="{StaticResource CaptionStyle}" IsTextSelectionEnabled="True" TextWrapping="Wrap"/></StackPanel></Expander>
+   </StackPanel>
   </StackPanel></Border>
  </StackPanel>
 </UserControl>

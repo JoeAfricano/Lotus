@@ -11,9 +11,14 @@ namespace Lotus.Infrastructure.Score;
 
 // CPU test: a small deterministic ray tracer (spheres, shadows, reflections). Each thread renders whole
 // rows of the same scene; the result is rendered pixels per second / 100.
-public sealed class CpuRayBenchmark : ICpuBenchmark
+public sealed class CpuRayBenchmark : ICpuBenchmark, IFramePreview
 {
     private const int Width = 320, Height = 180;
+    private int version;
+    // Live picture for the page: each worker writes the pixels it renders (BGRA).
+    public uint[] Pixels { get; } = new uint[Width * Height];
+    int IFramePreview.Width => Width; int IFramePreview.Height => Height;
+    public int Version => Volatile.Read(ref version);
     private static readonly (Vector3 C, float R, Vector3 Color, float Mirror)[] Spheres =
     [
         (new(0, -1000, 0), 999f, new(0.75f, 0.7f, 0.72f), 0.1f),
@@ -34,8 +39,10 @@ public sealed class CpuRayBenchmark : ICpuBenchmark
             long local = 0; var sink = 0f;
             while (!Volatile.Read(ref stop))
             {
-                var row = (int)(Interlocked.Increment(ref nextRow) % Height);
-                for (var x = 0; x < Width; x++) sink += Pixel(x, row).X;
+                var index = Interlocked.Increment(ref nextRow);
+                int row = (int)(index % Height), frame = (int)(index / Height);
+                for (var x = 0; x < Width; x++) { var c = Pixel(x, row, frame); sink += c.X; Pixels[row * Width + x] = Pack(c); }
+                Interlocked.Increment(ref version);
                 local += Width;
             }
             Interlocked.Add(ref pixels, local + (sink < -1 ? 1 : 0));
@@ -48,13 +55,21 @@ public sealed class CpuRayBenchmark : ICpuBenchmark
         return pixels / sw.Elapsed.TotalSeconds / 100.0;
     }
 
-    public static Vector3 Pixel(int x, int y)
+    private static uint Pack(Vector3 c)
     {
+        static uint B(float v) => (uint)Math.Clamp(MathF.Sqrt(Math.Max(0, v)) * 255, 0, 255); // gamma 2
+        return 0xFF000000u | (B(c.X) << 16) | (B(c.Y) << 8) | B(c.Z);
+    }
+
+    // The camera sways slowly frame by frame so the preview moves; the work per frame stays about the same.
+    public static Vector3 Pixel(int x, int y, int frame = 0)
+    {
+        var eye = new Vector3(0.35f * MathF.Sin(frame * 0.2f), 0.3f, -1);
         var color = Vector3.Zero;
         for (var s = 0; s < 4; s++) // 2x2 supersampling
         {
             var u = (x + (s & 1) * 0.5f) / Width * 2 - 1; var v = 1 - (y + (s >> 1) * 0.5f) / Height * 2;
-            color += Trace(new(0, 0.3f, -1), Vector3.Normalize(new(u * 1.78f, v, 1.6f)), 0);
+            color += Trace(eye, Vector3.Normalize(new(u * 1.78f, v, 1.6f)), 0);
         }
         return color / 4;
     }
@@ -86,8 +101,9 @@ public sealed class CpuRayBenchmark : ICpuBenchmark
     }
 }
 
-// GPU test: renders a ray-marched scene off screen at 1920x1080 with Direct3D 11 on the high-performance
-// adapter. Nothing is shown and no setting changes; result = frames per second x 10.
+// GPU test: renders a ray-marched scene at 1920x1080 with Direct3D 11 on the high-performance adapter, in a visible
+// window (shown at 1280x720; closing it cancels). No setting changes; result = frames per second x 10.
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
 public sealed class D3D11GpuBenchmark : IGpuBenchmark
 {
     private const int Width = 1920, Height = 1080;
@@ -135,39 +151,131 @@ public sealed class D3D11GpuBenchmark : IGpuBenchmark
         return null;
     }
 
-    public double? Run(TimeSpan duration, CancellationToken ct)
+    public IReadOnlyList<double>? Run(int passes, TimeSpan each, Action<int> onPass, CancellationToken ct)
     {
         using var adapter = PickAdapter();
         if (adapter is null) return null;
-        D3D11.D3D11CreateDevice(adapter, DriverType.Unknown, DeviceCreationFlags.None, [FeatureLevel.Level_11_0], out ID3D11Device? device, out ID3D11DeviceContext? context).CheckError();
+        D3D11.D3D11CreateDevice(adapter, DriverType.Unknown, DeviceCreationFlags.BgraSupport, [FeatureLevel.Level_11_0], out ID3D11Device? device, out ID3D11DeviceContext? context).CheckError();
         using var dev = device!; using var ctx = context!;
-        using var target = dev.CreateTexture2D(new Texture2DDescription(Format.R8G8B8A8_UNorm, Width, Height, 1, 1, BindFlags.RenderTarget));
-        using var rtv = dev.CreateRenderTargetView(target);
         using var vs = dev.CreateVertexShader(Compiler.Compile(Shader, "VS", "lotus-score.hlsl", "vs_5_0").Span);
         using var ps = dev.CreatePixelShader(Compiler.Compile(Shader, "PS", "lotus-score.hlsl", "ps_5_0").Span);
         using var cb = dev.CreateBuffer(new BufferDescription(16, BindFlags.ConstantBuffer));
-        using var fence = dev.CreateQuery(new QueryDescription(QueryType.Event));
-        ctx.OMSetRenderTargets(rtv); ctx.RSSetViewport(0, 0, Width, Height);
-        ctx.IASetPrimitiveTopology(PrimitiveTopology.TriangleList);
-        ctx.VSSetShader(vs); ctx.PSSetShader(ps); ctx.PSSetConstantBuffer(0, cb);
-        // Batches grow until each lasts >= 20 ms, so the sync gap stays small even on very fast GPUs.
-        var frames = 0; var batch = 4; var sw = Stopwatch.StartNew();
-        while (sw.Elapsed < duration)
+        var hwnd = SceneWindow.Create("LOTUS SCORE · GPU", 1280, 720);
+        try
         {
-            ct.ThrowIfCancellationRequested();
-            var started = sw.Elapsed;
-            for (var i = 0; i < batch; i++, frames++)
+            using var factory = adapter.GetParent<IDXGIFactory2>();
+            var desc = new SwapChainDescription1(Width, Height, Format.B8G8R8A8_UNorm)
             {
-                ctx.UpdateSubresource(new Vector4(frames * 0.016f, 0, 0, 0), cb);
-                ctx.Draw(3, 0);
+                BufferCount = 1, SwapEffect = SwapEffect.Discard, // blt model: Present(0) is not tied to the monitor refresh in a window
+                BufferUsage = Usage.RenderTargetOutput, SampleDescription = new(1, 0),
+                Scaling = Scaling.Stretch, AlphaMode = AlphaMode.Ignore, Flags = SwapChainFlags.None
+            };
+            using var swap = factory.CreateSwapChainForHwnd(dev, hwnd, desc);
+            factory.MakeWindowAssociation(hwnd, WindowAssociationFlags.IgnoreAll);
+            using var back = swap.GetBuffer<ID3D11Texture2D>(0);
+            using var rtv = dev.CreateRenderTargetView(back);
+            ctx.IASetPrimitiveTopology(PrimitiveTopology.TriangleList);
+            ctx.VSSetShader(vs); ctx.PSSetShader(ps); ctx.PSSetConstantBuffer(0, cb);
+            using var fence = dev.CreateQuery(new QueryDescription(QueryType.Event));
+            // Windows syncs every windowed Present to the monitor, so frames are rendered in timed batches (>= 20 ms each)
+            // and only the last frame of each batch is shown. The count is GPU throughput, not the monitor's refresh rate.
+            var results = new List<double>(); var frames = 0; var batch = 4;
+            for (var pass = 0; pass <= passes; pass++)
+            {
+                onPass(pass);
+                var counted = 0; var sw = Stopwatch.StartNew(); var title = TimeSpan.Zero;
+                while (sw.Elapsed < each)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    if (!SceneWindow.Pump(hwnd)) throw new OperationCanceledException("Scene window closed."); // the user closed it
+                    var started = sw.Elapsed;
+                    ctx.OMSetRenderTargets(rtv); ctx.RSSetViewport(0, 0, Width, Height);
+                    for (var i = 0; i < batch; i++, counted++)
+                    {
+                        ctx.UpdateSubresource(new Vector4(frames++ * 0.016f, 0, 0, 0), cb);
+                        ctx.Draw(3, 0);
+                    }
+                    swap.Present(0, PresentFlags.None);
+                    ctx.End(fence); ctx.Flush();
+                    var spin = new SpinWait();
+                    while (!ctx.IsDataAvailable(fence)) spin.SpinOnce();
+                    if ((sw.Elapsed - started).TotalMilliseconds < 20 && batch < 4096) batch *= 2;
+                    if (sw.Elapsed - title > TimeSpan.FromMilliseconds(500))
+                    {
+                        title = sw.Elapsed;
+                        SceneWindow.SetTitle(hwnd, $"LOTUS SCORE · GPU · {(pass == 0 ? "warm-up" : $"{pass}/{passes}")} · {counted / sw.Elapsed.TotalSeconds:0} FPS");
+                    }
+                }
+                if (pass > 0) results.Add(counted / sw.Elapsed.TotalSeconds * 10);
             }
-            ctx.End(fence); ctx.Flush();
-            var spin = new SpinWait();
-            while (!ctx.IsDataAvailable(fence)) spin.SpinOnce(); // the GPU queue never runs ahead of the clock
-            if ((sw.Elapsed - started).TotalMilliseconds < 20 && batch < 4096) batch *= 2;
+            return results;
         }
-        return frames / sw.Elapsed.TotalSeconds * 10;
+        finally { SceneWindow.Destroy(hwnd); }
     }
+}
+
+// Minimal Win32 window owned by the benchmark thread (messages are pumped between frames).
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+internal static class SceneWindow
+{
+    private delegate IntPtr WndProc(IntPtr hwnd, uint msg, IntPtr w, IntPtr l);
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+    private struct WndClassEx
+    {
+        public uint cbSize, style; public IntPtr lpfnWndProc; public int cbClsExtra, cbWndExtra;
+        public IntPtr hInstance, hIcon, hCursor, hbrBackground; public string? lpszMenuName; public string lpszClassName; public IntPtr hIconSm;
+    }
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    private struct Msg { public IntPtr hwnd; public uint message; public IntPtr wParam, lParam; public uint time; public int x, y, priv; }
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    private struct Rect { public int left, top, right, bottom; }
+    private const string ClassName = "LotusScoreScene";
+    private const uint Style = 0x00CA0000 | 0x10000000; // caption + system menu + minimize, visible
+    private static readonly WndProc Proc = (h, m, w, l) => DefWindowProcW(h, m, w, l); // kept alive for the process lifetime
+    private static bool registered;
+    private static readonly object Gate = new();
+
+    [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)] private static extern ushort RegisterClassExW(ref WndClassEx c);
+    [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)] private static extern IntPtr CreateWindowExW(int ex, string cls, string title, uint style, int x, int y, int w, int h, IntPtr parent, IntPtr menu, IntPtr inst, IntPtr param);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern IntPtr DefWindowProcW(IntPtr h, uint m, IntPtr w, IntPtr l);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool PeekMessageW(out Msg m, IntPtr h, uint min, uint max, uint remove);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool TranslateMessage(ref Msg m);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern IntPtr DispatchMessageW(ref Msg m);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool DestroyWindow(IntPtr h);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool IsWindow(IntPtr h);
+    [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)] private static extern bool SetWindowTextW(IntPtr h, string text);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool AdjustWindowRect(ref Rect r, uint style, bool menu);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern IntPtr LoadCursorW(IntPtr inst, IntPtr id);
+    [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)] private static extern IntPtr GetModuleHandleW(string? name);
+
+    public static IntPtr Create(string title, int width, int height)
+    {
+        var inst = GetModuleHandleW(null);
+        lock (Gate)
+        {
+            if (!registered)
+            {
+                var wc = new WndClassEx
+                {
+                    cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf<WndClassEx>(), lpfnWndProc = System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(Proc),
+                    hInstance = inst, hCursor = LoadCursorW(IntPtr.Zero, 32512), lpszClassName = ClassName
+                };
+                if (RegisterClassExW(ref wc) == 0) throw new InvalidOperationException("Could not register the scene window.");
+                registered = true;
+            }
+        }
+        var r = new Rect { right = width, bottom = height }; AdjustWindowRect(ref r, Style, false);
+        var hwnd = CreateWindowExW(0, ClassName, title, Style, unchecked((int)0x80000000), unchecked((int)0x80000000), r.right - r.left, r.bottom - r.top, IntPtr.Zero, IntPtr.Zero, inst, IntPtr.Zero);
+        return hwnd != IntPtr.Zero ? hwnd : throw new InvalidOperationException("Could not create the scene window.");
+    }
+    // false once the user closed the window.
+    public static bool Pump(IntPtr hwnd)
+    {
+        while (PeekMessageW(out var m, IntPtr.Zero, 0, 0, 1)) { TranslateMessage(ref m); DispatchMessageW(ref m); }
+        return IsWindow(hwnd);
+    }
+    public static void SetTitle(IntPtr hwnd, string text) => SetWindowTextW(hwnd, text);
+    public static void Destroy(IntPtr hwnd) { if (IsWindow(hwnd)) DestroyWindow(hwnd); Pump(hwnd); }
 }
 
 public sealed class JsonScoreHistory(string path) : IScoreHistory

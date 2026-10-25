@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Lotus.Tests;
 
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
 public sealed class ScoreTests
 {
     private sealed class FakeCpu(Func<int, double> value) : ICpuBenchmark
@@ -15,7 +16,13 @@ public sealed class ScoreTests
     private sealed class FakeGpu(double? fps) : IGpuBenchmark
     {
         public string? Adapter() => fps is null ? null : "Test GPU";
-        public double? Run(TimeSpan duration, CancellationToken ct) => fps;
+        public int Runs;
+        public IReadOnlyList<double>? Run(int passes, TimeSpan each, Action<int> onPass, CancellationToken ct)
+        {
+            Runs++; if (fps is null) return null;
+            for (var i = 0; i <= passes; i++) onPass(i);
+            return Enumerable.Repeat(fps.Value, passes).ToList();
+        }
     }
     private sealed class MemoryHistory : IScoreHistory
     {
@@ -36,8 +43,8 @@ public sealed class ScoreTests
 
     [Fact] public async Task RunMeasuresWarmupPlusThreePassesSavesHistoryAndCompares()
     {
-        var cpu = new FakeCpu(t => t == 1 ? 23330 : 198600); var history = new MemoryHistory();
-        var vm = new LotusScoreViewModel(cpu, new FakeGpu(10160), history, new Machine(), new TextCatalog(), ex => throw ex);
+        var cpu = new FakeCpu(t => t == 1 ? 23450 : 194700); var history = new MemoryHistory();
+        var vm = new LotusScoreViewModel(cpu, new FakeGpu(10380), history, new Machine(), new TextCatalog(), ex => throw ex);
         vm.Refresh(); Assert.True(vm.NoHistory); Assert.Equal("—", vm.Total);
         await vm.ToggleAsync();
         Assert.Equal(8, cpu.Calls); // 2 tests x (1 warm-up + 3)
@@ -58,6 +65,35 @@ public sealed class ScoreTests
         var running = slow.ToggleAsync(); await Task.Delay(50); await slow.ToggleAsync(); await running;
         Assert.Equal(new TextCatalog()["ScoreCancelled"], slow.Phase); Assert.Single(history.Runs);
     }
+    [Fact] public async Task ChosenSubsetRunsOnlyThoseTestsAndHasNoTotal()
+    {
+        var cpu = new FakeCpu(_ => 23450); var gpu = new FakeGpu(10380); var history = new MemoryHistory();
+        var vm = new LotusScoreViewModel(cpu, gpu, history, new Machine(), new TextCatalog(), ex => throw ex) { RunCpuAll = false, RunGpu = false };
+        Assert.True(vm.CanStart);
+        await vm.ToggleAsync();
+        Assert.Equal(4, cpu.Calls); Assert.Equal(0, gpu.Runs);
+        var run = Assert.Single(history.Runs);
+        Assert.Equal(1400, run.Cpu1); Assert.Null(run.CpuAll); Assert.Null(run.Total);
+        Assert.Equal("—", vm.Total); Assert.Equal(new TextCatalog()["ScorePartial"], vm.Verdict); Assert.DoesNotContain(vm.Compare, r => r.IsYou);
+        vm.RunCpu1 = false; Assert.False(vm.CanStart);
+    }
+
+    [Fact] public void PartsAreFoundByWindowsNameAndSearchedIndividually()
+    {
+        Assert.Equal("AMD Ryzen 5 5500", ScoreParts.Find("AMD Ryzen 5 5500", PartKind.Cpu)?.Name);
+        Assert.Equal("NVIDIA GeForce RTX 5060 Ti", ScoreParts.Find("NVIDIA GeForce RTX 5060 Ti", PartKind.Gpu)?.Name);
+        Assert.Equal("NVIDIA GeForce RTX 5060", ScoreParts.Find("NVIDIA GeForce RTX 5060", PartKind.Gpu)?.Name);
+        Assert.Null(ScoreParts.Find("Unknown GPU", PartKind.Gpu));
+        var vm = new LotusScoreViewModel(new FakeCpu(_ => 1), new FakeGpu(1), new MemoryHistory(), new RealNames(), new TextCatalog(), ex => throw ex);
+        vm.Refresh(); Assert.Empty(vm.PartResults); Assert.Equal(new TextCatalog()["ScorePartHint"], vm.PartHint);
+        vm.PartQuery = "rtx 5060";
+        Assert.Equal(["NVIDIA GeForce RTX 5060", "NVIDIA GeForce RTX 5060 Ti"], vm.PartResults.Select(r => r.Name));
+        Assert.True(vm.PartResults[0].IsYours); Assert.Contains("30", vm.PartResults[1].VsYou); // 15 000 vs 11 500 ≈ +30%
+        vm.PartQuery = "ryzen 7 7800x3d"; Assert.Equal("CPU", Assert.Single(vm.PartResults).Kind);
+        vm.PartQuery = "xyz"; Assert.Empty(vm.PartResults); Assert.Equal(new TextCatalog()["ScorePartNone"], vm.PartHint);
+    }
+    private sealed class RealNames : IScoreMachine { public string Cpu() => "AMD Ryzen 5 5500"; public string Gpu() => "NVIDIA GeForce RTX 5060"; }
+
     private sealed class SlowCpu : ICpuBenchmark
     {
         public double Run(int threads, TimeSpan duration, CancellationToken ct) { Task.Delay(5000, ct).Wait(ct); return 1; }
@@ -72,11 +108,13 @@ public sealed class ScoreTests
         Assert.ThrowsAny<OperationCanceledException>(() => cpu.Run(1, TimeSpan.FromSeconds(10), cts.Token));
     }
 
-    [Fact] public void RealGpuBenchmarkRunsOffscreenWhenAHardwareGpuExists()
+    [Fact] public void RealGpuBenchmarkRunsInItsSceneWindowWhenAHardwareGpuExists()
     {
         var gpu = new D3D11GpuBenchmark();
         if (gpu.Adapter() is null) return;
-        Assert.True(gpu.Run(TimeSpan.FromMilliseconds(300), default) > 0);
+        var passes = new List<int>();
+        var result = gpu.Run(1, TimeSpan.FromMilliseconds(200), passes.Add, default);
+        Assert.Equal([0, 1], passes); Assert.True(Assert.Single(result!) > 0);
     }
 
     [Fact] public void HistoryFileRoundTripsAndToleratesCorruption()
