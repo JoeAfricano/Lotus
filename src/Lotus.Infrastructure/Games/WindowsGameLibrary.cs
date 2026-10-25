@@ -64,9 +64,12 @@ public sealed class WindowsGameLibrary(string? steamPath = null, string? epicMan
         var folder = Path.Combine(cache, appId);
         if (Directory.Exists(folder))
         {
-            var found = Directory.EnumerateFiles(folder, "library_600x900*.jpg", SearchOption.AllDirectories).FirstOrDefault()
-                ?? Directory.EnumerateFiles(folder, "header*.jpg", SearchOption.AllDirectories).FirstOrDefault();
-            if (found is not null) return found;
+            // Portrait art first (old "library_600x900", newer "library_capsule"), then header and hero as fallbacks.
+            foreach (var pattern in new[] { "library_600x900*.jpg", "library_capsule*.jpg", "library_header*.jpg", "header*.jpg", "library_hero.jpg" })
+            {
+                var found = Directory.EnumerateFiles(folder, pattern, SearchOption.AllDirectories).FirstOrDefault();
+                if (found is not null) return found;
+            }
         }
         var header = Path.Combine(cache, appId + "_header.jpg");
         return File.Exists(header) ? header : null;

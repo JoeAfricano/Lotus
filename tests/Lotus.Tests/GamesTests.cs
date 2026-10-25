@@ -80,6 +80,17 @@ public sealed class GamesTests(ITestOutputHelper output) : IDisposable
         Assert.Contains(scan.Games, g => g.Name == "Meu Jogo"); Assert.DoesNotContain(scan.Games, g => g.Name == "Removido");
     }
 
+    [Fact] public void SteamCoverSupportsNewCapsuleNames()
+    {
+        var steam = Dir("SteamCovers");
+        FileAt("x", "SteamCovers", "appcache", "librarycache", "1371980", "724aaa", "library_capsule.jpg");
+        FileAt("x", "SteamCovers", "appcache", "librarycache", "1371980", "69044d", "library_header.jpg");
+        Assert.EndsWith("library_capsule.jpg", WindowsGameLibrary.SteamCover(steam, "1371980"));
+        FileAt("x", "SteamCovers", "appcache", "librarycache", "42", "abc", "library_header.jpg");
+        Assert.EndsWith("library_header.jpg", WindowsGameLibrary.SteamCover(steam, "42"));
+        Assert.Null(WindowsGameLibrary.SteamCover(steam, "999"));
+    }
+
     [Theory]
     [InlineData("steam://rungameid/730", true)]
     [InlineData("com.epicgames.launcher://apps/x?action=launch", true)]
