@@ -18,3 +18,14 @@ Validação: builds Debug/x64 e Release/x64 sem avisos/erros; 161 testes aprovad
 - **Correção:** o painel de perfis voltou a carregar planos e histórico ao abrir (chamada `RefreshAsync` perdida na reescrita do code-behind), detectada pela validação por UI Automation.
 - **Validação interativa (UIA, sem aplicar):** seleção Jogo/Diário/Personalizado, salvar, analisar ("Diferença encontrada"), Aplicar bloqueado sem confirmação, inicialização (17 entradas), recursos (1 item a ajustar). Plano ativo QuickCpuScheme idêntico antes e depois.
 - Testes: 173 aprovados em Debug e Release (12 novos de recursos/regras/leitura real).
+
+## Teste real autorizado — plano de energia (24/10/2026)
+
+Autorização específica do usuário para mudança temporária com restauração condicional. Executado pelo build Release via UI Automation, conferindo `powercfg /getactivescheme` a cada passo:
+
+1. Antes: QuickCpuScheme `74a73e13-bafc-4f87-a926-4cc004e707c3`; Alto desempenho disponível.
+2. Perfil Jogo → Analisar ("Diferença encontrada") → Confirmar → Aplicar: "Plano ativo verificado. Isso não comprova ganho de desempenho." Ativo: Alto desempenho `8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c`.
+3. Confirmar → Desfazer: "Plano anterior restaurado e verificado." Ativo: QuickCpuScheme.
+4. Rede de segurança (restauração por powercfg) não foi necessária. Sem elevação (`asInvoker`), sem reinício.
+
+Critério de conclusão da Etapa 06 atendido: Selecionar perfil → Analisar → Confirmar → Aplicar → Verificar → Desfazer funcionando com uma ação real. Limitações mantidas: sem compare-and-set atômico do Windows; mudança externa entre leituras não é impedida; nenhum ganho de desempenho foi medido. Pendentes para incrementos: desativação seletiva da inicialização e perfis personalizados nomeados.
