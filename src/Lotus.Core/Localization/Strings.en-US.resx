@@ -1150,4 +1150,21 @@ Current conditions: {1}</value></data>
   <data name="UninBatchDone" xml:space="preserve"><value>{0} of {1} program(s) removed.</value></data>
   <data name="UninBatchLeftovers" xml:space="preserve"><value>{0} folder(s) were left; check below.</value></data>
   <data name="UninBatchDoneShort" xml:space="preserve"><value>Done: {0} program(s) removed.</value></data>
+  <data name="ToolNetTileHint" xml:space="preserve"><value>Test your ping and find the fastest DNS for you.</value></data>
+  <data name="SetStartWithWindows" xml:space="preserve"><value>Start with Windows</value></data>
+  <data name="SetStartWithWindowsHint" xml:space="preserve"><value>Lotus opens minimized next to the clock when you turn on the PC.</value></data>
+  <data name="SetCloseToTray" xml:space="preserve"><value>Keep running when closed</value></data>
+  <data name="SetCloseToTrayHint" xml:space="preserve"><value>Lotus stays as an icon next to the clock and the **Ctrl + Shift + L** shortcut keeps working in games. To quit for good, right-click the icon and choose Exit.</value></data>
+  <data name="SetUiSounds" xml:space="preserve"><value>Interface sounds</value></data>
+  <data name="SetUiSoundsHint" xml:space="preserve"><value>Short, soft sounds when tasks finish and while navigating.</value></data>
+  <data name="TrayOpen" xml:space="preserve"><value>Open Lotus</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>Exit</value></data>
+  <data name="TrayTitle" xml:space="preserve"><value>Lotus is still here</value></data>
+  <data name="TrayBody" xml:space="preserve"><value>It stays next to the clock. In a game, press Ctrl + Shift + L to analyze stutter.</value></data>
+  <data name="TrayReportTitle" xml:space="preserve"><value>Game analysis ready</value></data>
+  <data name="OsdNoGame" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  No game from your library is open</value></data>
+  <data name="OsdStarting" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Analysis starts in {0}... keep playing</value></data>
+  <data name="OsdCounting" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Analyzing  &lt;C=EEC1A8>{0} s&lt;C&gt;</value></data>
+  <data name="OsdResult" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  {0}  ·  details in Lotus</value></data>
+  <data name="OsdFailed" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Couldn't measure right now</value></data>
 </root>

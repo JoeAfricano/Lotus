@@ -161,6 +161,8 @@ public sealed class GamesViewModel : ObservableObject
     }
     public ObservableCollection<GameCard> Featured { get; } = [];
     public bool HasFeatured => Featured.Count > 0;
+    // The library game that is running now (used by the in-game hotkey), or null.
+    public GameEntry? RunningGame() => processCheck is null ? null : all.Where(g => !hidden.Contains(g.Key)).FirstOrDefault(g => processCheck.IsRunning(g));
     private GameCard Card(GameEntry g)
     {
         var shader = ScsKillerOutput.Match(shaderStatuses, g);

@@ -159,5 +159,7 @@ public partial class App : Application
         };
         Log.Information("Application started {Version}", "0.1.0");
         window.Activate();
+        // Started with Windows: go straight to the tray (the hotkey and background features keep working).
+        if (Environment.GetCommandLineArgs().Contains(Lotus.Infrastructure.Setup.WindowsStartup.MinimizedArgument)) (window as MainWindow)?.HideToTray(firstTime: false);
     }
 }

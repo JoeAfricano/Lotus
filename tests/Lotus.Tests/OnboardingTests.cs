@@ -91,3 +91,12 @@ public sealed class OnboardingTests : IDisposable
         Assert.Null(new LocalProfileSource(Path.Combine(root, "none")).ReadSteam());
     }
 }
+
+public sealed class BackgroundPreferencesTests
+{
+    [Fact] public void DefaultsKeepLotusInTheTrayWithSoundsAndNoAutostart()
+    {
+        var p = new Lotus.Core.InterfacePreferences();
+        Assert.True(p.CloseToTray); Assert.True(p.UiSounds); Assert.False(p.StartWithWindows);
+    }
+}

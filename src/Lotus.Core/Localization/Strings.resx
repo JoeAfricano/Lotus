@@ -1150,4 +1150,21 @@ Condições atuais: {1}</value></data>
   <data name="UninBatchDone" xml:space="preserve"><value>{0} de {1} programa(s) removidos.</value></data>
   <data name="UninBatchLeftovers" xml:space="preserve"><value>Sobraram {0} pasta(s); confira abaixo.</value></data>
   <data name="UninBatchDoneShort" xml:space="preserve"><value>Concluído: {0} programa(s) removidos.</value></data>
+  <data name="ToolNetTileHint" xml:space="preserve"><value>Teste o ping e descubra o DNS mais rápido para você.</value></data>
+  <data name="SetStartWithWindows" xml:space="preserve"><value>Iniciar com o Windows</value></data>
+  <data name="SetStartWithWindowsHint" xml:space="preserve"><value>O Lotus abre minimizado perto do relógio quando você liga o PC.</value></data>
+  <data name="SetCloseToTray" xml:space="preserve"><value>Ao fechar, deixar em segundo plano</value></data>
+  <data name="SetCloseToTrayHint" xml:space="preserve"><value>O Lotus fica no ícone perto do relógio e o atalho **Ctrl + Shift + L** continua funcionando nos jogos. Para sair de vez, clique com o botão direito no ícone e escolha Sair.</value></data>
+  <data name="SetUiSounds" xml:space="preserve"><value>Sons da interface</value></data>
+  <data name="SetUiSoundsHint" xml:space="preserve"><value>Sons curtos e suaves ao concluir tarefas e navegar.</value></data>
+  <data name="TrayOpen" xml:space="preserve"><value>Abrir o Lotus</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>Sair</value></data>
+  <data name="TrayTitle" xml:space="preserve"><value>O Lotus continua aqui</value></data>
+  <data name="TrayBody" xml:space="preserve"><value>Ele fica perto do relógio. No jogo, aperte Ctrl + Shift + L para analisar travadas.</value></data>
+  <data name="TrayReportTitle" xml:space="preserve"><value>Análise do jogo pronta</value></data>
+  <data name="OsdNoGame" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Nenhum jogo da sua biblioteca aberto</value></data>
+  <data name="OsdStarting" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Análise começa em {0}... continue jogando</value></data>
+  <data name="OsdCounting" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Analisando  &lt;C=EEC1A8>{0} s&lt;C&gt;</value></data>
+  <data name="OsdResult" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  {0}  ·  detalhes no Lotus</value></data>
+  <data name="OsdFailed" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Não foi possível medir agora</value></data>
 </root>

@@ -62,6 +62,7 @@ public sealed partial class MainWindow : Window
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
         games.Goal = () => preferences.Current.Goal;
         _ = games.EnsureLoadedAsync(); // Home shows game shortcuts right away
+        SetUpBackground();
         try { experience.QuickFacts = Lotus.Infrastructure.Tools.QuickHardwareFacts.Read(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Quick hardware facts"); }
         games.SessionEnded += OnGameSessionEnded;
         InitializeComponent();
@@ -163,6 +164,7 @@ public sealed partial class MainWindow : Window
         palette.Apply(preferences.Current.Theme);
         palette.ApplyAccent(preferences.Current.Accent);
         Motion.Enabled = !preferences.Current.ReduceMotion;
+        ApplyStartup();
         UpdateAmbientState();
         UpdateBrandMotion();
         if (text.Language == preferences.Current.Language) return;
@@ -323,6 +325,95 @@ public sealed partial class MainWindow : Window
     // LOTUS SCORE stands out in the menu: bold, gold, always upper case.
     private static object NavLabel(Section section) => section.Id != "lotusscore" ? section.Title
         : new TextBlock { Text = section.Title.ToUpperInvariant(), FontWeight = Microsoft.UI.Text.FontWeights.Bold, Foreground = (Brush)Application.Current.Resources["GoldGradientBrush"], CharacterSpacing = 40 };
+
+    // ---- Background mode: tray icon, close-to-tray, start with Windows, in-game hotkey ----
+    private TrayIcon? tray;
+    private bool exiting, toldAboutTray;
+    private readonly Lotus.Infrastructure.Games.RtssOsd osd = new();
+    private Lotus.Core.Games.GamesViewModel.StutterReport? pendingReport;
+    private Lotus.Core.Games.GameEntry? pendingGame;
+    private bool analysing;
+
+    private void SetUpBackground()
+    {
+        tray = new TrayIcon("Lotus", text["TrayOpen"], text["TrayExit"]);
+        tray.Open += (_, _) => DispatcherQueue.TryEnqueue(ShowFromTray);
+        tray.Exit += (_, _) => DispatcherQueue.TryEnqueue(() => { exiting = true; Close(); });
+        tray.Hotkey += (_, _) => DispatcherQueue.TryEnqueue(() => _ = AnalyseRunningGameAsync());
+        tray.Show();
+        AppWindow.Closing += (_, args) =>
+        {
+            if (exiting || !preferences.Current.CloseToTray) return;
+            args.Cancel = true; HideToTray(firstTime: !toldAboutTray);
+        };
+        Closed += (_, _) => { tray?.Dispose(); osd.Clear(); };
+        ApplyStartup();
+    }
+    public void HideToTray(bool firstTime)
+    {
+        AppWindow.Hide();
+        if (firstTime) { toldAboutTray = true; tray?.Notify(text["TrayTitle"], text["TrayBody"]); }
+    }
+    private void ShowFromTray()
+    {
+        AppWindow.Show(); Activate();
+        if (pendingReport is { } r && pendingGame is { } g) { pendingReport = null; _ = ShowReportAsync(g, r); }
+    }
+    private void ApplyStartup()
+    {
+        try
+        {
+            if (Environment.ProcessPath is { } exe && Lotus.Infrastructure.Setup.WindowsStartup.IsEnabled() != preferences.Current.StartWithWindows)
+                Lotus.Infrastructure.Setup.WindowsStartup.Set(preferences.Current.StartWithWindows, exe);
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Start with Windows"); }
+    }
+
+    // Ctrl+Shift+L while playing: countdown and result right in the game overlay; details wait in Lotus.
+    private async Task AnalyseRunningGameAsync()
+    {
+        if (analysing) return;
+        var game = await Task.Run(games.RunningGame);
+        if (game is null) { osd.Show(text["OsdNoGame"]); await Task.Delay(4000); osd.Clear(); return; }
+        analysing = true;
+        try
+        {
+            const int seconds = 30, delay = 3;
+            using var stop = new CancellationTokenSource();
+            var countdown = Task.Run(async () =>
+            {
+                for (var left = seconds + delay; left > 0 && !stop.IsCancellationRequested; left--)
+                {
+                    osd.Show(left > seconds ? string.Format(text["OsdStarting"], left - seconds) : string.Format(text["OsdCounting"], left));
+                    try { await Task.Delay(1000, stop.Token); } catch (OperationCanceledException) { }
+                }
+            });
+            var report = await games.DiagnoseAsync(game, seconds, delay);
+            stop.Cancel(); await countdown;
+            if (report is null) { osd.Show(text["OsdFailed"]); }
+            else
+            {
+                var top = report.Findings[0];
+                osd.Show(string.Format(text["OsdResult"], text[top.Key + "Title"]));
+                pendingGame = game; pendingReport = report;
+                tray?.Notify(text["TrayReportTitle"], text[top.Key + "Title"]);
+            }
+            await Task.Delay(9000);
+        }
+        finally { osd.Clear(); analysing = false; }
+    }
+    private async Task ShowReportAsync(Lotus.Core.Games.GameEntry game, Lotus.Core.Games.GamesViewModel.StutterReport report)
+    {
+        if (ShellRoot.XamlRoot is null) return;
+        var body = new StackPanel { Spacing = 12, MaxWidth = 440 };
+        body.Children.Add(new TextBlock { Text = report.Summary, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
+        foreach (var f in report.Findings)
+        {
+            body.Children.Add(new TextBlock { Text = text[f.Key + "Title"], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, Foreground = (Brush)Application.Current.Resources["GoldBrush"] });
+            body.Children.Add(RichText.Block(text.Format(f.Key + "Body", f.Detail ?? ""), opacity: 0.9));
+        }
+        await new ContentDialog { XamlRoot = ShellRoot.XamlRoot, RequestedTheme = ElementTheme.Dark, Title = text.Format("WhyTitle", game.Name), Content = body, CloseButtonText = text["GsClose"] }.ShowAsync();
+    }
 
     public void OpenOnboarding(bool edit)
     {

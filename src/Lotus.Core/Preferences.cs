@@ -9,6 +9,9 @@ public sealed record InterfacePreferences
     public string Theme { get; init; } = "Midnight";
     public bool SidebarExpanded { get; init; } = true;
     public bool ReduceMotion { get; init; }
+    public bool StartWithWindows { get; init; }   // opens minimized to the tray at sign-in
+    public bool CloseToTray { get; init; } = true; // closing the window keeps Lotus in the background (hotkey keeps working)
+    public bool UiSounds { get; init; } = true;    // soft interface sounds
     // Player profile (first-run welcome): from Steam or the player's own name and picture, PC goal and accent color.
     public bool Onboarded { get; init; }
     public string ProfileSource { get; init; } = "none"; // steam | custom | none
@@ -78,6 +81,9 @@ public sealed class PreferencesViewModel : ObservableObject
     public int LanguageIndex { get => languageIndex; set { if (value is >= 0 and <= 1 && SetProperty(ref languageIndex, value) && !synchronizing) Save(); } }
     public int ThemeIndex { get => themeIndex; set { if (value is >= 0 and <= 1 && SetProperty(ref themeIndex, value) && !synchronizing) Save(); } }
     public bool ReduceMotion { get => reduceMotion; set { if (SetProperty(ref reduceMotion, value) && !synchronizing) Save(); } }
+    public bool StartWithWindows { get => service.Current.StartWithWindows; set { if (value != service.Current.StartWithWindows) { service.Update(service.Current with { StartWithWindows = value }); OnPropertyChanged(); } } }
+    public bool CloseToTray { get => service.Current.CloseToTray; set { if (value != service.Current.CloseToTray) { service.Update(service.Current with { CloseToTray = value }); OnPropertyChanged(); } } }
+    public bool UiSounds { get => service.Current.UiSounds; set { if (value != service.Current.UiSounds) { service.Update(service.Current with { UiSounds = value }); OnPropertyChanged(); } } }
     public string Message { get => message; private set => SetProperty(ref message, value); }
     public string PlayerName => service.Current.DisplayName;
     public PreferencesViewModel(PreferencesService service, ITextCatalog text)

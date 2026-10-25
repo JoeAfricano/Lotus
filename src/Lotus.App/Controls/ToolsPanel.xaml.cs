@@ -27,7 +27,7 @@ public sealed partial class ToolsPanel : UserControl
         foreach (var (id, glyph, title, status) in new[]
         {
             ("mem", "", "ToolMemTitle", "MemoryStatus"), ("temp", "", "ToolTempTitle", "TempStatus"), ("unin", "", "UninTitle", "Uninstall.Summary"),
-            ("net", "", "ToolNetTile", "NetStatus"), ("disk", "", "ToolDiskTitle", "DiskTileStatus"), ("drivers", "", "ToolDriverTitle", "DriverStatus")
+            ("net", "", "ToolNetTile", "NetTileStatus"), ("disk", "", "ToolDiskTitle", "DiskTileStatus"), ("drivers", "", "ToolDriverTitle", "DriverStatus")
         })
         {
             if (id == "unin" && vm.Uninstall is null) continue;
