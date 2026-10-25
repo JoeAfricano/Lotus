@@ -910,4 +910,7 @@ Current conditions: {1}</value></data>
   <data name="BenchDurationOption" xml:space="preserve"><value>{0} seconds</value></data>
   <data name="BenchPrevious" xml:space="preserve"><value>Measurement shown</value></data>
   <data name="BenchNoSessions" xml:space="preserve"><value>No measurements yet</value></data>
+  <data name="IntPreview" xml:space="preserve"><value>Preview the overlay</value></data>
+  <data name="IntPreviewOpened" xml:space="preserve"><value>Preview opened in a 3D window. RivaTuner draws the overlay on it as in a game; close the window to exit. If nothing appears, check that RivaTuner is running.</value></data>
+  <data name="IntPreviewFailed" xml:space="preserve"><value>The preview could not be opened. Details are in the log.</value></data>
 </root>

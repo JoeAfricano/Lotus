@@ -57,7 +57,7 @@
          <TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextTrimming="CharacterEllipsis"/>
         </StackPanel>
         <ProgressBar Grid.Column="1" Value="{Binding Percent}" Maximum="100" MinHeight="8" VerticalAlignment="Center"/>
-        <TextBlock Grid.Column="2" Text="{Binding Total}" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="SemiBold"/>
+        <TextBlock Grid.Column="2" Text="{Binding TotalText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="SemiBold"/>
        </Grid>
       </DataTemplate>
      </ItemsControl.ItemTemplate>

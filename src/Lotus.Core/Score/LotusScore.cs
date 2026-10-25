@@ -19,7 +19,7 @@ public sealed record ScoreReference(string Tier, string Example, int Cpu1, int C
     public int Total => LotusScale.Total(Cpu1, CpuAll, Gpu);
 }
 public sealed record Measured(double Median, double VariationPct);
-public sealed record CompareRow(string Label, string Detail, int Total, double Percent, bool IsYou);
+public sealed record CompareRow(string Label, string Detail, int Total, double Percent, bool IsYou, string TotalText = "");
 public sealed record HistoryRow(string Date, string Summary);
 public sealed record PartRow(string Name, string Kind, string Values, string VsYou, double Percent, bool IsYours);
 
@@ -53,7 +53,7 @@ public static class LotusScale
         new("ScoreTierEntry", "Intel Core i3-10100 · GTX 1650", 1200, 5500, 3500),
         new("ScoreTierBudget", "Ryzen 5 3600 · GTX 1660 Super", 1300, 9000, 6000),
         new("ScoreTierMid", "Ryzen 5 5600 · RTX 3060", 1500, 11000, 9000),
-        new("ScoreTierMidHigh", "Ryzen 5 5500 · RTX 5060", 1400, 10500, 11500),
+        new("ScoreTierMidHigh", "Ryzen 5 7600 · RTX 4060 Ti", 1850, 14500, 13500),
         new("ScoreTierHigh", "Ryzen 7 7800X3D · RTX 4070 Super", 1800, 18000, 20000),
         new("ScoreTierEnthusiast", "Core i9-14900K · RTX 4090", 2250, 38000, 36000),
     ];
@@ -188,7 +188,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         var rows = LotusScale.References.Select(r => (Label: Text[r.Tier], Detail: r.Example, r.Total, You: false)).ToList();
         if (last?.Total is { } total) rows.Add((Text["ScoreYou"], $"{last.CpuName} · {last.GpuName}", total, true));
         var max = Math.Max(1, rows.Max(r => r.Total));
-        foreach (var r in rows.OrderByDescending(r => r.Total)) Compare.Add(new(r.Label, r.Detail, r.Total, r.Total * 100.0 / max, r.You));
+        foreach (var r in rows.OrderByDescending(r => r.Total)) Compare.Add(new(r.Label, r.Detail, r.Total, r.Total * 100.0 / max, r.You, r.Total.ToString("N0", Culture)));
         History.Clear();
         try
         {

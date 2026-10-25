@@ -35,6 +35,13 @@ public partial class App : Application
     {
         // Short-lived elevated helper for RivaTuner profile edits: no window, no services, fixed allow-list.
         if (Lotus.Infrastructure.Integrations.RtssElevatedHelper.TryRun(Environment.GetCommandLineArgs()) is { } helperExit) { Environment.Exit(helperExit); return; }
+        // Overlay preview: a separate, unelevated process that only shows the 3D scene so RivaTuner draws its overlay on it.
+        if (Environment.GetCommandLineArgs().Contains(Lotus.Infrastructure.Score.D3D11GpuBenchmark.PreviewArgument))
+        {
+            var ok = false;
+            try { ok = Lotus.Infrastructure.Score.D3D11GpuBenchmark.Preview(); } catch (Exception) { }
+            Environment.Exit(ok ? 0 : 2); return;
+        }
         var logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Logs", "lotus-.jsonl");
         Log.Logger = new LoggerConfiguration().WriteTo.File(new JsonFormatter(), logPath,
             rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, fileSizeLimitBytes: 5_000_000, rollOnFileSizeLimit: true).CreateLogger();
@@ -97,7 +104,8 @@ public partial class App : Application
                 new Lotus.Infrastructure.Games.WindowsGameProcessCheck(),
                 new Lotus.Infrastructure.Games.RtssPreferredCaptureProvider(p.GetRequiredService<IFrameCaptureProvider>()), new Lotus.Infrastructure.Games.PdhGpuLoadSampler(), new Lotus.Infrastructure.Games.ScsKillerCli()))
             .AddSingleton(p => new Lotus.Core.Integrations.IntegrationsViewModel(new Lotus.Infrastructure.Integrations.WindowsRtssIntegration(),
-                new Lotus.Infrastructure.Integrations.WindowsToolDetector(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Integration operation failed")))
+                new Lotus.Infrastructure.Integrations.WindowsToolDetector(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Integration operation failed"),
+                () => { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute = false, ArgumentList = { Lotus.Infrastructure.Score.D3D11GpuBenchmark.PreviewArgument } })?.Dispose(); return true; }))
             .AddSingleton(p => { var gpu = new Lotus.Infrastructure.Score.D3D11GpuBenchmark(); return new Lotus.Core.Score.LotusScoreViewModel(new Lotus.Infrastructure.Score.CpuRayBenchmark(), gpu,
                 new Lotus.Infrastructure.Score.JsonScoreHistory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "score-history.json")),
                 new Lotus.Infrastructure.Score.WindowsScoreMachine(gpu), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Lotus Score failed")); })

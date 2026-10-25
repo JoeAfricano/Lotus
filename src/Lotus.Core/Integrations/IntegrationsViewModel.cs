@@ -20,7 +20,7 @@ public interface IRtssIntegration
 }
 public interface IToolDetector { ToolState Afterburner(); ToolState ScsKiller(); }
 
-public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector tools, ITextCatalog text, Action<Exception> log) : ObservableObject
+public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector tools, ITextCatalog text, Action<Exception> log, Func<bool>? openOverlayPreview = null) : ObservableObject
 {
     public ITextCatalog Text { get; } = text;
     public string RtssStatus { get; private set; } = "";
@@ -55,6 +55,14 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
 
     public Task ApplyOverlayAsync() => Run(async () => Message = Text[await rtss.ApplyLotusOverlayAsync() ? "IntOverlayApplied" : "IntOverlayFailed"]);
     public Task RestoreOverlayAsync() => Run(async () => Message = Text[await rtss.RestoreAsync() ? "IntOverlayRestored" : "IntOverlayFailed"]);
+    // Opens the 3D preview window (separate process) so RivaTuner draws the overlay on it, like a benchmark.
+    public bool CanPreview => openOverlayPreview is not null;
+    public void PreviewOverlay()
+    {
+        try { Message = Text[openOverlayPreview?.Invoke() == true ? "IntPreviewOpened" : "IntPreviewFailed"]; }
+        catch (Exception ex) { log(ex); Message = Text["IntPreviewFailed"]; }
+        OnPropertyChanged(nameof(Message));
+    }
     public Task ActivateLayoutAsync() => Run(async () => Message = Text[await rtss.ActivateLayoutAsync() ? "IntLayoutApplied" : "IntOverlayFailed"]);
     public Task RestoreLayoutAsync() => Run(async () => Message = Text[await rtss.RestoreLayoutAsync() ? "IntLayoutRestored" : "IntOverlayFailed"]);
     // null when the file could not be written (locked, disk full); the message explains it.

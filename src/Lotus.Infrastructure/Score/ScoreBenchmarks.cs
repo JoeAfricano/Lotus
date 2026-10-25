@@ -151,6 +151,43 @@ public sealed class D3D11GpuBenchmark : IGpuBenchmark
         return null;
     }
 
+    // Overlay preview: the same 3D scene in its own process ("Lotus.App.exe --overlay-preview"), synced to the monitor,
+    // until the window is closed. RivaTuner hooks it like a game, so the user sees the overlay without opening one.
+    public const string PreviewArgument = "--overlay-preview";
+    public static bool Preview()
+    {
+        using var adapter = PickAdapter();
+        if (adapter is null) return false;
+        D3D11.D3D11CreateDevice(adapter, DriverType.Unknown, DeviceCreationFlags.BgraSupport, [FeatureLevel.Level_11_0], out ID3D11Device? device, out ID3D11DeviceContext? context).CheckError();
+        using var dev = device!; using var ctx = context!;
+        using var vs = dev.CreateVertexShader(Compiler.Compile(Shader, "VS", "lotus-score.hlsl", "vs_5_0").Span);
+        using var ps = dev.CreatePixelShader(Compiler.Compile(Shader, "PS", "lotus-score.hlsl", "ps_5_0").Span);
+        using var cb = dev.CreateBuffer(new BufferDescription(16, BindFlags.ConstantBuffer));
+        var hwnd = SceneWindow.Create("Lotus · prévia do overlay (feche para sair)", 1280, 720);
+        try
+        {
+            using var factory = adapter.GetParent<IDXGIFactory2>();
+            var desc = new SwapChainDescription1(Width, Height, Format.B8G8R8A8_UNorm)
+            { BufferCount = 2, SwapEffect = SwapEffect.FlipDiscard, BufferUsage = Usage.RenderTargetOutput, SampleDescription = new(1, 0), Scaling = Scaling.Stretch, AlphaMode = AlphaMode.Ignore };
+            using var swap = factory.CreateSwapChainForHwnd(dev, hwnd, desc);
+            factory.MakeWindowAssociation(hwnd, WindowAssociationFlags.IgnoreAll);
+            using var back = swap.GetBuffer<ID3D11Texture2D>(0);
+            using var rtv = dev.CreateRenderTargetView(back);
+            ctx.IASetPrimitiveTopology(PrimitiveTopology.TriangleList);
+            ctx.VSSetShader(vs); ctx.PSSetShader(ps); ctx.PSSetConstantBuffer(0, cb);
+            var frame = 0;
+            while (SceneWindow.Pump(hwnd))
+            {
+                ctx.OMSetRenderTargets(rtv); ctx.RSSetViewport(0, 0, Width, Height); // flip model unbinds after Present
+                ctx.UpdateSubresource(new Vector4(frame++ * 0.016f, 0, 0, 0), cb);
+                ctx.Draw(3, 0);
+                swap.Present(1, PresentFlags.None); // vsync: light on the GPU, like a game menu
+            }
+            return true;
+        }
+        finally { SceneWindow.Destroy(hwnd); }
+    }
+
     public IReadOnlyList<double>? Run(int passes, TimeSpan each, Action<int> onPass, CancellationToken ct)
     {
         using var adapter = PickAdapter();

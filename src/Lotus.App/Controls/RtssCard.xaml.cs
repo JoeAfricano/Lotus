@@ -32,6 +32,9 @@ public sealed partial class RtssCard : UserControl
         if (DataContext is IntegrationsViewModel vm && await Confirm(vm.Text["IntLayoutRestoreTitle"], vm.Text["IntRestoreConfirmBody"], vm))
             await vm.RestoreLayoutAsync();
     }
+    // Opens the 3D preview window so RivaTuner shows the overlay on it.
+    private void OnPreviewOverlay(object sender, RoutedEventArgs e) => (DataContext as IntegrationsViewModel)?.PreviewOverlay();
+
     // Saves Lotus.ovl (no admin) and opens its folder for manual import in OverlayEditor.
     private void OnExportLayout(object sender, RoutedEventArgs e)
     {

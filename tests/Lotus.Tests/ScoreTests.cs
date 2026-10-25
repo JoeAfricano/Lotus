@@ -50,7 +50,7 @@ public sealed class ScoreTests
         Assert.Equal(8, cpu.Calls); // 2 tests x (1 warm-up + 3)
         var run = Assert.Single(history.Runs);
         Assert.Equal(1400, run.Cpu1); Assert.Equal(10500, run.CpuAll); Assert.Equal(11500, run.Gpu);
-        Assert.Equal(LotusScale.References.Single(r => r.Example.Contains("5060")).Total, run.Total); // calibration anchor
+        Assert.Equal(LotusScale.Total(1400, 10500, 11500), run.Total); // calibration anchor (Ryzen 5 5500 + RTX 5060)
         Assert.False(vm.Busy); Assert.False(vm.NoHistory); Assert.Contains(vm.Compare, r => r.IsYou && r.Total == run.Total);
         Assert.Equal(100, vm.Compare.Max(r => r.Percent));
         Assert.Contains("0.0", vm.Reliability.Replace(',', '.'));
