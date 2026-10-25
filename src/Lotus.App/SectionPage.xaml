@@ -98,6 +98,12 @@
     <SelectorBar x:Name="SettingsTabs" SelectionChanged="OnSettingsTabChanged" AutomationProperties.Name="{Binding Text[UxSettingsCategory]}" AutomationProperties.AutomationId="settings-category"/>
     <StackPanel x:Name="AppearanceContent" x:Load="{x:Bind ShowAppearance}" Spacing="8">
      <TextBlock Text="{Binding Text[AppearanceCategory]}" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,8"/>
+     <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <FontIcon Glyph="&#xE77B;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+      <TextBlock Grid.Column="1" Text="{Binding Text[ProfileEdit]}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+      <Button Grid.Column="2" Content="{Binding Text[ProfileEdit]}" Click="OnEditProfile" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="settings-profile"/>
+      <Button Grid.Column="3" Content="{Binding Text[ObReplay]}" Click="OnReplayWelcome" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="settings-replay-welcome"/>
+     </Grid></Border>
      <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <FontIcon Glyph="&#xE790;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
       <TextBlock Grid.Column="1" Text="{Binding Text[Theme]}" VerticalAlignment="Center" TextWrapping="Wrap"/>

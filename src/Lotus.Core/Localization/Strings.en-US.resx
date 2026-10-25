@@ -1030,4 +1030,60 @@ Current conditions: {1}</value></data>
   <data name="ToolDnsRestoreConfirm" xml:space="preserve"><value>Lotus restores exactly the previous DNS (automatic from the router or the one you used). Windows will ask for admin permission.</value></data>
   <data name="ToolDnsRestored" xml:space="preserve"><value>Previous DNS restored.</value></data>
   <data name="ToolDnsFailed" xml:space="preserve"><value>The DNS could not be changed (permission declined or the adapter changed). Nothing was changed.</value></data>
+  <data name="GreetingName" xml:space="preserve"><value>Hi, {0}.</value></data>
+  <data name="ProfileEdit" xml:space="preserve"><value>Edit profile</value></data>
+  <data name="ObStepOf" xml:space="preserve"><value>Step {0} of {1}</value></data>
+  <data name="ObSkip" xml:space="preserve"><value>Skip</value></data>
+  <data name="ObBack" xml:space="preserve"><value>Back</value></data>
+  <data name="ObNext" xml:space="preserve"><value>Continue</value></data>
+  <data name="ObBegin" xml:space="preserve"><value>Get started</value></data>
+  <data name="ObStart" xml:space="preserve"><value>Start using Lotus</value></data>
+  <data name="ObSave" xml:space="preserve"><value>Save profile</value></data>
+  <data name="ObWelcomeTitle" xml:space="preserve"><value>Welcome to Lotus</value></data>
+  <data name="ObWelcomeBody" xml:space="preserve"><value>Your PC ready to play: more FPS, less stutter and everything explained in plain words. In under a minute we make Lotus yours.</value></data>
+  <data name="ObWelcomeSafety" xml:space="preserve"><value>Nothing in Windows changes without your confirmation, and everything Lotus changes can be undone.</value></data>
+  <data name="ObProfileTitle" xml:space="preserve"><value>How do you want to appear?</value></data>
+  <data name="ObProfileBody" xml:space="preserve"><value>Use your Steam account on this PC or create your own profile. You can change it later by clicking your name in the corner.</value></data>
+  <data name="ObUseSteam" xml:space="preserve"><value>Use my Steam account</value></data>
+  <data name="ObSteamMissing" xml:space="preserve"><value>No Steam account found on this PC</value></data>
+  <data name="ObSteamNote" xml:space="preserve"><value>Lotus reads only the name and picture Steam already keeps on this PC. No login, no internet.</value></data>
+  <data name="ObUseCustom" xml:space="preserve"><value>Create my own</value></data>
+  <data name="ObCustomNote" xml:space="preserve"><value>Your name and a picture</value></data>
+  <data name="ObNamePlaceholder" xml:space="preserve"><value>What should we call you?</value></data>
+  <data name="ObPickPicture" xml:space="preserve"><value>Choose picture</value></data>
+  <data name="ObPreview" xml:space="preserve"><value>It looks like this:</value></data>
+  <data name="ObDefaultName" xml:space="preserve"><value>Player</value></data>
+  <data name="ObGoalTitle" xml:space="preserve"><value>What is your goal?</value></data>
+  <data name="ObGoalBody" xml:space="preserve"><value>Lotus tunes its game settings recommendations for this goal.</value></data>
+  <data name="ObGoalfps" xml:space="preserve"><value>More FPS</value></data>
+  <data name="ObGoalfpsDetail" xml:space="preserve"><value>Balanced quality aiming for the most frames per second.</value></data>
+  <data name="ObGoalcompetitive" xml:space="preserve"><value>Competitive</value></data>
+  <data name="ObGoalcompetitiveDetail" xml:space="preserve"><value>Lowest latency and high, steady FPS, even with less visual quality.</value></data>
+  <data name="ObGoalbalanced" xml:space="preserve"><value>Balanced</value></data>
+  <data name="ObGoalbalancedDetail" xml:space="preserve"><value>Good looks with steady FPS at your monitor's rate, and a quieter PC.</value></data>
+  <data name="ObAccentTitle" xml:space="preserve"><value>Pick your color</value></data>
+  <data name="ObAccentBody" xml:space="preserve"><value>The color shows on buttons, bars and highlights. See it live while you choose.</value></data>
+  <data name="AccentRose" xml:space="preserve"><value>Rose</value></data>
+  <data name="AccentCrimson" xml:space="preserve"><value>Crimson</value></data>
+  <data name="AccentGold" xml:space="preserve"><value>Gold</value></data>
+  <data name="AccentViolet" xml:space="preserve"><value>Violet</value></data>
+  <data name="ObTourTitle" xml:space="preserve"><value>What Lotus does for you</value></data>
+  <data name="ObTourOptimize" xml:space="preserve"><value>Optimize my PC</value></data>
+  <data name="ObTourOptimizeDetail" xml:space="preserve"><value>One click puts Windows in the Game profile (power, Game Mode, refresh rate), with undo.</value></data>
+  <data name="ObTourGames" xml:space="preserve"><value>My Games and Prepare and play</value></data>
+  <data name="ObTourGamesDetail" xml:space="preserve"><value>Your games from every store. "Prepare and play" readies the PC, opens the game and offers to go back to normal afterwards.</value></data>
+  <data name="ObTourWhy" xml:space="preserve"><value>Why is it stuttering?</value></data>
+  <data name="ObTourWhyDetail" xml:space="preserve"><value>With the game open, Lotus measures and explains the cause of the stutter with a suggested fix.</value></data>
+  <data name="ObTourScore" xml:space="preserve"><value>LOTUS SCORE</value></data>
+  <data name="ObTourScoreDetail" xml:space="preserve"><value>Test your PC's performance and compare it with other machines and parts.</value></data>
+  <data name="ObTourTools" xml:space="preserve"><value>Tools</value></data>
+  <data name="ObTourToolsDetail" xml:space="preserve"><value>Free memory, clean temp files, test internet and DNS, disk health and driver.</value></data>
+  <data name="ObReplay" xml:space="preserve"><value>Replay welcome</value></data>
+  <data name="AccentDark" xml:space="preserve"><value>Dark</value></data>
+  <data name="GsReasonGoalFps" xml:space="preserve"><value>You picked more FPS: one quality level lower and a higher FPS cap.</value></data>
+  <data name="GsReasonGoalCompetitive" xml:space="preserve"><value>You picked competitive: lower quality for less delay and high, steady FPS.</value></data>
+  <data name="ObSteamAsk" xml:space="preserve"><value>Want to use your Steam account?</value></data>
+  <data name="ObSteamAskNote" xml:space="preserve"><value>No Steam account found on this PC. Sign in to Steam and your account shows up here by itself in a few seconds.</value></data>
+  <data name="ObSteamSignIn" xml:space="preserve"><value>Sign in to Steam</value></data>
+  <data name="ObSteamGet" xml:space="preserve"><value>Get Steam</value></data>
 </root>

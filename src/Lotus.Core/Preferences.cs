@@ -9,11 +9,24 @@ public sealed record InterfacePreferences
     public string Theme { get; init; } = "Midnight";
     public bool SidebarExpanded { get; init; } = true;
     public bool ReduceMotion { get; init; }
+    // Player profile (first-run welcome): from Steam or the player's own name and picture, PC goal and accent color.
+    public bool Onboarded { get; init; }
+    public string ProfileSource { get; init; } = "none"; // steam | custom | none
+    public string DisplayName { get; init; } = "";
+    public string? AvatarPath { get; init; }
+    public string Goal { get; init; } = "balanced"; // fps | competitive | balanced
+    public string Accent { get; init; } = "rose"; // rose | crimson | gold | violet | dark
+    public static readonly string[] Goals = ["fps", "competitive", "balanced"];
+    public static readonly string[] Accents = ["rose", "crimson", "gold", "violet", "dark"];
     public InterfacePreferences Normalize() => this with
     {
         SchemaVersion = 1,
         Language = Language == "en-US" ? "en-US" : "pt-BR",
-        Theme = Theme == "Graphite" ? "Graphite" : "Midnight"
+        Theme = Theme == "Graphite" ? "Graphite" : "Midnight",
+        ProfileSource = ProfileSource is "steam" or "custom" ? ProfileSource : "none",
+        DisplayName = (DisplayName ?? "").Trim() is var n && n.Length > 32 ? n[..32] : (DisplayName ?? "").Trim(),
+        Goal = Goals.Contains(Goal) ? Goal : "balanced",
+        Accent = Accents.Contains(Accent) ? Accent : "rose"
     };
 }
 
@@ -66,6 +79,7 @@ public sealed class PreferencesViewModel : ObservableObject
     public int ThemeIndex { get => themeIndex; set { if (value is >= 0 and <= 1 && SetProperty(ref themeIndex, value) && !synchronizing) Save(); } }
     public bool ReduceMotion { get => reduceMotion; set { if (SetProperty(ref reduceMotion, value) && !synchronizing) Save(); } }
     public string Message { get => message; private set => SetProperty(ref message, value); }
+    public string PlayerName => service.Current.DisplayName;
     public PreferencesViewModel(PreferencesService service, ITextCatalog text)
     {
         this.service = service;

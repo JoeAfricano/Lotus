@@ -1030,4 +1030,60 @@ Condições atuais: {1}</value></data>
   <data name="ToolDnsRestoreConfirm" xml:space="preserve"><value>O Lotus restaura exatamente o DNS de antes (automático do roteador ou o que você usava). O Windows vai pedir permissão de administrador.</value></data>
   <data name="ToolDnsRestored" xml:space="preserve"><value>DNS anterior restaurado.</value></data>
   <data name="ToolDnsFailed" xml:space="preserve"><value>Não foi possível trocar o DNS (permissão recusada ou adaptador mudou). Nada foi alterado.</value></data>
+  <data name="GreetingName" xml:space="preserve"><value>Olá, {0}.</value></data>
+  <data name="ProfileEdit" xml:space="preserve"><value>Editar perfil</value></data>
+  <data name="ObStepOf" xml:space="preserve"><value>Passo {0} de {1}</value></data>
+  <data name="ObSkip" xml:space="preserve"><value>Pular</value></data>
+  <data name="ObBack" xml:space="preserve"><value>Voltar</value></data>
+  <data name="ObNext" xml:space="preserve"><value>Continuar</value></data>
+  <data name="ObBegin" xml:space="preserve"><value>Começar</value></data>
+  <data name="ObStart" xml:space="preserve"><value>Começar a usar</value></data>
+  <data name="ObSave" xml:space="preserve"><value>Salvar perfil</value></data>
+  <data name="ObWelcomeTitle" xml:space="preserve"><value>Bem-vindo ao Lotus</value></data>
+  <data name="ObWelcomeBody" xml:space="preserve"><value>Seu PC pronto para jogar: mais FPS, menos travadas e tudo explicado em linguagem simples. Em menos de um minuto deixamos o Lotus com a sua cara.</value></data>
+  <data name="ObWelcomeSafety" xml:space="preserve"><value>Nada no Windows muda sem você confirmar, e tudo o que o Lotus muda dá para desfazer.</value></data>
+  <data name="ObProfileTitle" xml:space="preserve"><value>Como quer aparecer?</value></data>
+  <data name="ObProfileBody" xml:space="preserve"><value>Use a sua conta Steam deste PC ou crie o seu perfil. Dá para trocar depois clicando no seu nome, no canto da tela.</value></data>
+  <data name="ObUseSteam" xml:space="preserve"><value>Usar minha conta Steam</value></data>
+  <data name="ObSteamMissing" xml:space="preserve"><value>Nenhuma conta Steam encontrada neste PC</value></data>
+  <data name="ObSteamNote" xml:space="preserve"><value>O Lotus lê só o nome e a foto que a Steam já guarda no PC. Sem login e sem internet.</value></data>
+  <data name="ObUseCustom" xml:space="preserve"><value>Criar o meu</value></data>
+  <data name="ObCustomNote" xml:space="preserve"><value>Seu nome e uma foto</value></data>
+  <data name="ObNamePlaceholder" xml:space="preserve"><value>Como quer ser chamado?</value></data>
+  <data name="ObPickPicture" xml:space="preserve"><value>Escolher foto</value></data>
+  <data name="ObPreview" xml:space="preserve"><value>Fica assim:</value></data>
+  <data name="ObDefaultName" xml:space="preserve"><value>Player</value></data>
+  <data name="ObGoalTitle" xml:space="preserve"><value>Qual é o seu objetivo?</value></data>
+  <data name="ObGoalBody" xml:space="preserve"><value>O Lotus ajusta as recomendações de configuração dos jogos para esse objetivo.</value></data>
+  <data name="ObGoalfps" xml:space="preserve"><value>Mais FPS</value></data>
+  <data name="ObGoalfpsDetail" xml:space="preserve"><value>Qualidade equilibrada mirando o máximo de quadros por segundo.</value></data>
+  <data name="ObGoalcompetitive" xml:space="preserve"><value>Competitivo</value></data>
+  <data name="ObGoalcompetitiveDetail" xml:space="preserve"><value>Menor atraso e FPS alto e estável, mesmo com menos qualidade visual.</value></data>
+  <data name="ObGoalbalanced" xml:space="preserve"><value>Equilíbrio</value></data>
+  <data name="ObGoalbalancedDetail" xml:space="preserve"><value>Visual bonito com FPS estável na taxa do seu monitor, e PC mais silencioso.</value></data>
+  <data name="ObAccentTitle" xml:space="preserve"><value>Escolha a sua cor</value></data>
+  <data name="ObAccentBody" xml:space="preserve"><value>A cor aparece nos botões, nas barras e nos destaques. Veja ao vivo enquanto escolhe.</value></data>
+  <data name="AccentRose" xml:space="preserve"><value>Rosé</value></data>
+  <data name="AccentCrimson" xml:space="preserve"><value>Carmesim</value></data>
+  <data name="AccentGold" xml:space="preserve"><value>Dourado</value></data>
+  <data name="AccentViolet" xml:space="preserve"><value>Violeta</value></data>
+  <data name="ObTourTitle" xml:space="preserve"><value>O que o Lotus faz por você</value></data>
+  <data name="ObTourOptimize" xml:space="preserve"><value>Otimizar meu PC</value></data>
+  <data name="ObTourOptimizeDetail" xml:space="preserve"><value>Um clique deixa o Windows no perfil Jogo (energia, Modo de Jogo, taxa do monitor), com desfazer.</value></data>
+  <data name="ObTourGames" xml:space="preserve"><value>Meus Jogos e Preparar e jogar</value></data>
+  <data name="ObTourGamesDetail" xml:space="preserve"><value>Seus jogos de todas as lojas. "Preparar e jogar" prepara o PC, abre o jogo e pergunta se quer voltar ao normal depois.</value></data>
+  <data name="ObTourWhy" xml:space="preserve"><value>Por que está travando?</value></data>
+  <data name="ObTourWhyDetail" xml:space="preserve"><value>Com o jogo aberto, o Lotus mede e explica a causa da travada com uma correção sugerida.</value></data>
+  <data name="ObTourScore" xml:space="preserve"><value>LOTUS SCORE</value></data>
+  <data name="ObTourScoreDetail" xml:space="preserve"><value>Teste o desempenho do PC e compare com outras máquinas e peças.</value></data>
+  <data name="ObTourTools" xml:space="preserve"><value>Ferramentas</value></data>
+  <data name="ObTourToolsDetail" xml:space="preserve"><value>Liberar memória, limpar temporários, testar a internet e o DNS, saúde do disco e driver.</value></data>
+  <data name="ObReplay" xml:space="preserve"><value>Rever boas-vindas</value></data>
+  <data name="AccentDark" xml:space="preserve"><value>Escuro</value></data>
+  <data name="GsReasonGoalFps" xml:space="preserve"><value>Você escolheu mais FPS: um nível de qualidade abaixo e limite de FPS mais alto.</value></data>
+  <data name="GsReasonGoalCompetitive" xml:space="preserve"><value>Você escolheu competitivo: qualidade mais baixa para ter menos atraso e FPS alto e estável.</value></data>
+  <data name="ObSteamAsk" xml:space="preserve"><value>Quer usar sua conta Steam?</value></data>
+  <data name="ObSteamAskNote" xml:space="preserve"><value>Não achei nenhuma conta Steam neste PC. Entre na Steam e sua conta aparece aqui sozinha em poucos segundos.</value></data>
+  <data name="ObSteamSignIn" xml:space="preserve"><value>Entrar na Steam</value></data>
+  <data name="ObSteamGet" xml:space="preserve"><value>Baixar a Steam</value></data>
 </root>

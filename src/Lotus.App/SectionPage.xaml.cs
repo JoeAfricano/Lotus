@@ -31,6 +31,8 @@ public sealed partial class SectionPage : Page
     public bool ShowAdvanced { get; private set; }
     public bool ShowFaq { get; private set; }
     public SectionPage() => InitializeComponent();
+    private void OnEditProfile(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenOnboarding(edit: true);
+    private void OnReplayWelcome(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenOnboarding(edit: false);
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);

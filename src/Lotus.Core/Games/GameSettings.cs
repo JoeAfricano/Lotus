@@ -59,7 +59,9 @@ public static partial class GpuScore
 // Starting point from hardware + display. Demand grows with pixels and target FPS; upscalers add headroom before the tier is chosen.
 public static class SettingsAdvisor
 {
-    public static SettingsRecommendation Recommend(SystemProfile p)
+    // goal (player profile): "balanced" = steady FPS at the monitor rate; "fps" = one quality level lower, higher cap;
+    // "competitive" = two levels lower and the highest cap, for latency.
+    public static SettingsRecommendation Recommend(SystemProfile p, string goal = "balanced")
     {
         var reasons = new List<string>();
         var score = GpuScore.Estimate(p.GpuName, p.VramMb);
@@ -85,8 +87,17 @@ public static class SettingsAdvisor
         if (native < 40) reasons.Add("GsReasonLowEnd");
         if (p.CpuThreads is > 0 and <= 4) reasons.Add("GsReasonCpu");
         if (p.RamMb is > 0 and < 12_000) reasons.Add("GsReasonRam");
-        reasons.Add("GsReasonCap");
-        return new(tier, textures, upscaler, mode, target, target, score, reasons);
+        var cap = target;
+        if (goal is "fps" or "competitive")
+        {
+            var drop = goal == "fps" ? 1 : 2;
+            tier = (QualityTier)Math.Max((int)QualityTier.Low, (int)tier - drop);
+            textures = (QualityTier)Math.Min((int)textures, Math.Max((int)tier, (int)textures - drop + 1));
+            cap = Math.Min(goal == "fps" ? 240 : 300, refresh * 2);
+            reasons.Add(goal == "fps" ? "GsReasonGoalFps" : "GsReasonGoalCompetitive");
+        }
+        else reasons.Add("GsReasonCap");
+        return new(tier, textures, upscaler, mode, cap, target, score, reasons);
     }
 }
 

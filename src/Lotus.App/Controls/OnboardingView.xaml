@@ -1,0 +1,150 @@
+<UserControl x:Class="Lotus.App.Controls.OnboardingView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Root" AutomationProperties.AutomationId="onboarding">
+ <Grid>
+  <!-- Dimmed, slightly tinted backdrop over the app -->
+  <Border x:Name="Backdrop" Background="#D90C060A" Opacity="0"/>
+  <Grid x:Name="Card" Width="760" MaxWidth="900" MinHeight="540" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24" Opacity="0"
+        Background="{ThemeResource WindowBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="22">
+   <Grid.RenderTransform><CompositeTransform x:Name="CardTransform" ScaleX="0.96" ScaleY="0.96" TranslateY="16"/></Grid.RenderTransform>
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <!-- Header: step counter, progress and skip -->
+   <Grid Padding="32,24,24,0" ColumnSpacing="16">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <TextBlock Text="{Binding StepText}" Style="{StaticResource EyebrowStyle}" VerticalAlignment="Center"/>
+    <ProgressBar x:Name="StepProgress" Grid.Column="1" Maximum="100" MinHeight="4" VerticalAlignment="Center"/>
+    <HyperlinkButton Grid.Column="2" Content="{Binding Text[ObSkip]}" Click="OnSkip" Visibility="{Binding IsLast, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}" AutomationProperties.AutomationId="ob-skip"/>
+   </Grid>
+   <!-- Step content (animated on every step change) -->
+   <Grid x:Name="StepHost" Grid.Row="1" Padding="40,16,40,8">
+    <Grid.RenderTransform><TranslateTransform x:Name="StepShift"/></Grid.RenderTransform>
+    <!-- 0. Welcome -->
+    <StackPanel Visibility="{Binding IsWelcome, Converter={StaticResource BooleanVisibility}}" Spacing="16" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="560">
+     <Viewbox x:Name="WelcomeFlower" Width="112" Height="112" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.6">
+      <Viewbox.RenderTransform><CompositeTransform x:Name="FlowerTransform"/></Viewbox.RenderTransform>
+      <Canvas Width="64" Height="64">
+       <Path Fill="{StaticResource PetalBrush}" Opacity="0.82" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z"/>
+       <Path Fill="{StaticResource PetalBrush}" Data="M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z"/>
+       <Path Stroke="{StaticResource GoldGradientBrush}" StrokeThickness="1.6" StrokeLineJoin="Round" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z"/>
+      </Canvas>
+     </Viewbox>
+     <TextBlock Text="{Binding Text[ObWelcomeTitle]}" FontSize="34" FontWeight="SemiBold" TextAlignment="Center" TextWrapping="Wrap"/>
+     <TextBlock Text="{Binding Text[ObWelcomeBody]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}" TextAlignment="Center" TextWrapping="Wrap"/>
+     <TextBlock Text="{Binding Text[ObWelcomeSafety]}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextAlignment="Center" TextWrapping="Wrap" Margin="0,8,0,0"/>
+    </StackPanel>
+    <!-- 1. Profile -->
+    <StackPanel Visibility="{Binding IsProfile, Converter={StaticResource BooleanVisibility}}" Spacing="16">
+     <TextBlock Text="{Binding Text[ObProfileTitle]}" FontSize="26" FontWeight="SemiBold"/>
+     <TextBlock Text="{Binding Text[ObProfileBody]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+     <Grid ColumnSpacing="14">
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <!-- Steam -->
+      <Button x:Name="SteamChoice" Click="OnUseSteam" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Top" HorizontalContentAlignment="Stretch" Padding="18" CornerRadius="16" Visibility="{Binding SteamFound, Converter={StaticResource BooleanVisibility}}"
+              Background="{ThemeResource CardBrush}" BorderThickness="2" BorderBrush="{Binding UseSteam, Converter={StaticResource SelectedBorder}}" AutomationProperties.AutomationId="ob-steam">
+       <StackPanel Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="12">
+         <Grid Width="52" Height="52">
+          <Ellipse Fill="{ThemeResource AccentGradientBrush}"/>
+          <Ellipse Visibility="{Binding SteamPicture, Converter={StaticResource PresenceVisibility}}"><Ellipse.Fill><ImageBrush ImageSource="{Binding SteamPicture, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Ellipse.Fill></Ellipse>
+          <FontIcon Glyph="&#xE7FC;" FontSize="20" Visibility="{Binding SteamPicture, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
+         </Grid>
+         <StackPanel VerticalAlignment="Center" Spacing="2">
+          <TextBlock Text="{Binding Text[ObUseSteam]}" FontWeight="SemiBold"/>
+          <TextBlock Text="{Binding SteamName}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" Visibility="{Binding SteamFound, Converter={StaticResource BooleanVisibility}}"/>
+          <TextBlock Text="{Binding Text[ObSteamMissing]}" Style="{StaticResource CaptionStyle}" Visibility="{Binding SteamFound, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}"/>
+         </StackPanel>
+        </StackPanel>
+        <TextBlock Text="{Binding Text[ObSteamNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+       </StackPanel>
+      </Button>
+      <!-- No Steam account on this PC: offer to sign in; the account shows up here by itself -->
+      <StackPanel Spacing="10" Padding="18" Background="{ThemeResource CardBrush}" CornerRadius="16" BorderThickness="1" BorderBrush="{ThemeResource CardBorderBrush}" Visibility="{Binding SteamFound, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}">
+       <TextBlock Text="{Binding Text[ObSteamAsk]}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+       <TextBlock Text="{Binding Text[ObSteamAskNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+       <Button Content="{Binding SteamSignInLabel}" Click="OnSteamSignIn" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="ob-steam-signin"/>
+      </StackPanel>
+      <!-- Own -->
+      <Button Grid.Column="1" Click="OnUseCustom" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Top" HorizontalContentAlignment="Stretch" Padding="18" CornerRadius="16"
+              Background="{ThemeResource CardBrush}" BorderThickness="2" BorderBrush="{Binding UseCustom, Converter={StaticResource SelectedBorder}}" AutomationProperties.AutomationId="ob-custom">
+       <StackPanel Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="12">
+         <Grid Width="52" Height="52">
+          <Ellipse Fill="{ThemeResource AccentGradientBrush}"/>
+          <Ellipse Visibility="{Binding CustomPicture, Converter={StaticResource PresenceVisibility}}"><Ellipse.Fill><ImageBrush ImageSource="{Binding CustomPicture, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Ellipse.Fill></Ellipse>
+          <FontIcon Glyph="&#xE77B;" FontSize="20" Visibility="{Binding CustomPicture, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
+         </Grid>
+         <StackPanel VerticalAlignment="Center"><TextBlock Text="{Binding Text[ObUseCustom]}" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[ObCustomNote]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+        </StackPanel>
+        <TextBox Text="{Binding CustomName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="{Binding Text[ObNamePlaceholder]}" MaxLength="32" GotFocus="OnCustomFocus" AutomationProperties.AutomationId="ob-name"/>
+        <Button Content="{Binding Text[ObPickPicture]}" Click="OnPickPicture" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="ob-picture"/>
+       </StackPanel>
+      </Button>
+     </Grid>
+     <!-- Live preview of the corner badge -->
+     <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Left">
+      <TextBlock Text="{Binding Text[ObPreview]}" Style="{StaticResource CaptionStyle}" VerticalAlignment="Center"/>
+      <Border Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="10" Padding="4,4,14,4">
+       <StackPanel Orientation="Horizontal" Spacing="10">
+        <Grid Width="30" Height="30">
+         <Border CornerRadius="8" Background="{ThemeResource AccentGradientBrush}"><TextBlock Text="{Binding PreviewInitial}" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+         <Border CornerRadius="8" Visibility="{Binding PreviewPicture, Converter={StaticResource PresenceVisibility}}"><Border.Background><ImageBrush ImageSource="{Binding PreviewPicture, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border.Background></Border>
+        </Grid>
+        <TextBlock Text="{Binding PreviewName}" FontWeight="SemiBold" FontSize="12.5" VerticalAlignment="Center" AutomationProperties.AutomationId="ob-preview-name"/>
+       </StackPanel>
+      </Border>
+     </StackPanel>
+    </StackPanel>
+    <!-- 2. Goal -->
+    <StackPanel Visibility="{Binding IsGoal, Converter={StaticResource BooleanVisibility}}" Spacing="16">
+     <TextBlock Text="{Binding Text[ObGoalTitle]}" FontSize="26" FontWeight="SemiBold"/>
+     <TextBlock Text="{Binding Text[ObGoalBody]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+     <ItemsControl ItemsSource="{Binding Goals}" AutomationProperties.AutomationId="ob-goals">
+      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="12"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate><DataTemplate>
+       <Button Tag="{Binding Id}" Click="OnPickGoal" Width="214" Height="164" Padding="18" CornerRadius="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top"
+               Background="{ThemeResource CardBrush}" BorderThickness="2" BorderBrush="{Binding Selected, Converter={StaticResource SelectedBorder}}" AutomationProperties.Name="{Binding Title}">
+        <StackPanel Spacing="8">
+         <FontIcon Glyph="{Binding Glyph}" FontSize="22" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
+         <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
+         <TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+        </StackPanel>
+       </Button>
+      </DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+    </StackPanel>
+    <!-- 3. Accent color (applied live) -->
+    <StackPanel Visibility="{Binding IsAccent, Converter={StaticResource BooleanVisibility}}" Spacing="16">
+     <TextBlock Text="{Binding Text[ObAccentTitle]}" FontSize="26" FontWeight="SemiBold"/>
+     <TextBlock Text="{Binding Text[ObAccentBody]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+     <ItemsControl ItemsSource="{Binding Accents}" AutomationProperties.AutomationId="ob-accents">
+      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="12"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate><DataTemplate>
+       <Button Tag="{Binding Id}" Click="OnPickAccent" Width="150" Padding="16" CornerRadius="16" HorizontalContentAlignment="Stretch"
+               Background="{ThemeResource CardBrush}" BorderThickness="2" BorderBrush="{Binding Selected, Converter={StaticResource SelectedBorder}}" AutomationProperties.Name="{Binding Label}">
+        <StackPanel Spacing="10">
+         <Ellipse Width="44" Height="44" HorizontalAlignment="Left" Fill="{Binding Hex, Converter={StaticResource HexBrush}}"/>
+         <TextBlock Text="{Binding Label}" FontWeight="SemiBold"/>
+        </StackPanel>
+       </Button>
+      </DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <!-- Sample of the accent on real controls -->
+     <StackPanel Orientation="Horizontal" Spacing="10">
+      <Button Content="{Binding Text[PlayPrepare]}" Style="{StaticResource PrimaryButtonStyle}" IsHitTestVisible="False"/>
+      <ProgressBar Width="220" Value="64" VerticalAlignment="Center"/>
+     </StackPanel>
+    </StackPanel>
+    <!-- 4. Tour -->
+    <StackPanel Visibility="{Binding IsTour, Converter={StaticResource BooleanVisibility}}" Spacing="14">
+     <TextBlock Text="{Binding Text[ObTourTitle]}" FontSize="26" FontWeight="SemiBold"/>
+     <StackPanel x:Name="TourList" Spacing="10"/>
+    </StackPanel>
+   </Grid>
+   <!-- Footer buttons -->
+   <Grid Grid.Row="2" Padding="40,12,40,28" ColumnSpacing="10">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <Button Content="{Binding Text[ObBack]}" Click="OnBack" Style="{StaticResource SoftButtonStyle}" MinWidth="110" MinHeight="42" Visibility="{Binding CanBack, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="ob-back"/>
+    <Button Grid.Column="2" Content="{Binding NextLabel}" Click="OnNext" Style="{StaticResource PrimaryButtonStyle}" MinWidth="160" MinHeight="42" AutomationProperties.AutomationId="ob-next"/>
+   </Grid>
+  </Grid>
+ </Grid>
+</UserControl>

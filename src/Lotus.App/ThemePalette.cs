@@ -40,6 +40,30 @@ public sealed class ThemePalette(ResourceDictionary resources)
         Set("WarningBrush", hc ? foreground : Argb(255, 240, 194, 125));
         Set("ErrorBrush", hc ? foreground : Argb(255, 255, 143, 163));
     }
+
+    // Accent color chosen by the player: buttons, selection, progress, badges and the rose text all follow it.
+    public void ApplyAccent(string accent)
+    {
+        if (new AccessibilitySettings().HighContrast) return;
+        var (main, light, dark, from, to) = accent switch
+        {
+            "crimson" => (Argb(255, 198, 40, 57), Argb(255, 240, 106, 122), Argb(255, 150, 24, 38), Argb(255, 224, 56, 76), Argb(255, 142, 18, 34)),
+            "gold" => (Argb(255, 196, 132, 52), Argb(255, 238, 192, 122), Argb(255, 150, 96, 30), Argb(255, 227, 163, 80), Argb(255, 154, 100, 32)),
+            "violet" => (Argb(255, 138, 79, 214), Argb(255, 183, 147, 242), Argb(255, 100, 52, 168), Argb(255, 156, 92, 240), Argb(255, 94, 42, 168)),
+            _ => (Argb(255, 214, 48, 111), Argb(255, 242, 123, 168), Argb(255, 184, 37, 93), Argb(255, 232, 55, 138), Argb(255, 168, 18, 79)),
+        };
+        var darkMode = accent == "dark";
+        if (darkMode) // dark buttons and badges; rose stays only on small details (selection, progress, highlights)
+        {
+            (from, to) = (Argb(255, 62, 50, 57), Argb(255, 36, 28, 33));
+        }
+        Set("RoseBrush", light); Set("NavigationViewSelectionIndicatorForeground", light);
+        var soft = darkMode ? Argb(0x22, 255, 255, 255) : Color.FromArgb(0x2E, main.R, main.G, main.B);
+        Set("AccentSoftBrush", soft); Set("BadgeBrush", soft);
+        Set("AccentFillColorDefaultBrush", main); Set("AccentFillColorSecondaryBrush", light); Set("AccentFillColorTertiaryBrush", dark);
+        resources["SystemAccentColor"] = main; resources["SystemAccentColorLight1"] = light; resources["SystemAccentColorLight2"] = light; resources["SystemAccentColorDark1"] = dark;
+        if (resources["AccentGradientBrush"] is LinearGradientBrush g && g.GradientStops.Count >= 2) { g.GradientStops[0].Color = from; g.GradientStops[1].Color = to; }
+    }
     private static Color Argb(byte a, byte r, byte g, byte b) => Color.FromArgb(a, r, g, b);
     private void Set(string key, Color color) => ((SolidColorBrush)resources[key]).Color = color;
 }

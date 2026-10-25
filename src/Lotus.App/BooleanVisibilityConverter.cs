@@ -47,3 +47,14 @@ public sealed class CoverImageConverter : IValueConverter
     }
     public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
 }
+// "#RRGGBB" to a brush (accent swatches).
+public sealed class HexBrushConverter : IValueConverter
+{
+    public object? Convert(object value, Type targetType, object parameter, string language)
+    {
+        if (value is not string s || s.Length != 7 || s[0] != '#') return null;
+        var c = System.Convert.ToUInt32(s[1..], 16);
+        return new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, (byte)(c >> 16), (byte)(c >> 8), (byte)c));
+    }
+    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
+}

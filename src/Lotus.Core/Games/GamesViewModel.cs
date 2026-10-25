@@ -184,7 +184,7 @@ public sealed class GamesViewModel : ObservableObject
             return await Task.Run(() =>
             {
                 var p = profileSource.Read();
-                var r = SettingsAdvisor.Recommend(p);
+                var r = SettingsAdvisor.Recommend(p, Goal?.Invoke() ?? "balanced");
                 var (recipe, support) = Recipe(game);
                 var lines = new List<string>
                 {
@@ -263,7 +263,7 @@ public sealed class GamesViewModel : ObservableObject
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
             var canRaise = raw is not null && recipe!.StepQuality(raw, +1) is not null;
             var canLower = raw is not null && recipe!.StepQuality(raw, -1) is not null;
-            var target = SettingsAdvisor.Recommend(profileSource!.Read()).TargetFps;
+            var target = SettingsAdvisor.Recommend(profileSource!.Read(), Goal?.Invoke() ?? "balanced").TargetFps;
             var decision = QualityTuner.Decide(s.AverageFps, s.Low1Fps, target, gpuBusy, canRaise, canLower);
             if (decision.Step != 0) pendingSteps[game.Key] = decision.Step; else pendingSteps.Remove(game.Key);
             var summary = Text.Format("GsMeasureSummary", s.AverageFps, s.Low1Fps, gpuBusy is { } g ? $"{g:0}%" : "?", target);
@@ -313,7 +313,7 @@ public sealed class GamesViewModel : ObservableObject
             var (recipe, support) = Recipe(game);
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
             var canLower = raw is not null && recipe!.StepQuality(raw, -1) is not null;
-            var target = SettingsAdvisor.Recommend(profileSource!.Read()).TargetFps;
+            var target = SettingsAdvisor.Recommend(profileSource!.Read(), Goal?.Invoke() ?? "balanced").TargetFps;
             var pending = GameProfile is null ? 0 : (await GameProfile.PreviewAsync()).Count(p => !p.AlreadyApplied);
             var (load, apps) = Memory is null ? (0d, (IReadOnlyList<string>)[]) : await Task.Run(() => Memory.Read(game), token);
             var findings = StutterDiagnosis.Analyze(new(s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds, gpuBusy, target,
@@ -336,6 +336,7 @@ public sealed class GamesViewModel : ObservableObject
     }
 
     // ---- Preparar e jogar ----
+    public Func<string>? Goal { get; set; } // player profile goal: fps | competitive | balanced
     public IGameProfile? GameProfile { get; set; }
     public IGameWatch? Watch { get; set; }
     public event EventHandler<PlaySessionEnded>? SessionEnded;

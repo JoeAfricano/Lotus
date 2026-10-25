@@ -19,7 +19,7 @@ public sealed class SectionViewModel
     public PreferencesViewModel Preferences { get; }
     public Telemetry.MonitoringViewModel? Monitoring { get; }
     public Diagnostics.MemoryAnalysisViewModel? MemoryAnalysis { get; }
-    public string Title => Section.Id == "home" ? Text["Greeting"] : Section.Title;
+    public string Title => Section.Id == "home" ? (Preferences.PlayerName is { Length: > 0 } name ? Text.Format("GreetingName", name) : Text["Greeting"]) : Section.Title;
     public string Subtitle => Section.Description;
     public string Glyph => Section.Glyph;
     public string NextStep => Section.NextStep;

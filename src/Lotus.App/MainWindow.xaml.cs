@@ -18,6 +18,8 @@ public sealed partial class MainWindow : Window
     private readonly PreferencesService preferences;
     private readonly PreferencesViewModel preferencesViewModel;
     private readonly ThemePalette palette;
+    private readonly Lotus.Core.Profile.OnboardingViewModel onboarding;
+    public static MainWindow? Shell { get; private set; }
     private bool initialized;
     private bool updatingLayout;
     private bool? narrow;
@@ -58,8 +60,10 @@ public sealed partial class MainWindow : Window
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
         games.Watch = new Lotus.Core.Games.PollingGameWatch(new Lotus.Infrastructure.Games.WindowsGameProcessCheck());
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
+        games.Goal = () => preferences.Current.Goal;
         games.SessionEnded += OnGameSessionEnded;
         InitializeComponent();
+        Shell = this;
         ShellRoot.DataContext = ViewModel;
         ShellRoot.Language = text.Language;
         ExtendsContentIntoTitleBar = true;
@@ -92,6 +96,13 @@ public sealed partial class MainWindow : Window
         ViewModel.PropertyChanged += OnRouteChanged;
         experience.DemandChanged += OnExperienceDemandChanged;
         Navigation.SelectedItem = Navigation.MenuItems[0];
+        // Player profile: accent color, corner badge and the first-run welcome.
+        onboarding = new Lotus.Core.Profile.OnboardingViewModel(preferences, new Lotus.Infrastructure.Profile.LocalProfileSource(), text, ex => Serilog.Log.Warning(ex, "Profile"));
+        onboarding.AccentPreview += (_, accent) => palette.ApplyAccent(accent);
+        Onboarding.Closed += (_, _) => { palette.ApplyAccent(preferences.Current.Accent); ShowProfile(); ShowRoute(force: true); };
+        palette.ApplyAccent(preferences.Current.Accent);
+        ShowProfile();
+        if (onboarding.NeedsWelcome) DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => OpenOnboarding(edit: false));
         ShowRoute();
         preferences.PropertyChanged += OnPreferencesChanged;
         Closed += (_, _) =>
@@ -148,6 +159,7 @@ public sealed partial class MainWindow : Window
     {
         if (args.PropertyName != nameof(PreferencesService.Current)) return;
         palette.Apply(preferences.Current.Theme);
+        palette.ApplyAccent(preferences.Current.Accent);
         UpdateAmbientState();
         UpdateBrandMotion();
         if (text.Language == preferences.Current.Language) return;
@@ -303,6 +315,30 @@ public sealed partial class MainWindow : Window
         UpdateMonitoringDemand();
     }
     private void OnExperienceDemandChanged(object? sender, EventArgs args) => UpdateMonitoringDemand();
+
+    public void OpenOnboarding(bool edit)
+    {
+        Onboarding.MotionEnabled = !preferences.Current.ReduceMotion;
+        Onboarding.Open(onboarding, edit);
+    }
+    private void OnProfileTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) => OpenOnboarding(edit: true);
+    // Hover feedback on the profile badge (it opens the profile editor).
+    private void OnProfileEnter(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) { if (sender is Border b) b.Background = (Brush)Application.Current.Resources["CardHoverBrush"]; }
+    private void OnProfileLeave(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) { if (sender is Border b) b.Background = (Brush)Application.Current.Resources["CardBrush"]; }
+    // Corner badge: the player's chosen name and picture (Steam or their own), "Player" until chosen.
+    private void ShowProfile()
+    {
+        var p = preferences.Current;
+        var name = p.DisplayName.Length > 0 ? p.DisplayName : "Player";
+        ProfileName.Text = name; ProfileInitial.Text = char.ToUpperInvariant(name[0]).ToString();
+        ToolTipService.SetToolTip(ExpandedFooter, text["ProfileEdit"]);
+        if (p.AvatarPath is { } path && File.Exists(path))
+        {
+            ProfilePictureBrush.ImageSource = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(path)) { DecodePixelWidth = 64 };
+            ProfilePicture.Visibility = Visibility.Visible;
+        }
+        else ProfilePicture.Visibility = Visibility.Collapsed;
+    }
 
     // After a "Preparar e jogar" session: ask (never decide) whether to return to the previous settings.
     private async void OnGameSessionEnded(object? sender, Lotus.Core.Games.PlaySessionEnded session)
