@@ -48,3 +48,11 @@ Primeira entrega da versão focada no jogador leigo (ver decisões de produto em
 - **No Rest for the Wicked** (`NoRestForTheWickedRecipe`): calibrado pelas telas do jogo — `QualityPreset` 4 = Qualidade Máxima (escala de 0 a 4, de Desempenho a Qualidade Máxima), `UpscaleMethod` 1 = DLSS, `UpscaleQualityMode` 0 = Qualidade, `FrameRateCap` 0 = desligado. Aplicação inicial: limite de FPS na meta e DLSS Qualidade em RTX; preset só pelo ciclo de medição. JSON preservado (só chaves alteradas mudam).
 - **Unreal**: o passo altera todos os grupos `sg.*` exceto texturas.
 - Testes: 260 aprovados (regras de decisão, limites, receitas, medir→ajustar com captura simulada, leitura real do contador de GPU). Nenhuma configuração real de jogo foi alterada.
+
+## Complemento: SCSKiller (pré-carregar shaders, 25/10/2026)
+
+- SCSKiller 1.3.2 é GPL-3.0-or-later (BlueHeisenberg; downloads oficiais só em https://github.com/BlueHeisenberg/SCSKiller/releases). Reaproveitar o código tornaria o Lotus GPL; por decisão do usuário o Lotus **integra pela CLI documentada** (`scskiller status`, `scskiller compile <id> --idle`), como programa separado, sem copiar, ligar ou redistribuir código.
+- Como ele funciona (pela documentação da CLI): lê o índice de shaders da engine nos arquivos do jogo (Oodle/AES quando necessário), pode gravar pipelines com um `d3d12.dll` na pasta do jogo e compila no cache do driver; recompila após atualizar o driver.
+- No Lotus: status por card (prontos / recompilar após driver / pré-carregados / não suportado), "Pré-carregar shaders" no menu do jogo (jogo fechado, confirmação, prioridade baixa, progresso no status). Sem SCSKiller instalado: aviso opcional com link para a página oficial (o Lotus nunca baixa).
+- Neste PC: God of War precisa recompilar (driver 617.42 → 621.01), No Rest for the Wicked pronto, Persona 5 Royal não suportado. Nenhuma compilação real foi executada.
+- Testes: 264 aprovados (parser com a saída real da CLI, correspondência por id/nome, fluxo com ferramenta simulada, oferta quando ausente).

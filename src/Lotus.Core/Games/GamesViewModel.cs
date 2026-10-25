@@ -6,7 +6,8 @@ namespace Lotus.Core.Games;
 
 // Each card carries its own labels and commands, so item templates never depend on the parent DataContext.
 public sealed record GameCard(GameEntry Game, string Name, string Store, string Initials, string? CoverPath,
-    string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove, string OptimizeLabel = "", string MeasureLabel = "");
+    string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove, string OptimizeLabel = "", string MeasureLabel = "",
+    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null);
 public sealed record StoreFilter(string Id, string Label);
 // Result of "Otimizar configurações": hardware, the recommendation as readable lines, and whether Lotus can apply it.
 public sealed record GameSettingsAnalysis(SettingsRecommendation Recommendation, IReadOnlyList<string> Lines, string Hardware, GameSettingsSupport? Support, bool HasOriginal, int? PendingStep = null);
@@ -26,6 +27,8 @@ public sealed class GamesViewModel : ObservableObject
     private readonly IGameProcessCheck? processCheck;
     private readonly Benchmark.IFrameCaptureProvider? capture;
     private readonly IGpuLoadSampler? gpuSampler;
+    private readonly IShaderPrecompiler? shaders;
+    private IReadOnlyList<ShaderStatus> shaderStatuses = [];
     private readonly Dictionary<string, int> pendingSteps = new(StringComparer.OrdinalIgnoreCase);
     private List<GameEntry> all = [];
     private List<GameEntry> manual = [];
@@ -54,10 +57,10 @@ public sealed class GamesViewModel : ObservableObject
 
     public GamesViewModel(IGameLibrary library, IManualGameStore manualStore, IGameLauncher launcher, ITextCatalog text, Action<Exception> log,
         ISystemProfileSource? profileSource = null, IReadOnlyList<IGameSettingsRecipe>? recipes = null, IGameSettingsStore? settingsStore = null, IGameProcessCheck? processCheck = null,
-        Benchmark.IFrameCaptureProvider? capture = null, IGpuLoadSampler? gpuSampler = null)
+        Benchmark.IFrameCaptureProvider? capture = null, IGpuLoadSampler? gpuSampler = null, IShaderPrecompiler? shaders = null)
     {
         this.library = library; this.manualStore = manualStore; this.launcher = launcher; Text = text; this.log = log;
-        this.profileSource = profileSource; this.recipes = recipes ?? []; this.settingsStore = settingsStore; this.processCheck = processCheck; this.capture = capture; this.gpuSampler = gpuSampler;
+        this.profileSource = profileSource; this.recipes = recipes ?? []; this.settingsStore = settingsStore; this.processCheck = processCheck; this.capture = capture; this.gpuSampler = gpuSampler; this.shaders = shaders;
         LaunchCommand = new RelayCommand<GameCard>(Launch, c => c?.Game.CanLaunch == true);
         RemoveCommand = new RelayCommand<GameCard>(Remove);
     }
@@ -76,6 +79,9 @@ public sealed class GamesViewModel : ObservableObject
                 hidden = new(manualStore.LoadHidden(), StringComparer.OrdinalIgnoreCase);
                 return library.Scan(manual);
             });
+            // Optional SCSKiller status; a failure here never blocks the library.
+            try { shaderStatuses = shaders is { IsAvailable: true } ? await shaders.StatusAsync(CancellationToken.None) : []; }
+            catch (Exception ex) { log(ex); shaderStatuses = []; }
             all = result.Games.ToList();
             foreach (var e in result.Errors) log(new InvalidOperationException("Game scan: " + e));
             status = "";
@@ -149,7 +155,11 @@ public sealed class GamesViewModel : ObservableObject
         Games.Clear();
         foreach (var g in Visible.Where(g => (store.Length == 0 || g.Store == store) && (term.Length == 0 || Normalize(g.Name).Contains(term)))
                                  .OrderBy(g => g.Name, StringComparer.CurrentCultureIgnoreCase))
-            Games.Add(new(g, g.Name, g.Store, Initials(g.Name), g.CoverPath, Text["GamesPlay"], Text["GamesHide"], LaunchCommand, RemoveCommand, Text["GsMenu"], Text["GsMeasureMenu"]));
+        {
+            var shader = ScsKillerOutput.Match(shaderStatuses, g);
+            Games.Add(new(g, g.Name, g.Store, Initials(g.Name), g.CoverPath, Text["GamesPlay"], Text["GamesHide"], LaunchCommand, RemoveCommand, Text["GsMenu"], Text["GsMeasureMenu"],
+                shader is null ? null : Text["ScsState" + shader.State], shader?.State is ShaderState.Ready or ShaderState.Stale, Text["ScsPrecompile"], shader?.Id));
+        }
         OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(EmptyMessage));
     }
 
@@ -286,9 +296,31 @@ public sealed class GamesViewModel : ObservableObject
         return key;
     }
 
+    // ---- Optional shader pre-compilation (SCSKiller) ----
+    public const string ScsKillerReleases = "https://github.com/BlueHeisenberg/SCSKiller/releases/latest";
+    public bool ShaderToolInstalled => shaders?.IsAvailable == true;
+    public bool ShowShaderToolOffer => shaders is not null && !ShaderToolInstalled && loaded && all.Count > 0;
+
+    public async Task<bool> PrecompileAsync(GameCard card, CancellationToken token = default)
+    {
+        if (shaders is not { IsAvailable: true } || card.ShaderId is not { } id) return false;
+        try
+        {
+            status = Text.Format("ScsCompiling", card.Name); Notify();
+            var progress = new Progress<string>(line => { status = Text.Format("ScsProgress", card.Name, line.Length > 120 ? line[..120] + "…" : line); Notify(); });
+            var code = await shaders.CompileAsync(id, progress, token);
+            shaderStatuses = await shaders.StatusAsync(token);
+            ApplyFilter();
+            status = Text.Format(code == 0 ? "ScsDone" : "ScsFailed", card.Name); Notify();
+            return code == 0;
+        }
+        catch (OperationCanceledException) { status = ""; Notify(); return false; }
+        catch (Exception ex) { log(ex); status = Text.Format("ScsFailed", card.Name); Notify(); return false; }
+    }
+
     public void RefreshLanguage() { BuildStores(); ApplyFilter(); Notify(); }
     private void Notify()
     {
-        foreach (var p in new[] { nameof(Status), nameof(IsBusy), nameof(IsEmpty), nameof(EmptyMessage), nameof(Summary) }) OnPropertyChanged(p);
+        foreach (var p in new[] { nameof(Status), nameof(IsBusy), nameof(IsEmpty), nameof(EmptyMessage), nameof(Summary), nameof(ShowShaderToolOffer) }) OnPropertyChanged(p);
     }
 }

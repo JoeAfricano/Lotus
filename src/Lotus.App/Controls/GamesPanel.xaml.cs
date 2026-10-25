@@ -96,6 +96,23 @@ public sealed partial class GamesPanel : UserControl
             await vm.ApplyStepAsync(card.Game);
     }
 
+    // Pre-compilation runs through the user's SCSKiller, with the game closed.
+    private async void OnPrecompile(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: GameCard card } || DataContext is not GamesViewModel vm) return;
+        if (vm.IsGameRunning(card.Game))
+        {
+            await Show(vm.Text["ScsPrecompile"], new TextBlock { Text = vm.Text.Format("GsCloseGame", card.Name), TextWrapping = TextWrapping.Wrap, MaxWidth = 440 }, null, vm.Text["GsClose"]);
+            return;
+        }
+        if (await Show(vm.Text.Format("ScsConfirmTitle", card.Name), new TextBlock { Text = vm.Text["ScsConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, vm.Text["ScsPrecompile"], vm.Text["UxCancel"]))
+            await vm.PrecompileAsync(card);
+    }
+
+    // Opens only the official SCSKiller releases page; Lotus never downloads it.
+    private async void OnScsOffer(object sender, RoutedEventArgs e) =>
+        await Windows.System.Launcher.LaunchUriAsync(new Uri(GamesViewModel.ScsKillerReleases));
+
     private async Task<bool> Show(string title, UIElement content, string? primary, string close)
     {
         var dialog = new ContentDialog { XamlRoot = XamlRoot, Title = title, Content = content, CloseButtonText = close, RequestedTheme = ElementTheme.Dark, DefaultButton = ContentDialogButton.Close };

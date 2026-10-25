@@ -787,4 +787,18 @@ Current conditions: {1}</value></data>
   <data name="GsStepRaised" xml:space="preserve"><value>{0}: quality raised one level. Play and measure again to confirm.</value></data>
   <data name="GsStepLowered" xml:space="preserve"><value>{0}: quality lowered one level. Play and measure again to confirm.</value></data>
   <data name="GsNoPendingStep" xml:space="preserve"><value>{0}: measure the game before adjusting.</value></data>
+  <data name="ScsStateReady" xml:space="preserve"><value>Shaders: ready to pre-compile</value></data>
+  <data name="ScsStateStale" xml:space="preserve"><value>Shaders: recompile (driver updated)</value></data>
+  <data name="ScsStateCompiled" xml:space="preserve"><value>Shaders: pre-compiled</value></data>
+  <data name="ScsStateUnsupported" xml:space="preserve"><value>Shaders: game not supported</value></data>
+  <data name="ScsStateOther" xml:space="preserve"><value>Shaders: see SCSKiller</value></data>
+  <data name="ScsPrecompile" xml:space="preserve"><value>Pre-compile shaders</value></data>
+  <data name="ScsConfirmTitle" xml:space="preserve"><value>Pre-compile {0}'s shaders?</value></data>
+  <data name="ScsConfirmBody" xml:space="preserve"><value>SCSKiller compiles the game's shaders into the graphics driver cache to reduce first-time effect stutter. It runs at low priority and can take seconds to minutes. Keep the game closed. Not every stutter comes from shaders.</value></data>
+  <data name="ScsCompiling" xml:space="preserve"><value>Pre-compiling {0}'s shaders...</value></data>
+  <data name="ScsProgress" xml:space="preserve"><value>{0}: {1}</value></data>
+  <data name="ScsDone" xml:space="preserve"><value>{0}: shaders pre-compiled.</value></data>
+  <data name="ScsFailed" xml:space="preserve"><value>{0}: SCSKiller did not finish pre-compiling. See details in SCSKiller itself.</value></data>
+  <data name="ScsOffer" xml:space="preserve"><value>Optional: install SCSKiller (free, open source) to pre-compile shaders and reduce stutter in many games. Lotus then uses it automatically.</value></data>
+  <data name="ScsOfferLink" xml:space="preserve"><value>Learn about SCSKiller</value></data>
 </root>

@@ -787,4 +787,18 @@ Condições atuais: {1}</value></data>
   <data name="GsStepRaised" xml:space="preserve"><value>{0}: qualidade aumentada um nível. Jogue e meça de novo para confirmar.</value></data>
   <data name="GsStepLowered" xml:space="preserve"><value>{0}: qualidade reduzida um nível. Jogue e meça de novo para confirmar.</value></data>
   <data name="GsNoPendingStep" xml:space="preserve"><value>{0}: meça o jogo antes de ajustar.</value></data>
+  <data name="ScsStateReady" xml:space="preserve"><value>Shaders: prontos para pré-carregar</value></data>
+  <data name="ScsStateStale" xml:space="preserve"><value>Shaders: recompilar (driver atualizado)</value></data>
+  <data name="ScsStateCompiled" xml:space="preserve"><value>Shaders: pré-carregados</value></data>
+  <data name="ScsStateUnsupported" xml:space="preserve"><value>Shaders: jogo não suportado</value></data>
+  <data name="ScsStateOther" xml:space="preserve"><value>Shaders: ver no SCSKiller</value></data>
+  <data name="ScsPrecompile" xml:space="preserve"><value>Pré-carregar shaders</value></data>
+  <data name="ScsConfirmTitle" xml:space="preserve"><value>Pré-carregar os shaders de {0}?</value></data>
+  <data name="ScsConfirmBody" xml:space="preserve"><value>O SCSKiller compila os shaders do jogo no cache do driver de vídeo, para reduzir as travadas da primeira vez que efeitos aparecem. Roda com prioridade baixa e pode levar de segundos a minutos. Mantenha o jogo fechado. Nem toda travada vem de shaders.</value></data>
+  <data name="ScsCompiling" xml:space="preserve"><value>Pré-carregando os shaders de {0}...</value></data>
+  <data name="ScsProgress" xml:space="preserve"><value>{0}: {1}</value></data>
+  <data name="ScsDone" xml:space="preserve"><value>{0}: shaders pré-carregados.</value></data>
+  <data name="ScsFailed" xml:space="preserve"><value>{0}: o SCSKiller não concluiu o pré-carregamento. Veja os detalhes no próprio SCSKiller.</value></data>
+  <data name="ScsOffer" xml:space="preserve"><value>Opcional: instale o SCSKiller (gratuito, código aberto) para pré-carregar shaders e reduzir travadas em muitos jogos. O Lotus passa a usá-lo automaticamente.</value></data>
+  <data name="ScsOfferLink" xml:space="preserve"><value>Conhecer o SCSKiller</value></data>
 </root>
