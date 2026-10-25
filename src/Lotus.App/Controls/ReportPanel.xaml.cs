@@ -57,6 +57,14 @@ public sealed partial class ReportPanel : UserControl
                 sections.Add(new(t["RepGames"], rows, t.Format("GamesSummary", games.Games.Count, rows.Count)));
             }
             if (IncNotes.IsChecked == true && Notes.Text.Trim() is { Length: > 0 } notes) sections.Add(new(t["RepNotes"], [], notes));
+            if (IncLog.IsChecked == true)
+            {
+                var logs = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Logs");
+                var entries = await Task.Run(() => LogDigest.Read(logs, DateTimeOffset.Now.AddDays(-7)));
+                var rows = entries.Select(e => new ReportRow(e.When.LocalDateTime.ToString("g", culture) + " · " + t["RepLevel" + e.Level],
+                    e.Detail is null ? e.Message : e.Message + " — " + e.Detail)).ToList();
+                sections.Add(new(t["RepLog"], rows, rows.Count == 0 ? t["RepLogEmpty"] : t["RepLogNote"]));
+            }
             var title = ReportName.Text.Trim().Length > 0 ? ReportName.Text.Trim() : t["RepDefaultName"];
             var now = DateTime.Now;
             var html = ReportBuilder.Html(title, t.Format("RepSubtitle", now.ToString("f", culture), Environment.MachineName), sections, t["RepFooter"]);

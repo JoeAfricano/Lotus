@@ -17,6 +17,7 @@
     <CheckBox x:Name="IncScore" Content="{Binding Text[RepScore]}" IsChecked="True" AutomationProperties.AutomationId="report-score"/>
     <CheckBox x:Name="IncFps" Content="{Binding Text[RepFps]}" IsChecked="True" AutomationProperties.AutomationId="report-fps"/>
     <CheckBox x:Name="IncGames" Content="{Binding Text[RepGames]}" IsChecked="True" AutomationProperties.AutomationId="report-games"/>
+    <CheckBox x:Name="IncLog" Content="{Binding Text[RepLog]}" IsChecked="True" AutomationProperties.AutomationId="report-log"/>
     <CheckBox x:Name="IncNotes" Content="{Binding Text[RepNotes]}" IsChecked="False" AutomationProperties.AutomationId="report-notes-toggle"/>
    </VariableSizedWrapGrid>
    <TextBox x:Name="Notes" PlaceholderText="{Binding Text[RepNotesPlaceholder]}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="70" Visibility="{Binding IsChecked, ElementName=IncNotes, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="report-notes"/>

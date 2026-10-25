@@ -1187,4 +1187,10 @@ Condições atuais: {1}</value></data>
   <data name="RepSubtitle" xml:space="preserve"><value>Gerado em {0} · {1}</value></data>
   <data name="RepFooter" xml:space="preserve"><value>Feito pelo Lotus. Os dados vêm deste PC e ficam só nele.</value></data>
   <data name="RepDone" xml:space="preserve"><value>Concluído: relatório salvo ({0}).</value></data>
+  <data name="RepLog" xml:space="preserve"><value>Log de erros</value></data>
+  <data name="RepLogEmpty" xml:space="preserve"><value>Nenhum erro registrado pelo Lotus nos últimos 7 dias.</value></data>
+  <data name="RepLogNote" xml:space="preserve"><value>Problemas que o Lotus registrou nos últimos 7 dias (mais recentes primeiro). Útil para pedir ajuda ou comparar depois.</value></data>
+  <data name="RepLevelWarning" xml:space="preserve"><value>Aviso</value></data>
+  <data name="RepLevelError" xml:space="preserve"><value>Erro</value></data>
+  <data name="RepLevelFatal" xml:space="preserve"><value>Erro grave</value></data>
 </root>

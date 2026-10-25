@@ -110,3 +110,25 @@ public sealed class ReportBuilderTests
         Assert.Equal("Meu PC 2026-10-25 1852.html", Lotus.Core.Reports.ReportBuilder.FileName("Meu: PC?", new DateTime(2026, 10, 25, 18, 52, 0)));
     }
 }
+
+public sealed class LogDigestTests
+{
+    [Fact] public void ReadsOnlyRecentWarningsAndErrorsWithValuesFilledIn()
+    {
+        var dir = Path.Combine(Path.GetTempPath(), "LotusLog-" + Guid.NewGuid()); Directory.CreateDirectory(dir);
+        try
+        {
+            File.WriteAllLines(Path.Combine(dir, "lotus-20261025.jsonl"), [
+                """{"Timestamp":"2026-10-25T10:00:00-03:00","Level":"Information","MessageTemplate":"ok"}""",
+                """{"Timestamp":"2026-10-25T11:00:00-03:00","Level":"Warning","MessageTemplate":"DNS failed {Server}","Properties":{"Server":"1.1.1.1"}}""",
+                """{"Timestamp":"2026-10-25T12:00:00-03:00","Level":"Error","MessageTemplate":"Report failed","Exception":"System.IO.IOException: disk full\r\n   at X"}""",
+                """{"Timestamp":"2026-10-01T12:00:00-03:00","Level":"Error","MessageTemplate":"old"}""",
+                "not json"]);
+            var e = Lotus.Core.Reports.LogDigest.Read(dir, new DateTimeOffset(2026, 10, 18, 0, 0, 0, TimeSpan.FromHours(-3)));
+            Assert.Equal(2, e.Count);
+            Assert.Equal(("Error", "Report failed", "System.IO.IOException: disk full"), (e[0].Level, e[0].Message, e[0].Detail));
+            Assert.Equal("DNS failed 1.1.1.1", e[1].Message);
+        }
+        finally { Directory.Delete(dir, true); }
+    }
+}
