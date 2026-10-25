@@ -87,7 +87,7 @@
     <ContentControl x:Name="HistoryContent" x:Load="{x:Bind ShowHistory}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE81C;" Style="{StaticResource BadgeIconStyle}"/></Border><TextBlock Text="{Binding Text[UxHistoryEmptyTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxHistoryEmptyDescription]}" Style="{StaticResource CaptionStyle}"/></StackPanel></ContentControl>
    </StackPanel>
 
-   <ContentControl x:Name="GamesContent" x:Load="{x:Bind ShowGames}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="14"><Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE7FC;" Style="{StaticResource BadgeIconStyle}"/></Border><TextBlock Text="{Binding Text[UxGamesEmptyTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxGamesEmptyDescription]}" Style="{StaticResource BodyStyle}"/><ContentControl Content="{Binding Text[UxGamesFuture]}" Style="{StaticResource StatusBadgeStyle}"/></StackPanel></ContentControl>
+   <controls:GamesPanel x:Name="GamesContent" x:Load="{x:Bind ShowGames}" DataContext="{Binding Games}"/>
 
    <StackPanel x:Name="SettingsContent" x:Load="{x:Bind ShowSettings}" Spacing="20">
     <SelectorBar x:Name="SettingsTabs" SelectionChanged="OnSettingsTabChanged" AutomationProperties.Name="{Binding Text[UxSettingsCategory]}" AutomationProperties.AutomationId="settings-category"/>

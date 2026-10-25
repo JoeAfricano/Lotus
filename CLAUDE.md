@@ -29,7 +29,7 @@ Leia `AGENTS.md` e siga suas diretrizes. Responda em português brasileiro. O pr
 - Inicialização: status via StartupApproved (somente leitura) e correção de duplicidade HKCU; 17 entradas reais.
 - ResetExplode: binário conferido e descompilado (`docs/LOTUS_RESETEXPLODE_REFERENCE.md`, fontes em `artifacts/references/ResetExplode/decompiled/`).
 - Navegação superior; recursos de jogos do Windows somente leitura (orientação manual). Validação atual: Debug/Release sem avisos; 173 testes aprovados em cada. Atalho `Lotus.lnk` na raiz (build Release).
-- Plano mestre recebido (Etapas 06–14). Detecção de jogos (Steam/Xbox/GOG/Epic) e estimativa de FPS por especificações ficam para a Etapa 09.
+- Plano mestre recebido (Etapas 06–14). Produto afunilado para o jogador leigo: Meus Jogos → Preparar e jogar → overlay FPS → "Por que está travando?". Entrega 1 (Meus Jogos) concluída: `docs/LOTUS_GAMES.md`. Overlay pausado a pedido do usuário.
 - Aguardar comandos do usuário antes das próximas etapas.
 
 ## Validação já executada (anterior)

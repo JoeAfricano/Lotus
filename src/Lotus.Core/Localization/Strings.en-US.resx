@@ -672,4 +672,25 @@ Current conditions: {1}</value></data>
   <data name="FeatConflict" xml:space="preserve"><value>The setting changed outside Lotus; nothing was overwritten. Check it in Settings.</value></data>
   <data name="FeatReverted" xml:space="preserve"><value>Previous value restored and verified.</value></data>
   <data name="FeatNothingToUndo" xml:space="preserve"><value>There is no Lotus change to undo.</value></data>
+  <data name="GamesSearch" xml:space="preserve"><value>Search games</value></data>
+  <data name="GamesAllStores" xml:space="preserve"><value>All stores</value></data>
+  <data name="GamesAdd" xml:space="preserve"><value>Add game</value></data>
+  <data name="GamesRefresh" xml:space="preserve"><value>Scan again</value></data>
+  <data name="GamesPlay" xml:space="preserve"><value>Play</value></data>
+  <data name="GamesRemove" xml:space="preserve"><value>Remove from list</value></data>
+  <data name="GamesScanning" xml:space="preserve"><value>Looking for installed games...</value></data>
+  <data name="GamesSummary" xml:space="preserve"><value>{0} game(s) in {1} store(s)</value></data>
+  <data name="GamesNoneFound" xml:space="preserve"><value>No games found in supported stores (Steam, Epic, Xbox, GOG, EA and Ubisoft). Use "Add game" to include an executable.</value></data>
+  <data name="GamesNoMatch" xml:space="preserve"><value>No game matches the search.</value></data>
+  <data name="GamesScanFailed" xml:space="preserve"><value>Games could not be scanned. Details in the log.</value></data>
+  <data name="GamesInvalidExe" xml:space="preserve"><value>Choose an existing .exe file.</value></data>
+  <data name="GamesSaveFailed" xml:space="preserve"><value>The game list could not be saved.</value></data>
+  <data name="GamesAdded" xml:space="preserve"><value>{0} added.</value></data>
+  <data name="GamesRemoved" xml:space="preserve"><value>{0} removed from the list (nothing was uninstalled).</value></data>
+  <data name="GamesLaunching" xml:space="preserve"><value>Opening {0}...</value></data>
+  <data name="GamesLaunchFailed" xml:space="preserve"><value>{0} could not be opened.</value></data>
+  <data name="GamesReadOnly" xml:space="preserve"><value>Lotus only reads launcher libraries; nothing is changed in your games.</value></data>
+  <data name="GamesHide" xml:space="preserve"><value>Hide from list</value></data>
+  <data name="GamesHidden" xml:space="preserve"><value>{0} hidden (nothing was uninstalled).</value></data>
+  <data name="GamesShowHidden" xml:space="preserve"><value>Show {0} hidden item(s)</value></data>
 </root>

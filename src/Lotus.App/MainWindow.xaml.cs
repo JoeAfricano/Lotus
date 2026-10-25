@@ -29,6 +29,7 @@ public sealed partial class MainWindow : Window
     private readonly Lotus.Core.Optimization.OptimizationViewModel optimizer;
     private readonly Lotus.Core.Optimization.PowerProfilesViewModel powerProfiles;
     private readonly Lotus.Core.Diagnostics.HardwareDiagnosticsViewModel hardware;
+    private readonly Lotus.Core.Games.GamesViewModel games;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
     private BrandPulse? flowerPulse;
@@ -40,7 +41,7 @@ public sealed partial class MainWindow : Window
     private BrandMotionProof? brandProof;
     private bool brandProofShown;
 
-    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring, Lotus.Core.Diagnostics.MemoryAnalysisViewModel memoryAnalysis, ExperienceViewModel experience, Lotus.Core.Benchmark.BenchmarkViewModel benchmark, Lotus.Core.Optimization.OptimizationViewModel optimizer, Lotus.Core.Optimization.PowerProfilesViewModel powerProfiles, Lotus.Core.Diagnostics.HardwareDiagnosticsViewModel hardware)
+    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring, Lotus.Core.Diagnostics.MemoryAnalysisViewModel memoryAnalysis, ExperienceViewModel experience, Lotus.Core.Benchmark.BenchmarkViewModel benchmark, Lotus.Core.Optimization.OptimizationViewModel optimizer, Lotus.Core.Optimization.PowerProfilesViewModel powerProfiles, Lotus.Core.Diagnostics.HardwareDiagnosticsViewModel hardware, Lotus.Core.Games.GamesViewModel games)
     {
         ViewModel = viewModel;
         this.text = text;
@@ -49,7 +50,7 @@ public sealed partial class MainWindow : Window
         this.palette = palette;
         this.monitoring = monitoring;
         this.memoryAnalysis = memoryAnalysis;
-        this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer; this.powerProfiles = powerProfiles; this.hardware = hardware;
+        this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer; this.powerProfiles = powerProfiles; this.hardware = hardware; this.games = games;
         InitializeComponent();
         ShellRoot.DataContext = ViewModel;
         ShellRoot.Language = text.Language;
@@ -148,7 +149,7 @@ public sealed partial class MainWindow : Window
         ShellRoot.Language = text.Language;
         ViewModel.RefreshLanguage();
         monitoring.RefreshLanguage();
-        experience.RefreshLanguage(); benchmark.RefreshLanguage(); optimizer.RefreshLanguage(); powerProfiles.RefreshLanguage(); hardware.RefreshLanguage();
+        experience.RefreshLanguage(); benchmark.RefreshLanguage(); optimizer.RefreshLanguage(); powerProfiles.RefreshLanguage(); hardware.RefreshLanguage(); games.RefreshLanguage();
         foreach (NavigationViewItem item in Navigation.MenuItems)
         {
             var section = ViewModel.Items.Single(s => s.Id == (string)item.Tag);
@@ -288,7 +289,7 @@ public sealed partial class MainWindow : Window
         if (force || displayedSectionId != group)
         {
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
-                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware), new SuppressNavigationTransitionInfo());
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games), new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
         }
         UpdateMonitoringDemand();

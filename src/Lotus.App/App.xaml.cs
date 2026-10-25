@@ -17,6 +17,8 @@ public partial class App : Application
     public static ITextCatalog Text { get; private set; } = new TextCatalog();
     private ServiceProvider? services;
     private Window? window;
+    // Needed by WinUI pickers in an unpackaged app.
+    public static nint WindowHandle { get; private set; }
     public App() => InitializeComponent();
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
@@ -70,6 +72,9 @@ public partial class App : Application
                     new Lotus.Core.Optimization.WindowedOptimizationsAction(new Lotus.Infrastructure.Optimization.WindowsDirectXUserSettings()))))
             .AddSingleton(p => new Lotus.Core.Diagnostics.HardwareDiagnosticsViewModel(new Lotus.Infrastructure.Diagnostics.WindowsHardwareFacts(),
                 p.GetRequiredService<MonitoringViewModel>(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Hardware diagnostics failed")))
+            .AddSingleton(p => new Lotus.Core.Games.GamesViewModel(new Lotus.Infrastructure.Games.WindowsGameLibrary(),
+                new Lotus.Infrastructure.Games.JsonManualGameStore(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "games.json")),
+                new Lotus.Infrastructure.Games.WindowsGameLauncher(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Games operation failed")))
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);
@@ -79,6 +84,7 @@ public partial class App : Application
         Log.Information("Preferences initialized {Status} {Language} {Theme}", preferences.LoadStatus, Text.Language, preferences.Current.Theme);
         UnhandledException += (_, e) => Log.Fatal(e.Exception, "Unhandled UI exception");
         window = services.GetRequiredService<MainWindow>();
+        WindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(window);
         var readyToClose = false;
         var closeRequested = false;
         window.AppWindow.Closing += async (_, e) =>

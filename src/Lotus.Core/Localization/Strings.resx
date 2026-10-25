@@ -672,4 +672,25 @@ Condições atuais: {1}</value></data>
   <data name="FeatConflict" xml:space="preserve"><value>A configuração mudou fora do Lotus; nada foi sobrescrito. Confira em Configurações.</value></data>
   <data name="FeatReverted" xml:space="preserve"><value>Valor anterior restaurado e verificado.</value></data>
   <data name="FeatNothingToUndo" xml:space="preserve"><value>Não há alteração do Lotus para desfazer.</value></data>
+  <data name="GamesSearch" xml:space="preserve"><value>Buscar jogo</value></data>
+  <data name="GamesAllStores" xml:space="preserve"><value>Todas as lojas</value></data>
+  <data name="GamesAdd" xml:space="preserve"><value>Adicionar jogo</value></data>
+  <data name="GamesRefresh" xml:space="preserve"><value>Procurar de novo</value></data>
+  <data name="GamesPlay" xml:space="preserve"><value>Jogar</value></data>
+  <data name="GamesRemove" xml:space="preserve"><value>Remover da lista</value></data>
+  <data name="GamesScanning" xml:space="preserve"><value>Procurando jogos instalados...</value></data>
+  <data name="GamesSummary" xml:space="preserve"><value>{0} jogo(s) em {1} loja(s)</value></data>
+  <data name="GamesNoneFound" xml:space="preserve"><value>Nenhum jogo encontrado nas lojas compatíveis (Steam, Epic, Xbox, GOG, EA e Ubisoft). Use "Adicionar jogo" para incluir um executável.</value></data>
+  <data name="GamesNoMatch" xml:space="preserve"><value>Nenhum jogo corresponde à busca.</value></data>
+  <data name="GamesScanFailed" xml:space="preserve"><value>Não foi possível procurar os jogos. Detalhes no log.</value></data>
+  <data name="GamesInvalidExe" xml:space="preserve"><value>Escolha um arquivo .exe existente.</value></data>
+  <data name="GamesSaveFailed" xml:space="preserve"><value>Não foi possível salvar a lista de jogos.</value></data>
+  <data name="GamesAdded" xml:space="preserve"><value>{0} adicionado.</value></data>
+  <data name="GamesRemoved" xml:space="preserve"><value>{0} removido da lista (nada foi desinstalado).</value></data>
+  <data name="GamesLaunching" xml:space="preserve"><value>Abrindo {0}...</value></data>
+  <data name="GamesLaunchFailed" xml:space="preserve"><value>Não foi possível abrir {0}.</value></data>
+  <data name="GamesReadOnly" xml:space="preserve"><value>O Lotus só lê as bibliotecas dos launchers; nada é alterado nos jogos.</value></data>
+  <data name="GamesHide" xml:space="preserve"><value>Ocultar da lista</value></data>
+  <data name="GamesHidden" xml:space="preserve"><value>{0} ocultado (nada foi desinstalado).</value></data>
+  <data name="GamesShowHidden" xml:space="preserve"><value>Mostrar {0} item(ns) oculto(s)</value></data>
 </root>
