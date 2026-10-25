@@ -99,6 +99,8 @@ public interface IGameSettingsRecipe
     string? ReadRaw(GameEntry game);                                 // current settings text (INI, JSON...)
     void WriteRaw(GameEntry game, string raw);
     string Transform(string raw, SettingsRecommendation recommendation); // pure: only known keys change
+    // One quality level up (+1) or down (-1); null when the recipe cannot step quality or is already at the limit.
+    string? StepQuality(string raw, int step) => null;
 }
 // Keeps the first (original) settings text per game so "Restore original" always returns to the pre-Lotus state.
 public interface IGameSettingsStore
@@ -108,4 +110,29 @@ public interface IGameSettingsStore
     void ClearOriginal(string gameKey);
 }
 public interface ISystemProfileSource { SystemProfile Read(); }
-public interface IGameProcessCheck { bool IsRunning(GameEntry game); }
+public interface IGameProcessCheck
+{
+    bool IsRunning(GameEntry game);
+    RunningGame? Find(GameEntry game) => null; // main game process, used by the measurement loop
+}
+
+// ---- Measurement loop ----
+// One adjustment per measurement: lower quality only when the GPU is the bottleneck, raise it only with clear headroom.
+public sealed record TuningDecision(int Step, string ReasonKey);
+public static class QualityTuner
+{
+    public static TuningDecision Decide(double averageFps, double low1Fps, int targetFps, double? gpuBusyPercent, bool canRaise, bool canLower)
+    {
+        var below = averageFps < targetFps * 0.95 || low1Fps < targetFps * 0.70;
+        if (below)
+        {
+            // A GPU that is not busy cannot be helped by lighter graphics: the CPU (or the game) is the limit.
+            if (gpuBusyPercent is { } busy && busy < 80) return new(0, "GsTuneCpuBound");
+            return canLower ? new(-1, "GsTuneLower") : new(0, "GsTuneAtMinimum");
+        }
+        if (gpuBusyPercent is { } load && load < 65 && canRaise) return new(+1, "GsTuneRaise");
+        return new(0, "GsTuneGood");
+    }
+}
+public interface IGpuLoadSampler { Task<double?> AverageAsync(TimeSpan duration, CancellationToken token); }
+public sealed record RunningGame(int Pid, string Executable, DateTimeOffset StartedUtc);

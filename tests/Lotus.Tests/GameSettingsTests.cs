@@ -119,5 +119,75 @@ public sealed class GameSettingsTests(Xunit.Abstractions.ITestOutputHelper outpu
         Assert.False(string.IsNullOrWhiteSpace(p.GpuName)); Assert.True(p.VramMb > 0);
     }
 
+    [Theory]
+    [InlineData(50, 40, 75, 98.0, -1, "GsTuneLower")]
+    [InlineData(50, 40, 75, 55.0, 0, "GsTuneCpuBound")]
+    [InlineData(75, 70, 75, 50.0, 1, "GsTuneRaise")]
+    [InlineData(75, 70, 75, 90.0, 0, "GsTuneGood")]
+    [InlineData(75, 40, 75, 99.0, -1, "GsTuneLower")]
+    [InlineData(50, 40, 75, null, -1, "GsTuneLower")]
+    public void TunerSeparatesGpuAndCpuBottlenecks(double avg, double low, int target, double? gpu, int step, string reason) =>
+        Assert.Equal(new TuningDecision(step, reason), QualityTuner.Decide(avg, low, target, gpu, canRaise: true, canLower: true));
+
+    [Fact] public void TunerRespectsLimits()
+    {
+        Assert.Equal("GsTuneAtMinimum", QualityTuner.Decide(40, 30, 60, 99, canRaise: true, canLower: false).ReasonKey);
+        Assert.Equal("GsTuneGood", QualityTuner.Decide(60, 58, 60, 40, canRaise: false, canLower: true).ReasonKey);
+    }
+
+    private const string Nrftw = """{"Version":22,"VSyncEnabled":true,"FrameRateCap":0,"DisplayContrast":-2.384185791015625e-7,"QualityPreset":4,"UpscaleMethod":1,"UpscaleQualityMode":0,"OverallVolume":1.0}""";
+    [Fact, System.Runtime.Versioning.SupportedOSPlatform("windows")] public void NoRestRecipeKeepsQualityAndOtherValues()
+    {
+        var r = SettingsAdvisor.Recommend(new("NVIDIA GeForce RTX 5060", 8192, 12, 16_000, 1920, 1080, 75));
+        var json = NoRestForTheWickedRecipe.TransformJson(Nrftw, r);
+        Assert.Contains("\"FrameRateCap\":75", json); Assert.Contains("\"QualityPreset\":4", json); // initial apply never lowers quality
+        Assert.Contains("\"OverallVolume\":1.0", json); Assert.Contains("-2.384185791015625e-7", json);
+        var recipe = new NoRestForTheWickedRecipe(@"Software\Lotus.Tests.Nonexistent");
+        Assert.Contains("\"QualityPreset\":3", recipe.StepQuality(Nrftw, -1)); Assert.Null(recipe.StepQuality(Nrftw, +1));
+        Assert.Null(recipe.Probe(new GameEntry(GameStores.Steam, "1", "Other", root)));
+    }
+
+    [Fact] public void UnrealStepMovesAllGroupsButTextures()
+    {
+        var recipe = new UnrealEngineRecipe(root);
+        var lowered = new IniText(recipe.StepQuality(Ini, -1)!);
+        Assert.Equal("2", lowered.Get("ScalabilityGroups", "sg.ShadowQuality")); Assert.Null(lowered.Get("ScalabilityGroups", "sg.TextureQuality"));
+        var allLow = "[ScalabilityGroups]\r\n" + string.Join("\r\n", new[] { "View", "AntiAliasing", "Shadow", "GlobalIllumination", "Reflection", "PostProcess", "Effects", "Foliage", "Shading" }.Select(g => $"sg.{g}Quality=0"));
+        Assert.Null(recipe.StepQuality(allLow.Replace("sg.ViewQuality", "sg.ViewDistanceQuality"), -1));
+    }
+
+    private sealed class FakeCapture(double avg, double low) : Lotus.Core.Benchmark.IFrameCaptureProvider
+    {
+        public Task<Lotus.Core.Benchmark.BenchmarkSession> CaptureAsync(Lotus.Core.Benchmark.CaptureRequest request, CancellationToken stop) =>
+            Task.FromResult(new Lotus.Core.Benchmark.BenchmarkSession(Guid.NewGuid(), request.Target, DateTimeOffset.UtcNow, request.Seconds, "Completed", "test", "test", "", "", "", "{}",
+                new("sc", 0, 0, 100, [], new(100, request.Seconds, avg, low, 20, 25, 16, 0, 50), "", false), ""));
+    }
+    private sealed class FakeSampler(double? load) : IGpuLoadSampler { public Task<double?> AverageAsync(TimeSpan d, CancellationToken t) => Task.FromResult(load); }
+    private sealed class Found : IGameProcessCheck { public bool Run = true; public bool IsRunning(GameEntry g) => Run; public RunningGame? Find(GameEntry g) => Run ? new(1234, "MyGame-Win64-Shipping.exe", DateTimeOffset.UtcNow) : null; }
+
+    [Fact] public async Task MeasureThenApplyLowersOneLevelOnlyAfterTheGameCloses()
+    {
+        var (game, config, local) = FakeUnrealGame(); var proc = new Found();
+        var vm = new GamesViewModel(new NoLibrary(), new NoStore(), new NoLauncher(), new TextCatalog(), _ => { }, new FixedProfile(), [new UnrealEngineRecipe(local)],
+            new FileGameSettingsStore(Path.Combine(root, "Backups")), proc, new FakeCapture(48, 30), new FakeSampler(99));
+        var result = (await vm.MeasureAsync(game, seconds: 1, startDelaySeconds: 0))!;
+        Assert.Equal(new TuningDecision(-1, "GsTuneLower"), result.Decision); Assert.True(result.CanApplyStep);
+        Assert.Equal(-1, (await vm.AnalyzeSettingsAsync(game))!.PendingStep);
+        Assert.Equal("GsCloseGame", await vm.ApplyStepAsync(game)); Assert.Equal(Ini, File.ReadAllText(config));
+        proc.Run = false;
+        Assert.Equal("GsStepLowered", await vm.ApplyStepAsync(game));
+        Assert.Equal("2", new IniText(File.ReadAllText(config)).Get("ScalabilityGroups", "sg.ShadowQuality"));
+        Assert.Equal("GsNoPendingStep", await vm.ApplyStepAsync(game));
+        Assert.Equal("GsRestored", await vm.RestoreSettingsAsync(game)); Assert.Equal(Ini, File.ReadAllText(config));
+        Assert.Null(await vm.MeasureAsync(game, 1, 0)); // game not running
+    }
+
+    [Fact, System.Runtime.Versioning.SupportedOSPlatform("windows")] public async Task RealGpuCounterIsReadable()
+    {
+        var load = await new PdhGpuLoadSampler().AverageAsync(TimeSpan.FromSeconds(2), CancellationToken.None);
+        output.WriteLine($"GPU 3D load (2 s): {load?.ToString("0.0") ?? "unavailable"}");
+        Assert.True(load is null or >= 0 and <= 100);
+    }
+
     public void Dispose() { if (Directory.Exists(root)) Directory.Delete(root, true); }
 }

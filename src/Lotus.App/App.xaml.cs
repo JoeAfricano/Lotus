@@ -90,9 +90,10 @@ public partial class App : Application
                 new Lotus.Infrastructure.Games.JsonManualGameStore(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "games.json")),
                 new Lotus.Infrastructure.Games.WindowsGameLauncher(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Games operation failed"),
                 new Lotus.Infrastructure.Games.WindowsSystemProfile(new Lotus.Infrastructure.Optimization.WindowsDisplayModes()),
-                [new Lotus.Infrastructure.Games.UnrealEngineRecipe()],
+                [new Lotus.Infrastructure.Games.UnrealEngineRecipe(), new Lotus.Infrastructure.Games.NoRestForTheWickedRecipe()],
                 new Lotus.Infrastructure.Games.FileGameSettingsStore(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "GameSettingsBackups")),
-                new Lotus.Infrastructure.Games.WindowsGameProcessCheck()))
+                new Lotus.Infrastructure.Games.WindowsGameProcessCheck(),
+                p.GetRequiredService<IFrameCaptureProvider>(), new Lotus.Infrastructure.Games.PdhGpuLoadSampler()))
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);

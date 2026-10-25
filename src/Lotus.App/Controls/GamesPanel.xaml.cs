@@ -65,11 +65,42 @@ public sealed partial class GamesPanel : UserControl
             XamlRoot = XamlRoot, Title = vm.Text.Format("GsTitle", card.Name), RequestedTheme = ElementTheme.Dark,
             Content = new ScrollViewer { Content = body, MaxHeight = 460 }, CloseButtonText = vm.Text["GsClose"], DefaultButton = ContentDialogButton.Close
         };
-        if (analysis.Support is { CanApply: true }) dialog.PrimaryButtonText = vm.Text["GsApply"];
+        // A measured adjustment takes precedence over the hardware-based starting point.
+        var pending = analysis.PendingStep is { } step && analysis.Support is { CanApply: true };
+        if (pending) body.Children.Insert(1, new TextBlock { Text = vm.Text.Format("GsStepPending", vm.Text[analysis.PendingStep > 0 ? "GsStepUp" : "GsStepDown"]), TextWrapping = TextWrapping.Wrap, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        if (analysis.Support is { CanApply: true }) dialog.PrimaryButtonText = vm.Text[pending ? "GsStepApply" : "GsApply"];
         if (analysis.HasOriginal) dialog.SecondaryButtonText = vm.Text["GsRestore"];
         var result = await dialog.ShowAsync();
-        if (result == ContentDialogResult.Primary) await vm.ApplySettingsAsync(card.Game, analysis.Recommendation);
+        if (result == ContentDialogResult.Primary) { if (pending) await vm.ApplyStepAsync(card.Game); else await vm.ApplySettingsAsync(card.Game, analysis.Recommendation); }
         else if (result == ContentDialogResult.Secondary) await vm.RestoreSettingsAsync(card.Game);
+    }
+
+    // Measure while the game runs, then explain the bottleneck and offer one quality step.
+    private async void OnMeasureGame(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: GameCard card } || DataContext is not GamesViewModel vm || !vm.CanMeasure) return;
+        if (!vm.IsGameRunning(card.Game))
+        {
+            await Show(vm.Text["GsMeasureMenu"], new TextBlock { Text = vm.Text.Format("GsMeasureNotRunning", card.Name), TextWrapping = TextWrapping.Wrap, MaxWidth = 440 }, null, vm.Text["GsClose"]);
+            return;
+        }
+        var start = await Show(vm.Text.Format("GsMeasureConfirmTitle", card.Name), new TextBlock { Text = vm.Text["GsMeasureConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, vm.Text["GsMeasureStart"], vm.Text["UxCancel"]);
+        if (!start) return;
+        var result = await vm.MeasureAsync(card.Game);
+        if (result is null) return;
+        var body = new StackPanel { Spacing = 10, MaxWidth = 480 };
+        body.Children.Add(new TextBlock { Text = result.Summary, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
+        body.Children.Add(new TextBlock { Text = result.DecisionText, TextWrapping = TextWrapping.Wrap });
+        if (result.CanApplyStep) body.Children.Add(new TextBlock { Text = vm.Text.Format("GsStepPending", vm.Text[result.Decision.Step > 0 ? "GsStepUp" : "GsStepDown"]), TextWrapping = TextWrapping.Wrap, Opacity = 0.8 });
+        if (await Show(vm.Text["GsMeasureResultTitle"], body, result.CanApplyStep ? vm.Text["GsStepApply"] : null, vm.Text["GsClose"]))
+            await vm.ApplyStepAsync(card.Game);
+    }
+
+    private async Task<bool> Show(string title, UIElement content, string? primary, string close)
+    {
+        var dialog = new ContentDialog { XamlRoot = XamlRoot, Title = title, Content = content, CloseButtonText = close, RequestedTheme = ElementTheme.Dark, DefaultButton = ContentDialogButton.Close };
+        if (primary is not null) dialog.PrimaryButtonText = primary;
+        return await dialog.ShowAsync() == ContentDialogResult.Primary;
     }
 
     private async void OnRemoveGame(object sender, RoutedEventArgs e)

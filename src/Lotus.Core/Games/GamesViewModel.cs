@@ -6,10 +6,11 @@ namespace Lotus.Core.Games;
 
 // Each card carries its own labels and commands, so item templates never depend on the parent DataContext.
 public sealed record GameCard(GameEntry Game, string Name, string Store, string Initials, string? CoverPath,
-    string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove, string OptimizeLabel = "");
+    string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove, string OptimizeLabel = "", string MeasureLabel = "");
 public sealed record StoreFilter(string Id, string Label);
 // Result of "Otimizar configurações": hardware, the recommendation as readable lines, and whether Lotus can apply it.
-public sealed record GameSettingsAnalysis(SettingsRecommendation Recommendation, IReadOnlyList<string> Lines, string Hardware, GameSettingsSupport? Support, bool HasOriginal);
+public sealed record GameSettingsAnalysis(SettingsRecommendation Recommendation, IReadOnlyList<string> Lines, string Hardware, GameSettingsSupport? Support, bool HasOriginal, int? PendingStep = null);
+public sealed record MeasureResult(string Summary, TuningDecision Decision, string DecisionText, bool CanApplyStep);
 
 // "Meus Jogos": scans launchers in the background, filters by text and store, launches on request.
 // "Remove from list" only hides a game (launcher or manual); a later scan can bring it back. Nothing is uninstalled.
@@ -23,6 +24,9 @@ public sealed class GamesViewModel : ObservableObject
     private readonly IReadOnlyList<IGameSettingsRecipe> recipes;
     private readonly IGameSettingsStore? settingsStore;
     private readonly IGameProcessCheck? processCheck;
+    private readonly Benchmark.IFrameCaptureProvider? capture;
+    private readonly IGpuLoadSampler? gpuSampler;
+    private readonly Dictionary<string, int> pendingSteps = new(StringComparer.OrdinalIgnoreCase);
     private List<GameEntry> all = [];
     private List<GameEntry> manual = [];
     private HashSet<string> hidden = new(StringComparer.OrdinalIgnoreCase);
@@ -49,10 +53,11 @@ public sealed class GamesViewModel : ObservableObject
     public IRelayCommand<GameCard> RemoveCommand { get; }
 
     public GamesViewModel(IGameLibrary library, IManualGameStore manualStore, IGameLauncher launcher, ITextCatalog text, Action<Exception> log,
-        ISystemProfileSource? profileSource = null, IReadOnlyList<IGameSettingsRecipe>? recipes = null, IGameSettingsStore? settingsStore = null, IGameProcessCheck? processCheck = null)
+        ISystemProfileSource? profileSource = null, IReadOnlyList<IGameSettingsRecipe>? recipes = null, IGameSettingsStore? settingsStore = null, IGameProcessCheck? processCheck = null,
+        Benchmark.IFrameCaptureProvider? capture = null, IGpuLoadSampler? gpuSampler = null)
     {
         this.library = library; this.manualStore = manualStore; this.launcher = launcher; Text = text; this.log = log;
-        this.profileSource = profileSource; this.recipes = recipes ?? []; this.settingsStore = settingsStore; this.processCheck = processCheck;
+        this.profileSource = profileSource; this.recipes = recipes ?? []; this.settingsStore = settingsStore; this.processCheck = processCheck; this.capture = capture; this.gpuSampler = gpuSampler;
         LaunchCommand = new RelayCommand<GameCard>(Launch, c => c?.Game.CanLaunch == true);
         RemoveCommand = new RelayCommand<GameCard>(Remove);
     }
@@ -144,7 +149,7 @@ public sealed class GamesViewModel : ObservableObject
         Games.Clear();
         foreach (var g in Visible.Where(g => (store.Length == 0 || g.Store == store) && (term.Length == 0 || Normalize(g.Name).Contains(term)))
                                  .OrderBy(g => g.Name, StringComparer.CurrentCultureIgnoreCase))
-            Games.Add(new(g, g.Name, g.Store, Initials(g.Name), g.CoverPath, Text["GamesPlay"], Text["GamesHide"], LaunchCommand, RemoveCommand, Text["GsMenu"]));
+            Games.Add(new(g, g.Name, g.Store, Initials(g.Name), g.CoverPath, Text["GamesPlay"], Text["GamesHide"], LaunchCommand, RemoveCommand, Text["GsMenu"], Text["GsMeasureMenu"]));
         OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(EmptyMessage));
     }
 
@@ -183,7 +188,7 @@ public sealed class GamesViewModel : ObservableObject
                 };
                 lines.AddRange(r.ReasonKeys.Select(k => Text[k]));
                 var hardware = Text.Format("GsHardware", string.IsNullOrWhiteSpace(p.GpuName) ? "?" : p.GpuName, p.VramMb / 1024.0, p.Width, p.Height, p.RefreshHz);
-                return new GameSettingsAnalysis(r, lines, hardware, support, settingsStore?.LoadOriginal(game.Key) is not null);
+                return new GameSettingsAnalysis(r, lines, hardware, support, settingsStore?.LoadOriginal(game.Key) is not null, pendingSteps.TryGetValue(game.Key, out var step) ? step : null);
             });
         }
         catch (Exception ex) { log(ex); status = Text["GsFailed"]; Notify(); return null; }
@@ -226,6 +231,56 @@ public sealed class GamesViewModel : ObservableObject
             if (recipe.ReadRaw(game) != original) return "GsVerifyFailed";
             settingsStore.ClearOriginal(game.Key);
             return "GsRestored";
+        });
+        status = Text.Format(key, game.Name); Notify();
+        return key;
+    }
+
+    // Measures the running game with PresentMon while sampling GPU load, then decides one quality step.
+    public bool CanMeasure => capture is not null && processCheck is not null && profileSource is not null;
+    public bool IsGameRunning(GameEntry game) => processCheck?.Find(game) is not null;
+
+    public async Task<MeasureResult?> MeasureAsync(GameEntry game, int seconds = 45, int startDelaySeconds = 10, CancellationToken token = default)
+    {
+        if (!CanMeasure || processCheck!.Find(game) is not { } run) { status = Text.Format("GsMeasureNotRunning", game.Name); Notify(); return null; }
+        try
+        {
+            for (var left = startDelaySeconds; left > 0; left--) { status = Text.Format("GsMeasureStartsIn", left); Notify(); await Task.Delay(1000, token); }
+            status = Text.Format("GsMeasuring", seconds); Notify();
+            var gpu = gpuSampler?.AverageAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<double?>(null);
+            var session = await capture!.CaptureAsync(new(new(run.Pid, run.Executable, run.StartedUtc), seconds, Elevated: true, "Lotus: " + game.Name, "{}"), token);
+            var gpuBusy = await gpu;
+            if (session.Data?.Statistics is not { } s) { status = Text["GsMeasureFailed"]; Notify(); return null; }
+            var (recipe, support) = Recipe(game);
+            var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
+            var canRaise = raw is not null && recipe!.StepQuality(raw, +1) is not null;
+            var canLower = raw is not null && recipe!.StepQuality(raw, -1) is not null;
+            var target = SettingsAdvisor.Recommend(profileSource!.Read()).TargetFps;
+            var decision = QualityTuner.Decide(s.AverageFps, s.Low1Fps, target, gpuBusy, canRaise, canLower);
+            if (decision.Step != 0) pendingSteps[game.Key] = decision.Step; else pendingSteps.Remove(game.Key);
+            var summary = Text.Format("GsMeasureSummary", s.AverageFps, s.Low1Fps, gpuBusy is { } g ? $"{g:0}%" : "?", target);
+            status = summary; Notify();
+            return new(summary, decision, Text[decision.ReasonKey], decision.Step != 0);
+        }
+        catch (OperationCanceledException) { status = ""; Notify(); return null; }
+        catch (Exception ex) { log(ex); status = Text["GsMeasureFailed"]; Notify(); return null; }
+    }
+
+    // Applies the step decided by the last measurement (game closed, original saved once, verified).
+    public async Task<string> ApplyStepAsync(GameEntry game)
+    {
+        var key = await Task.Run(() =>
+        {
+            if (!pendingSteps.TryGetValue(game.Key, out var step)) return "GsNoPendingStep";
+            var (recipe, support) = Recipe(game);
+            if (recipe is null || support is not { CanApply: true } || settingsStore is null) return "GsNotSupported";
+            if (processCheck?.IsRunning(game) == true) return "GsCloseGame";
+            if (recipe.ReadRaw(game) is not { } raw || recipe.StepQuality(raw, step) is not { } updated) return "GsAlready";
+            settingsStore.SaveOriginalOnce(game.Key, raw);
+            recipe.WriteRaw(game, updated);
+            if (recipe.ReadRaw(game) != updated) return "GsVerifyFailed";
+            pendingSteps.Remove(game.Key);
+            return step > 0 ? "GsStepRaised" : "GsStepLowered";
         });
         status = Text.Format(key, game.Name); Notify();
         return key;

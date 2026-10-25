@@ -765,4 +765,26 @@ Current conditions: {1}</value></data>
   <data name="GsFailed" xml:space="preserve"><value>Hardware could not be analyzed. Details in the log.</value></data>
   <data name="GsReasonTarget60" xml:space="preserve"><value>A steady 60 FPS target: better than swinging while chasing the monitor's maximum rate.</value></data>
   <data name="GsReasonLowEnd" xml:space="preserve"><value>Entry-level GPU: if it still stutters, lower the game resolution to 1600×900 or 1280×720.</value></data>
+  <data name="GsMeasureMenu" xml:space="preserve"><value>Measure and adjust</value></data>
+  <data name="GsMeasureNotRunning" xml:space="preserve"><value>Open {0} and play a typical scene; then use "Measure and adjust".</value></data>
+  <data name="GsMeasureConfirmTitle" xml:space="preserve"><value>Measure {0}?</value></data>
+  <data name="GsMeasureConfirmBody" xml:space="preserve"><value>After confirming, go back to the game: Lotus starts measuring in 10 seconds and measures for 45 seconds. Keep playing normally. Windows may ask for admin permission for the FPS meter (PresentMon).</value></data>
+  <data name="GsMeasureStart" xml:space="preserve"><value>Measure</value></data>
+  <data name="GsMeasureStartsIn" xml:space="preserve"><value>Go back to the game: measuring starts in {0} s...</value></data>
+  <data name="GsMeasuring" xml:space="preserve"><value>Measuring for {0} s... keep playing.</value></data>
+  <data name="GsMeasureFailed" xml:space="preserve"><value>Could not measure (permission denied or the game closed). Details in the log.</value></data>
+  <data name="GsMeasureSummary" xml:space="preserve"><value>Average {0:0} FPS · 1% low {1:0} FPS · GPU {2} busy · target {3} FPS.</value></data>
+  <data name="GsMeasureResultTitle" xml:space="preserve"><value>Measurement result</value></data>
+  <data name="GsTuneLower" xml:space="preserve"><value>The GPU is maxed out and FPS is below target: one quality level lower should make the game steadier.</value></data>
+  <data name="GsTuneRaise" xml:space="preserve"><value>The GPU has headroom and FPS is on target: you can go one quality level higher without losing smoothness.</value></data>
+  <data name="GsTuneCpuBound" xml:space="preserve"><value>FPS is below target but the GPU is not maxed out: the CPU (or the game itself) is the bottleneck. Lower graphics would not help; close background apps and reduce CPU-heavy options (view distance, crowds, physics).</value></data>
+  <data name="GsTuneAtMinimum" xml:space="preserve"><value>FPS is below target, but quality is already at the lowest level Lotus adjusts. Consider lowering resolution or using the upscaler's Performance mode.</value></data>
+  <data name="GsTuneGood" xml:space="preserve"><value>Looks great: FPS on target with the GPU well used. Nothing to change.</value></data>
+  <data name="GsStepApply" xml:space="preserve"><value>Apply adjustment</value></data>
+  <data name="GsStepPending" xml:space="preserve"><value>Measured adjustment pending: {0} one quality level (close the game and apply).</value></data>
+  <data name="GsStepUp" xml:space="preserve"><value>raise</value></data>
+  <data name="GsStepDown" xml:space="preserve"><value>lower</value></data>
+  <data name="GsStepRaised" xml:space="preserve"><value>{0}: quality raised one level. Play and measure again to confirm.</value></data>
+  <data name="GsStepLowered" xml:space="preserve"><value>{0}: quality lowered one level. Play and measure again to confirm.</value></data>
+  <data name="GsNoPendingStep" xml:space="preserve"><value>{0}: measure the game before adjusting.</value></data>
 </root>

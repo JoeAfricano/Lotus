@@ -75,6 +75,18 @@ public sealed class UnrealEngineRecipe(string? localAppData = null) : IGameSetti
         ini.Set("/Script/Engine.GameUserSettings", "FrameRateLimit", r.FpsCap.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture));
         return ini.ToString();
     }
+    // Steps every scalability group except textures (VRAM-bound) by one level within 0..3.
+    public string? StepQuality(string raw, int step)
+    {
+        var ini = new IniText(raw); var changed = false;
+        foreach (var g in Groups)
+        {
+            var current = int.TryParse(ini.Get("ScalabilityGroups", g), out var v) ? v : 3;
+            var next = Math.Clamp(current + Math.Sign(step), 0, 3);
+            if (next != current) { ini.Set("ScalabilityGroups", g, next.ToString()); changed = true; }
+        }
+        return changed ? ini.ToString() : null;
+    }
 }
 
 // Minimal line-preserving INI editor: changes or appends a key inside a section, never reorders or drops other lines.
@@ -131,6 +143,26 @@ public sealed class FileGameSettingsStore(string root) : IGameSettingsStore
 [SupportedOSPlatform("windows")]
 public sealed class WindowsGameProcessCheck : IGameProcessCheck
 {
+    // Main game process = largest working set among processes under the install folder.
+    public RunningGame? Find(GameEntry game)
+    {
+        var dir = game.InstallDir is { Length: > 0 } d ? Path.GetFullPath(d).TrimEnd('\\') + "\\" : null;
+        if (dir is null) return null;
+        RunningGame? best = null; long bestMemory = -1;
+        foreach (var p in Process.GetProcesses())
+        {
+            using (p)
+            {
+                try
+                {
+                    if (p.MainModule?.FileName is { } f && f.StartsWith(dir, StringComparison.OrdinalIgnoreCase) && p.WorkingSet64 > bestMemory)
+                    { bestMemory = p.WorkingSet64; best = new(p.Id, Path.GetFileName(f), new DateTimeOffset(p.StartTime.ToUniversalTime(), TimeSpan.Zero)); }
+                }
+                catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException) { }
+            }
+        }
+        return best;
+    }
     public bool IsRunning(GameEntry game)
     {
         var dir = game.InstallDir is { Length: > 0 } d ? Path.GetFullPath(d).TrimEnd('\\') + "\\" : null;
@@ -144,5 +176,55 @@ public sealed class WindowsGameProcessCheck : IGameProcessCheck
             }
         }
         return false;
+    }
+}
+
+// No Rest for the Wicked (Unity, Moon Studios): JSON in HKCU\Software\Moon Studios\NoRestForTheWicked, value "DeviceSettings_Key_h…".
+// Calibrated against the in-game menu: QualityPreset 4 = "Qualidade Máxima", UpscaleMethod 1 = DLSS, UpscaleQualityMode 0 = Qualidade.
+// Initial apply never lowers quality: it sets the upscaler (RTX only, verified values) and the FPS cap; QualityPreset changes only
+// through the measurement loop (QualityStep), one level at a time.
+[SupportedOSPlatform("windows")]
+public sealed class NoRestForTheWickedRecipe(string registryPath = @"Software\Moon Studios\NoRestForTheWicked") : IGameSettingsRecipe
+{
+    public string Id => "moonstudios.norestforthewicked.v1";
+    public const int MaxPreset = 4;
+    private string? ValueName()
+    {
+        using var key = Registry.CurrentUser.OpenSubKey(registryPath);
+        return key?.GetValueNames().FirstOrDefault(n => n.StartsWith("DeviceSettings_Key", StringComparison.Ordinal));
+    }
+    public GameSettingsSupport? Probe(GameEntry game) =>
+        game.Name.Contains("No Rest for the Wicked", StringComparison.OrdinalIgnoreCase) || game.Id == "1371980"
+            ? ValueName() is null ? new(Id, "Moon Studios (Unity)", false, "GsRunOnce") : new(Id, "Moon Studios (Unity)", true)
+            : null;
+    public string? ReadRaw(GameEntry game)
+    {
+        if (ValueName() is not { } name) return null;
+        using var key = Registry.CurrentUser.OpenSubKey(registryPath);
+        return key?.GetValue(name) is byte[] b ? Encoding.UTF8.GetString(b).TrimEnd('\0') : null;
+    }
+    public void WriteRaw(GameEntry game, string raw)
+    {
+        var name = ValueName() ?? throw new InvalidOperationException("Game settings not found.");
+        using var key = Registry.CurrentUser.OpenSubKey(registryPath, writable: true) ?? throw new InvalidOperationException("Game settings key not found.");
+        key.SetValue(name, Encoding.UTF8.GetBytes(raw + "\0"), RegistryValueKind.Binary); // Unity PlayerPrefs strings are NUL-terminated UTF-8
+    }
+    public string Transform(string raw, SettingsRecommendation r) => TransformJson(raw, r);
+    public string? StepQuality(string raw, int step)
+    {
+        var json = System.Text.Json.Nodes.JsonNode.Parse(raw)!.AsObject();
+        var current = json["QualityPreset"]?.GetValue<int>() ?? MaxPreset;
+        var next = current + Math.Sign(step);
+        if (next < 0 || next > MaxPreset) return null;
+        json["QualityPreset"] = next;
+        return json.ToJsonString();
+    }
+    public static string TransformJson(string raw, SettingsRecommendation r, int? qualityPreset = null)
+    {
+        var json = System.Text.Json.Nodes.JsonNode.Parse(raw)!.AsObject();
+        json["FrameRateCap"] = r.FpsCap;
+        if (r.Upscaler == Upscaler.Dlss) { json["UpscaleMethod"] = 1; if (r.Mode == UpscaleMode.Quality) json["UpscaleQualityMode"] = 0; }
+        if (qualityPreset is { } q) json["QualityPreset"] = Math.Clamp(q, 0, MaxPreset);
+        return json.ToJsonString();
     }
 }

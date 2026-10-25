@@ -40,3 +40,11 @@ Primeira entrega da versão focada no jogador leigo (ver decisões de produto em
 - **Segurança**: só com o jogo fechado (processo sob a pasta de instalação), original salvo uma única vez em `%LOCALAPPDATA%\Lotus\GameSettingsBackups`, verificação após gravar, "Restaurar original" e confirmação no diálogo.
 - **Jogos deste PC**: No Rest for the Wicked guarda opções em JSON no registro (`DeviceSettings_Key`: `QualityPreset`, `UpscaleMethod`, `RenderScale*`, `FrameRateCap`, `DRSEnabled/DRSTargetFPS`) — receita depende de calibrar os números dos presets; Persona 5 Royal e God of War ficam em modo recomendação.
 - Testes: 249 aprovados (pontuação de GPU, recomendações de entrada a topo, receita Unreal com jogo falso, editor INI, aplicar/bloquear jogo aberto/restaurar, leitura real somente leitura).
+
+## Ciclo de medição e receita calibrada (25/10/2026)
+
+- **Regra principal**: a aplicação inicial nunca reduz qualidade sem evidência; a qualidade muda só pelo ciclo **Medir e ajustar**, um nível por vez.
+- **Medir e ajustar** (menu do jogo, com o jogo aberto): contagem de 10 s para o usuário voltar ao jogo, captura PresentMon de 45 s (elevada; o Windows pede permissão) e, em paralelo, uso de GPU pelo contador do Windows `\GPU Engine(*engtype_3D)\Utilization Percentage` (`PdhGpuLoadSampler`, qualquer fabricante). `QualityTuner`: abaixo da meta (média < 95% ou 1% low < 70%) com GPU ≥ 80% → baixar um nível; abaixo da meta com GPU < 80% → gargalo de CPU/jogo, não mexe nos gráficos e explica; na meta com GPU < 65% → subir um nível; senão, manter. O ajuste fica pendente e é aplicado com o jogo fechado, com backup do original e verificação.
+- **No Rest for the Wicked** (`NoRestForTheWickedRecipe`): calibrado pelas telas do jogo — `QualityPreset` 4 = Qualidade Máxima (escala de 0 a 4, de Desempenho a Qualidade Máxima), `UpscaleMethod` 1 = DLSS, `UpscaleQualityMode` 0 = Qualidade, `FrameRateCap` 0 = desligado. Aplicação inicial: limite de FPS na meta e DLSS Qualidade em RTX; preset só pelo ciclo de medição. JSON preservado (só chaves alteradas mudam).
+- **Unreal**: o passo altera todos os grupos `sg.*` exceto texturas.
+- Testes: 260 aprovados (regras de decisão, limites, receitas, medir→ajustar com captura simulada, leitura real do contador de GPU). Nenhuma configuração real de jogo foi alterada.

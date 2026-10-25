@@ -765,4 +765,26 @@ Condições atuais: {1}</value></data>
   <data name="GsFailed" xml:space="preserve"><value>Não foi possível analisar o hardware. Detalhes no log.</value></data>
   <data name="GsReasonTarget60" xml:space="preserve"><value>Meta de 60 FPS estáveis: melhor que oscilar tentando alcançar a taxa máxima do monitor.</value></data>
   <data name="GsReasonLowEnd" xml:space="preserve"><value>Placa de entrada: se ainda travar, reduza a resolução do jogo para 1600×900 ou 1280×720.</value></data>
+  <data name="GsMeasureMenu" xml:space="preserve"><value>Medir e ajustar</value></data>
+  <data name="GsMeasureNotRunning" xml:space="preserve"><value>Abra {0} e jogue numa cena comum; depois use "Medir e ajustar".</value></data>
+  <data name="GsMeasureConfirmTitle" xml:space="preserve"><value>Medir {0}?</value></data>
+  <data name="GsMeasureConfirmBody" xml:space="preserve"><value>Depois de confirmar, volte para o jogo: o Lotus começa a medir em 10 segundos e mede por 45 segundos. Continue jogando normalmente. O Windows pode pedir permissão de administrador para o medidor de FPS (PresentMon).</value></data>
+  <data name="GsMeasureStart" xml:space="preserve"><value>Medir</value></data>
+  <data name="GsMeasureStartsIn" xml:space="preserve"><value>Volte para o jogo: a medição começa em {0} s...</value></data>
+  <data name="GsMeasuring" xml:space="preserve"><value>Medindo por {0} s... continue jogando.</value></data>
+  <data name="GsMeasureFailed" xml:space="preserve"><value>Não foi possível medir (permissão negada ou o jogo fechou). Detalhes no log.</value></data>
+  <data name="GsMeasureSummary" xml:space="preserve"><value>Média {0:0} FPS · 1% low {1:0} FPS · GPU {2} ocupada · meta {3} FPS.</value></data>
+  <data name="GsMeasureResultTitle" xml:space="preserve"><value>Resultado da medição</value></data>
+  <data name="GsTuneLower" xml:space="preserve"><value>A placa de vídeo está no limite e o FPS ficou abaixo da meta: baixar um nível de qualidade deve deixar o jogo mais estável.</value></data>
+  <data name="GsTuneRaise" xml:space="preserve"><value>Sobra placa de vídeo e o FPS está na meta: dá para subir um nível de qualidade sem perder fluidez.</value></data>
+  <data name="GsTuneCpuBound" xml:space="preserve"><value>O FPS ficou abaixo da meta, mas a placa de vídeo não está no limite: o processador (ou o próprio jogo) é o gargalo. Baixar gráficos não ajudaria; feche programas em segundo plano e reduza opções de CPU no jogo (distância de visão, multidões, física).</value></data>
+  <data name="GsTuneAtMinimum" xml:space="preserve"><value>O FPS ficou abaixo da meta, mas a qualidade já está no mínimo que o Lotus ajusta. Considere reduzir a resolução ou usar o upscaler em modo Desempenho.</value></data>
+  <data name="GsTuneGood" xml:space="preserve"><value>Está ótimo: FPS na meta com a placa bem aproveitada. Nada a mudar.</value></data>
+  <data name="GsStepApply" xml:space="preserve"><value>Aplicar ajuste</value></data>
+  <data name="GsStepPending" xml:space="preserve"><value>Ajuste medido pendente: {0} um nível de qualidade (feche o jogo e aplique).</value></data>
+  <data name="GsStepUp" xml:space="preserve"><value>subir</value></data>
+  <data name="GsStepDown" xml:space="preserve"><value>baixar</value></data>
+  <data name="GsStepRaised" xml:space="preserve"><value>{0}: qualidade aumentada um nível. Jogue e meça de novo para confirmar.</value></data>
+  <data name="GsStepLowered" xml:space="preserve"><value>{0}: qualidade reduzida um nível. Jogue e meça de novo para confirmar.</value></data>
+  <data name="GsNoPendingStep" xml:space="preserve"><value>{0}: meça o jogo antes de ajustar.</value></data>
 </root>
