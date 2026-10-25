@@ -35,6 +35,7 @@ public sealed partial class MainWindow : Window
     private readonly Lotus.Core.Integrations.IntegrationsViewModel integrations;
     private readonly Lotus.Core.Score.LotusScoreViewModel score;
     private readonly Lotus.Core.Tools.ToolsViewModel tools;
+    private GuidedSetupViewModel? guided;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
     private BrandPulse? flowerPulse;
@@ -56,6 +57,7 @@ public sealed partial class MainWindow : Window
         this.monitoring = monitoring;
         this.memoryAnalysis = memoryAnalysis;
         this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer; this.powerProfiles = powerProfiles; this.hardware = hardware; this.games = games; this.integrations = integrations; this.score = score; this.tools = tools;
+        guided = new GuidedSetupViewModel(preferences, text, ex => Serilog.Log.Warning(ex, "Guided setup"), powerProfiles, tools, integrations);
         // Preparar e jogar: same Game profile and journal as Otimizar; the game is followed until it closes.
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
         games.Watch = new Lotus.Core.Games.PollingGameWatch(new Lotus.Infrastructure.Games.WindowsGameProcessCheck());
@@ -300,7 +302,8 @@ public sealed partial class MainWindow : Window
     }
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
-        if (updatingNavigation || args.SelectedItem is not NavigationViewItem { Tag: string id }) return;
+        if (updatingNavigation || args.SelectedItem is not NavigationViewItem { Tag: string id } item) return;
+        if (item.Icon is { } icon) Motion.Pop(icon); // the chosen section's icon springs
         ViewModel.NavigateCommand.Execute(id);
         if (narrow == true && Navigation.PaneDisplayMode != NavigationViewPaneDisplayMode.Top) Navigation.IsPaneOpen = false;
     }
@@ -317,7 +320,7 @@ public sealed partial class MainWindow : Window
         if (force || displayedSectionId != group)
         {
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
-                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools), new SuppressNavigationTransitionInfo());
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided }, new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
             Motion.EnterPage(ContentFrame); // new section rises and fades in
         }

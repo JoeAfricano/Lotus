@@ -32,6 +32,7 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
     public bool CanRestoreRtss { get; private set; }
     public bool CanRestoreLayout { get; private set; }
     public string LayoutStatus { get; private set; } = "";
+    public bool LayoutOn { get; private set; } // a Lotus layout is the one RivaTuner shows
     public string? ExportedPath { get; private set; }
     public bool Busy { get; private set; }
 
@@ -45,6 +46,7 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             CanRestoreRtss = r.Installed && rtss.HasBackup();
             CanRestoreLayout = r.Installed && rtss.HasLayoutBackup();
             var active = r.Installed && rtss.LayoutActive();
+            LayoutOn = active || (r.Installed && rtss.ActiveLayoutName() is { } name && name.StartsWith("Lotus", StringComparison.OrdinalIgnoreCase)); // incl. the player's own Lotus layouts
             LayoutStatus = !r.Installed ? "" : active ? Text[rtss.ActiveLayoutName() == "Lotus-Neon" ? "IntLayoutActiveNeon" : "IntLayoutActive"] : rtss.ActiveLayoutName() is { } other ? Text.Format("IntLayoutOther", other) : Text["IntLayoutInactive"];
             var ab = tools.Afterburner(); AfterburnerStatus = ab.Installed ? Text.Format("IntAfterburnerOn", ab.Version ?? "?") : Text["IntNotInstalled"];
             var scs = tools.ScsKiller(); ScsStatus = scs.Installed ? Text.Format("IntScsOn", scs.Version ?? "?") : Text["IntScsOff"];

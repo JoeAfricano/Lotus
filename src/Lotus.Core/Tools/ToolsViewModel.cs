@@ -66,6 +66,8 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
     public string DriverStatus { get; private set; } = "";
     public string? DriverUrl { get; private set; }
     public bool HasTemp { get; private set; }
+    public long TempBytes => tempScan?.Bytes ?? 0;
+    public int TempItems => tempScan?.Items ?? 0;
     public string Message { get; private set; } = "";
     public string DiskTip { get; private set; } = "";
     public string NetTileStatus => NetStatus.Length > 0 ? NetStatus : Text["ToolNetTileHint"];

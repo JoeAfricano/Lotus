@@ -1209,4 +1209,56 @@ Current conditions: {1}</value></data>
   <data name="RecCancel" xml:space="preserve"><value>Not now</value></data>
   <data name="RecConfirmTitle" xml:space="preserve"><value>Install {0}?</value></data>
   <data name="RecConfirmBody" xml:space="preserve"><value>Lotus will download {0} through winget, from an official source, and install it without you clicking anything. By confirming you accept the publisher's terms. If Windows asks for administrator permission, that's the installer asking.</value></data>
+  <data name="HomeGames" xml:space="preserve"><value>Your games</value></data>
+  <data name="HomeGamesAll" xml:space="preserve"><value>See all</value></data>
+  <data name="GdIntroTitle" xml:space="preserve"><value>Let's get your PC ready to play.</value></data>
+  <data name="GdIntroBody" xml:space="preserve"><value>Lotus takes a look at the PC, asks what you want to change and does the rest. Takes about 30 seconds.</value></data>
+  <data name="GdStart" xml:space="preserve"><value>Analyze my PC</value></data>
+  <data name="GdSkip" xml:space="preserve"><value>Not now</value></data>
+  <data name="GdSafety" xml:space="preserve"><value>**Nothing changes until you answer.** Everything Lotus touches can be undone, and files go to the Recycle Bin.</value></data>
+  <data name="GdAnalyzingTitle" xml:space="preserve"><value>Analyzing your PC...</value></data>
+  <data name="GdAnalyzingBody" xml:space="preserve"><value>Only reading for now. Nothing is changed in this step.</value></data>
+  <data name="GdStepPc" xml:space="preserve"><value>Reading memory, disks and open programs</value></data>
+  <data name="GdStepWindows" xml:space="preserve"><value>Checking power and Windows gaming features</value></data>
+  <data name="GdStepDns" xml:space="preserve"><value>Measuring DNS speed</value></data>
+  <data name="GdStepDrivers" xml:space="preserve"><value>Looking for new drivers</value></data>
+  <data name="GdAnalysisDone" xml:space="preserve"><value>Analysis complete</value></data>
+  <data name="GdQuestionsTitle" xml:space="preserve"><value>Here's what I found. What do you want to do?</value></data>
+  <data name="GdQuestionsBody" xml:space="preserve"><value>I've already ticked what I recommend. Untick anything you don't want and click **Optimize now**.</value></data>
+  <data name="GdNothingBody" xml:space="preserve"><value>**Your PC is already well tuned.** I found nothing to change right now.</value></data>
+  <data name="GdQProfile" xml:space="preserve"><value>Put Windows in game mode</value></data>
+  <data name="GdQProfileDetail" xml:space="preserve"><value>{0}</value></data>
+  <data name="GdQTemp" xml:space="preserve"><value>Send {0} of temporary files to the Recycle Bin</value></data>
+  <data name="GdQTempDetail" xml:space="preserve"><value>{0} items older than 24 hours that Windows and programs left behind. You can get them back from the Recycle Bin.</value></data>
+  <data name="GdQApps" xml:space="preserve"><value>Close heavy programs before playing</value></data>
+  <data name="GdQAppsDetail" xml:space="preserve"><value>Tick the ones that can close. They close the normal way, like clicking X, so nothing unsaved is lost without a prompt.</value></data>
+  <data name="GdQDns" xml:space="preserve"><value>Switch to a faster DNS</value></data>
+  <data name="GdQDnsDetail" xml:space="preserve"><value>The current one is saved and you can go back in Tools › Internet and DNS. Windows may ask for permission.</value></data>
+  <data name="GdQOverlay" xml:space="preserve"><value>Turn on the Lotus FPS overlay</value></data>
+  <data name="GdQOverlayDetail" xml:space="preserve"><value>Shows FPS, 1% low, temperature and usage in game, through RivaTuner. Windows may ask for permission.</value></data>
+  <data name="GdQDriver" xml:space="preserve"><value>There's a new driver for your graphics card</value></data>
+  <data name="GdOpenDriver" xml:space="preserve"><value>Open official site</value></data>
+  <data name="GdQDisk" xml:space="preserve"><value>Low free disk space</value></data>
+  <data name="GdApply" xml:space="preserve"><value>Optimize now ({0})</value></data>
+  <data name="GdFinishNoChanges" xml:space="preserve"><value>Finish without changes</value></data>
+  <data name="GdLater" xml:space="preserve"><value>Leave it for later</value></data>
+  <data name="GdUndoHint" xml:space="preserve"><value>You can undo everything later in **Optimize my PC** and **Tools**.</value></data>
+  <data name="GdApplyingTitle" xml:space="preserve"><value>Optimizing...</value></data>
+  <data name="GdApplyingBody" xml:space="preserve"><value>Leave it to me. If Windows asks for permission, just accept.</value></data>
+  <data name="GdSkipped" xml:space="preserve"><value>You chose to leave this one.</value></data>
+  <data name="GdFailed" xml:space="preserve"><value>That didn't work this time. Nothing was forced.</value></data>
+  <data name="GdAppsNone" xml:space="preserve"><value>No program ticked.</value></data>
+  <data name="GdDoneTitle" xml:space="preserve"><value>Done! Your PC is tuned.</value></data>
+  <data name="GdDoneBody" xml:space="preserve"><value>**{0} change(s) made.** Now it's up to you: change anything in Optimize my PC or Tools.</value></data>
+  <data name="GdDoneShort" xml:space="preserve"><value>{0} change(s) made</value></data>
+  <data name="GdFinish" xml:space="preserve"><value>Finish</value></data>
+  <data name="GdEdit" xml:space="preserve"><value>Adjust optimizations</value></data>
+  <data name="GdTools" xml:space="preserve"><value>Tools</value></data>
+  <data name="GdReadyTitle" xml:space="preserve"><value>Your PC is ready to play</value></data>
+  <data name="GdReadySummary" xml:space="preserve"><value>{0} change(s) made by Lotus on {1}. Everything can be changed or undone whenever you want.</value></data>
+  <data name="GdReadyNone" xml:space="preserve"><value>Lotus analyzed your PC on {1} and everything was fine.</value></data>
+  <data name="GdReadySkipped" xml:space="preserve"><value>Whenever you want, tune the PC in Optimize my PC or run the guided analysis again in Settings.</value></data>
+  <data name="GdRedoTitle" xml:space="preserve"><value>Guided analysis</value></data>
+  <data name="GdRedoHint" xml:space="preserve"><value>Analyzes the PC again and asks what to change, like the first time.</value></data>
+  <data name="GdRedo" xml:space="preserve"><value>Run again</value></data>
 </root>

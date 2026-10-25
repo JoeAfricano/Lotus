@@ -1,0 +1,111 @@
+<UserControl x:Class="Lotus.App.Controls.GuidedSetupCard" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="using:Lotus.App" xmlns:controls="using:Lotus.App.Controls">
+ <Grid>
+  <!-- First run: analyse → questions → apply → result -->
+  <Border Style="{StaticResource HeroCardStyle}" Visibility="{Binding ShowWizard, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="guided">
+   <StackPanel Spacing="16">
+    <Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+     <Border x:Name="Badge" Width="52" Height="52" CornerRadius="16" Background="{ThemeResource AccentGradientBrush}" VerticalAlignment="Top">
+      <FontIcon x:Name="BadgeIcon" Glyph="&#xE9D9;" FontSize="24" Foreground="White" AutomationProperties.AccessibilityView="Raw"/>
+     </Border>
+     <StackPanel Grid.Column="1" Spacing="6">
+      <TextBlock Text="{Binding Heading}" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" app:Motion.Settle="True" AutomationProperties.HeadingLevel="Level2"/>
+      <TextBlock app:Rich.Text="{Binding Description}" FontSize="15" LineHeight="23" TextWrapping="Wrap" MaxWidth="720" HorizontalAlignment="Left" Foreground="{ThemeResource MutedBrush}"/>
+     </StackPanel>
+    </Grid>
+
+    <!-- Intro -->
+    <StackPanel Spacing="12" Visibility="{Binding IsIntro, Converter={StaticResource BooleanVisibility}}">
+     <StackPanel Orientation="Horizontal" Spacing="10">
+      <Button Click="OnAnalyze" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" AutomationProperties.AutomationId="guided-start">
+       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE9D9;" FontSize="14"/><TextBlock Text="{Binding Text[GdStart]}"/></StackPanel>
+      </Button>
+      <Button Content="{Binding Text[GdSkip]}" Click="OnClose" Style="{StaticResource SoftButtonStyle}" MinHeight="44" AutomationProperties.AutomationId="guided-skip"/>
+     </StackPanel>
+     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE83D;" FontSize="13" Foreground="{ThemeResource SuccessBrush}" VerticalAlignment="Top" Margin="0,2,0,0"/>
+      <TextBlock app:Rich.Text="{Binding Text[GdSafety]}" Style="{StaticResource CaptionStyle}" MaxWidth="680"/></StackPanel>
+    </StackPanel>
+
+    <!-- Analysing / applying -->
+    <StackPanel Spacing="8" MaxWidth="560" HorizontalAlignment="Left" Visibility="{Binding IsAnalyzing, Converter={StaticResource BooleanVisibility}}">
+     <TextBlock Text="{Binding Step}" FontWeight="SemiBold" app:Motion.Settle="True"/>
+     <controls:TaskProgressView State="{Binding Progress}"/>
+    </StackPanel>
+
+    <!-- Questions (also the live checklist while applying and the result at the end) -->
+    <ItemsControl ItemsSource="{Binding Questions}" Visibility="{Binding ShowQuestionList, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="guided-questions">
+     <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="10" app:Motion.Stagger="True"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+     <ItemsControl.ItemTemplate><DataTemplate>
+      <Border Padding="16,14" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+       <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <Border Width="40" Height="40" CornerRadius="12" Background="{StaticResource BadgeBrush}" VerticalAlignment="Top">
+         <FontIcon Glyph="{Binding Glyph}" FontSize="17" Foreground="{StaticResource RoseBrush}"/>
+        </Border>
+        <StackPanel Grid.Column="1" Spacing="4">
+         <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="15" TextWrapping="Wrap"/>
+         <TextBlock app:Rich.Text="{Binding Detail}" Style="{StaticResource CaptionStyle}"/>
+         <!-- Heavy apps: the player picks which ones close -->
+         <ItemsControl ItemsSource="{Binding Apps}" Visibility="{Binding ShowApps, Converter={StaticResource BooleanVisibility}}" Margin="0,4,0,0">
+          <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="250" ItemHeight="36"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate><DataTemplate><CheckBox IsChecked="{Binding Selected, Mode=TwoWay}"><TextBlock><Run Text="{Binding Name}"/><Run Text=" · " Foreground="{ThemeResource MutedBrush}"/><Run Text="{Binding SizeText}" Foreground="{ThemeResource MutedBrush}"/></TextBlock></CheckBox></DataTemplate></ItemsControl.ItemTemplate>
+         </ItemsControl>
+         <TextBlock Text="{Binding Result}" FontSize="12.5" TextWrapping="Wrap" Foreground="{ThemeResource GoldBrush}" app:Motion.Settle="True" Visibility="{Binding Result, Converter={StaticResource PresenceVisibility}}"/>
+        </StackPanel>
+        <!-- Answer, then live state -->
+        <Grid Grid.Column="2" VerticalAlignment="Center" MinWidth="64">
+         <ToggleSwitch IsOn="{Binding Accepted, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" Visibility="{Binding IsOpen, Converter={StaticResource BooleanVisibility}}" AutomationProperties.Name="{Binding Title}"/>
+         <HyperlinkButton Content="{Binding LinkLabel}" Tag="{Binding Url}" Click="OnOpenLink" Visibility="{Binding Url, Converter={StaticResource PresenceVisibility}}"/>
+         <FontIcon Glyph="&#xE823;" FontSize="16" Opacity="0.6" HorizontalAlignment="Right" Visibility="{Binding IsQueued, Converter={StaticResource BooleanVisibility}}"/>
+         <ProgressRing IsActive="{Binding IsRunning}" Width="22" Height="22" HorizontalAlignment="Right" Visibility="{Binding IsRunning, Converter={StaticResource BooleanVisibility}}"/>
+         <Border Width="28" Height="28" CornerRadius="14" Background="{ThemeResource SuccessBrush}" HorizontalAlignment="Right" Visibility="{Binding IsOk, Converter={StaticResource BooleanVisibility}}" Loaded="OnResultIconLoaded">
+          <FontIcon Glyph="&#xE73E;" FontSize="14" Foreground="#12090F"/>
+         </Border>
+         <Border Width="28" Height="28" CornerRadius="14" Background="{ThemeResource ErrorBrush}" HorizontalAlignment="Right" Visibility="{Binding IsFailed, Converter={StaticResource BooleanVisibility}}">
+          <FontIcon Glyph="&#xE711;" FontSize="12" Foreground="#12090F"/>
+         </Border>
+         <TextBlock Text="&#x2014;" Opacity="0.5" HorizontalAlignment="Right" Visibility="{Binding IsSkipped, Converter={StaticResource BooleanVisibility}}"/>
+        </Grid>
+       </Grid>
+      </Border>
+     </DataTemplate></ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+    <!-- Questions footer -->
+    <StackPanel Spacing="10" Visibility="{Binding IsQuestions, Converter={StaticResource BooleanVisibility}}">
+     <StackPanel Orientation="Horizontal" Spacing="10">
+      <Button Click="OnApply" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" AutomationProperties.AutomationId="guided-apply">
+       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE945;" FontSize="14"/><TextBlock Text="{Binding ApplyLabel}"/></StackPanel>
+      </Button>
+      <Button Content="{Binding Text[GdLater]}" Click="OnClose" Style="{StaticResource SoftButtonStyle}" MinHeight="44" AutomationProperties.AutomationId="guided-later"/>
+     </StackPanel>
+     <TextBlock app:Rich.Text="{Binding Text[GdUndoHint]}" Style="{StaticResource CaptionStyle}" MaxWidth="720" HorizontalAlignment="Left"/>
+    </StackPanel>
+
+    <!-- Applying -->
+    <controls:TaskProgressView State="{Binding Progress}" MaxWidth="560" HorizontalAlignment="Left" Visibility="{Binding IsApplying, Converter={StaticResource BooleanVisibility}}"/>
+
+    <!-- Done: free to edit -->
+    <StackPanel Orientation="Horizontal" Spacing="10" Visibility="{Binding IsDone, Converter={StaticResource BooleanVisibility}}">
+     <Button Content="{Binding Text[GdFinish]}" Click="OnClose" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" AutomationProperties.AutomationId="guided-finish"/>
+     <Button Content="{Binding Text[GdEdit]}" Tag="optimize" Click="OnGo" Style="{StaticResource SoftButtonStyle}" MinHeight="44"/>
+     <Button Content="{Binding Text[GdTools]}" Tag="tools" Click="OnGo" Style="{StaticResource SoftButtonStyle}" MinHeight="44"/>
+    </StackPanel>
+   </StackPanel>
+  </Border>
+
+  <!-- Afterwards: a short "ready" card instead of the big button -->
+  <Border Style="{StaticResource HeroCardStyle}" Padding="24" Visibility="{Binding ShowReady, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="guided-ready">
+   <Grid ColumnSpacing="18"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <Border Width="52" Height="52" CornerRadius="16" Background="{ThemeResource AccentGradientBrush}"><FontIcon Glyph="&#xE7FC;" FontSize="24" Foreground="White"/></Border>
+    <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+     <TextBlock Text="{Binding Text[GdReadyTitle]}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap"/>
+     <TextBlock Text="{Binding ReadySummary}" Style="{StaticResource CaptionStyle}" FontSize="13.5"/>
+    </StackPanel>
+    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+     <Button Content="{Binding Text[GdEdit]}" Tag="optimize" Click="OnGo" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="guided-edit"/>
+     <Button Content="{Binding Text[GdTools]}" Tag="tools" Click="OnGo" Style="{StaticResource SoftButtonStyle}"/>
+    </StackPanel>
+   </Grid>
+  </Border>
+ </Grid>
+</UserControl>

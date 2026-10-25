@@ -3,8 +3,8 @@
   <StackPanel x:Name="PageContent" Padding="32,28,32,40" Spacing="24" HorizontalAlignment="Stretch" SizeChanged="OnContentSizeChanged">
    <ContentControl Content="{Binding}" ContentTemplate="{StaticResource PageHeaderTemplate}" HorizontalContentAlignment="Stretch"/>
 
-   <StackPanel x:Name="HomeContent" x:Load="{x:Bind ShowHome}" Spacing="20">
-    <controls:PrimaryActionCard DataContext="{Binding Experience}"/>
+   <StackPanel x:Name="HomeContent" x:Load="{x:Bind ShowHome}" Spacing="20" app:Motion.Stagger="True">
+    <controls:GuidedSetupCard DataContext="{Binding Guided}" NavigateRequested="OnGuidedNavigate"/>
     <!-- Your games: quick shortcuts; the cover opens My Games, Play starts the game -->
     <Grid ColumnSpacing="12" Margin="0,8,0,0" Visibility="{Binding Games.HasFeatured, Converter={StaticResource BooleanVisibility}}">
      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
@@ -122,6 +122,11 @@
       <TextBlock Grid.Column="1" Text="{Binding Text[ProfileEdit]}" VerticalAlignment="Center" TextWrapping="Wrap"/>
       <Button Grid.Column="2" Content="{Binding Text[ProfileEdit]}" Click="OnEditProfile" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="settings-profile"/>
       <Button Grid.Column="3" Content="{Binding Text[ObReplay]}" Click="OnReplayWelcome" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="settings-replay-welcome"/>
+     </Grid></Border>
+     <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <FontIcon Glyph="&#xE9D9;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[GdRedoTitle]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[GdRedoHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+      <Button Grid.Column="2" Content="{Binding Text[GdRedo]}" Click="OnRedoGuided" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="settings-redo-guided"/>
      </Grid></Border>
      <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <FontIcon Glyph="&#xE7E8;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>

@@ -5,7 +5,7 @@
   <!-- Lotus identity: plum-black surfaces, crimson/magenta accent, rose-gold brand and highlights.
        ThemePalette mutates these brushes in place; translucent values let Mica and the ambient layer show through. -->
   <SolidColorBrush x:Key="WindowBrush" Color="#FF170B13"/><SolidColorBrush x:Key="ShellBrush" Color="#EB12090F"/><SolidColorBrush x:Key="PaneBrush" Color="#00000000"/>
-  <SolidColorBrush x:Key="CardBrush" Color="#B81F0F19"/><SolidColorBrush x:Key="CardHoverBrush" Color="#CC2A1521"/><SolidColorBrush x:Key="CardBorderBrush" Color="#1AFFE4EE"/>
+  <SolidColorBrush x:Key="CardBrush" Color="#B81F0F19"/><SolidColorBrush x:Key="CardHoverBrush" Color="#CC2A1521"/><SolidColorBrush x:Key="CardBorderBrush" Color="#1AFFE4EE"/><SolidColorBrush x:Key="CardHoverBorderBrush" Color="#66F27BA8"/>
   <SolidColorBrush x:Key="ElevatedBrush" Color="#D9261320"/><SolidColorBrush x:Key="DividerBrush" Color="#12FFE4EE"/>
   <SolidColorBrush x:Key="SuccessBrush" Color="#7FD1A8"/><SolidColorBrush x:Key="WarningBrush" Color="#F0C27D"/><SolidColorBrush x:Key="ErrorBrush" Color="#FF8FA3"/>
   <SolidColorBrush x:Key="OnRoseBrush" Color="#FFF6F9"/><SolidColorBrush x:Key="RoseBrush" Color="#F27BA8"/><SolidColorBrush x:Key="GoldBrush" Color="#EEC1A8"/>

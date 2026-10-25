@@ -58,6 +58,7 @@ public sealed class ThemePalette(ResourceDictionary resources)
             (from, to) = (Argb(255, 62, 50, 57), Argb(255, 36, 28, 33));
         }
         Set("RoseBrush", light);
+        Set("CardHoverBorderBrush", darkMode ? Argb(0x59, 242, 123, 168) : Color.FromArgb(0x66, light.R, light.G, light.B));
         // Menu: selected item filled with the accent, band tinted with it (gold selection line stays).
         var tint = darkMode ? Argb(255, 120, 96, 108) : main;
         Set("NavigationViewItemBackgroundSelected", Color.FromArgb(0x73, tint.R, tint.G, tint.B)); Set("NavigationViewItemBackgroundSelectedPointerOver", Color.FromArgb(0x8C, tint.R, tint.G, tint.B));

@@ -34,6 +34,7 @@ public sealed partial class SectionPage : Page
     private void OnEditProfile(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenOnboarding(edit: true);
     // Home game shortcuts: the cover opens My Games (Play on the cover starts the game itself).
     private void OnOpenGames(object sender, RoutedEventArgs e) => shell?.NavigateCommand.Execute("games");
+    private void OnGuidedNavigate(object? sender, string id) => shell?.NavigateCommand.Execute(id);
     private void OnHomeGameTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
     {
         if (e.OriginalSource is FrameworkElement { DataContext: not null } source && FindButton(source)) return; // the Play button handles its own tap
@@ -77,6 +78,7 @@ public sealed partial class SectionPage : Page
         finally { SetupButton.IsEnabled = true; OnSetupLoaded(sender, e); }
     }
     private void OnReplayWelcome(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenOnboarding(edit: false);
+    private void OnRedoGuided(object sender, RoutedEventArgs e) { if (DataContext is SectionViewModel { Guided: { } g }) { g.Restart(); shell?.NavigateCommand.Execute("home"); } }
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);

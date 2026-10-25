@@ -50,8 +50,16 @@ public static class Motion
     {
         f.ScaleTransition = new Vector3Transition { Duration = Normal }; f.TranslationTransition = new Vector3Transition { Duration = Normal };
         f.SizeChanged += (_, _) => f.CenterPoint = new Vector3((float)f.ActualWidth / 2, (float)f.ActualHeight / 2, 0);
-        void Rest() { f.Scale = Vector3.One; f.Translation = Vector3.Zero; }
-        f.PointerEntered += (_, _) => { if (On) { f.Scale = new Vector3((float)scale, (float)scale, 1); f.Translation = new Vector3(0, -2, 0); } };
+        // Cards (Borders) also light their edge in the accent while the pointer is over them.
+        Microsoft.UI.Xaml.Media.Brush? restBorder = null;
+        void Glow(bool on)
+        {
+            if (f is not Border b || Application.Current.Resources["CardHoverBorderBrush"] is not Microsoft.UI.Xaml.Media.Brush hover) return;
+            if (on) { if (!ReferenceEquals(b.BorderBrush, hover)) restBorder = b.BorderBrush; b.BorderBrush = hover; }
+            else if (restBorder is not null) { b.BorderBrush = restBorder; restBorder = null; }
+        }
+        void Rest() { f.Scale = Vector3.One; f.Translation = Vector3.Zero; Glow(false); }
+        f.PointerEntered += (_, _) => { Glow(true); if (On) { f.Scale = new Vector3((float)scale, (float)scale, 1); f.Translation = new Vector3(0, -2, 0); } };
         f.PointerExited += (_, _) => Rest(); f.PointerCanceled += (_, _) => Rest(); f.PointerCaptureLost += (_, _) => Rest();
     }
 
@@ -96,4 +104,54 @@ public static class Motion
         timer.Start();
     }
 
+    // ---- Pop: an icon springs up (1 → 1.22 → 1) to confirm a choice, e.g. the selected menu item ----
+    public static void Pop(UIElement element)
+    {
+        if (!On || element is not FrameworkElement f) return;
+        var v = ElementCompositionPreview.GetElementVisual(element); var c = v.Compositor;
+        v.CenterPoint = new Vector3((float)f.ActualWidth / 2, (float)f.ActualHeight / 2, 0);
+        var a = c.CreateVector3KeyFrameAnimation();
+        a.InsertKeyFrame(0.35f, new Vector3(1.22f, 1.22f, 1), Ease(c));
+        a.InsertKeyFrame(1, Vector3.One, c.CreateCubicBezierEasingFunction(new Vector2(0.34f, 1.56f), new Vector2(0.64f, 1f))); // slight overshoot
+        a.Duration = TimeSpan.FromMilliseconds(420);
+        v.StartAnimation("Scale", a);
+    }
+
+    // ---- Sheen: a faint diagonal light sweeps across a hero surface every few seconds ----
+    public static readonly DependencyProperty SheenProperty = DependencyProperty.RegisterAttached("Sheen", typeof(bool), typeof(Motion),
+        new PropertyMetadata(false, (d, e) => { if (d is FrameworkElement f && e.NewValue is true) AttachSheen(f); }));
+    public static bool GetSheen(DependencyObject d) => (bool)d.GetValue(SheenProperty);
+    public static void SetSheen(DependencyObject d, bool value) => d.SetValue(SheenProperty, value);
+
+    private static void AttachSheen(FrameworkElement f)
+    {
+        var c = ElementCompositionPreview.GetElementVisual(f).Compositor;
+        var brush = c.CreateLinearGradientBrush(); brush.StartPoint = new Vector2(0, 0); brush.EndPoint = new Vector2(1, 0);
+        brush.ColorStops.Add(c.CreateColorGradientStop(0, Windows.UI.Color.FromArgb(0, 255, 255, 255)));
+        brush.ColorStops.Add(c.CreateColorGradientStop(0.5f, Windows.UI.Color.FromArgb(22, 255, 236, 244)));
+        brush.ColorStops.Add(c.CreateColorGradientStop(1, Windows.UI.Color.FromArgb(0, 255, 255, 255)));
+        var band = c.CreateSpriteVisual(); band.Brush = brush; band.RotationAngleInDegrees = 18;
+        var clip = c.CreateContainerVisual(); clip.Children.InsertAtTop(band);
+        ElementCompositionPreview.SetElementChildVisual(f, clip); // drawn above the content; composition visuals are not hit-tested
+        void Layout()
+        {
+            var w = (float)f.ActualWidth; var h = (float)f.ActualHeight;
+            band.StopAnimation("Offset.X");
+            if (w <= 0 || h <= 0) return;
+            clip.Size = new Vector2(w, h);
+            var radius = f is Border b ? (float)b.CornerRadius.TopLeft : 16f;
+            var shape = c.CreateRoundedRectangleGeometry(); shape.Size = new Vector2(w, h); shape.CornerRadius = new Vector2(radius, radius);
+            clip.Clip = c.CreateGeometricClip(shape);
+            band.Size = new Vector2(Math.Max(160, w * 0.22f), h * 2.2f); band.Offset = new Vector3(-band.Size.X * 2, -h * 0.6f, 0);
+            band.IsVisible = On;
+            if (!On) return;
+            var sweep = c.CreateScalarKeyFrameAnimation();
+            sweep.InsertKeyFrame(0, -band.Size.X * 2); sweep.InsertKeyFrame(0.32f, w + band.Size.X, Ease(c)); sweep.InsertKeyFrame(1, w + band.Size.X);
+            sweep.Duration = TimeSpan.FromSeconds(7); sweep.DelayTime = TimeSpan.FromMilliseconds(900); sweep.IterationBehavior = AnimationIterationBehavior.Forever;
+            band.StartAnimation("Offset.X", sweep);
+        }
+        f.SizeChanged += (_, _) => Layout();
+        f.Loaded += (_, _) => Layout();
+        f.Unloaded += (_, _) => band.StopAnimation("Offset.X");
+    }
 }

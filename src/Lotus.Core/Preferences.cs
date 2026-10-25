@@ -12,6 +12,10 @@ public sealed record InterfacePreferences
     public bool StartWithWindows { get; init; }   // opens minimized to the tray at sign-in
     public bool CloseToTray { get; init; } = true; // closing the window keeps Lotus in the background (hotkey keeps working)
     public bool UiSounds { get; init; } = true;    // soft interface sounds
+    // First-run guided setup on Home (analyse, ask, apply what was accepted). Shown once; Settings can run it again.
+    public bool GuidedDone { get; init; }
+    public DateTimeOffset? GuidedAt { get; init; }
+    public int GuidedChanges { get; init; }
     // Player profile (first-run welcome): from Steam or the player's own name and picture, PC goal and accent color.
     public bool Onboarded { get; init; }
     public string ProfileSource { get; init; } = "none"; // steam | custom | none

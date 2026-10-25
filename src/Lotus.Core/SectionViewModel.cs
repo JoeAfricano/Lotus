@@ -15,6 +15,7 @@ public sealed class SectionViewModel
     public Integrations.IntegrationsViewModel? Integrations { get; }
     public Score.LotusScoreViewModel? Score { get; }
     public Tools.ToolsViewModel? Tools { get; }
+    public GuidedSetupViewModel? Guided { get; init; } // first-run guided setup on Home
     public ITextCatalog Text { get; }
     public PreferencesViewModel Preferences { get; }
     public Telemetry.MonitoringViewModel? Monitoring { get; }

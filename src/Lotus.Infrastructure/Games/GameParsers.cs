@@ -52,14 +52,15 @@ public static class GameParsers
         VdfNode.Parse(libraryFoldersVdf).Child("libraryfolders")?.Children.Values
             .Select(c => c.Get("path")).Where(p => !string.IsNullOrWhiteSpace(p)).Select(p => p!.Replace('/', '\\')).ToList() ?? []; // VdfNode already unescaped "\\"; UNC paths keep their leading "\\"
 
-    private static readonly string[] SteamTools = ["Steamworks Common", "Proton", "Steam Linux Runtime", "SteamVR"];
+    // Steam entries that are tools, not games (Wallpaper Engine 431960, Linux runtimes 1070560/1391110/1628350).
+    private static readonly string[] SteamTools = ["Steamworks Common", "Proton", "Steam Linux Runtime", "SteamVR", "Wallpaper Engine"];
     public static SteamApp? SteamManifest(string acf)
     {
         var state = VdfNode.Parse(acf).Child("AppState");
         string? id = state?.Get("appid"), name = state?.Get("name"), dir = state?.Get("installdir");
         if (id is null || name is null || dir is null) return null;
         if (long.TryParse(state!.Get("StateFlags"), out var flags) && (flags & 4) == 0) return null; // 4 = fully installed
-        if (id == "228980" || SteamTools.Any(t => name.StartsWith(t, StringComparison.OrdinalIgnoreCase))) return null;
+        if (id is "228980" or "431960" or "1070560" or "1391110" or "1628350" || SteamTools.Any(t => name.StartsWith(t, StringComparison.OrdinalIgnoreCase))) return null;
         return new(id, name, dir);
     }
 

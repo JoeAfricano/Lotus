@@ -2,7 +2,7 @@
  <!-- Surfaces -->
  <Style x:Key="CardStyle" TargetType="Border"><Setter Property="app:Motion.Hover" Value="1.004"/><Setter Property="Background" Value="{ThemeResource CardBrush}"/><Setter Property="BorderBrush" Value="{ThemeResource CardBorderBrush}"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="16"/><Setter Property="Padding" Value="20"/></Style>
  <Style x:Key="CompactCardStyle" TargetType="Border" BasedOn="{StaticResource CardStyle}"><Setter Property="Padding" Value="16"/><Setter Property="CornerRadius" Value="14"/></Style>
- <Style x:Key="HeroCardStyle" TargetType="Border" BasedOn="{StaticResource CardStyle}"><Setter Property="Background" Value="{ThemeResource HeroBrush}"/><Setter Property="CornerRadius" Value="20"/><Setter Property="Padding" Value="28"/></Style>
+ <Style x:Key="HeroCardStyle" TargetType="Border" BasedOn="{StaticResource CardStyle}"><Setter Property="app:Motion.Sheen" Value="True"/><Setter Property="Background" Value="{ThemeResource HeroBrush}"/><Setter Property="CornerRadius" Value="20"/><Setter Property="Padding" Value="28"/></Style>
  <Style x:Key="CardControlStyle" TargetType="ContentControl">
   <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ContentControl"><Border Style="{StaticResource CardStyle}"><ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" HorizontalContentAlignment="Stretch"/></Border></ControlTemplate></Setter.Value></Setter>
@@ -52,7 +52,7 @@
  <DataTemplate x:Key="PageHeaderTemplate">
   <Grid ColumnSpacing="16" Margin="0,4,0,4">
    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-   <Border Width="52" Height="52" CornerRadius="16" Background="{ThemeResource AccentSoftBrush}" VerticalAlignment="Top"><FontIcon Glyph="{Binding Glyph}" FontSize="24" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AccessibilityView="Raw"/></Border>
+   <Border Width="52" Height="52" CornerRadius="16" Background="{ThemeResource AccentGradientBrush}" BorderBrush="#33FFFFFF" BorderThickness="1" VerticalAlignment="Top"><FontIcon Glyph="{Binding Glyph}" FontSize="24" Foreground="White" AutomationProperties.AccessibilityView="Raw"/></Border>
    <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
     <TextBlock Text="{Binding Title}" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.HeadingLevel="Level1"/>
     <TextBlock Text="{Binding Subtitle}" Style="{StaticResource CaptionStyle}" FontSize="14"/>
