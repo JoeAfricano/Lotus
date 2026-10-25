@@ -213,17 +213,21 @@ public static class LotusOverlayLayout
 {
     public static string OverlaysDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Overlays");
     public static string DefaultConfig => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "RivaTuner Statistics Server", "Plugins", "Client", "OverlayEditor.cfg");
-    public static string Text()
+    // The layout is the user's own "Lotus Neon" design (ANSI, with its alpha artwork next to it); both are shipped byte for byte.
+    public const string ArtFile = "Lotus-Arte-Alpha.png";
+    private static byte[] Resource(string name)
     {
-        using var stream = typeof(LotusOverlayLayout).Assembly.GetManifestResourceStream("Lotus.ovl") ?? throw new InvalidOperationException("Embedded overlay missing.");
-        using var reader = new StreamReader(stream);
-        return reader.ReadToEnd();
+        using var stream = typeof(LotusOverlayLayout).Assembly.GetManifestResourceStream(name) ?? throw new InvalidOperationException("Embedded overlay file missing: " + name);
+        using var copy = new MemoryStream(); stream.CopyTo(copy); return copy.ToArray();
     }
+    public static string Text() => System.Text.Encoding.Latin1.GetString(Resource("Lotus.ovl"));
     public static string Export(string? dir = null)
     {
-        var target = Path.Combine(dir ?? OverlaysDir, "Lotus.ovl");
-        Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-        File.WriteAllText(target, Text(), System.Text.Encoding.Latin1); // OverlayEditor reads layouts as ANSI
+        var folder = dir ?? OverlaysDir;
+        Directory.CreateDirectory(folder);
+        File.WriteAllBytes(Path.Combine(folder, ArtFile), Resource(ArtFile)); // EmbeddedImage= expects it beside the layout
+        var target = Path.Combine(folder, "Lotus.ovl");
+        File.WriteAllBytes(target, Resource("Lotus.ovl"));
         return target;
     }
     // Only a .ovl inside the Lotus overlays folder may be activated.

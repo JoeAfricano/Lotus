@@ -97,3 +97,9 @@ Primeira entrega da versão focada no jogador leigo (ver decisões de produto em
 - **LOTUS SCORE**: escolha dos testes (CPU 1 núcleo, CPU todos, GPU); prévia ao vivo da cena da CPU; teste da GPU numa janela própria (lotes medidos, apresentação ~50 Hz, sem limite do monitor; fechar cancela); pontuação total só com o conjunto completo; busca individual de CPU/GPU com pontos estimados e diferença para o seu PC; textos sobrepostos corrigidos. Recalibrado: 1 400 / 10 500 / 11 500 no PC de referência.
 - **Desempenho › Comparar** em 3 passos (jogo, duração, medir), com dica quando nenhum jogo está aberto e opções técnicas recolhidas.
 - 292 testes aprovados em Debug e Release. Validação visual destas telas fica com o usuário.
+
+## Preparar e jogar e overlay do usuário (25/10/2026)
+
+- **Preparar e jogar** (botão principal do cartão do jogo; "Jogar" direto fica no menu): uma confirmação lista as mudanças pendentes do perfil Jogo (mesmo journal e desfazer da tela Otimizar) e, quando houver SCSKiller, oferece pré-carregar shaders (marcado se o driver mudou). Aplica, verifica relendo o estado, abre o jogo e acompanha (até 3 min para iniciar, depois até o último processo fechar). Ao fechar, pergunta se volta ao normal; só desfaz o que o Lotus mudou e ninguém alterou depois.
+- **Overlay oficial = "Lotus Neon Corrigido"** criado pelo usuário (`Lotus.ovl` + `Lotus-Arte-Alpha.png`, embutidos e exportados byte a byte). O gerador anterior foi removido; o Lotus não regrava o layout sozinho. Botão "Ver o overlay agora" abre a cena 3D num processo separado para o RivaTuner desenhar o overlay sobre ela.
+- 295 testes aprovados em Debug e Release.

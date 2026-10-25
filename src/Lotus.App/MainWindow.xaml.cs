@@ -53,6 +53,10 @@ public sealed partial class MainWindow : Window
         this.monitoring = monitoring;
         this.memoryAnalysis = memoryAnalysis;
         this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer; this.powerProfiles = powerProfiles; this.hardware = hardware; this.games = games; this.integrations = integrations; this.score = score;
+        // Preparar e jogar: same Game profile and journal as Otimizar; the game is followed until it closes.
+        games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
+        games.Watch = new Lotus.Core.Games.PollingGameWatch(new Lotus.Infrastructure.Games.WindowsGameProcessCheck());
+        games.SessionEnded += OnGameSessionEnded;
         InitializeComponent();
         ShellRoot.DataContext = ViewModel;
         ShellRoot.Language = text.Language;
@@ -297,6 +301,20 @@ public sealed partial class MainWindow : Window
         UpdateMonitoringDemand();
     }
     private void OnExperienceDemandChanged(object? sender, EventArgs args) => UpdateMonitoringDemand();
+
+    // After a "Preparar e jogar" session: ask (never decide) whether to return to the previous settings.
+    private async void OnGameSessionEnded(object? sender, Lotus.Core.Games.PlaySessionEnded session)
+    {
+        if (!session.ProfileApplied || ShellRoot.XamlRoot is null) return;
+        var dialog = new ContentDialog
+        {
+            XamlRoot = ShellRoot.XamlRoot, RequestedTheme = ElementTheme.Dark, DefaultButton = ContentDialogButton.Primary,
+            Title = text.Format("PlayEndedTitle", session.Game.Name),
+            Content = new TextBlock { Text = text["PlayEndedBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 },
+            PrimaryButtonText = text["PlayUndo"], CloseButtonText = text["PlayKeep"]
+        };
+        if (await dialog.ShowAsync() == ContentDialogResult.Primary) await games.UndoProfileAsync();
+    }
     private void UpdateMonitoringDemand()
     {
         if (!initialized) return;

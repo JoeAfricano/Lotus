@@ -109,6 +109,35 @@ public sealed partial class GamesPanel : UserControl
             await vm.PrecompileAsync(card);
     }
 
+    // "Preparar e jogar": one confirmation with everything that changes, then apply, launch and follow the game.
+    private async void OnPrepareAndPlay(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: GameCard card } || DataContext is not GamesViewModel vm) return;
+        if (!vm.CanPrepare) { card.Launch.Execute(card); return; }
+        if (await vm.PlanPlayAsync(card) is not { } plan) return;
+        var body = new StackPanel { Spacing = 10, MaxWidth = 480 };
+        body.Children.Add(new TextBlock { Text = vm.Text["PlayIntro"], TextWrapping = TextWrapping.Wrap, Opacity = 0.85 });
+        CheckBox? profile = null, shaders = null;
+        if (plan.Pending > 0)
+        {
+            profile = new CheckBox { Content = vm.Text.Format("PlayApplyProfile", plan.Pending), IsChecked = true };
+            body.Children.Add(profile);
+            var list = new StackPanel { Spacing = 6, Margin = new Thickness(28, 0, 0, 0) };
+            foreach (var s in plan.Steps.Where(s => !s.AlreadyApplied))
+                list.Children.Add(new TextBlock { Text = $"{s.Title}: {s.From}  →  {s.To}", TextWrapping = TextWrapping.Wrap, Opacity = 0.75, FontSize = 12.5 });
+            body.Children.Add(list);
+        }
+        else body.Children.Add(new TextBlock { Text = vm.Text["PlayProfileReady"], TextWrapping = TextWrapping.Wrap, Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["GoldBrush"] });
+        if (plan.OfferShaders)
+        {
+            shaders = new CheckBox { Content = vm.Text[plan.ShadersRecommended ? "PlayShadersStale" : "PlayShaders"], IsChecked = plan.ShadersRecommended };
+            body.Children.Add(shaders);
+        }
+        body.Children.Add(new TextBlock { Text = vm.Text["PlayUndoLater"], TextWrapping = TextWrapping.Wrap, FontSize = 12, Opacity = 0.65, Margin = new Thickness(0, 4, 0, 0) });
+        if (!await Show(vm.Text.Format("PlayTitle", card.Name), new ScrollViewer { Content = body, MaxHeight = 480 }, vm.Text["PlayGo"], vm.Text["UxCancel"])) return;
+        await vm.PlayAsync(plan, profile?.IsChecked == true, shaders?.IsChecked == true);
+    }
+
     // Optional: opens the user's SCSKiller window to see the details.
     private void OnOpenShaderTool(object sender, RoutedEventArgs e) => (DataContext as GamesViewModel)?.OpenShaderTool();
     private void OnOpenShaderToolButton(object sender, RoutedEventArgs e) => (DataContext as GamesViewModel)?.OpenShaderTool();

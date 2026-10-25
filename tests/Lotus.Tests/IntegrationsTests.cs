@@ -101,7 +101,8 @@ public sealed class IntegrationsTests : IDisposable
     {
         var text = LotusOverlayLayout.Text();
         var ini = new IniText(text);
-        Assert.Contains("percentile(Frametime,99)", text); Assert.Contains("%FPS low01%", text); Assert.Contains("<G=Frametime", text); Assert.Contains("%GPU1 clock%", text);
+        Assert.Contains("EmbeddedImage=" + LotusOverlayLayout.ArtFile, text); Assert.Contains("<G=Frametime", text); Assert.Contains("%GPU Clock%", text);
+        Assert.Contains("%CPU Temp% °C", text); // ANSI degree sign survives (byte 0xB0)
         Assert.DoesNotContain("<S=", text); // OverlayEditor shows data sources as %Name%, not <S=...>
         // Every %Name% macro refers to a declared source.
         foreach (System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(text, @"%([A-Za-z][^%\r\n]*?)%"))

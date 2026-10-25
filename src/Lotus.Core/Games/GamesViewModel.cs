@@ -7,7 +7,7 @@ namespace Lotus.Core.Games;
 // Each card carries its own labels and commands, so item templates never depend on the parent DataContext.
 public sealed record GameCard(GameEntry Game, string Name, string Store, string Initials, string? CoverPath,
     string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove, string OptimizeLabel = "", string MeasureLabel = "",
-    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "");
+    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "", string PrepareLabel = "");
 public sealed record StoreFilter(string Id, string Label);
 // Result of "Otimizar configurações": hardware, the recommendation as readable lines, and whether Lotus can apply it.
 public sealed record GameSettingsAnalysis(SettingsRecommendation Recommendation, IReadOnlyList<string> Lines, string Hardware, GameSettingsSupport? Support, bool HasOriginal, int? PendingStep = null);
@@ -156,7 +156,7 @@ public sealed class GamesViewModel : ObservableObject
         {
             var shader = ScsKillerOutput.Match(shaderStatuses, g);
             Games.Add(new(g, g.Name, g.Store, Initials(g.Name), g.CoverPath, Text["GamesPlay"], Text["GamesHide"], LaunchCommand, RemoveCommand, Text["GsMenu"], Text["GsMeasureMenu"],
-                shader is null ? null : Text["ScsState" + shader.State], shader?.State is ShaderState.Ready or ShaderState.Stale, Text["ScsPrecompile"], shader?.Id, Text["ScsOpen"]));
+                shader is null ? null : Text["ScsState" + shader.State], shader?.State is ShaderState.Ready or ShaderState.Stale, Text["ScsPrecompile"], shader?.Id, Text["ScsOpen"], Text["PlayPrepare"]));
         }
         OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(EmptyMessage));
     }
@@ -293,6 +293,58 @@ public sealed class GamesViewModel : ObservableObject
     public const string ScsKillerReleases = "https://github.com/BlueHeisenberg/SCSKiller/releases/latest";
     public bool ShaderToolInstalled => shaders?.IsAvailable == true;
     public bool ShowShaderToolOffer => shaders is not null && !ShaderToolInstalled && loaded && all.Count > 0;
+
+    // ---- Preparar e jogar ----
+    public IGameProfile? GameProfile { get; set; }
+    public IGameWatch? Watch { get; set; }
+    public event EventHandler<PlaySessionEnded>? SessionEnded;
+    public bool CanPrepare => GameProfile is not null;
+
+    // What would change before playing; nothing is applied here.
+    public async Task<PlayPlan?> PlanPlayAsync(GameCard card)
+    {
+        if (GameProfile is null) return null;
+        try
+        {
+            status = Text.Format("PlayAnalyzing", card.Name); Notify();
+            var steps = await GameProfile.PreviewAsync();
+            var shader = ScsKillerOutput.Match(shaderStatuses, card.Game);
+            status = ""; Notify();
+            return new(card, steps, card.CanPrecompile && ShaderToolInstalled, shader?.State == ShaderState.Stale);
+        }
+        catch (Exception ex) { log(ex); status = Text["PlayFailed"]; Notify(); return null; }
+    }
+
+    // Applies the confirmed plan, optionally pre-loads shaders, launches and follows the game until it closes.
+    public async Task PlayAsync(PlayPlan plan, bool applyProfile, bool precompile, CancellationToken token = default)
+    {
+        var card = plan.Card; var applied = false;
+        try
+        {
+            if (applyProfile && plan.Pending > 0 && GameProfile is not null)
+            {
+                status = Text.Format("PlayApplying", card.Name); Notify();
+                applied = await GameProfile.ApplyAsync();
+                if (!applied) { status = Text["PlayApplyPartial"]; Notify(); }
+            }
+            if (precompile && plan.OfferShaders) await PrecompileAsync(card, token);
+            Launch(card);
+            if (Watch is null) return;
+            status = Text.Format("PlayWatching", card.Name); Notify();
+            var played = await Watch.WaitForSessionAsync(card.Game, TimeSpan.FromMinutes(3), token);
+            status = played is null ? Text.Format("PlayNotStarted", card.Name) : Text.Format("PlayEnded", card.Name, (int)played.Value.TotalMinutes); Notify();
+            SessionEnded?.Invoke(this, new(card.Game, applied || (applyProfile && plan.Pending == 0), played ?? TimeSpan.Zero));
+        }
+        catch (OperationCanceledException) { status = ""; Notify(); }
+        catch (Exception ex) { log(ex); status = Text["PlayFailed"]; Notify(); }
+    }
+
+    public async Task<bool> UndoProfileAsync()
+    {
+        if (GameProfile is null) return false;
+        try { var ok = await GameProfile.UndoAsync(); status = Text[ok ? "PlayUndone" : "PlayUndoConflict"]; Notify(); return ok; }
+        catch (Exception ex) { log(ex); status = Text["PlayUndoConflict"]; Notify(); return false; }
+    }
 
     // Live job card: game, stage, bar (done/total) and time left from SCSKiller's own rate.
     private CancellationTokenSource? shaderCts;

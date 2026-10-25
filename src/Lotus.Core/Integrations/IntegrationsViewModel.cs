@@ -45,7 +45,6 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             CanRestoreLayout = r.Installed && rtss.HasLayoutBackup();
             var active = r.Installed && rtss.LayoutActive();
             LayoutStatus = !r.Installed ? "" : Text[active ? "IntLayoutActive" : "IntLayoutInactive"];
-            if (active) rtss.ExportLayout(); // keeps the active Lotus.ovl (in Lotus's own folder) at this version's layout
             var ab = tools.Afterburner(); AfterburnerStatus = ab.Installed ? Text.Format("IntAfterburnerOn", ab.Version ?? "?") : Text["IntNotInstalled"];
             var scs = tools.ScsKiller(); ScsStatus = scs.Installed ? Text.Format("IntScsOn", scs.Version ?? "?") : Text["IntScsOff"];
         }

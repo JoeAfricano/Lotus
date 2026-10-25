@@ -913,4 +913,26 @@ Condições atuais: {1}</value></data>
   <data name="IntPreview" xml:space="preserve"><value>Ver o overlay agora</value></data>
   <data name="IntPreviewOpened" xml:space="preserve"><value>Prévia aberta numa janela 3D. O RivaTuner desenha o overlay sobre ela como num jogo; feche a janela para sair. Se nada aparecer, confira se o RivaTuner está aberto.</value></data>
   <data name="IntPreviewFailed" xml:space="preserve"><value>Não foi possível abrir a prévia. Detalhes no log.</value></data>
+  <data name="PlayPrepare" xml:space="preserve"><value>Preparar e jogar</value></data>
+  <data name="PlayTitle" xml:space="preserve"><value>Preparar {0}</value></data>
+  <data name="PlayIntro" xml:space="preserve"><value>O Lotus deixa o PC no perfil Jogo, abre o jogo e acompanha até você fechar.</value></data>
+  <data name="PlayApplyProfile" xml:space="preserve"><value>Aplicar o perfil Jogo ({0} mudança(s))</value></data>
+  <data name="PlayProfileReady" xml:space="preserve"><value>Seu PC já está no perfil Jogo. Nada a mudar.</value></data>
+  <data name="PlayShaders" xml:space="preserve"><value>Pré-carregar os shaders antes de abrir (reduz travadinhas)</value></data>
+  <data name="PlayShadersStale" xml:space="preserve"><value>Pré-carregar os shaders antes de abrir (recomendado: o driver mudou desde o último)</value></data>
+  <data name="PlayUndoLater" xml:space="preserve"><value>Quando você fechar o jogo, o Lotus pergunta se quer voltar ao que era antes.</value></data>
+  <data name="PlayGo" xml:space="preserve"><value>Preparar e jogar</value></data>
+  <data name="PlayAnalyzing" xml:space="preserve"><value>Verificando o que preparar para {0}...</value></data>
+  <data name="PlayApplying" xml:space="preserve"><value>Aplicando o perfil Jogo para {0}...</value></data>
+  <data name="PlayApplyPartial" xml:space="preserve"><value>Parte do perfil não pôde ser aplicada (algo mudou no Windows). O jogo abre mesmo assim.</value></data>
+  <data name="PlayWatching" xml:space="preserve"><value>{0} aberto. O Lotus acompanha até você fechar.</value></data>
+  <data name="PlayNotStarted" xml:space="preserve"><value>{0} não foi detectado em 3 minutos; o Lotus parou de acompanhar.</value></data>
+  <data name="PlayEnded" xml:space="preserve"><value>{0} fechado depois de {1} min.</value></data>
+  <data name="PlayFailed" xml:space="preserve"><value>Não foi possível preparar o jogo. Detalhes no log.</value></data>
+  <data name="PlayEndedTitle" xml:space="preserve"><value>Você fechou {0}</value></data>
+  <data name="PlayEndedBody" xml:space="preserve"><value>Voltar o PC para como estava antes de jogar? O Lotus desfaz só o que ele mudou e que ninguém alterou depois.</value></data>
+  <data name="PlayUndo" xml:space="preserve"><value>Voltar ao normal</value></data>
+  <data name="PlayKeep" xml:space="preserve"><value>Manter perfil Jogo</value></data>
+  <data name="PlayUndone" xml:space="preserve"><value>PC de volta ao normal.</value></data>
+  <data name="PlayUndoConflict" xml:space="preserve"><value>Algumas mudanças não foram desfeitas porque algo as alterou depois. Veja em Otimizar › Histórico.</value></data>
 </root>
