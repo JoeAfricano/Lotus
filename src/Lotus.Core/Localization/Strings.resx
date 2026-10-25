@@ -660,17 +660,10 @@ Condições atuais: {1}</value></data>
   <data name="HwGpuHybrid" xml:space="preserve"><value>Duas GPUs: dedicada ({0}) e integrada ({1}). Confira em Configurações › Gráficos se os jogos usam a dedicada.</value></data>
   <data name="HwGpuDedicated" xml:space="preserve"><value>GPU dedicada: {0}.</value></data>
   <data name="HwGpuIntegratedOnly" xml:space="preserve"><value>Apenas GPU integrada ({0}). Jogos exigentes podem ficar limitados por ela.</value></data>
-  <data name="FeatApplyButton" xml:space="preserve"><value>Ativar pelo Lotus</value></data>
   <data name="FeatUndoButton" xml:space="preserve"><value>Desfazer</value></data>
-  <data name="FeatConfirmTitle" xml:space="preserve"><value>Ativar otimizações para jogos em janela?</value></data>
-  <data name="FeatConfirmBody" xml:space="preserve"><value>O Lotus vai ligar a mesma opção de Configurações › Tela › Gráficos, só para o seu usuário e sem pedir administrador. O valor anterior fica registrado e pode ser restaurado em Desfazer. Vale para jogos abertos depois da mudança; não há garantia de mais FPS.</value></data>
   <data name="FeatConfirmUndoTitle" xml:space="preserve"><value>Restaurar o valor anterior?</value></data>
   <data name="FeatConfirmUndoBody" xml:space="preserve"><value>O Lotus só restaura se a opção ainda estiver como ele deixou; se ela foi alterada fora do Lotus, nada é sobrescrito.</value></data>
   <data name="FeatConfirm" xml:space="preserve"><value>Confirmar</value></data>
-  <data name="FeatApplied" xml:space="preserve"><value>Otimizações para jogos em janela ativadas e verificadas. Valem para jogos abertos a partir de agora.</value></data>
-  <data name="FeatNoChange" xml:space="preserve"><value>Já estava ativado; nada foi alterado.</value></data>
-  <data name="FeatConflict" xml:space="preserve"><value>A configuração mudou fora do Lotus; nada foi sobrescrito. Confira em Configurações.</value></data>
-  <data name="FeatReverted" xml:space="preserve"><value>Valor anterior restaurado e verificado.</value></data>
   <data name="FeatNothingToUndo" xml:space="preserve"><value>Não há alteração do Lotus para desfazer.</value></data>
   <data name="GamesSearch" xml:space="preserve"><value>Buscar jogo</value></data>
   <data name="GamesAllStores" xml:space="preserve"><value>Todas as lojas</value></data>
@@ -713,4 +706,13 @@ Condições atuais: {1}</value></data>
   <data name="PfUndone" xml:space="preserve"><value>{0} item(ns) restaurado(s) e verificado(s).</value></data>
   <data name="PfUndoConflict" xml:space="preserve"><value>{0} restaurado(s); {1} mantido(s) porque mudou fora do Lotus.</value></data>
   <data name="PfNothingToUndo" xml:space="preserve"><value>Não há alteração do Lotus para desfazer.</value></data>
+  <data name="FeatApplyButton" xml:space="preserve"><value>Ajustar pelo Lotus</value></data>
+  <data name="FeatApplied" xml:space="preserve"><value>{0}: ajustado e verificado.</value></data>
+  <data name="FeatNoChange" xml:space="preserve"><value>{0}: já estava como recomendado; nada foi alterado.</value></data>
+  <data name="FeatConflict" xml:space="preserve"><value>{0}: a configuração mudou fora do Lotus; nada foi sobrescrito.</value></data>
+  <data name="FeatReverted" xml:space="preserve"><value>{0}: valor anterior restaurado e verificado.</value></data>
+  <data name="FeatConfirmTitle" xml:space="preserve"><value>Ajustar: {0}?</value></data>
+  <data name="FeatConfirmBody" xml:space="preserve"><value>O Lotus vai alterar só esta opção, a mesma das Configurações do Windows, sem pedir administrador. O valor anterior fica registrado e pode ser restaurado em Desfazer. Não há garantia de mais FPS.</value></data>
+  <data name="FeatNamedisplay-refresh" xml:space="preserve"><value>Taxa de atualização do monitor</value></data>
+  <data name="FeatAdvicedisplay-refresh" xml:space="preserve"><value>Usar a maior taxa que o monitor suporta deixa o jogo visivelmente mais fluido. É comum o Windows ficar em 60 Hz em monitores de 144 Hz.</value></data>
 </root>

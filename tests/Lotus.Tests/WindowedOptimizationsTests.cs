@@ -101,10 +101,10 @@ public sealed class WindowedOptimizationsTests : IDisposable
         await vm.RefreshAsync();
         var row = Assert.Single(vm.Features); Assert.True(row.CanApply); Assert.False(row.CanUndo); Assert.True(row.NeedsAttention);
         await vm.ApplyFeatureAsync(WindowedOptimizationsAction.FeatureId, confirmed: true);
-        Assert.Equal(vm.Text["FeatApplied"], vm.FeatureStatus);
+        Assert.Equal(vm.Text.Format("FeatApplied", vm.Text["FeatNamewindowed-optimizations"]), vm.FeatureStatus);
         row = Assert.Single(vm.Features); Assert.False(row.CanApply); Assert.True(row.CanUndo); Assert.False(row.NeedsAttention);
         await vm.UndoFeatureAsync(WindowedOptimizationsAction.FeatureId, confirmed: true);
-        Assert.Equal(vm.Text["FeatReverted"], vm.FeatureStatus); Assert.Equal("AutoHDREnable=1;", dx.Value);
+        Assert.Equal(vm.Text.Format("FeatReverted", vm.Text["FeatNamewindowed-optimizations"]), vm.FeatureStatus); Assert.Equal("AutoHDREnable=1;", dx.Value);
         Assert.True(Assert.Single(vm.Features).CanApply);
     }
 
@@ -156,6 +156,74 @@ public sealed class WindowedOptimizationsTests : IDisposable
         var changes = await vm.PreviewProfileAsync();
         Assert.Equal(vm.Text["PfRowPower"], Assert.Single(changes).Title);
         Assert.True(changes[0].AlreadyApplied); // Daily suggests Balanced, which is already active
+    }
+
+    private sealed class FakeRegistry : IUserRegistry
+    {
+        public Dictionary<string, int> Values = new(); public int Writes;
+        public int? ReadDword(string path, string name) => Values.TryGetValue(path + "\\" + name, out var v) ? v : null;
+        public void WriteDword(string path, string name, int? value) { Writes++; if (value is null) Values.Remove(path + "\\" + name); else Values[path + "\\" + name] = value.Value; }
+    }
+    private sealed class FakeDisplay(int current, int max, bool accept = true) : IDisplayModes
+    {
+        public int Current = current;
+        public DisplayModeState? Primary() => new(@"\\.\DISPLAY1", 1920, 1080, Current, max);
+        public bool SetRefresh(string device, int hz) { if (!accept) return false; Current = hz; return true; }
+    }
+
+    [Fact] public async Task RegistryActionsRespectWindowsDefaultsAndRestoreExactly()
+    {
+        var reg = new FakeRegistry();
+        var recording = new OptimizationEngine(Journal, RegistryDwordAction.BackgroundRecording(reg));
+        Assert.Equal(OperationStage.NoChange, (await recording.AnalyzeAsync()).Stage); // absent = off = already recommended
+        reg.Values[@"Software\Microsoft\Windows\CurrentVersion\GameDVR\HistoricalCaptureEnabled"] = 1;
+        var applied = await recording.ApplyAsync((await recording.AnalyzeAsync()).Id, true);
+        Assert.Equal(OperationStage.Applied, applied.Stage); Assert.Equal(0, reg.Values[@"Software\Microsoft\Windows\CurrentVersion\GameDVR\HistoricalCaptureEnabled"]);
+        Assert.Equal(OperationStage.Reverted, (await recording.RevertAsync(applied.Id, true)).Stage);
+        Assert.Equal(1, reg.Values[@"Software\Microsoft\Windows\CurrentVersion\GameDVR\HistoricalCaptureEnabled"]);
+        var gameMode = new OptimizationEngine(Journal, RegistryDwordAction.GameMode(reg));
+        Assert.Equal(OperationStage.NoChange, (await gameMode.AnalyzeAsync()).Stage); // absent = on
+        reg.Values[@"Software\Microsoft\GameBar\AutoGameModeEnabled"] = 0;
+        var on = await gameMode.ApplyAsync((await gameMode.AnalyzeAsync()).Id, true);
+        Assert.Equal(1, reg.Values[@"Software\Microsoft\GameBar\AutoGameModeEnabled"]);
+        reg.Values[@"Software\Microsoft\GameBar\AutoGameModeEnabled"] = 0; // user changed it afterwards
+        Assert.Equal(OperationStage.Conflict, (await gameMode.RevertAsync(on.Id, true)).Stage);
+    }
+
+    [Fact] public async Task DisplayRefreshRaisesToMaximumAndUndoes()
+    {
+        var display = new FakeDisplay(60, 144); var engine = new OptimizationEngine(Journal, new DisplayRefreshAction(display));
+        var applied = await engine.ApplyAsync((await engine.AnalyzeAsync()).Id, true);
+        Assert.Equal(OperationStage.Applied, applied.Stage); Assert.Equal(144, display.Current);
+        Assert.Equal(OperationStage.Reverted, (await engine.RevertAsync(applied.Id, true)).Stage); Assert.Equal(60, display.Current);
+        Assert.Equal(OperationStage.NoChange, (await new OptimizationEngine(Journal, new DisplayRefreshAction(new FakeDisplay(143, 144))).AnalyzeAsync()).Stage);
+        var rejected = new OptimizationEngine(Journal, new DisplayRefreshAction(new FakeDisplay(60, 144, accept: false)));
+        Assert.Equal(OperationStage.Conflict, (await rejected.ApplyAsync((await rejected.AnalyzeAsync()).Id, true)).Stage);
+    }
+
+    [Fact] public async Task ProfilesIncludeEveryRecommendedFeatureAction()
+    {
+        var power = new MutablePower(); var dx = new FakeDx(); var reg = new FakeRegistry(); var display = new FakeDisplay(60, 144);
+        reg.Values[@"Software\Microsoft\Windows\CurrentVersion\GameDVR\HistoricalCaptureEnabled"] = 1;
+        var engines = new Dictionary<string, OptimizationEngine>
+        {
+            ["background-recording"] = new(Journal, RegistryDwordAction.BackgroundRecording(reg)),
+            ["gamemode"] = new(Journal, RegistryDwordAction.GameMode(reg)),
+            [DisplayRefreshAction.FeatureId] = new(Journal, new DisplayRefreshAction(display))
+        };
+        var vm = new PowerProfilesViewModel(new OptimizationEngine(Journal, new PowerSchemeAction(power)), power, Journal, new EmptyStartup(), new TextCatalog(), _ => { },
+            new DxFeatures(dx), Engine(dx), engines);
+        await vm.RefreshAsync();
+        var game = await vm.PreviewProfileAsync();
+        Assert.Equal(5, game.Count); Assert.Equal(4, game.Count(c => !c.AlreadyApplied)); // power, windowed, recording, refresh; Game Mode already on
+        Assert.Contains(game, c => c.From == "60 Hz" && c.To == "144 Hz");
+        await vm.ApplyProfileAsync(game);
+        Assert.Equal(vm.Text.Format("PfApplied", 4), vm.ProfileStatus); Assert.Equal(144, display.Current);
+        vm.SelectProfileCommand.Execute("daily");
+        var daily = await vm.PreviewProfileAsync();
+        Assert.Equal([vm.Text["PfRowPower"], vm.Text["FeatNamegamemode"], vm.Text["FeatNamedisplay-refresh"]], daily.Select(c => c.Title).OrderBy(t => t == vm.Text["PfRowPower"] ? 0 : t == vm.Text["FeatNamegamemode"] ? 1 : 2));
+        await vm.UndoProfileAsync();
+        Assert.Equal(60, display.Current); Assert.Equal(1, reg.Values[@"Software\Microsoft\Windows\CurrentVersion\GameDVR\HistoricalCaptureEnabled"]);
     }
 
     public void Dispose() { if (Directory.Exists(directory)) Directory.Delete(directory, true); }

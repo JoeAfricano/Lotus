@@ -16,6 +16,7 @@ public static class GameFeatureRules
         ("background-recording", "game") => FeatureState.Off,
         ("windowed-optimizations", "game") => FeatureState.On,
         ("gamemode", "daily") => FeatureState.On,
+        ("display-refresh", "game" or "daily") => FeatureState.On,
         _ => null
     };
     // SystemDefault counts as aligned only where the documented Windows default matches the desired state.

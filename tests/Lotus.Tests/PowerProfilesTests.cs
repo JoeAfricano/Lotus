@@ -188,7 +188,7 @@ public sealed class PowerProfilesTests(ITestOutputHelper output) : IDisposable
         if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
         var before = new WindowsPowerSchemes().Active();
         var items = new WindowsGameFeatures().Read();
-        Assert.Equal(["gamemode", "background-recording", "windowed-optimizations", "hags"], items.Select(i => i.Id));
+        Assert.Equal(["gamemode", "background-recording", "windowed-optimizations", "hags", "display-refresh"], items.Select(i => i.Id));
         Assert.Equal(before, new WindowsPowerSchemes().Active());
         foreach (var i in items) output.WriteLine($"{i.Id}={i.State}");
     }

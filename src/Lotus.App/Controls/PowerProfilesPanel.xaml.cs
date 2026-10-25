@@ -60,7 +60,7 @@ public sealed partial class PowerProfilesPanel : UserControl
     private async void OnApplyFeature(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { Tag: string id } && DataContext is Lotus.Core.Optimization.PowerProfilesViewModel vm
-            && await ConfirmAsync(vm.Text["FeatConfirmTitle"], vm.Text["FeatConfirmBody"], vm.Text))
+            && await ConfirmAsync(vm.Text.Format("FeatConfirmTitle", vm.Text["FeatName" + id]), vm.Text["FeatConfirmBody"], vm.Text))
             await vm.ApplyFeatureAsync(id, confirmed: true);
     }
     private async void OnUndoFeature(object sender, RoutedEventArgs e)

@@ -20,6 +20,17 @@ public partial class App : Application
     // Needed by WinUI pickers in an unpackaged app.
     public static nint WindowHandle { get; private set; }
     public App() => InitializeComponent();
+    // Reversible per-user feature actions offered by the profiles (same journal as the power plan).
+    private static Dictionary<string, Lotus.Core.Optimization.OptimizationEngine> FeatureEngines(Lotus.Infrastructure.Optimization.SqliteOptimizationJournal journal)
+    {
+        var registry = new Lotus.Infrastructure.Optimization.WindowsUserRegistry();
+        return new()
+        {
+            ["background-recording"] = new(journal, Lotus.Core.Optimization.RegistryDwordAction.BackgroundRecording(registry)),
+            ["gamemode"] = new(journal, Lotus.Core.Optimization.RegistryDwordAction.GameMode(registry)),
+            [Lotus.Core.Optimization.DisplayRefreshAction.FeatureId] = new(journal, new Lotus.Core.Optimization.DisplayRefreshAction(new Lotus.Infrastructure.Optimization.WindowsDisplayModes()))
+        };
+    }
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         var logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Logs", "lotus-.jsonl");
@@ -67,9 +78,10 @@ public partial class App : Application
                 new Lotus.Core.Optimization.OptimizationEngine(p.GetRequiredService<Lotus.Infrastructure.Optimization.SqliteOptimizationJournal>(),
                     new Lotus.Core.Optimization.PowerSchemeAction(p.GetRequiredService<Lotus.Core.Optimization.IPowerSchemeService>())),
                 p.GetRequiredService<Lotus.Core.Optimization.IPowerSchemeService>(), p.GetRequiredService<Lotus.Infrastructure.Optimization.SqliteOptimizationJournal>(),
-                p.GetRequiredService<Lotus.Core.Optimization.IStartupInventory>(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Power profile operation failed"), new Lotus.Infrastructure.Optimization.WindowsGameFeatures(),
+                p.GetRequiredService<Lotus.Core.Optimization.IStartupInventory>(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Power profile operation failed"), new Lotus.Infrastructure.Optimization.WindowsGameFeatures(new Lotus.Infrastructure.Optimization.WindowsDisplayModes()),
                 new Lotus.Core.Optimization.OptimizationEngine(p.GetRequiredService<Lotus.Infrastructure.Optimization.SqliteOptimizationJournal>(),
-                    new Lotus.Core.Optimization.WindowedOptimizationsAction(new Lotus.Infrastructure.Optimization.WindowsDirectXUserSettings()))))
+                    new Lotus.Core.Optimization.WindowedOptimizationsAction(new Lotus.Infrastructure.Optimization.WindowsDirectXUserSettings())),
+                FeatureEngines(p.GetRequiredService<Lotus.Infrastructure.Optimization.SqliteOptimizationJournal>())))
             .AddSingleton(p => new Lotus.Core.Diagnostics.HardwareDiagnosticsViewModel(new Lotus.Infrastructure.Diagnostics.WindowsHardwareFacts(),
                 p.GetRequiredService<MonitoringViewModel>(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Hardware diagnostics failed")))
             .AddSingleton(p => new Lotus.Core.Games.GamesViewModel(new Lotus.Infrastructure.Games.WindowsGameLibrary(),
