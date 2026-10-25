@@ -14,6 +14,8 @@ namespace Lotus.App;
 
 public partial class App : Application
 {
+    [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+    private static extern int MessageBoxW(IntPtr hwnd, string text, string caption, uint type);
     public static ITextCatalog Text { get; private set; } = new TextCatalog();
     private ServiceProvider? services;
     private Window? window;
@@ -37,6 +39,17 @@ public partial class App : Application
         if (Lotus.Infrastructure.Integrations.RtssElevatedHelper.TryRun(Environment.GetCommandLineArgs()) is { } helperExit) { Environment.Exit(helperExit); return; }
         // Short-lived elevated helper for the DNS switch (fixed provider list, backup in the user's Lotus folder).
         if (Lotus.Infrastructure.Tools.DnsElevatedHelper.TryRun(Environment.GetCommandLineArgs()) is { } dnsExit) { Environment.Exit(dnsExit); return; }
+        // Uninstall from Windows' "Installed apps": asks first, keeps the player's data unless they choose otherwise.
+        if (Environment.GetCommandLineArgs().Contains(Lotus.Infrastructure.Setup.LotusSetup.UninstallArgument))
+        {
+            var text = new TextCatalog(System.Globalization.CultureInfo.CurrentUICulture.Name == "en-US" ? "en-US" : "pt-BR");
+            if (MessageBoxW(IntPtr.Zero, text["SetupUninstallAsk"], "Lotus", 0x24) == 6) // Yes/No, question
+            {
+                var removeData = MessageBoxW(IntPtr.Zero, text["SetupUninstallData"], "Lotus", 0x124) == 6; // default No
+                new Lotus.Infrastructure.Setup.LotusSetup().Uninstall(removeData);
+            }
+            Environment.Exit(0); return;
+        }
         // Overlay preview: a separate, unelevated process that only shows the 3D scene so RivaTuner draws its overlay on it.
         if (Environment.GetCommandLineArgs().Contains(Lotus.Infrastructure.Score.D3D11GpuBenchmark.PreviewArgument))
         {

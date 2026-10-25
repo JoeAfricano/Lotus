@@ -1124,4 +1124,17 @@ Condições atuais: {1}</value></data>
   <data name="UninRecycleConfirm" xml:space="preserve"><value>{0} pasta(s) vão para a Lixeira. Dá para recuperar de lá se precisar.</value></data>
   <data name="UninLeftoversRecycled" xml:space="preserve"><value>{0} pasta(s) enviadas para a Lixeira.</value></data>
   <data name="UninLeftoversDone" xml:space="preserve"><value>Concluído: {0} pasta(s) na Lixeira.</value></data>
+  <data name="SetupTitle" xml:space="preserve"><value>Instalar o Lotus</value></data>
+  <data name="SetupNotInstalled" xml:space="preserve"><value>O Lotus está rodando direto da pasta onde você o extraiu. Instale para ter atalhos no Menu Iniciar e na Área de Trabalho e poder desinstalar pelo Windows.</value></data>
+  <data name="SetupInstalledHere" xml:space="preserve"><value>Instalado em {0}. Para desinstalar, use Configurações do Windows › Aplicativos instalados.</value></data>
+  <data name="SetupInstalledElsewhere" xml:space="preserve"><value>Já existe um Lotus instalado em {0}. Você pode atualizá-lo com esta versão.</value></data>
+  <data name="SetupInstall" xml:space="preserve"><value>Instalar o Lotus neste PC</value></data>
+  <data name="SetupUpdate" xml:space="preserve"><value>Atualizar a versão instalada</value></data>
+  <data name="SetupInstalling" xml:space="preserve"><value>Instalando...</value></data>
+  <data name="SetupDoneTitle" xml:space="preserve"><value>Lotus instalado</value></data>
+  <data name="SetupDoneBody" xml:space="preserve"><value>Pronto! O Lotus foi instalado em {0}, com atalhos no **Menu Iniciar** e na **Área de Trabalho**. Ele também aparece em Aplicativos instalados do Windows.</value></data>
+  <data name="SetupOpenInstalled" xml:space="preserve"><value>Abrir o Lotus instalado</value></data>
+  <data name="SetupFailed" xml:space="preserve"><value>Não foi possível instalar. Detalhes no log.</value></data>
+  <data name="SetupUninstallAsk" xml:space="preserve"><value>Desinstalar o Lotus deste PC?</value></data>
+  <data name="SetupUninstallData" xml:space="preserve"><value>Apagar também os seus dados do Lotus (perfil, histórico do Score e backups)? Se escolher Não, eles ficam guardados para uma próxima instalação.</value></data>
 </root>

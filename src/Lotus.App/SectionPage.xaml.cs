@@ -32,6 +32,38 @@ public sealed partial class SectionPage : Page
     public bool ShowFaq { get; private set; }
     public SectionPage() => InitializeComponent();
     private void OnEditProfile(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenOnboarding(edit: true);
+
+    // ---- Install Lotus on this PC (per user, no administrator) ----
+    private readonly Lotus.Infrastructure.Setup.LotusSetup setup = new();
+    private void OnSetupLoaded(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not SectionViewModel vm) return;
+        SetupStatus.Text = setup.IsInstalledCopy ? vm.Text.Format("SetupInstalledHere", setup.InstallDir)
+            : setup.IsInstalled ? vm.Text.Format("SetupInstalledElsewhere", setup.InstallDir) : vm.Text["SetupNotInstalled"];
+        SetupButton.Visibility = setup.IsInstalledCopy ? Visibility.Collapsed : Visibility.Visible;
+        SetupButton.Content = vm.Text[setup.IsInstalled ? "SetupUpdate" : "SetupInstall"];
+    }
+    private async void OnInstallLotus(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not SectionViewModel vm) return;
+        SetupButton.IsEnabled = false; SetupStatus.Text = vm.Text["SetupInstalling"];
+        try
+        {
+            await Task.Run(() => setup.Install());
+            var dialog = new ContentDialog
+            {
+                XamlRoot = XamlRoot, RequestedTheme = ElementTheme.Dark, Title = vm.Text["SetupDoneTitle"], DefaultButton = ContentDialogButton.Primary,
+                Content = RichText.Block(vm.Text.Format("SetupDoneBody", setup.InstallDir)), PrimaryButtonText = vm.Text["SetupOpenInstalled"], CloseButtonText = vm.Text["GsClose"]
+            };
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(setup.InstalledExe) { UseShellExecute = true })?.Dispose();
+                Application.Current.Exit();
+            }
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Install failed"); SetupStatus.Text = vm.Text["SetupFailed"]; }
+        finally { SetupButton.IsEnabled = true; OnSetupLoaded(sender, e); }
+    }
     private void OnReplayWelcome(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenOnboarding(edit: false);
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {

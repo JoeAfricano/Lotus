@@ -1124,4 +1124,17 @@ Current conditions: {1}</value></data>
   <data name="UninRecycleConfirm" xml:space="preserve"><value>{0} folder(s) go to the Recycle Bin. You can restore them from there if needed.</value></data>
   <data name="UninLeftoversRecycled" xml:space="preserve"><value>{0} folder(s) sent to the Recycle Bin.</value></data>
   <data name="UninLeftoversDone" xml:space="preserve"><value>Done: {0} folder(s) in the Recycle Bin.</value></data>
+  <data name="SetupTitle" xml:space="preserve"><value>Install Lotus</value></data>
+  <data name="SetupNotInstalled" xml:space="preserve"><value>Lotus is running straight from the folder you extracted. Install it to get Start menu and desktop shortcuts and uninstall it from Windows.</value></data>
+  <data name="SetupInstalledHere" xml:space="preserve"><value>Installed in {0}. To uninstall, use Windows Settings › Installed apps.</value></data>
+  <data name="SetupInstalledElsewhere" xml:space="preserve"><value>Lotus is already installed in {0}. You can update it with this version.</value></data>
+  <data name="SetupInstall" xml:space="preserve"><value>Install Lotus on this PC</value></data>
+  <data name="SetupUpdate" xml:space="preserve"><value>Update the installed version</value></data>
+  <data name="SetupInstalling" xml:space="preserve"><value>Installing...</value></data>
+  <data name="SetupDoneTitle" xml:space="preserve"><value>Lotus installed</value></data>
+  <data name="SetupDoneBody" xml:space="preserve"><value>Done! Lotus was installed in {0}, with shortcuts in the **Start menu** and on the **desktop**. It also shows in Windows' Installed apps.</value></data>
+  <data name="SetupOpenInstalled" xml:space="preserve"><value>Open installed Lotus</value></data>
+  <data name="SetupFailed" xml:space="preserve"><value>Couldn't install. Details are in the log.</value></data>
+  <data name="SetupUninstallAsk" xml:space="preserve"><value>Uninstall Lotus from this PC?</value></data>
+  <data name="SetupUninstallData" xml:space="preserve"><value>Also delete your Lotus data (profile, Score history and backups)? If you choose No, it stays for a future install.</value></data>
 </root>
