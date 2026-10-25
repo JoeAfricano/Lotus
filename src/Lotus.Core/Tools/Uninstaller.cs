@@ -6,7 +6,7 @@ namespace Lotus.Core.Tools;
 // "Desinstalar programas": the program's own registered uninstaller does the removal; afterwards Lotus looks for
 // leftovers only in well-known places with the program's exact name, and moves what the player checks to the Recycle Bin.
 public sealed record InstalledApp(string Key, string Name, string? Publisher, string? Version, long? SizeBytes, DateTime? Installed,
-    string? InstallLocation, string UninstallCommand, bool UserScope);
+    string? InstallLocation, string UninstallCommand, bool UserScope, string? IconSource = null);
 public sealed record Leftover(string Path, long Bytes, bool Recommended, bool NeedsAdmin);
 public interface IAppUninstaller
 {
@@ -15,6 +15,7 @@ public interface IAppUninstaller
     Task<bool> WaitUntilRemovedAsync(InstalledApp app, TimeSpan timeout, CancellationToken token);
     IReadOnlyList<Leftover> FindLeftovers(InstalledApp app, IReadOnlyList<InstalledApp> stillInstalled);
     int Recycle(IReadOnlyList<Leftover> items, IProgress<double>? progress = null); // returns how many left their folder
+    string? IconFor(InstalledApp app); // cached PNG of the program's icon, or null
 }
 
 public sealed partial class LeftoverRow(Leftover item, string size) : ObservableObject
@@ -25,11 +26,63 @@ public sealed partial class LeftoverRow(Leftover item, string size) : Observable
     public bool CanRecycle => !Item.NeedsAdmin;
     [ObservableProperty] private bool selected = item.Recommended && !item.NeedsAdmin;
 }
-public sealed record AppRowView(InstalledApp App, string Detail);
+public sealed partial class AppRowView(InstalledApp app, string detail) : ObservableObject
+{
+    public InstalledApp App { get; } = app;
+    public string Detail { get; } = detail;
+    public string Initial => App.Name.Length > 0 ? char.ToUpperInvariant(App.Name[0]).ToString() : "?";
+    [ObservableProperty] private bool selected;
+    [ObservableProperty] private string? iconPath;
+}
 
 public sealed class UninstallerViewModel(IAppUninstaller uninstaller, ITextCatalog text, Action<Exception> log) : ObservableObject
 {
     private List<InstalledApp> all = [];
+    private readonly Dictionary<string, string?> icons = [];
+    public int SelectedCount => Apps.Count(a => a.Selected);
+    public bool HasSelection => SelectedCount > 0;
+    public string UninstallSelectedLabel => Text.Format("UninSelected", SelectedCount);
+    public void SelectionChanged() { OnPropertyChanged(nameof(SelectedCount)); OnPropertyChanged(nameof(HasSelection)); OnPropertyChanged(nameof(UninstallSelectedLabel)); }
+
+    // Icons come from each program's own file, extracted in the background and cached by Lotus.
+    private async System.Threading.Tasks.Task LoadIconsAsync()
+    {
+        foreach (var row in Apps.ToList())
+        {
+            if (icons.TryGetValue(row.App.Key, out var known)) { row.IconPath = known; continue; }
+            string? path = null;
+            try { path = await System.Threading.Tasks.Task.Run(() => uninstaller.IconFor(row.App)); } catch (Exception ex) { log(ex); }
+            icons[row.App.Key] = path; row.IconPath = path;
+        }
+    }
+
+    // Several at once: each program's own uninstaller runs in turn; the leftovers of all of them are reviewed together.
+    public async System.Threading.Tasks.Task UninstallSelectedAsync()
+    {
+        var chosen = Apps.Where(a => a.Selected).Select(a => a.App).ToList();
+        if (chosen.Count == 0 || Busy) return;
+        Busy = true; Removed = null; Leftovers.Clear(); Job.Start(); Notify();
+        var removed = new List<InstalledApp>();
+        try
+        {
+            for (var i = 0; i < chosen.Count; i++)
+            {
+                var app = chosen[i];
+                Status = Text.Format("UninBatchRunning", i + 1, chosen.Count, app.Name); Notify();
+                if (await uninstaller.RunUninstallerAsync(app, CancellationToken.None) is not null
+                    && await uninstaller.WaitUntilRemovedAsync(app, TimeSpan.FromSeconds(60), CancellationToken.None)) removed.Add(app);
+                Job.Report((i + 1) * 85.0 / chosen.Count);
+            }
+            await LoadAsync();
+            foreach (var app in removed)
+                foreach (var l in await System.Threading.Tasks.Task.Run(() => uninstaller.FindLeftovers(app, all)))
+                    if (Leftovers.All(x => x.Path != l.Path)) Leftovers.Add(new(l, l.Bytes >= 1L << 30 ? $"{l.Bytes / (double)(1L << 30):0.0} GB" : $"{Math.Max(1, l.Bytes / (1L << 20))} MB"));
+            Status = Text.Format("UninBatchDone", removed.Count, chosen.Count) + (Leftovers.Count > 0 ? " " + Text.Format("UninBatchLeftovers", Leftovers.Count) : "");
+            if (removed.Count > 0) Job.Finish(Text.Format("UninBatchDoneShort", removed.Count)); else Job.Fail();
+        }
+        catch (Exception ex) { log(ex); Status = Text["ToolFailed"]; Job.Fail(); }
+        finally { Busy = false; Notify(); SelectionChanged(); }
+    }
     private string query = "";
     public ITextCatalog Text { get; } = text;
     public ObservableCollection<AppRowView> Apps { get; } = [];
@@ -62,8 +115,10 @@ public sealed class UninstallerViewModel(IAppUninstaller uninstaller, ITextCatal
             if (a.Version is { Length: > 0 } v) parts.Add(v);
             if (a.SizeBytes is > 0 and var s) parts.Add(s >= 1L << 30 ? $"{s / (double)(1L << 30):0.0} GB" : $"{s / (double)(1L << 20):0} MB");
             if (a.Installed is { } d) parts.Add(d.ToString("d", Culture));
-            Apps.Add(new(a, string.Join(" · ", parts)));
+            Apps.Add(new(a, string.Join(" · ", parts)) { IconPath = icons.GetValueOrDefault(a.Key) });
         }
+        SelectionChanged();
+        _ = LoadIconsAsync();
     }
 
     // Runs the program's own uninstaller; when it is gone, looks for leftovers for the player to review.

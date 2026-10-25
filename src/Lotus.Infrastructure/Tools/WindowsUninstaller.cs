@@ -33,7 +33,7 @@ public sealed class WindowsUninstaller : IAppUninstaller
                 DateTime? installed = k.GetValue("InstallDate") is string d && DateTime.TryParseExact(d, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var dt) ? dt : null;
                 var location = (k.GetValue("InstallLocation") as string)?.Trim().Trim('"');
                 var app = new InstalledApp($"{hive}:{view}:{id}", name.Trim(), (k.GetValue("Publisher") as string)?.Trim(), (k.GetValue("DisplayVersion") as string)?.Trim(),
-                    size, installed, string.IsNullOrWhiteSpace(location) ? null : location, command.Trim(), user);
+                    size, installed, string.IsNullOrWhiteSpace(location) ? null : location, command.Trim(), user, (k.GetValue("DisplayIcon") as string)?.Trim());
                 apps.TryAdd(app.Name + "|" + app.Version, app); // the same program listed in two views counts once
             }
         }
@@ -114,6 +114,31 @@ public sealed class WindowsUninstaller : IAppUninstaller
             progress?.Report((i + 1) * 100.0 / items.Count);
         }
         return moved;
+    }
+
+    // Icon from DisplayIcon ("file.exe,0" or an .ico), else the uninstaller's own file; cached as PNG in %LOCALAPPDATA%\Lotus\Icons.
+    public string? IconFor(InstalledApp app)
+    {
+        var source = app.IconSource ?? Split(app.UninstallCommand).File;
+        if (string.IsNullOrWhiteSpace(source)) return null;
+        var index = 0; var comma = source.LastIndexOf(',');
+        if (comma > 1 && int.TryParse(source[(comma + 1)..].Trim(), out var i)) { index = i; source = source[..comma]; }
+        source = Environment.ExpandEnvironmentVariables(source.Trim().Trim('"'));
+        if (!File.Exists(source) || source.EndsWith("msiexec.exe", StringComparison.OrdinalIgnoreCase)) return null;
+        var cache = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Icons");
+        var target = Path.Combine(cache, Convert.ToHexString(System.Security.Cryptography.SHA1.HashData(System.Text.Encoding.UTF8.GetBytes(source + "|" + index))) + ".png");
+        if (File.Exists(target)) return target;
+        try
+        {
+            using var icon = source.EndsWith(".ico", StringComparison.OrdinalIgnoreCase) ? new System.Drawing.Icon(source, 48, 48)
+                : System.Drawing.Icon.ExtractIcon(source, index, 48) ?? System.Drawing.Icon.ExtractAssociatedIcon(source);
+            if (icon is null) return null;
+            Directory.CreateDirectory(cache);
+            using var bitmap = icon.ToBitmap();
+            bitmap.Save(target, System.Drawing.Imaging.ImageFormat.Png);
+            return target;
+        }
+        catch (Exception ex) when (ex is ArgumentException or IOException or System.Runtime.InteropServices.ExternalException or UnauthorizedAccessException) { return null; }
     }
 
     private static string StripVersion(string name) => System.Text.RegularExpressions.Regex.Replace(name, @"[\s\-_]*(v?\d+(\.\d+)*)(\s*\(.*\))?\s*$", "").Trim();

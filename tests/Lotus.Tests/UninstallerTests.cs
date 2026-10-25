@@ -41,6 +41,7 @@ public sealed class UninstallerTests : IDisposable
         public Task<bool> WaitUntilRemovedAsync(InstalledApp app, TimeSpan timeout, CancellationToken t) => Task.FromResult(Installed.All(a => a.Key != app.Key));
         public IReadOnlyList<Leftover> FindLeftovers(InstalledApp app, IReadOnlyList<InstalledApp> still) => [new(@"C:\Games\Old", 10, true, false), new(@"C:\Program Files\Old", 10, true, true)];
         public int Recycle(IReadOnlyList<Leftover> items, IProgress<double>? progress = null) { Recycled += items.Count; return items.Count; }
+        public string? IconFor(InstalledApp app) => null;
     }
 
     [Fact] public async Task UninstallThenReviewLeftoversAndRecycleOnlyChecked()

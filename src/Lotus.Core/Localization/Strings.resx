@@ -1141,4 +1141,13 @@ Condições atuais: {1}</value></data>
   <data name="IntLayoutActiveNeon" xml:space="preserve"><value>Layout ativo: Lotus Neon</value></data>
   <data name="IntLayoutNeon" xml:space="preserve"><value>Usar o Lotus Neon (cartão)</value></data>
   <data name="IntNeonWhat" xml:space="preserve"><value>**Lotus Neon:** um cartão no canto com FPS grande, médias e barras de uso. Bom para quem prefere tudo agrupado.</value></data>
+  <data name="ToolBack" xml:space="preserve"><value>Voltar às ferramentas</value></data>
+  <data name="ToolNetTile" xml:space="preserve"><value>Internet e DNS</value></data>
+  <data name="UninSelected" xml:space="preserve"><value>Desinstalar selecionados ({0})</value></data>
+  <data name="UninBatchConfirmTitle" xml:space="preserve"><value>Desinstalar {0} programa(s)?</value></data>
+  <data name="UninBatchConfirmBody" xml:space="preserve"><value>Os desinstaladores vão abrir um de cada vez: {0}. **Siga as etapas de cada um até o fim.** No final, o Lotus mostra o que sobrou de todos.</value></data>
+  <data name="UninBatchRunning" xml:space="preserve"><value>Desinstalando {0} de {1}: {2}. Siga as etapas na janela do desinstalador.</value></data>
+  <data name="UninBatchDone" xml:space="preserve"><value>{0} de {1} programa(s) removidos.</value></data>
+  <data name="UninBatchLeftovers" xml:space="preserve"><value>Sobraram {0} pasta(s); confira abaixo.</value></data>
+  <data name="UninBatchDoneShort" xml:space="preserve"><value>Concluído: {0} programa(s) removidos.</value></data>
 </root>

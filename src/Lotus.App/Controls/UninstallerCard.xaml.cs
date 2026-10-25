@@ -21,6 +21,15 @@ public sealed partial class UninstallerCard : UserControl
         await vm.UninstallAsync(row.App);
     }
 
+    private void OnSelectionClick(object sender, RoutedEventArgs e) => (DataContext as UninstallerViewModel)?.SelectionChanged();
+    private async void OnUninstallSelected(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not UninstallerViewModel vm || vm.SelectedCount == 0) return;
+        var names = string.Join(", ", vm.Apps.Where(a => a.Selected).Select(a => a.App.Name));
+        if (!await Confirm(vm.Text.Format("UninBatchConfirmTitle", vm.SelectedCount), vm.Text.Format("UninBatchConfirmBody", names), vm.Text["UninButton"], vm)) return;
+        await vm.UninstallSelectedAsync();
+    }
+
     private async void OnRecycleLeftovers(object sender, RoutedEventArgs e)
     {
         if (DataContext is not UninstallerViewModel vm) return;

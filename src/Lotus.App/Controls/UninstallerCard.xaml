@@ -11,15 +11,23 @@
    </Grid>
    <TextBox Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="{Binding Text[UninSearch]}" MinHeight="40" VerticalContentAlignment="Center" AutomationProperties.Name="{Binding Text[UninSearch]}" AutomationProperties.AutomationId="unin-search"/>
    <TextBlock Text="{Binding Summary}" Style="{StaticResource CaptionStyle}"/>
-   <ScrollViewer MaxHeight="320" VerticalScrollBarVisibility="Auto">
+   <StackPanel Orientation="Horizontal" Spacing="8">
+    <Button Content="{Binding UninstallSelectedLabel}" Click="OnUninstallSelected" IsEnabled="{Binding HasSelection}" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="unin-selected"/>
+   </StackPanel>
+   <ScrollViewer MaxHeight="520" VerticalScrollBarVisibility="Auto">
     <ItemsControl ItemsSource="{Binding Apps}" AutomationProperties.AutomationId="unin-apps">
      <ItemsControl.ItemTemplate><DataTemplate>
-      <Grid ColumnSpacing="12" Padding="0,6,12,6"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-       <StackPanel VerticalAlignment="Center">
+      <Grid ColumnSpacing="12" Padding="0,6,12,6"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+       <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}" Click="OnSelectionClick" MinWidth="0" VerticalAlignment="Center" AutomationProperties.Name="{Binding App.Name}"/>
+       <Grid Grid.Column="1" Width="36" Height="36" VerticalAlignment="Center">
+        <Border CornerRadius="9" Background="{ThemeResource BadgeBrush}"><TextBlock Text="{Binding Initial}" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource RoseBrush}"/></Border>
+        <Image Source="{Binding IconPath, Converter={StaticResource CoverImage}}" Width="32" Height="32" Visibility="{Binding IconPath, Converter={StaticResource PresenceVisibility}}"/>
+       </Grid>
+       <StackPanel Grid.Column="2" VerticalAlignment="Center">
         <TextBlock Text="{Binding App.Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
         <TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextTrimming="CharacterEllipsis"/>
        </StackPanel>
-       <Button Grid.Column="1" Content="{Binding DataContext.Text[UninButton], ElementName=Root}" Tag="{Binding}" Click="OnUninstall" Style="{StaticResource SoftButtonStyle}" AutomationProperties.Name="{Binding App.Name}"/>
+       <Button Grid.Column="3" Content="{Binding DataContext.Text[UninButton], ElementName=Root}" Tag="{Binding}" Click="OnUninstall" Style="{StaticResource SoftButtonStyle}" AutomationProperties.Name="{Binding App.Name}"/>
       </Grid>
      </DataTemplate></ItemsControl.ItemTemplate>
     </ItemsControl>

@@ -68,6 +68,7 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
     public bool HasTemp { get; private set; }
     public string Message { get; private set; } = "";
     public string DiskTip { get; private set; } = "";
+    public string DiskTileStatus => DiskTip.Length > 0 ? DiskTip : DiskRows.FirstOrDefault()?.Detail ?? "";
     // Progress and completion of each task, shown with a bar, percentage and a "done" check.
     public UninstallerViewModel? Uninstall { get; } = uninstall;
     public TaskState MemTask { get; } = new(); public TaskState TempTask { get; } = new();
@@ -294,7 +295,7 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
     }
     private void Notify()
     {
-        foreach (var p in new[] { nameof(MemoryStatus), nameof(TempStatus), nameof(NetStatus), nameof(DriverStatus), nameof(DriverUrl), nameof(HasTemp), nameof(Busy), nameof(Message), nameof(DiskTip) }) OnPropertyChanged(p);
+        foreach (var p in new[] { nameof(MemoryStatus), nameof(TempStatus), nameof(NetStatus), nameof(DriverStatus), nameof(DriverUrl), nameof(HasTemp), nameof(Busy), nameof(Message), nameof(DiskTip), nameof(DiskTileStatus) }) OnPropertyChanged(p);
     }
     public void RefreshLanguage() => _ = RefreshAsync();
 }

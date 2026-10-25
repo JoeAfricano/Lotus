@@ -1141,4 +1141,13 @@ Current conditions: {1}</value></data>
   <data name="IntLayoutActiveNeon" xml:space="preserve"><value>Active layout: Lotus Neon</value></data>
   <data name="IntLayoutNeon" xml:space="preserve"><value>Use Lotus Neon (card)</value></data>
   <data name="IntNeonWhat" xml:space="preserve"><value>**Lotus Neon:** a corner card with big FPS, averages and usage bars. Good if you like everything grouped.</value></data>
+  <data name="ToolBack" xml:space="preserve"><value>Back to tools</value></data>
+  <data name="ToolNetTile" xml:space="preserve"><value>Internet and DNS</value></data>
+  <data name="UninSelected" xml:space="preserve"><value>Uninstall selected ({0})</value></data>
+  <data name="UninBatchConfirmTitle" xml:space="preserve"><value>Uninstall {0} program(s)?</value></data>
+  <data name="UninBatchConfirmBody" xml:space="preserve"><value>The uninstallers open one at a time: {0}. **Follow each one's steps to the end.** At the end, Lotus shows what was left from all of them.</value></data>
+  <data name="UninBatchRunning" xml:space="preserve"><value>Uninstalling {0} of {1}: {2}. Follow the steps in the uninstaller window.</value></data>
+  <data name="UninBatchDone" xml:space="preserve"><value>{0} of {1} program(s) removed.</value></data>
+  <data name="UninBatchLeftovers" xml:space="preserve"><value>{0} folder(s) were left; check below.</value></data>
+  <data name="UninBatchDoneShort" xml:space="preserve"><value>Done: {0} program(s) removed.</value></data>
 </root>
