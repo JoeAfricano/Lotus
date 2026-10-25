@@ -133,7 +133,35 @@
       <ProgressBar Width="220" Value="64" VerticalAlignment="Center"/>
      </StackPanel>
     </StackPanel>
-    <!-- 4. Tour -->
+    <!-- 4. Recommended programs (install only on click + confirmation) -->
+    <StackPanel Visibility="{Binding IsApps, Converter={StaticResource BooleanVisibility}}" Spacing="12">
+     <TextBlock Text="{Binding Text[RecTitle]}" FontSize="26" FontWeight="SemiBold"/>
+     <TextBlock app:Rich.Text="{Binding Text[RecBody]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+     <ItemsControl x:Name="AppList" ItemsSource="{Binding Apps.Rows}" AutomationProperties.AutomationId="ob-apps">
+      <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="336" ItemHeight="128" MaximumRowsOrColumns="2"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate><DataTemplate>
+       <Border Margin="0,0,10,10" Padding="14,12" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.02">
+        <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+         <Border Width="38" Height="38" CornerRadius="11" Background="{StaticResource BadgeBrush}" VerticalAlignment="Top">
+          <FontIcon Glyph="{Binding Glyph}" FontSize="16" Foreground="{StaticResource RoseBrush}"/>
+         </Border>
+         <StackPanel Grid.Column="1" Spacing="3">
+          <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+          <TextBlock app:Rich.Text="{Binding Description}" FontSize="12" Opacity="0.8" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
+          <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+           <Button Tag="{Binding}" Click="OnInstallApp" Content="{Binding ActionLabel}" Style="{StaticResource SoftButtonStyle}" Padding="12,4" MinHeight="28" FontSize="12"
+                   Visibility="{Binding CanInstall, Converter={StaticResource BooleanVisibility}}" AutomationProperties.Name="{Binding Name}"/>
+           <ProgressRing IsActive="{Binding Busy}" Width="16" Height="16" Visibility="{Binding Busy, Converter={StaticResource BooleanVisibility}}"/>
+           <FontIcon Glyph="&#xE73E;" FontSize="13" Foreground="{StaticResource RoseBrush}" Visibility="{Binding ShowInstalled, Converter={StaticResource BooleanVisibility}}"/>
+           <TextBlock Text="{Binding Status}" FontSize="12" Opacity="0.85" VerticalAlignment="Center"/>
+          </StackPanel>
+         </StackPanel>
+        </Grid>
+       </Border>
+      </DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+    </StackPanel>
+    <!-- 5. Tour -->
     <StackPanel Visibility="{Binding IsTour, Converter={StaticResource BooleanVisibility}}" Spacing="14">
      <TextBlock Text="{Binding Text[ObTourTitle]}" FontSize="26" FontWeight="SemiBold"/>
      <StackPanel x:Name="TourList" Spacing="10"/>

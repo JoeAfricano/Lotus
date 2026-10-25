@@ -151,6 +151,19 @@ public sealed partial class OnboardingView : UserControl
         };
         steamWatch.Start();
     }
+    // Recommended program: confirm first, then install through winget (or open the official page when there is no package).
+    private async void OnInstallApp(object sender, RoutedEventArgs e)
+    {
+        if (Vm?.Apps is not { } apps || sender is not FrameworkElement { Tag: RecommendedAppRow row }) return;
+        if (!apps.InstallsDirectly(row)) { await Windows.System.Launcher.LaunchUriAsync(new Uri(row.App.Page)); return; }
+        var dialog = new ContentDialog
+        {
+            XamlRoot = XamlRoot, Title = apps.Text.Format("RecConfirmTitle", row.Name), Content = new TextBlock { Text = apps.Text.Format("RecConfirmBody", row.Name), TextWrapping = TextWrapping.Wrap },
+            PrimaryButtonText = apps.Text["RecInstall"], CloseButtonText = apps.Text["RecCancel"], DefaultButton = ContentDialogButton.Primary,
+        };
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
+        await apps.InstallAsync(row);
+    }
     private void OnUseSteam(object sender, RoutedEventArgs e) { if (Vm is { } vm) vm.UseSteam = true; }
     private void OnUseCustom(object sender, RoutedEventArgs e) { if (Vm is { } vm) vm.UseCustom = true; }
     private void OnCustomFocus(object sender, RoutedEventArgs e) { if (Vm is { } vm) vm.UseCustom = true; }

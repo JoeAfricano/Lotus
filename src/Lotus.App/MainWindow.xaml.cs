@@ -100,7 +100,8 @@ public sealed partial class MainWindow : Window
         experience.DemandChanged += OnExperienceDemandChanged;
         Navigation.SelectedItem = Navigation.MenuItems[0];
         // Player profile: accent color, corner badge and the first-run welcome.
-        onboarding = new Lotus.Core.Profile.OnboardingViewModel(preferences, new Lotus.Infrastructure.Profile.LocalProfileSource(), text, ex => Serilog.Log.Warning(ex, "Profile"));
+        onboarding = new Lotus.Core.Profile.OnboardingViewModel(preferences, new Lotus.Infrastructure.Profile.LocalProfileSource(), text, ex => Serilog.Log.Warning(ex, "Profile"),
+            new Lotus.Core.Profile.RecommendedAppsViewModel(new Lotus.Infrastructure.Profile.WingetAppInstaller(), text, ex => Serilog.Log.Warning(ex, "Recommended apps")));
         onboarding.AccentPreview += (_, accent) => palette.ApplyAccent(accent);
         Onboarding.Closed += (_, _) => { palette.ApplyAccent(preferences.Current.Accent); ShowProfile(); ShowRoute(force: true); };
         palette.ApplyAccent(preferences.Current.Accent);

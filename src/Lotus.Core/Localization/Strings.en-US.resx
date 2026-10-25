@@ -1193,4 +1193,20 @@ Current conditions: {1}</value></data>
   <data name="RepLevelWarning" xml:space="preserve"><value>Warning</value></data>
   <data name="RepLevelError" xml:space="preserve"><value>Error</value></data>
   <data name="RepLevelFatal" xml:space="preserve"><value>Serious error</value></data>
+  <data name="RecTitle" xml:space="preserve"><value>Programs that go well with Lotus</value></data>
+  <data name="RecBody" xml:space="preserve"><value>Optional, but they make everything better. Lotus installs through **winget**, the official Windows installer, and only when you click. The ones not on winget open their official site.</value></data>
+  <data name="RecApp_afterburner" xml:space="preserve"><value>Shows graphics card temperature, usage and clocks, and controls the fans.</value></data>
+  <data name="RecApp_rtss" xml:space="preserve"><value>Draws the in-game **FPS overlay** and caps FPS without extra input lag. Lotus uses it.</value></data>
+  <data name="RecApp_scskiller" xml:space="preserve"><value>Precompiles **shaders** before you play, so the first matches don't stutter.</value></data>
+  <data name="RecApp_hwinfo" xml:space="preserve"><value>Reads every sensor in the PC. Good for checking temperature and stability.</value></data>
+  <data name="RecApp_nvidiaapp" xml:space="preserve"><value>NVIDIA's official driver and settings. Only useful with an NVIDIA card.</value></data>
+  <data name="RecApp_discord" xml:space="preserve"><value>Voice and chat with friends while you play.</value></data>
+  <data name="RecInstall" xml:space="preserve"><value>Install</value></data>
+  <data name="RecOpenSite" xml:space="preserve"><value>Open site</value></data>
+  <data name="RecInstalling" xml:space="preserve"><value>Installing...</value></data>
+  <data name="RecInstalled" xml:space="preserve"><value>Installed</value></data>
+  <data name="RecFailed" xml:space="preserve"><value>Couldn't install it. Try the official site.</value></data>
+  <data name="RecCancel" xml:space="preserve"><value>Not now</value></data>
+  <data name="RecConfirmTitle" xml:space="preserve"><value>Install {0}?</value></data>
+  <data name="RecConfirmBody" xml:space="preserve"><value>Lotus will download {0} through winget, from an official source, and install it without you clicking anything. By confirming you accept the publisher's terms. If Windows asks for administrator permission, that's the installer asking.</value></data>
 </root>

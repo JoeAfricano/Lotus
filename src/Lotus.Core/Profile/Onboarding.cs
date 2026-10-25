@@ -18,7 +18,7 @@ public sealed record GoalOption(string Id, string Title, string Detail, string G
 // First-run welcome in steps (and later "Edit profile", which starts at the profile step and skips the tour).
 public sealed class OnboardingViewModel : ObservableObject
 {
-    public const int WelcomeStep = 0, ProfileStep = 1, GoalStep = 2, AccentStep = 3, TourStep = 4;
+    public const int WelcomeStep = 0, ProfileStep = 1, GoalStep = 2, AccentStep = 3, AppsStep = 4, TourStep = 5;
     private readonly PreferencesService preferences;
     private readonly IProfileSource source;
     private readonly Action<Exception> log;
@@ -33,20 +33,23 @@ public sealed class OnboardingViewModel : ObservableObject
     public event EventHandler? Finished;
     public event EventHandler<string>? AccentPreview; // live preview while choosing a color
 
-    public OnboardingViewModel(PreferencesService preferences, IProfileSource source, ITextCatalog text, Action<Exception> log)
+    public OnboardingViewModel(PreferencesService preferences, IProfileSource source, ITextCatalog text, Action<Exception> log, RecommendedAppsViewModel? apps = null)
     {
-        this.preferences = preferences; this.source = source; Text = text; this.log = log;
+        Apps = apps; this.preferences = preferences; this.source = source; Text = text; this.log = log;
         var p = preferences.Current;
         goal = p.Goal; accent = p.Accent; source_ = p.ProfileSource;
         customName = p.ProfileSource == "custom" ? p.DisplayName : ""; customPicture = p.ProfileSource == "custom" ? p.AvatarPath : null;
     }
 
+    // Recommended programs step (detection runs when the step opens).
+    public RecommendedAppsViewModel? Apps { get; }
+
     public bool NeedsWelcome => !preferences.Current.Onboarded;
     public int Step => step;
-    public int StepCount => editing ? 3 : 5;
+    public int StepCount => editing ? 3 : 6;
     public int StepNumber => editing ? step : step + 1;
     public bool IsWelcome => step == WelcomeStep; public bool IsProfile => step == ProfileStep; public bool IsGoal => step == GoalStep;
-    public bool IsAccent => step == AccentStep; public bool IsTour => step == TourStep;
+    public bool IsAccent => step == AccentStep; public bool IsApps => step == AppsStep; public bool IsTour => step == TourStep;
     public bool CanBack => editing ? step > ProfileStep : step > WelcomeStep;
     public bool IsLast => editing ? step == AccentStep : step == TourStep;
     public string NextLabel => Text[IsLast ? (editing ? "ObSave" : "ObStart") : step == WelcomeStep ? "ObBegin" : "ObNext"];
@@ -107,7 +110,7 @@ public sealed class OnboardingViewModel : ObservableObject
     public void Next()
     {
         if (IsLast) { Finish(); return; }
-        step++; NotifyAll();
+        step++; if (IsApps) Apps?.Refresh(); NotifyAll();
     }
     public void Back() { if (CanBack) { step--; NotifyAll(); } }
     public void Skip() => Finish(); // keeps defaults; the welcome does not show again
@@ -126,7 +129,7 @@ public sealed class OnboardingViewModel : ObservableObject
     }
     private void NotifyAll()
     {
-        foreach (var n in new[] { nameof(Step), nameof(StepCount), nameof(StepNumber), nameof(IsWelcome), nameof(IsProfile), nameof(IsGoal), nameof(IsAccent), nameof(IsTour),
+        foreach (var n in new[] { nameof(Step), nameof(StepCount), nameof(StepNumber), nameof(IsWelcome), nameof(IsProfile), nameof(IsGoal), nameof(IsAccent), nameof(IsApps), nameof(IsTour),
                      nameof(CanBack), nameof(IsLast), nameof(NextLabel), nameof(StepText), nameof(SteamFound), nameof(SteamName), nameof(SteamPicture), nameof(Goal), nameof(Accent), nameof(GoalTitle) })
             OnPropertyChanged(n);
         NotifyProfile();

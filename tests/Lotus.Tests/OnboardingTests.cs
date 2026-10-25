@@ -32,11 +32,11 @@ public sealed class OnboardingTests : IDisposable
         var vm = new OnboardingViewModel(prefs, new Source(new("Joe", @"C:\a.png")), new TextCatalog(), ex => throw ex);
         Assert.True(vm.NeedsWelcome);
         vm.Start(edit: false);
-        Assert.True(vm.IsWelcome); Assert.Equal(5, vm.StepCount); Assert.True(vm.UseSteam); Assert.Equal("Joe", vm.PreviewName);
+        Assert.True(vm.IsWelcome); Assert.Equal(6, vm.StepCount); Assert.True(vm.UseSteam); Assert.Equal("Joe", vm.PreviewName);
         string? preview = null; vm.AccentPreview += (_, a) => preview = a;
         vm.Next(); vm.Next(); vm.Goal = "competitive"; vm.Next(); vm.Accent = "dark"; Assert.Equal("dark", preview);
         Assert.Single(vm.Accents, a => a.Selected && a.Id == "dark"); Assert.Single(vm.Goals, g => g.Selected && g.Id == "competitive");
-        vm.Next(); Assert.True(vm.IsTour && vm.IsLast); vm.Next();
+        vm.Next(); Assert.True(vm.IsApps); vm.Next(); Assert.True(vm.IsTour && vm.IsLast); vm.Next();
         var s = store.Saved;
         Assert.True(s.Onboarded); Assert.Equal(("steam", "Joe", @"C:\a.png", "competitive", "dark"), (s.ProfileSource, s.DisplayName, s.AvatarPath, s.Goal, s.Accent));
         Assert.False(new OnboardingViewModel(prefs, new Source(null), new TextCatalog(), _ => { }).NeedsWelcome);
@@ -130,5 +130,29 @@ public sealed class LogDigestTests
             Assert.Equal("DNS failed 1.1.1.1", e[1].Message);
         }
         finally { Directory.Delete(dir, true); }
+    }
+}
+
+public sealed class RecommendedAppsTests
+{
+    private sealed class FakeInstaller : Lotus.Core.Profile.IAppInstaller
+    {
+        public HashSet<string> Present = ["rtss"]; public bool Winget = true; public List<string> Installed = [];
+        public bool IsInstalled(Lotus.Core.Profile.RecommendedApp app) => Present.Contains(app.Id);
+        public bool WingetAvailable() => Winget;
+        public Task<bool> InstallAsync(Lotus.Core.Profile.RecommendedApp app, CancellationToken token) { Installed.Add(app.WingetId!); Present.Add(app.Id); return Task.FromResult(true); }
+    }
+
+    [Fact] public async Task DetectsInstalledAndInstallsOnlyWingetPackages()
+    {
+        var fake = new FakeInstaller(); var vm = new Lotus.Core.Profile.RecommendedAppsViewModel(fake, new Lotus.Core.TextCatalog(), ex => throw ex);
+        vm.Refresh();
+        var rtss = vm.Rows.Single(r => r.App.Id == "rtss"); var ab = vm.Rows.Single(r => r.App.Id == "afterburner"); var scs = vm.Rows.Single(r => r.App.Id == "scskiller");
+        Assert.True(rtss.Installed); Assert.False(rtss.CanInstall); Assert.True(ab.CanInstall);
+        Assert.False(vm.InstallsDirectly(scs)); // no winget package: official page instead
+        await vm.InstallAsync(scs); Assert.Empty(fake.Installed);
+        await vm.InstallAsync(ab); Assert.Equal(["Guru3D.Afterburner"], fake.Installed); Assert.True(ab.Installed); Assert.False(ab.Busy);
+        await vm.InstallAsync(rtss); Assert.Single(fake.Installed); // already there
+        fake.Winget = false; vm.Refresh(); Assert.False(vm.InstallsDirectly(vm.Rows.Single(r => r.App.Id == "discord")));
     }
 }
