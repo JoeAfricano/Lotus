@@ -56,3 +56,10 @@ Primeira entrega da versão focada no jogador leigo (ver decisões de produto em
 - No Lotus: status por card (prontos / recompilar após driver / pré-carregados / não suportado), "Pré-carregar shaders" no menu do jogo (jogo fechado, confirmação, prioridade baixa, progresso no status). Sem SCSKiller instalado: aviso opcional com link para a página oficial (o Lotus nunca baixa).
 - Neste PC: God of War precisa recompilar (driver 617.42 → 621.01), No Rest for the Wicked pronto, Persona 5 Royal não suportado. Nenhuma compilação real foi executada.
 - Testes: 264 aprovados (parser com a saída real da CLI, correspondência por id/nome, fluxo com ferramenta simulada, oferta quando ausente).
+
+## Complemento: RivaTuner — leitura de FPS (25/10/2026)
+
+- RivaTuner 7.3.7 e MSI Afterburner 4.6.6 instalados neste PC. Perfis do RivaTuner ficam em Program Files (somente leitura para usuários): editar exigirá um pedido de administrador por aplicação.
+- `RtssSharedMemory` lê a memória compartilhada documentada no SDK (`RTSSSharedMemoryV2`, assinatura `'RTSS'`, entradas com PID, nome, janela de tempo, frames e frametime), sem administrador e sem injeção por parte do Lotus.
+- `RtssPreferredCaptureProvider`: no "Medir e ajustar", se o RivaTuner acompanha o processo do jogo, mede por ele (sem aviso do Windows); senão usa o PresentMon elevado. Pelo RivaTuner, o 1% low é aproximado (frametime amostrado a cada ~10 ms), registrado em Diagnostics.
+- Leitura real: o RivaTuner acompanhava 3 aplicativos no momento do teste. Testes: 266 aprovados (layout do SDK em memória isolada, preferência RTSS→PresentMon, leitura real segura).

@@ -768,7 +768,7 @@ Condições atuais: {1}</value></data>
   <data name="GsMeasureMenu" xml:space="preserve"><value>Medir e ajustar</value></data>
   <data name="GsMeasureNotRunning" xml:space="preserve"><value>Abra {0} e jogue numa cena comum; depois use "Medir e ajustar".</value></data>
   <data name="GsMeasureConfirmTitle" xml:space="preserve"><value>Medir {0}?</value></data>
-  <data name="GsMeasureConfirmBody" xml:space="preserve"><value>Depois de confirmar, volte para o jogo: o Lotus começa a medir em 10 segundos e mede por 45 segundos. Continue jogando normalmente. O Windows pode pedir permissão de administrador para o medidor de FPS (PresentMon).</value></data>
+  <data name="GsMeasureConfirmBody" xml:space="preserve"><value>Depois de confirmar, volte para o jogo: o Lotus começa a medir em 10 segundos e mede por 45 segundos. Continue jogando normalmente. Com o RivaTuner aberto, o Lotus lê o FPS dele sem pedir nada; sem ele, o Windows pode pedir permissão de administrador para o medidor de FPS (PresentMon).</value></data>
   <data name="GsMeasureStart" xml:space="preserve"><value>Medir</value></data>
   <data name="GsMeasureStartsIn" xml:space="preserve"><value>Volte para o jogo: a medição começa em {0} s...</value></data>
   <data name="GsMeasuring" xml:space="preserve"><value>Medindo por {0} s... continue jogando.</value></data>

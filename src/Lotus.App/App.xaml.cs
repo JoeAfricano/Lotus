@@ -93,7 +93,7 @@ public partial class App : Application
                 [new Lotus.Infrastructure.Games.UnrealEngineRecipe(), new Lotus.Infrastructure.Games.NoRestForTheWickedRecipe()],
                 new Lotus.Infrastructure.Games.FileGameSettingsStore(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "GameSettingsBackups")),
                 new Lotus.Infrastructure.Games.WindowsGameProcessCheck(),
-                p.GetRequiredService<IFrameCaptureProvider>(), new Lotus.Infrastructure.Games.PdhGpuLoadSampler(), new Lotus.Infrastructure.Games.ScsKillerCli()))
+                new Lotus.Infrastructure.Games.RtssPreferredCaptureProvider(p.GetRequiredService<IFrameCaptureProvider>()), new Lotus.Infrastructure.Games.PdhGpuLoadSampler(), new Lotus.Infrastructure.Games.ScsKillerCli()))
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);
