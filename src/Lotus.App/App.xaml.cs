@@ -88,7 +88,11 @@ public partial class App : Application
                 p.GetRequiredService<MonitoringViewModel>(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Hardware diagnostics failed")))
             .AddSingleton(p => new Lotus.Core.Games.GamesViewModel(new Lotus.Infrastructure.Games.WindowsGameLibrary(),
                 new Lotus.Infrastructure.Games.JsonManualGameStore(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "games.json")),
-                new Lotus.Infrastructure.Games.WindowsGameLauncher(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Games operation failed")))
+                new Lotus.Infrastructure.Games.WindowsGameLauncher(), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Games operation failed"),
+                new Lotus.Infrastructure.Games.WindowsSystemProfile(new Lotus.Infrastructure.Optimization.WindowsDisplayModes()),
+                [new Lotus.Infrastructure.Games.UnrealEngineRecipe()],
+                new Lotus.Infrastructure.Games.FileGameSettingsStore(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "GameSettingsBackups")),
+                new Lotus.Infrastructure.Games.WindowsGameProcessCheck()))
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);

@@ -43,7 +43,7 @@
          <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE768;" FontSize="12"/><TextBlock Text="{Binding PlayLabel}"/></StackPanel>
         </Button>
         <Button Grid.Column="1" Style="{StaticResource SoftButtonStyle}" MinHeight="34" Padding="9,4" ToolTipService.ToolTip="{Binding RemoveLabel}" AutomationProperties.Name="{Binding RemoveLabel}"><FontIcon Glyph="&#xE712;" FontSize="13"/>
-         <Button.Flyout><MenuFlyout><MenuFlyoutItem Text="{Binding RemoveLabel}" Click="OnRemoveGame"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE74D;"/></MenuFlyoutItem.Icon></MenuFlyoutItem></MenuFlyout></Button.Flyout>
+         <Button.Flyout><MenuFlyout><MenuFlyoutItem Text="{Binding OptimizeLabel}" Click="OnOptimizeSettings"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE9E9;"/></MenuFlyoutItem.Icon></MenuFlyoutItem><MenuFlyoutItem Text="{Binding RemoveLabel}" Click="OnRemoveGame"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE74D;"/></MenuFlyoutItem.Icon></MenuFlyoutItem></MenuFlyout></Button.Flyout>
         </Button>
        </Grid>
       </StackPanel>

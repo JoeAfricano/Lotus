@@ -47,6 +47,31 @@ public sealed partial class GamesPanel : UserControl
             vm.Restore(list.SelectedItems.Cast<GameEntry>().ToList());
     }
 
+    // Recommendation first; "Aplicar no jogo" only when a recipe can edit the settings safely.
+    private async void OnOptimizeSettings(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: GameCard card } || DataContext is not GamesViewModel vm) return;
+        var analysis = await vm.AnalyzeSettingsAsync(card.Game);
+        if (analysis is null) return;
+        var body = new StackPanel { Spacing = 8, MaxWidth = 480 };
+        body.Children.Add(new TextBlock { Text = analysis.Hardware, Opacity = 0.75, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 6) });
+        foreach (var line in analysis.Lines)
+            body.Children.Add(new TextBlock { Text = "•  " + line, TextWrapping = TextWrapping.Wrap });
+        var support = analysis.Support is { CanApply: true } s ? vm.Text.Format("GsSupportApply", s.EngineLabel)
+            : analysis.Support is { } u ? $"{u.EngineLabel}: {vm.Text[u.Detail ?? "GsSupportManual"]}" : vm.Text["GsSupportManual"];
+        body.Children.Add(new TextBlock { Text = support, TextWrapping = TextWrapping.Wrap, Opacity = 0.8, FontSize = 12.5, Margin = new Thickness(0, 8, 0, 0) });
+        var dialog = new ContentDialog
+        {
+            XamlRoot = XamlRoot, Title = vm.Text.Format("GsTitle", card.Name), RequestedTheme = ElementTheme.Dark,
+            Content = new ScrollViewer { Content = body, MaxHeight = 460 }, CloseButtonText = vm.Text["GsClose"], DefaultButton = ContentDialogButton.Close
+        };
+        if (analysis.Support is { CanApply: true }) dialog.PrimaryButtonText = vm.Text["GsApply"];
+        if (analysis.HasOriginal) dialog.SecondaryButtonText = vm.Text["GsRestore"];
+        var result = await dialog.ShowAsync();
+        if (result == ContentDialogResult.Primary) await vm.ApplySettingsAsync(card.Game, analysis.Recommendation);
+        else if (result == ContentDialogResult.Secondary) await vm.RestoreSettingsAsync(card.Game);
+    }
+
     private async void OnRemoveGame(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: GameCard card } || DataContext is not GamesViewModel vm) return;

@@ -723,4 +723,46 @@ Condições atuais: {1}</value></data>
   <data name="StartupConfirmTitle" xml:space="preserve"><value>{0}: {1} na inicialização?</value></data>
   <data name="StartupConfirmBody" xml:space="preserve"><value>Usa a mesma marcação do Gerenciador de Tarefas: nada é apagado ou desinstalado, e você pode reverter aqui a qualquer momento. Vale a partir do próximo login.</value></data>
   <data name="PowerStartupLimits" xml:space="preserve"><value>Itens das chaves Run e pastas Inicializar. O status segue o Gerenciador de Tarefas. Desativar é opcional, item por item, e nunca faz parte do "Aplicar perfil". Tarefas agendadas e serviços não são incluídos.</value></data>
+  <data name="GsMenu" xml:space="preserve"><value>Otimizar configurações</value></data>
+  <data name="GsTitle" xml:space="preserve"><value>Configurações recomendadas: {0}</value></data>
+  <data name="GsHardware" xml:space="preserve"><value>{0} · {1:0.#} GB de VRAM · {2}×{3} a {4} Hz</value></data>
+  <data name="GsLineTarget" xml:space="preserve"><value>Meta: {0} FPS estáveis (a taxa do seu monitor).</value></data>
+  <data name="GsLinePreset" xml:space="preserve"><value>Qualidade gráfica geral: {0}.</value></data>
+  <data name="GsLineTextures" xml:space="preserve"><value>Texturas: {0} (limitadas pela memória de vídeo).</value></data>
+  <data name="GsLineUpscale" xml:space="preserve"><value>Ative {0} no modo {1}: mais FPS com pouca perda de nitidez.</value></data>
+  <data name="GsLineNoUpscale" xml:space="preserve"><value>Upscaler opcional: sua placa tem folga nesta resolução.</value></data>
+  <data name="GsLineCap" xml:space="preserve"><value>Limite de FPS em {0}: frametime mais estável, menos calor e ruído.</value></data>
+  <data name="GsTierLow" xml:space="preserve"><value>Baixa</value></data>
+  <data name="GsTierMedium" xml:space="preserve"><value>Média</value></data>
+  <data name="GsTierHigh" xml:space="preserve"><value>Alta</value></data>
+  <data name="GsTierUltra" xml:space="preserve"><value>Ultra</value></data>
+  <data name="GsUpscalerDlss" xml:space="preserve"><value>DLSS</value></data>
+  <data name="GsUpscalerFsr" xml:space="preserve"><value>FSR</value></data>
+  <data name="GsUpscalerXess" xml:space="preserve"><value>XeSS</value></data>
+  <data name="GsModeQuality" xml:space="preserve"><value>Qualidade</value></data>
+  <data name="GsModeBalanced" xml:space="preserve"><value>Equilibrado</value></data>
+  <data name="GsModePerformance" xml:space="preserve"><value>Desempenho</value></data>
+  <data name="GsModeOff" xml:space="preserve"><value>desligado</value></data>
+  <data name="GsReasonDlss" xml:space="preserve"><value>Sua placa é RTX: o DLSS costuma render mais FPS que baixar a qualidade.</value></data>
+  <data name="GsReasonFsr" xml:space="preserve"><value>O FSR funciona em qualquer placa e ajuda a manter a meta de FPS.</value></data>
+  <data name="GsReasonVram" xml:space="preserve"><value>A memória de vídeo é o limite das texturas; acima disso o jogo pode travar.</value></data>
+  <data name="GsReasonCpu" xml:space="preserve"><value>Processador com poucos núcleos: prefira o limite de FPS e reduza distância de visão e multidões.</value></data>
+  <data name="GsReasonRam" xml:space="preserve"><value>Pouca RAM: feche navegador e launchers antes de jogar.</value></data>
+  <data name="GsReasonCap" xml:space="preserve"><value>Este é o ponto de partida; o Lotus vai medir no seu PC e ajustar.</value></data>
+  <data name="GsSupportApply" xml:space="preserve"><value>{0}: o Lotus pode aplicar estas configurações (backup do original antes).</value></data>
+  <data name="GsRunOnce" xml:space="preserve"><value>Abra o jogo uma vez para ele criar o arquivo de configurações.</value></data>
+  <data name="GsSupportManual" xml:space="preserve"><value>Este jogo guarda as opções num formato que o Lotus ainda não edita com segurança. Ajuste no menu do jogo conforme acima.</value></data>
+  <data name="GsApply" xml:space="preserve"><value>Aplicar no jogo</value></data>
+  <data name="GsRestore" xml:space="preserve"><value>Restaurar original</value></data>
+  <data name="GsClose" xml:space="preserve"><value>Fechar</value></data>
+  <data name="GsApplied" xml:space="preserve"><value>{0}: configurações aplicadas e conferidas. Abra o jogo para ver o resultado.</value></data>
+  <data name="GsAlready" xml:space="preserve"><value>{0}: já estava com estas configurações.</value></data>
+  <data name="GsCloseGame" xml:space="preserve"><value>{0} está aberto. Feche o jogo antes, para ele não sobrescrever as mudanças.</value></data>
+  <data name="GsNotSupported" xml:space="preserve"><value>{0}: este jogo ainda não tem receita para aplicar automaticamente.</value></data>
+  <data name="GsVerifyFailed" xml:space="preserve"><value>{0}: a gravação não pôde ser confirmada; nada foi considerado aplicado.</value></data>
+  <data name="GsRestored" xml:space="preserve"><value>{0}: configurações originais restauradas.</value></data>
+  <data name="GsNoOriginal" xml:space="preserve"><value>{0}: não há configuração original salva pelo Lotus.</value></data>
+  <data name="GsFailed" xml:space="preserve"><value>Não foi possível analisar o hardware. Detalhes no log.</value></data>
+  <data name="GsReasonTarget60" xml:space="preserve"><value>Meta de 60 FPS estáveis: melhor que oscilar tentando alcançar a taxa máxima do monitor.</value></data>
+  <data name="GsReasonLowEnd" xml:space="preserve"><value>Placa de entrada: se ainda travar, reduza a resolução do jogo para 1600×900 ou 1280×720.</value></data>
 </root>

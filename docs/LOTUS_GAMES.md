@@ -31,3 +31,12 @@ Primeira entrega da versão focada no jogador leigo (ver decisões de produto em
 - "Desfazer perfil" restaura a última alteração do Lotus de cada ação, apenas onde nada mudou por fora; mudanças externas entre a prévia e a aplicação viram conflito e não são sobrescritas.
 - A prévia grava planos "Planejado" no journal (aparecem no histórico) sem alterar o Windows.
 - Testes: 228 aprovados em Debug e Release (prévia sem mutação, aplicar/desfazer tudo, conflito externo, Perfil Diário só com as próprias ações). Verificação na interface por UI Automation; capturas de tela saíram pretas por falta de tela ativa no momento (sem erros no log).
+
+## Configuração inteligente dos jogos — base (25/10/2026)
+
+- **Perfil do sistema** (`WindowsSystemProfile`, somente leitura): GPU e VRAM pela chave de classe de vídeo do registro, threads, RAM e monitor principal. Neste PC: RTX 5060 8 GB, 12 threads, 16 GB, 1920×1080 a 75 Hz.
+- **Recomendação** (`SettingsAdvisor`): pontuação relativa de GPU (`GpuScore`, ≈100 = classe RTX 3060; heurística documentada) dividida pela demanda (pixels × FPS-alvo). Upscaler conta como ganho (Q ×1,3, E ×1,5, D ×1,8; em ≤1080p no máximo Equilibrado). DLSS em RTX, XeSS em Arc, FSR nas demais. Texturas limitadas pela VRAM. PCs fracos miram 60 FPS estáveis. Limite de FPS = meta. Neste PC: Alta, texturas Altas, DLSS Qualidade, limite 75.
+- **Receitas** (`IGameSettingsRecipe`: ler texto bruto → transformação pura → gravar e conferir): `UnrealEngineRecipe` genérica (`GameUserSettings.ini`, grupos `sg.*` 0–3 e `FrameRateLimit`; preserva todas as outras linhas; pede para abrir o jogo uma vez se o arquivo não existir). Sem receita = modo recomendação (o que escolher no menu do jogo).
+- **Segurança**: só com o jogo fechado (processo sob a pasta de instalação), original salvo uma única vez em `%LOCALAPPDATA%\Lotus\GameSettingsBackups`, verificação após gravar, "Restaurar original" e confirmação no diálogo.
+- **Jogos deste PC**: No Rest for the Wicked guarda opções em JSON no registro (`DeviceSettings_Key`: `QualityPreset`, `UpscaleMethod`, `RenderScale*`, `FrameRateCap`, `DRSEnabled/DRSTargetFPS`) — receita depende de calibrar os números dos presets; Persona 5 Royal e God of War ficam em modo recomendação.
+- Testes: 249 aprovados (pontuação de GPU, recomendações de entrada a topo, receita Unreal com jogo falso, editor INI, aplicar/bloquear jogo aberto/restaurar, leitura real somente leitura).

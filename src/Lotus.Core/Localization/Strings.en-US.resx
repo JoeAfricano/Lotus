@@ -723,4 +723,46 @@ Current conditions: {1}</value></data>
   <data name="StartupConfirmTitle" xml:space="preserve"><value>{0}: {1} at startup?</value></data>
   <data name="StartupConfirmBody" xml:space="preserve"><value>Uses the same marker as Task Manager: nothing is deleted or uninstalled and you can revert here anytime. Takes effect at next sign-in.</value></data>
   <data name="PowerStartupLimits" xml:space="preserve"><value>Items from Run keys and Startup folders. Status follows Task Manager. Disabling is optional, item by item, and never part of "Apply profile". Scheduled tasks and services are not included.</value></data>
+  <data name="GsMenu" xml:space="preserve"><value>Optimize settings</value></data>
+  <data name="GsTitle" xml:space="preserve"><value>Recommended settings: {0}</value></data>
+  <data name="GsHardware" xml:space="preserve"><value>{0} · {1:0.#} GB VRAM · {2}×{3} at {4} Hz</value></data>
+  <data name="GsLineTarget" xml:space="preserve"><value>Target: a steady {0} FPS (your monitor's refresh rate).</value></data>
+  <data name="GsLinePreset" xml:space="preserve"><value>Overall graphics quality: {0}.</value></data>
+  <data name="GsLineTextures" xml:space="preserve"><value>Textures: {0} (limited by video memory).</value></data>
+  <data name="GsLineUpscale" xml:space="preserve"><value>Turn on {0} in {1} mode: more FPS with little loss of sharpness.</value></data>
+  <data name="GsLineNoUpscale" xml:space="preserve"><value>Upscaler optional: your GPU has headroom at this resolution.</value></data>
+  <data name="GsLineCap" xml:space="preserve"><value>Cap FPS at {0}: steadier frametime, less heat and noise.</value></data>
+  <data name="GsTierLow" xml:space="preserve"><value>Low</value></data>
+  <data name="GsTierMedium" xml:space="preserve"><value>Medium</value></data>
+  <data name="GsTierHigh" xml:space="preserve"><value>High</value></data>
+  <data name="GsTierUltra" xml:space="preserve"><value>Ultra</value></data>
+  <data name="GsUpscalerDlss" xml:space="preserve"><value>DLSS</value></data>
+  <data name="GsUpscalerFsr" xml:space="preserve"><value>FSR</value></data>
+  <data name="GsUpscalerXess" xml:space="preserve"><value>XeSS</value></data>
+  <data name="GsModeQuality" xml:space="preserve"><value>Quality</value></data>
+  <data name="GsModeBalanced" xml:space="preserve"><value>Balanced</value></data>
+  <data name="GsModePerformance" xml:space="preserve"><value>Performance</value></data>
+  <data name="GsModeOff" xml:space="preserve"><value>off</value></data>
+  <data name="GsReasonDlss" xml:space="preserve"><value>Your GPU is RTX: DLSS usually gives more FPS than lowering quality.</value></data>
+  <data name="GsReasonFsr" xml:space="preserve"><value>FSR works on any GPU and helps hold the FPS target.</value></data>
+  <data name="GsReasonVram" xml:space="preserve"><value>Video memory limits textures; above it the game may stutter.</value></data>
+  <data name="GsReasonCpu" xml:space="preserve"><value>CPU with few cores: keep the FPS cap and lower view distance and crowds.</value></data>
+  <data name="GsReasonRam" xml:space="preserve"><value>Low RAM: close browser and launchers before playing.</value></data>
+  <data name="GsReasonCap" xml:space="preserve"><value>This is the starting point; Lotus will measure on your PC and adjust.</value></data>
+  <data name="GsSupportApply" xml:space="preserve"><value>{0}: Lotus can apply these settings (original backed up first).</value></data>
+  <data name="GsRunOnce" xml:space="preserve"><value>Open the game once so it creates its settings file.</value></data>
+  <data name="GsSupportManual" xml:space="preserve"><value>This game stores options in a format Lotus does not safely edit yet. Set them in the game menu as above.</value></data>
+  <data name="GsApply" xml:space="preserve"><value>Apply to game</value></data>
+  <data name="GsRestore" xml:space="preserve"><value>Restore original</value></data>
+  <data name="GsClose" xml:space="preserve"><value>Close</value></data>
+  <data name="GsApplied" xml:space="preserve"><value>{0}: settings applied and verified. Open the game to see the result.</value></data>
+  <data name="GsAlready" xml:space="preserve"><value>{0}: already using these settings.</value></data>
+  <data name="GsCloseGame" xml:space="preserve"><value>{0} is running. Close it first so it does not overwrite the changes.</value></data>
+  <data name="GsNotSupported" xml:space="preserve"><value>{0}: this game has no recipe to apply automatically yet.</value></data>
+  <data name="GsVerifyFailed" xml:space="preserve"><value>{0}: the write could not be confirmed; nothing is considered applied.</value></data>
+  <data name="GsRestored" xml:space="preserve"><value>{0}: original settings restored.</value></data>
+  <data name="GsNoOriginal" xml:space="preserve"><value>{0}: no original settings saved by Lotus.</value></data>
+  <data name="GsFailed" xml:space="preserve"><value>Hardware could not be analyzed. Details in the log.</value></data>
+  <data name="GsReasonTarget60" xml:space="preserve"><value>A steady 60 FPS target: better than swinging while chasing the monitor's maximum rate.</value></data>
+  <data name="GsReasonLowEnd" xml:space="preserve"><value>Entry-level GPU: if it still stutters, lower the game resolution to 1600×900 or 1280×720.</value></data>
 </root>

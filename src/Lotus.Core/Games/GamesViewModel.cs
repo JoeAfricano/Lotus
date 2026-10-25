@@ -6,8 +6,10 @@ namespace Lotus.Core.Games;
 
 // Each card carries its own labels and commands, so item templates never depend on the parent DataContext.
 public sealed record GameCard(GameEntry Game, string Name, string Store, string Initials, string? CoverPath,
-    string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove);
+    string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove, string OptimizeLabel = "");
 public sealed record StoreFilter(string Id, string Label);
+// Result of "Otimizar configurações": hardware, the recommendation as readable lines, and whether Lotus can apply it.
+public sealed record GameSettingsAnalysis(SettingsRecommendation Recommendation, IReadOnlyList<string> Lines, string Hardware, GameSettingsSupport? Support, bool HasOriginal);
 
 // "Meus Jogos": scans launchers in the background, filters by text and store, launches on request.
 // "Remove from list" only hides a game (launcher or manual); a later scan can bring it back. Nothing is uninstalled.
@@ -17,6 +19,10 @@ public sealed class GamesViewModel : ObservableObject
     private readonly IManualGameStore manualStore;
     private readonly IGameLauncher launcher;
     private readonly Action<Exception> log;
+    private readonly ISystemProfileSource? profileSource;
+    private readonly IReadOnlyList<IGameSettingsRecipe> recipes;
+    private readonly IGameSettingsStore? settingsStore;
+    private readonly IGameProcessCheck? processCheck;
     private List<GameEntry> all = [];
     private List<GameEntry> manual = [];
     private HashSet<string> hidden = new(StringComparer.OrdinalIgnoreCase);
@@ -42,9 +48,11 @@ public sealed class GamesViewModel : ObservableObject
     public IRelayCommand<GameCard> LaunchCommand { get; }
     public IRelayCommand<GameCard> RemoveCommand { get; }
 
-    public GamesViewModel(IGameLibrary library, IManualGameStore manualStore, IGameLauncher launcher, ITextCatalog text, Action<Exception> log)
+    public GamesViewModel(IGameLibrary library, IManualGameStore manualStore, IGameLauncher launcher, ITextCatalog text, Action<Exception> log,
+        ISystemProfileSource? profileSource = null, IReadOnlyList<IGameSettingsRecipe>? recipes = null, IGameSettingsStore? settingsStore = null, IGameProcessCheck? processCheck = null)
     {
         this.library = library; this.manualStore = manualStore; this.launcher = launcher; Text = text; this.log = log;
+        this.profileSource = profileSource; this.recipes = recipes ?? []; this.settingsStore = settingsStore; this.processCheck = processCheck;
         LaunchCommand = new RelayCommand<GameCard>(Launch, c => c?.Game.CanLaunch == true);
         RemoveCommand = new RelayCommand<GameCard>(Remove);
     }
@@ -136,7 +144,7 @@ public sealed class GamesViewModel : ObservableObject
         Games.Clear();
         foreach (var g in Visible.Where(g => (store.Length == 0 || g.Store == store) && (term.Length == 0 || Normalize(g.Name).Contains(term)))
                                  .OrderBy(g => g.Name, StringComparer.CurrentCultureIgnoreCase))
-            Games.Add(new(g, g.Name, g.Store, Initials(g.Name), g.CoverPath, Text["GamesPlay"], Text["GamesHide"], LaunchCommand, RemoveCommand));
+            Games.Add(new(g, g.Name, g.Store, Initials(g.Name), g.CoverPath, Text["GamesPlay"], Text["GamesHide"], LaunchCommand, RemoveCommand, Text["GsMenu"]));
         OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(EmptyMessage));
     }
 
@@ -150,6 +158,77 @@ public sealed class GamesViewModel : ObservableObject
     {
         var words = name.Split([' ', ':', '-', '_'], StringSplitOptions.RemoveEmptyEntries).Where(w => char.IsLetterOrDigit(w[0])).ToArray();
         return words.Length == 0 ? "?" : string.Concat(words.Take(2).Select(w => char.ToUpperInvariant(w[0])));
+    }
+
+    // ---- Smart game settings ----
+    public bool CanOptimizeSettings => profileSource is not null;
+
+    public async Task<GameSettingsAnalysis?> AnalyzeSettingsAsync(GameEntry game)
+    {
+        if (profileSource is null) return null;
+        try
+        {
+            return await Task.Run(() =>
+            {
+                var p = profileSource.Read();
+                var r = SettingsAdvisor.Recommend(p);
+                var (recipe, support) = Recipe(game);
+                var lines = new List<string>
+                {
+                    Text.Format("GsLineTarget", r.TargetFps),
+                    Text.Format("GsLinePreset", Text["GsTier" + r.Tier]),
+                    Text.Format("GsLineTextures", Text["GsTier" + r.TextureTier]),
+                    r.Upscaler == Upscaler.None ? Text["GsLineNoUpscale"] : Text.Format("GsLineUpscale", Text["GsUpscaler" + r.Upscaler], Text["GsMode" + r.Mode]),
+                    Text.Format("GsLineCap", r.FpsCap)
+                };
+                lines.AddRange(r.ReasonKeys.Select(k => Text[k]));
+                var hardware = Text.Format("GsHardware", string.IsNullOrWhiteSpace(p.GpuName) ? "?" : p.GpuName, p.VramMb / 1024.0, p.Width, p.Height, p.RefreshHz);
+                return new GameSettingsAnalysis(r, lines, hardware, support, settingsStore?.LoadOriginal(game.Key) is not null);
+            });
+        }
+        catch (Exception ex) { log(ex); status = Text["GsFailed"]; Notify(); return null; }
+    }
+
+    private (IGameSettingsRecipe? Recipe, GameSettingsSupport? Support) Recipe(GameEntry game)
+    {
+        foreach (var r in recipes) if (r.Probe(game) is { } s) return (r, s);
+        return (null, null);
+    }
+
+    // Writes only with the game closed, after saving the original once, and verifies by reading back.
+    public async Task<string> ApplySettingsAsync(GameEntry game, SettingsRecommendation recommendation)
+    {
+        var key = await Task.Run(() =>
+        {
+            var (recipe, support) = Recipe(game);
+            if (recipe is null || support is not { CanApply: true } || settingsStore is null) return "GsNotSupported";
+            if (processCheck?.IsRunning(game) == true) return "GsCloseGame";
+            var raw = recipe.ReadRaw(game);
+            if (raw is null) return "GsNotSupported";
+            var updated = recipe.Transform(raw, recommendation);
+            if (updated == raw) return "GsAlready";
+            settingsStore.SaveOriginalOnce(game.Key, raw);
+            recipe.WriteRaw(game, updated);
+            return recipe.ReadRaw(game) == updated ? "GsApplied" : "GsVerifyFailed";
+        });
+        status = Text.Format(key, game.Name); Notify();
+        return key;
+    }
+
+    public async Task<string> RestoreSettingsAsync(GameEntry game)
+    {
+        var key = await Task.Run(() =>
+        {
+            var (recipe, _) = Recipe(game);
+            if (recipe is null || settingsStore?.LoadOriginal(game.Key) is not { } original) return "GsNoOriginal";
+            if (processCheck?.IsRunning(game) == true) return "GsCloseGame";
+            recipe.WriteRaw(game, original);
+            if (recipe.ReadRaw(game) != original) return "GsVerifyFailed";
+            settingsStore.ClearOriginal(game.Key);
+            return "GsRestored";
+        });
+        status = Text.Format(key, game.Name); Notify();
+        return key;
     }
 
     public void RefreshLanguage() { BuildStores(); ApplyFilter(); Notify(); }
