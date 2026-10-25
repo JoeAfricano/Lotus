@@ -123,3 +123,35 @@ public sealed class DriverVersionTests
     public void ShowsTheNumberPlayersKnow(string vendor, string version, string expected) =>
         Assert.Equal(expected, new Lotus.Core.Tools.GpuDriver("GPU", version, null, vendor).FriendlyVersion);
 }
+
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+public sealed class DriverUpdateTests
+{
+    private sealed class Handler : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage r, CancellationToken t)
+        {
+            var url = r.RequestUri!.ToString();
+            var body = url.Contains("lookupValueSearch")
+                ? "<?xml version=\"1.0\"?><LookupValueSearch><LookupValues><LookupValue ParentID=\"131\"><Name>NVIDIA GeForce RTX 5060 Ti</Name><Value>1076</Value></LookupValue><LookupValue ParentID=\"131\"><Name>NVIDIA GeForce RTX 5060</Name><Value>1078</Value></LookupValue></LookupValues></LookupValueSearch>"
+                : url.Contains("psid=131&pfid=1078")
+                    ? "{ \"Success\" : \"1\", \"IDS\" : [{ \"downloadInfo\": { \"Name\" : \"GeForce%20Game%20Ready%20Driver\", \"Version\" : \"625.10\", \"ReleaseDateTime\" : \"Wed Oct 21, 2026\", \"DetailsURL\" : \"https://www.nvidia.com/en-us/drivers/details/282412/\" } }] }"
+                    : "{}";
+            return Task.FromResult(new HttpResponseMessage(System.Net.HttpStatusCode.OK) { Content = new StringContent(body) });
+        }
+    }
+
+    [Theory]
+    [InlineData("625.10", "621.01", true)] [InlineData("621.01", "621.01", false)] [InlineData("617.42", "621.01", false)]
+    [InlineData("32.0.16.2101", "32.0.15.9999", true)] [InlineData("abc", "1.0", false)]
+    public void ComparesVersionsNumerically(string latest, string installed, bool newer) => Assert.Equal(newer, Lotus.Core.Tools.ToolsViewModel.Newer(latest, installed));
+
+    [Fact] public async Task ReadsLatestFromNvidiaServiceForTheExactCard()
+    {
+        var updates = new TrustedDriverUpdates(new HttpClient(new Handler()));
+        var latest = await updates.NvidiaLatestAsync("NVIDIA GeForce RTX 5060", default);
+        Assert.Equal(("GeForce Game Ready Driver", "625.10"), (latest!.Name, latest.Version));
+        Assert.Equal("https://www.nvidia.com/en-us/drivers/details/282412/", latest.DetailsUrl);
+        Assert.Null(await updates.NvidiaLatestAsync("NVIDIA GeForce RTX 9999", default));
+    }
+}

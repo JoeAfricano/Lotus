@@ -113,7 +113,7 @@ public partial class App : Application
                 new Lotus.Infrastructure.Score.WindowsScoreMachine(gpu), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Lotus Score failed")); })
             .AddSingleton(p => new Lotus.Core.Tools.ToolsViewModel(new Lotus.Infrastructure.Tools.WindowsAppCloser(), new Lotus.Infrastructure.Tools.WindowsTempCleaner(),
                 new Lotus.Infrastructure.Tools.PingConnectionTester(), new Lotus.Infrastructure.Tools.WindowsDiskHealth(), new Lotus.Infrastructure.Tools.WindowsDriverInfo(),
-                p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Tools operation failed"), new Lotus.Infrastructure.Tools.WindowsDnsService()))
+                p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Tools operation failed"), new Lotus.Infrastructure.Tools.WindowsDnsService(), new Lotus.Infrastructure.Tools.TrustedDriverUpdates()))
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);

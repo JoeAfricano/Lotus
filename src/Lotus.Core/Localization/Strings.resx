@@ -1003,10 +1003,10 @@ Condições atuais: {1}</value></data>
   <data name="ToolHealthUnhealthy" xml:space="preserve"><value>com defeito: faça backup já</value></data>
   <data name="ToolHealthUnknown" xml:space="preserve"><value>estado desconhecido</value></data>
   <data name="ToolVolumeLine" xml:space="preserve"><value>{0} livres de {1} ({2:0}%)</value></data>
-  <data name="ToolDriverTitle" xml:space="preserve"><value>Driver de vídeo</value></data>
+  <data name="ToolDriverTitle" xml:space="preserve"><value>Drivers</value></data>
   <data name="ToolDriverLine" xml:space="preserve"><value>{0} · versão {1} · {2}</value></data>
   <data name="ToolDriverNone" xml:space="preserve"><value>Driver de vídeo não identificado.</value></data>
-  <data name="ToolDriverWhat" xml:space="preserve"><value>Para atualizar, use o **site oficial** do fabricante. O Lotus não baixa nem instala drivers.</value></data>
+  <data name="ToolDriverWhat" xml:space="preserve"><value>O Lotus confere se há versões mais novas em **fontes oficiais**: o serviço da própria NVIDIA para a placa de vídeo e o **Windows Update** para os outros drivers. Ele mostra onde atualizar; a instalação fica com você.</value></data>
   <data name="ToolDriverOpen" xml:space="preserve"><value>Site oficial</value></data>
   <data name="ToolFailed" xml:space="preserve"><value>Algo deu errado. Detalhes no log.</value></data>
   <data name="DlgCancel" xml:space="preserve"><value>Cancelar</value></data>
@@ -1093,4 +1093,17 @@ Condições atuais: {1}</value></data>
   <data name="ToolTempDoneShort" xml:space="preserve"><value>Concluído: {1} na Lixeira.</value></data>
   <data name="ToolTestDone" xml:space="preserve"><value>Teste concluído.</value></data>
   <data name="ScoreDoneTotal" xml:space="preserve"><value>Concluído: {0} pontos.</value></data>
+  <data name="ToolDrvCheck" xml:space="preserve"><value>Verificar atualizações</value></data>
+  <data name="ToolDrvGpuOk" xml:space="preserve"><value>Em dia: você já tem a versão mais recente ({0}).</value></data>
+  <data name="ToolDrvGpuOld" xml:space="preserve"><value>Tem versão nova: você usa {0} e a NVIDIA já lançou a {1} ({2}).</value></data>
+  <data name="ToolDrvGpuManual" xml:space="preserve"><value>Para esta placa, confira no site oficial do fabricante.</value></data>
+  <data name="ToolDrvGpuOffline" xml:space="preserve"><value>Não consegui falar com o serviço da NVIDIA agora. Tente de novo mais tarde.</value></data>
+  <data name="ToolDrvPending" xml:space="preserve"><value>Atualização no Windows Update · {0} · {1}</value></data>
+  <data name="ToolDrvAllOk" xml:space="preserve"><value>Tudo em dia. Nenhum driver desatualizado encontrado.</value></data>
+  <data name="ToolDrvFound" xml:space="preserve"><value>Encontrei {0} driver(s) para atualizar. Use os botões abaixo para ir direto ao lugar certo.</value></data>
+  <data name="ToolDrvWuError" xml:space="preserve"><value>Não deu para consultar o Windows Update agora. A placa de vídeo foi verificada normalmente.</value></data>
+  <data name="ToolDrvDoneOk" xml:space="preserve"><value>Verificação concluída: tudo em dia.</value></data>
+  <data name="ToolDrvDoneFound" xml:space="preserve"><value>Verificação concluída: {0} para atualizar.</value></data>
+  <data name="ToolDrvOpenNvidia" xml:space="preserve"><value>Baixar na NVIDIA</value></data>
+  <data name="ToolDrvOpenWu" xml:space="preserve"><value>Abrir no Windows Update</value></data>
 </root>

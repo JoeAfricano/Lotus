@@ -29,6 +29,15 @@ public sealed partial class ToolsPanel : UserControl
             await vm.RecycleTempAsync();
     }
     private async void OnTestNet(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel vm) await vm.TestConnectionAsync(); }
+    private async void OnCheckDrivers(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel vm) await vm.CheckDriversAsync(); }
+    // Only NVIDIA's own driver page (validated in the service) and Windows' optional updates page.
+    private async void OnOpenGpuUpdate(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel { GpuUpdateUrl: { } url } && Uri.TryCreate(url, UriKind.Absolute, out var u) && u.Scheme == "https" && u.Host.EndsWith("nvidia.com", StringComparison.OrdinalIgnoreCase))
+            await Windows.System.Launcher.LaunchUriAsync(u);
+    }
+    private async void OnOpenWindowsUpdate(object sender, RoutedEventArgs e) =>
+        await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:windowsupdate-optionalupdates"));
     private async void OnTestDns(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel vm) await vm.BenchmarkDnsAsync(); }
     private async void OnApplyDns(object sender, RoutedEventArgs e)
     {

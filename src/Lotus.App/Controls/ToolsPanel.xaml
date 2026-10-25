@@ -91,13 +91,32 @@
     <TextBlock Text="{Binding DiskTip}" app:Motion.Settle="True" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource WarningBrush}" TextWrapping="Wrap" Visibility="{Binding DiskTip, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="tools-disk-tip"/>
    </StackPanel>
   </Border>
-  <!-- Graphics driver -->
+  <!-- Drivers: outdated ones from trusted sources (NVIDIA's own service, Windows Update) -->
   <Border Style="{StaticResource CardStyle}">
-   <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-    <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE7F8;" Style="{StaticResource BadgeIconStyle}"/></Border>
-    <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[ToolDriverTitle]}" FontWeight="SemiBold"/><TextBlock Text="{Binding DriverStatus}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-driver"/><TextBlock app:Rich.Text="{Binding Text[ToolDriverWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
-    <Button Grid.Column="2" Content="{Binding Text[ToolDriverOpen]}" Click="OnOpenDriverSite" Visibility="{Binding DriverUrl, Converter={StaticResource PresenceVisibility}}" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center"/>
-   </Grid>
+   <StackPanel Spacing="10">
+    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE7F8;" Style="{StaticResource BadgeIconStyle}"/></Border>
+     <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[ToolDriverTitle]}" FontWeight="SemiBold"/><TextBlock Text="{Binding DriverStatus}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-driver"/><TextBlock app:Rich.Text="{Binding Text[ToolDriverWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+     <Button Grid.Column="2" Content="{Binding Text[ToolDrvCheck]}" Click="OnCheckDrivers" Visibility="{Binding CanCheckDrivers, Converter={StaticResource BooleanVisibility}}" Style="{StaticResource PrimaryButtonStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="tools-drivers-check"/>
+    </Grid>
+    <ItemsControl ItemsSource="{Binding DriverRows}" AutomationProperties.AutomationId="tools-driver-rows">
+     <ItemsControl.ItemTemplate><DataTemplate>
+      <Grid ColumnSpacing="12" Margin="0,3"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="300"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <FontIcon Glyph="&#xE7BA;" FontSize="14" Foreground="{ThemeResource WarningBrush}" Visibility="{Binding Warning, Converter={StaticResource BooleanVisibility}}" VerticalAlignment="Top" Margin="0,2,0,0"/>
+       <FontIcon Glyph="&#xE73E;" FontSize="14" Foreground="{ThemeResource SuccessBrush}" Visibility="{Binding Warning, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}" VerticalAlignment="Top" Margin="0,2,0,0"/>
+       <TextBlock Grid.Column="1" Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+       <TextBlock Grid.Column="2" Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+      </Grid>
+     </DataTemplate></ItemsControl.ItemTemplate>
+    </ItemsControl>
+    <TextBlock Text="{Binding DriverUpdateStatus}" app:Motion.Settle="True" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" Visibility="{Binding DriverUpdateStatus, Converter={StaticResource PresenceVisibility}}"/>
+    <controls:TaskProgressView State="{Binding DriverTask}" AutomationProperties.AutomationId="tools-drivers-task"/>
+    <StackPanel Orientation="Horizontal" Spacing="8">
+     <Button Content="{Binding Text[ToolDrvOpenNvidia]}" Click="OnOpenGpuUpdate" Visibility="{Binding GpuUpdateUrl, Converter={StaticResource PresenceVisibility}}" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="tools-drivers-nvidia"/>
+     <Button Content="{Binding Text[ToolDrvOpenWu]}" Click="OnOpenWindowsUpdate" Visibility="{Binding HasWindowsDriverUpdates, Converter={StaticResource BooleanVisibility}}" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="tools-drivers-wu"/>
+     <Button Content="{Binding Text[ToolDriverOpen]}" Click="OnOpenDriverSite" Visibility="{Binding DriverUrl, Converter={StaticResource PresenceVisibility}}" Style="{StaticResource SoftButtonStyle}"/>
+    </StackPanel>
+   </StackPanel>
   </Border>
  </StackPanel>
 </UserControl>

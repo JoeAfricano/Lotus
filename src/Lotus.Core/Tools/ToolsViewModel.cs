@@ -29,6 +29,10 @@ public sealed record GpuDriver(string Name, string Version, DateTime? Date, stri
     }
 }
 public interface IDriverInfo { GpuDriver? Read(); }
+public sealed record LatestDriver(string Name, string Version, DateTime? Date, string DetailsUrl);
+public sealed record PendingDriver(string Title, string Manufacturer, DateTime? Date);
+public sealed record DriverCheck(LatestDriver? GpuLatest, IReadOnlyList<PendingDriver> Others, string? GpuError, string? WindowsUpdateError);
+public interface IDriverUpdates { Task<DriverCheck> CheckAsync(GpuDriver? gpu, CancellationToken token, IProgress<double>? progress = null); }
 public sealed record DnsProvider(string Id, string Name, string Primary, string Secondary);
 public sealed record DnsState(string Adapter, IReadOnlyList<string> Servers, bool Automatic, bool HasBackup);
 public sealed record DnsResult(string Id, string Name, string Server, double? MedianMs, double FailPercent);
@@ -50,7 +54,7 @@ public sealed partial class AppRow(RunningApp app, string sizeText) : Observable
 }
 public sealed record InfoRow(string Title, string Detail, bool Warning);
 
-public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnectionTester net, IDiskHealth disks, IDriverInfo driver, ITextCatalog text, Action<Exception> log, IDnsService? dns = null) : ObservableObject
+public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnectionTester net, IDiskHealth disks, IDriverInfo driver, ITextCatalog text, Action<Exception> log, IDnsService? dns = null, IDriverUpdates? updates = null) : ObservableObject
 {
     public ITextCatalog Text { get; } = text;
     public ObservableCollection<AppRow> Apps { get; } = [];
@@ -149,6 +153,56 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
         });
     }
 
+    // ---- Outdated drivers: NVIDIA's service for the graphics card, Windows Update for the rest ----
+    public TaskState DriverTask { get; } = new();
+    public ObservableCollection<InfoRow> DriverRows { get; } = [];
+    public string DriverUpdateStatus { get; private set; } = "";
+    public string? GpuUpdateUrl { get; private set; }
+    public bool HasWindowsDriverUpdates { get; private set; }
+    public bool CanCheckDrivers => updates is not null;
+    private GpuDriver? installedGpu;
+
+    public async Task CheckDriversAsync()
+    {
+        if (updates is null) return;
+        await Run(async () =>
+        {
+            DriverTask.Start();
+            installedGpu ??= await Task.Run(driver.Read);
+            var check = await updates.CheckAsync(installedGpu, CancellationToken.None, DriverTask.Progress());
+            DriverRows.Clear(); GpuUpdateUrl = null;
+            var gpuOutdated = false;
+            if (check.GpuLatest is { } latest && installedGpu is { } g)
+            {
+                gpuOutdated = Newer(latest.Version, g.FriendlyVersion);
+                GpuUpdateUrl = gpuOutdated ? latest.DetailsUrl : null;
+                DriverRows.Add(new(g.Name, gpuOutdated
+                    ? Text.Format("ToolDrvGpuOld", g.FriendlyVersion, latest.Version, latest.Date?.ToString("d", Culture) ?? "?")
+                    : Text.Format("ToolDrvGpuOk", g.FriendlyVersion), gpuOutdated));
+            }
+            else if (installedGpu is { } other) DriverRows.Add(new(other.Name, Text[check.GpuError is null ? "ToolDrvGpuManual" : "ToolDrvGpuOffline"], false));
+            foreach (var d in check.Others)
+                DriverRows.Add(new(d.Title, Text.Format("ToolDrvPending", d.Manufacturer.Length > 0 ? d.Manufacturer : "?", d.Date?.ToString("d", Culture) ?? "?"), true));
+            HasWindowsDriverUpdates = check.Others.Count > 0;
+            var outdated = check.Others.Count + (gpuOutdated ? 1 : 0);
+            DriverUpdateStatus = check.WindowsUpdateError is not null ? Text["ToolDrvWuError"] : outdated == 0 ? Text["ToolDrvAllOk"] : Text.Format("ToolDrvFound", outdated);
+            DriverTask.Finish(outdated == 0 ? Text["ToolDrvDoneOk"] : Text.Format("ToolDrvDoneFound", outdated));
+            foreach (var p in new[] { nameof(DriverUpdateStatus), nameof(GpuUpdateUrl), nameof(HasWindowsDriverUpdates) }) OnPropertyChanged(p);
+        });
+    }
+    // "621.01" vs "617.42": compares the numeric parts; anything unparsable counts as not newer.
+    public static bool Newer(string latest, string installed)
+    {
+        static int[]? Parts(string v) { var p = v.Split('.'); return p.All(x => int.TryParse(x, out _)) ? [.. p.Select(int.Parse)] : null; }
+        if (Parts(latest) is not { } a || Parts(installed) is not { } b) return false;
+        for (var i = 0; i < Math.Max(a.Length, b.Length); i++)
+        {
+            var x = i < a.Length ? a[i] : 0; var y = i < b.Length ? b[i] : 0;
+            if (x != y) return x > y;
+        }
+        return false;
+    }
+
     // ---- DNS: measured on this connection; switching asks first and can be undone ----
     public ObservableCollection<InfoRow> DnsRows { get; } = [];
     public string DnsStatus { get; private set; } = "";
@@ -234,7 +288,7 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
         if (Busy) return;
         Busy = true; Message = ""; Notify();
         try { await work(); }
-        catch (Exception ex) { log(ex); Message = Text["ToolFailed"]; foreach (var t in new[] { MemTask, TempTask, NetTask, DnsTask }) if (t.Running) t.Fail(); }
+        catch (Exception ex) { log(ex); Message = Text["ToolFailed"]; foreach (var t in new[] { MemTask, TempTask, NetTask, DnsTask, DriverTask }) if (t.Running) t.Fail(); }
         finally { Busy = false; Notify(); }
     }
     private void Notify()
