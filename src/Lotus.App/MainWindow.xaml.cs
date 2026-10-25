@@ -61,6 +61,7 @@ public sealed partial class MainWindow : Window
         games.Watch = new Lotus.Core.Games.PollingGameWatch(new Lotus.Infrastructure.Games.WindowsGameProcessCheck());
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
         games.Goal = () => preferences.Current.Goal;
+        try { experience.QuickFacts = Lotus.Infrastructure.Tools.QuickHardwareFacts.Read(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Quick hardware facts"); }
         games.SessionEnded += OnGameSessionEnded;
         InitializeComponent();
         Shell = this;
@@ -348,7 +349,7 @@ public sealed partial class MainWindow : Window
         {
             XamlRoot = ShellRoot.XamlRoot, RequestedTheme = ElementTheme.Dark, DefaultButton = ContentDialogButton.Primary,
             Title = text.Format("PlayEndedTitle", session.Game.Name),
-            Content = new TextBlock { Text = text["PlayEndedBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 },
+            Content = RichText.Block(text["PlayEndedBody"]),
             PrimaryButtonText = text["PlayUndo"], CloseButtonText = text["PlayKeep"]
         };
         if (await dialog.ShowAsync() == ContentDialogResult.Primary) await games.UndoProfileAsync();

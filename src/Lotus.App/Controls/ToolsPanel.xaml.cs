@@ -52,7 +52,7 @@ public sealed partial class ToolsPanel : UserControl
         var dialog = new ContentDialog
         {
             XamlRoot = XamlRoot, Title = title, RequestedTheme = ElementTheme.Dark, DefaultButton = ContentDialogButton.Close,
-            Content = new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, CloseButtonText = vm.Text[primary is null ? "GsClose" : "DlgCancel"]
+            Content = RichText.Block(body), CloseButtonText = vm.Text[primary is null ? "GsClose" : "DlgCancel"]
         };
         if (primary is not null) dialog.PrimaryButtonText = primary;
         return await dialog.ShowAsync() == ContentDialogResult.Primary;

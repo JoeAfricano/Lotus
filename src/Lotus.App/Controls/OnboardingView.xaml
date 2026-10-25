@@ -1,4 +1,4 @@
-<UserControl x:Class="Lotus.App.Controls.OnboardingView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+<UserControl x:Class="Lotus.App.Controls.OnboardingView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:app="using:Lotus.App"
              x:Name="Root" AutomationProperties.AutomationId="onboarding">
  <Grid>
   <!-- Dimmed, slightly tinted backdrop over the app -->
@@ -28,13 +28,13 @@
       </Canvas>
      </Viewbox>
      <TextBlock Text="{Binding Text[ObWelcomeTitle]}" FontSize="34" FontWeight="SemiBold" TextAlignment="Center" TextWrapping="Wrap"/>
-     <TextBlock Text="{Binding Text[ObWelcomeBody]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}" TextAlignment="Center" TextWrapping="Wrap"/>
-     <TextBlock Text="{Binding Text[ObWelcomeSafety]}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextAlignment="Center" TextWrapping="Wrap" Margin="0,8,0,0"/>
+     <TextBlock app:Rich.Text="{Binding Text[ObWelcomeBody]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}" TextAlignment="Center" TextWrapping="Wrap"/>
+     <TextBlock app:Rich.Text="{Binding Text[ObWelcomeSafety]}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextAlignment="Center" TextWrapping="Wrap" Margin="0,8,0,0"/>
     </StackPanel>
     <!-- 1. Profile -->
     <StackPanel Visibility="{Binding IsProfile, Converter={StaticResource BooleanVisibility}}" Spacing="16">
      <TextBlock Text="{Binding Text[ObProfileTitle]}" FontSize="26" FontWeight="SemiBold"/>
-     <TextBlock Text="{Binding Text[ObProfileBody]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+     <TextBlock app:Rich.Text="{Binding Text[ObProfileBody]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
      <Grid ColumnSpacing="14">
       <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
       <!-- Steam -->
@@ -53,13 +53,13 @@
           <TextBlock Text="{Binding Text[ObSteamMissing]}" Style="{StaticResource CaptionStyle}" Visibility="{Binding SteamFound, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}"/>
          </StackPanel>
         </StackPanel>
-        <TextBlock Text="{Binding Text[ObSteamNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+        <TextBlock app:Rich.Text="{Binding Text[ObSteamNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
        </StackPanel>
       </Button>
       <!-- No Steam account on this PC: offer to sign in; the account shows up here by itself -->
       <StackPanel Spacing="10" Padding="18" Background="{ThemeResource CardBrush}" CornerRadius="16" BorderThickness="1" BorderBrush="{ThemeResource CardBorderBrush}" Visibility="{Binding SteamFound, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}">
        <TextBlock Text="{Binding Text[ObSteamAsk]}" FontWeight="SemiBold" TextWrapping="Wrap"/>
-       <TextBlock Text="{Binding Text[ObSteamAskNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+       <TextBlock app:Rich.Text="{Binding Text[ObSteamAskNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
        <Button Content="{Binding SteamSignInLabel}" Click="OnSteamSignIn" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="ob-steam-signin"/>
       </StackPanel>
       <!-- Own -->
@@ -105,7 +105,7 @@
         <StackPanel Spacing="8">
          <FontIcon Glyph="{Binding Glyph}" FontSize="22" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
          <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
-         <TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+         <TextBlock app:Rich.Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
         </StackPanel>
        </Button>
       </DataTemplate></ItemsControl.ItemTemplate>
@@ -114,7 +114,7 @@
     <!-- 3. Accent color (applied live) -->
     <StackPanel Visibility="{Binding IsAccent, Converter={StaticResource BooleanVisibility}}" Spacing="16">
      <TextBlock Text="{Binding Text[ObAccentTitle]}" FontSize="26" FontWeight="SemiBold"/>
-     <TextBlock Text="{Binding Text[ObAccentBody]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+     <TextBlock app:Rich.Text="{Binding Text[ObAccentBody]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
      <ItemsControl ItemsSource="{Binding Accents}" AutomationProperties.AutomationId="ob-accents">
       <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="12"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
       <ItemsControl.ItemTemplate><DataTemplate>

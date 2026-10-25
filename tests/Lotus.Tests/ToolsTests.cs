@@ -110,3 +110,15 @@ public sealed class DnsTests
         Assert.Contains(DnsProviders.All, p => p.Id == "cloudflare" && p.Primary == "1.1.1.1");
     }
 }
+
+public sealed class DriverVersionTests
+{
+    [Theory]
+    [InlineData("NVIDIA", "32.0.16.2101", "621.01")]
+    [InlineData("NVIDIA", "31.0.15.5222", "552.22")]
+    [InlineData("NVIDIA", "32.0.15.6094", "560.94")]
+    [InlineData("AMD", "32.0.12011.1036", "32.0.12011.1036")]
+    [InlineData("NVIDIA", "garbage", "garbage")]
+    public void ShowsTheNumberPlayersKnow(string vendor, string version, string expected) =>
+        Assert.Equal(expected, new Lotus.Core.Tools.GpuDriver("GPU", version, null, vendor).FriendlyVersion);
+}

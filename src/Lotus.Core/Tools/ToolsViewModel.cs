@@ -14,7 +14,20 @@ public interface IConnectionTester { Task<IReadOnlyList<PingStats>> RunAsync(Can
 public sealed record DiskInfo(string Name, string Media, string Health, long SizeBytes);
 public sealed record VolumeInfo(string Letter, long FreeBytes, long TotalBytes);
 public interface IDiskHealth { (IReadOnlyList<DiskInfo> Disks, IReadOnlyList<VolumeInfo> Volumes) Read(); }
-public sealed record GpuDriver(string Name, string Version, DateTime? Date, string Vendor);
+public sealed record GpuDriver(string Name, string Version, DateTime? Date, string Vendor)
+{
+    // The number players know: NVIDIA shows 32.0.16.2101 as 621.01 (last five digits of the last two groups).
+    public string FriendlyVersion
+    {
+        get
+        {
+            var p = Version.Split('.');
+            if (Vendor != "NVIDIA" || p.Length != 4 || !p.All(x => x.Length > 0 && x.All(char.IsDigit))) return Version;
+            var digits = p[2] + p[3].PadLeft(4, '0');
+            return digits.Length < 5 ? Version : $"{digits[^5..^2]}.{digits[^2..]}";
+        }
+    }
+}
 public interface IDriverInfo { GpuDriver? Read(); }
 public sealed record DnsProvider(string Id, string Name, string Primary, string Secondary);
 public sealed record DnsState(string Adapter, IReadOnlyList<string> Servers, bool Automatic, bool HasBackup);
@@ -50,6 +63,7 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
     public string? DriverUrl { get; private set; }
     public bool HasTemp { get; private set; }
     public string Message { get; private set; } = "";
+    public string DiskTip { get; private set; } = "";
     public bool Busy { get; private set; }
     private TempScan? tempScan;
     private System.Globalization.CultureInfo Culture => System.Globalization.CultureInfo.GetCultureInfo(Text.Language);
@@ -65,15 +79,16 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
             tempScan = await Task.Run(temp.Scan); HasTemp = tempScan.Items > 0;
             TempStatus = HasTemp ? Text.Format("ToolTempFound", tempScan.Items, Size(tempScan.Bytes)) : Text["ToolTempNone"];
             var (d, v) = await Task.Run(disks.Read);
-            DiskRows.Clear();
+            DiskRows.Clear(); DiskTip = "";
             foreach (var x in d) DiskRows.Add(new(x.Name, Text.Format("ToolDiskLine", Text["ToolMedia" + x.Media], Text["ToolHealth" + x.Health], Size(x.SizeBytes)), x.Health != "Healthy"));
             foreach (var x in v)
             {
                 var free = x.TotalBytes > 0 ? x.FreeBytes * 100.0 / x.TotalBytes : 100;
-                DiskRows.Add(new(x.Letter, Text.Format("ToolVolumeLine", Size(x.FreeBytes), Size(x.TotalBytes), free), free < 10));
+                DiskRows.Add(new(x.Letter, Text.Format("ToolVolumeLine", Size(x.FreeBytes), Size(x.TotalBytes), free), free < 15));
+                if (free < 15) DiskTip = Text.Format("ToolDiskLow", x.Letter);
             }
             var g = await Task.Run(driver.Read);
-            DriverStatus = g is null ? Text["ToolDriverNone"] : Text.Format("ToolDriverLine", g.Name, g.Version, g.Date?.ToString("d", Culture) ?? "?");
+            DriverStatus = g is null ? Text["ToolDriverNone"] : Text.Format("ToolDriverLine", g.Name, g.FriendlyVersion == g.Version ? g.Version : $"{g.FriendlyVersion} ({g.Version})", g.Date?.ToString("d", Culture) ?? "?");
             DriverUrl = g?.Vendor switch
             {
                 "NVIDIA" => "https://www.nvidia.com/pt-br/drivers/",
@@ -213,7 +228,7 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
     }
     private void Notify()
     {
-        foreach (var p in new[] { nameof(MemoryStatus), nameof(TempStatus), nameof(NetStatus), nameof(DriverStatus), nameof(DriverUrl), nameof(HasTemp), nameof(Busy), nameof(Message) }) OnPropertyChanged(p);
+        foreach (var p in new[] { nameof(MemoryStatus), nameof(TempStatus), nameof(NetStatus), nameof(DriverStatus), nameof(DriverUrl), nameof(HasTemp), nameof(Busy), nameof(Message), nameof(DiskTip) }) OnPropertyChanged(p);
     }
     public void RefreshLanguage() => _ = RefreshAsync();
 }

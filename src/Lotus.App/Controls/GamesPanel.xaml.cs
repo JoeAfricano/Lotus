@@ -116,7 +116,7 @@ public sealed partial class GamesPanel : UserControl
         if (!vm.CanPrepare) { card.Launch.Execute(card); return; }
         if (await vm.PlanPlayAsync(card) is not { } plan) return;
         var body = new StackPanel { Spacing = 10, MaxWidth = 430 };
-        body.Children.Add(new TextBlock { Text = vm.Text["PlayIntro"], TextWrapping = TextWrapping.Wrap, Opacity = 0.85 });
+        body.Children.Add(RichText.Block(vm.Text["PlayIntro"], opacity: 0.9));
         CheckBox? profile = null, shaders = null;
         if (plan.Pending > 0)
         {
@@ -133,7 +133,7 @@ public sealed partial class GamesPanel : UserControl
             shaders = new CheckBox { Content = vm.Text[plan.ShadersRecommended ? "PlayShadersStale" : "PlayShaders"], IsChecked = plan.ShadersRecommended };
             body.Children.Add(shaders);
         }
-        body.Children.Add(new TextBlock { Text = vm.Text["PlayUndoLater"], TextWrapping = TextWrapping.Wrap, FontSize = 12, Opacity = 0.65, Margin = new Thickness(0, 4, 0, 0) });
+        body.Children.Add(RichText.Block(vm.Text["PlayUndoLater"], 12, 0.7));
         if (!await Show(vm.Text.Format("PlayTitle", card.Name), body, vm.Text["PlayGo"], vm.Text["DlgCancel"], primaryDefault: true)) return;
         await vm.PlayAsync(plan, profile?.IsChecked == true, shaders?.IsChecked == true);
     }
@@ -147,7 +147,7 @@ public sealed partial class GamesPanel : UserControl
             await Show(vm.Text["WhyMenu"], new TextBlock { Text = vm.Text.Format("WhyNotRunning", card.Name), TextWrapping = TextWrapping.Wrap, MaxWidth = 440 }, null, vm.Text["GsClose"]);
             return;
         }
-        if (!await Show(vm.Text.Format("WhyTitle", card.Name), new TextBlock { Text = vm.Text["WhyConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, vm.Text["GsMeasureStart"], vm.Text["DlgCancel"])) return;
+        if (!await Show(vm.Text.Format("WhyTitle", card.Name), RichText.Block(vm.Text["WhyConfirmBody"]), vm.Text["GsMeasureStart"], vm.Text["DlgCancel"])) return;
         if (await vm.DiagnoseAsync(card.Game) is not { } report) return;
         var body = new StackPanel { Spacing = 12, MaxWidth = 430 };
         body.Children.Add(new TextBlock { Text = report.Summary, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
@@ -157,7 +157,7 @@ public sealed partial class GamesPanel : UserControl
             var item = new StackPanel { Spacing = 3 };
             var title = report.Findings.Count > 1 && f.Key != "WhyAllGood" ? $"{number++}. {vm.Text[f.Key + "Title"]}" : vm.Text[f.Key + "Title"];
             item.Children.Add(new TextBlock { Text = title, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["GoldBrush"] });
-            item.Children.Add(new TextBlock { Text = vm.Text.Format(f.Key + "Body", f.Detail ?? ""), TextWrapping = TextWrapping.Wrap, Opacity = 0.85 });
+            item.Children.Add(RichText.Block(vm.Text.Format(f.Key + "Body", f.Detail ?? ""), opacity: 0.9));
             body.Children.Add(item);
         }
         var canApplyProfile = report.Findings.Any(f => f.Fix == Lotus.Core.Games.StutterFix.PrepareProfile);

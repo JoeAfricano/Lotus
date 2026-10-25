@@ -63,10 +63,12 @@ public sealed class ExperienceViewModel : ObservableObject, IDisposable
     public string Evidence => text.Format("RamEvidence", Assessment.ObservedDuration.TotalSeconds.ToString("F0", Culture), Assessment.LowDuration.TotalSeconds.ToString("F0", Culture));
     public string Source => Assessment.Source ?? text["UxUnavailable"];
     public string LastAnalysis => Assessment.CapturedAt is { } at ? text.Format("LastUpdate", at.ToLocalTime().ToString("g", Culture)) : text["UxNoAnalysis"];
-    public string CpuModel => hardware?.Cpu.Model ?? text["UxUnavailable"];
-    public string GpuModel => hardware?.Gpu.Devices.FirstOrDefault()?.Name ?? text["UxUnavailable"];
-    public string RamCapacity => hardware?.Memory.TotalPhysicalBytes is { Status: TelemetryStatus.Available, Value: { } n } ? Bytes(n) : text["UxUnavailable"];
-    public string SummaryTime => hardware is null ? text["UxSummaryWaiting"] : text.Format("UxSummaryTime", hardware.CapturedAt.ToLocalTime().ToString("g", Culture));
+    // Names read straight from Windows at startup, so Home is filled before any analysis.
+    public (string? Cpu, string? Gpu, long? RamBytes)? QuickFacts { get; set { field = value; foreach (var n in new[] { nameof(CpuModel), nameof(GpuModel), nameof(RamCapacity), nameof(SummaryTime) }) OnPropertyChanged(n); } }
+    public string CpuModel => hardware?.Cpu.Model ?? QuickFacts?.Cpu ?? text["UxUnavailable"];
+    public string GpuModel => hardware?.Gpu.Devices.FirstOrDefault()?.Name ?? QuickFacts?.Gpu ?? text["UxUnavailable"];
+    public string RamCapacity => hardware?.Memory.TotalPhysicalBytes is { Status: TelemetryStatus.Available, Value: { } n } ? Bytes(n) : QuickFacts?.RamBytes is { } q ? Bytes((ulong)q) : text["UxUnavailable"];
+    public string SummaryTime => hardware is null ? text[QuickFacts is null ? "UxSummaryWaiting" : "UxSummaryQuick"] : text.Format("UxSummaryTime", hardware.CapturedAt.ToLocalTime().ToString("g", Culture));
     private string Bytes(ulong? value) => value is { } n ? TelemetryMath.GiB(n).ToString("F2", Culture) + " GiB" : "—";
     private async Task AnalyzeAsync()
     {

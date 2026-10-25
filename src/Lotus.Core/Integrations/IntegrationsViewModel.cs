@@ -14,6 +14,7 @@ public interface IRtssIntegration
     // Full Lotus overlay (OverlayEditor layout): export without admin, activate/restore through the elevated helper.
     string ExportLayout();
     bool LayoutActive();
+    string? ActiveLayoutName(); // file name of the OverlayEditor layout in use, or null
     bool HasLayoutBackup();
     Task<bool> ActivateLayoutAsync();
     Task<bool> RestoreLayoutAsync();
@@ -44,7 +45,7 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             CanRestoreRtss = r.Installed && rtss.HasBackup();
             CanRestoreLayout = r.Installed && rtss.HasLayoutBackup();
             var active = r.Installed && rtss.LayoutActive();
-            LayoutStatus = !r.Installed ? "" : Text[active ? "IntLayoutActive" : "IntLayoutInactive"];
+            LayoutStatus = !r.Installed ? "" : active ? Text["IntLayoutActive"] : rtss.ActiveLayoutName() is { } other ? Text.Format("IntLayoutOther", other) : Text["IntLayoutInactive"];
             var ab = tools.Afterburner(); AfterburnerStatus = ab.Installed ? Text.Format("IntAfterburnerOn", ab.Version ?? "?") : Text["IntNotInstalled"];
             var scs = tools.ScsKiller(); ScsStatus = scs.Installed ? Text.Format("IntScsOn", scs.Version ?? "?") : Text["IntScsOff"];
         }

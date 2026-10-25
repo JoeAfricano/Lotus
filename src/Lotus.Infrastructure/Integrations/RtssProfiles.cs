@@ -150,6 +150,7 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
     public bool LayoutActive() =>
         LotusOverlayLayout.ActiveLayout(OverlayConfig) is { } active && string.Equals(Path.GetFullPath(active), Path.GetFullPath(Path.Combine(Overlays, "Lotus.ovl")), StringComparison.OrdinalIgnoreCase);
     public bool HasLayoutBackup() => File.Exists(Path.Combine(Backups, "OverlayEditor.cfg.original"));
+    public string? ActiveLayoutName() => LotusOverlayLayout.ActiveLayout(OverlayConfig) is { Length: > 0 } p ? Path.GetFileNameWithoutExtension(p) : null;
     public async Task<bool> ActivateLayoutAsync() => await RunElevated(["--rtss-layout", ExportLayout()]) == 0 && LayoutActive();
     public async Task<bool> RestoreLayoutAsync() => await RunElevated(["--rtss-layout-restore"]) == 0 && !HasLayoutBackup();
 

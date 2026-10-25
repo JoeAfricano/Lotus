@@ -186,3 +186,20 @@ public sealed class WindowsDriverInfo : IDriverInfo
         return best;
     }
 }
+
+// Processor, graphics card and RAM names for Home, read once at startup (registry and kernel32, read-only).
+[SupportedOSPlatform("windows")]
+public static class QuickHardwareFacts
+{
+    [StructLayout(LayoutKind.Sequential)]
+    private struct MemoryStatus { public uint Length, Load; public ulong TotalPhys, AvailPhys, TotalPage, AvailPage, TotalVirtual, AvailVirtual, AvailExtended; }
+    [DllImport("kernel32.dll")] private static extern bool GlobalMemoryStatusEx(ref MemoryStatus status);
+    public static (string? Cpu, string? Gpu, long? RamBytes) Read()
+    {
+        var cpu = (Registry.GetValue(@"HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString", null) as string)?.Trim();
+        var gpu = new WindowsDriverInfo().Read()?.Name;
+        var status = new MemoryStatus { Length = (uint)Marshal.SizeOf<MemoryStatus>() };
+        long? ram = GlobalMemoryStatusEx(ref status) ? (long)status.TotalPhys : null;
+        return (cpu, gpu, ram);
+    }
+}

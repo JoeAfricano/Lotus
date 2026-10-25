@@ -10,7 +10,7 @@ Name=Lotus Neon Corrigido
 RefreshPeriod=250
 EmbeddedImage=Lotus-Arte-Alpha.png
 [General]
-Sources=13
+Sources=16
 Tables=0
 Layers=31
 [Source0]
@@ -104,6 +104,27 @@ Format=%.3f
 Formula=x/4000.0-int(x/4000.0)
 Provider=HAL
 ID=Timer
+[Source13]
+Name=FPS Avg Live
+Units=
+Format=%.0f
+Formula=1000/swavg(Frametime,0)
+Provider=HAL
+ID=Stub
+[Source14]
+Name=FPS Low1 Live
+Units=
+Format=%.0f
+Formula=1000/percentile(Frametime,99)
+Provider=HAL
+ID=Stub
+[Source15]
+Name=FPS Low01 Live
+Units=
+Format=%.0f
+Formula=1000/percentile(Frametime,99.9)
+Provider=HAL
+ID=Stub
 [Layer0]
 Name=Fundo independente 30 por cento
 Text=<B=358,526>
@@ -184,7 +205,7 @@ Size=399
 TextColor=FFF5FA
 [Layer7]
 Name=Average
-Text=<FRAVG>
+Text=%FPS Avg Live%
 PositionX=305
 PositionY=73
 ExtentX=55
@@ -195,7 +216,7 @@ Size=114
 TextColor=FFF5FA
 [Layer8]
 Name=1 percent low
-Text=<FR10L>
+Text=%FPS Low1 Live%
 PositionX=312
 PositionY=101
 ExtentX=48
@@ -206,7 +227,7 @@ Size=114
 TextColor=FFF5FA
 [Layer9]
 Name=0.1 percent low
-Text=<FR01L>
+Text=%FPS Low01 Live%
 PositionX=312
 PositionY=128
 ExtentX=48

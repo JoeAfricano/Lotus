@@ -1,4 +1,4 @@
-<UserControl x:Class="Lotus.App.Controls.ScorePanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<UserControl x:Class="Lotus.App.Controls.ScorePanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:app="using:Lotus.App">
  <StackPanel Spacing="16">
   <!-- Hero: score on the left, test choice and start on the right -->
   <Border Style="{StaticResource CardStyle}" Padding="24">
@@ -20,7 +20,7 @@
     </StackPanel>
     <!-- Progress row spans the card -->
     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="8">
-     <TextBlock Text="{Binding Text[ScoreIntro]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+     <TextBlock app:Rich.Text="{Binding Text[ScoreIntro]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
      <ProgressBar Value="{Binding Progress}" Maximum="100" Visibility="{Binding Busy, Converter={StaticResource BooleanVisibility}}"/>
      <TextBlock Text="{Binding Phase}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" TextWrapping="Wrap" Visibility="{Binding Phase, Converter={StaticResource PresenceVisibility}}" AutomationProperties.LiveSetting="Polite" AutomationProperties.AutomationId="score-phase"/>
      <TextBlock Text="{Binding Reliability}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" Visibility="{Binding Reliability, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="score-reliability"/>
@@ -62,7 +62,7 @@
       </DataTemplate>
      </ItemsControl.ItemTemplate>
     </ItemsControl>
-    <TextBlock Text="{Binding Text[ScoreEstimateNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+    <TextBlock app:Rich.Text="{Binding Text[ScoreEstimateNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
     <Border Height="1" Background="{ThemeResource DividerBrush}" Margin="0,6"/>
     <TextBlock Text="{Binding Text[ScoreSearchTitle]}" FontWeight="SemiBold"/>
     <TextBox Text="{Binding PartQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="{Binding Text[ScoreSearchPlaceholder]}" MinHeight="40" VerticalContentAlignment="Center" AutomationProperties.Name="{Binding Text[ScoreSearchTitle]}" AutomationProperties.AutomationId="score-part-search"/>
@@ -89,7 +89,7 @@
   <Border Style="{StaticResource CardStyle}">
    <StackPanel Spacing="10">
     <TextBlock Text="{Binding Text[ScoreOnlineTitle]}" Style="{StaticResource SectionTitleStyle}"/>
-    <TextBlock Text="{Binding Text[ScoreOnlineNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+    <TextBlock app:Rich.Text="{Binding Text[ScoreOnlineNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
     <StackPanel x:Name="OnlineLinks" Orientation="Horizontal" Spacing="8"/>
    </StackPanel>
   </Border>

@@ -67,7 +67,7 @@ public sealed class IntegrationsTests : IDisposable
         public ToolState State() => new(installed, installed ? "7.3.7" : null);
         public bool? OverlayConfigured() => configured; public bool HasBackup() => backup;
         public Task<bool> ApplyLotusOverlayAsync() => Task.FromResult(true); public Task<bool> RestoreAsync() => Task.FromResult(false);
-        public string ExportLayout() => @"C:\x\Lotus.ovl"; public bool LayoutActive() => configured == true; public bool HasLayoutBackup() => backup;
+        public string ExportLayout() => @"C:\x\Lotus.ovl"; public bool LayoutActive() => configured == true; public string? ActiveLayoutName() => "Riva Overlay"; public bool HasLayoutBackup() => backup;
         public Task<bool> ActivateLayoutAsync() => Task.FromResult(true); public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
     }
     private sealed class Tools(bool ab, bool scs) : IToolDetector

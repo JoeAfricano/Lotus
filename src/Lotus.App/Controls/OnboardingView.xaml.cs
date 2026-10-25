@@ -104,7 +104,7 @@ public sealed partial class OnboardingView : UserControl
                 Child = new FontIcon { Glyph = glyph, FontSize = 17, Foreground = (Brush)Application.Current.Resources["RoseBrush"] } };
             var text = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
             text.Children.Add(new TextBlock { Text = vm.Text["ObTour" + key], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-            text.Children.Add(new TextBlock { Text = vm.Text["ObTour" + key + "Detail"], TextWrapping = TextWrapping.Wrap, Opacity = 0.75, FontSize = 12.5 });
+            text.Children.Add(RichText.Block(vm.Text["ObTour" + key + "Detail"], 12.5, 0.8));
             Grid.SetColumn(text, 1); row.Children.Add(badge); row.Children.Add(text);
             TourList.Children.Add(row);
         }

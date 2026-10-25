@@ -460,7 +460,7 @@ Entre no jogo.</value>
   <data name="FaqAmbientQuestion" xml:space="preserve"><value>Por que o fundo fica parado às vezes?</value></data>
   <data name="FaqAmbientAnswer" xml:space="preserve"><value>O fundo segue Reduzir animações do Lotus e a preferência de movimento do Windows. Ele também pausa quando a janela perde o foco ou é minimizada. A marca possui sua própria política de movimento.</value></data>
   <data name="BenchTitle" xml:space="preserve"><value>Medir o FPS de uma partida</value></data>
-  <data name="BenchIntro" xml:space="preserve"><value>Mede o FPS real do jogo enquanto você joga. Para comparar antes e depois de otimizar, jogue o mesmo trecho nas duas medições.</value></data>
+  <data name="BenchIntro" xml:space="preserve"><value>Mede o **FPS real** enquanto você joga. Para comparar antes e depois de otimizar, jogue o **mesmo trecho** nas duas medições.</value></data>
   <data name="BenchProcess" xml:space="preserve"><value>Jogo ou aplicativo aberto</value></data>
   <data name="BenchRefresh" xml:space="preserve"><value>Atualizar lista</value></data>
   <data name="BenchDuration" xml:space="preserve"><value>Limite da captura (10–120 segundos)</value></data>
@@ -818,9 +818,9 @@ Condições atuais: {1}</value></data>
   <data name="IntAfterburnerWhat" xml:space="preserve"><value>O Lotus usa os sensores dele no diagnóstico. A curva de ventoinha só será sugerida se a GPU perder desempenho por temperatura; overclock e tensão nunca são automáticos.</value></data>
   <data name="IntScsOn" xml:space="preserve"><value>Instalado ({0}) · use "Pré-carregar shaders" no menu de cada jogo.</value></data>
   <data name="IntScsOff" xml:space="preserve"><value>Não instalado (opcional): pré-carrega shaders para reduzir travadas.</value></data>
-  <data name="IntLayoutWhat" xml:space="preserve"><value>Overlay completo do Lotus: FPS, média, 1% e 0,1% low, gráfico de frametime e barras de CPU, GPU, VRAM e RAM com temperaturas e clocks (plugin OverlayEditor do RivaTuner).</value></data>
-  <data name="IntLayoutActive" xml:space="preserve"><value>Layout ativo: Lotus.</value></data>
-  <data name="IntLayoutInactive" xml:space="preserve"><value>Layout ativo: outro (o seu atual é mantido até você trocar).</value></data>
+  <data name="IntLayoutWhat" xml:space="preserve"><value>O overlay do Lotus mostra **FPS, média, 1% e 0,1% low**, gráfico de frametime e uso de CPU, GPU, VRAM e RAM com temperaturas, direto no jogo (plugin OverlayEditor do RivaTuner).</value></data>
+  <data name="IntLayoutActive" xml:space="preserve"><value>Layout ativo: Lotus Neon</value></data>
+  <data name="IntLayoutInactive" xml:space="preserve"><value>Nenhum layout do OverlayEditor ativo agora.</value></data>
   <data name="IntLayoutApply" xml:space="preserve"><value>Usar o overlay do Lotus</value></data>
   <data name="IntLayoutRestore" xml:space="preserve"><value>Voltar ao layout anterior</value></data>
   <data name="IntLayoutExport" xml:space="preserve"><value>Salvar arquivo do overlay</value></data>
@@ -833,7 +833,7 @@ Condições atuais: {1}</value></data>
   <data name="lotusscoreTitle" xml:space="preserve"><value>LOTUS SCORE</value></data>
   <data name="lotusscoreDescription" xml:space="preserve"><value>Teste o desempenho do seu PC e compare com outras máquinas.</value></data>
   <data name="lotusscoreNext" xml:space="preserve"><value>Teste de CPU e GPU com pontuação comparável.</value></data>
-  <data name="ScoreIntro" xml:space="preserve"><value>Escolha os testes e clique em Iniciar. Cada um leva cerca de 15 segundos e nada no Windows é alterado. O teste de GPU abre uma janela com a cena 3D; fechar a janela cancela. Feche jogos e programas pesados antes.</value></data>
+  <data name="ScoreIntro" xml:space="preserve"><value>Escolha os testes e clique em Iniciar. Cada um leva uns **15 segundos** e nada no Windows muda. O teste de GPU abre uma janela com a cena 3D; se fechar a janela, ele para. **Feche jogos e programas pesados antes.**</value></data>
   <data name="ScoreStart" xml:space="preserve"><value>Iniciar teste</value></data>
   <data name="ScoreCancel" xml:space="preserve"><value>Cancelar</value></data>
   <data name="ScoreMachine" xml:space="preserve"><value>{0} · {1}</value></data>
@@ -863,9 +863,9 @@ Condições atuais: {1}</value></data>
   <data name="ScoreCpuAllLabel" xml:space="preserve"><value>CPU · todos os núcleos</value></data>
   <data name="ScoreGpuLabel" xml:space="preserve"><value>GPU · 3D</value></data>
   <data name="ScoreCompareTitle" xml:space="preserve"><value>Comparação offline</value></data>
-  <data name="ScoreEstimateNote" xml:space="preserve"><value>Referências estimadas a partir de dados públicos de desempenho relativo, calibradas em um PC real (Ryzen 5 5500 + RTX 5060). Use como orientação, não como medida exata.</value></data>
+  <data name="ScoreEstimateNote" xml:space="preserve"><value>As referências são **estimativas** feitas a partir de dados públicos de desempenho e calibradas num PC real (Ryzen 5 5500 + RTX 5060). Servem para ter uma ideia, não como medida exata.</value></data>
   <data name="ScoreOnlineTitle" xml:space="preserve"><value>Comparação online</value></data>
-  <data name="ScoreOnlineNote" xml:space="preserve"><value>Abre sites públicos no navegador já com as peças do seu PC. O Lotus não envia seus dados.</value></data>
+  <data name="ScoreOnlineNote" xml:space="preserve"><value>Abre sites públicos no navegador já com as peças do seu PC. **O Lotus não envia nenhum dado seu.**</value></data>
   <data name="ScoreHistoryTitle" xml:space="preserve"><value>Seus testes anteriores</value></data>
   <data name="ScoreHistoryEmpty" xml:space="preserve"><value>Nenhum teste ainda. Rode o primeiro para ter uma referência antes e depois de otimizar.</value></data>
   <data name="GsWriteFailed" xml:space="preserve"><value>Não foi possível alterar as configurações de {0}. Detalhes no log.</value></data>
@@ -903,7 +903,7 @@ Condições atuais: {1}</value></data>
   <data name="IntSimpleOsd" xml:space="preserve"><value>Alternativa: overlay simples (só FPS e gráfico)</value></data>
   <data name="BenchStep1" xml:space="preserve"><value>Abra o jogo e escolha-o aqui</value></data>
   <data name="BenchStep2" xml:space="preserve"><value>Por quanto tempo medir</value></data>
-  <data name="BenchStep3" xml:space="preserve"><value>Clique em Medir e volte para o jogo. Jogue normalmente até o tempo acabar.</value></data>
+  <data name="BenchStep3" xml:space="preserve"><value>Clique em Medir e **volte para o jogo**. Jogue normalmente até o tempo acabar.</value></data>
   <data name="BenchAdvanced" xml:space="preserve"><value>Opções avançadas</value></data>
   <data name="BenchNoTargets" xml:space="preserve"><value>Nenhum jogo aberto. Abra o jogo, volte aqui e clique em Atualizar lista.</value></data>
   <data name="BenchPickTarget" xml:space="preserve"><value>Escolha o jogo</value></data>
@@ -915,12 +915,12 @@ Condições atuais: {1}</value></data>
   <data name="IntPreviewFailed" xml:space="preserve"><value>Não foi possível abrir a prévia. Detalhes no log.</value></data>
   <data name="PlayPrepare" xml:space="preserve"><value>Preparar e jogar</value></data>
   <data name="PlayTitle" xml:space="preserve"><value>Preparar {0}</value></data>
-  <data name="PlayIntro" xml:space="preserve"><value>O Lotus deixa o PC no perfil Jogo, abre o jogo e acompanha até você fechar.</value></data>
+  <data name="PlayIntro" xml:space="preserve"><value>O Lotus coloca o PC no **perfil Jogo**, abre o jogo e fica de olho até você fechar.</value></data>
   <data name="PlayApplyProfile" xml:space="preserve"><value>Aplicar o perfil Jogo ({0} mudança(s))</value></data>
   <data name="PlayProfileReady" xml:space="preserve"><value>Seu PC já está no perfil Jogo. Nada a mudar.</value></data>
   <data name="PlayShaders" xml:space="preserve"><value>Pré-carregar os shaders antes de abrir (reduz travadinhas)</value></data>
   <data name="PlayShadersStale" xml:space="preserve"><value>Pré-carregar os shaders antes de abrir (recomendado: o driver mudou desde o último)</value></data>
-  <data name="PlayUndoLater" xml:space="preserve"><value>Quando você fechar o jogo, o Lotus pergunta se quer voltar ao que era antes.</value></data>
+  <data name="PlayUndoLater" xml:space="preserve"><value>Quando você fechar o jogo, o Lotus **pergunta se quer voltar** ao que era antes.</value></data>
   <data name="PlayGo" xml:space="preserve"><value>Preparar e jogar</value></data>
   <data name="PlayAnalyzing" xml:space="preserve"><value>Verificando o que preparar para {0}...</value></data>
   <data name="PlayApplying" xml:space="preserve"><value>Aplicando o perfil Jogo para {0}...</value></data>
@@ -930,7 +930,7 @@ Condições atuais: {1}</value></data>
   <data name="PlayEnded" xml:space="preserve"><value>{0} fechado depois de {1} min.</value></data>
   <data name="PlayFailed" xml:space="preserve"><value>Não foi possível preparar o jogo. Detalhes no log.</value></data>
   <data name="PlayEndedTitle" xml:space="preserve"><value>Você fechou {0}</value></data>
-  <data name="PlayEndedBody" xml:space="preserve"><value>Voltar o PC para como estava antes de jogar? O Lotus desfaz só o que ele mudou e que ninguém alterou depois.</value></data>
+  <data name="PlayEndedBody" xml:space="preserve"><value>Quer deixar o PC como estava antes de jogar? O Lotus desfaz **só o que ele mudou** e que ninguém mexeu depois.</value></data>
   <data name="PlayUndo" xml:space="preserve"><value>Voltar ao normal</value></data>
   <data name="PlayKeep" xml:space="preserve"><value>Manter perfil Jogo</value></data>
   <data name="PlayUndone" xml:space="preserve"><value>PC de volta ao normal.</value></data>
@@ -938,37 +938,37 @@ Condições atuais: {1}</value></data>
   <data name="WhyMenu" xml:space="preserve"><value>Por que está travando?</value></data>
   <data name="WhyTitle" xml:space="preserve"><value>Por que {0} está travando?</value></data>
   <data name="WhyNotRunning" xml:space="preserve"><value>Abra {0}, jogue até a parte que trava e então use esta opção. O Lotus mede o jogo enquanto ele roda.</value></data>
-  <data name="WhyConfirmBody" xml:space="preserve"><value>Volte para o jogo e jogue normalmente, de preferência na parte que trava. Em 5 segundos o Lotus mede por 30 segundos e depois explica o que encontrou. Nada é alterado durante a medição.</value></data>
+  <data name="WhyConfirmBody" xml:space="preserve"><value>Volte para o jogo e jogue normal, de preferência **na parte que trava**. Em 5 segundos o Lotus mede por **30 segundos** e depois conta o que achou. Nada muda durante a medição.</value></data>
   <data name="WhyMeasuring" xml:space="preserve"><value>Medindo por {0} segundos. Continue jogando...</value></data>
   <data name="WhySummary" xml:space="preserve"><value>{0:0} FPS em média · 1% low {1:0} FPS · {2} travadas em {3:0} s</value></data>
   <data name="WhyShadersTitle" xml:space="preserve"><value>Shaders sendo compilados durante o jogo</value></data>
-  <data name="WhyShadersBody" xml:space="preserve"><value>As travadas bruscas combinam com o jogo compilando shaders na hora. Feche o jogo e use "Pré-carregar shaders": as próximas partidas ficam mais lisas.</value></data>
+  <data name="WhyShadersBody" xml:space="preserve"><value>As travadas bruscas batem com o jogo **compilando shaders na hora**. Feche o jogo e use **Pré-carregar shaders**: as próximas partidas ficam mais lisas.</value></data>
   <data name="WhyMemoryTitle" xml:space="preserve"><value>Memória RAM quase cheia</value></data>
-  <data name="WhyMemoryBody" xml:space="preserve"><value>O Windows está quase sem memória livre, e isso causa travadas. Os programas que mais usam agora: {0}. Feche o que não precisar enquanto joga.</value></data>
+  <data name="WhyMemoryBody" xml:space="preserve"><value>O Windows está quase **sem memória livre**, e isso causa travadas. Quem mais está usando agora: {0}. Feche o que não precisar enquanto joga.</value></data>
   <data name="WhyProfileTitle" xml:space="preserve"><value>PC fora do perfil Jogo</value></data>
-  <data name="WhyProfileBody" xml:space="preserve"><value>Algumas configurações do Windows não estão no ideal para jogar (plano de energia, Modo de Jogo, gravação em segundo plano ou taxa do monitor). O Lotus pode aplicar o perfil Jogo agora, com desfazer.</value></data>
+  <data name="WhyProfileBody" xml:space="preserve"><value>Algumas configurações do Windows **não estão no ideal para jogar** (energia, Modo de Jogo, gravação em segundo plano ou taxa do monitor). Dá para aplicar o perfil Jogo agora e desfazer depois.</value></data>
   <data name="WhyGpuLimitTitle" xml:space="preserve"><value>Placa de vídeo no limite</value></data>
-  <data name="WhyGpuLimitBody" xml:space="preserve"><value>A placa de vídeo está trabalhando quase 100% e o FPS fica abaixo do ideal. Baixar um nível de qualidade resolve. Feche o jogo e use "Otimizar configurações": o ajuste já está pronto.</value></data>
+  <data name="WhyGpuLimitBody" xml:space="preserve"><value>A placa de vídeo está **trabalhando no limite** e o FPS fica abaixo do ideal. Baixar um nível de qualidade resolve. Feche o jogo e use **Otimizar configurações**: o ajuste já está pronto.</value></data>
   <data name="WhyCpuLimitTitle" xml:space="preserve"><value>Processador ou programas em segundo plano limitando</value></data>
-  <data name="WhyCpuLimitBody" xml:space="preserve"><value>A placa de vídeo tem folga, mas o FPS está baixo: o processador ou outros programas estão segurando o jogo. Feche programas pesados e use o perfil Jogo.</value></data>
+  <data name="WhyCpuLimitBody" xml:space="preserve"><value>A placa de vídeo tem folga, mas o FPS está baixo. O **processador ou outros programas** estão segurando o jogo. Feche o que estiver pesado e use o perfil Jogo.</value></data>
   <data name="WhyUnknownStutterTitle" xml:space="preserve"><value>Travadas sem causa clara</value></data>
-  <data name="WhyUnknownStutterBody" xml:space="preserve"><value>O Lotus viu travadas, mas nenhuma causa comum. Atualizar o driver de vídeo e verificar os arquivos do jogo no launcher costuma ajudar.</value></data>
+  <data name="WhyUnknownStutterBody" xml:space="preserve"><value>Deu para ver travadas, mas **nenhuma causa comum**. Atualizar o driver de vídeo e verificar os arquivos do jogo no launcher costuma ajudar.</value></data>
   <data name="WhyAllGoodTitle" xml:space="preserve"><value>Nada de errado encontrado</value></data>
-  <data name="WhyAllGoodBody" xml:space="preserve"><value>O jogo rodou estável durante a medição. Se a travada for em outra parte, meça lá.</value></data>
+  <data name="WhyAllGoodBody" xml:space="preserve"><value>O jogo rodou **estável** durante a medição. Se a travada acontece em outro lugar, meça lá.</value></data>
   <data name="WhyApplyProfile" xml:space="preserve"><value>Aplicar perfil Jogo agora</value></data>
   <data name="WhyProfileApplied" xml:space="preserve"><value>Perfil Jogo aplicado. Dá para desfazer em Otimizar.</value></data>
   <data name="toolsTitle" xml:space="preserve"><value>Ferramentas</value></data>
   <data name="toolsDescription" xml:space="preserve"><value>Ajudas rápidas e seguras para o PC de jogo.</value></data>
   <data name="toolsNext" xml:space="preserve"><value>Memória, arquivos temporários, conexão, disco e driver.</value></data>
-  <data name="ToolIntro" xml:space="preserve"><value>Nada muda sem você confirmar. Programas fecham normalmente (como clicar no X) e arquivos vão para a Lixeira.</value></data>
+  <data name="ToolIntro" xml:space="preserve"><value>Aqui nada muda sem você confirmar. Programas fecham **do jeito normal**, como clicar no X, e arquivos vão para a **Lixeira**.</value></data>
   <data name="ToolMemTitle" xml:space="preserve"><value>Liberar memória para jogar</value></data>
-  <data name="ToolMemWhat" xml:space="preserve"><value>Programas abertos que mais usam RAM. Marque os que pode fechar antes de jogar.</value></data>
+  <data name="ToolMemWhat" xml:space="preserve"><value>Os programas abertos que **mais usam memória**. Marque os que pode fechar antes de jogar.</value></data>
   <data name="ToolMemPick" xml:space="preserve"><value>Marque o que fechar. Só aparecem programas com janela, que fecham normalmente.</value></data>
   <data name="ToolMemNone" xml:space="preserve"><value>Nenhum programa pesado aberto. A memória está livre para o jogo.</value></data>
   <data name="ToolMemClose" xml:space="preserve"><value>Fechar selecionados</value></data>
   <data name="ToolMemNoneChosen" xml:space="preserve"><value>Marque pelo menos um programa na lista.</value></data>
   <data name="ToolMemConfirmTitle" xml:space="preserve"><value>Fechar estes programas?</value></data>
-  <data name="ToolMemConfirmBody" xml:space="preserve"><value>O Lotus pede para fechar normalmente: {0}. Se houver trabalho não salvo, o próprio programa pergunta.</value></data>
+  <data name="ToolMemConfirmBody" xml:space="preserve"><value>O Lotus pede para estes programas fecharem **do jeito normal**: {0}. Se tiver algo sem salvar, o próprio programa pergunta.</value></data>
   <data name="ToolMemFreed" xml:space="preserve"><value>Cerca de {0} liberados.</value></data>
   <data name="ToolMemNothing" xml:space="preserve"><value>Nenhum programa foi fechado (eles não têm janela ou recusaram).</value></data>
   <data name="ToolRefresh" xml:space="preserve"><value>Atualizar</value></data>
@@ -976,11 +976,11 @@ Condições atuais: {1}</value></data>
   <data name="ToolTempFound" xml:space="preserve"><value>{0} itens antigos (mais de 24 h) somando {1}.</value></data>
   <data name="ToolTempNone" xml:space="preserve"><value>Nada antigo para limpar.</value></data>
   <data name="ToolTempClean" xml:space="preserve"><value>Enviar para a Lixeira</value></data>
-  <data name="ToolTempConfirm" xml:space="preserve"><value>Os arquivos temporários com mais de 24 horas vão para a Lixeira (dá para recuperar). Arquivos em uso ficam onde estão.</value></data>
+  <data name="ToolTempConfirm" xml:space="preserve"><value>Os temporários com **mais de 24 horas** vão para a Lixeira, então dá para recuperar. Arquivos em uso ficam onde estão.</value></data>
   <data name="ToolTempDone" xml:space="preserve"><value>{0} itens ({1}) enviados para a Lixeira.</value></data>
   <data name="ToolTempInUse" xml:space="preserve"><value>Alguns estavam em uso e ficaram.</value></data>
   <data name="ToolNetTitle" xml:space="preserve"><value>Teste de conexão</value></data>
-  <data name="ToolNetWhat" xml:space="preserve"><value>Mede o tempo de resposta (ping), a variação e a perda até o seu roteador e até a internet.</value></data>
+  <data name="ToolNetWhat" xml:space="preserve"><value>Mede o **ping**, a variação e a perda até o seu roteador e até a internet.</value></data>
   <data name="ToolNetRun" xml:space="preserve"><value>Testar</value></data>
   <data name="ToolNetRunning" xml:space="preserve"><value>Testando por alguns segundos...</value></data>
   <data name="ToolNetGateway" xml:space="preserve"><value>Seu roteador</value></data>
@@ -992,7 +992,7 @@ Condições atuais: {1}</value></data>
   <data name="ToolNetSlow" xml:space="preserve"><value>Conexão estável, mas com ping alto até a internet.</value></data>
   <data name="ToolNetGood" xml:space="preserve"><value>Conexão boa para jogar.</value></data>
   <data name="ToolDiskTitle" xml:space="preserve"><value>Saúde do disco</value></data>
-  <data name="ToolDiskWhat" xml:space="preserve"><value>Estado informado pelo próprio Windows e espaço livre. Só leitura.</value></data>
+  <data name="ToolDiskWhat" xml:space="preserve"><value>O que o próprio Windows diz sobre o disco e quanto espaço sobra. **Só leitura.**</value></data>
   <data name="ToolDiskLine" xml:space="preserve"><value>{0} · {1} · {2}</value></data>
   <data name="ToolMediaHdd" xml:space="preserve"><value>HD</value></data>
   <data name="ToolMediaSsd" xml:space="preserve"><value>SSD</value></data>
@@ -1006,12 +1006,12 @@ Condições atuais: {1}</value></data>
   <data name="ToolDriverTitle" xml:space="preserve"><value>Driver de vídeo</value></data>
   <data name="ToolDriverLine" xml:space="preserve"><value>{0} · versão {1} · {2}</value></data>
   <data name="ToolDriverNone" xml:space="preserve"><value>Driver de vídeo não identificado.</value></data>
-  <data name="ToolDriverWhat" xml:space="preserve"><value>Para atualizar, use o site oficial do fabricante. O Lotus não baixa nem instala drivers.</value></data>
+  <data name="ToolDriverWhat" xml:space="preserve"><value>Para atualizar, use o **site oficial** do fabricante. O Lotus não baixa nem instala drivers.</value></data>
   <data name="ToolDriverOpen" xml:space="preserve"><value>Site oficial</value></data>
   <data name="ToolFailed" xml:space="preserve"><value>Algo deu errado. Detalhes no log.</value></data>
   <data name="DlgCancel" xml:space="preserve"><value>Cancelar</value></data>
   <data name="ToolDnsTitle" xml:space="preserve"><value>DNS (o "endereçador" da internet)</value></data>
-  <data name="ToolDnsWhat" xml:space="preserve"><value>O DNS influencia o tempo para abrir sites, lojas e conectar aos servidores, não o ping dentro da partida. O melhor muda conforme a região, por isso o Lotus mede na sua conexão.</value></data>
+  <data name="ToolDnsWhat" xml:space="preserve"><value>O DNS ajuda a abrir sites e lojas e a conectar nos servidores. **Não muda o ping dentro da partida.** O mais rápido depende da sua região, então o Lotus mede na sua conexão.</value></data>
   <data name="ToolDnsTest" xml:space="preserve"><value>Medir DNS</value></data>
   <data name="ToolDnsRunning" xml:space="preserve"><value>Medindo o DNS atual e os públicos (Cloudflare, Google, Quad9, OpenDNS)...</value></data>
   <data name="ToolDnsLine" xml:space="preserve"><value>{0:0} ms (mediana) · falhas {1:0}%</value></data>
@@ -1024,7 +1024,7 @@ Condições atuais: {1}</value></data>
   <data name="ToolDnsKeep" xml:space="preserve"><value>Seu DNS atual já é rápido. Não precisa trocar.</value></data>
   <data name="ToolDnsNoneWorks" xml:space="preserve"><value>Nenhum DNS público respondeu. Verifique a conexão.</value></data>
   <data name="ToolDnsApply" xml:space="preserve"><value>Usar {0}</value></data>
-  <data name="ToolDnsConfirm" xml:space="preserve"><value>O Lotus troca o DNS só da conexão com internet (IPv4) e guarda o atual para você voltar quando quiser. O Windows vai pedir permissão de administrador.</value></data>
+  <data name="ToolDnsConfirm" xml:space="preserve"><value>O Lotus troca o DNS **só da conexão com a internet** (IPv4) e guarda o atual para você voltar quando quiser. O Windows vai pedir permissão de administrador.</value></data>
   <data name="ToolDnsApplied" xml:space="preserve"><value>DNS trocado e conferido. Dá para voltar ao anterior a qualquer momento.</value></data>
   <data name="ToolDnsRestore" xml:space="preserve"><value>Voltar ao DNS anterior</value></data>
   <data name="ToolDnsRestoreConfirm" xml:space="preserve"><value>O Lotus restaura exatamente o DNS de antes (automático do roteador ou o que você usava). O Windows vai pedir permissão de administrador.</value></data>
@@ -1040,50 +1040,53 @@ Condições atuais: {1}</value></data>
   <data name="ObStart" xml:space="preserve"><value>Começar a usar</value></data>
   <data name="ObSave" xml:space="preserve"><value>Salvar perfil</value></data>
   <data name="ObWelcomeTitle" xml:space="preserve"><value>Bem-vindo ao Lotus</value></data>
-  <data name="ObWelcomeBody" xml:space="preserve"><value>Seu PC pronto para jogar: mais FPS, menos travadas e tudo explicado em linguagem simples. Em menos de um minuto deixamos o Lotus com a sua cara.</value></data>
-  <data name="ObWelcomeSafety" xml:space="preserve"><value>Nada no Windows muda sem você confirmar, e tudo o que o Lotus muda dá para desfazer.</value></data>
-  <data name="ObProfileTitle" xml:space="preserve"><value>Como quer aparecer?</value></data>
-  <data name="ObProfileBody" xml:space="preserve"><value>Use a sua conta Steam deste PC ou crie o seu perfil. Dá para trocar depois clicando no seu nome, no canto da tela.</value></data>
+  <data name="ObWelcomeBody" xml:space="preserve"><value>Aqui você deixa o PC pronto para jogar: **mais FPS, menos travadas** e tudo explicado sem complicação. Leva menos de um minuto para deixar o Lotus do seu jeito.</value></data>
+  <data name="ObWelcomeSafety" xml:space="preserve"><value>Nada muda no Windows sem você confirmar, e **tudo dá para desfazer**.</value></data>
+  <data name="ObProfileTitle" xml:space="preserve"><value>Como você quer aparecer?</value></data>
+  <data name="ObProfileBody" xml:space="preserve"><value>Use a sua **conta Steam** ou crie um perfil seu. Depois é só clicar no seu nome, no canto da tela, para trocar.</value></data>
   <data name="ObUseSteam" xml:space="preserve"><value>Usar minha conta Steam</value></data>
   <data name="ObSteamMissing" xml:space="preserve"><value>Nenhuma conta Steam encontrada neste PC</value></data>
-  <data name="ObSteamNote" xml:space="preserve"><value>O Lotus lê só o nome e a foto que a Steam já guarda no PC. Sem login e sem internet.</value></data>
+  <data name="ObSteamNote" xml:space="preserve"><value>Só o nome e a foto que a Steam já guarda no seu PC. **Sem login, sem internet.**</value></data>
   <data name="ObUseCustom" xml:space="preserve"><value>Criar o meu</value></data>
   <data name="ObCustomNote" xml:space="preserve"><value>Seu nome e uma foto</value></data>
   <data name="ObNamePlaceholder" xml:space="preserve"><value>Como quer ser chamado?</value></data>
   <data name="ObPickPicture" xml:space="preserve"><value>Escolher foto</value></data>
   <data name="ObPreview" xml:space="preserve"><value>Fica assim:</value></data>
   <data name="ObDefaultName" xml:space="preserve"><value>Player</value></data>
-  <data name="ObGoalTitle" xml:space="preserve"><value>Qual é o seu objetivo?</value></data>
-  <data name="ObGoalBody" xml:space="preserve"><value>O Lotus ajusta as recomendações de configuração dos jogos para esse objetivo.</value></data>
+  <data name="ObGoalTitle" xml:space="preserve"><value>O que você quer do seu PC?</value></data>
+  <data name="ObGoalBody" xml:space="preserve"><value>As sugestões de configuração dos jogos seguem o que você escolher aqui. Dá para mudar quando quiser.</value></data>
   <data name="ObGoalfps" xml:space="preserve"><value>Mais FPS</value></data>
-  <data name="ObGoalfpsDetail" xml:space="preserve"><value>Qualidade equilibrada mirando o máximo de quadros por segundo.</value></data>
+  <data name="ObGoalfpsDetail" xml:space="preserve"><value>Prioriza **quadros por segundo**, com a qualidade um pouco mais baixa.</value></data>
   <data name="ObGoalcompetitive" xml:space="preserve"><value>Competitivo</value></data>
-  <data name="ObGoalcompetitiveDetail" xml:space="preserve"><value>Menor atraso e FPS alto e estável, mesmo com menos qualidade visual.</value></data>
+  <data name="ObGoalcompetitiveDetail" xml:space="preserve"><value>**Menos atraso** e FPS alto e estável. O visual fica em segundo plano.</value></data>
   <data name="ObGoalbalanced" xml:space="preserve"><value>Equilíbrio</value></data>
-  <data name="ObGoalbalancedDetail" xml:space="preserve"><value>Visual bonito com FPS estável na taxa do seu monitor, e PC mais silencioso.</value></data>
+  <data name="ObGoalbalancedDetail" xml:space="preserve"><value>Jogo bonito e **FPS estável** na taxa do seu monitor, com o PC mais silencioso.</value></data>
   <data name="ObAccentTitle" xml:space="preserve"><value>Escolha a sua cor</value></data>
-  <data name="ObAccentBody" xml:space="preserve"><value>A cor aparece nos botões, nas barras e nos destaques. Veja ao vivo enquanto escolhe.</value></data>
+  <data name="ObAccentBody" xml:space="preserve"><value>A cor aparece nos botões, nas barras e nos destaques. **Você vê a mudança na hora.**</value></data>
   <data name="AccentRose" xml:space="preserve"><value>Rosé</value></data>
   <data name="AccentCrimson" xml:space="preserve"><value>Carmesim</value></data>
   <data name="AccentGold" xml:space="preserve"><value>Dourado</value></data>
   <data name="AccentViolet" xml:space="preserve"><value>Violeta</value></data>
-  <data name="ObTourTitle" xml:space="preserve"><value>O que o Lotus faz por você</value></data>
+  <data name="ObTourTitle" xml:space="preserve"><value>O que você encontra no Lotus</value></data>
   <data name="ObTourOptimize" xml:space="preserve"><value>Otimizar meu PC</value></data>
-  <data name="ObTourOptimizeDetail" xml:space="preserve"><value>Um clique deixa o Windows no perfil Jogo (energia, Modo de Jogo, taxa do monitor), com desfazer.</value></data>
+  <data name="ObTourOptimizeDetail" xml:space="preserve"><value>Com **um clique**, o Windows entra no perfil Jogo: energia, Modo de Jogo e taxa do monitor. Dá para desfazer.</value></data>
   <data name="ObTourGames" xml:space="preserve"><value>Meus Jogos e Preparar e jogar</value></data>
-  <data name="ObTourGamesDetail" xml:space="preserve"><value>Seus jogos de todas as lojas. "Preparar e jogar" prepara o PC, abre o jogo e pergunta se quer voltar ao normal depois.</value></data>
+  <data name="ObTourGamesDetail" xml:space="preserve"><value>Todos os seus jogos num lugar só. O **Preparar e jogar** arruma o PC, abre o jogo e, quando você fecha, pergunta se quer voltar ao normal.</value></data>
   <data name="ObTourWhy" xml:space="preserve"><value>Por que está travando?</value></data>
-  <data name="ObTourWhyDetail" xml:space="preserve"><value>Com o jogo aberto, o Lotus mede e explica a causa da travada com uma correção sugerida.</value></data>
+  <data name="ObTourWhyDetail" xml:space="preserve"><value>Com o jogo aberto, o Lotus mede e **diz o que está causando a travada**, junto com o que fazer.</value></data>
   <data name="ObTourScore" xml:space="preserve"><value>LOTUS SCORE</value></data>
-  <data name="ObTourScoreDetail" xml:space="preserve"><value>Teste o desempenho do PC e compare com outras máquinas e peças.</value></data>
+  <data name="ObTourScoreDetail" xml:space="preserve"><value>Veja **quanto o seu PC rende** e compare com outras máquinas e peças.</value></data>
   <data name="ObTourTools" xml:space="preserve"><value>Ferramentas</value></data>
-  <data name="ObTourToolsDetail" xml:space="preserve"><value>Liberar memória, limpar temporários, testar a internet e o DNS, saúde do disco e driver.</value></data>
+  <data name="ObTourToolsDetail" xml:space="preserve"><value>Liberar memória, limpar temporários, testar a internet e o DNS, ver a **saúde do disco** e o driver de vídeo.</value></data>
   <data name="ObReplay" xml:space="preserve"><value>Rever boas-vindas</value></data>
   <data name="AccentDark" xml:space="preserve"><value>Escuro</value></data>
   <data name="GsReasonGoalFps" xml:space="preserve"><value>Você escolheu mais FPS: um nível de qualidade abaixo e limite de FPS mais alto.</value></data>
   <data name="GsReasonGoalCompetitive" xml:space="preserve"><value>Você escolheu competitivo: qualidade mais baixa para ter menos atraso e FPS alto e estável.</value></data>
   <data name="ObSteamAsk" xml:space="preserve"><value>Quer usar sua conta Steam?</value></data>
-  <data name="ObSteamAskNote" xml:space="preserve"><value>Não achei nenhuma conta Steam neste PC. Entre na Steam e sua conta aparece aqui sozinha em poucos segundos.</value></data>
+  <data name="ObSteamAskNote" xml:space="preserve"><value>Não encontrei uma conta Steam neste PC. Entre na Steam e ela **aparece aqui sozinha** em alguns segundos.</value></data>
   <data name="ObSteamSignIn" xml:space="preserve"><value>Entrar na Steam</value></data>
   <data name="ObSteamGet" xml:space="preserve"><value>Baixar a Steam</value></data>
+  <data name="IntLayoutOther" xml:space="preserve"><value>Layout ativo: {0} (fica assim até você trocar)</value></data>
+  <data name="UxSummaryQuick" xml:space="preserve"><value>Dados lidos do Windows. Para ver uso e temperatura ao vivo, abra Desempenho.</value></data>
+  <data name="ToolDiskLow" xml:space="preserve"><value>O {0} está com pouco espaço. Jogos e caches de shader precisam de folga: deixe pelo menos 15% livre. Comece pelos Arquivos temporários acima.</value></data>
 </root>

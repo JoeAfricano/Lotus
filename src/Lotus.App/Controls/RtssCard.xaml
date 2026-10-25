@@ -1,4 +1,4 @@
-<UserControl x:Class="Lotus.App.Controls.RtssCard" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<UserControl x:Class="Lotus.App.Controls.RtssCard" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:app="using:Lotus.App">
  <!-- RivaTuner overlay: shown in My Games (where players look) and in Settings › Integrations. -->
  <Border Style="{StaticResource CardStyle}">
   <StackPanel Spacing="12">
@@ -11,7 +11,7 @@
     </StackPanel>
     <TextBlock Grid.Column="2" Text="{Binding LayoutStatus}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" VerticalAlignment="Center" AutomationProperties.AutomationId="int-layout-status"/>
    </Grid>
-   <TextBlock Text="{Binding Text[IntLayoutWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+   <TextBlock app:Rich.Text="{Binding Text[IntLayoutWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
    <!-- Main choice first: the full Lotus overlay; the simple OSD stays as an alternative. -->
    <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{Binding RtssInstalled, Converter={StaticResource BooleanVisibility}}">
     <Button Click="OnActivateLayout" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="int-layout-apply">

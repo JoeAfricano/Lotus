@@ -819,8 +819,8 @@ Current conditions: {1}</value></data>
   <data name="IntScsOn" xml:space="preserve"><value>Installed ({0}) · use "Pre-compile shaders" in each game's menu.</value></data>
   <data name="IntScsOff" xml:space="preserve"><value>Not installed (optional): pre-compiles shaders to reduce stutter.</value></data>
   <data name="IntLayoutWhat" xml:space="preserve"><value>Full Lotus overlay: FPS, average, 1% and 0.1% low, frametime graph and CPU, GPU, VRAM and RAM bars with temperatures and clocks (RivaTuner's OverlayEditor plugin).</value></data>
-  <data name="IntLayoutActive" xml:space="preserve"><value>Active layout: Lotus.</value></data>
-  <data name="IntLayoutInactive" xml:space="preserve"><value>Active layout: another one (yours is kept until you switch).</value></data>
+  <data name="IntLayoutActive" xml:space="preserve"><value>Active layout: Lotus Neon</value></data>
+  <data name="IntLayoutInactive" xml:space="preserve"><value>No OverlayEditor layout active right now.</value></data>
   <data name="IntLayoutApply" xml:space="preserve"><value>Use the Lotus overlay</value></data>
   <data name="IntLayoutRestore" xml:space="preserve"><value>Back to previous layout</value></data>
   <data name="IntLayoutExport" xml:space="preserve"><value>Save overlay file</value></data>
@@ -1086,4 +1086,7 @@ Current conditions: {1}</value></data>
   <data name="ObSteamAskNote" xml:space="preserve"><value>No Steam account found on this PC. Sign in to Steam and your account shows up here by itself in a few seconds.</value></data>
   <data name="ObSteamSignIn" xml:space="preserve"><value>Sign in to Steam</value></data>
   <data name="ObSteamGet" xml:space="preserve"><value>Get Steam</value></data>
+  <data name="IntLayoutOther" xml:space="preserve"><value>Active layout: {0} (stays until you switch)</value></data>
+  <data name="UxSummaryQuick" xml:space="preserve"><value>Read from Windows. For live usage and temperature, open Performance.</value></data>
+  <data name="ToolDiskLow" xml:space="preserve"><value>{0} is low on space. Games and shader caches need room: keep at least 15% free. Start with Temporary files above.</value></data>
 </root>
