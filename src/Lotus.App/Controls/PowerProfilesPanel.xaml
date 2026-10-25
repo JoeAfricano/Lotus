@@ -116,10 +116,15 @@
           <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE7BA;" FontSize="13" Foreground="{ThemeResource WarningBrush}" Visibility="{Binding NeedsAttention, Converter={StaticResource BooleanVisibility}}"/><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel>
           <ContentControl Grid.Column="1" Content="{Binding State}" Style="{StaticResource StatusBadgeStyle}" VerticalAlignment="Center"/>
           <TextBlock Grid.Row="1" Text="{Binding Advice}" Style="{StaticResource CaptionStyle}"/>
-          <HyperlinkButton Grid.Row="1" Grid.Column="1" Content="{Binding DataContext.Text[FeatOpenSettings], ElementName=ProfileCards}" Tag="{Binding SettingsUri}" Click="OnOpenSettings" VerticalAlignment="Center" Padding="6,2"/>
+          <StackPanel Grid.Row="1" Grid.Column="1" Spacing="6" HorizontalAlignment="Right" VerticalAlignment="Center">
+           <Button Content="{Binding DataContext.Text[FeatApplyButton], ElementName=ProfileCards}" Tag="{Binding Id}" Click="OnApplyFeature" Style="{StaticResource PrimaryButtonStyle}" MinHeight="32" Padding="12,4" HorizontalAlignment="Right" Visibility="{Binding CanApply, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="feature-apply"/>
+           <Button Content="{Binding DataContext.Text[FeatUndoButton], ElementName=ProfileCards}" Tag="{Binding Id}" Click="OnUndoFeature" Style="{StaticResource SoftButtonStyle}" MinHeight="32" Padding="12,4" HorizontalAlignment="Right" Visibility="{Binding CanUndo, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="feature-undo"/>
+           <HyperlinkButton Content="{Binding DataContext.Text[FeatOpenSettings], ElementName=ProfileCards}" Tag="{Binding SettingsUri}" Click="OnOpenSettings" Padding="6,2" HorizontalAlignment="Right"/>
+          </StackPanel>
          </Grid></Border>
         </DataTemplate></ItemsControl.ItemTemplate>
        </ItemsControl>
+       <TextBlock Text="{Binding FeatureStatus}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite" AutomationProperties.AutomationId="feature-status"/>
       </StackPanel>
      </Expander>
      <!-- Reversible actions -->

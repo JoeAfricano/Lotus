@@ -40,3 +40,12 @@ Card "Verificação de hardware" no Início, executado automaticamente na primei
 - **GPU:** motivos de limitação NVML da última leitura do monitoramento (sem segunda sessão NVML). Térmica/proteção de hardware = atenção; teto de energia = normal sob carga; ociosa = verificar com jogo aberto. Adaptadores por `EnumDisplayDevices`, com detecção heurística de GPU híbrida (link para Configurações › Gráficos).
 
 Resultado real neste PC: 1920×1080 a 75 Hz (máximo), 2×8 GB DDR4 3200 em dual channel, CPU sem limite, RTX 5060 dedicada; nenhum limitador encontrado. Limitação da GPU depende de uma leitura recente em Desempenho. Testes: 197 aprovados em Debug e Release (24 novos, incluindo parser SMBIOS com bytes sintéticos e leitura real somente leitura).
+
+## Segunda ação real: otimizações para jogos em janela (24/10/2026)
+
+`WindowedOptimizationsAction` (`windows.directx.windowed-optimizations.v1`) usa o mesmo motor/journal da ação de energia. Grava `SwapEffectUpgradeEnable=1` em `HKCU\Software\Microsoft\DirectX\UserGpuPreferences\DirectXUserGlobalSettings` — o valor que Configurações › Tela › Gráficos escreve —, preservando os demais pares (AutoHDR, VRR) e a ordem. Sem elevação; elegível no Windows 11 (build ≥ 22000).
+
+- Já ativado (inclusive com formatação diferente) = `NoChange`, sem regravar. Mudança externa antes de aplicar ou antes de desfazer = conflito, nada sobrescrito. Desfazer restaura o valor original exato (inclusive ausente). Recuperação após interrupção não atribui autoria (`CanAttributeRecovery=false`).
+- O motor agora recupera e lista apenas os planos da própria ação, permitindo várias ações no mesmo journal; o bloqueio global contra operações concorrentes foi mantido.
+- Interface: "Ativar pelo Lotus" e "Desfazer" na linha do recurso, sempre com diálogo de confirmação explícita; status com verificação. Detecção e ação usam o mesmo parser.
+- Estado real neste PC: `SwapEffectUpgradeEnable=0;` (desativado explicitamente). Nenhuma escrita real foi feita; testes automatizados usam registro simulado. Testes: 207 aprovados em Debug e Release.

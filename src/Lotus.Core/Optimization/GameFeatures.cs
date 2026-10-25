@@ -1,11 +1,11 @@
 namespace Lotus.Core.Optimization;
 
-// Windows gaming features the Lotus can read reliably. Changing them has no official, verifiable API here,
-// so the app only reports state and opens the matching Windows Settings page (manual guidance).
+// Windows gaming features the Lotus can read reliably. Most are manual guidance (state + Settings link);
+// only features with a verifiable, reversible per-user value get a real action (see WindowedOptimizationsAction).
 public enum FeatureState { On, Off, SystemDefault, Unavailable }
 public sealed record GameFeature(string Id, FeatureState State, string SettingsUri);
 public interface IGameFeatureInventory { IReadOnlyList<GameFeature> Read(); }
-public sealed record GameFeatureRow(string Id, string Name, string State, string Advice, bool NeedsAttention, string SettingsUri);
+public sealed record GameFeatureRow(string Id, string Name, string State, string Advice, bool NeedsAttention, string SettingsUri, bool CanApply = false, bool CanUndo = false);
 
 public static class GameFeatureRules
 {

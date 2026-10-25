@@ -595,7 +595,7 @@ Current conditions: {1}</value></data>
   <data name="PfHowItWorks" xml:space="preserve"><value>How does it work?</value></data>
   <data name="UxMemoryLabel" xml:space="preserve"><value>Memory</value></data>
   <data name="PfRowFeatures" xml:space="preserve"><value>Windows gaming features</value></data>
-  <data name="FeatManual" xml:space="preserve"><value>Manual adjustment: Lotus shows the state and opens the right page without changing anything.</value></data>
+  <data name="FeatManual" xml:space="preserve"><value>Lotus shows the state and opens the right Settings page. When "Enable with Lotus" is available, the change is journaled, verified and can be undone.</value></data>
   <data name="FeatOpenSettings" xml:space="preserve"><value>Open in Settings</value></data>
   <data name="FeatNotRead" xml:space="preserve"><value>Not checked yet</value></data>
   <data name="FeatAllGood" xml:space="preserve"><value>Everything fits this profile</value></data>
@@ -660,4 +660,16 @@ Current conditions: {1}</value></data>
   <data name="HwGpuHybrid" xml:space="preserve"><value>Two GPUs: dedicated ({0}) and integrated ({1}). Check in Settings › Graphics that games use the dedicated one.</value></data>
   <data name="HwGpuDedicated" xml:space="preserve"><value>Dedicated GPU: {0}.</value></data>
   <data name="HwGpuIntegratedOnly" xml:space="preserve"><value>Integrated GPU only ({0}). Demanding games may be limited by it.</value></data>
+  <data name="FeatApplyButton" xml:space="preserve"><value>Enable with Lotus</value></data>
+  <data name="FeatUndoButton" xml:space="preserve"><value>Undo</value></data>
+  <data name="FeatConfirmTitle" xml:space="preserve"><value>Enable optimizations for windowed games?</value></data>
+  <data name="FeatConfirmBody" xml:space="preserve"><value>Lotus will turn on the same option found in Settings › Display › Graphics, for your user only and without admin rights. The previous value is journaled and can be restored with Undo. It applies to games started after the change; more FPS is not guaranteed.</value></data>
+  <data name="FeatConfirmUndoTitle" xml:space="preserve"><value>Restore the previous value?</value></data>
+  <data name="FeatConfirmUndoBody" xml:space="preserve"><value>Lotus only restores it if the option is still as Lotus left it; if it was changed elsewhere, nothing is overwritten.</value></data>
+  <data name="FeatConfirm" xml:space="preserve"><value>Confirm</value></data>
+  <data name="FeatApplied" xml:space="preserve"><value>Optimizations for windowed games enabled and verified. They apply to games started from now on.</value></data>
+  <data name="FeatNoChange" xml:space="preserve"><value>Already enabled; nothing was changed.</value></data>
+  <data name="FeatConflict" xml:space="preserve"><value>The setting changed outside Lotus; nothing was overwritten. Check it in Settings.</value></data>
+  <data name="FeatReverted" xml:space="preserve"><value>Previous value restored and verified.</value></data>
+  <data name="FeatNothingToUndo" xml:space="preserve"><value>There is no Lotus change to undo.</value></data>
 </root>

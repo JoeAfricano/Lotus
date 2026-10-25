@@ -75,7 +75,8 @@ public sealed class OptimizationEngine(IOptimizationJournal journal, IOptimizati
     });
     public Task<IReadOnlyList<OptimizationPlan>> RecoverAsync() => Locked<IReadOnlyList<OptimizationPlan>>(() =>
     {
-        foreach (var p in journal.List().Where(p => p.Stage is OperationStage.Applying or OperationStage.Reverting))
+        // A shared journal may hold other actions; each engine recovers and lists only its own plans.
+        foreach (var p in journal.List().Where(p => p.ActionId == action.Definition.Id && p.Stage is OperationStage.Applying or OperationStage.Reverting))
         {
             var current = action.Detect();
             var stage = p.ActionId != action.Definition.Id ? OperationStage.Conflict : !action.CanAttributeRecovery
@@ -84,7 +85,7 @@ public sealed class OptimizationEngine(IOptimizationJournal journal, IOptimizati
                 : current == p.RestoreTarget ? OperationStage.Reverted : current == p.Desired ? OperationStage.Applied : OperationStage.Conflict;
             Save(p with { Stage = stage });
         }
-        return journal.List(); // Recovery observes state; it NEVER resumes mutations automatically.
+        return journal.List().Where(p => p.ActionId == action.Definition.Id).ToList(); // Recovery observes state; it NEVER resumes mutations automatically.
     });
     private OptimizationPlan Get(Guid id)
     {

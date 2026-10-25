@@ -19,6 +19,30 @@ public sealed partial class PowerProfilesPanel : UserControl
             await Windows.System.Launcher.LaunchUriAsync(new Uri(uri));
     }
 
+    // Real feature actions always pass through an explicit confirmation dialog.
+    private async void OnApplyFeature(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: string id } && DataContext is Lotus.Core.Optimization.PowerProfilesViewModel vm
+            && await ConfirmAsync(vm.Text["FeatConfirmTitle"], vm.Text["FeatConfirmBody"], vm.Text))
+            await vm.ApplyFeatureAsync(id, confirmed: true);
+    }
+    private async void OnUndoFeature(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: string id } && DataContext is Lotus.Core.Optimization.PowerProfilesViewModel vm
+            && await ConfirmAsync(vm.Text["FeatConfirmUndoTitle"], vm.Text["FeatConfirmUndoBody"], vm.Text))
+            await vm.UndoFeatureAsync(id, confirmed: true);
+    }
+    private async Task<bool> ConfirmAsync(string title, string body, Lotus.Core.ITextCatalog text)
+    {
+        var dialog = new ContentDialog
+        {
+            XamlRoot = XamlRoot, Title = title, Content = new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap, MaxWidth = 460 },
+            PrimaryButtonText = text["FeatConfirm"], CloseButtonText = text["UxCancel"], DefaultButton = ContentDialogButton.Close,
+            RequestedTheme = ElementTheme.Dark
+        };
+        return await dialog.ShowAsync() == ContentDialogResult.Primary;
+    }
+
     // Three columns on wide windows, one stacked column on narrow ones.
     private void OnCardsSizeChanged(object sender, SizeChangedEventArgs e)
     {

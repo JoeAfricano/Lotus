@@ -33,8 +33,9 @@ public sealed class WindowsGameFeatures : IGameFeatureInventory
         {
             using var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\DirectX\UserGpuPreferences", writable: false);
             if (key?.GetValue("DirectXUserGlobalSettings") is not string settings) return FeatureState.SystemDefault;
-            return settings.Contains("SwapEffectUpgradeEnable=1", StringComparison.OrdinalIgnoreCase) ? FeatureState.On
-                : settings.Contains("SwapEffectUpgradeEnable=0", StringComparison.OrdinalIgnoreCase) ? FeatureState.Off : FeatureState.SystemDefault;
+            // Same parser as the reversible action, so detection and action always agree.
+            return WindowedOptimizationsAction.IsEnabled(settings) ? FeatureState.On
+                : settings.Contains("SwapEffectUpgradeEnable", StringComparison.OrdinalIgnoreCase) ? FeatureState.Off : FeatureState.SystemDefault;
         }
         catch (Exception ex) when (ex is UnauthorizedAccessException or System.Security.SecurityException or IOException) { return FeatureState.Unavailable; }
     }

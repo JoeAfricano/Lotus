@@ -14,6 +14,8 @@ public sealed class PowerProfilesViewModel : ObservableObject
     private readonly IStartupInventory startup;
     private readonly IGameFeatureInventory? featureSource;
     private IReadOnlyList<GameFeature> features = [];
+    private readonly OptimizationEngine? windowed;
+    private OptimizationPlan? windowedApplied;
     private readonly Action<Exception> log;
     private readonly Dictionary<string, OptimizationProfile> profiles = new();
     private string profileId = "game", messageKey = "PowerReady", error = "";
@@ -28,6 +30,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public string StartupStatus { get; private set; } = "";
     public ObservableCollection<GameFeatureRow> Features { get; } = [];
     public string FeaturesSummary { get; private set; } = "";
+    public string FeatureStatus { get; private set; } = "";
     public bool CanEdit => !busy;
     public bool IsGame => profileId == "game";
     public bool IsDaily => profileId == "daily";
@@ -57,9 +60,9 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public IAsyncRelayCommand RevertCommand { get; }
     public IAsyncRelayCommand StartupCommand { get; }
     public PowerProfilesViewModel(OptimizationEngine engine, IPowerSchemeService power, IProfileStore store,
-        IStartupInventory startup, ITextCatalog text, Action<Exception> log, IGameFeatureInventory? features = null)
+        IStartupInventory startup, ITextCatalog text, Action<Exception> log, IGameFeatureInventory? features = null, OptimizationEngine? windowedEngine = null)
     {
-        this.engine = engine; this.power = power; this.store = store; this.startup = startup; featureSource = features; Text = text; this.log = log;
+        this.engine = engine; this.power = power; this.store = store; this.startup = startup; featureSource = features; windowed = windowedEngine; Text = text; this.log = log;
         SelectProfileCommand = new RelayCommand<string>(SelectProfile, _ => !busy);
         RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !busy);
         SaveCommand = new AsyncRelayCommand(() => Run(async () => { await SaveAsync(); InvalidatePlan(); messageKey = "PowerSaved"; }), () => !busy && (!PowerEnabled || SelectedScheme is not null));
@@ -94,6 +97,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
         active = data.Active; ac = data.Ac == true; profiles.Clear();
         foreach (var p in data.Profiles) profiles[p.Id] = p;
         if (featureSource is not null) features = await Task.Run(featureSource.Read);
+        if (windowed is not null) windowedApplied = LastApplied(await windowed.RecoverAsync());
         scheme = null; enabled = true;
         SelectProfile(profileId); await LoadOperations(null);
     });
@@ -130,6 +134,34 @@ public sealed class PowerProfilesViewModel : ObservableObject
         finally { busy = false; Confirmed = false; Notify(); }
     }
     public void RefreshLanguage() { BuildFeatureRows(); Notify(); }
+    // Real, reversible feature actions. The UI asks for explicit confirmation before calling these.
+    public Task ApplyFeatureAsync(string id, bool confirmed) => FeatureRun(id, async engine =>
+    {
+        var plan = await engine.AnalyzeAsync(null, profileId);
+        if (plan.Stage == OperationStage.Planned) plan = await engine.ApplyAsync(plan.Id, confirmed);
+        return plan.Stage switch { OperationStage.Applied => "FeatApplied", OperationStage.NoChange => "FeatNoChange", _ => "FeatConflict" };
+    });
+    public Task UndoFeatureAsync(string id, bool confirmed) => FeatureRun(id, async engine =>
+    {
+        if (windowedApplied is null) return "FeatNothingToUndo";
+        var plan = await engine.RevertAsync(windowedApplied.Id, confirmed);
+        return plan.Stage == OperationStage.Reverted ? "FeatReverted" : "FeatConflict";
+    });
+    private Task FeatureRun(string id, Func<OptimizationEngine, Task<string>> work) => Run(async () =>
+    {
+        if (windowed is null || id != WindowedOptimizationsAction.FeatureId) throw new InvalidOperationException("Unknown feature action.");
+        string key;
+        try { key = await work(windowed); }
+        finally
+        {
+            windowedApplied = LastApplied(await windowed.RecoverAsync());
+            if (featureSource is not null) features = await Task.Run(featureSource.Read);
+            BuildFeatureRows();
+        }
+        FeatureStatus = Text[key]; OnPropertyChanged(nameof(FeatureStatus));
+    });
+    private static OptimizationPlan? LastApplied(IReadOnlyList<OptimizationPlan> plans) =>
+        plans.Where(p => p.Stage == OperationStage.Applied).OrderByDescending(p => p.CreatedUtc).FirstOrDefault();
     // Rows reflect the selected profile: what it recommends and whether the current state differs.
     private void BuildFeatureRows()
     {
@@ -139,7 +171,9 @@ public sealed class PowerProfilesViewModel : ObservableObject
             var desired = GameFeatureRules.Desired(f.Id, profileId);
             var advice = f.State == FeatureState.Unavailable ? Text["FeatUnavailableAdvice"]
                 : desired is null ? Text["FeatAdvice" + f.Id] : Text[desired == FeatureState.On ? "FeatRecommendOn" : "FeatRecommendOff"] + " " + Text["FeatAdvice" + f.Id];
-            Features.Add(new(f.Id, Text["FeatName" + f.Id], Text["FeatState" + f.State], advice, GameFeatureRules.NeedsAttention(f, profileId), f.SettingsUri));
+            var actionable = windowed is not null && f.Id == WindowedOptimizationsAction.FeatureId;
+            Features.Add(new(f.Id, Text["FeatName" + f.Id], Text["FeatState" + f.State], advice, GameFeatureRules.NeedsAttention(f, profileId), f.SettingsUri,
+                actionable && windowedApplied is null && f.State is not (FeatureState.On or FeatureState.Unavailable), actionable && windowedApplied is not null));
         }
         var attention = Features.Count(r => r.NeedsAttention);
         FeaturesSummary = Features.Count == 0 ? Text["FeatNotRead"] : attention == 0 ? Text["FeatAllGood"] : Text.Format("FeatAttention", attention);
