@@ -32,6 +32,7 @@ public sealed partial class MainWindow : Window
     private readonly Lotus.Core.Games.GamesViewModel games;
     private readonly Lotus.Core.Integrations.IntegrationsViewModel integrations;
     private readonly Lotus.Core.Score.LotusScoreViewModel score;
+    private readonly Lotus.Core.Tools.ToolsViewModel tools;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
     private BrandPulse? flowerPulse;
@@ -43,7 +44,7 @@ public sealed partial class MainWindow : Window
     private BrandMotionProof? brandProof;
     private bool brandProofShown;
 
-    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring, Lotus.Core.Diagnostics.MemoryAnalysisViewModel memoryAnalysis, ExperienceViewModel experience, Lotus.Core.Benchmark.BenchmarkViewModel benchmark, Lotus.Core.Optimization.OptimizationViewModel optimizer, Lotus.Core.Optimization.PowerProfilesViewModel powerProfiles, Lotus.Core.Diagnostics.HardwareDiagnosticsViewModel hardware, Lotus.Core.Games.GamesViewModel games, Lotus.Core.Integrations.IntegrationsViewModel integrations, Lotus.Core.Score.LotusScoreViewModel score)
+    public MainWindow(ShellViewModel viewModel, ITextCatalog text, PreferencesService preferences, PreferencesViewModel preferencesViewModel, ThemePalette palette, MonitoringViewModel monitoring, Lotus.Core.Diagnostics.MemoryAnalysisViewModel memoryAnalysis, ExperienceViewModel experience, Lotus.Core.Benchmark.BenchmarkViewModel benchmark, Lotus.Core.Optimization.OptimizationViewModel optimizer, Lotus.Core.Optimization.PowerProfilesViewModel powerProfiles, Lotus.Core.Diagnostics.HardwareDiagnosticsViewModel hardware, Lotus.Core.Games.GamesViewModel games, Lotus.Core.Integrations.IntegrationsViewModel integrations, Lotus.Core.Score.LotusScoreViewModel score, Lotus.Core.Tools.ToolsViewModel tools)
     {
         ViewModel = viewModel;
         this.text = text;
@@ -52,7 +53,7 @@ public sealed partial class MainWindow : Window
         this.palette = palette;
         this.monitoring = monitoring;
         this.memoryAnalysis = memoryAnalysis;
-        this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer; this.powerProfiles = powerProfiles; this.hardware = hardware; this.games = games; this.integrations = integrations; this.score = score;
+        this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer; this.powerProfiles = powerProfiles; this.hardware = hardware; this.games = games; this.integrations = integrations; this.score = score; this.tools = tools;
         // Preparar e jogar: same Game profile and journal as Otimizar; the game is followed until it closes.
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
         games.Watch = new Lotus.Core.Games.PollingGameWatch(new Lotus.Infrastructure.Games.WindowsGameProcessCheck());
@@ -156,7 +157,7 @@ public sealed partial class MainWindow : Window
         ShellRoot.Language = text.Language;
         ViewModel.RefreshLanguage();
         monitoring.RefreshLanguage();
-        experience.RefreshLanguage(); benchmark.RefreshLanguage(); optimizer.RefreshLanguage(); powerProfiles.RefreshLanguage(); hardware.RefreshLanguage(); games.RefreshLanguage(); integrations.RefreshLanguage(); score.RefreshLanguage();
+        experience.RefreshLanguage(); benchmark.RefreshLanguage(); optimizer.RefreshLanguage(); powerProfiles.RefreshLanguage(); hardware.RefreshLanguage(); games.RefreshLanguage(); integrations.RefreshLanguage(); score.RefreshLanguage(); tools.RefreshLanguage();
         foreach (NavigationViewItem item in Navigation.MenuItems)
         {
             var section = ViewModel.Items.Single(s => s.Id == (string)item.Tag);
@@ -296,7 +297,7 @@ public sealed partial class MainWindow : Window
         if (force || displayedSectionId != group)
         {
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
-                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score), new SuppressNavigationTransitionInfo());
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools), new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
         }
         UpdateMonitoringDemand();

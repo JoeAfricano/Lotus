@@ -957,4 +957,56 @@ Condições atuais: {1}</value></data>
   <data name="WhyAllGoodBody" xml:space="preserve"><value>O jogo rodou estável durante a medição. Se a travada for em outra parte, meça lá.</value></data>
   <data name="WhyApplyProfile" xml:space="preserve"><value>Aplicar perfil Jogo agora</value></data>
   <data name="WhyProfileApplied" xml:space="preserve"><value>Perfil Jogo aplicado. Dá para desfazer em Otimizar.</value></data>
+  <data name="toolsTitle" xml:space="preserve"><value>Ferramentas</value></data>
+  <data name="toolsDescription" xml:space="preserve"><value>Ajudas rápidas e seguras para o PC de jogo.</value></data>
+  <data name="toolsNext" xml:space="preserve"><value>Memória, arquivos temporários, conexão, disco e driver.</value></data>
+  <data name="ToolIntro" xml:space="preserve"><value>Nada muda sem você confirmar. Programas fecham normalmente (como clicar no X) e arquivos vão para a Lixeira.</value></data>
+  <data name="ToolMemTitle" xml:space="preserve"><value>Liberar memória para jogar</value></data>
+  <data name="ToolMemWhat" xml:space="preserve"><value>Programas abertos que mais usam RAM. Marque os que pode fechar antes de jogar.</value></data>
+  <data name="ToolMemPick" xml:space="preserve"><value>Marque o que fechar. Só aparecem programas com janela, que fecham normalmente.</value></data>
+  <data name="ToolMemNone" xml:space="preserve"><value>Nenhum programa pesado aberto. A memória está livre para o jogo.</value></data>
+  <data name="ToolMemClose" xml:space="preserve"><value>Fechar selecionados</value></data>
+  <data name="ToolMemNoneChosen" xml:space="preserve"><value>Marque pelo menos um programa na lista.</value></data>
+  <data name="ToolMemConfirmTitle" xml:space="preserve"><value>Fechar estes programas?</value></data>
+  <data name="ToolMemConfirmBody" xml:space="preserve"><value>O Lotus pede para fechar normalmente: {0}. Se houver trabalho não salvo, o próprio programa pergunta.</value></data>
+  <data name="ToolMemFreed" xml:space="preserve"><value>Cerca de {0} liberados.</value></data>
+  <data name="ToolMemNothing" xml:space="preserve"><value>Nenhum programa foi fechado (eles não têm janela ou recusaram).</value></data>
+  <data name="ToolRefresh" xml:space="preserve"><value>Atualizar</value></data>
+  <data name="ToolTempTitle" xml:space="preserve"><value>Arquivos temporários</value></data>
+  <data name="ToolTempFound" xml:space="preserve"><value>{0} itens antigos (mais de 24 h) somando {1}.</value></data>
+  <data name="ToolTempNone" xml:space="preserve"><value>Nada antigo para limpar.</value></data>
+  <data name="ToolTempClean" xml:space="preserve"><value>Enviar para a Lixeira</value></data>
+  <data name="ToolTempConfirm" xml:space="preserve"><value>Os arquivos temporários com mais de 24 horas vão para a Lixeira (dá para recuperar). Arquivos em uso ficam onde estão.</value></data>
+  <data name="ToolTempDone" xml:space="preserve"><value>{0} itens ({1}) enviados para a Lixeira.</value></data>
+  <data name="ToolTempInUse" xml:space="preserve"><value>Alguns estavam em uso e ficaram.</value></data>
+  <data name="ToolNetTitle" xml:space="preserve"><value>Teste de conexão</value></data>
+  <data name="ToolNetWhat" xml:space="preserve"><value>Mede o tempo de resposta (ping), a variação e a perda até o seu roteador e até a internet.</value></data>
+  <data name="ToolNetRun" xml:space="preserve"><value>Testar</value></data>
+  <data name="ToolNetRunning" xml:space="preserve"><value>Testando por alguns segundos...</value></data>
+  <data name="ToolNetGateway" xml:space="preserve"><value>Seu roteador</value></data>
+  <data name="ToolNetNoReply" xml:space="preserve"><value>sem resposta</value></data>
+  <data name="ToolNetLine" xml:space="preserve"><value>{0:0} ms · variação {1:0} ms · perda {2:0}%</value></data>
+  <data name="ToolNetOffline" xml:space="preserve"><value>Sem acesso à internet agora.</value></data>
+  <data name="ToolNetLocalBad" xml:space="preserve"><value>O problema está na rede da sua casa (Wi-Fi ou cabo até o roteador). Se puder, jogue no cabo ou mais perto do roteador.</value></data>
+  <data name="ToolNetUnstable" xml:space="preserve"><value>Conexão instável: há perda de pacotes ou muita variação, o que causa lag mesmo com ping baixo.</value></data>
+  <data name="ToolNetSlow" xml:space="preserve"><value>Conexão estável, mas com ping alto até a internet.</value></data>
+  <data name="ToolNetGood" xml:space="preserve"><value>Conexão boa para jogar.</value></data>
+  <data name="ToolDiskTitle" xml:space="preserve"><value>Saúde do disco</value></data>
+  <data name="ToolDiskWhat" xml:space="preserve"><value>Estado informado pelo próprio Windows e espaço livre. Só leitura.</value></data>
+  <data name="ToolDiskLine" xml:space="preserve"><value>{0} · {1} · {2}</value></data>
+  <data name="ToolMediaHdd" xml:space="preserve"><value>HD</value></data>
+  <data name="ToolMediaSsd" xml:space="preserve"><value>SSD</value></data>
+  <data name="ToolMediaScm" xml:space="preserve"><value>Memória de armazenamento</value></data>
+  <data name="ToolMediaUnknown" xml:space="preserve"><value>Tipo desconhecido</value></data>
+  <data name="ToolHealthHealthy" xml:space="preserve"><value>saudável</value></data>
+  <data name="ToolHealthWarning" xml:space="preserve"><value>atenção: faça backup</value></data>
+  <data name="ToolHealthUnhealthy" xml:space="preserve"><value>com defeito: faça backup já</value></data>
+  <data name="ToolHealthUnknown" xml:space="preserve"><value>estado desconhecido</value></data>
+  <data name="ToolVolumeLine" xml:space="preserve"><value>{0} livres de {1} ({2:0}%)</value></data>
+  <data name="ToolDriverTitle" xml:space="preserve"><value>Driver de vídeo</value></data>
+  <data name="ToolDriverLine" xml:space="preserve"><value>{0} · versão {1} · {2}</value></data>
+  <data name="ToolDriverNone" xml:space="preserve"><value>Driver de vídeo não identificado.</value></data>
+  <data name="ToolDriverWhat" xml:space="preserve"><value>Para atualizar, use o site oficial do fabricante. O Lotus não baixa nem instala drivers.</value></data>
+  <data name="ToolDriverOpen" xml:space="preserve"><value>Site oficial</value></data>
+  <data name="ToolFailed" xml:space="preserve"><value>Algo deu errado. Detalhes no log.</value></data>
 </root>

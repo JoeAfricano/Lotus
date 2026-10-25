@@ -14,6 +14,7 @@ public sealed class SectionViewModel
     public Games.GamesViewModel? Games { get; }
     public Integrations.IntegrationsViewModel? Integrations { get; }
     public Score.LotusScoreViewModel? Score { get; }
+    public Tools.ToolsViewModel? Tools { get; }
     public ITextCatalog Text { get; }
     public PreferencesViewModel Preferences { get; }
     public Telemetry.MonitoringViewModel? Monitoring { get; }
@@ -27,10 +28,10 @@ public sealed class SectionViewModel
     public string Planned => Text["Planned"];
     public bool MotionEnabled { get; }
     public IReadOnlyList<MetricPlaceholder> Metrics { get; }
-    public SectionViewModel(Section section, ITextCatalog text, PreferencesViewModel preferences, bool motionEnabled = true, Telemetry.MonitoringViewModel? monitoring = null, Diagnostics.MemoryAnalysisViewModel? memoryAnalysis = null, ShellViewModel? shell = null, ExperienceViewModel? experience = null, Benchmark.BenchmarkViewModel? benchmark = null, Optimization.OptimizationViewModel? optimizer = null, Optimization.PowerProfilesViewModel? powerProfiles = null, Diagnostics.HardwareDiagnosticsViewModel? hardware = null, Games.GamesViewModel? games = null, Integrations.IntegrationsViewModel? integrations = null, Score.LotusScoreViewModel? score = null)
+    public SectionViewModel(Section section, ITextCatalog text, PreferencesViewModel preferences, bool motionEnabled = true, Telemetry.MonitoringViewModel? monitoring = null, Diagnostics.MemoryAnalysisViewModel? memoryAnalysis = null, ShellViewModel? shell = null, ExperienceViewModel? experience = null, Benchmark.BenchmarkViewModel? benchmark = null, Optimization.OptimizationViewModel? optimizer = null, Optimization.PowerProfilesViewModel? powerProfiles = null, Diagnostics.HardwareDiagnosticsViewModel? hardware = null, Games.GamesViewModel? games = null, Integrations.IntegrationsViewModel? integrations = null, Score.LotusScoreViewModel? score = null, Tools.ToolsViewModel? tools = null)
     {
         Section = section;
-        Shell = shell; Experience = experience; Benchmark = benchmark; Optimizer = optimizer; PowerProfiles = powerProfiles; Hardware = hardware; Games = games; Integrations = integrations; Score = score;
+        Shell = shell; Experience = experience; Benchmark = benchmark; Optimizer = optimizer; PowerProfiles = powerProfiles; Hardware = hardware; Games = games; Integrations = integrations; Score = score; Tools = tools;
         Text = text;
         Preferences = preferences;
         Monitoring = monitoring;

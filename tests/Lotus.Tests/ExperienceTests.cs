@@ -24,7 +24,7 @@ public sealed class ExperienceTests
     public void LegacyDestinationsMapToFiveGroups(string requested, string group, string route)
     {
         var shell = new ShellViewModel(new Events()); shell.NavigateCommand.Execute(requested);
-        Assert.Equal(group, shell.SelectedSection.Id); Assert.Equal(route, shell.CurrentRoute); Assert.Equal(6, shell.Items.Count);
+        Assert.Equal(group, shell.SelectedSection.Id); Assert.Equal(route, shell.CurrentRoute); Assert.Equal(7, shell.Items.Count);
     }
     [Fact] public void InternalTabsAndLanguageKeepExactRoute()
     {

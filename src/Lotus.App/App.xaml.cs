@@ -109,6 +109,9 @@ public partial class App : Application
             .AddSingleton(p => { var gpu = new Lotus.Infrastructure.Score.D3D11GpuBenchmark(); return new Lotus.Core.Score.LotusScoreViewModel(new Lotus.Infrastructure.Score.CpuRayBenchmark(), gpu,
                 new Lotus.Infrastructure.Score.JsonScoreHistory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "score-history.json")),
                 new Lotus.Infrastructure.Score.WindowsScoreMachine(gpu), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Lotus Score failed")); })
+            .AddSingleton(p => new Lotus.Core.Tools.ToolsViewModel(new Lotus.Infrastructure.Tools.WindowsAppCloser(), new Lotus.Infrastructure.Tools.WindowsTempCleaner(),
+                new Lotus.Infrastructure.Tools.PingConnectionTester(), new Lotus.Infrastructure.Tools.WindowsDiskHealth(), new Lotus.Infrastructure.Tools.WindowsDriverInfo(),
+                p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Tools operation failed")))
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);

@@ -1,0 +1,81 @@
+<UserControl x:Class="Lotus.App.Controls.ToolsPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <StackPanel Spacing="16">
+  <TextBlock Text="{Binding Text[ToolIntro]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+  <ProgressBar IsIndeterminate="True" Visibility="{Binding Busy, Converter={StaticResource BooleanVisibility}}"/>
+  <TextBlock Text="{Binding Message}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" Visibility="{Binding Message, Converter={StaticResource PresenceVisibility}}"/>
+  <!-- Free memory for gaming -->
+  <Border Style="{StaticResource CardStyle}">
+   <StackPanel Spacing="10">
+    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+     <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE964;" Style="{StaticResource BadgeIconStyle}"/></Border>
+     <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[ToolMemTitle]}" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[ToolMemWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+    </Grid>
+    <ItemsControl ItemsSource="{Binding Apps}" AutomationProperties.AutomationId="tools-apps">
+     <ItemsControl.ItemTemplate>
+      <DataTemplate>
+       <Grid ColumnSpacing="12" Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="90"/></Grid.ColumnDefinitions>
+        <CheckBox Content="{Binding Name}" IsChecked="{Binding Selected, Mode=TwoWay}" IsEnabled="{Binding HasWindow}"/>
+        <TextBlock Grid.Column="1" Text="{Binding SizeText}" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource CaptionStyle}"/>
+       </Grid>
+      </DataTemplate>
+     </ItemsControl.ItemTemplate>
+    </ItemsControl>
+    <TextBlock Text="{Binding MemoryStatus}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap"/>
+    <StackPanel Orientation="Horizontal" Spacing="8">
+     <Button Content="{Binding Text[ToolMemClose]}" Click="OnCloseApps" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="tools-close-apps"/>
+     <Button Content="{Binding Text[ToolRefresh]}" Click="OnRefresh" Style="{StaticResource SoftButtonStyle}"/>
+    </StackPanel>
+   </StackPanel>
+  </Border>
+  <!-- Temporary files -->
+  <Border Style="{StaticResource CardStyle}">
+   <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE74D;" Style="{StaticResource BadgeIconStyle}"/></Border>
+    <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[ToolTempTitle]}" FontWeight="SemiBold"/><TextBlock Text="{Binding TempStatus}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-temp-status"/></StackPanel>
+    <Button Grid.Column="2" Content="{Binding Text[ToolTempClean]}" Click="OnCleanTemp" IsEnabled="{Binding HasTemp}" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="tools-temp-clean"/>
+   </Grid>
+  </Border>
+  <!-- Connection test -->
+  <Border Style="{StaticResource CardStyle}">
+   <StackPanel Spacing="10">
+    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE701;" Style="{StaticResource BadgeIconStyle}"/></Border>
+     <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[ToolNetTitle]}" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[ToolNetWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+     <Button Grid.Column="2" Content="{Binding Text[ToolNetRun]}" Click="OnTestNet" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="tools-net-run"/>
+    </Grid>
+    <ItemsControl ItemsSource="{Binding NetRows}">
+     <ItemsControl.ItemTemplate><DataTemplate>
+      <Grid ColumnSpacing="12" Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="200"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/><TextBlock Grid.Column="1" Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+      </Grid>
+     </DataTemplate></ItemsControl.ItemTemplate>
+    </ItemsControl>
+    <TextBlock Text="{Binding NetStatus}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" Visibility="{Binding NetStatus, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="tools-net-status"/>
+   </StackPanel>
+  </Border>
+  <!-- Disk health -->
+  <Border Style="{StaticResource CardStyle}">
+   <StackPanel Spacing="10">
+    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+     <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xEDA2;" Style="{StaticResource BadgeIconStyle}"/></Border>
+     <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[ToolDiskTitle]}" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[ToolDiskWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+    </Grid>
+    <ItemsControl ItemsSource="{Binding DiskRows}" AutomationProperties.AutomationId="tools-disks">
+     <ItemsControl.ItemTemplate><DataTemplate>
+      <Grid ColumnSpacing="12" Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="260"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Grid.Column="1" Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+      </Grid>
+     </DataTemplate></ItemsControl.ItemTemplate>
+    </ItemsControl>
+   </StackPanel>
+  </Border>
+  <!-- Graphics driver -->
+  <Border Style="{StaticResource CardStyle}">
+   <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE7F8;" Style="{StaticResource BadgeIconStyle}"/></Border>
+    <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[ToolDriverTitle]}" FontWeight="SemiBold"/><TextBlock Text="{Binding DriverStatus}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-driver"/><TextBlock Text="{Binding Text[ToolDriverWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+    <Button Grid.Column="2" Content="{Binding Text[ToolDriverOpen]}" Click="OnOpenDriverSite" Visibility="{Binding DriverUrl, Converter={StaticResource PresenceVisibility}}" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center"/>
+   </Grid>
+  </Border>
+ </StackPanel>
+</UserControl>

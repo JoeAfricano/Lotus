@@ -92,6 +92,7 @@
     <controls:GamesPanel x:Name="GamesContent" DataContext="{Binding Games}"/>
    </StackPanel>
    <controls:ScorePanel x:Name="ScoreContent" x:Load="{x:Bind ShowScore}" DataContext="{Binding Score}"/>
+   <controls:ToolsPanel x:Name="ToolsContent" x:Load="{x:Bind ShowTools}" DataContext="{Binding Tools}"/>
 
    <StackPanel x:Name="SettingsContent" x:Load="{x:Bind ShowSettings}" Spacing="20">
     <SelectorBar x:Name="SettingsTabs" SelectionChanged="OnSettingsTabChanged" AutomationProperties.Name="{Binding Text[UxSettingsCategory]}" AutomationProperties.AutomationId="settings-category"/>

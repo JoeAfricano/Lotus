@@ -957,4 +957,56 @@ Current conditions: {1}</value></data>
   <data name="WhyAllGoodBody" xml:space="preserve"><value>The game ran steadily during the measurement. If it stutters elsewhere, measure there.</value></data>
   <data name="WhyApplyProfile" xml:space="preserve"><value>Apply Game profile now</value></data>
   <data name="WhyProfileApplied" xml:space="preserve"><value>Game profile applied. You can undo it in Optimize.</value></data>
+  <data name="toolsTitle" xml:space="preserve"><value>Tools</value></data>
+  <data name="toolsDescription" xml:space="preserve"><value>Quick, safe helpers for your gaming PC.</value></data>
+  <data name="toolsNext" xml:space="preserve"><value>Memory, temp files, connection, disk and driver.</value></data>
+  <data name="ToolIntro" xml:space="preserve"><value>Nothing changes without your confirmation. Apps close normally (like clicking X) and files go to the Recycle Bin.</value></data>
+  <data name="ToolMemTitle" xml:space="preserve"><value>Free memory for gaming</value></data>
+  <data name="ToolMemWhat" xml:space="preserve"><value>Open programs using the most RAM. Check the ones you can close before playing.</value></data>
+  <data name="ToolMemPick" xml:space="preserve"><value>Check what to close. Only programs with a window are listed; they close normally.</value></data>
+  <data name="ToolMemNone" xml:space="preserve"><value>No heavy programs open. Memory is free for the game.</value></data>
+  <data name="ToolMemClose" xml:space="preserve"><value>Close selected</value></data>
+  <data name="ToolMemNoneChosen" xml:space="preserve"><value>Check at least one program in the list.</value></data>
+  <data name="ToolMemConfirmTitle" xml:space="preserve"><value>Close these programs?</value></data>
+  <data name="ToolMemConfirmBody" xml:space="preserve"><value>Lotus asks them to close normally: {0}. If there is unsaved work, the program itself asks.</value></data>
+  <data name="ToolMemFreed" xml:space="preserve"><value>About {0} freed.</value></data>
+  <data name="ToolMemNothing" xml:space="preserve"><value>No program was closed (they have no window or declined).</value></data>
+  <data name="ToolRefresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="ToolTempTitle" xml:space="preserve"><value>Temporary files</value></data>
+  <data name="ToolTempFound" xml:space="preserve"><value>{0} old items (over 24 h) totaling {1}.</value></data>
+  <data name="ToolTempNone" xml:space="preserve"><value>Nothing old to clean.</value></data>
+  <data name="ToolTempClean" xml:space="preserve"><value>Send to Recycle Bin</value></data>
+  <data name="ToolTempConfirm" xml:space="preserve"><value>Temporary files older than 24 hours go to the Recycle Bin (recoverable). Files in use stay where they are.</value></data>
+  <data name="ToolTempDone" xml:space="preserve"><value>{0} items ({1}) sent to the Recycle Bin.</value></data>
+  <data name="ToolTempInUse" xml:space="preserve"><value>Some were in use and stayed.</value></data>
+  <data name="ToolNetTitle" xml:space="preserve"><value>Connection test</value></data>
+  <data name="ToolNetWhat" xml:space="preserve"><value>Measures response time (ping), variation and loss to your router and to the internet.</value></data>
+  <data name="ToolNetRun" xml:space="preserve"><value>Test</value></data>
+  <data name="ToolNetRunning" xml:space="preserve"><value>Testing for a few seconds...</value></data>
+  <data name="ToolNetGateway" xml:space="preserve"><value>Your router</value></data>
+  <data name="ToolNetNoReply" xml:space="preserve"><value>no reply</value></data>
+  <data name="ToolNetLine" xml:space="preserve"><value>{0:0} ms · variation {1:0} ms · loss {2:0}%</value></data>
+  <data name="ToolNetOffline" xml:space="preserve"><value>No internet access right now.</value></data>
+  <data name="ToolNetLocalBad" xml:space="preserve"><value>The problem is in your home network (Wi-Fi or cable to the router). If you can, play wired or closer to the router.</value></data>
+  <data name="ToolNetUnstable" xml:space="preserve"><value>Unstable connection: packet loss or high variation causes lag even with low ping.</value></data>
+  <data name="ToolNetSlow" xml:space="preserve"><value>Stable connection, but high ping to the internet.</value></data>
+  <data name="ToolNetGood" xml:space="preserve"><value>Good connection for gaming.</value></data>
+  <data name="ToolDiskTitle" xml:space="preserve"><value>Disk health</value></data>
+  <data name="ToolDiskWhat" xml:space="preserve"><value>Status reported by Windows itself and free space. Read-only.</value></data>
+  <data name="ToolDiskLine" xml:space="preserve"><value>{0} · {1} · {2}</value></data>
+  <data name="ToolMediaHdd" xml:space="preserve"><value>HDD</value></data>
+  <data name="ToolMediaSsd" xml:space="preserve"><value>SSD</value></data>
+  <data name="ToolMediaScm" xml:space="preserve"><value>Storage-class memory</value></data>
+  <data name="ToolMediaUnknown" xml:space="preserve"><value>Unknown type</value></data>
+  <data name="ToolHealthHealthy" xml:space="preserve"><value>healthy</value></data>
+  <data name="ToolHealthWarning" xml:space="preserve"><value>warning: back up your files</value></data>
+  <data name="ToolHealthUnhealthy" xml:space="preserve"><value>failing: back up now</value></data>
+  <data name="ToolHealthUnknown" xml:space="preserve"><value>unknown status</value></data>
+  <data name="ToolVolumeLine" xml:space="preserve"><value>{0} free of {1} ({2:0}%)</value></data>
+  <data name="ToolDriverTitle" xml:space="preserve"><value>Graphics driver</value></data>
+  <data name="ToolDriverLine" xml:space="preserve"><value>{0} · version {1} · {2}</value></data>
+  <data name="ToolDriverNone" xml:space="preserve"><value>Graphics driver not identified.</value></data>
+  <data name="ToolDriverWhat" xml:space="preserve"><value>To update, use the maker's official site. Lotus never downloads or installs drivers.</value></data>
+  <data name="ToolDriverOpen" xml:space="preserve"><value>Official site</value></data>
+  <data name="ToolFailed" xml:space="preserve"><value>Something went wrong. Details are in the log.</value></data>
 </root>

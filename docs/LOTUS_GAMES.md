@@ -107,3 +107,11 @@ Primeira entrega da versão focada no jogador leigo (ver decisões de produto em
 ## "Por que está travando?" (25/10/2026)
 
 - Menu do jogo, com o jogo aberto: mede 30 s (mesma captura de "Medir e ajustar" + carga da GPU) e ordena causas prováveis: shaders não pré-carregados (travadas bruscas + SCSKiller "Ready/Stale"), RAM ≥ 85% (cita os 3 programas que mais usam, sem fechar nada), PC fora do perfil Jogo, GPU no limite (deixa o ajuste de qualidade pronto para depois de fechar) ou processador/segundo plano limitando. Única correção aplicada na hora, com confirmação: o perfil Jogo (reversível). 300 testes aprovados.
+
+## Aba Ferramentas (25/10/2026)
+
+- **Liberar memória para jogar**: programas com janela que mais usam RAM (agrupados por nome, processos do sistema e o próprio Lotus/RTSS fora); o usuário marca e confirma; fechamento normal (`CloseMainWindow`), nunca encerramento forçado.
+- **Arquivos temporários**: só `%TEMP%` do usuário, itens com mais de 24 h, enviados para a Lixeira (`SHFileOperation` com desfazer); itens em uso ficam.
+- **Teste de conexão**: 20 pings ao roteador, 1.1.1.1 e 8.8.8.8; veredito separa rede da casa de internet (instável, ping alto, boa, sem internet).
+- **Saúde do disco** (WMI Storage, só leitura) e **driver de vídeo** (registro, só leitura) com link apenas para o site oficial do fabricante; o Lotus não baixa nem instala drivers.
+- Validado no PC real: conexão boa, SSD saudável, driver identificado. 304 testes aprovados em Debug e Release. Pendente: desinstalador completo com resíduos para a Lixeira.
