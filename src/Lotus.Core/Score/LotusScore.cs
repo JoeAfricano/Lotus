@@ -70,6 +70,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
 
     public ITextCatalog Text { get; } = text;
     public IFramePreview? Preview => cpu as IFramePreview;
+    public TaskState RunTask { get; } = new();
     public bool Busy { get; private set; }
     public bool Idle => !Busy;
     public bool ShowCpuPreview { get; private set; }
@@ -120,6 +121,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         bool doCpu1 = runCpu1, doCpuAll = runCpuAll, doGpu = runGpu && gpu.Adapter() is not null;
         var stages = (doCpu1 ? 1 : 0) + (doCpuAll ? 1 : 0) + (doGpu ? 1 : 0); var stage = 0;
         Busy = true; Progress = 0; Reliability = ""; Verdict = ""; Notify();
+        RunTask.Start();
         try
         {
             var threads = Environment.ProcessorCount;
@@ -152,10 +154,11 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
             Verdict = total is { } t ? VerdictFor(t) : Text["ScorePartial"];
             Reliability = Text.Format(variation < 3 ? "ScoreReliable" : "ScoreUnstable", variation);
             Phase = Text["ScoreDone"];
+            RunTask.Finish(total is { } done ? Text.Format("ScoreDoneTotal", done.ToString("N0", Culture)) : Text["ScoreDone"]);
             if (runGpu && gpu.Adapter() is null) Phase += " " + Text["ScoreNoGpu"];
         }
-        catch (OperationCanceledException) { Phase = Text["ScoreCancelled"]; }
-        catch (Exception ex) { log(ex); Phase = Text["ScoreFailed"]; }
+        catch (OperationCanceledException) { Phase = Text["ScoreCancelled"]; RunTask.Fail(); }
+        catch (Exception ex) { log(ex); Phase = Text["ScoreFailed"]; RunTask.Fail(); }
         finally { Busy = false; ShowCpuPreview = false; Progress = 100; cts?.Dispose(); cts = null; Rebuild(); SearchParts(); }
     }
 
@@ -240,6 +243,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
 
     private void Notify()
     {
+        RunTask.Report(Progress);
         foreach (var p in new[] { nameof(Busy), nameof(Idle), nameof(ShowCpuPreview), nameof(HasResult), nameof(Progress), nameof(Phase), nameof(Total), nameof(Cpu1), nameof(CpuAll), nameof(Gpu),
                      nameof(Verdict), nameof(Reliability), nameof(MachineText), nameof(StartLabel), nameof(NoHistory), nameof(CanStart) })
             OnPropertyChanged(p);

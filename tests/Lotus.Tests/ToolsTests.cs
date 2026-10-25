@@ -15,8 +15,8 @@ public sealed class ToolsTests
         public IReadOnlyList<RunningApp> List() => Running;
         public int CloseGracefully(RunningApp app) { Closed.Add(app.Name); Running.RemoveAll(a => a.Name == app.Name); return 1; }
     }
-    private sealed class Temp : ITempCleaner { public int Recycled; public TempScan Scan() => Recycled > 0 ? new(0, 0) : new(5, 50L << 20); public TempScan Recycle() { Recycled++; return new(5, 50L << 20); } }
-    private sealed class Net(params PingStats[] stats) : IConnectionTester { public Task<IReadOnlyList<PingStats>> RunAsync(CancellationToken t) => Task.FromResult<IReadOnlyList<PingStats>>(stats); }
+    private sealed class Temp : ITempCleaner { public int Recycled; public TempScan Scan() => Recycled > 0 ? new(0, 0) : new(5, 50L << 20); public TempScan Recycle(IProgress<double>? progress = null) { Recycled++; progress?.Report(100); return new(5, 50L << 20); } }
+    private sealed class Net(params PingStats[] stats) : IConnectionTester { public Task<IReadOnlyList<PingStats>> RunAsync(CancellationToken t, IProgress<double>? progress = null) => Task.FromResult<IReadOnlyList<PingStats>>(stats); }
     private sealed class Disks : IDiskHealth
     {
         public (IReadOnlyList<DiskInfo>, IReadOnlyList<VolumeInfo>) Read() => ([new("Samsung SSD", "Ssd", "Healthy", 1L << 40)], [new("C:", 5L << 30, 100L << 30)]);
@@ -38,6 +38,7 @@ public sealed class ToolsTests
         vm.Apps[0].Selected = true; await vm.CloseSelectedAsync();
         Assert.Equal(["Chrome"], apps.Closed); Assert.Contains("3", vm.MemoryStatus);
         await vm.RecycleTempAsync(); Assert.Equal(1, temp.Recycled); Assert.False(vm.HasTemp);
+        Assert.True(vm.TempTask.Done); Assert.False(vm.TempTask.Running); Assert.Equal(100, vm.TempTask.Percent); Assert.True(vm.MemTask.Done);
     }
 
     [Fact] public void ConnectionVerdictSeparatesHomeNetworkFromInternet()

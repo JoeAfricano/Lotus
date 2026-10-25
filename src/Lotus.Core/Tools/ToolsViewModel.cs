@@ -8,9 +8,9 @@ namespace Lotus.Core.Tools;
 public sealed record RunningApp(string Name, long Bytes, bool HasWindow, IReadOnlyList<int> Pids);
 public interface IAppCloser { IReadOnlyList<RunningApp> List(); int CloseGracefully(RunningApp app); } // returns processes asked to close
 public sealed record TempScan(int Items, long Bytes);
-public interface ITempCleaner { TempScan Scan(); TempScan Recycle(); } // only items older than 24 h; Recycle returns what was moved
+public interface ITempCleaner { TempScan Scan(); TempScan Recycle(IProgress<double>? progress = null); } // only items older than 24 h; Recycle returns what was moved
 public sealed record PingStats(string Target, double? AverageMs, double? JitterMs, double LossPercent);
-public interface IConnectionTester { Task<IReadOnlyList<PingStats>> RunAsync(CancellationToken token); } // gateway first, then internet
+public interface IConnectionTester { Task<IReadOnlyList<PingStats>> RunAsync(CancellationToken token, IProgress<double>? progress = null); } // gateway first, then internet
 public sealed record DiskInfo(string Name, string Media, string Health, long SizeBytes);
 public sealed record VolumeInfo(string Letter, long FreeBytes, long TotalBytes);
 public interface IDiskHealth { (IReadOnlyList<DiskInfo> Disks, IReadOnlyList<VolumeInfo> Volumes) Read(); }
@@ -35,7 +35,7 @@ public sealed record DnsResult(string Id, string Name, string Server, double? Me
 public interface IDnsService
 {
     DnsState? Current();
-    Task<IReadOnlyList<DnsResult>> BenchmarkAsync(CancellationToken token);
+    Task<IReadOnlyList<DnsResult>> BenchmarkAsync(CancellationToken token, IProgress<double>? progress = null);
     Task<bool> ApplyAsync(string providerId); // elevated helper; verified by reading the adapter back
     Task<bool> RestoreAsync();
 }
@@ -64,6 +64,9 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
     public bool HasTemp { get; private set; }
     public string Message { get; private set; } = "";
     public string DiskTip { get; private set; } = "";
+    // Progress and completion of each task, shown with a bar, percentage and a "done" check.
+    public TaskState MemTask { get; } = new(); public TaskState TempTask { get; } = new();
+    public TaskState NetTask { get; } = new(); public TaskState DnsTask { get; } = new();
     public bool Busy { get; private set; }
     private TempScan? tempScan;
     private System.Globalization.CultureInfo Culture => System.Globalization.CultureInfo.GetCultureInfo(Text.Language);
@@ -106,13 +109,15 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
         await Run(async () =>
         {
             var chosen = Apps.Where(a => a.Selected).ToList();
-            var asked = await Task.Run(() => chosen.Sum(a => apps.CloseGracefully(a.App)));
-            await Task.Delay(1500);
+            MemTask.Start(); var asked = 0;
+            for (var i = 0; i < chosen.Count; i++) { var app = chosen[i]; asked += await Task.Run(() => apps.CloseGracefully(app.App)); MemTask.Report((i + 1) * 70.0 / Math.Max(1, chosen.Count)); }
+            for (var w = 1; w <= 3; w++) { await Task.Delay(500); MemTask.Report(70 + w * 10); } // give apps a moment to close
             var before = chosen.Sum(a => a.App.Bytes);
             var list = await Task.Run(apps.List);
             Apps.Clear(); foreach (var a in list.Where(x => x.HasWindow).Take(8)) Apps.Add(new(a, Size(a.Bytes)));
             var still = list.Where(a => chosen.Any(c => c.Name == a.Name)).Sum(a => a.Bytes);
             MemoryStatus = asked == 0 ? Text["ToolMemNothing"] : Text.Format("ToolMemFreed", Size(Math.Max(0, before - still)));
+            if (asked == 0) MemTask.Fail(); else MemTask.Finish(Text.Format("ToolMemDone", Size(Math.Max(0, before - still))));
         });
     }
 
@@ -120,9 +125,11 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
     {
         await Run(async () =>
         {
-            var moved = await Task.Run(temp.Recycle);
+            TempTask.Start(); var progress = TempTask.Progress();
+            var moved = await Task.Run(() => temp.Recycle(progress));
             tempScan = await Task.Run(temp.Scan); HasTemp = tempScan.Items > 0;
             TempStatus = Text.Format("ToolTempDone", moved.Items, Size(moved.Bytes)) + (HasTemp ? " " + Text["ToolTempInUse"] : "");
+            TempTask.Finish(Text.Format("ToolTempDoneShort", moved.Items, Size(moved.Bytes)));
         });
     }
 
@@ -131,12 +138,14 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
         await Run(async () =>
         {
             NetStatus = Text["ToolNetRunning"]; Notify();
-            var stats = await net.RunAsync(CancellationToken.None);
+            NetTask.Start();
+            var stats = await net.RunAsync(CancellationToken.None, NetTask.Progress());
             NetRows.Clear();
             foreach (var s in stats)
                 NetRows.Add(new(s.Target == "gateway" ? Text["ToolNetGateway"] : s.Target,
                     s.AverageMs is null ? Text["ToolNetNoReply"] : Text.Format("ToolNetLine", s.AverageMs, s.JitterMs ?? 0, s.LossPercent), s.LossPercent > 0 || s.AverageMs is null or > 80));
             NetStatus = Verdict(stats);
+            NetTask.Finish(Text["ToolTestDone"]);
         });
     }
 
@@ -164,7 +173,9 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
         await Run(async () =>
         {
             DnsStatus = Text["ToolDnsRunning"]; NotifyDns();
-            var results = await dns.BenchmarkAsync(CancellationToken.None);
+            DnsTask.Start();
+            var results = await dns.BenchmarkAsync(CancellationToken.None, DnsTask.Progress());
+            DnsTask.Finish(Text["ToolTestDone"]);
             DnsRows.Clear(); DnsNames.Clear();
             foreach (var r in results.OrderBy(r => r.MedianMs ?? double.MaxValue))
             {
@@ -223,7 +234,7 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
         if (Busy) return;
         Busy = true; Message = ""; Notify();
         try { await work(); }
-        catch (Exception ex) { log(ex); Message = Text["ToolFailed"]; }
+        catch (Exception ex) { log(ex); Message = Text["ToolFailed"]; foreach (var t in new[] { MemTask, TempTask, NetTask, DnsTask }) if (t.Running) t.Fail(); }
         finally { Busy = false; Notify(); }
     }
     private void Notify()

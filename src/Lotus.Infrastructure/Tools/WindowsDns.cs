@@ -42,12 +42,13 @@ public sealed class WindowsDnsService(string? dataRoot = null, Func<string[], Ta
     public bool HasBackup() => File.Exists(BackupPath);
 
     // Median response time of several real lookups per resolver; the current one is measured too.
-    public async Task<IReadOnlyList<DnsResult>> BenchmarkAsync(CancellationToken token)
+    public async Task<IReadOnlyList<DnsResult>> BenchmarkAsync(CancellationToken token, IProgress<double>? progress = null)
     {
         var targets = new List<(string Id, string Name, string Ip)>();
         if (Current() is { Servers.Count: > 0 } c) targets.Add(("current", c.Servers[0], c.Servers[0]));
         targets.AddRange(DnsProviders.All.Select(p => (p.Id, p.Name, p.Primary)));
         var results = new List<DnsResult>();
+        var done = 0; var total = targets.Count * Domains.Length * 3;
         foreach (var t in targets)
         {
             var times = new List<double>(); var failed = 0;
@@ -56,6 +57,7 @@ public sealed class WindowsDnsService(string? dataRoot = null, Func<string[], Ta
                 {
                     token.ThrowIfCancellationRequested();
                     if (await QueryAsync(t.Ip, d, token) is { } ms) times.Add(ms); else failed++;
+                    progress?.Report(++done * 100.0 / total);
                 }
             times.Sort();
             results.Add(new(t.Id, t.Name, t.Ip, times.Count > 0 ? times[times.Count / 2] : null, failed * 100.0 / (Domains.Length * 3)));

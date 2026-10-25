@@ -973,11 +973,11 @@ Current conditions: {1}</value></data>
   <data name="ToolMemNothing" xml:space="preserve"><value>No program was closed (they have no window or declined).</value></data>
   <data name="ToolRefresh" xml:space="preserve"><value>Refresh</value></data>
   <data name="ToolTempTitle" xml:space="preserve"><value>Temporary files</value></data>
-  <data name="ToolTempFound" xml:space="preserve"><value>{0} old items (over 24 h) totaling {1}.</value></data>
+  <data name="ToolTempFound" xml:space="preserve"><value>Items older than 24 h: {0}, totaling {1}.</value></data>
   <data name="ToolTempNone" xml:space="preserve"><value>Nothing old to clean.</value></data>
   <data name="ToolTempClean" xml:space="preserve"><value>Send to Recycle Bin</value></data>
   <data name="ToolTempConfirm" xml:space="preserve"><value>Temporary files older than 24 hours go to the Recycle Bin (recoverable). Files in use stay where they are.</value></data>
-  <data name="ToolTempDone" xml:space="preserve"><value>{0} items ({1}) sent to the Recycle Bin.</value></data>
+  <data name="ToolTempDone" xml:space="preserve"><value>Items sent to the Recycle Bin: {0} ({1}).</value></data>
   <data name="ToolTempInUse" xml:space="preserve"><value>Some were in use and stayed.</value></data>
   <data name="ToolNetTitle" xml:space="preserve"><value>Connection test</value></data>
   <data name="ToolNetWhat" xml:space="preserve"><value>Measures response time (ping), variation and loss to your router and to the internet.</value></data>
@@ -1089,4 +1089,8 @@ Current conditions: {1}</value></data>
   <data name="IntLayoutOther" xml:space="preserve"><value>Active layout: {0} (stays until you switch)</value></data>
   <data name="UxSummaryQuick" xml:space="preserve"><value>Read from Windows. For live usage and temperature, open Performance.</value></data>
   <data name="ToolDiskLow" xml:space="preserve"><value>{0} is low on space. Games and shader caches need room: keep at least 15% free. Start with Temporary files above.</value></data>
+  <data name="ToolMemDone" xml:space="preserve"><value>Done: about {0} freed.</value></data>
+  <data name="ToolTempDoneShort" xml:space="preserve"><value>Done: {1} in the Recycle Bin.</value></data>
+  <data name="ToolTestDone" xml:space="preserve"><value>Test complete.</value></data>
+  <data name="ScoreDoneTotal" xml:space="preserve"><value>Done: {0} points.</value></data>
 </root>

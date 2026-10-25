@@ -396,6 +396,9 @@ public sealed class GamesViewModel : ObservableObject
     public string ShaderJobEta { get; private set; } = "";
     public double ShaderJobPercent { get; private set; }
     public bool ShaderJobIndeterminate { get; private set; } = true;
+    public TaskState ShaderTask { get; } = new();
+    public bool ShaderCardVisible => ShaderJobActive || ShaderTask.Done;
+    public void DismissShaderCard() { ShaderTask.Reset(); NotifyShaderJob(); }
 
     public async Task<bool> PrecompileAsync(GameCard card, CancellationToken token = default)
     {
@@ -403,6 +406,7 @@ public sealed class GamesViewModel : ObservableObject
         shaderCts = CancellationTokenSource.CreateLinkedTokenSource(token);
         var started = DateTime.UtcNow;
         ShaderJobActive = true; ShaderJobTitle = Text.Format("ScsJobTitle", card.Name); ShaderJobDetail = Text["ScsStageWaiting"]; ShaderJobEta = ""; ShaderJobPercent = 0; ShaderJobIndeterminate = true;
+        ShaderTask.Start();
         status = ""; NotifyShaderJob();
         try
         {
@@ -411,10 +415,11 @@ public sealed class GamesViewModel : ObservableObject
             shaderStatuses = await shaders.StatusAsync(shaderCts.Token);
             ApplyFilter();
             status = Text.Format(code == 0 ? "ScsDone" : "ScsFailed", card.Name);
+            if (code == 0) ShaderTask.Finish(Text.Format("ScsDone", card.Name)); else ShaderTask.Fail();
             return code == 0;
         }
-        catch (OperationCanceledException) { status = Text.Format("ScsCancelled", card.Name); return false; }
-        catch (Exception ex) { log(ex); status = Text.Format("ScsFailed", card.Name); return false; }
+        catch (OperationCanceledException) { status = Text.Format("ScsCancelled", card.Name); ShaderTask.Fail(); return false; }
+        catch (Exception ex) { log(ex); status = Text.Format("ScsFailed", card.Name); ShaderTask.Fail(); return false; }
         finally { ShaderJobActive = false; shaderCts?.Dispose(); shaderCts = null; NotifyShaderJob(); Notify(); }
     }
     public void CancelPrecompile() => shaderCts?.Cancel();
@@ -426,6 +431,7 @@ public sealed class GamesViewModel : ObservableObject
         var stage = p.Stage is "Waiting" or "Indexing" or "Planning" or "Materializing" or "Warming" or "Paused" or "Done" or "Failed" or "Stopped" ? Text["ScsStage" + p.Stage] : p.Stage;
         ShaderJobIndeterminate = p.Fraction is null;
         if (p.Fraction is { } f) ShaderJobPercent = f * 100;
+        if (p.Fraction is { } fr) ShaderTask.Report(fr * 100);
         ShaderJobDetail = p.Total > 0
             ? Text.Format(p.Stage == "Indexing" ? "ScsJobPackages" : "ScsJobCount", stage, p.Done.ToString("N0", Culture), p.Total.ToString("N0", Culture), p.PerSecond.ToString("N0", Culture))
             : stage;
@@ -437,7 +443,7 @@ public sealed class GamesViewModel : ObservableObject
         : t.TotalMinutes >= 1 ? Text.Format("DurMinutes", (int)t.TotalMinutes, t.Seconds) : Text.Format("DurSeconds", Math.Max(1, (int)t.TotalSeconds));
     private void NotifyShaderJob()
     {
-        foreach (var p in new[] { nameof(ShaderJobActive), nameof(ShaderJobTitle), nameof(ShaderJobDetail), nameof(ShaderJobEta), nameof(ShaderJobPercent), nameof(ShaderJobIndeterminate) }) OnPropertyChanged(p);
+        foreach (var p in new[] { nameof(ShaderJobActive), nameof(ShaderJobTitle), nameof(ShaderJobDetail), nameof(ShaderJobEta), nameof(ShaderJobPercent), nameof(ShaderJobIndeterminate), nameof(ShaderCardVisible) }) OnPropertyChanged(p);
     }
 
     public void RefreshLanguage() { BuildStores(); ApplyFilter(); Notify(); }

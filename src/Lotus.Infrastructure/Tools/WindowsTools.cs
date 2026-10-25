@@ -77,11 +77,12 @@ public sealed class WindowsTempCleaner(string? folder = null, Func<DateTime>? cl
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return 0; }
     }
     public TempScan Scan() { var items = Old().ToList(); return new(items.Count, items.Sum(SizeOf)); }
-    public TempScan Recycle()
+    public TempScan Recycle(IProgress<double>? progress = null)
     {
-        var items = Old().ToList(); int moved = 0; long bytes = 0;
+        var items = Old().ToList(); int moved = 0; long bytes = 0, done = 0;
         foreach (var e in items)
         {
+            progress?.Report(++done * 100.0 / Math.Max(1, items.Count));
             var size = SizeOf(e);
             if (RecycleBin.Send(e.FullName)) { moved++; bytes += size; } // in-use items stay where they are
         }
@@ -100,14 +101,15 @@ public static class RecycleBin
     public static bool Send(string path)
     {
         var op = new ShFileOp { func = Delete, from = path + "\0\0", flags = AllowUndo | NoConfirmation | Silent | NoErrorUi };
-        return SHFileOperationW(ref op) == 0 && !op.aborted && !File.Exists(path) && !Directory.Exists(path);
+        SHFileOperationW(ref op); // its return code is unreliable (it can report failure after moving); what counts is whether the item left
+        return !File.Exists(path) && !Directory.Exists(path);
     }
 }
 
 // 20 pings to the router (local network) and to two public resolvers (internet).
 public sealed class PingConnectionTester(int count = 20) : IConnectionTester
 {
-    public async Task<IReadOnlyList<PingStats>> RunAsync(CancellationToken token)
+    public async Task<IReadOnlyList<PingStats>> RunAsync(CancellationToken token, IProgress<double>? progress = null)
     {
         var targets = new List<(string Label, string Address)>();
         var gateway = NetworkInterface.GetAllNetworkInterfaces()
@@ -116,10 +118,12 @@ public sealed class PingConnectionTester(int count = 20) : IConnectionTester
             .FirstOrDefault(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork && !a.Equals(System.Net.IPAddress.Any));
         if (gateway is not null) targets.Add(("gateway", gateway.ToString()));
         targets.Add(("Cloudflare 1.1.1.1", "1.1.1.1")); targets.Add(("Google 8.8.8.8", "8.8.8.8"));
-        var results = await Task.WhenAll(targets.Select(t => Measure(t.Label, t.Address, token)));
+        var sent = 0; var total = targets.Count * count;
+        void Tick() => progress?.Report(Interlocked.Increment(ref sent) * 100.0 / total);
+        var results = await Task.WhenAll(targets.Select(t => Measure(t.Label, t.Address, Tick, token)));
         return results;
     }
-    private async Task<PingStats> Measure(string label, string address, CancellationToken token)
+    private async Task<PingStats> Measure(string label, string address, Action tick, CancellationToken token)
     {
         using var ping = new Ping(); var times = new List<double>(); var lost = 0;
         for (var i = 0; i < count; i++)
@@ -127,6 +131,7 @@ public sealed class PingConnectionTester(int count = 20) : IConnectionTester
             token.ThrowIfCancellationRequested();
             try { var r = await ping.SendPingAsync(address, 1000); if (r.Status == IPStatus.Success) times.Add(r.RoundtripTime); else lost++; }
             catch (PingException) { lost++; }
+            tick();
             await Task.Delay(100, token);
         }
         double? avg = times.Count > 0 ? times.Average() : null;

@@ -973,11 +973,11 @@ Condições atuais: {1}</value></data>
   <data name="ToolMemNothing" xml:space="preserve"><value>Nenhum programa foi fechado (eles não têm janela ou recusaram).</value></data>
   <data name="ToolRefresh" xml:space="preserve"><value>Atualizar</value></data>
   <data name="ToolTempTitle" xml:space="preserve"><value>Arquivos temporários</value></data>
-  <data name="ToolTempFound" xml:space="preserve"><value>{0} itens antigos (mais de 24 h) somando {1}.</value></data>
+  <data name="ToolTempFound" xml:space="preserve"><value>Itens com mais de 24 h: {0}, somando {1}.</value></data>
   <data name="ToolTempNone" xml:space="preserve"><value>Nada antigo para limpar.</value></data>
   <data name="ToolTempClean" xml:space="preserve"><value>Enviar para a Lixeira</value></data>
   <data name="ToolTempConfirm" xml:space="preserve"><value>Os temporários com **mais de 24 horas** vão para a Lixeira, então dá para recuperar. Arquivos em uso ficam onde estão.</value></data>
-  <data name="ToolTempDone" xml:space="preserve"><value>{0} itens ({1}) enviados para a Lixeira.</value></data>
+  <data name="ToolTempDone" xml:space="preserve"><value>Itens enviados para a Lixeira: {0} ({1}).</value></data>
   <data name="ToolTempInUse" xml:space="preserve"><value>Alguns estavam em uso e ficaram.</value></data>
   <data name="ToolNetTitle" xml:space="preserve"><value>Teste de conexão</value></data>
   <data name="ToolNetWhat" xml:space="preserve"><value>Mede o **ping**, a variação e a perda até o seu roteador e até a internet.</value></data>
@@ -1089,4 +1089,8 @@ Condições atuais: {1}</value></data>
   <data name="IntLayoutOther" xml:space="preserve"><value>Layout ativo: {0} (fica assim até você trocar)</value></data>
   <data name="UxSummaryQuick" xml:space="preserve"><value>Dados lidos do Windows. Para ver uso e temperatura ao vivo, abra Desempenho.</value></data>
   <data name="ToolDiskLow" xml:space="preserve"><value>O {0} está com pouco espaço. Jogos e caches de shader precisam de folga: deixe pelo menos 15% livre. Comece pelos Arquivos temporários acima.</value></data>
+  <data name="ToolMemDone" xml:space="preserve"><value>Concluído: cerca de {0} liberados.</value></data>
+  <data name="ToolTempDoneShort" xml:space="preserve"><value>Concluído: {1} na Lixeira.</value></data>
+  <data name="ToolTestDone" xml:space="preserve"><value>Teste concluído.</value></data>
+  <data name="ScoreDoneTotal" xml:space="preserve"><value>Concluído: {0} pontos.</value></data>
 </root>
