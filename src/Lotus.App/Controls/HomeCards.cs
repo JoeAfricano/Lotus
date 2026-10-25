@@ -75,6 +75,7 @@ public sealed partial class ReadinessCard : UserControl
     private readonly Button action = new();
     private SectionViewModel? vm;
     private double shown = -1;
+    private static bool scanned; // the Tools scan feeds this card once per session, not on every visit
     private string target = "optimize";
     public event EventHandler<string>? NavigateRequested;
 
@@ -108,7 +109,7 @@ public sealed partial class ReadinessCard : UserControl
         if (model.Monitoring is { } m) { m.Updated -= OnUpdated; m.Updated += OnUpdated; }
         Render();
         // Heavy apps and disk space come from Ferramentas (read-only scan), once per session.
-        if (model.Tools is { Apps.Count: 0, Busy: false } tools) { try { await tools.RefreshAsync(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Readiness tools scan"); } Render(); }
+        if (!scanned && model.Tools is { Busy: false } tools) { scanned = true; try { await tools.RefreshAsync(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Readiness tools scan"); } Render(); }
     }
 
     private void OnUpdated(object? sender, EventArgs e) => DispatcherQueue.TryEnqueue(Render);

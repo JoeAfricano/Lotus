@@ -46,7 +46,9 @@ public sealed partial class SectionPage : Page
             // The library may still be scanning (startup): redraw when it fills in.
             var redraw = DispatcherQueue.CreateTimer(); redraw.Interval = TimeSpan.FromMilliseconds(400); redraw.IsRepeating = false;
             redraw.Tick += (_, _) => ContinueCard?.Show(vm);
-            games.Games.CollectionChanged += (_, _) => DispatcherQueue.TryEnqueue(() => { redraw.Stop(); redraw.Start(); });
+            void OnLibrary(object? s, System.Collections.Specialized.NotifyCollectionChangedEventArgs a) => DispatcherQueue.TryEnqueue(() => { redraw.Stop(); redraw.Start(); });
+            games.Games.CollectionChanged += OnLibrary;
+            ContinueCard.Unloaded += (_, _) => { games.Games.CollectionChanged -= OnLibrary; redraw.Stop(); }; // the library outlives this page
             await games.EnsureLoadedAsync();
         }
         ContinueCard?.Show(vm);
