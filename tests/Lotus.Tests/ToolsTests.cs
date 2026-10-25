@@ -74,3 +74,39 @@ public sealed class ToolsTests
         Assert.All(new WindowsAppCloser().List(), a => Assert.True(a.Bytes > 0));
     }
 }
+
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+public sealed class DnsTests
+{
+    private static DnsResult R(string id, double? ms, double fail = 0) => new(id, id, "1.2.3.4", ms, fail);
+
+    [Fact] public void RecommendsOnlyAClearlyFasterWorkingResolver()
+    {
+        Assert.Equal(("cloudflare", "ToolDnsSuggest"), ToolsViewModel.Recommend([R("current", 60), R("cloudflare", 12), R("google", 30)]));
+        Assert.Equal((null, "ToolDnsKeep"), ToolsViewModel.Recommend([R("current", 14), R("cloudflare", 12)]));       // not 20% better
+        Assert.Equal(("google", "ToolDnsSuggest"), ToolsViewModel.Recommend([R("current", 60), R("cloudflare", 10, fail: 7), R("google", 20)])); // failures disqualify
+        Assert.Equal(("quad9", "ToolDnsSuggestBroken"), ToolsViewModel.Recommend([R("current", null, 100), R("quad9", 15)]));
+        Assert.Equal((null, "ToolDnsNoneWorks"), ToolsViewModel.Recommend([R("current", 20), R("google", null, 100)]));
+    }
+
+    [Fact] public void ElevatedHelperRejectsAnythingOutsideTheAllowList()
+    {
+        var data = Path.Combine(Path.GetTempPath(), "LotusDnsTest-" + Guid.NewGuid(), "Lotus"); Directory.CreateDirectory(data);
+        try
+        {
+            Assert.Null(DnsElevatedHelper.TryRun(["--other"]));
+            Assert.Equal(3, DnsElevatedHelper.TryRun(["--dns-set", "{00000000-0000-0000-0000-000000000000}", "evil-dns", "--lotus-data", data]));
+            Assert.Equal(3, DnsElevatedHelper.TryRun(["--dns-set", "x' OR 1=1", "google", "--lotus-data", data])); // adapter id must be a GUID
+            Assert.Equal(4, DnsElevatedHelper.TryRun(["--dns-restore", "--lotus-data", data]));                      // nothing to restore
+            Assert.False(File.Exists(Path.Combine(data, "DnsBackup.json")));
+        }
+        finally { Directory.Delete(Path.GetDirectoryName(data)!, true); }
+    }
+
+    [Fact] public async Task RealQueryAnswersOrTimesOutQuietly()
+    {
+        var ms = await WindowsDnsService.QueryAsync("1.1.1.1", "www.google.com", default);
+        Assert.True(ms is null or > 0);
+        Assert.Contains(DnsProviders.All, p => p.Id == "cloudflare" && p.Primary == "1.1.1.1");
+    }
+}

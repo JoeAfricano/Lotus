@@ -16,6 +16,16 @@ public sealed record VolumeInfo(string Letter, long FreeBytes, long TotalBytes);
 public interface IDiskHealth { (IReadOnlyList<DiskInfo> Disks, IReadOnlyList<VolumeInfo> Volumes) Read(); }
 public sealed record GpuDriver(string Name, string Version, DateTime? Date, string Vendor);
 public interface IDriverInfo { GpuDriver? Read(); }
+public sealed record DnsProvider(string Id, string Name, string Primary, string Secondary);
+public sealed record DnsState(string Adapter, IReadOnlyList<string> Servers, bool Automatic, bool HasBackup);
+public sealed record DnsResult(string Id, string Name, string Server, double? MedianMs, double FailPercent);
+public interface IDnsService
+{
+    DnsState? Current();
+    Task<IReadOnlyList<DnsResult>> BenchmarkAsync(CancellationToken token);
+    Task<bool> ApplyAsync(string providerId); // elevated helper; verified by reading the adapter back
+    Task<bool> RestoreAsync();
+}
 
 public sealed partial class AppRow(RunningApp app, string sizeText) : ObservableObject
 {
@@ -27,7 +37,7 @@ public sealed partial class AppRow(RunningApp app, string sizeText) : Observable
 }
 public sealed record InfoRow(string Title, string Detail, bool Warning);
 
-public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnectionTester net, IDiskHealth disks, IDriverInfo driver, ITextCatalog text, Action<Exception> log) : ObservableObject
+public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnectionTester net, IDiskHealth disks, IDriverInfo driver, ITextCatalog text, Action<Exception> log, IDnsService? dns = null) : ObservableObject
 {
     public ITextCatalog Text { get; } = text;
     public ObservableCollection<AppRow> Apps { get; } = [];
@@ -71,6 +81,7 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
                 "Intel" => "https://www.intel.com.br/content/www/br/pt/download-center/home.html",
                 _ => null
             };
+            RefreshDns();
         });
     }
 
@@ -112,6 +123,72 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
                     s.AverageMs is null ? Text["ToolNetNoReply"] : Text.Format("ToolNetLine", s.AverageMs, s.JitterMs ?? 0, s.LossPercent), s.LossPercent > 0 || s.AverageMs is null or > 80));
             NetStatus = Verdict(stats);
         });
+    }
+
+    // ---- DNS: measured on this connection; switching asks first and can be undone ----
+    public ObservableCollection<InfoRow> DnsRows { get; } = [];
+    public string DnsStatus { get; private set; } = "";
+    public string? RecommendedDns { get; private set; }
+    public string RecommendedDnsLabel => RecommendedDns is { } id ? Text.Format("ToolDnsApply", DnsNames.GetValueOrDefault(id, id)) : "";
+    public bool CanApplyDns => RecommendedDns is not null;
+    public bool CanRestoreDns { get; private set; }
+    public bool HasDns => dns is not null;
+    private readonly Dictionary<string, string> DnsNames = [];
+
+    public void RefreshDns()
+    {
+        if (dns?.Current() is not { } c) { DnsStatus = dns is null ? "" : Text["ToolDnsNoAdapter"]; NotifyDns(); return; }
+        CanRestoreDns = c.HasBackup;
+        DnsStatus = Text.Format(c.Automatic ? "ToolDnsCurrentAuto" : "ToolDnsCurrentManual", string.Join(", ", c.Servers), c.Adapter);
+        NotifyDns();
+    }
+
+    public async Task BenchmarkDnsAsync()
+    {
+        if (dns is null) return;
+        await Run(async () =>
+        {
+            DnsStatus = Text["ToolDnsRunning"]; NotifyDns();
+            var results = await dns.BenchmarkAsync(CancellationToken.None);
+            DnsRows.Clear(); DnsNames.Clear();
+            foreach (var r in results.OrderBy(r => r.MedianMs ?? double.MaxValue))
+            {
+                DnsNames[r.Id] = r.Name;
+                var title = r.Id == "current" ? Text.Format("ToolDnsCurrentRow", r.Server) : $"{r.Name} ({r.Server})";
+                DnsRows.Add(new(title, r.MedianMs is null ? Text["ToolNetNoReply"] : Text.Format("ToolDnsLine", r.MedianMs, r.FailPercent), r.FailPercent > 0));
+            }
+            (RecommendedDns, var key) = Recommend(results);
+            DnsStatus = Text.Format(key, RecommendedDns is { } id ? DnsNames[id] : "");
+        });
+        NotifyDns();
+    }
+
+    // Recommends a switch only when a public resolver is clearly faster (≥ 20% and ≥ 5 ms) and never failed.
+    public static (string? Id, string Key) Recommend(IReadOnlyList<DnsResult> results)
+    {
+        var current = results.FirstOrDefault(r => r.Id == "current");
+        var best = results.Where(r => r.Id != "current" && r.MedianMs is not null && r.FailPercent == 0).MinBy(r => r.MedianMs);
+        if (best is null) return (null, "ToolDnsNoneWorks");
+        if (current?.MedianMs is not { } now) return (best.Id, "ToolDnsSuggestBroken");
+        return best.MedianMs < now * 0.8 && now - best.MedianMs >= 5 ? (best.Id, "ToolDnsSuggest") : (null, "ToolDnsKeep");
+    }
+
+    public async Task ApplyDnsAsync()
+    {
+        if (dns is null || RecommendedDns is not { } id) return;
+        await Run(async () => { DnsStatus = Text[await dns.ApplyAsync(id) ? "ToolDnsApplied" : "ToolDnsFailed"]; RecommendedDns = null; });
+        RefreshDnsKeepStatus();
+    }
+    public async Task RestoreDnsAsync()
+    {
+        if (dns is null) return;
+        await Run(async () => DnsStatus = Text[await dns.RestoreAsync() ? "ToolDnsRestored" : "ToolDnsFailed"]);
+        RefreshDnsKeepStatus();
+    }
+    private void RefreshDnsKeepStatus() { var keep = DnsStatus; RefreshDns(); DnsStatus = keep; NotifyDns(); }
+    private void NotifyDns()
+    {
+        foreach (var p in new[] { nameof(DnsStatus), nameof(RecommendedDns), nameof(RecommendedDnsLabel), nameof(CanApplyDns), nameof(CanRestoreDns), nameof(HasDns) }) OnPropertyChanged(p);
     }
 
     // Plain-language verdict: local network vs internet.

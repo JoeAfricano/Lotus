@@ -29,6 +29,17 @@ public sealed partial class ToolsPanel : UserControl
             await vm.RecycleTempAsync();
     }
     private async void OnTestNet(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel vm) await vm.TestConnectionAsync(); }
+    private async void OnTestDns(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel vm) await vm.BenchmarkDnsAsync(); }
+    private async void OnApplyDns(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel vm && await Confirm(vm.RecommendedDnsLabel, vm.Text["ToolDnsConfirm"], vm.Text["FeatConfirm"], vm))
+            await vm.ApplyDnsAsync();
+    }
+    private async void OnRestoreDns(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel vm && await Confirm(vm.Text["ToolDnsRestore"], vm.Text["ToolDnsRestoreConfirm"], vm.Text["FeatConfirm"], vm))
+            await vm.RestoreDnsAsync();
+    }
     // Opens only the GPU maker's official driver page; Lotus never downloads or installs drivers.
     private async void OnOpenDriverSite(object sender, RoutedEventArgs e)
     {
@@ -41,7 +52,7 @@ public sealed partial class ToolsPanel : UserControl
         var dialog = new ContentDialog
         {
             XamlRoot = XamlRoot, Title = title, RequestedTheme = ElementTheme.Dark, DefaultButton = ContentDialogButton.Close,
-            Content = new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, CloseButtonText = vm.Text[primary is null ? "GsClose" : "UxCancel"]
+            Content = new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, CloseButtonText = vm.Text[primary is null ? "GsClose" : "DlgCancel"]
         };
         if (primary is not null) dialog.PrimaryButtonText = primary;
         return await dialog.ShowAsync() == ContentDialogResult.Primary;

@@ -82,7 +82,7 @@ public sealed partial class PowerProfilesPanel : UserControl
     {
         var dialog = new ContentDialog
         {
-            XamlRoot = XamlRoot, Title = title, Content = content, PrimaryButtonText = primary, CloseButtonText = text["UxCancel"],
+            XamlRoot = XamlRoot, Title = title, Content = content, PrimaryButtonText = primary, CloseButtonText = text["DlgCancel"],
             DefaultButton = primaryDefault ? ContentDialogButton.Primary : ContentDialogButton.Close, RequestedTheme = ElementTheme.Dark
         };
         return await dialog.ShowAsync() == ContentDialogResult.Primary;

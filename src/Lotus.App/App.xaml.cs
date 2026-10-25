@@ -35,6 +35,8 @@ public partial class App : Application
     {
         // Short-lived elevated helper for RivaTuner profile edits: no window, no services, fixed allow-list.
         if (Lotus.Infrastructure.Integrations.RtssElevatedHelper.TryRun(Environment.GetCommandLineArgs()) is { } helperExit) { Environment.Exit(helperExit); return; }
+        // Short-lived elevated helper for the DNS switch (fixed provider list, backup in the user's Lotus folder).
+        if (Lotus.Infrastructure.Tools.DnsElevatedHelper.TryRun(Environment.GetCommandLineArgs()) is { } dnsExit) { Environment.Exit(dnsExit); return; }
         // Overlay preview: a separate, unelevated process that only shows the 3D scene so RivaTuner draws its overlay on it.
         if (Environment.GetCommandLineArgs().Contains(Lotus.Infrastructure.Score.D3D11GpuBenchmark.PreviewArgument))
         {
@@ -111,7 +113,7 @@ public partial class App : Application
                 new Lotus.Infrastructure.Score.WindowsScoreMachine(gpu), p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Lotus Score failed")); })
             .AddSingleton(p => new Lotus.Core.Tools.ToolsViewModel(new Lotus.Infrastructure.Tools.WindowsAppCloser(), new Lotus.Infrastructure.Tools.WindowsTempCleaner(),
                 new Lotus.Infrastructure.Tools.PingConnectionTester(), new Lotus.Infrastructure.Tools.WindowsDiskHealth(), new Lotus.Infrastructure.Tools.WindowsDriverInfo(),
-                p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Tools operation failed")))
+                p.GetRequiredService<ITextCatalog>(), ex => Log.Warning(ex, "Tools operation failed"), new Lotus.Infrastructure.Tools.WindowsDnsService()))
             .AddSingleton<IAppEvents, AppEvents>().AddSingleton<ShellViewModel>().AddSingleton<MainWindow>().BuildServiceProvider();
         Text = services.GetRequiredService<ITextCatalog>();
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);

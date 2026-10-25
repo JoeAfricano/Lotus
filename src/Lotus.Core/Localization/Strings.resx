@@ -1009,4 +1009,25 @@ Condições atuais: {1}</value></data>
   <data name="ToolDriverWhat" xml:space="preserve"><value>Para atualizar, use o site oficial do fabricante. O Lotus não baixa nem instala drivers.</value></data>
   <data name="ToolDriverOpen" xml:space="preserve"><value>Site oficial</value></data>
   <data name="ToolFailed" xml:space="preserve"><value>Algo deu errado. Detalhes no log.</value></data>
+  <data name="DlgCancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="ToolDnsTitle" xml:space="preserve"><value>DNS (o "endereçador" da internet)</value></data>
+  <data name="ToolDnsWhat" xml:space="preserve"><value>O DNS influencia o tempo para abrir sites, lojas e conectar aos servidores, não o ping dentro da partida. O melhor muda conforme a região, por isso o Lotus mede na sua conexão.</value></data>
+  <data name="ToolDnsTest" xml:space="preserve"><value>Medir DNS</value></data>
+  <data name="ToolDnsRunning" xml:space="preserve"><value>Medindo o DNS atual e os públicos (Cloudflare, Google, Quad9, OpenDNS)...</value></data>
+  <data name="ToolDnsLine" xml:space="preserve"><value>{0:0} ms (mediana) · falhas {1:0}%</value></data>
+  <data name="ToolDnsCurrentRow" xml:space="preserve"><value>Seu DNS atual ({0})</value></data>
+  <data name="ToolDnsCurrentAuto" xml:space="preserve"><value>Atual: automático do roteador ({0}) · {1}</value></data>
+  <data name="ToolDnsCurrentManual" xml:space="preserve"><value>Atual: definido manualmente ({0}) · {1}</value></data>
+  <data name="ToolDnsNoAdapter" xml:space="preserve"><value>Nenhuma conexão com internet encontrada.</value></data>
+  <data name="ToolDnsSuggest" xml:space="preserve"><value>{0} respondeu bem mais rápido que o seu DNS atual. Vale trocar.</value></data>
+  <data name="ToolDnsSuggestBroken" xml:space="preserve"><value>Seu DNS atual não respondeu bem. {0} funcionou: vale trocar.</value></data>
+  <data name="ToolDnsKeep" xml:space="preserve"><value>Seu DNS atual já é rápido. Não precisa trocar.</value></data>
+  <data name="ToolDnsNoneWorks" xml:space="preserve"><value>Nenhum DNS público respondeu. Verifique a conexão.</value></data>
+  <data name="ToolDnsApply" xml:space="preserve"><value>Usar {0}</value></data>
+  <data name="ToolDnsConfirm" xml:space="preserve"><value>O Lotus troca o DNS só da conexão com internet (IPv4) e guarda o atual para você voltar quando quiser. O Windows vai pedir permissão de administrador.</value></data>
+  <data name="ToolDnsApplied" xml:space="preserve"><value>DNS trocado e conferido. Dá para voltar ao anterior a qualquer momento.</value></data>
+  <data name="ToolDnsRestore" xml:space="preserve"><value>Voltar ao DNS anterior</value></data>
+  <data name="ToolDnsRestoreConfirm" xml:space="preserve"><value>O Lotus restaura exatamente o DNS de antes (automático do roteador ou o que você usava). O Windows vai pedir permissão de administrador.</value></data>
+  <data name="ToolDnsRestored" xml:space="preserve"><value>DNS anterior restaurado.</value></data>
+  <data name="ToolDnsFailed" xml:space="preserve"><value>Não foi possível trocar o DNS (permissão recusada ou adaptador mudou). Nada foi alterado.</value></data>
 </root>

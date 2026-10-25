@@ -41,7 +41,7 @@ public sealed partial class GamesPanel : UserControl
         var dialog = new ContentDialog
         {
             XamlRoot = XamlRoot, Title = vm.Text["GamesRestoreTitle"], Content = content, RequestedTheme = ElementTheme.Dark,
-            PrimaryButtonText = vm.Text["GamesRestoreSelected"], CloseButtonText = vm.Text["UxCancel"], DefaultButton = ContentDialogButton.Primary
+            PrimaryButtonText = vm.Text["GamesRestoreSelected"], CloseButtonText = vm.Text["DlgCancel"], DefaultButton = ContentDialogButton.Primary
         };
         if (await dialog.ShowAsync() == ContentDialogResult.Primary && list.SelectedItems.Count > 0)
             vm.Restore(list.SelectedItems.Cast<GameEntry>().ToList());
@@ -53,7 +53,7 @@ public sealed partial class GamesPanel : UserControl
         if (sender is not FrameworkElement { DataContext: GameCard card } || DataContext is not GamesViewModel vm) return;
         var analysis = await vm.AnalyzeSettingsAsync(card.Game);
         if (analysis is null) return;
-        var body = new StackPanel { Spacing = 8, MaxWidth = 480 };
+        var body = new StackPanel { Spacing = 8, MaxWidth = 430 };
         body.Children.Add(new TextBlock { Text = analysis.Hardware, Opacity = 0.75, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 6) });
         foreach (var line in analysis.Lines)
             body.Children.Add(new TextBlock { Text = "•  " + line, TextWrapping = TextWrapping.Wrap });
@@ -63,7 +63,7 @@ public sealed partial class GamesPanel : UserControl
         var dialog = new ContentDialog
         {
             XamlRoot = XamlRoot, Title = vm.Text.Format("GsTitle", card.Name), RequestedTheme = ElementTheme.Dark,
-            Content = new ScrollViewer { Content = body, MaxHeight = 460 }, CloseButtonText = vm.Text["GsClose"], DefaultButton = ContentDialogButton.Close
+            Content = body, CloseButtonText = vm.Text["GsClose"], DefaultButton = ContentDialogButton.Close
         };
         // A measured adjustment takes precedence over the hardware-based starting point.
         var pending = analysis.PendingStep is { } step && analysis.Support is { CanApply: true };
@@ -84,11 +84,11 @@ public sealed partial class GamesPanel : UserControl
             await Show(vm.Text["GsMeasureMenu"], new TextBlock { Text = vm.Text.Format("GsMeasureNotRunning", card.Name), TextWrapping = TextWrapping.Wrap, MaxWidth = 440 }, null, vm.Text["GsClose"]);
             return;
         }
-        var start = await Show(vm.Text.Format("GsMeasureConfirmTitle", card.Name), new TextBlock { Text = vm.Text["GsMeasureConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, vm.Text["GsMeasureStart"], vm.Text["UxCancel"]);
+        var start = await Show(vm.Text.Format("GsMeasureConfirmTitle", card.Name), new TextBlock { Text = vm.Text["GsMeasureConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, vm.Text["GsMeasureStart"], vm.Text["DlgCancel"]);
         if (!start) return;
         var result = await vm.MeasureAsync(card.Game);
         if (result is null) return;
-        var body = new StackPanel { Spacing = 10, MaxWidth = 480 };
+        var body = new StackPanel { Spacing = 10, MaxWidth = 430 };
         body.Children.Add(new TextBlock { Text = result.Summary, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
         body.Children.Add(new TextBlock { Text = result.DecisionText, TextWrapping = TextWrapping.Wrap });
         if (result.CanApplyStep) body.Children.Add(new TextBlock { Text = vm.Text.Format("GsStepPending", vm.Text[result.Decision.Step > 0 ? "GsStepUp" : "GsStepDown"]), TextWrapping = TextWrapping.Wrap, Opacity = 0.8 });
@@ -105,7 +105,7 @@ public sealed partial class GamesPanel : UserControl
             await Show(vm.Text["ScsPrecompile"], new TextBlock { Text = vm.Text.Format("GsCloseGame", card.Name), TextWrapping = TextWrapping.Wrap, MaxWidth = 440 }, null, vm.Text["GsClose"]);
             return;
         }
-        if (await Show(vm.Text.Format("ScsConfirmTitle", card.Name), new TextBlock { Text = vm.Text["ScsConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, vm.Text["ScsPrecompile"], vm.Text["UxCancel"]))
+        if (await Show(vm.Text.Format("ScsConfirmTitle", card.Name), new TextBlock { Text = vm.Text["ScsConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, vm.Text["ScsPrecompile"], vm.Text["DlgCancel"]))
             await vm.PrecompileAsync(card);
     }
 
@@ -115,7 +115,7 @@ public sealed partial class GamesPanel : UserControl
         if (sender is not FrameworkElement { DataContext: GameCard card } || DataContext is not GamesViewModel vm) return;
         if (!vm.CanPrepare) { card.Launch.Execute(card); return; }
         if (await vm.PlanPlayAsync(card) is not { } plan) return;
-        var body = new StackPanel { Spacing = 10, MaxWidth = 480 };
+        var body = new StackPanel { Spacing = 10, MaxWidth = 430 };
         body.Children.Add(new TextBlock { Text = vm.Text["PlayIntro"], TextWrapping = TextWrapping.Wrap, Opacity = 0.85 });
         CheckBox? profile = null, shaders = null;
         if (plan.Pending > 0)
@@ -134,7 +134,7 @@ public sealed partial class GamesPanel : UserControl
             body.Children.Add(shaders);
         }
         body.Children.Add(new TextBlock { Text = vm.Text["PlayUndoLater"], TextWrapping = TextWrapping.Wrap, FontSize = 12, Opacity = 0.65, Margin = new Thickness(0, 4, 0, 0) });
-        if (!await Show(vm.Text.Format("PlayTitle", card.Name), new ScrollViewer { Content = body, MaxHeight = 480 }, vm.Text["PlayGo"], vm.Text["UxCancel"])) return;
+        if (!await Show(vm.Text.Format("PlayTitle", card.Name), body, vm.Text["PlayGo"], vm.Text["DlgCancel"], primaryDefault: true)) return;
         await vm.PlayAsync(plan, profile?.IsChecked == true, shaders?.IsChecked == true);
     }
 
@@ -147,9 +147,9 @@ public sealed partial class GamesPanel : UserControl
             await Show(vm.Text["WhyMenu"], new TextBlock { Text = vm.Text.Format("WhyNotRunning", card.Name), TextWrapping = TextWrapping.Wrap, MaxWidth = 440 }, null, vm.Text["GsClose"]);
             return;
         }
-        if (!await Show(vm.Text.Format("WhyTitle", card.Name), new TextBlock { Text = vm.Text["WhyConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, vm.Text["GsMeasureStart"], vm.Text["UxCancel"])) return;
+        if (!await Show(vm.Text.Format("WhyTitle", card.Name), new TextBlock { Text = vm.Text["WhyConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, vm.Text["GsMeasureStart"], vm.Text["DlgCancel"])) return;
         if (await vm.DiagnoseAsync(card.Game) is not { } report) return;
-        var body = new StackPanel { Spacing = 12, MaxWidth = 500 };
+        var body = new StackPanel { Spacing = 12, MaxWidth = 430 };
         body.Children.Add(new TextBlock { Text = report.Summary, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
         var number = 1;
         foreach (var f in report.Findings)
@@ -161,7 +161,7 @@ public sealed partial class GamesPanel : UserControl
             body.Children.Add(item);
         }
         var canApplyProfile = report.Findings.Any(f => f.Fix == Lotus.Core.Games.StutterFix.PrepareProfile);
-        if (await Show(vm.Text.Format("WhyTitle", card.Name), new ScrollViewer { Content = body, MaxHeight = 480 }, canApplyProfile ? vm.Text["WhyApplyProfile"] : null, vm.Text["GsClose"]))
+        if (await Show(vm.Text.Format("WhyTitle", card.Name), body, canApplyProfile ? vm.Text["WhyApplyProfile"] : null, vm.Text["GsClose"]))
             await vm.ApplyGameProfileNowAsync();
     }
 
@@ -174,9 +174,9 @@ public sealed partial class GamesPanel : UserControl
     private async void OnScsOffer(object sender, RoutedEventArgs e) =>
         await Windows.System.Launcher.LaunchUriAsync(new Uri(GamesViewModel.ScsKillerReleases));
 
-    private async Task<bool> Show(string title, UIElement content, string? primary, string close)
+    private async Task<bool> Show(string title, UIElement content, string? primary, string close, bool primaryDefault = false)
     {
-        var dialog = new ContentDialog { XamlRoot = XamlRoot, Title = title, Content = content, CloseButtonText = close, RequestedTheme = ElementTheme.Dark, DefaultButton = ContentDialogButton.Close };
+        var dialog = new ContentDialog { XamlRoot = XamlRoot, Title = title, Content = content, CloseButtonText = close, RequestedTheme = ElementTheme.Dark, DefaultButton = primaryDefault ? ContentDialogButton.Primary : ContentDialogButton.Close };
         if (primary is not null) dialog.PrimaryButtonText = primary;
         return await dialog.ShowAsync() == ContentDialogResult.Primary;
     }
@@ -188,7 +188,7 @@ public sealed partial class GamesPanel : UserControl
         {
             XamlRoot = XamlRoot, Title = vm.Text.Format("GamesRemoveConfirmTitle", card.Name), RequestedTheme = ElementTheme.Dark,
             Content = new TextBlock { Text = vm.Text["GamesRemoveConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 420 },
-            PrimaryButtonText = vm.Text["GamesRemoveConfirm"], CloseButtonText = vm.Text["UxCancel"], DefaultButton = ContentDialogButton.Close
+            PrimaryButtonText = vm.Text["GamesRemoveConfirm"], CloseButtonText = vm.Text["DlgCancel"], DefaultButton = ContentDialogButton.Close
         };
         if (await dialog.ShowAsync() == ContentDialogResult.Primary) card.Remove.Execute(card);
     }

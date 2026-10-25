@@ -25,7 +25,7 @@
     </StackPanel>
     <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
      <Button Content="{Binding Text[ScsOpen]}" Click="OnOpenShaderToolButton" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="games-shader-open"/>
-     <Button Content="{Binding Text[UxCancel]}" Click="OnCancelPrecompile" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="games-shader-cancel"/>
+     <Button Content="{Binding Text[DlgCancel]}" Click="OnCancelPrecompile" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="games-shader-cancel"/>
     </StackPanel>
     <StackPanel Grid.Row="1" Grid.ColumnSpan="3" Spacing="6">
      <ProgressBar Value="{Binding ShaderJobPercent}" Maximum="100" IsIndeterminate="{Binding ShaderJobIndeterminate}" MinHeight="6"/>

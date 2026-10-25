@@ -51,6 +51,25 @@
      </DataTemplate></ItemsControl.ItemTemplate>
     </ItemsControl>
     <TextBlock Text="{Binding NetStatus}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" Visibility="{Binding NetStatus, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="tools-net-status"/>
+    <!-- DNS: measured here, switched only on request (UAC), with restore -->
+    <StackPanel Spacing="8" Visibility="{Binding HasDns, Converter={StaticResource BooleanVisibility}}">
+     <Border Height="1" Background="{ThemeResource DividerBrush}" Margin="0,6"/>
+     <TextBlock Text="{Binding Text[ToolDnsTitle]}" FontWeight="SemiBold"/>
+     <TextBlock Text="{Binding Text[ToolDnsWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+     <ItemsControl ItemsSource="{Binding DnsRows}" AutomationProperties.AutomationId="tools-dns-rows">
+      <ItemsControl.ItemTemplate><DataTemplate>
+       <Grid ColumnSpacing="12" Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="260"/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Grid.Column="1" Text="{Binding Detail}" Style="{StaticResource CaptionStyle}"/>
+       </Grid>
+      </DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="{Binding DnsStatus}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-dns-status"/>
+     <StackPanel Orientation="Horizontal" Spacing="8">
+      <Button Content="{Binding Text[ToolDnsTest]}" Click="OnTestDns" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="tools-dns-test"/>
+      <Button Content="{Binding RecommendedDnsLabel}" Click="OnApplyDns" Style="{StaticResource PrimaryButtonStyle}" Visibility="{Binding CanApplyDns, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="tools-dns-apply"/>
+      <Button Content="{Binding Text[ToolDnsRestore]}" Click="OnRestoreDns" Style="{StaticResource SoftButtonStyle}" Visibility="{Binding CanRestoreDns, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="tools-dns-restore"/>
+     </StackPanel>
+    </StackPanel>
    </StackPanel>
   </Border>
   <!-- Disk health -->
