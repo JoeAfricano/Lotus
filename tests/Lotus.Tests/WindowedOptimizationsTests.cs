@@ -108,5 +108,55 @@ public sealed class WindowedOptimizationsTests : IDisposable
         Assert.True(Assert.Single(vm.Features).CanApply);
     }
 
+    private sealed class MutablePower : IPowerSchemeService
+    {
+        public Guid Current = ProfileSuggestions.Balanced;
+        public IReadOnlyList<PowerScheme> List() => [new(ProfileSuggestions.Balanced, "Balanced"), new(ProfileSuggestions.HighPerformance, "High performance")];
+        public Guid Active() => Current;
+        public bool? OnAcPower() => true;
+        public void SetActive(Guid id) => Current = id;
+    }
+    private PowerProfilesViewModel ProfileVm(MutablePower power, FakeDx dx) =>
+        new(new OptimizationEngine(Journal, new PowerSchemeAction(power)), power, Journal, new EmptyStartup(), new TextCatalog(), _ => { }, new DxFeatures(dx), Engine(dx));
+
+    [Fact] public async Task OneClickProfileAppliesEverythingThenUndoesEverything()
+    {
+        var power = new MutablePower(); var dx = new FakeDx("AutoHDREnable=1;"); var vm = ProfileVm(power, dx);
+        await vm.RefreshAsync(); Assert.True(vm.IsGame); Assert.False(vm.CanUndoProfile);
+        var changes = await vm.PreviewProfileAsync();
+        Assert.Equal(2, changes.Count(c => !c.AlreadyApplied));
+        Assert.Contains(changes, c => c.From == "Balanced" && c.To == "High performance");
+        Assert.Equal(ProfileSuggestions.Balanced, power.Current); Assert.Equal(0, dx.Writes); // preview never mutates
+        await vm.ApplyProfileAsync(changes);
+        Assert.Equal(vm.Text.Format("PfApplied", 2), vm.ProfileStatus);
+        Assert.Equal(ProfileSuggestions.HighPerformance, power.Current); Assert.True(WindowedOptimizationsAction.IsEnabled(dx.Value));
+        Assert.True(vm.CanUndoProfile); Assert.False(vm.Features.Single().NeedsAttention);
+        var again = await vm.PreviewProfileAsync(); Assert.All(again, c => Assert.True(c.AlreadyApplied));
+        await vm.ApplyProfileAsync(again); Assert.Equal(vm.Text["PfPreviewNothing"], vm.ProfileStatus);
+        await vm.UndoProfileAsync();
+        Assert.Equal(vm.Text.Format("PfUndone", 2), vm.ProfileStatus);
+        Assert.Equal(ProfileSuggestions.Balanced, power.Current); Assert.Equal("AutoHDREnable=1;", dx.Value); Assert.False(vm.CanUndoProfile);
+    }
+
+    [Fact] public async Task OneClickProfileNeverOverwritesExternalChanges()
+    {
+        var power = new MutablePower(); var dx = new FakeDx(); var vm = ProfileVm(power, dx);
+        await vm.RefreshAsync();
+        var changes = await vm.PreviewProfileAsync();
+        dx.Value = "SwapEffectUpgradeEnable=0;"; // changed outside Lotus between preview and apply
+        await vm.ApplyProfileAsync(changes);
+        Assert.Equal(vm.Text.Format("PfAppliedWithConflicts", 1, 1), vm.ProfileStatus);
+        Assert.Equal("SwapEffectUpgradeEnable=0;", dx.Value); Assert.Equal(ProfileSuggestions.HighPerformance, power.Current);
+    }
+
+    [Fact] public async Task DailyProfileOnlyIncludesItsOwnActions()
+    {
+        var power = new MutablePower(); var dx = new FakeDx(); var vm = ProfileVm(power, dx);
+        await vm.RefreshAsync(); vm.SelectProfileCommand.Execute("daily");
+        var changes = await vm.PreviewProfileAsync();
+        Assert.Equal(vm.Text["PfRowPower"], Assert.Single(changes).Title);
+        Assert.True(changes[0].AlreadyApplied); // Daily suggests Balanced, which is already active
+    }
+
     public void Dispose() { if (Directory.Exists(directory)) Directory.Delete(directory, true); }
 }

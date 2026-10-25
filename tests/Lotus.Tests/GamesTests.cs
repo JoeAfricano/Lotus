@@ -131,14 +131,19 @@ public sealed class GamesTests(ITestOutputHelper output) : IDisposable
         vm.SelectedStore = vm.Stores[0];
         var exe = FileAt("", "Add", "MeuJogo.exe");
         Assert.True(await vm.AddManualAsync(exe));
-        var added = Assert.Single(vm.Games, g => g.CanRemove); Assert.Equal("MeuJogo", added.Name); Assert.Single(store.Items);
+        var added = Assert.Single(vm.Games, g => g.Store == GameStores.Manual); Assert.Equal("MeuJogo", added.Name); Assert.Single(store.Items);
         Assert.False(await vm.AddManualAsync(Path.Combine(root, "nao-existe.exe")));
-        vm.HideCommand.Execute(added); Assert.Empty(store.Items); Assert.DoesNotContain(vm.Games, g => g.CanRemove);
+        // Removing only hides: the manual entry stays saved and both can come back after a rescan.
         var pokemon = vm.Games.Single(g => g.Name == "Pokémon Arena"); Assert.Equal(vm.Text["GamesPlay"], pokemon.PlayLabel);
-        pokemon.Hide.Execute(pokemon); Assert.DoesNotContain(vm.Games, g => g.Name == "Pokémon Arena"); Assert.True(vm.HasHidden); Assert.Equal(["Steam:1"], store.Hidden);
+        added.Remove.Execute(added); pokemon.Remove.Execute(pokemon);
+        Assert.DoesNotContain(vm.Games, g => g.Name is "MeuJogo" or "Pokémon Arena"); Assert.Single(store.Items);
         Assert.DoesNotContain(vm.Stores, s => s.Id == GameStores.Steam);
-        await vm.RefreshAsync(); Assert.DoesNotContain(vm.Games, g => g.Name == "Pokémon Arena");
-        vm.ShowHiddenCommand.Execute(null); Assert.Contains(vm.Games, g => g.Name == "Pokémon Arena"); Assert.Empty(store.Hidden);
+        var removed = await vm.RescanAsync();
+        Assert.Equal(["MeuJogo", "Pokémon Arena"], removed.Select(g => g.Name));
+        Assert.Equal(vm.Text.Format("GamesRescanDone", 1), vm.Status);
+        vm.Restore(removed.Where(g => g.Store == GameStores.Steam));
+        Assert.Contains(vm.Games, g => g.Name == "Pokémon Arena"); Assert.Equal(["Manual:" + exe.ToLowerInvariant()], store.Hidden);
+        Assert.True(await vm.AddManualAsync(exe)); Assert.Empty(store.Hidden); Assert.Contains(vm.Games, g => g.Name == "MeuJogo");
         Assert.Equal("PA", GamesViewModel.Initials("Pokémon Arena"));
     }
 

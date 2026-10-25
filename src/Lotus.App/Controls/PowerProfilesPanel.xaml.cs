@@ -19,6 +19,43 @@ public sealed partial class PowerProfilesPanel : UserControl
             await Windows.System.Launcher.LaunchUriAsync(new Uri(uri));
     }
 
+    // One click: the profile is analyzed, the full list of changes is shown once, and confirming applies everything.
+    private async void OnApplyProfile(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not Lotus.Core.Optimization.PowerProfilesViewModel vm) return;
+        var changes = await vm.PreviewProfileAsync();
+        var pending = changes.Where(c => !c.AlreadyApplied).ToList();
+        if (pending.Count == 0) { await vm.ApplyProfileAsync(changes); return; }
+        var list = new StackPanel { Spacing = 8, MaxWidth = 460 };
+        list.Children.Add(new TextBlock { Text = vm.Text["PfPreviewIntro"], TextWrapping = TextWrapping.Wrap, Opacity = 0.85, Margin = new Thickness(0, 0, 0, 6) });
+        foreach (var c in changes)
+        {
+            var row = new Grid { ColumnSpacing = 10 };
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); row.ColumnDefinitions.Add(new ColumnDefinition());
+            row.Children.Add(new FontIcon { Glyph = c.AlreadyApplied ? "" : "", FontSize = 13, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, 3, 0, 0) });
+            var text = new StackPanel(); Grid.SetColumn(text, 1);
+            text.Children.Add(new TextBlock { Text = c.Title, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
+            text.Children.Add(new TextBlock { Text = c.AlreadyApplied ? $"{c.To} · {vm.Text["PfAlready"]}" : $"{c.From}  →  {c.To}", Opacity = 0.75, TextWrapping = TextWrapping.Wrap });
+            row.Children.Add(text); list.Children.Add(row);
+        }
+        list.Children.Add(new TextBlock { Text = vm.Text["PowerRisk"], TextWrapping = TextWrapping.Wrap, FontSize = 12, Opacity = 0.65, Margin = new Thickness(0, 6, 0, 0) });
+        if (await ShowAsync(vm.Text.Format("PfPreviewTitle", vm.Text[ProfileTitleKey(vm)]), list, vm.Text["PfApplyConfirm"], vm.Text))
+            await vm.ApplyProfileAsync(changes);
+    }
+    private static string ProfileTitleKey(Lotus.Core.Optimization.PowerProfilesViewModel vm) => vm.IsGame ? "PfGameTitle" : vm.IsDaily ? "PfDailyTitle" : "PfCustomTitle";
+    private async void OnUndoProfile(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is Lotus.Core.Optimization.PowerProfilesViewModel vm && await ConfirmAsync(vm.Text["PfUndoTitle"], vm.Text["PfUndoBody"], vm.Text))
+            await vm.UndoProfileAsync();
+    }
+    // Undo of a specific history entry: the dialog replaces the old confirmation checkbox.
+    private async void OnUndoOperation(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not Lotus.Core.Optimization.PowerProfilesViewModel vm || !await ConfirmAsync(vm.Text["PfUndoTitle"], vm.Text["PfUndoBody"], vm.Text)) return;
+        vm.Confirmed = true;
+        if (vm.RevertCommand.CanExecute(null)) await vm.RevertCommand.ExecuteAsync(null); else vm.Confirmed = false;
+    }
+
     // Real feature actions always pass through an explicit confirmation dialog.
     private async void OnApplyFeature(object sender, RoutedEventArgs e)
     {
@@ -32,13 +69,14 @@ public sealed partial class PowerProfilesPanel : UserControl
             && await ConfirmAsync(vm.Text["FeatConfirmUndoTitle"], vm.Text["FeatConfirmUndoBody"], vm.Text))
             await vm.UndoFeatureAsync(id, confirmed: true);
     }
-    private async Task<bool> ConfirmAsync(string title, string body, Lotus.Core.ITextCatalog text)
+    private Task<bool> ConfirmAsync(string title, string body, Lotus.Core.ITextCatalog text) =>
+        ShowAsync(title, new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }, text["FeatConfirm"], text, primaryDefault: false);
+    private async Task<bool> ShowAsync(string title, UIElement content, string primary, Lotus.Core.ITextCatalog text, bool primaryDefault = true)
     {
         var dialog = new ContentDialog
         {
-            XamlRoot = XamlRoot, Title = title, Content = new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap, MaxWidth = 460 },
-            PrimaryButtonText = text["FeatConfirm"], CloseButtonText = text["UxCancel"], DefaultButton = ContentDialogButton.Close,
-            RequestedTheme = ElementTheme.Dark
+            XamlRoot = XamlRoot, Title = title, Content = content, PrimaryButtonText = primary, CloseButtonText = text["UxCancel"],
+            DefaultButton = primaryDefault ? ContentDialogButton.Primary : ContentDialogButton.Close, RequestedTheme = ElementTheme.Dark
         };
         return await dialog.ShowAsync() == ContentDialogResult.Primary;
     }

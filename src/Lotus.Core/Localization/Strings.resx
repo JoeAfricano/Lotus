@@ -675,9 +675,7 @@ Condições atuais: {1}</value></data>
   <data name="GamesSearch" xml:space="preserve"><value>Buscar jogo</value></data>
   <data name="GamesAllStores" xml:space="preserve"><value>Todas as lojas</value></data>
   <data name="GamesAdd" xml:space="preserve"><value>Adicionar jogo</value></data>
-  <data name="GamesRefresh" xml:space="preserve"><value>Procurar de novo</value></data>
   <data name="GamesPlay" xml:space="preserve"><value>Jogar</value></data>
-  <data name="GamesRemove" xml:space="preserve"><value>Remover da lista</value></data>
   <data name="GamesScanning" xml:space="preserve"><value>Procurando jogos instalados...</value></data>
   <data name="GamesSummary" xml:space="preserve"><value>{0} jogo(s) em {1} loja(s)</value></data>
   <data name="GamesNoneFound" xml:space="preserve"><value>Nenhum jogo encontrado nas lojas compatíveis (Steam, Epic, Xbox, GOG, EA e Ubisoft). Use "Adicionar jogo" para incluir um executável.</value></data>
@@ -690,7 +688,29 @@ Condições atuais: {1}</value></data>
   <data name="GamesLaunching" xml:space="preserve"><value>Abrindo {0}...</value></data>
   <data name="GamesLaunchFailed" xml:space="preserve"><value>Não foi possível abrir {0}.</value></data>
   <data name="GamesReadOnly" xml:space="preserve"><value>O Lotus só lê as bibliotecas dos launchers; nada é alterado nos jogos.</value></data>
-  <data name="GamesHide" xml:space="preserve"><value>Ocultar da lista</value></data>
-  <data name="GamesHidden" xml:space="preserve"><value>{0} ocultado (nada foi desinstalado).</value></data>
-  <data name="GamesShowHidden" xml:space="preserve"><value>Mostrar {0} item(ns) oculto(s)</value></data>
+  <data name="GamesHide" xml:space="preserve"><value>Remover da lista</value></data>
+  <data name="GamesHidden" xml:space="preserve"><value>{0} removido da lista (nada foi desinstalado).</value></data>
+  <data name="GamesMore" xml:space="preserve"><value>Mais opções</value></data>
+  <data name="GamesRemoveConfirmTitle" xml:space="preserve"><value>Remover {0} da lista?</value></data>
+  <data name="GamesRemoveConfirmBody" xml:space="preserve"><value>O jogo só sai da biblioteca do Lotus. Nada é desinstalado ou apagado, e você pode trazê-lo de volta depois.</value></data>
+  <data name="GamesRemoveConfirm" xml:space="preserve"><value>Remover</value></data>
+  <data name="GamesRescan" xml:space="preserve"><value>Escanear jogos</value></data>
+  <data name="GamesRescanDone" xml:space="preserve"><value>Plataformas verificadas: {0} jogo(s) na biblioteca.</value></data>
+  <data name="GamesRestoreTitle" xml:space="preserve"><value>Colocar jogos de volta na lista?</value></data>
+  <data name="GamesRestoreHint" xml:space="preserve"><value>Estes jogos continuam instalados, mas foram removidos da lista do Lotus. Marque os que você quer de volta.</value></data>
+  <data name="GamesRestoreSelected" xml:space="preserve"><value>Colocar de volta</value></data>
+  <data name="GamesRestored" xml:space="preserve"><value>{0} jogo(s) de volta na lista.</value></data>
+  <data name="PfPreviewTitle" xml:space="preserve"><value>Aplicar o {0}?</value></data>
+  <data name="PfPreviewIntro" xml:space="preserve"><value>O Lotus vai fazer estas alterações e verificar cada uma. Tudo pode ser desfeito depois em "Desfazer perfil".</value></data>
+  <data name="PfPreviewNothing" xml:space="preserve"><value>Tudo já está como o perfil recomenda; nada foi alterado.</value></data>
+  <data name="PfAlready" xml:space="preserve"><value>já está assim</value></data>
+  <data name="PfApplyConfirm" xml:space="preserve"><value>Aplicar</value></data>
+  <data name="PfApplied" xml:space="preserve"><value>{0} alteração(ões) aplicada(s) e verificada(s). Não há garantia de mais FPS; use o benchmark para comparar.</value></data>
+  <data name="PfAppliedWithConflicts" xml:space="preserve"><value>{0} aplicada(s); {1} não aplicada(s) porque a configuração mudou fora do Lotus.</value></data>
+  <data name="PfUndo" xml:space="preserve"><value>Desfazer perfil</value></data>
+  <data name="PfUndoTitle" xml:space="preserve"><value>Desfazer as alterações do perfil?</value></data>
+  <data name="PfUndoBody" xml:space="preserve"><value>O Lotus restaura o estado anterior de cada item que ele alterou, somente se ninguém tiver mudado depois.</value></data>
+  <data name="PfUndone" xml:space="preserve"><value>{0} item(ns) restaurado(s) e verificado(s).</value></data>
+  <data name="PfUndoConflict" xml:space="preserve"><value>{0} restaurado(s); {1} mantido(s) porque mudou fora do Lotus.</value></data>
+  <data name="PfNothingToUndo" xml:space="preserve"><value>Não há alteração do Lotus para desfazer.</value></data>
 </root>

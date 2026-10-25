@@ -6,6 +6,8 @@ using CommunityToolkit.Mvvm.Input;
 namespace Lotus.Core.Optimization;
 
 public sealed record OperationChoice(OptimizationPlan Plan, string Label);
+// One line of the "Apply profile" preview: what changes, from what to what, already planned in the journal.
+public sealed record PlannedChange(string Title, string From, string To, bool AlreadyApplied, OptimizationEngine Engine, OptimizationPlan Plan);
 public sealed class PowerProfilesViewModel : ObservableObject
 {
     private readonly OptimizationEngine engine;
@@ -31,6 +33,9 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public ObservableCollection<GameFeatureRow> Features { get; } = [];
     public string FeaturesSummary { get; private set; } = "";
     public string FeatureStatus { get; private set; } = "";
+    public string ProfileStatus { get; private set; } = "";
+    public bool CanUndoProfile => !busy && (LastPowerApplied is not null || windowedApplied is not null);
+    private OptimizationPlan? LastPowerApplied => LastApplied(Operations.Select(o => o.Plan).ToList());
     public bool CanEdit => !busy;
     public bool IsGame => profileId == "game";
     public bool IsDaily => profileId == "daily";
@@ -134,6 +139,66 @@ public sealed class PowerProfilesViewModel : ObservableObject
         finally { busy = false; Confirmed = false; Notify(); }
     }
     public void RefreshLanguage() { BuildFeatureRows(); Notify(); }
+    // One-click profile: analyzes every action of the profile; the UI shows the list in one confirmation dialog.
+    public async Task<IReadOnlyList<PlannedChange>> PreviewProfileAsync()
+    {
+        var changes = new List<PlannedChange>();
+        await Run(async () =>
+        {
+            await engine.RecoverAsync();
+            if (PowerEnabled && SelectedScheme is not null)
+            {
+                var p = await engine.AnalyzeAsync(SelectedScheme.Id.ToString("D"), profileId);
+                changes.Add(new(Text["PfRowPower"], Name(p.Before.Value), Name(p.Desired.Value), p.Stage == OperationStage.NoChange, engine, p));
+            }
+            if (windowed is not null && GameFeatureRules.Desired(WindowedOptimizationsAction.FeatureId, profileId) == FeatureState.On)
+            {
+                try
+                {
+                    await windowed.RecoverAsync();
+                    var p = await windowed.AnalyzeAsync(null, profileId);
+                    changes.Add(new(Text["FeatName" + WindowedOptimizationsAction.FeatureId], WindowedLabel(p.Before.Value), WindowedLabel(p.Desired.Value), p.Stage == OperationStage.NoChange, windowed, p));
+                }
+                catch (InvalidOperationException ex) { log(ex); } // Unsupported Windows or pending recovery: skipped, never forced.
+            }
+        });
+        return changes;
+    }
+    private string WindowedLabel(string? raw) => Text[raw is null or "<absent>" ? "FeatStateSystemDefault" : WindowedOptimizationsAction.IsEnabled(raw) ? "FeatStateOn" : "FeatStateOff"];
+
+    // Applies every planned change (the confirmation came from the dialog), verifying each through its engine.
+    public Task ApplyProfileAsync(IReadOnlyList<PlannedChange> changes) => Run(async () =>
+    {
+        int applied = 0, failed = 0;
+        foreach (var c in changes.Where(c => !c.AlreadyApplied))
+        {
+            var result = await c.Engine.ApplyAsync(c.Plan.Id, confirmed: true);
+            if (result.Stage == OperationStage.Applied) applied++; else failed++;
+        }
+        await AfterProfileChange();
+        ProfileStatus = failed == 0 ? (applied == 0 ? Text["PfPreviewNothing"] : Text.Format("PfApplied", applied)) : Text.Format("PfAppliedWithConflicts", applied, failed);
+        OnPropertyChanged(nameof(ProfileStatus));
+    });
+
+    // Restores the latest Lotus change of each action, only where nothing changed it afterwards.
+    public Task UndoProfileAsync() => Run(async () =>
+    {
+        int restored = 0, failed = 0;
+        if (LastPowerApplied is { } power) { if ((await engine.RevertAsync(power.Id, confirmed: true)).Stage == OperationStage.Reverted) restored++; else failed++; }
+        if (windowed is not null && windowedApplied is { } w) { if ((await windowed.RevertAsync(w.Id, confirmed: true)).Stage == OperationStage.Reverted) restored++; else failed++; }
+        await AfterProfileChange();
+        ProfileStatus = failed == 0 ? (restored == 0 ? Text["PfNothingToUndo"] : Text.Format("PfUndone", restored)) : Text.Format("PfUndoConflict", restored, failed);
+        OnPropertyChanged(nameof(ProfileStatus));
+    });
+
+    private async Task AfterProfileChange()
+    {
+        await LoadOperations(null);
+        if (windowed is not null) windowedApplied = LastApplied(await windowed.RecoverAsync());
+        if (featureSource is not null) features = await Task.Run(featureSource.Read);
+        BuildFeatureRows();
+    }
+
     // Real, reversible feature actions. The UI asks for explicit confirmation before calling these.
     public Task ApplyFeatureAsync(string id, bool confirmed) => FeatureRun(id, async engine =>
     {
@@ -181,7 +246,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
     }
     private void Notify()
     {
-        foreach (var p in new[] { nameof(CanEdit), nameof(Status), nameof(Summary), nameof(Details), nameof(ActiveName), nameof(ProfileName), nameof(SchemeLabel) }) OnPropertyChanged(p);
+        foreach (var p in new[] { nameof(CanEdit), nameof(Status), nameof(Summary), nameof(Details), nameof(ActiveName), nameof(ProfileName), nameof(SchemeLabel), nameof(CanUndoProfile) }) OnPropertyChanged(p);
         SelectProfileCommand?.NotifyCanExecuteChanged(); RefreshCommand?.NotifyCanExecuteChanged(); SaveCommand?.NotifyCanExecuteChanged();
         AnalyzeCommand?.NotifyCanExecuteChanged(); ApplyCommand?.NotifyCanExecuteChanged(); RevertCommand?.NotifyCanExecuteChanged(); StartupCommand?.NotifyCanExecuteChanged();
     }

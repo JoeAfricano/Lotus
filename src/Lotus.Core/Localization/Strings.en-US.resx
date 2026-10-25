@@ -675,9 +675,7 @@ Current conditions: {1}</value></data>
   <data name="GamesSearch" xml:space="preserve"><value>Search games</value></data>
   <data name="GamesAllStores" xml:space="preserve"><value>All stores</value></data>
   <data name="GamesAdd" xml:space="preserve"><value>Add game</value></data>
-  <data name="GamesRefresh" xml:space="preserve"><value>Scan again</value></data>
   <data name="GamesPlay" xml:space="preserve"><value>Play</value></data>
-  <data name="GamesRemove" xml:space="preserve"><value>Remove from list</value></data>
   <data name="GamesScanning" xml:space="preserve"><value>Looking for installed games...</value></data>
   <data name="GamesSummary" xml:space="preserve"><value>{0} game(s) in {1} store(s)</value></data>
   <data name="GamesNoneFound" xml:space="preserve"><value>No games found in supported stores (Steam, Epic, Xbox, GOG, EA and Ubisoft). Use "Add game" to include an executable.</value></data>
@@ -690,7 +688,29 @@ Current conditions: {1}</value></data>
   <data name="GamesLaunching" xml:space="preserve"><value>Opening {0}...</value></data>
   <data name="GamesLaunchFailed" xml:space="preserve"><value>{0} could not be opened.</value></data>
   <data name="GamesReadOnly" xml:space="preserve"><value>Lotus only reads launcher libraries; nothing is changed in your games.</value></data>
-  <data name="GamesHide" xml:space="preserve"><value>Hide from list</value></data>
-  <data name="GamesHidden" xml:space="preserve"><value>{0} hidden (nothing was uninstalled).</value></data>
-  <data name="GamesShowHidden" xml:space="preserve"><value>Show {0} hidden item(s)</value></data>
+  <data name="GamesHide" xml:space="preserve"><value>Remove from list</value></data>
+  <data name="GamesHidden" xml:space="preserve"><value>{0} removed from the list (nothing was uninstalled).</value></data>
+  <data name="GamesMore" xml:space="preserve"><value>More options</value></data>
+  <data name="GamesRemoveConfirmTitle" xml:space="preserve"><value>Remove {0} from the list?</value></data>
+  <data name="GamesRemoveConfirmBody" xml:space="preserve"><value>The game only leaves the Lotus library. Nothing is uninstalled or deleted, and you can bring it back later.</value></data>
+  <data name="GamesRemoveConfirm" xml:space="preserve"><value>Remove</value></data>
+  <data name="GamesRescan" xml:space="preserve"><value>Scan games</value></data>
+  <data name="GamesRescanDone" xml:space="preserve"><value>Platforms checked: {0} game(s) in the library.</value></data>
+  <data name="GamesRestoreTitle" xml:space="preserve"><value>Put games back on the list?</value></data>
+  <data name="GamesRestoreHint" xml:space="preserve"><value>These games are still installed but were removed from the Lotus list. Check the ones you want back.</value></data>
+  <data name="GamesRestoreSelected" xml:space="preserve"><value>Put back</value></data>
+  <data name="GamesRestored" xml:space="preserve"><value>{0} game(s) back on the list.</value></data>
+  <data name="PfPreviewTitle" xml:space="preserve"><value>Apply the {0}?</value></data>
+  <data name="PfPreviewIntro" xml:space="preserve"><value>Lotus will make these changes and verify each one. Everything can be undone later with "Undo profile".</value></data>
+  <data name="PfPreviewNothing" xml:space="preserve"><value>Everything already matches the profile; nothing was changed.</value></data>
+  <data name="PfAlready" xml:space="preserve"><value>already set</value></data>
+  <data name="PfApplyConfirm" xml:space="preserve"><value>Apply</value></data>
+  <data name="PfApplied" xml:space="preserve"><value>{0} change(s) applied and verified. More FPS is not guaranteed; use the benchmark to compare.</value></data>
+  <data name="PfAppliedWithConflicts" xml:space="preserve"><value>{0} applied; {1} not applied because the setting changed outside Lotus.</value></data>
+  <data name="PfUndo" xml:space="preserve"><value>Undo profile</value></data>
+  <data name="PfUndoTitle" xml:space="preserve"><value>Undo the profile changes?</value></data>
+  <data name="PfUndoBody" xml:space="preserve"><value>Lotus restores the previous state of each item it changed, only if nothing changed it afterwards.</value></data>
+  <data name="PfUndone" xml:space="preserve"><value>{0} item(s) restored and verified.</value></data>
+  <data name="PfUndoConflict" xml:space="preserve"><value>{0} restored; {1} kept because it changed outside Lotus.</value></data>
+  <data name="PfNothingToUndo" xml:space="preserve"><value>There is no Lotus change to undo.</value></data>
 </root>
