@@ -83,3 +83,8 @@ Primeira entrega da versão focada no jogador leigo (ver decisões de produto em
 - Pontuação total: média geométrica ponderada (GPU 50%, multi 30%, single 20%); 10 000 = PC gamer intermediário. Fatores calibrados no PC de desenvolvimento (Ryzen 5 5500 + RTX 5060 → 1 400 / 10 500 / 11 500).
 - **Offline**: tabela embutida de 6 faixas (entrada a entusiasta) com valores estimados a partir de desempenho relativo público; rotulado como estimativa. **Online**: botões que abrem pc-builds, 3DMark e How Many FPS com as peças do PC; sem raspagem de sites nem envio de dados pelo Lotus.
 - Histórico das últimas 20 execuções em `%LOCALAPPDATA%\Lotus\score-history.json`. 285 testes aprovados em Debug e Release.
+
+## Revisão de código (25/10/2026)
+
+- Corrigidos: erro de escrita nas configurações de jogo virava travamento (agora mostra mensagem); backup e restauração do RivaTuner/OverlayEditor agora byte a byte (ANSI com acentos preservado; `.ovl` exportado em ANSI); o auxiliar elevado recebe a pasta Lotus do usuário (`--lotus-data`), porque o UAC pode elevar outra conta; exportar overlay sem tratamento de erro; reativar item de inicialização caía em conflito permanente (agora ativa normalmente); corrida entre reescanear e remover jogo; bibliotecas Steam em compartilhamento de rede (UNC); textos do Score ao trocar idioma.
+- GPU do Score com lotes adaptativos (≥ 20 ms por sincronização) para não comprimir GPUs rápidas; fator recalibrado. 288 testes aprovados em Debug e Release.
