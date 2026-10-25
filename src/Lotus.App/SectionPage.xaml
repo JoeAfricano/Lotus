@@ -103,7 +103,7 @@
     <SelectorBar x:Name="PerformanceTabs" SelectionChanged="OnPerformanceTabChanged" AutomationProperties.Name="{Binding Text[UxPerformanceSections]}"><SelectorBarItem Text="{Binding Text[UxLiveTab]}"/><SelectorBarItem Text="{Binding Text[UxCompareTab]}"/><SelectorBarItem Text="{Binding Text[UxHistoryTab]}"/></SelectorBar>
     <controls:MonitoringPanel x:Name="MonitoringContent" x:Load="{x:Bind ShowLive}" DataContext="{Binding Monitoring}"/>
     <controls:BenchmarkPanel x:Name="CompareContent" x:Load="{x:Bind ShowCompare}" DataContext="{Binding Benchmark}"/>
-    <ContentControl x:Name="HistoryContent" x:Load="{x:Bind ShowHistory}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE81C;" Style="{StaticResource BadgeIconStyle}"/></Border><TextBlock Text="{Binding Text[UxHistoryEmptyTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxHistoryEmptyDescription]}" Style="{StaticResource CaptionStyle}"/></StackPanel></ContentControl>
+    <controls:ReportPanel x:Name="HistoryContent" x:Load="{x:Bind ShowHistory}"/>
    </StackPanel>
 
    <StackPanel x:Name="GamesArea" x:Load="{x:Bind ShowGames}" Spacing="16">

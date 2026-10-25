@@ -1,0 +1,32 @@
+<UserControl x:Class="Lotus.App.Controls.ReportPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="using:Lotus.App" xmlns:controls="using:Lotus.App.Controls">
+ <Border Style="{StaticResource CardStyle}" Padding="24">
+  <StackPanel Spacing="14">
+   <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+    <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE9F9;" Style="{StaticResource BadgeIconStyle}"/></Border>
+    <StackPanel Grid.Column="1" Spacing="3">
+     <TextBlock Text="{Binding Text[RepTitle]}" Style="{StaticResource SectionTitleStyle}"/>
+     <TextBlock app:Rich.Text="{Binding Text[RepWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+    </StackPanel>
+   </Grid>
+   <TextBox x:Name="ReportName" Header="{Binding Text[RepNameHeader]}" PlaceholderText="{Binding Text[RepNamePlaceholder]}" MaxLength="60" AutomationProperties.AutomationId="report-name"/>
+   <TextBlock Text="{Binding Text[RepChoose]}" FontWeight="SemiBold"/>
+   <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="260" ItemHeight="44">
+    <CheckBox x:Name="IncPc" Content="{Binding Text[RepPc]}" IsChecked="True" AutomationProperties.AutomationId="report-pc"/>
+    <CheckBox x:Name="IncDrivers" Content="{Binding Text[RepDrivers]}" IsChecked="True" AutomationProperties.AutomationId="report-drivers"/>
+    <CheckBox x:Name="IncScore" Content="{Binding Text[RepScore]}" IsChecked="True" AutomationProperties.AutomationId="report-score"/>
+    <CheckBox x:Name="IncFps" Content="{Binding Text[RepFps]}" IsChecked="True" AutomationProperties.AutomationId="report-fps"/>
+    <CheckBox x:Name="IncGames" Content="{Binding Text[RepGames]}" IsChecked="True" AutomationProperties.AutomationId="report-games"/>
+    <CheckBox x:Name="IncNotes" Content="{Binding Text[RepNotes]}" IsChecked="False" AutomationProperties.AutomationId="report-notes-toggle"/>
+   </VariableSizedWrapGrid>
+   <TextBox x:Name="Notes" PlaceholderText="{Binding Text[RepNotesPlaceholder]}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="70" Visibility="{Binding IsChecked, ElementName=IncNotes, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="report-notes"/>
+   <StackPanel Orientation="Horizontal" Spacing="8">
+    <Button Click="OnGenerate" Style="{StaticResource PrimaryButtonStyle}" MinHeight="42" AutomationProperties.AutomationId="report-generate">
+     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE9F9;" FontSize="13"/><TextBlock Text="{Binding Text[RepGenerate]}"/></StackPanel>
+    </Button>
+    <Button x:Name="OpenFolder" Content="{Binding Text[RepOpenFolder]}" Click="OnOpenFolder" Style="{StaticResource SoftButtonStyle}" MinHeight="42" Visibility="Collapsed"/>
+   </StackPanel>
+   <controls:TaskProgressView x:Name="Progress" AutomationProperties.AutomationId="report-task"/>
+  </StackPanel>
+ </Border>
+</UserControl>

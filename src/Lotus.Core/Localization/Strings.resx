@@ -420,7 +420,7 @@ Entre no jogo.</value>
   <data name="UxPerformanceSections" xml:space="preserve"><value>Áreas de desempenho</value></data>
   <data name="UxLiveTab" xml:space="preserve"><value>Ao vivo</value></data>
   <data name="UxCompareTab" xml:space="preserve"><value>Comparar</value></data>
-  <data name="UxHistoryTab" xml:space="preserve"><value>Histórico</value></data>
+  <data name="UxHistoryTab" xml:space="preserve"><value>Relatório</value></data>
   <data name="UxCompareEmptyTitle" xml:space="preserve"><value>Cada partida conta uma história.</value></data>
   <data name="UxCompareEmptyDescription" xml:space="preserve"><value>A captura de partidas está em desenvolvimento. Quando estiver pronta, você poderá comparar fluidez, FPS e tempo entre quadros com dados reais.</value></data>
   <data name="UxHistoryEmptyTitle" xml:space="preserve"><value>Seu histórico começa nas próximas etapas.</value></data>
@@ -1167,4 +1167,24 @@ Condições atuais: {1}</value></data>
   <data name="OsdCounting" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Analisando  &lt;C=EEC1A8>{0} s&lt;C&gt;</value></data>
   <data name="OsdResult" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  {0}  ·  detalhes no Lotus</value></data>
   <data name="OsdFailed" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Não foi possível medir agora</value></data>
+  <data name="RepTitle" xml:space="preserve"><value>Relatório personalizado</value></data>
+  <data name="RepWhat" xml:space="preserve"><value>Escolha o que entra e o Lotus monta um relatório do seu PC numa página só. Abre no navegador, dá para **salvar em PDF** pela opção imprimir e fica guardado em Documentos › Lotus. **Nada é enviado.**</value></data>
+  <data name="RepNameHeader" xml:space="preserve"><value>Título do relatório</value></data>
+  <data name="RepNamePlaceholder" xml:space="preserve"><value>Ex.: Meu PC antes de otimizar</value></data>
+  <data name="RepChoose" xml:space="preserve"><value>O que incluir</value></data>
+  <data name="RepPc" xml:space="preserve"><value>Meu PC</value></data>
+  <data name="RepDrivers" xml:space="preserve"><value>Drivers e discos</value></data>
+  <data name="RepScore" xml:space="preserve"><value>LOTUS SCORE</value></data>
+  <data name="RepFps" xml:space="preserve"><value>Medições de FPS</value></data>
+  <data name="RepGames" xml:space="preserve"><value>Meus jogos</value></data>
+  <data name="RepNotes" xml:space="preserve"><value>Anotações</value></data>
+  <data name="RepNotesPlaceholder" xml:space="preserve"><value>Escreva o que quiser registrar (o que mudou, como o jogo estava...)</value></data>
+  <data name="RepGenerate" xml:space="preserve"><value>Gerar relatório</value></data>
+  <data name="RepOpenFolder" xml:space="preserve"><value>Abrir pasta</value></data>
+  <data name="RepNoData" xml:space="preserve"><value>sem dados</value></data>
+  <data name="RepFpsEmpty" xml:space="preserve"><value>Nenhuma medição ainda. Use a aba Comparar para medir um jogo.</value></data>
+  <data name="RepDefaultName" xml:space="preserve"><value>Relatório do meu PC</value></data>
+  <data name="RepSubtitle" xml:space="preserve"><value>Gerado em {0} · {1}</value></data>
+  <data name="RepFooter" xml:space="preserve"><value>Feito pelo Lotus. Os dados vêm deste PC e ficam só nele.</value></data>
+  <data name="RepDone" xml:space="preserve"><value>Concluído: relatório salvo ({0}).</value></data>
 </root>

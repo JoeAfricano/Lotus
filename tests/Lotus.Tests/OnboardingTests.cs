@@ -100,3 +100,13 @@ public sealed class BackgroundPreferencesTests
         Assert.True(p.CloseToTray); Assert.True(p.UiSounds); Assert.False(p.StartWithWindows);
     }
 }
+
+public sealed class ReportBuilderTests
+{
+    [Fact] public void HtmlEscapesAndSkipsEmptySectionsAndNameIsSafe()
+    {
+        var html = Lotus.Core.Reports.ReportBuilder.Html("<Meu PC>", "sub", [new("A", [new("x", "<b>")]), new("Vazia", [])], "rodapé");
+        Assert.Contains("&lt;Meu PC&gt;", html); Assert.Contains("&lt;b&gt;", html); Assert.DoesNotContain("Vazia", html);
+        Assert.Equal("Meu PC 2026-10-25 1852.html", Lotus.Core.Reports.ReportBuilder.FileName("Meu: PC?", new DateTime(2026, 10, 25, 18, 52, 0)));
+    }
+}
