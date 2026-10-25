@@ -18,7 +18,7 @@ Leia `AGENTS.md` e siga suas diretrizes. Responda em português brasileiro. O pr
 - `SqliteOptimizationJournal` reutiliza a infraestrutura anterior, migração v2 para perfis; o armazenamento descartável da Etapa 05 continua disponível.
 - `PowerProfilesViewModel` e `Controls/PowerProfilesPanel.xaml` integrados a Otimizar. Adaptadores, motor e interface têm testes com mutações simuladas.
 - `WindowsStartupInventory`: leitura de Run HKCU/HKLM e pastas de inicialização; não altera entradas nem presume que todas estejam habilitadas.
-- Teste real autorizado executado em 24/10/2026: Alto desempenho aplicado e verificado, Desfazer restaurou QuickCpuScheme (detalhes em `docs/LOTUS_STAGE06_UI.md`). Novas mudanças reais continuam exigindo aprovação específica.
+- Testes reais autorizados em 24/10/2026: (1) jogos em janela ativado e desfeito para `SwapEffectUpgradeEnable=0;`; (2) Alto desempenho aplicado e verificado, Desfazer restaurou QuickCpuScheme (detalhes em `docs/LOTUS_STAGE06_UI.md`). Novas mudanças reais continuam exigindo aprovação específica.
 - Consulta real: plano ativo `QuickCpuScheme`, GUID `74a73e13-bafc-4f87-a926-4cc004e707c3`. Também estavam disponíveis Equilibrado, Alto desempenho e Economia de energia. Reconsultar antes de qualquer operação.
 - Foram encontradas 33 entradas de inicialização, sem fontes indisponíveis na consulta realizada.
 - Windows não oferece compare-and-set atômico para o plano ativo. A implementação verifica antes/depois e bloqueia rollback diante de mudança detectada; interrupções ambíguas viram conflito. Não prometer proteção contra mudança externa entre leituras ou garantia absoluta de rollback.

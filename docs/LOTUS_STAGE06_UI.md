@@ -49,3 +49,7 @@ Resultado real neste PC: 1920×1080 a 75 Hz (máximo), 2×8 GB DDR4 3200 em dual
 - O motor agora recupera e lista apenas os planos da própria ação, permitindo várias ações no mesmo journal; o bloqueio global contra operações concorrentes foi mantido.
 - Interface: "Ativar pelo Lotus" e "Desfazer" na linha do recurso, sempre com diálogo de confirmação explícita; status com verificação. Detecção e ação usam o mesmo parser.
 - Estado real neste PC: `SwapEffectUpgradeEnable=0;` (desativado explicitamente). Nenhuma escrita real foi feita; testes automatizados usam registro simulado. Testes: 207 aprovados em Debug e Release.
+
+### Teste real autorizado — jogos em janela (24/10/2026)
+
+Build Release via UI Automation, confirmando no diálogo do Lotus e conferindo o registro a cada passo: antes `SwapEffectUpgradeEnable=0;` → "Ativar pelo Lotus" + Confirmar: "ativadas e verificadas", valor `SwapEffectUpgradeEnable=1;` → "Desfazer" + Confirmar: "Valor anterior restaurado e verificado", valor `SwapEffectUpgradeEnable=0;`. Rede de segurança não usada; sem elevação. Nenhum ganho de desempenho foi medido neste teste.
