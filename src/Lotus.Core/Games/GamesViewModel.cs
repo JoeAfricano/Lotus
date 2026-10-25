@@ -7,7 +7,7 @@ namespace Lotus.Core.Games;
 // Each card carries its own labels and commands, so item templates never depend on the parent DataContext.
 public sealed record GameCard(GameEntry Game, string Name, string Store, string Initials, string? CoverPath,
     string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove, string OptimizeLabel = "", string MeasureLabel = "",
-    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "", string PrepareLabel = "", string WhyLabel = "");
+    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "", string PrepareLabel = "", string WhyLabel = "", string OptimizeMenuLabel = "");
 public sealed record StoreFilter(string Id, string Label);
 // Result of "Otimizar configurações": hardware, the recommendation as readable lines, and whether Lotus can apply it.
 public sealed record GameSettingsAnalysis(SettingsRecommendation Recommendation, IReadOnlyList<string> Lines, string Hardware, GameSettingsSupport? Support, bool HasOriginal, int? PendingStep = null);
@@ -153,12 +153,19 @@ public sealed class GamesViewModel : ObservableObject
         Games.Clear();
         foreach (var g in Visible.Where(g => (store.Length == 0 || g.Store == store) && (term.Length == 0 || Normalize(g.Name).Contains(term)))
                                  .OrderBy(g => g.Name, StringComparer.CurrentCultureIgnoreCase))
-        {
-            var shader = ScsKillerOutput.Match(shaderStatuses, g);
-            Games.Add(new(g, g.Name, g.Store, Initials(g.Name), g.CoverPath, Text["GamesPlay"], Text["GamesHide"], LaunchCommand, RemoveCommand, Text["GsMenu"], Text["GsMeasureMenu"],
-                shader is null ? null : Text["ScsState" + shader.State], shader?.State is ShaderState.Ready or ShaderState.Stale, Text["ScsPrecompile"], shader?.Id, Text["ScsOpen"], Text["PlayPrepare"], Text["WhyMenu"]));
-        }
-        OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(EmptyMessage));
+            Games.Add(Card(g));
+        // Home shortcuts: up to 7 games, regardless of the search box.
+        Featured.Clear();
+        foreach (var g in Visible.OrderBy(g => g.Name, StringComparer.CurrentCultureIgnoreCase).Take(7)) Featured.Add(Card(g));
+        OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(EmptyMessage)); OnPropertyChanged(nameof(HasFeatured));
+    }
+    public ObservableCollection<GameCard> Featured { get; } = [];
+    public bool HasFeatured => Featured.Count > 0;
+    private GameCard Card(GameEntry g)
+    {
+        var shader = ScsKillerOutput.Match(shaderStatuses, g);
+        return new(g, g.Name, g.Store, Initials(g.Name), g.CoverPath, Text["GamesPlay"], Text["GamesHide"], LaunchCommand, RemoveCommand, Text["GsMenu"], Text["GsMeasureMenu"],
+                shader is null ? null : Text["ScsState" + shader.State], shader?.State is ShaderState.Ready or ShaderState.Stale, Text["ScsPrecompile"], shader?.Id, Text["ScsOpen"], Text["PlayPrepare"], Text["WhyMenu"], Text["GamesOptimizeMenu"]);
     }
 
     public static string Normalize(string value)

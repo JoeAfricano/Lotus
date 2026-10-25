@@ -1,16 +1,18 @@
 [Master]
 Implementation=2
 FontFace=Segoe UI
-FontHeight=-16
+FontHeight=-24
 FontWeight=600
 ZoomRatio=1
 [Settings]
-LockUserSettings=1
-Name=Lotus Neon Corrigido
+Name=Lotus Top Sombra 1920
+EnvVars=
 RefreshPeriod=250
+LockUserSettings=1
 EmbeddedImage=Lotus-Arte-Alpha.png
+PingAddr=
 [General]
-Sources=16
+Sources=15
 Tables=0
 Layers=31
 [Source0]
@@ -98,27 +100,20 @@ Formula=x/1024
 Provider=HAL
 ID=Total RAM
 [Source12]
-Name=Lotus Pulse
-Units=
-Format=%.3f
-Formula=x/4000.0-int(x/4000.0)
-Provider=HAL
-ID=Timer
-[Source13]
 Name=FPS Avg Live
 Units=
 Format=%.0f
 Formula=1000/swavg(Frametime,0)
 Provider=HAL
 ID=Stub
-[Source14]
+[Source13]
 Name=FPS Low1 Live
 Units=
 Format=%.0f
 Formula=1000/percentile(Frametime,99)
 Provider=HAL
 ID=Stub
-[Source15]
+[Source14]
 Name=FPS Low01 Live
 Units=
 Format=%.0f
@@ -126,344 +121,332 @@ Formula=1000/percentile(Frametime,99.9)
 Provider=HAL
 ID=Stub
 [Layer0]
-Name=Fundo independente 30 por cento
-Text=<B=358,526>
-PositionX=11
-PositionY=10
-ExtentX=358
-ExtentY=526
+Name=Shadow 1
+Text=<B=132,96,R10>
+PositionX=740
+PositionY=20
+ExtentX=132
+ExtentY=96
 ExtentOrigin=0
 FixedAlignment=1
-Size=100
-TextColor=4D000000
+TextColor=38000000
 [Layer1]
-Name=Lotus translucent 0
-Text=<I=380,13,0,0,1036,35>
-PositionX=0
-PositionY=0
-ExtentX=380
-ExtentY=13
+Name=Shadow 2
+Text=<B=148,96,R10>
+PositionX=880
+PositionY=20
+ExtentX=148
+ExtentY=96
 ExtentOrigin=0
 FixedAlignment=1
-Size=100
-TextColor=FFFFFF
+TextColor=38000000
 [Layer2]
-Name=Lotus translucent 1
-Text=<I=24,55,0,35,65,150>
-PositionX=0
-PositionY=13
-ExtentX=24
-ExtentY=55
+Name=Shadow 3
+Text=<B=148,96,R10>
+PositionX=1036
+PositionY=20
+ExtentX=148
+ExtentY=96
 ExtentOrigin=0
 FixedAlignment=1
-Size=100
-TextColor=FFFFFF
+TextColor=38000000
 [Layer3]
-Name=Lotus translucent 2
-Text=<I=286,55,256,35,780,150>
-PositionX=94
-PositionY=13
-ExtentX=286
-ExtentY=55
+Name=Shadow 4
+Text=<B=148,96,R10>
+PositionX=1192
+PositionY=20
+ExtentX=148
+ExtentY=96
 ExtentOrigin=0
 FixedAlignment=1
-Size=100
-TextColor=FFFFFF
+TextColor=38000000
 [Layer4]
-Name=Lotus translucent 3
-Text=<I=380,489,0,185,1036,1333>
-PositionX=0
-PositionY=68
-ExtentX=380
-ExtentY=489
+Name=Panel 0
+Text=<B=152,160,R10>
+PositionX=580
+PositionY=16
+ExtentX=152
+ExtentY=160
 ExtentOrigin=0
 FixedAlignment=1
-Size=100
-TextColor=FFFFFF
+TextColor=660C1016
 [Layer5]
-Name=Lotus translucent 4
-Text=<I=70,55,65,35,191,150>
-PositionX=24
-PositionY=13
-ExtentX=70
-ExtentY=55
+Name=Panel 5
+Text=<B=600,56,R10>
+PositionX=740
+PositionY=120
+ExtentX=600
+ExtentY=56
 ExtentOrigin=0
 FixedAlignment=1
-Size=100
-TextColor=BDBDBD,0,0.5,FFFFFF,0.5,1,BDBDBD,1,(Lotus Pulse,1)
-RefreshPeriod=50
+TextColor=660C1016
 [Layer6]
+Name=Lotus symbol
+Text=<I=32,28,80,35,185,155>
+PositionX=608
+PositionY=30
+ExtentX=32
+ExtentY=28
+ExtentOrigin=0
+FixedAlignment=1
+TextColor=FFFFFF
+[Layer7]
+Name=Brand
+Text=LOTUS
+PositionX=649
+PositionY=34
+ExtentX=75
+ExtentY=20
+ExtentOrigin=0
+FixedAlignment=1
+Size=58
+TextColor=F394B5
+[Layer8]
 Name=FPS
 Text=<FR>
-PositionX=33
-PositionY=90
-ExtentX=121
-ExtentY=83
+PositionX=598
+PositionY=70
+ExtentX=92
+ExtentY=51
 ExtentOrigin=0
 FixedAlignment=1
-Size=399
-TextColor=FFF5FA
-[Layer7]
-Name=Average
-Text=%FPS Avg Live%
-PositionX=305
-PositionY=73
-ExtentX=55
-ExtentY=24
-ExtentOrigin=0
-FixedAlignment=1
-Size=114
-TextColor=FFF5FA
-[Layer8]
-Name=1 percent low
-Text=%FPS Low1 Live%
-PositionX=312
-PositionY=101
-ExtentX=48
-ExtentY=24
-ExtentOrigin=0
-FixedAlignment=1
-Size=114
-TextColor=FFF5FA
+Size=150
+TextColor=FFFFFF
 [Layer9]
-Name=0.1 percent low
-Text=%FPS Low01 Live%
-PositionX=312
-PositionY=128
-ExtentX=48
-ExtentY=24
-ExtentOrigin=0
+Name=FPS label
+Text=FPS
+PositionX=590
+PositionY=126
+ExtentX=132
+ExtentY=17
+ExtentOrigin=1
 FixedAlignment=1
-Size=114
-TextColor=FFF5FA
+Size=50
+TextColor=BCB3BE
 [Layer10]
+Name=Frametime label
+Text=FRAMETIME
+PositionX=750
+PositionY=34
+ExtentX=112
+ExtentY=17
+ExtentOrigin=1
+FixedAlignment=1
+Size=50
+TextColor=BCB3BE
+[Layer11]
 Name=Frametime
 Text=<FT> ms
-PositionX=290
-PositionY=176
-ExtentX=73
-ExtentY=23
+PositionX=750
+PositionY=60
+ExtentX=120
+ExtentY=34
 ExtentOrigin=0
 FixedAlignment=1
-Size=112
-TextColor=FFF5FA
-[Layer11]
-Name=Frametime graph
-Text=<G=Frametime,0,0,1,0,33.3,0>
-PositionX=33
-PositionY=212
-ExtentX=291
-ExtentY=61
-ExtentOrigin=0
-FixedAlignment=1
-Size=73
-TextColor=FF70AE
+TextColor=FFFFFF
 [Layer12]
-Name=Graph max
-Text=33
-PositionX=334
-PositionY=208
-ExtentX=21
-ExtentY=15
-ExtentOrigin=0
+Name=GPU label
+Text=GPU
+PositionX=890
+PositionY=34
+ExtentX=128
+ExtentY=17
+ExtentOrigin=1
 FixedAlignment=1
-Size=73
-TextColor=BEB8C1
+Size=50
+TextColor=BCB3BE
 [Layer13]
-Name=Graph middle
-Text=16
-PositionX=334
-PositionY=239
-ExtentX=21
-ExtentY=15
-ExtentOrigin=0
-FixedAlignment=1
-Size=73
-TextColor=BEB8C1
-[Layer14]
-Name=Graph zero
-Text=0
-PositionX=334
-PositionY=264
-ExtentX=21
-ExtentY=15
-ExtentOrigin=0
-FixedAlignment=1
-Size=73
-TextColor=BEB8C1
-[Layer15]
-Name=CPU usage
-Text=%CPU Load%%
-PositionX=136
-PositionY=297
-ExtentX=66
-ExtentY=21
-ExtentOrigin=0
-FixedAlignment=1
-Size=101
-TextColor=FFF5FA
-[Layer16]
-Name=CPU bar
-Text=<G=CPU Load,0,0,0,0,100,9>
-PositionX=137
-PositionY=320
-ExtentX=120
-ExtentY=7
-ExtentOrigin=0
-FixedAlignment=1
-Size=73
-TextColor=FF3480
-[Layer17]
-Name=GPU usage
+Name=GPU load
 Text=%GPU Load%%
-PositionX=136
-PositionY=348
-ExtentX=66
-ExtentY=21
-ExtentOrigin=0
-FixedAlignment=1
-Size=101
-TextColor=FFF5FA
-[Layer18]
-Name=GPU bar
-Text=<G=GPU Load,0,0,0,0,100,9>
-PositionX=137
-PositionY=370
-ExtentX=120
-ExtentY=7
-ExtentOrigin=0
-FixedAlignment=1
-Size=73
-TextColor=FF3480
-[Layer19]
-Name=VRAM usage
-Text=%VRAM Load%%
-PositionX=136
-PositionY=398
-ExtentX=66
-ExtentY=21
-ExtentOrigin=0
-FixedAlignment=1
-Size=101
-TextColor=FFF5FA
-[Layer20]
-Name=VRAM bar
-Text=<G=VRAM Load,0,0,0,0,100,9>
-PositionX=137
-PositionY=420
-ExtentX=120
-ExtentY=7
-ExtentOrigin=0
-FixedAlignment=1
-Size=73
-TextColor=FF3480
-[Layer21]
-Name=RAM usage
-Text=%RAM Load%%
-PositionX=136
-PositionY=448
-ExtentX=66
-ExtentY=21
-ExtentOrigin=0
-FixedAlignment=1
-Size=101
-TextColor=FFF5FA
-[Layer22]
-Name=RAM bar
-Text=<G=RAM Load,0,0,0,0,100,9>
-PositionX=137
-PositionY=470
-ExtentX=120
-ExtentY=7
-ExtentOrigin=0
-FixedAlignment=1
-Size=73
-TextColor=FF3480
-[Layer23]
-Name=CPU temperature
-Text=%CPU Temp% °C
-PositionX=287
-PositionY=297
+PositionX=890
+PositionY=60
 ExtentX=73
-ExtentY=21
+ExtentY=34
 ExtentOrigin=0
 FixedAlignment=1
-Size=98
-TextColor=FFF5FA
-[Layer24]
-Name=CPU clock
-Text=%CPU Clock% GHz
-PositionX=287
-PositionY=316
-ExtentX=73
-ExtentY=18
-ExtentOrigin=0
-FixedAlignment=1
-Size=85
-TextColor=BEB8C1
-[Layer25]
-Name=GPU temperature
+TextColor=FFFFFF
+[Layer14]
+Name=GPU temp
 Text=%GPU Temp% °C
-PositionX=287
-PositionY=348
+PositionX=967
+PositionY=67
+ExtentX=57
+ExtentY=20
+ExtentOrigin=0
+FixedAlignment=1
+Size=58
+TextColor=FFFFFF
+[Layer15]
+Name=CPU label
+Text=CPU
+PositionX=1046
+PositionY=34
+ExtentX=128
+ExtentY=17
+ExtentOrigin=1
+FixedAlignment=1
+Size=50
+TextColor=BCB3BE
+[Layer16]
+Name=CPU load
+Text=%CPU Load%%
+PositionX=1047
+PositionY=60
 ExtentX=73
-ExtentY=21
+ExtentY=34
 ExtentOrigin=0
 FixedAlignment=1
-Size=98
-TextColor=FFF5FA
-[Layer26]
-Name=GPU clock
-Text=%GPU Clock% MHz
-PositionX=287
-PositionY=367
-ExtentX=81
-ExtentY=18
-ExtentOrigin=0
-FixedAlignment=1
-Size=85
-TextColor=BEB8C1
-[Layer27]
-Name=VRAM capacity
-Text=%VRAM Used% / %VRAM Total% GB
-PositionX=273
-PositionY=403
-ExtentX=88
+TextColor=FFFFFF
+[Layer17]
+Name=CPU temp
+Text=%CPU Temp% °C
+PositionX=1124
+PositionY=67
+ExtentX=55
 ExtentY=20
 ExtentOrigin=0
 FixedAlignment=1
-Size=94
-TextColor=FFF5FA
-[Layer28]
-Name=RAM capacity
-Text=%RAM Used% / %RAM Total% GB
-PositionX=266
-PositionY=454
-ExtentX=98
-ExtentY=20
-ExtentOrigin=0
+Size=58
+TextColor=FFFFFF
+[Layer18]
+Name=Memory label
+Text=RAM / VRAM
+PositionX=1202
+PositionY=34
+ExtentX=128
+ExtentY=17
+ExtentOrigin=1
 FixedAlignment=1
-Size=94
-TextColor=FFF5FA
-[Layer29]
-Name=API and resolution
-Text=<API> | <RES>
-PositionX=37
-PositionY=504
-ExtentX=235
+Size=50
+TextColor=BCB3BE
+[Layer19]
+Name=VRAM label
+Text=VRAM
+PositionX=1202
+PositionY=60
+ExtentX=46
 ExtentY=17
 ExtentOrigin=0
 FixedAlignment=1
-Size=80
-TextColor=BEB8C1
-[Layer30]
-Name=Footer frametime
-Text=<FT> ms
-PositionX=305
-PositionY=504
-ExtentX=59
-ExtentY=18
+Size=50
+TextColor=BCB3BE
+[Layer20]
+Name=VRAM
+Text=%VRAM Used% GB
+PositionX=1254
+PositionY=58
+ExtentX=70
+ExtentY=23
 ExtentOrigin=0
 FixedAlignment=1
-Size=89
-TextColor=FFF5FA
+Size=67
+TextColor=FFFFFF
+[Layer21]
+Name=RAM label
+Text=RAM
+PositionX=1202
+PositionY=88
+ExtentX=46
+ExtentY=17
+ExtentOrigin=0
+FixedAlignment=1
+Size=50
+TextColor=BCB3BE
+[Layer22]
+Name=RAM
+Text=%RAM Used% GB
+PositionX=1254
+PositionY=86
+ExtentX=70
+ExtentY=23
+ExtentOrigin=0
+FixedAlignment=1
+Size=67
+TextColor=FFFFFF
+[Layer23]
+Name=Average label
+Text=AVG
+PositionX=750
+PositionY=96
+ExtentX=35
+ExtentY=17
+ExtentOrigin=0
+FixedAlignment=1
+Size=50
+TextColor=BCB3BE
+[Layer24]
+Name=Average
+Text=%FPS Avg Live%
+PositionX=791
+PositionY=96
+ExtentX=65
+ExtentY=17
+ExtentOrigin=0
+FixedAlignment=1
+Size=50
+TextColor=FFFFFF
+[Layer25]
+Name=One percent label
+Text=1% LOW
+PositionX=890
+PositionY=96
+ExtentX=62
+ExtentY=17
+ExtentOrigin=0
+FixedAlignment=1
+Size=50
+TextColor=BCB3BE
+[Layer26]
+Name=One percent
+Text=%FPS Low1 Live%
+PositionX=960
+PositionY=96
+ExtentX=65
+ExtentY=17
+ExtentOrigin=0
+FixedAlignment=1
+Size=50
+TextColor=FFFFFF
+[Layer27]
+Name=Point one percent label
+Text=0.1% LOW
+PositionX=1047
+PositionY=96
+ExtentX=76
+ExtentY=17
+ExtentOrigin=0
+FixedAlignment=1
+Size=50
+TextColor=BCB3BE
+[Layer28]
+Name=Point one percent
+Text=%FPS Low01 Live%
+PositionX=1130
+PositionY=96
+ExtentX=49
+ExtentY=17
+ExtentOrigin=0
+FixedAlignment=1
+Size=50
+TextColor=FFFFFF
+[Layer29]
+Name=Frametime history
+Text=<G=Frametime,576,24,1,0,33.3,0>
+PositionX=752
+PositionY=144
+ExtentX=576
+ExtentY=24
+ExtentOrigin=0
+FixedAlignment=1
+TextColor=FF70AE
+[Layer30]
+Name=Framepacer title
+Text=FRAMEPACER
+PositionX=752
+PositionY=124
+ExtentX=576
+ExtentY=17
+ExtentOrigin=1
+FixedAlignment=1
+Size=50
+TextColor=BCB3BE

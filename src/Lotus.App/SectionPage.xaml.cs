@@ -32,6 +32,18 @@ public sealed partial class SectionPage : Page
     public bool ShowFaq { get; private set; }
     public SectionPage() => InitializeComponent();
     private void OnEditProfile(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenOnboarding(edit: true);
+    // Home game shortcuts: the cover opens My Games (Play on the cover starts the game itself).
+    private void OnOpenGames(object sender, RoutedEventArgs e) => shell?.NavigateCommand.Execute("games");
+    private void OnHomeGameTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+    {
+        if (e.OriginalSource is FrameworkElement { DataContext: not null } source && FindButton(source)) return; // the Play button handles its own tap
+        shell?.NavigateCommand.Execute("games");
+    }
+    private static bool FindButton(DependencyObject d)
+    {
+        for (var x = d; x is not null; x = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(x)) if (x is Button) return true;
+        return false;
+    }
 
     // ---- Install Lotus on this PC (per user, no administrator) ----
     private readonly Lotus.Infrastructure.Setup.LotusSetup setup = new();
@@ -95,10 +107,10 @@ public sealed partial class SectionPage : Page
             ShowLive = ShowPerformance && shell.PerformanceTabIndex == 0;
             ShowCompare = ShowPerformance && shell.PerformanceTabIndex == 1; ShowHistory = ShowPerformance && shell.PerformanceTabIndex == 2;
             ShowAppearance = ShowSettings && shell.SettingsCategoryIndex == 0;
-            ShowMonitoringSettings = ShowSettings && shell.SettingsCategoryIndex == 1;
-            ShowIntegrations = ShowSettings && shell.SettingsCategoryIndex == 2;
-            ShowSafety = ShowSettings && shell.SettingsCategoryIndex == 3; ShowAdvanced = ShowSettings && shell.SettingsCategoryIndex == 4;
-            ShowFaq = ShowSettings && shell.SettingsCategoryIndex == 5;
+            ShowMonitoringSettings = false;
+            ShowIntegrations = ShowSettings && shell.SettingsCategoryIndex == 1;
+            ShowSafety = ShowSettings && shell.SettingsCategoryIndex == 2; ShowAdvanced = ShowSettings && shell.SettingsCategoryIndex == 3;
+            ShowFaq = ShowSettings && shell.SettingsCategoryIndex == 4;
             Bindings.Update();
             if (ShowOptimize) OptimizeTabs.SelectedItem = OptimizeTabs.Items[shell.OptimizeTabIndex];
             if (ShowPerformance) PerformanceTabs.SelectedItem = PerformanceTabs.Items[shell.PerformanceTabIndex];

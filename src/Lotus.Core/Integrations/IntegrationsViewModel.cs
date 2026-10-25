@@ -12,11 +12,11 @@ public interface IRtssIntegration
     Task<bool> ApplyLotusOverlayAsync(); // elevated helper; true only when verified by reading the profile back
     Task<bool> RestoreAsync();
     // Full Lotus overlay (OverlayEditor layout): export without admin, activate/restore through the elevated helper.
-    string ExportLayout();
+    string ExportLayout(string variant = "top"); // "top" (main) or "neon" (optional card)
     bool LayoutActive();
     string? ActiveLayoutName(); // file name of the OverlayEditor layout in use, or null
     bool HasLayoutBackup();
-    Task<bool> ActivateLayoutAsync();
+    Task<bool> ActivateLayoutAsync(string variant = "top");
     Task<bool> RestoreLayoutAsync();
 }
 public interface IToolDetector { ToolState Afterburner(); ToolState ScsKiller(); }
@@ -45,7 +45,7 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             CanRestoreRtss = r.Installed && rtss.HasBackup();
             CanRestoreLayout = r.Installed && rtss.HasLayoutBackup();
             var active = r.Installed && rtss.LayoutActive();
-            LayoutStatus = !r.Installed ? "" : active ? Text["IntLayoutActive"] : rtss.ActiveLayoutName() is { } other ? Text.Format("IntLayoutOther", other) : Text["IntLayoutInactive"];
+            LayoutStatus = !r.Installed ? "" : active ? Text[rtss.ActiveLayoutName() == "Lotus-Neon" ? "IntLayoutActiveNeon" : "IntLayoutActive"] : rtss.ActiveLayoutName() is { } other ? Text.Format("IntLayoutOther", other) : Text["IntLayoutInactive"];
             var ab = tools.Afterburner(); AfterburnerStatus = ab.Installed ? Text.Format("IntAfterburnerOn", ab.Version ?? "?") : Text["IntNotInstalled"];
             var scs = tools.ScsKiller(); ScsStatus = scs.Installed ? Text.Format("IntScsOn", scs.Version ?? "?") : Text["IntScsOff"];
         }
@@ -63,7 +63,7 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
         catch (Exception ex) { log(ex); Message = Text["IntPreviewFailed"]; }
         OnPropertyChanged(nameof(Message));
     }
-    public Task ActivateLayoutAsync() => Run(async () => Message = Text[await rtss.ActivateLayoutAsync() ? "IntLayoutApplied" : "IntOverlayFailed"]);
+    public Task ActivateLayoutAsync(string variant = "top") => Run(async () => Message = Text[await rtss.ActivateLayoutAsync(variant) ? "IntLayoutApplied" : "IntOverlayFailed"]);
     public Task RestoreLayoutAsync() => Run(async () => Message = Text[await rtss.RestoreLayoutAsync() ? "IntLayoutRestored" : "IntOverlayFailed"]);
     // null when the file could not be written (locked, disk full); the message explains it.
     public string? ExportLayout()

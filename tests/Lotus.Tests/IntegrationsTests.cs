@@ -67,8 +67,8 @@ public sealed class IntegrationsTests : IDisposable
         public ToolState State() => new(installed, installed ? "7.3.7" : null);
         public bool? OverlayConfigured() => configured; public bool HasBackup() => backup;
         public Task<bool> ApplyLotusOverlayAsync() => Task.FromResult(true); public Task<bool> RestoreAsync() => Task.FromResult(false);
-        public string ExportLayout() => @"C:\x\Lotus.ovl"; public bool LayoutActive() => configured == true; public string? ActiveLayoutName() => "Riva Overlay"; public bool HasLayoutBackup() => backup;
-        public Task<bool> ActivateLayoutAsync() => Task.FromResult(true); public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
+        public string ExportLayout(string variant = "top") => @"C:\x\Lotus.ovl"; public bool LayoutActive() => configured == true; public string? ActiveLayoutName() => "Riva Overlay"; public bool HasLayoutBackup() => backup;
+        public Task<bool> ActivateLayoutAsync(string variant = "top") => Task.FromResult(true); public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
     }
     private sealed class Tools(bool ab, bool scs) : IToolDetector
     {
@@ -99,10 +99,15 @@ public sealed class IntegrationsTests : IDisposable
 
     [Fact] public void EmbeddedLayoutIsConsistent()
     {
-        var text = LotusOverlayLayout.Text();
+        Assert.Contains("Lotus Top Sombra", LotusOverlayLayout.Text()); Assert.Contains("Lotus Neon", LotusOverlayLayout.Text(LotusOverlayLayout.Neon));
+        foreach (var variant in new[] { LotusOverlayLayout.Main, LotusOverlayLayout.Neon }) LayoutIsConsistent(LotusOverlayLayout.Text(variant));
+    }
+    private static void LayoutIsConsistent(string text)
+    {
         var ini = new IniText(text);
-        Assert.Contains("EmbeddedImage=" + LotusOverlayLayout.ArtFile, text); Assert.Contains("<G=Frametime", text); Assert.Contains("%GPU Clock%", text);
+        Assert.Contains("EmbeddedImage=" + LotusOverlayLayout.ArtFile, text); Assert.Contains("<G=Frametime", text); Assert.Contains("%FPS Low1 Live%", text);
         Assert.Contains("%CPU Temp% °C", text); // ANSI degree sign survives (byte 0xB0)
+        Assert.DoesNotContain("<FRAVG>", text); // benchmark-only tag replaced by a live formula
         Assert.DoesNotContain("<S=", text); // OverlayEditor shows data sources as %Name%, not <S=...>
         // Every %Name% macro refers to a declared source.
         foreach (System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(text, @"%([A-Za-z][^%\r\n]*?)%"))

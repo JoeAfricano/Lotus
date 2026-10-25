@@ -818,8 +818,8 @@ Condições atuais: {1}</value></data>
   <data name="IntAfterburnerWhat" xml:space="preserve"><value>O Lotus usa os sensores dele no diagnóstico. A curva de ventoinha só será sugerida se a GPU perder desempenho por temperatura; overclock e tensão nunca são automáticos.</value></data>
   <data name="IntScsOn" xml:space="preserve"><value>Instalado ({0}) · use "Pré-carregar shaders" no menu de cada jogo.</value></data>
   <data name="IntScsOff" xml:space="preserve"><value>Não instalado (opcional): pré-carrega shaders para reduzir travadas.</value></data>
-  <data name="IntLayoutWhat" xml:space="preserve"><value>O overlay do Lotus mostra **FPS, média, 1% e 0,1% low**, gráfico de frametime e uso de CPU, GPU, VRAM e RAM com temperaturas, direto no jogo (plugin OverlayEditor do RivaTuner).</value></data>
-  <data name="IntLayoutActive" xml:space="preserve"><value>Layout ativo: Lotus Neon</value></data>
+  <data name="IntLayoutWhat" xml:space="preserve"><value>O overlay do Lotus é uma **barra no topo da tela** com FPS, frametime, média, **1% e 0,1% low**, uso e temperatura de CPU e GPU, RAM e VRAM, direto no jogo (plugin OverlayEditor do RivaTuner).</value></data>
+  <data name="IntLayoutActive" xml:space="preserve"><value>Layout ativo: Lotus Top</value></data>
   <data name="IntLayoutInactive" xml:space="preserve"><value>Nenhum layout do OverlayEditor ativo agora.</value></data>
   <data name="IntLayoutApply" xml:space="preserve"><value>Usar o overlay do Lotus</value></data>
   <data name="IntLayoutRestore" xml:space="preserve"><value>Voltar ao layout anterior</value></data>
@@ -900,7 +900,7 @@ Condições atuais: {1}</value></data>
   <data name="ScsCancelled" xml:space="preserve"><value>Pré-carregamento de {0} cancelado.</value></data>
   <data name="ScsOpen" xml:space="preserve"><value>Ver no SCSKiller</value></data>
   <data name="IntOverlayCardTitle" xml:space="preserve"><value>Overlay de FPS no jogo (RivaTuner)</value></data>
-  <data name="IntSimpleOsd" xml:space="preserve"><value>Alternativa: overlay simples (só FPS e gráfico)</value></data>
+  <data name="IntSimpleOsd" xml:space="preserve"><value>Outras opções de overlay</value></data>
   <data name="BenchStep1" xml:space="preserve"><value>Abra o jogo e escolha-o aqui</value></data>
   <data name="BenchStep2" xml:space="preserve"><value>Por quanto tempo medir</value></data>
   <data name="BenchStep3" xml:space="preserve"><value>Clique em Medir e **volte para o jogo**. Jogue normalmente até o tempo acabar.</value></data>
@@ -1137,4 +1137,8 @@ Condições atuais: {1}</value></data>
   <data name="SetupFailed" xml:space="preserve"><value>Não foi possível instalar. Detalhes no log.</value></data>
   <data name="SetupUninstallAsk" xml:space="preserve"><value>Desinstalar o Lotus deste PC?</value></data>
   <data name="SetupUninstallData" xml:space="preserve"><value>Apagar também os seus dados do Lotus (perfil, histórico do Score e backups)? Se escolher Não, eles ficam guardados para uma próxima instalação.</value></data>
+  <data name="GamesOptimizeMenu" xml:space="preserve"><value>Otimizar</value></data>
+  <data name="IntLayoutActiveNeon" xml:space="preserve"><value>Layout ativo: Lotus Neon</value></data>
+  <data name="IntLayoutNeon" xml:space="preserve"><value>Usar o Lotus Neon (cartão)</value></data>
+  <data name="IntNeonWhat" xml:space="preserve"><value>**Lotus Neon:** um cartão no canto com FPS grande, médias e barras de uso. Bom para quem prefere tudo agrupado.</value></data>
 </root>

@@ -62,17 +62,21 @@
          <Border.Background><ImageBrush ImageSource="{Binding CoverPath, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border.Background>
         </Border>
         <Border Background="#B312090F" CornerRadius="6" Padding="7,3" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top"><TextBlock Text="{Binding Store}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource MainTextBrush}"/></Border>
+        <!-- Play: launches the game directly -->
+        <Button Command="{Binding Launch}" CommandParameter="{Binding}" Width="60" Height="60" CornerRadius="30" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                Background="{ThemeResource AccentGradientBrush}" BorderBrush="#66FFFFFF" BorderThickness="2" app:Motion.Hover="1.1" app:Motion.Press="True"
+                ToolTipService.ToolTip="{Binding PlayLabel}" AutomationProperties.Name="{Binding PlayLabel}">
+         <FontIcon Glyph="&#xF5B0;" FontSize="22" Foreground="White" Margin="3,0,0,0"/>
+        </Button>
        </Grid>
       </Border>
       <StackPanel Grid.Row="1" Padding="12,10,12,12" Spacing="10">
        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxLines="2" TextWrapping="Wrap" Height="40" ToolTipService.ToolTip="{Binding Name}"/>
        <TextBlock Text="{Binding ShaderLabel}" FontSize="11" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis" Margin="0,-6,0,0" Visibility="{Binding ShaderLabel, Converter={StaticResource PresenceVisibility}}" ToolTipService.ToolTip="{Binding ShaderLabel}"/>
-       <Grid ColumnSpacing="6"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-        <Button Click="OnPrepareAndPlay" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="34" Padding="10,4" AutomationProperties.Name="{Binding PrepareLabel}" ToolTipService.ToolTip="{Binding PrepareLabel}">
-         <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE768;" FontSize="12"/><TextBlock Text="{Binding PrepareLabel}" TextTrimming="CharacterEllipsis"/></StackPanel>
-        </Button>
-        <Button Grid.Column="1" Style="{StaticResource SoftButtonStyle}" MinHeight="34" Padding="9,4" ToolTipService.ToolTip="{Binding RemoveLabel}" AutomationProperties.Name="{Binding RemoveLabel}"><FontIcon Glyph="&#xE712;" FontSize="13"/>
-         <Button.Flyout><MenuFlyout><MenuFlyoutItem Text="{Binding PlayLabel}" Command="{Binding Launch}" CommandParameter="{Binding}"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE768;"/></MenuFlyoutItem.Icon></MenuFlyoutItem><MenuFlyoutItem Text="{Binding PrecompileLabel}" Click="OnPrecompile" Visibility="{Binding CanPrecompile, Converter={StaticResource BooleanVisibility}}"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE945;"/></MenuFlyoutItem.Icon></MenuFlyoutItem><MenuFlyoutItem Text="{Binding OpenShaderLabel}" Click="OnOpenShaderTool" Visibility="{Binding ShaderLabel, Converter={StaticResource PresenceVisibility}}"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE8A7;"/></MenuFlyoutItem.Icon></MenuFlyoutItem><MenuFlyoutItem Text="{Binding WhyLabel}" Click="OnWhyStutter"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE9CE;"/></MenuFlyoutItem.Icon></MenuFlyoutItem><MenuFlyoutItem Text="{Binding MeasureLabel}" Click="OnMeasureGame"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE9D2;"/></MenuFlyoutItem.Icon></MenuFlyoutItem><MenuFlyoutItem Text="{Binding OptimizeLabel}" Click="OnOptimizeSettings"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE9E9;"/></MenuFlyoutItem.Icon></MenuFlyoutItem><MenuFlyoutItem Text="{Binding RemoveLabel}" Click="OnRemoveGame"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE74D;"/></MenuFlyoutItem.Icon></MenuFlyoutItem></MenuFlyout></Button.Flyout>
+       <Grid>
+        <Button Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="34" Padding="10,4" AutomationProperties.Name="{Binding OptimizeMenuLabel}">
+         <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding OptimizeMenuLabel}"/></StackPanel>
+         <Button.Flyout><MenuFlyout><MenuFlyoutItem Text="{Binding PrecompileLabel}" Click="OnPrecompile" Visibility="{Binding CanPrecompile, Converter={StaticResource BooleanVisibility}}"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE945;"/></MenuFlyoutItem.Icon></MenuFlyoutItem><MenuFlyoutItem Text="{Binding OpenShaderLabel}" Click="OnOpenShaderTool" Visibility="{Binding ShaderLabel, Converter={StaticResource PresenceVisibility}}"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE8A7;"/></MenuFlyoutItem.Icon></MenuFlyoutItem><MenuFlyoutItem Text="{Binding WhyLabel}" Click="OnWhyStutter"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE9CE;"/></MenuFlyoutItem.Icon></MenuFlyoutItem><MenuFlyoutItem Text="{Binding MeasureLabel}" Click="OnMeasureGame"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE9D2;"/></MenuFlyoutItem.Icon></MenuFlyoutItem><MenuFlyoutItem Text="{Binding OptimizeLabel}" Click="OnOptimizeSettings"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE9E9;"/></MenuFlyoutItem.Icon></MenuFlyoutItem><MenuFlyoutItem Text="{Binding RemoveLabel}" Click="OnRemoveGame"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE74D;"/></MenuFlyoutItem.Icon></MenuFlyoutItem></MenuFlyout></Button.Flyout>
         </Button>
        </Grid>
       </StackPanel>

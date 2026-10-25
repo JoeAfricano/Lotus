@@ -27,6 +27,11 @@ public sealed partial class RtssCard : UserControl
         if (DataContext is IntegrationsViewModel vm && await Confirm(vm.Text["IntLayoutConfirmTitle"], vm.Text["IntLayoutConfirmBody"], vm))
             await vm.ActivateLayoutAsync();
     }
+    private async void OnActivateNeon(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is IntegrationsViewModel vm && await Confirm(vm.Text["IntLayoutConfirmTitle"], vm.Text["IntLayoutConfirmBody"], vm))
+            await vm.ActivateLayoutAsync("neon");
+    }
     private async void OnRestoreLayout(object sender, RoutedEventArgs e)
     {
         if (DataContext is IntegrationsViewModel vm && await Confirm(vm.Text["IntLayoutRestoreTitle"], vm.Text["IntRestoreConfirmBody"], vm))

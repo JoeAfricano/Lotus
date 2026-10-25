@@ -32,8 +32,8 @@ public sealed class ExperienceTests
         shell.NavigateCommand.Execute("history"); Assert.Equal(2, shell.PerformanceTabIndex);
         text.SetLanguage("en-US"); shell.RefreshLanguage(); Assert.Equal("history", shell.CurrentRoute);
         shell.NavigateCommand.Execute("restore"); Assert.Equal(1, shell.OptimizeTabIndex);
-        shell.SettingsCategoryIndex = 4; Assert.Equal("logs", shell.CurrentRoute);
-        Assert.Equal("Advanced", shell.SettingsCategories[4]);
+        shell.SettingsCategoryIndex = 3; Assert.Equal("logs", shell.CurrentRoute);
+        Assert.Equal("Advanced", shell.SettingsCategories[3]); Assert.Equal(5, shell.SettingsCategories.Count);
         shell.SettingsCategoryIndex = -1; Assert.Equal("logs", shell.CurrentRoute);
     }
     [Theory]

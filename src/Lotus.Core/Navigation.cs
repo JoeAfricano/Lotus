@@ -31,7 +31,7 @@ public static class AppRoutes
         "games" => new("games", "games"), "score" or "lotusscore" => new("lotusscore", "lotusscore"), "tools" => new("tools", "tools"),
         "performance" or "monitoring" => new("monitoring", "performance"),
         "benchmark" => new("benchmark", "performance"), "history" => new("history", "performance"),
-        "settings" => new("settings", "settings"), "settings-monitoring" => new("settings-monitoring", "settings"),
+        "settings" or "settings-monitoring" => new("settings", "settings"),
         "settings-integrations" => new("settings-integrations", "settings"),
         "settings-security" => new("settings-security", "settings"), "logs" => new("logs", "settings"), "faq" => new("faq", "settings"),
         _ => null
@@ -51,10 +51,10 @@ public sealed class ShellViewModel : ObservableObject
     public int OptimizeTabIndex => CurrentRoute == "restore" ? 1 : 0;
     public int SettingsCategoryIndex
     {
-        get => CurrentRoute switch { "settings-monitoring" => 1, "settings-integrations" => 2, "settings-security" => 3, "logs" => 4, "faq" => 5, _ => 0 };
-        set { if (value is >= 0 and <= 5) Navigate(new[] { "settings", "settings-monitoring", "settings-integrations", "settings-security", "logs", "faq" }[value]); }
+        get => CurrentRoute switch { "settings-integrations" => 1, "settings-security" => 2, "logs" => 3, "faq" => 4, _ => 0 };
+        set { if (value is >= 0 and <= 4) Navigate(new[] { "settings", "settings-integrations", "settings-security", "logs", "faq" }[value]); }
     }
-    public IReadOnlyList<string> SettingsCategories => new[] { "AppearanceCategory", "MonitoringCategory", "IntegrationsCategory", "SafetyCategory", "AdvancedCategory", "FaqCategory" }.Select(key => Text[key]).ToArray();
+    public IReadOnlyList<string> SettingsCategories => new[] { "AppearanceCategory", "IntegrationsCategory", "SafetyCategory", "AdvancedCategory", "FaqCategory" }.Select(key => Text[key]).ToArray();
     public ShellViewModel(IAppEvents events, ITextCatalog? text = null)
     {
         this.events = events; Text = text ?? new TextCatalog();

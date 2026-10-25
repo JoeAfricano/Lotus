@@ -61,6 +61,7 @@ public sealed partial class MainWindow : Window
         games.Watch = new Lotus.Core.Games.PollingGameWatch(new Lotus.Infrastructure.Games.WindowsGameProcessCheck());
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
         games.Goal = () => preferences.Current.Goal;
+        _ = games.EnsureLoadedAsync(); // Home shows game shortcuts right away
         try { experience.QuickFacts = Lotus.Infrastructure.Tools.QuickHardwareFacts.Read(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Quick hardware facts"); }
         games.SessionEnded += OnGameSessionEnded;
         InitializeComponent();
@@ -81,7 +82,7 @@ public sealed partial class MainWindow : Window
         {
             var item = new NavigationViewItem
             {
-                Content = section.Title, Tag = section.Id,
+                Content = NavLabel(section), Tag = section.Id,
                 Icon = new FontIcon { Glyph = section.Glyph, FontSize = 17 },
                 MinHeight = 44, Margin = new Thickness(4, 2, 4, 2), CornerRadius = new CornerRadius(10), HorizontalContentAlignment = HorizontalAlignment.Stretch
             };
@@ -175,7 +176,7 @@ public sealed partial class MainWindow : Window
         foreach (NavigationViewItem item in Navigation.MenuItems)
         {
             var section = ViewModel.Items.Single(s => s.Id == (string)item.Tag);
-            item.Content = section.Title;
+            item.Content = NavLabel(section);
             AutomationProperties.SetName(item, section.Title);
             ToolTipService.SetToolTip(item, section.Title);
         }
@@ -318,6 +319,10 @@ public sealed partial class MainWindow : Window
         UpdateMonitoringDemand();
     }
     private void OnExperienceDemandChanged(object? sender, EventArgs args) => UpdateMonitoringDemand();
+
+    // LOTUS SCORE stands out in the menu: bold, gold, always upper case.
+    private static object NavLabel(Section section) => section.Id != "lotusscore" ? section.Title
+        : new TextBlock { Text = section.Title.ToUpperInvariant(), FontWeight = Microsoft.UI.Text.FontWeights.Bold, Foreground = (Brush)Application.Current.Resources["GoldGradientBrush"], CharacterSpacing = 40 };
 
     public void OpenOnboarding(bool edit)
     {

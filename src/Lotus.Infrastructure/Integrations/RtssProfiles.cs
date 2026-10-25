@@ -146,12 +146,13 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
 {
     private string OverlayConfig => overlayConfig ?? LotusOverlayLayout.DefaultConfig;
     private string Overlays => overlaysDir ?? LotusOverlayLayout.OverlaysDir;
-    public string ExportLayout() => LotusOverlayLayout.Export(Overlays);
-    public bool LayoutActive() =>
-        LotusOverlayLayout.ActiveLayout(OverlayConfig) is { } active && string.Equals(Path.GetFullPath(active), Path.GetFullPath(Path.Combine(Overlays, "Lotus.ovl")), StringComparison.OrdinalIgnoreCase);
+    public string ExportLayout(string variant = LotusOverlayLayout.Main) => LotusOverlayLayout.Export(Overlays, variant);
+    // Active when OverlayEditor uses one of the Lotus layouts (main or Neon) from Lotus's folder.
+    public bool LayoutActive() => LotusOverlayLayout.ActiveLayout(OverlayConfig) is { } active && new[] { LotusOverlayLayout.Main, LotusOverlayLayout.Neon }
+        .Any(v => string.Equals(Path.GetFullPath(active), Path.GetFullPath(Path.Combine(Overlays, LotusOverlayLayout.FileFor(v))), StringComparison.OrdinalIgnoreCase));
     public bool HasLayoutBackup() => File.Exists(Path.Combine(Backups, "OverlayEditor.cfg.original"));
     public string? ActiveLayoutName() => LotusOverlayLayout.ActiveLayout(OverlayConfig) is { Length: > 0 } p ? Path.GetFileNameWithoutExtension(p) : null;
-    public async Task<bool> ActivateLayoutAsync() => await RunElevated(["--rtss-layout", ExportLayout()]) == 0 && LayoutActive();
+    public async Task<bool> ActivateLayoutAsync(string variant = LotusOverlayLayout.Main) => await RunElevated(["--rtss-layout", ExportLayout(variant)]) == 0 && LayoutActive();
     public async Task<bool> RestoreLayoutAsync() => await RunElevated(["--rtss-layout-restore"]) == 0 && !HasLayoutBackup();
 
     public static readonly IReadOnlyList<RtssChange> LotusOverlay =
@@ -221,14 +222,17 @@ public static class LotusOverlayLayout
         using var stream = typeof(LotusOverlayLayout).Assembly.GetManifestResourceStream(name) ?? throw new InvalidOperationException("Embedded overlay file missing: " + name);
         using var copy = new MemoryStream(); stream.CopyTo(copy); return copy.ToArray();
     }
-    public static string Text() => System.Text.Encoding.Latin1.GetString(Resource("Lotus.ovl"));
-    public static string Export(string? dir = null)
+    // Two layouts by the player: "top" (main: "Lotus Top Sombra", a bar across the top) and "neon" (optional card).
+    public const string Main = "top", Neon = "neon";
+    public static string FileFor(string variant) => variant == Neon ? "Lotus-Neon.ovl" : "Lotus.ovl";
+    public static string Text(string variant = Main) => System.Text.Encoding.Latin1.GetString(Resource(FileFor(variant)));
+    public static string Export(string? dir = null, string variant = Main)
     {
         var folder = dir ?? OverlaysDir;
         Directory.CreateDirectory(folder);
         File.WriteAllBytes(Path.Combine(folder, ArtFile), Resource(ArtFile)); // EmbeddedImage= expects it beside the layout
-        var target = Path.Combine(folder, "Lotus.ovl");
-        File.WriteAllBytes(target, Resource("Lotus.ovl"));
+        var target = Path.Combine(folder, FileFor(variant));
+        File.WriteAllBytes(target, Resource(FileFor(variant)));
         return target;
     }
     // Only a .ovl inside the Lotus overlays folder may be activated.

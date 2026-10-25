@@ -2,7 +2,6 @@
  <StackPanel Spacing="10" app:Motion.Stagger="True">
   <TextBlock Text="{Binding Text[IntegrationsCategory]}" Style="{StaticResource SectionTitleStyle}"/>
   <TextBlock Text="{Binding Text[IntIntro]}" Style="{StaticResource CaptionStyle}" Margin="0,0,0,6"/>
-  <controls:RtssCard/>
   <!-- MSI Afterburner -->
   <Border Style="{StaticResource CardStyle}">
    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
