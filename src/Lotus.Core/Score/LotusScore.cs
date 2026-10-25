@@ -81,6 +81,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     public string Cpu1 => Points(last?.Cpu1);
     public string CpuAll => Points(last?.CpuAll);
     public string Gpu => Points(last?.Gpu);
+    public int? TotalValue => last?.Total; public int? Cpu1Value => last?.Cpu1; public int? CpuAllValue => last?.CpuAll; public int? GpuValue => last?.Gpu;
     public string Verdict { get; private set; } = "";
     public string Reliability { get; private set; } = "";
     public string MachineText { get; private set; } = "";

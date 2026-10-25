@@ -161,6 +161,7 @@ public sealed partial class MainWindow : Window
         if (args.PropertyName != nameof(PreferencesService.Current)) return;
         palette.Apply(preferences.Current.Theme);
         palette.ApplyAccent(preferences.Current.Accent);
+        Motion.Enabled = !preferences.Current.ReduceMotion;
         UpdateAmbientState();
         UpdateBrandMotion();
         if (text.Language == preferences.Current.Language) return;
@@ -312,6 +313,7 @@ public sealed partial class MainWindow : Window
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
                 !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools), new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
+            Motion.EnterPage(ContentFrame); // new section rises and fades in
         }
         UpdateMonitoringDemand();
     }

@@ -1,5 +1,5 @@
-<UserControl x:Class="Lotus.App.Controls.IntegrationsPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Lotus.App.Controls">
- <StackPanel Spacing="10">
+<UserControl x:Class="Lotus.App.Controls.IntegrationsPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:app="using:Lotus.App" xmlns:controls="using:Lotus.App.Controls">
+ <StackPanel Spacing="10" app:Motion.Stagger="True">
   <TextBlock Text="{Binding Text[IntegrationsCategory]}" Style="{StaticResource SectionTitleStyle}"/>
   <TextBlock Text="{Binding Text[IntIntro]}" Style="{StaticResource CaptionStyle}" Margin="0,0,0,6"/>
   <controls:RtssCard/>

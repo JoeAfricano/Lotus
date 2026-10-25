@@ -33,7 +33,7 @@
     </StackPanel>
    </Expander>
    <ProgressBar IsIndeterminate="True" Visibility="{Binding Busy, Converter={StaticResource BooleanVisibility}}"/>
-   <TextBlock Text="{Binding Message}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" AutomationProperties.AutomationId="int-message"/>
+   <TextBlock Text="{Binding Message}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" app:Motion.Settle="True" AutomationProperties.AutomationId="int-message"/>
   </StackPanel>
  </Border>
 </UserControl>

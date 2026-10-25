@@ -1,8 +1,8 @@
 <UserControl x:Class="Lotus.App.Controls.ToolsPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:app="using:Lotus.App">
- <StackPanel Spacing="16">
+ <StackPanel Spacing="16" app:Motion.Stagger="True">
   <TextBlock app:Rich.Text="{Binding Text[ToolIntro]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
   <ProgressBar IsIndeterminate="True" Visibility="{Binding Busy, Converter={StaticResource BooleanVisibility}}"/>
-  <TextBlock Text="{Binding Message}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" Visibility="{Binding Message, Converter={StaticResource PresenceVisibility}}"/>
+  <TextBlock Text="{Binding Message}" app:Motion.Settle="True" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" Visibility="{Binding Message, Converter={StaticResource PresenceVisibility}}"/>
   <!-- Free memory for gaming -->
   <Border Style="{StaticResource CardStyle}">
    <StackPanel Spacing="10">
@@ -20,7 +20,7 @@
       </DataTemplate>
      </ItemsControl.ItemTemplate>
     </ItemsControl>
-    <TextBlock Text="{Binding MemoryStatus}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap"/>
+    <TextBlock Text="{Binding MemoryStatus}" app:Motion.Settle="True" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap"/>
     <StackPanel Orientation="Horizontal" Spacing="8">
      <Button Content="{Binding Text[ToolMemClose]}" Click="OnCloseApps" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="tools-close-apps"/>
      <Button Content="{Binding Text[ToolRefresh]}" Click="OnRefresh" Style="{StaticResource SoftButtonStyle}"/>
@@ -31,7 +31,7 @@
   <Border Style="{StaticResource CardStyle}">
    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE74D;" Style="{StaticResource BadgeIconStyle}"/></Border>
-    <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[ToolTempTitle]}" FontWeight="SemiBold"/><TextBlock Text="{Binding TempStatus}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-temp-status"/></StackPanel>
+    <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[ToolTempTitle]}" FontWeight="SemiBold"/><TextBlock Text="{Binding TempStatus}" app:Motion.Settle="True" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-temp-status"/></StackPanel>
     <Button Grid.Column="2" Content="{Binding Text[ToolTempClean]}" Click="OnCleanTemp" IsEnabled="{Binding HasTemp}" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="tools-temp-clean"/>
    </Grid>
   </Border>
@@ -50,7 +50,7 @@
       </Grid>
      </DataTemplate></ItemsControl.ItemTemplate>
     </ItemsControl>
-    <TextBlock Text="{Binding NetStatus}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" Visibility="{Binding NetStatus, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="tools-net-status"/>
+    <TextBlock Text="{Binding NetStatus}" app:Motion.Settle="True" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" Visibility="{Binding NetStatus, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="tools-net-status"/>
     <!-- DNS: measured here, switched only on request (UAC), with restore -->
     <StackPanel Spacing="8" Visibility="{Binding HasDns, Converter={StaticResource BooleanVisibility}}">
      <Border Height="1" Background="{ThemeResource DividerBrush}" Margin="0,6"/>
@@ -63,7 +63,7 @@
        </Grid>
       </DataTemplate></ItemsControl.ItemTemplate>
      </ItemsControl>
-     <TextBlock Text="{Binding DnsStatus}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-dns-status"/>
+     <TextBlock Text="{Binding DnsStatus}" app:Motion.Settle="True" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-dns-status"/>
      <StackPanel Orientation="Horizontal" Spacing="8">
       <Button Content="{Binding Text[ToolDnsTest]}" Click="OnTestDns" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="tools-dns-test"/>
       <Button Content="{Binding RecommendedDnsLabel}" Click="OnApplyDns" Style="{StaticResource PrimaryButtonStyle}" Visibility="{Binding CanApplyDns, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="tools-dns-apply"/>
@@ -86,7 +86,7 @@
       </Grid>
      </DataTemplate></ItemsControl.ItemTemplate>
     </ItemsControl>
-    <TextBlock Text="{Binding DiskTip}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource WarningBrush}" TextWrapping="Wrap" Visibility="{Binding DiskTip, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="tools-disk-tip"/>
+    <TextBlock Text="{Binding DiskTip}" app:Motion.Settle="True" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource WarningBrush}" TextWrapping="Wrap" Visibility="{Binding DiskTip, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="tools-disk-tip"/>
    </StackPanel>
   </Border>
   <!-- Graphics driver -->

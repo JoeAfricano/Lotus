@@ -21,6 +21,7 @@ public sealed partial class ScorePanel : UserControl
             if (DataContext is not LotusScoreViewModel vm) return;
             vm.Refresh();
             vm.PropertyChanged += OnVmChanged;
+            ShowNumbers(vm, animate: false);
             OnlineLinks.Children.Clear();
             foreach (var (name, url) in vm.OnlineLinks())
             {
@@ -33,9 +34,29 @@ public sealed partial class ScorePanel : UserControl
         Unloaded += (_, _) => { previewTimer.Stop(); if (DataContext is LotusScoreViewModel vm) vm.PropertyChanged -= OnVmChanged; };
     }
 
+    // Scores count up when a test finishes; otherwise they are just shown.
+    private bool wasBusy;
+    private void ShowNumbers(LotusScoreViewModel vm, bool animate)
+    {
+        var culture = System.Globalization.CultureInfo.GetCultureInfo(vm.Text.Language);
+        void Show(TextBlock block, int? value)
+        {
+            if (value is not { } v) { block.Text = "—"; return; }
+            if (animate) Motion.CountTo(block, v, n => n.ToString("N0", culture)); else block.Text = v.ToString("N0", culture);
+        }
+        Show(TotalText, vm.TotalValue); Show(Cpu1Text, vm.Cpu1Value); Show(CpuAllText, vm.CpuAllValue); Show(GpuText, vm.GpuValue);
+    }
+
     // The preview timer runs only while the CPU scene is visible.
     private void OnVmChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
+        if (e.PropertyName == nameof(LotusScoreViewModel.Busy) && sender is LotusScoreViewModel s)
+        {
+            if (wasBusy && !s.Busy) ShowNumbers(s, animate: true);
+            wasBusy = s.Busy;
+            return;
+        }
+        if (e.PropertyName == nameof(LotusScoreViewModel.Total) && sender is LotusScoreViewModel t && !t.Busy && !wasBusy) ShowNumbers(t, animate: false);
         if (e.PropertyName != nameof(LotusScoreViewModel.ShowCpuPreview) || sender is not LotusScoreViewModel vm) return;
         if (vm.ShowCpuPreview) previewTimer.Start(); else { previewTimer.Stop(); DrawPreview(); }
     }

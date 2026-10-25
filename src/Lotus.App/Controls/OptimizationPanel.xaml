@@ -1,5 +1,5 @@
 <UserControl x:Class="Lotus.App.Controls.OptimizationPanel"
- xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:app="using:Lotus.App">
  <ContentControl Style="{StaticResource CardControlStyle}">
   <StackPanel Spacing="14">
    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
@@ -9,7 +9,7 @@
    <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE83D;" FontSize="13" Foreground="{ThemeResource SuccessBrush}" VerticalAlignment="Top" Margin="0,2,0,0"/><TextBlock Text="{Binding Text[OptSafety]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
    <Button Content="{Binding Text[OptAnalyze]}" Command="{Binding AnalyzeCommand}" Style="{StaticResource SoftButtonStyle}"/>
    <ComboBox Header="{Binding Text[OptHistory]}" ItemsSource="{Binding Plans}" SelectedItem="{Binding Selected, Mode=TwoWay}" DisplayMemberPath="Id" HorizontalAlignment="Left" MinWidth="320" MaxWidth="520" IsEnabled="{Binding CanEdit}"/>
-   <TextBlock Text="{Binding Status}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite"/>
+   <TextBlock Text="{Binding Status}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite" app:Motion.Settle="True"/>
    <CheckBox Content="{Binding Text[OptConfirm]}" IsChecked="{Binding Confirmed, Mode=TwoWay}" IsEnabled="{Binding CanEdit}"/>
    <StackPanel Orientation="Horizontal" Spacing="8">
     <Button Content="{Binding Text[OptApply]}" Command="{Binding ApplyCommand}" Style="{StaticResource PrimaryButtonStyle}"/>
