@@ -150,7 +150,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
             int? total = full ? LotusScale.Total(c1!.Value, ca!.Value, g) : null;
             var variation = new[] { single?.VariationPct ?? 0, multi?.VariationPct ?? 0, graphics?.VariationPct ?? 0 }.Max();
             last = new ScoreRun(DateTime.Now, c1, ca, g, total, Math.Round(variation, 1), machine.Cpu(), machine.Gpu());
-            history.Save([last, .. history.Load().Take(19)]);
+            history.Save([last, .. history.Load().Take(19)]); global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Score);
             Verdict = total is { } t ? VerdictFor(t) : Text["ScorePartial"];
             Reliability = Text.Format(variation < 3 ? "ScoreReliable" : "ScoreUnstable", variation);
             Phase = ""; // the progress view already shows "done" with its check

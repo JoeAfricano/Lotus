@@ -29,11 +29,12 @@ public static class Progression
     // Level n starts at 50·n·(n−1) XP: 0, 100, 300, 600, 1000, 1500…
     public static int LevelStart(int level) => 50 * level * (level - 1);
     public static int LevelFor(int xp) { var n = 1; while (LevelStart(n + 1) <= xp) n++; return n; }
-    public static string TitleKey(int level) => level switch { 1 => "DyTitle1", <= 3 => "DyTitle2", <= 6 => "DyTitle3", <= 9 => "DyTitle4", <= 14 => "DyTitle5", _ => "DyTitle6" };
+    public static string TitleKey(int level) => level switch { 1 => "DyTitle1", <= 3 => "DyTitle2", <= 6 => "DyTitle3", <= 9 => "DyTitle4", <= 14 => "DyTitle5", <= 24 => "DyTitle6", <= 39 => "DyTitle7", _ => "DyTitle8" };
 
-    public static Progress Of(IReadOnlyList<DiaryEntry> entries)
+    // extraXp: XP earned outside the diary (Lotus achievements, Steam achievements).
+    public static Progress Of(IReadOnlyList<DiaryEntry> entries, int extraXp = 0)
     {
-        var xp = entries.Sum(Xp);
+        var xp = entries.Sum(Xp) + Math.Max(0, extraXp);
         var level = LevelFor(xp);
         var completed = entries.Where(e => e.Status == DiaryStatus.Completed).ToList();
         var reviews = entries.Count(e => e.Review.Length >= 40);

@@ -155,6 +155,7 @@ public sealed class GuidedSetupViewModel : ObservableObject
             Progress.Report((i + 1) * 100.0 / chosen.Count);
         }
         var applied = chosen.Count(q => q.IsOk);
+        if (applied > 0) global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Optimize);
         preferences.Update(preferences.Current with { GuidedDone = true, GuidedAt = DateTimeOffset.Now, GuidedChanges = applied });
         Progress.Finish(Text.Format("GdDoneShort", applied));
         Phase = GuidedPhase.Done;

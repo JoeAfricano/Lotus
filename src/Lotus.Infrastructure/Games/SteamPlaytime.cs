@@ -10,7 +10,7 @@ public static class SteamPlaytime
     {
         try
         {
-            var steam = steamPath ?? (Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam")?.GetValue("SteamPath") as string)?.Replace('/', Path.DirectorySeparatorChar);
+            var steam = steamPath ?? (!OperatingSystem.IsWindows() ? null : Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam")?.GetValue("SteamPath") as string)?.Replace('/', Path.DirectorySeparatorChar);
             var userdata = steam is null ? null : Path.Combine(steam, "userdata");
             if (userdata is null || !Directory.Exists(userdata)) return new Dictionary<string, int>();
             var config = Directory.EnumerateDirectories(userdata).Select(d => Path.Combine(d, "config", "localconfig.vdf")).Where(File.Exists)

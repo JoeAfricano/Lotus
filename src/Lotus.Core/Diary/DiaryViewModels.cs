@@ -48,11 +48,16 @@ public sealed class DiaryViewModel : ObservableObject
     {
         this.diary = diary; Text = text; Preferences = preferences;
         diary.Changed += (_, _) => Refresh();
+        diary.ProgressChanged += (_, _) => RefreshProgress();
         Refresh();
     }
     public ITextCatalog Text { get; }
     public PreferencesService Preferences { get; }
     public GameDiary Diary => diary;
+    // Achievements (Lotus and Steam), shown in the diary's other sections.
+    public Achievements.AchievementsViewModel? Achievements { get; set; }
+    private string section = "games";
+    public string Section { get => section; set { if (value is "games" or "trophies" or "steam") SetProperty(ref section, value); } }
     public Progress Progress { get; private set; } = Progression.Of([]);
     public ObservableCollection<DiaryCard> Items { get; } = [];
     public ObservableCollection<DiaryTab> Tabs { get; } = [];
@@ -96,8 +101,15 @@ public sealed class DiaryViewModel : ObservableObject
             new BadgeView(b.Id, b.Glyph, Text["DyBadge" + b.Id], Text["DyBadge" + b.Id + "Hint"], b.Unlocked,
                 b.Unlocked ? Text["DyBadgeDone"] : $"{b.Current}/{b.Goal}", b.Fraction))];
         Fill();
-        foreach (var p in typeof(DiaryViewModel).GetProperties().Where(p => p.Name is not (nameof(Items) or nameof(Tabs) or nameof(Text) or nameof(Preferences) or nameof(Diary) or nameof(Tab) or nameof(Query) or nameof(Sort))))
+        foreach (var p in typeof(DiaryViewModel).GetProperties().Where(p => p.Name is not (nameof(Items) or nameof(Tabs) or nameof(Text) or nameof(Preferences) or nameof(Diary) or nameof(Tab) or nameof(Query) or nameof(Sort) or nameof(Section) or nameof(Achievements))))
             OnPropertyChanged(p.Name);
+    }
+
+    // Only the level/XP numbers changed (achievements, Steam): no need to rebuild the list.
+    public void RefreshProgress()
+    {
+        Progress = diary.Progress;
+        foreach (var n in new[] { nameof(Progress), nameof(LevelText), nameof(TitleText), nameof(XpText), nameof(LevelPercent) }) OnPropertyChanged(n);
     }
 
     private void Fill()

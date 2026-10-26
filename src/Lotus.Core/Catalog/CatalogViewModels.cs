@@ -59,7 +59,7 @@ public sealed class GameDetailsViewModel(IGameCatalog catalog, ITextCatalog text
     // Set by Home's "Continue playing" card: Meus Jogos opens straight on this game.
     public GameEntry? Pending { get; set; }
     public Task LoadInstalledAsync(GameEntry game) => Load(game.Name, game, game.CoverPath, t => catalog.DetailsAsync(game.Store, game.Id, game.Name, t));
-    public Task LoadSteamAsync(string appId, string name, GameEntry? installed, string? art) => Load(name, installed, art, t => catalog.SteamDetailsAsync(appId, t));
+    public Task LoadSteamAsync(string appId, string name, GameEntry? installed, string? art) { global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Details); return Load(name, installed, art, t => catalog.SteamDetailsAsync(appId, t)); }
 
     private async Task Load(string title, GameEntry? installed, string? art, Func<CancellationToken, Task<GameInfo?>> fetch)
     {
@@ -251,7 +251,7 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
 
     private async Task Show(CatalogItem item, GameInfo info)
     {
-        Picked = item; PickStatus = "";
+        Picked = item; PickStatus = ""; global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Pick);
         await Details.LoadSteamAsync(item.AppId, info.Name, InstalledFor(item.AppId), item.Wide);
     }
 

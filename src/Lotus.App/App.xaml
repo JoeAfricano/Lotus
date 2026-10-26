@@ -1,7 +1,7 @@
 <Application x:Class="Lotus.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ui="using:Windows.UI" xmlns:local="using:Lotus.App" RequestedTheme="Dark">
  <Application.Resources><ResourceDictionary>
   <ResourceDictionary.MergedDictionaries><XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/><ResourceDictionary Source="Controls/Foundation.xaml"/></ResourceDictionary.MergedDictionaries>
-  <local:BooleanVisibilityConverter x:Key="BooleanVisibility"/><local:PresenceVisibilityConverter x:Key="PresenceVisibility"/><local:CoverImageConverter x:Key="CoverImage"/><local:HexBrushConverter x:Key="HexBrush"/><local:BooleanOpacityConverter x:Key="DimWhenTrue"/><local:DiaryBrushConverter x:Key="DiaryBrush"/><local:UnlockedOpacityConverter x:Key="UnlockedOpacity"/>
+  <local:BooleanVisibilityConverter x:Key="BooleanVisibility"/><local:PresenceVisibilityConverter x:Key="PresenceVisibility"/><local:CoverImageConverter x:Key="CoverImage"/><local:HexBrushConverter x:Key="HexBrush"/><local:BooleanOpacityConverter x:Key="DimWhenTrue"/><local:DiaryBrushConverter x:Key="DiaryBrush"/><local:UnlockedOpacityConverter x:Key="UnlockedOpacity"/><local:TierFillConverter x:Key="TierFill"/>
   <!-- Lotus identity: plum-black surfaces, crimson/magenta accent, rose-gold brand and highlights.
        ThemePalette mutates these brushes in place; translucent values let Mica and the ambient layer show through. -->
   <SolidColorBrush x:Key="WindowBrush" Color="#FF170B13"/><SolidColorBrush x:Key="ShellBrush" Color="#EB12090F"/><SolidColorBrush x:Key="PaneBrush" Color="#00000000"/>

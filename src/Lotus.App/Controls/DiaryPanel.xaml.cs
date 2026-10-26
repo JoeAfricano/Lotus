@@ -22,6 +22,31 @@ public sealed partial class DiaryPanel : UserControl
     private void OnVm(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(DiaryViewModel.LevelPercent) or nameof(DiaryViewModel.Progress)) DispatcherQueue.TryEnqueue(Render);
+        if (e.PropertyName is nameof(DiaryViewModel.Section)) DispatcherQueue.TryEnqueue(() => ShowSection(animate: true));
+    }
+
+    // Games, achievements or Steam. The bar follows the view model (a toast can open "Conquistas" directly).
+    private bool showing;
+    private void ShowSection(bool animate)
+    {
+        if (Vm is not { } vm) return;
+        showing = true;
+        SectionBar.SelectedItem = vm.Section switch { "trophies" => SectionTrophies, "steam" => SectionSteam, _ => SectionGames };
+        showing = false;
+        var target = vm.Section switch { "trophies" => (FrameworkElement)TrophiesArea, "steam" => SteamArea, _ => GamesArea };
+        foreach (var area in new FrameworkElement[] { GamesArea, TrophiesArea, SteamArea })
+            area.Visibility = area == target ? Visibility.Visible : Visibility.Collapsed;
+        if (animate) Motion.EnterPage(target);
+        if (target == TrophiesArea) TrophiesArea.Celebrate();
+        // Opened on one game (from a game page): bring that game into view.
+        if (target == SteamArea && vm.Achievements?.HasSelected == true)
+            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => SteamArea.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = Motion.Enabled, VerticalAlignmentRatio = 0 }));
+    }
+    private void OnSection(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    {
+        if (showing || Vm is not { } vm || sender.SelectedItem?.Tag is not string id || id == vm.Section) return;
+        UiSound.Play(UiSound.Cue.Toggle);
+        vm.Section = id;
     }
 
     private void Render()
@@ -40,6 +65,7 @@ public sealed partial class DiaryPanel : UserControl
             timer.Start();
         }
         PaintTabs();
+        ShowSection(animate: false);
     }
 
     // Selected tab: gold underline and full text; others muted.

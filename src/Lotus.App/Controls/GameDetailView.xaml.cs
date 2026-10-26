@@ -19,8 +19,8 @@ public sealed partial class GameDetailView : UserControl
         InitializeComponent();
         // Repaint the diary buttons when the diary changes (saved from the sheet, removed, added elsewhere).
         EventHandler onDiary = (_, _) => DispatcherQueue.TryEnqueue(PaintDiary);
-        Loaded += (_, _) => { if (MainWindow.Shell is { } s) { s.Diary.Changed -= onDiary; s.Diary.Changed += onDiary; } PaintDiary(); };
-        Unloaded += (_, _) => { if (MainWindow.Shell is { } s) s.Diary.Changed -= onDiary; };
+        Loaded += (_, _) => { if (MainWindow.Shell is { } s) { s.Diary.Changed -= onDiary; s.Diary.Changed += onDiary; s.Trophies.Changed -= onDiary; s.Trophies.Changed += onDiary; } PaintDiary(); };
+        Unloaded += (_, _) => { if (MainWindow.Shell is { } s) { s.Diary.Changed -= onDiary; s.Trophies.Changed -= onDiary; } };
         DataContextChanged += (_, _) =>
         {
             if (vm is not null) vm.PropertyChanged -= OnVm;
@@ -87,7 +87,32 @@ public sealed partial class GameDetailView : UserControl
         WantText.Text = saved is null ? vm.Text["DyWant"] : "✓ " + vm.Text["DyStatus" + saved.Status];
         WantIcon.Glyph = saved is null ? "" : "";
         LogText.Text = vm.Text[saved is null ? "DyLog" : "DyEditorEdit"];
+        PaintTrophies();
     }
+
+    // Steam achievements in this game: progress and the rarest ones the player has.
+    private void PaintTrophies()
+    {
+        if (vm is null || MainWindow.Shell is not { } shell) return;
+        var game = vm.HasTitle ? shell.Trophies.Game(vm.ToDiaryEntry().AppId) : null;
+        TrophyStrip.Visibility = game is { Total: > 0 } ? Visibility.Visible : Visibility.Collapsed;
+        if (game is null) return;
+        var culture = System.Globalization.CultureInfo.GetCultureInfo(vm.Text.Language);
+        TrophyTitle.Text = vm.Text["TrDetailTitle"]; TrophyAll.Text = vm.Text["TrDetailAll"];
+        TrophyCount.Text = vm.Text.Format("TrGameCount", game.Unlocked, game.Total);
+        TrophyPercent.Text = (game.Fraction * 100).ToString("0", culture) + "%";
+        TrophyBar.Value = game.Fraction * 100;
+        TrophyIcons.Children.Clear();
+        foreach (var a in game.Items.Where(a => a.Unlocked).OrderBy(a => a.Percent ?? 101).Take(10))
+        {
+            var url = Lotus.Core.Achievements.SteamGameAchievements.IconUrl(game.AppId, a.Icon);
+            var tile = new Border { Width = 46, Height = 46, CornerRadius = new CornerRadius(9), Background = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["HeroBrush"] };
+            if (Uri.TryCreate(url, UriKind.Absolute, out var u)) tile.Child = new Image { Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(u) { DecodePixelWidth = 92 }, Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill };
+            ToolTipService.SetToolTip(tile, a.Percent is { } p ? $"{a.Name} · {p.ToString(p < 10 ? "0.0" : "0", culture)}%" : a.Name);
+            TrophyIcons.Children.Add(tile);
+        }
+    }
+    private void OnTrophies(object sender, RoutedEventArgs e) { if (vm?.ToDiaryEntry().AppId is { } id) MainWindow.Shell?.ShowSteamAchievements(id); }
     private void OnWant(object sender, RoutedEventArgs e)
     {
         if (vm is null || MainWindow.Shell is not { } shell) return;

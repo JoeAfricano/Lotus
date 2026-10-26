@@ -41,6 +41,9 @@ public sealed partial class MainWindow : Window
     private Lotus.Core.Diary.GameDiary diary = null!;
     private Lotus.Core.Diary.DiaryViewModel diaryPage = null!;
     private Lotus.Core.Diary.DiaryEditorViewModel diaryEditor = null!;
+    private Lotus.Core.Achievements.TrophyCenter trophies = null!;
+    private Lotus.Core.Achievements.AchievementsViewModel achievements = null!;
+    private Microsoft.UI.Dispatching.DispatcherQueueTimer? steamTimer;
     private Lotus.Core.Catalog.GameDetailsViewModel? gameDetails;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
@@ -68,11 +71,19 @@ public sealed partial class MainWindow : Window
         games.IsFavorite = journal.IsFavorite;
         journal.Changed += (_, _) => games.RefreshFeatured();
         player = new Lotus.Core.Games.PlayerPanelViewModel(games, journal, text, () => Lotus.Infrastructure.Games.SteamPlaytime.Read());
+        var catalog = new Lotus.Infrastructure.Catalog.SteamCatalog(language: preferences.Current.Language);
         diary = new Lotus.Core.Diary.GameDiary(new Lotus.Infrastructure.Games.JsonGameDiaryStore(), ex => Serilog.Log.Warning(ex, "Game diary"));
         diaryPage = new Lotus.Core.Diary.DiaryViewModel(diary, text, preferences);
         diaryEditor = new Lotus.Core.Diary.DiaryEditorViewModel(diary, text);
         diary.Changed += (_, _) => DispatcherQueue.TryEnqueue(ShowDiaryLevel);
-        var catalog = new Lotus.Infrastructure.Catalog.SteamCatalog(language: preferences.Current.Language);
+        diary.ProgressChanged += (_, _) => DispatcherQueue.TryEnqueue(ShowDiaryLevel);
+        // Achievements: Lotus ones, Steam ones read from this PC, all feeding the diary level.
+        trophies = new Lotus.Core.Achievements.TrophyCenter(diary, new Lotus.Infrastructure.Games.SteamAchievementReader(preferences.Current.Language),
+            new Lotus.Infrastructure.Games.SteamRarityClient(), new Lotus.Infrastructure.Games.JsonTrophyLedgerStore(),
+            () => Lotus.Infrastructure.Games.SteamPlaytime.Read(), () => games.InstalledGames().Count, ex => Serilog.Log.Warning(ex, "Achievements"),
+            async (id, token) => (await catalog.SteamDetailsAsync(id, token))?.Name);
+        achievements = new Lotus.Core.Achievements.AchievementsViewModel(trophies, text);
+        diaryPage.Achievements = achievements;
         gameList = new Lotus.Core.Catalog.GameListViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game list"), games.InstalledGames);
         gameDetails = new Lotus.Core.Catalog.GameDetailsViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game details"));
         // Preparar e jogar: same Game profile and journal as Otimizar; the game is followed until it closes.
@@ -129,6 +140,7 @@ public sealed partial class MainWindow : Window
         if (onboarding.NeedsWelcome) DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => OpenOnboarding(edit: false));
         else DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => { if (AppWindow.IsVisible) UiSound.Play(UiSound.Cue.Startup); }); // soft hello (not when starting in the tray)
         ShowRoute();
+        StartAchievements();
         preferences.PropertyChanged += OnPreferencesChanged;
         Closed += (_, _) =>
         {
@@ -143,6 +155,7 @@ public sealed partial class MainWindow : Window
         Activated += (_, args) =>
         {
             windowActive = args.WindowActivationState != WindowActivationState.Deactivated;
+            if (windowActive && trophies.LastSync is { } synced && DateTimeOffset.Now - synced > TimeSpan.FromMinutes(3)) _ = trophies.SyncAsync(); // back from a game: new achievements?
             UpdateAmbientState();
             // Deactivation alone does not interrupt an explicit analysis.
             UpdateBrandMotion();
@@ -500,6 +513,34 @@ public sealed partial class MainWindow : Window
         else UiSound.Play(UiSound.Cue.Done);
     }
     private void OnOpenDiary(object? sender, EventArgs e) { Player.Close(); ViewModel.NavigateCommand.Execute("diary"); }
+    // Achievements: toasts for anything new, a first look at Steam a few seconds after start, then every 10 minutes.
+    private void StartAchievements()
+    {
+        trophies.News += (_, news) => DispatcherQueue.TryEnqueue(() => Toast.Show(news, text));
+        trophies.Evaluate();
+        if (DateTime.Now.Hour == 0) Lotus.Core.Achievements.Activity.Record(Lotus.Core.Achievements.Activity.Midnight);
+        steamTimer = DispatcherQueue.CreateTimer();
+        steamTimer.Interval = TimeSpan.FromSeconds(4);
+        steamTimer.Tick += (t, _) => { t.Interval = TimeSpan.FromMinutes(10); _ = trophies.SyncAsync(); };
+        steamTimer.Start();
+    }
+    private void OnToastView(object? sender, bool steam)
+    {
+        Player.Close();
+        diaryPage.Section = steam ? "steam" : "trophies";
+        ViewModel.NavigateCommand.Execute("diary");
+    }
+    public Lotus.Core.Achievements.TrophyCenter Trophies => trophies;
+    // From a game page: the diary's Steam section, opened on that game.
+    public void ShowSteamAchievements(string appId)
+    {
+        Player.Close();
+        achievements.SteamQuery = "";
+        achievements.Select(achievements.SteamGames.FirstOrDefault(g => g.Game.AppId == appId));
+        diaryPage.Section = "steam";
+        ViewModel.NavigateCommand.Execute("diary");
+    }
+
     // Title-bar diary chip: opens the diary page and shows the player's level.
     private void OnDiaryButton(object sender, RoutedEventArgs e) { Motion.Pop(DiaryIcon); UiSound.Play(UiSound.Cue.Navigate); OnOpenDiary(sender, EventArgs.Empty); }
     private void ShowDiaryLevel() { if (DiaryLevel is { } t && diaryPage is { } d) t.Text = d.LevelText; }

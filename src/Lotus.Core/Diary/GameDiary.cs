@@ -54,12 +54,16 @@ public sealed class GameDiary(IGameDiaryStore store, Action<Exception> log)
     public const int ReviewLimit = 5000, BioLimit = 160;
     private readonly DiaryData data = Load(store, log);
     public event EventHandler? Changed;
+    // Raised when XP from outside the diary (achievements, Steam) changes.
+    public event EventHandler? ProgressChanged;
+    public Func<int>? ExtraXp { get; set; }
+    public void NotifyProgress() => ProgressChanged?.Invoke(this, EventArgs.Empty);
 
     public IReadOnlyList<DiaryEntry> Entries => data.Entries;
     public string Bio => data.Bio;
     public DiaryEntry? Get(string key) => data.Entries.FirstOrDefault(e => string.Equals(e.Key, key, StringComparison.OrdinalIgnoreCase));
     public bool Contains(string key) => Get(key) is not null;
-    public Progress Progress => Progression.Of(data.Entries);
+    public Progress Progress => Progression.Of(data.Entries, ExtraXp?.Invoke() ?? 0);
 
     // Saves (adds or replaces) an entry, cleaning the input, and reports what it did to the player's progress.
     public DiaryProgressChange Save(DiaryEntry input)

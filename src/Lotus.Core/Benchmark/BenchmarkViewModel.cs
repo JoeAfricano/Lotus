@@ -111,6 +111,7 @@ public sealed class BenchmarkViewModel : ObservableObject
             SelectedSession = session;
             await repository.SaveAsync(session);
             Sessions.Insert(0, session); while (Sessions.Count > 100) Sessions.RemoveAt(Sessions.Count - 1);
+            if (session.Status == "Completed") global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Benchmark);
             statusKey = session.Status switch { "Completed" => "BenchCompleted", "AccessDenied" => "BenchPermission",
                 "ToolMissing" => "BenchToolMissing", "InsufficientData" => "BenchInsufficient", "Cancelled" => "BenchCancelled", _ => "BenchFailed" };
         }

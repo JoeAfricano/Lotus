@@ -1562,4 +1562,146 @@ Current conditions: {1}</value></data>
   <data name="DyCelebrateBadge" xml:space="preserve"><value>New badge</value></data>
   <data name="DyCelebrateContinue" xml:space="preserve"><value>Continue</value></data>
   <data name="DyCelebrateShare" xml:space="preserve"><value>See in diary</value></data>
+  <data name="Trhunt_first" xml:space="preserve"><value>First trophy</value></data>
+  <data name="Trhunt_firstHint" xml:space="preserve"><value>Unlock your first Steam achievement.</value></data>
+  <data name="Trhunt_100" xml:space="preserve"><value>Hunter</value></data>
+  <data name="Trhunt_100Hint" xml:space="preserve"><value>100 Steam achievements unlocked.</value></data>
+  <data name="Trhunt_500" xml:space="preserve"><value>Seasoned hunter</value></data>
+  <data name="Trhunt_500Hint" xml:space="preserve"><value>500 Steam achievements unlocked.</value></data>
+  <data name="Trhunt_1000" xml:space="preserve"><value>A thousand and one</value></data>
+  <data name="Trhunt_1000Hint" xml:space="preserve"><value>1,000 Steam achievements unlocked.</value></data>
+  <data name="Trhunt_2500" xml:space="preserve"><value>Trophy legend</value></data>
+  <data name="Trhunt_2500Hint" xml:space="preserve"><value>2,500 Steam achievements unlocked.</value></data>
+  <data name="Trperfect_1" xml:space="preserve"><value>One hundred percent</value></data>
+  <data name="Trperfect_1Hint" xml:space="preserve"><value>Unlock every achievement in a game.</value></data>
+  <data name="Trperfect_5" xml:space="preserve"><value>Completionist</value></data>
+  <data name="Trperfect_5Hint" xml:space="preserve"><value>5 games at 100% achievements.</value></data>
+  <data name="Trperfect_15" xml:space="preserve"><value>Total obsession</value></data>
+  <data name="Trperfect_15Hint" xml:space="preserve"><value>15 games at 100% achievements.</value></data>
+  <data name="Trrare_1" xml:space="preserve"><value>Rarity</value></data>
+  <data name="Trrare_1Hint" xml:space="preserve"><value>An achievement fewer than 10% of players have.</value></data>
+  <data name="Trrare_10" xml:space="preserve"><value>Rarity collector</value></data>
+  <data name="Trrare_10Hint" xml:space="preserve"><value>10 achievements fewer than 5% of players have.</value></data>
+  <data name="Trrare_ultra" xml:space="preserve"><value>One in a hundred</value></data>
+  <data name="Trrare_ultraHint" xml:space="preserve"><value>An achievement fewer than 1% of players have.</value></data>
+  <data name="Trday_10" xml:space="preserve"><value>Inspired day</value></data>
+  <data name="Trday_10Hint" xml:space="preserve"><value>10 achievements in a single day.</value></data>
+  <data name="Trstreak_7" xml:space="preserve"><value>On fire</value></data>
+  <data name="Trstreak_7Hint" xml:space="preserve"><value>Achievements on 7 days in a row.</value></data>
+  <data name="Trtourist_25" xml:space="preserve"><value>Tourist</value></data>
+  <data name="Trtourist_25Hint" xml:space="preserve"><value>Achievements in 25 different games.</value></data>
+  <data name="Trhalf_10" xml:space="preserve"><value>Halfway there</value></data>
+  <data name="Trhalf_10Hint" xml:space="preserve"><value>10 games with at least half of their achievements.</value></data>
+  <data name="Tryear_100" xml:space="preserve"><value>Productive year</value></data>
+  <data name="Tryear_100Hint" xml:space="preserve"><value>100 achievements this year.</value></data>
+  <data name="Trhours_100" xml:space="preserve"><value>True gamer</value></data>
+  <data name="Trhours_100Hint" xml:space="preserve"><value>100 hours played on Steam.</value></data>
+  <data name="Trhours_1000" xml:space="preserve"><value>A thousand hours</value></data>
+  <data name="Trhours_1000Hint" xml:space="preserve"><value>1,000 hours played on Steam.</value></data>
+  <data name="Trhours_5000" xml:space="preserve"><value>Gamer for life</value></data>
+  <data name="Trhours_5000Hint" xml:space="preserve"><value>5,000 hours played on Steam.</value></data>
+  <data name="Trloyal_100" xml:space="preserve"><value>Married to the game</value></data>
+  <data name="Trloyal_100Hint" xml:space="preserve"><value>100 hours in a single game.</value></data>
+  <data name="Trloyal_500" xml:space="preserve"><value>Till death do us part</value></data>
+  <data name="Trloyal_500Hint" xml:space="preserve"><value>500 hours in a single game.</value></data>
+  <data name="Trlibrary_25" xml:space="preserve"><value>Living library</value></data>
+  <data name="Trlibrary_25Hint" xml:space="preserve"><value>25 games with at least 1 hour played.</value></data>
+  <data name="Trlibrary_100" xml:space="preserve"><value>Curator</value></data>
+  <data name="Trlibrary_100Hint" xml:space="preserve"><value>100 games with at least 1 hour played.</value></data>
+  <data name="Trinstalled_10" xml:space="preserve"><value>Full shelf</value></data>
+  <data name="Trinstalled_10Hint" xml:space="preserve"><value>10 installed games found by Lotus.</value></data>
+  <data name="Trlotus_score" xml:space="preserve"><value>Know your machine</value></data>
+  <data name="Trlotus_scoreHint" xml:space="preserve"><value>Run the Lotus Score.</value></data>
+  <data name="Trlotus_bench" xml:space="preserve"><value>First measurement</value></data>
+  <data name="Trlotus_benchHint" xml:space="preserve"><value>Finish an FPS measurement.</value></data>
+  <data name="Trlotus_bench10" xml:space="preserve"><value>FPS scientist</value></data>
+  <data name="Trlotus_bench10Hint" xml:space="preserve"><value>Finish 10 FPS measurements.</value></data>
+  <data name="Trlotus_optimize" xml:space="preserve"><value>Hands on</value></data>
+  <data name="Trlotus_optimizeHint" xml:space="preserve"><value>Apply your first optimization with Lotus.</value></data>
+  <data name="Trlotus_launch" xml:space="preserve"><value>Press play</value></data>
+  <data name="Trlotus_launchHint" xml:space="preserve"><value>Launch a game from Lotus.</value></data>
+  <data name="Trlotus_launch50" xml:space="preserve"><value>Champion routine</value></data>
+  <data name="Trlotus_launch50Hint" xml:space="preserve"><value>Launch 50 games from Lotus.</value></data>
+  <data name="Trlotus_pick" xml:space="preserve"><value>Let fate decide</value></data>
+  <data name="Trlotus_pickHint" xml:space="preserve"><value>Use the Game list draw.</value></data>
+  <data name="Trlotus_curious" xml:space="preserve"><value>Curious</value></data>
+  <data name="Trlotus_curiousHint" xml:space="preserve"><value>Open 25 game pages.</value></data>
+  <data name="Trlotus_platinum" xml:space="preserve"><value>Platinum Lotus</value></data>
+  <data name="Trlotus_platinumHint" xml:space="preserve"><value>Unlock every other achievement (secret ones excluded).</value></data>
+  <data name="Trnight_owl" xml:space="preserve"><value>Night owl</value></data>
+  <data name="Trnight_owlHint" xml:space="preserve"><value>Unlocked an achievement between 2 and 5 a.m.</value></data>
+  <data name="Trcomeback" xml:space="preserve"><value>Resurrection</value></data>
+  <data name="TrcomebackHint" xml:space="preserve"><value>Came back to a game after more than a year and unlocked an achievement.</value></data>
+  <data name="Trxmas" xml:space="preserve"><value>Silent night</value></data>
+  <data name="TrxmasHint" xml:space="preserve"><value>Unlocked an achievement on Christmas Day.</value></data>
+  <data name="Trnewyear" xml:space="preserve"><value>New year, new trophy</value></data>
+  <data name="TrnewyearHint" xml:space="preserve"><value>Unlocked an achievement on January 1st.</value></data>
+  <data name="Trfast_perfect" xml:space="preserve"><value>Golden lightning</value></data>
+  <data name="Trfast_perfectHint" xml:space="preserve"><value>Got 100% in a game (10 or more achievements) within 7 days.</value></data>
+  <data name="Trmidnight" xml:space="preserve"><value>Midnight at Lotus</value></data>
+  <data name="TrmidnightHint" xml:space="preserve"><value>Opened Lotus after midnight.</value></data>
+  <data name="Trharsh" xml:space="preserve"><value>Ruthless critic</value></data>
+  <data name="TrharshHint" xml:space="preserve"><value>Rated a game 2 or less in the diary.</value></data>
+  <data name="TrCatall" xml:space="preserve"><value>All</value></data>
+  <data name="TrCatdiary" xml:space="preserve"><value>Diary</value></data>
+  <data name="TrCathunter" xml:space="preserve"><value>Hunter</value></data>
+  <data name="TrCatlibrary" xml:space="preserve"><value>Library</value></data>
+  <data name="TrCatlotus" xml:space="preserve"><value>Lotus</value></data>
+  <data name="TrCatsecret" xml:space="preserve"><value>Secret</value></data>
+  <data name="TrTierbronze" xml:space="preserve"><value>Bronze</value></data>
+  <data name="TrTiersilver" xml:space="preserve"><value>Silver</value></data>
+  <data name="TrTiergold" xml:space="preserve"><value>Gold</value></data>
+  <data name="TrTierplatinum" xml:space="preserve"><value>Platinum</value></data>
+  <data name="TrSummary" xml:space="preserve"><value>{0} of {1} achievements</value></data>
+  <data name="TrXpTotal" xml:space="preserve"><value>{0} XP from achievements</value></data>
+  <data name="TrSyncing" xml:space="preserve"><value>Reading your Steam achievements…</value></data>
+  <data name="TrSynced" xml:space="preserve"><value>Updated at {0}</value></data>
+  <data name="TrNeverSynced" xml:space="preserve"><value>Not synced yet</value></data>
+  <data name="TrSortrecent" xml:space="preserve"><value>Most recent</value></data>
+  <data name="TrSortprogress" xml:space="preserve"><value>Closest to 100%</value></data>
+  <data name="TrSortname" xml:space="preserve"><value>Name</value></data>
+  <data name="TrGameCount" xml:space="preserve"><value>{0}/{1} achievements</value></data>
+  <data name="TrLastUnlock" xml:space="preserve"><value>Last on {0}</value></data>
+  <data name="TrNoUnlock" xml:space="preserve"><value>None yet</value></data>
+  <data name="TrSecretName" xml:space="preserve"><value>Secret achievement</value></data>
+  <data name="TrSecretHint" xml:space="preserve"><value>Keep playing. It shows up when you least expect it.</value></data>
+  <data name="TrHiddenName" xml:space="preserve"><value>Hidden achievement</value></data>
+  <data name="TrHiddenHint" xml:space="preserve"><value>Steam hides this one until you unlock it.</value></data>
+  <data name="TrEarnedOn" xml:space="preserve"><value>Earned on {0}</value></data>
+  <data name="TrRarity" xml:space="preserve"><value>{0} · {1}%</value></data>
+  <data name="TrRaritylegendary" xml:space="preserve"><value>Legendary</value></data>
+  <data name="TrRarityepic" xml:space="preserve"><value>Epic</value></data>
+  <data name="TrRarityrare" xml:space="preserve"><value>Rare</value></data>
+  <data name="TrRarityuncommon" xml:space="preserve"><value>Uncommon</value></data>
+  <data name="TrRaritycommon" xml:space="preserve"><value>Common</value></data>
+  <data name="TrRarityunknown" xml:space="preserve"><value>Unknown rarity</value></data>
+  <data name="DySectionGames" xml:space="preserve"><value>Games</value></data>
+  <data name="DySectionTrophies" xml:space="preserve"><value>Achievements</value></data>
+  <data name="DySectionSteam" xml:space="preserve"><value>Steam</value></data>
+  <data name="TrNextUp" xml:space="preserve"><value>Almost there</value></data>
+  <data name="TrNextUpHint" xml:space="preserve"><value>The achievements closest to unlocking.</value></data>
+  <data name="TrShowcase" xml:space="preserve"><value>Showcase</value></data>
+  <data name="TrShowcaseHint" xml:space="preserve"><value>Your rarest Steam achievements.</value></data>
+  <data name="TrSteamUnlocked" xml:space="preserve"><value>Steam achievements</value></data>
+  <data name="TrSteamPerfect" xml:space="preserve"><value>games at 100%</value></data>
+  <data name="TrSteamGames" xml:space="preserve"><value>games with achievements</value></data>
+  <data name="TrSteamXp" xml:space="preserve"><value>XP from Steam</value></data>
+  <data name="TrNoSteam" xml:space="preserve"><value>No Steam achievements found on this PC. Open Steam and play something: Lotus reads what Steam keeps on this PC, with no login and no password.</value></data>
+  <data name="TrSync" xml:space="preserve"><value>Refresh</value></data>
+  <data name="TrBack" xml:space="preserve"><value>All games</value></data>
+  <data name="TrSteamSearch" xml:space="preserve"><value>Search game</value></data>
+  <data name="TrSteamHint" xml:space="preserve"><value>Read straight from Steam on this PC. Works even with a private profile.</value></data>
+  <data name="TrXpRule" xml:space="preserve"><value>How to level up: finish games in the diary, earn Lotus achievements (25 to 250 XP) and Steam ones (rarer is worth more).</value></data>
+  <data name="TrToastOne" xml:space="preserve"><value>Achievement unlocked</value></data>
+  <data name="TrToastMany" xml:space="preserve"><value>{0} achievements unlocked</value></data>
+  <data name="TrToastSteam" xml:space="preserve"><value>+{0} Steam achievements</value></data>
+  <data name="TrToastSteamIn" xml:space="preserve"><value>+{0} Steam achievements in {1}</value></data>
+  <data name="TrToastImport" xml:space="preserve"><value>Your Steam history is here!</value></data>
+  <data name="TrToastImportBody" xml:space="preserve"><value>{0} achievements in {1} games became XP in your diary.</value></data>
+  <data name="TrToastView" xml:space="preserve"><value>See achievements</value></data>
+  <data name="TrToastXp" xml:space="preserve"><value>+{0} XP</value></data>
+  <data name="DyTitle7" xml:space="preserve"><value>Myth</value></data>
+  <data name="DyTitle8" xml:space="preserve"><value>Immortal</value></data>
+  <data name="TrDetailTitle" xml:space="preserve"><value>Your achievements in this game</value></data>
+  <data name="TrDetailAll" xml:space="preserve"><value>See all</value></data>
 </root>

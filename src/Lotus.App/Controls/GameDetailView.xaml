@@ -68,6 +68,26 @@
    </Border>
   </Grid>
 
+  <!-- The player's Steam achievements in this game (filled in code) -->
+  <Border x:Name="TrophyStrip" Style="{StaticResource CardStyle}" Visibility="Collapsed" AutomationProperties.AutomationId="detail-trophies">
+   <Grid ColumnSpacing="18" RowSpacing="12">
+    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <StackPanel Spacing="6">
+     <TextBlock x:Name="TrophyTitle" Style="{StaticResource SectionTitleStyle}"/>
+     <Grid ColumnSpacing="12">
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <ProgressBar x:Name="TrophyBar" Maximum="100" MinHeight="6" CornerRadius="3" VerticalAlignment="Center"/>
+      <TextBlock Grid.Column="1"><Run x:Name="TrophyCount"/><Run Text="  ·  "/><Run x:Name="TrophyPercent" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/></TextBlock>
+     </Grid>
+    </StackPanel>
+    <Button Grid.Column="1" Click="OnTrophies" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="detail-trophies-all">
+     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE735;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/><TextBlock x:Name="TrophyAll"/></StackPanel>
+    </Button>
+    <StackPanel x:Name="TrophyIcons" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="8"/>
+   </Grid>
+  </Border>
+
   <!-- Synopsis + tags -->
   <Border Style="{StaticResource CardStyle}" Visibility="{Binding HasInfo, Converter={StaticResource BooleanVisibility}}">
    <StackPanel Spacing="10">

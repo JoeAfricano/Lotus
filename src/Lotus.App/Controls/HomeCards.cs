@@ -44,7 +44,7 @@ public sealed partial class ContinueCard : UserControl
         if (game is not null && games is not null)
         {
             buttons.Children.Add(HomeMotion.Button(t["GiPlay"], "", primary: true, () => { UiSound.Play(UiSound.Cue.Open); games.Play(game); }));
-            buttons.Children.Add(HomeMotion.Button(t["GiDetails"], "", primary: false, () => DetailsRequested?.Invoke(this, game)));
+            var details = HomeMotion.Button(t["GiDetails"], "", primary: false, () => DetailsRequested?.Invoke(this, game)); Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(details, "continue-details"); buttons.Children.Add(details);
         }
         else if (games is not null)
             buttons.Children.Add(HomeMotion.Button(t["HomeRescan"], "", primary: true, async () => { await games.RefreshAsync(); Show(vm); }));

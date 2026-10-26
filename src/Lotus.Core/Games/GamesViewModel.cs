@@ -132,7 +132,7 @@ public sealed class GamesViewModel : ObservableObject
     private void Launch(GameCard? card)
     {
         if (card is null) return;
-        try { launcher.Launch(card.Game); status = Text.Format("GamesLaunching", card.Name); }
+        try { launcher.Launch(card.Game); status = Text.Format("GamesLaunching", card.Name); global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Launch); }
         catch (Exception ex) { log(ex); status = Text.Format("GamesLaunchFailed", card.Name); }
         Notify();
     }

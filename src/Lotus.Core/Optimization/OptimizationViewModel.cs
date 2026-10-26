@@ -25,7 +25,12 @@ public sealed class OptimizationViewModel : ObservableObject
     {
         this.engine = engine; Text = text; this.log = log;
         AnalyzeCommand = new AsyncRelayCommand(() => Run(async () => { await engine.RecoverAsync(); return await engine.AnalyzeAsync(); }), () => !busy);
-        ApplyCommand = new AsyncRelayCommand(() => Run(async () => await engine.ApplyAsync(Selected!.Id, Confirmed)), () => !busy && Confirmed && Selected?.Stage == OperationStage.Planned);
+        ApplyCommand = new AsyncRelayCommand(() => Run(async () =>
+        {
+            var plan = await engine.ApplyAsync(Selected!.Id, Confirmed);
+            if (plan?.Stage == OperationStage.Applied) global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Optimize);
+            return plan;
+        }),() => !busy && Confirmed && Selected?.Stage == OperationStage.Planned);
         RevertCommand = new AsyncRelayCommand(() => Run(async () => await engine.RevertAsync(Selected!.Id, Confirmed)), () => !busy && Confirmed && Selected?.Stage == OperationStage.Applied);
         RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !busy);
     }

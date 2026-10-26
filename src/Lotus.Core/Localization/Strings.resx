@@ -1562,4 +1562,146 @@ Condições atuais: {1}</value></data>
   <data name="DyCelebrateBadge" xml:space="preserve"><value>Nova medalha</value></data>
   <data name="DyCelebrateContinue" xml:space="preserve"><value>Continuar</value></data>
   <data name="DyCelebrateShare" xml:space="preserve"><value>Ver no diário</value></data>
+  <data name="Trhunt_first" xml:space="preserve"><value>Primeiro troféu</value></data>
+  <data name="Trhunt_firstHint" xml:space="preserve"><value>Desbloqueie sua primeira conquista na Steam.</value></data>
+  <data name="Trhunt_100" xml:space="preserve"><value>Caçador</value></data>
+  <data name="Trhunt_100Hint" xml:space="preserve"><value>100 conquistas desbloqueadas na Steam.</value></data>
+  <data name="Trhunt_500" xml:space="preserve"><value>Caçador experiente</value></data>
+  <data name="Trhunt_500Hint" xml:space="preserve"><value>500 conquistas desbloqueadas na Steam.</value></data>
+  <data name="Trhunt_1000" xml:space="preserve"><value>Mil e uma conquistas</value></data>
+  <data name="Trhunt_1000Hint" xml:space="preserve"><value>1.000 conquistas desbloqueadas na Steam.</value></data>
+  <data name="Trhunt_2500" xml:space="preserve"><value>Lenda dos troféus</value></data>
+  <data name="Trhunt_2500Hint" xml:space="preserve"><value>2.500 conquistas desbloqueadas na Steam.</value></data>
+  <data name="Trperfect_1" xml:space="preserve"><value>Cem por cento</value></data>
+  <data name="Trperfect_1Hint" xml:space="preserve"><value>Desbloqueie todas as conquistas de um jogo.</value></data>
+  <data name="Trperfect_5" xml:space="preserve"><value>Completista</value></data>
+  <data name="Trperfect_5Hint" xml:space="preserve"><value>5 jogos com 100% das conquistas.</value></data>
+  <data name="Trperfect_15" xml:space="preserve"><value>Obsessão total</value></data>
+  <data name="Trperfect_15Hint" xml:space="preserve"><value>15 jogos com 100% das conquistas.</value></data>
+  <data name="Trrare_1" xml:space="preserve"><value>Raridade</value></data>
+  <data name="Trrare_1Hint" xml:space="preserve"><value>Uma conquista que menos de 10% dos jogadores têm.</value></data>
+  <data name="Trrare_10" xml:space="preserve"><value>Colecionador de raridades</value></data>
+  <data name="Trrare_10Hint" xml:space="preserve"><value>10 conquistas que menos de 5% dos jogadores têm.</value></data>
+  <data name="Trrare_ultra" xml:space="preserve"><value>Um em cem</value></data>
+  <data name="Trrare_ultraHint" xml:space="preserve"><value>Uma conquista que menos de 1% dos jogadores têm.</value></data>
+  <data name="Trday_10" xml:space="preserve"><value>Dia inspirado</value></data>
+  <data name="Trday_10Hint" xml:space="preserve"><value>10 conquistas no mesmo dia.</value></data>
+  <data name="Trstreak_7" xml:space="preserve"><value>Sequência de fogo</value></data>
+  <data name="Trstreak_7Hint" xml:space="preserve"><value>Conquistas em 7 dias seguidos.</value></data>
+  <data name="Trtourist_25" xml:space="preserve"><value>Turista</value></data>
+  <data name="Trtourist_25Hint" xml:space="preserve"><value>Conquistas em 25 jogos diferentes.</value></data>
+  <data name="Trhalf_10" xml:space="preserve"><value>Meio caminho</value></data>
+  <data name="Trhalf_10Hint" xml:space="preserve"><value>10 jogos com pelo menos metade das conquistas.</value></data>
+  <data name="Tryear_100" xml:space="preserve"><value>Ano produtivo</value></data>
+  <data name="Tryear_100Hint" xml:space="preserve"><value>100 conquistas neste ano.</value></data>
+  <data name="Trhours_100" xml:space="preserve"><value>Jogador de verdade</value></data>
+  <data name="Trhours_100Hint" xml:space="preserve"><value>100 horas jogadas na Steam.</value></data>
+  <data name="Trhours_1000" xml:space="preserve"><value>Mil horas</value></data>
+  <data name="Trhours_1000Hint" xml:space="preserve"><value>1.000 horas jogadas na Steam.</value></data>
+  <data name="Trhours_5000" xml:space="preserve"><value>Vida de gamer</value></data>
+  <data name="Trhours_5000Hint" xml:space="preserve"><value>5.000 horas jogadas na Steam.</value></data>
+  <data name="Trloyal_100" xml:space="preserve"><value>Casado com o jogo</value></data>
+  <data name="Trloyal_100Hint" xml:space="preserve"><value>100 horas em um único jogo.</value></data>
+  <data name="Trloyal_500" xml:space="preserve"><value>Até que a morte nos separe</value></data>
+  <data name="Trloyal_500Hint" xml:space="preserve"><value>500 horas em um único jogo.</value></data>
+  <data name="Trlibrary_25" xml:space="preserve"><value>Biblioteca viva</value></data>
+  <data name="Trlibrary_25Hint" xml:space="preserve"><value>25 jogos com pelo menos 1 hora jogada.</value></data>
+  <data name="Trlibrary_100" xml:space="preserve"><value>Curador</value></data>
+  <data name="Trlibrary_100Hint" xml:space="preserve"><value>100 jogos com pelo menos 1 hora jogada.</value></data>
+  <data name="Trinstalled_10" xml:space="preserve"><value>Prateleira cheia</value></data>
+  <data name="Trinstalled_10Hint" xml:space="preserve"><value>10 jogos instalados encontrados pelo Lotus.</value></data>
+  <data name="Trlotus_score" xml:space="preserve"><value>Conheça sua máquina</value></data>
+  <data name="Trlotus_scoreHint" xml:space="preserve"><value>Rode o Lotus Score.</value></data>
+  <data name="Trlotus_bench" xml:space="preserve"><value>Primeira medição</value></data>
+  <data name="Trlotus_benchHint" xml:space="preserve"><value>Conclua uma medição de FPS.</value></data>
+  <data name="Trlotus_bench10" xml:space="preserve"><value>Cientista do FPS</value></data>
+  <data name="Trlotus_bench10Hint" xml:space="preserve"><value>Conclua 10 medições de FPS.</value></data>
+  <data name="Trlotus_optimize" xml:space="preserve"><value>Mãos à obra</value></data>
+  <data name="Trlotus_optimizeHint" xml:space="preserve"><value>Aplique sua primeira otimização pelo Lotus.</value></data>
+  <data name="Trlotus_launch" xml:space="preserve"><value>Aperte o play</value></data>
+  <data name="Trlotus_launchHint" xml:space="preserve"><value>Abra um jogo pelo Lotus.</value></data>
+  <data name="Trlotus_launch50" xml:space="preserve"><value>Rotina de campeão</value></data>
+  <data name="Trlotus_launch50Hint" xml:space="preserve"><value>Abra 50 jogos pelo Lotus.</value></data>
+  <data name="Trlotus_pick" xml:space="preserve"><value>Deixa o destino escolher</value></data>
+  <data name="Trlotus_pickHint" xml:space="preserve"><value>Use o sorteio da Game list.</value></data>
+  <data name="Trlotus_curious" xml:space="preserve"><value>Curioso</value></data>
+  <data name="Trlotus_curiousHint" xml:space="preserve"><value>Abra 25 páginas de jogos.</value></data>
+  <data name="Trlotus_platinum" xml:space="preserve"><value>Lótus de Platina</value></data>
+  <data name="Trlotus_platinumHint" xml:space="preserve"><value>Desbloqueie todas as outras conquistas (menos as secretas).</value></data>
+  <data name="Trnight_owl" xml:space="preserve"><value>Coruja</value></data>
+  <data name="Trnight_owlHint" xml:space="preserve"><value>Desbloqueou uma conquista entre 2h e 5h da manhã.</value></data>
+  <data name="Trcomeback" xml:space="preserve"><value>Ressurreição</value></data>
+  <data name="TrcomebackHint" xml:space="preserve"><value>Voltou a um jogo depois de mais de um ano e desbloqueou uma conquista.</value></data>
+  <data name="Trxmas" xml:space="preserve"><value>Noite feliz</value></data>
+  <data name="TrxmasHint" xml:space="preserve"><value>Desbloqueou uma conquista no dia de Natal.</value></data>
+  <data name="Trnewyear" xml:space="preserve"><value>Ano novo, troféu novo</value></data>
+  <data name="TrnewyearHint" xml:space="preserve"><value>Desbloqueou uma conquista no dia 1º de janeiro.</value></data>
+  <data name="Trfast_perfect" xml:space="preserve"><value>Relâmpago dourado</value></data>
+  <data name="Trfast_perfectHint" xml:space="preserve"><value>Fez 100% de um jogo (10 ou mais conquistas) em até 7 dias.</value></data>
+  <data name="Trmidnight" xml:space="preserve"><value>Meia-noite no Lotus</value></data>
+  <data name="TrmidnightHint" xml:space="preserve"><value>Abriu o Lotus depois da meia-noite.</value></data>
+  <data name="Trharsh" xml:space="preserve"><value>Crítico implacável</value></data>
+  <data name="TrharshHint" xml:space="preserve"><value>Deu nota 2 ou menos a um jogo no diário.</value></data>
+  <data name="TrCatall" xml:space="preserve"><value>Todas</value></data>
+  <data name="TrCatdiary" xml:space="preserve"><value>Diário</value></data>
+  <data name="TrCathunter" xml:space="preserve"><value>Caçador</value></data>
+  <data name="TrCatlibrary" xml:space="preserve"><value>Biblioteca</value></data>
+  <data name="TrCatlotus" xml:space="preserve"><value>Lotus</value></data>
+  <data name="TrCatsecret" xml:space="preserve"><value>Secretas</value></data>
+  <data name="TrTierbronze" xml:space="preserve"><value>Bronze</value></data>
+  <data name="TrTiersilver" xml:space="preserve"><value>Prata</value></data>
+  <data name="TrTiergold" xml:space="preserve"><value>Ouro</value></data>
+  <data name="TrTierplatinum" xml:space="preserve"><value>Platina</value></data>
+  <data name="TrSummary" xml:space="preserve"><value>{0} de {1} conquistas</value></data>
+  <data name="TrXpTotal" xml:space="preserve"><value>{0} XP de conquistas</value></data>
+  <data name="TrSyncing" xml:space="preserve"><value>Lendo suas conquistas da Steam…</value></data>
+  <data name="TrSynced" xml:space="preserve"><value>Atualizado às {0}</value></data>
+  <data name="TrNeverSynced" xml:space="preserve"><value>Ainda não sincronizado</value></data>
+  <data name="TrSortrecent" xml:space="preserve"><value>Mais recentes</value></data>
+  <data name="TrSortprogress" xml:space="preserve"><value>Mais perto de 100%</value></data>
+  <data name="TrSortname" xml:space="preserve"><value>Nome</value></data>
+  <data name="TrGameCount" xml:space="preserve"><value>{0}/{1} conquistas</value></data>
+  <data name="TrLastUnlock" xml:space="preserve"><value>Última em {0}</value></data>
+  <data name="TrNoUnlock" xml:space="preserve"><value>Nenhuma ainda</value></data>
+  <data name="TrSecretName" xml:space="preserve"><value>Conquista secreta</value></data>
+  <data name="TrSecretHint" xml:space="preserve"><value>Continue jogando. Ela aparece quando você menos espera.</value></data>
+  <data name="TrHiddenName" xml:space="preserve"><value>Conquista oculta</value></data>
+  <data name="TrHiddenHint" xml:space="preserve"><value>A Steam esconde esta até você desbloquear.</value></data>
+  <data name="TrEarnedOn" xml:space="preserve"><value>Conquistada em {0}</value></data>
+  <data name="TrRarity" xml:space="preserve"><value>{0} · {1}%</value></data>
+  <data name="TrRaritylegendary" xml:space="preserve"><value>Lendária</value></data>
+  <data name="TrRarityepic" xml:space="preserve"><value>Épica</value></data>
+  <data name="TrRarityrare" xml:space="preserve"><value>Rara</value></data>
+  <data name="TrRarityuncommon" xml:space="preserve"><value>Incomum</value></data>
+  <data name="TrRaritycommon" xml:space="preserve"><value>Comum</value></data>
+  <data name="TrRarityunknown" xml:space="preserve"><value>Raridade desconhecida</value></data>
+  <data name="DySectionGames" xml:space="preserve"><value>Jogos</value></data>
+  <data name="DySectionTrophies" xml:space="preserve"><value>Conquistas</value></data>
+  <data name="DySectionSteam" xml:space="preserve"><value>Steam</value></data>
+  <data name="TrNextUp" xml:space="preserve"><value>Quase lá</value></data>
+  <data name="TrNextUpHint" xml:space="preserve"><value>As conquistas mais perto de sair.</value></data>
+  <data name="TrShowcase" xml:space="preserve"><value>Vitrine</value></data>
+  <data name="TrShowcaseHint" xml:space="preserve"><value>Suas conquistas mais raras da Steam.</value></data>
+  <data name="TrSteamUnlocked" xml:space="preserve"><value>conquistas Steam</value></data>
+  <data name="TrSteamPerfect" xml:space="preserve"><value>jogos com 100%</value></data>
+  <data name="TrSteamGames" xml:space="preserve"><value>jogos com conquistas</value></data>
+  <data name="TrSteamXp" xml:space="preserve"><value>XP vindo da Steam</value></data>
+  <data name="TrNoSteam" xml:space="preserve"><value>Nenhuma conquista da Steam encontrada neste PC. Abra a Steam e jogue algo: o Lotus lê o que a Steam guarda no PC, sem login e sem senha.</value></data>
+  <data name="TrSync" xml:space="preserve"><value>Atualizar</value></data>
+  <data name="TrBack" xml:space="preserve"><value>Todos os jogos</value></data>
+  <data name="TrSteamSearch" xml:space="preserve"><value>Buscar jogo</value></data>
+  <data name="TrSteamHint" xml:space="preserve"><value>Lido direto da Steam neste PC. Funciona mesmo com perfil privado.</value></data>
+  <data name="TrXpRule" xml:space="preserve"><value>Como subir de nível: conclua jogos no diário, ganhe conquistas do Lotus (25 a 250 XP) e da Steam (as mais raras valem mais).</value></data>
+  <data name="TrToastOne" xml:space="preserve"><value>Conquista desbloqueada</value></data>
+  <data name="TrToastMany" xml:space="preserve"><value>{0} conquistas desbloqueadas</value></data>
+  <data name="TrToastSteam" xml:space="preserve"><value>+{0} conquistas na Steam</value></data>
+  <data name="TrToastSteamIn" xml:space="preserve"><value>+{0} conquistas na Steam em {1}</value></data>
+  <data name="TrToastImport" xml:space="preserve"><value>Sua história na Steam chegou!</value></data>
+  <data name="TrToastImportBody" xml:space="preserve"><value>{0} conquistas em {1} jogos viraram XP no seu diário.</value></data>
+  <data name="TrToastView" xml:space="preserve"><value>Ver conquistas</value></data>
+  <data name="TrToastXp" xml:space="preserve"><value>+{0} XP</value></data>
+  <data name="DyTitle7" xml:space="preserve"><value>Mito</value></data>
+  <data name="DyTitle8" xml:space="preserve"><value>Imortal</value></data>
+  <data name="TrDetailTitle" xml:space="preserve"><value>Suas conquistas neste jogo</value></data>
+  <data name="TrDetailAll" xml:space="preserve"><value>Ver todas</value></data>
 </root>

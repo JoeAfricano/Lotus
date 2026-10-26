@@ -65,7 +65,8 @@ public sealed partial class PlayerPanel : UserControl
         MiniBar.Value = 0; GlideBar(d.LevelPercent);
         MiniDone.Text = d.StatCompleted; MiniDoneLabel.Text = t["DyStatCompleted"];
         MiniHours.Text = d.StatHours; MiniHoursLabel.Text = t["DyStatHours"];
-        MiniBadges.Text = p.UnlockedBadges + "/" + p.Badges.Count; MiniBadgesLabel.Text = t["DyBadges"].ToLowerInvariant();
+        if (d.Achievements is { } ach) { MiniBadges.Text = ach.UnlockedCount + "/" + ach.Center.States.Count; MiniBadgesLabel.Text = t["DySectionTrophies"].ToLowerInvariant(); }
+        else { MiniBadges.Text = p.UnlockedBadges + "/" + p.Badges.Count; MiniBadgesLabel.Text = t["DyBadges"].ToLowerInvariant(); }
         MiniOpen.Content = t["DyOpen"];
         MiniShelf.Children.Clear();
         foreach (var card in d.Shelf(6))

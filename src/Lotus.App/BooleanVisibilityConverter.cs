@@ -70,8 +70,32 @@ public sealed class DiaryBrushConverter : IValueConverter
     {
         "good" => B(102, 214, 140), "mixed" => B(255, 204, 80), "bad" => B(255, 110, 110),
         "Completed" => B(64, 200, 170), "Playing" => B(242, 123, 168), "Want" => B(156, 120, 240), "Paused" => B(240, 194, 125), "Dropped" => B(160, 140, 150),
+        // Achievement tiers and Steam rarity bands
+        "bronze" => B(214, 140, 82), "silver" => B(196, 204, 214), "gold" => B(244, 200, 110), "platinum" => B(150, 225, 240),
+        "legendary" => B(255, 170, 60), "epic" => B(190, 120, 255), "rare" => B(90, 170, 255), "uncommon" => B(102, 214, 140), "common" => B(179, 161, 172),
         _ => B(179, 161, 172),
     };
+    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
+}
+// Medal fill for an achievement tier (a soft metallic gradient).
+public sealed class TierFillConverter : IValueConverter
+{
+    private static Windows.UI.Color C(byte r, byte g, byte b) => Windows.UI.Color.FromArgb(255, r, g, b);
+    public object Convert(object value, Type targetType, object parameter, string language)
+    {
+        var (light, dark) = (value as string) switch
+        {
+            "bronze" => (C(240, 178, 122), C(160, 92, 44)),
+            "silver" => (C(236, 240, 245), C(140, 150, 166)),
+            "gold" => (C(255, 228, 150), C(214, 150, 50)),
+            "platinum" => (C(210, 248, 255), C(110, 170, 200)),
+            _ => (C(90, 70, 82), C(52, 38, 48)),
+        };
+        var brush = new Microsoft.UI.Xaml.Media.LinearGradientBrush { StartPoint = new(0, 0), EndPoint = new(1, 1) };
+        brush.GradientStops.Add(new() { Color = light, Offset = 0 });
+        brush.GradientStops.Add(new() { Color = dark, Offset = 1 });
+        return brush;
+    }
     public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
 }
 // Locked badges are faded; unlocked are full.

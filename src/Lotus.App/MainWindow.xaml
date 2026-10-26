@@ -56,6 +56,7 @@
   <controls:PlayerPanel x:Name="Player" Grid.Row="1" Grid.RowSpan="2" EditProfileRequested="OnPlayerEditProfile" DiaryRequested="OnOpenDiary"/>
   <controls:DiaryEditorView x:Name="DiaryEditor" Grid.Row="1" Grid.RowSpan="2" Saved="OnDiarySaved"/>
   <controls:CelebrationView x:Name="Celebration" Grid.Row="1" Grid.RowSpan="2" DiaryRequested="OnOpenDiary"/>
+  <controls:TrophyToast x:Name="Toast" Grid.Row="1" Grid.RowSpan="2" ViewRequested="OnToastView"/>
   <controls:OnboardingView x:Name="Onboarding" Grid.RowSpan="3"/>
  </Grid>
 </Window>
