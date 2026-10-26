@@ -23,7 +23,12 @@ Leia `AGENTS.md` e siga suas diretrizes. Responda em português brasileiro. O pr
 - Foram encontradas 33 entradas de inicialização, sem fontes indisponíveis na consulta realizada.
 - Windows não oferece compare-and-set atômico para o plano ativo. A implementação verifica antes/depois e bloqueia rollback diante de mudança detectada; interrupções ambíguas viram conflito. Não prometer proteção contra mudança externa entre leituras ou garantia absoluta de rollback.
 
-## Atualização 24/10/2026 (Claude Code)
+## Estado em 26/10/2026 (Claude Code)
+
+- Primeira entrega **0.1.0-alpha** pronta: instalador `artifactsdistotus-setup-0.1.0-alpha.exe` (gerar de novo com `toolsbuild-installer.ps1`). resumo em `docs/lotus_games.md` (seção 0.1.0-alpha).
+- versão definida em `directory.build.props`. aguardar comandos do usuário para a próxima versão.
+
+## atualização 24/10/2026 (claude code)
 
 - Interface redesenhada e nova identidade (logo vetorial ouro rosé/carmesim, paleta ameixa) — ver `docs/LOTUS_STAGE06_UI.md`. Marca e animação saíram do standby a pedido do usuário.
 - Inicialização: status via StartupApproved (somente leitura) e correção de duplicidade HKCU; 17 entradas reais.
