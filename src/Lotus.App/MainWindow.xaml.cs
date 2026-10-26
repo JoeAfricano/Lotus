@@ -380,14 +380,19 @@ public sealed partial class MainWindow : Window
         Closed += (_, _) => { tray?.Dispose(); osd.Clear(); };
         ApplyStartup();
     }
+    // True when the X should only hide Lotus (tray mode); the app then must not shut its services down.
+    public bool WillHideToTray => !exiting && preferences.Current.CloseToTray && tray is not null;
     public void HideToTray(bool firstTime)
     {
         AppWindow.Hide();
         if (firstTime) { toldAboutTray = true; tray?.Notify(text["TrayTitle"], text["TrayBody"]); }
     }
+    public void BringBack() => ShowFromTray(); // another launch asked for the window
     private void ShowFromTray()
     {
-        AppWindow.Show(); Activate();
+        AppWindow.Show();
+        if (AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized } presenter) presenter.Restore();
+        Activate();
         if (pendingReport is { } r && pendingGame is { } g) { pendingReport = null; _ = ShowReportAsync(g, r); }
     }
     private void ApplyStartup()

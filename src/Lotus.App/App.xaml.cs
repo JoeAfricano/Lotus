@@ -33,6 +33,8 @@ public partial class App : Application
             [Lotus.Core.Optimization.DisplayRefreshAction.FeatureId] = new(journal, new Lotus.Core.Optimization.DisplayRefreshAction(new Lotus.Infrastructure.Optimization.WindowsDisplayModes()))
         };
     }
+    private Mutex? single;          // held for the life of the main instance
+    private EventWaitHandle showSignal = null!;
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         // Short-lived elevated helper for RivaTuner profile edits: no window, no services, fixed allow-list.
@@ -57,6 +59,14 @@ public partial class App : Application
             try { ok = Lotus.Infrastructure.Score.D3D11GpuBenchmark.Preview(); } catch (Exception) { }
             Environment.Exit(ok ? 0 : 2); return;
         }
+        // One Lotus at a time: a second launch (Start menu, shortcut) just brings the running one back, even from the tray.
+        single = new Mutex(true, @"Local\Lotus.App.Main", out var firstInstance);
+        if (!firstInstance)
+        {
+            try { using var show = EventWaitHandle.OpenExisting(@"Local\Lotus.App.Show"); show.Set(); } catch (WaitHandleCannotBeOpenedException) { }
+            Environment.Exit(0); return;
+        }
+        showSignal = new EventWaitHandle(false, EventResetMode.AutoReset, @"Local\Lotus.App.Show");
         var logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Logs", "lotus-.jsonl");
         Log.Logger = new LoggerConfiguration().WriteTo.File(new JsonFormatter(), logPath,
             rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, fileSizeLimitBytes: 5_000_000, rollOnFileSizeLimit: true).CreateLogger();
@@ -152,6 +162,7 @@ public partial class App : Application
         {
             if (readyToClose) return;
             e.Cancel = true;
+            if (!closeRequested && ((MainWindow)window).WillHideToTray) return; // closing to the tray: keep everything running
             if (closeRequested) return;
             closeRequested = true;
             ((MainWindow)window).PrepareForClose();
@@ -165,8 +176,10 @@ public partial class App : Application
             await services.GetRequiredService<HardwareMonitoringService>().DisposeAsync();
             Log.Information("Application closed"); await services.DisposeAsync(); Log.CloseAndFlush();
         };
-        Log.Information("Application started {Version}", "0.1.0");
+        Log.Information("Application started {Version}", "0.1.0-alpha");
         window.Activate();
+        var main = (MainWindow)window;
+        new Thread(() => { while (showSignal.WaitOne()) main.DispatcherQueue.TryEnqueue(main.BringBack); }) { IsBackground = true, Name = "Lotus single instance" }.Start();
         // Started with Windows: go straight to the tray (the hotkey and background features keep working).
         if (Environment.GetCommandLineArgs().Contains(Lotus.Infrastructure.Setup.WindowsStartup.MinimizedArgument)) (window as MainWindow)?.HideToTray(firstTime: false);
     }

@@ -32,10 +32,12 @@ public sealed class CpuRayBenchmark : ICpuBenchmark, IFramePreview
     public double Run(int threads, TimeSpan duration, CancellationToken ct)
     {
         threads = Math.Max(1, threads);
+        using var fullSpeed = new FullSpeed(); // no background throttling while measuring
         long pixels = 0; var nextRow = -1L; var stop = false;
         var sw = Stopwatch.StartNew();
         var workers = Enumerable.Range(0, threads).Select(_ => new Thread(() =>
         {
+            FullSpeed.ThisThread();
             long local = 0; var sink = 0f;
             while (!Volatile.Read(ref stop))
             {
@@ -46,7 +48,7 @@ public sealed class CpuRayBenchmark : ICpuBenchmark, IFramePreview
                 local += Width;
             }
             Interlocked.Add(ref pixels, local + (sink < -1 ? 1 : 0));
-        }) { IsBackground = true, Priority = ThreadPriority.Normal }).ToArray();
+        }) { IsBackground = true, Priority = ThreadPriority.AboveNormal }).ToArray();
         foreach (var w in workers) w.Start();
         while (sw.Elapsed < duration && !ct.IsCancellationRequested) Thread.Sleep(10);
         Volatile.Write(ref stop, true);
@@ -190,6 +192,7 @@ public sealed class D3D11GpuBenchmark : IGpuBenchmark
 
     public IReadOnlyList<double>? Run(int passes, TimeSpan each, Action<int> onPass, CancellationToken ct)
     {
+        using var fullSpeed = new FullSpeed(); FullSpeed.ThisThread();
         using var adapter = PickAdapter();
         if (adapter is null) return null;
         D3D11.D3D11CreateDevice(adapter, DriverType.Unknown, DeviceCreationFlags.BgraSupport, [FeatureLevel.Level_11_0], out ID3D11Device? device, out ID3D11DeviceContext? context).CheckError();

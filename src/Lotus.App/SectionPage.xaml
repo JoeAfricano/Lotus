@@ -8,7 +8,7 @@
     <Grid x:Name="HomeTop" ColumnSpacing="20" RowSpacing="16">
      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition x:Name="HomeSideColumn" Width="360"/></Grid.ColumnDefinitions>
      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-     <controls:ContinueCard x:Name="ContinueCard" Loaded="OnContinueLoaded" DetailsRequested="OnContinueDetails"/>
+     <controls:ContinueCard x:Name="ContinueCard" Loaded="OnContinueLoaded" DetailsRequested="OnContinueDetails" VerticalAlignment="Top" Height="372"/>
      <StackPanel x:Name="HomeSide" Grid.Column="1" Spacing="16" VerticalAlignment="Top">
       <controls:GuidedSetupCard DataContext="{Binding Guided}" NavigateRequested="OnGuidedNavigate"/>
       <controls:ReadinessCard x:Name="ReadinessCard" Loaded="OnReadinessLoaded" NavigateRequested="OnGuidedNavigate" Visibility="{Binding Guided.ShowReady, Converter={StaticResource BooleanVisibility}}"/>

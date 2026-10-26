@@ -1070,9 +1070,9 @@ Current conditions: {1}</value></data>
   <data name="ObTourTitle" xml:space="preserve"><value>What Lotus does for you</value></data>
   <data name="ObTourOptimize" xml:space="preserve"><value>Optimize my PC</value></data>
   <data name="ObTourOptimizeDetail" xml:space="preserve"><value>One click puts Windows in the Game profile (power, Game Mode, refresh rate), with undo.</value></data>
-  <data name="ObTourGames" xml:space="preserve"><value>My Games and Prepare and play</value></data>
-  <data name="ObTourGamesDetail" xml:space="preserve"><value>Your games from every store. "Prepare and play" readies the PC, opens the game and offers to go back to normal afterwards.</value></data>
-  <data name="ObTourWhy" xml:space="preserve"><value>Why is it stuttering?</value></data>
+  <data name="ObTourGames" xml:space="preserve"><value>My Games</value></data>
+  <data name="ObTourGamesDetail" xml:space="preserve"><value>All your games in one place, with **synopsis, score and difficulty**, FPS overlay and one-click Play.</value></data>
+  <data name="ObTourWhy" xml:space="preserve"><value>Why is it stuttering? (Ctrl + Shift + L)</value></data>
   <data name="ObTourWhyDetail" xml:space="preserve"><value>With the game open, Lotus measures and explains the cause of the stutter with a suggested fix.</value></data>
   <data name="ObTourScore" xml:space="preserve"><value>LOTUS SCORE</value></data>
   <data name="ObTourScoreDetail" xml:space="preserve"><value>Test your PC's performance and compare it with other machines and parts.</value></data>
@@ -1450,4 +1450,8 @@ Current conditions: {1}</value></data>
   <data name="Fq7Q" xml:space="preserve"><value>Why does Lotus sometimes ask for administrator permission?</value></data>
   <data name="Fq7A" xml:space="preserve"><value>Lotus runs without privileges. When an action has to touch something system-wide (DNS, the RivaTuner overlay), a helper asks Windows for permission for that action only, and you can say no.</value></data>
   <data name="GiNoMetacritic" xml:space="preserve"><value>No published score</value></data>
+  <data name="ObTourList" xml:space="preserve"><value>Game list</value></data>
+  <data name="ObTourListDetail" xml:space="preserve"><value>Don't know what to play? Trending lists that update themselves and a **draw** to your taste. It's the button in the top corner.</value></data>
+  <data name="ObTourProfile" xml:space="preserve"><value>Your profile</value></data>
+  <data name="ObTourProfileDetail" xml:space="preserve"><value>Click your name: last game, **hours played**, favorites and notes per game.</value></data>
 </root>

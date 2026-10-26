@@ -153,7 +153,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
             history.Save([last, .. history.Load().Take(19)]);
             Verdict = total is { } t ? VerdictFor(t) : Text["ScorePartial"];
             Reliability = Text.Format(variation < 3 ? "ScoreReliable" : "ScoreUnstable", variation);
-            Phase = Text["ScoreDone"];
+            Phase = ""; // the progress view already shows "done" with its check
             RunTask.Finish(total is { } done ? Text.Format("ScoreDoneTotal", done.ToString("N0", Culture)) : Text["ScoreDone"]);
             if (runGpu && gpu.Adapter() is null) Phase += " " + Text["ScoreNoGpu"];
         }

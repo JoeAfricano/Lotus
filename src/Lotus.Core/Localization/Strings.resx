@@ -1070,9 +1070,9 @@ Condições atuais: {1}</value></data>
   <data name="ObTourTitle" xml:space="preserve"><value>O que você encontra no Lotus</value></data>
   <data name="ObTourOptimize" xml:space="preserve"><value>Otimizar meu PC</value></data>
   <data name="ObTourOptimizeDetail" xml:space="preserve"><value>Com **um clique**, o Windows entra no perfil Jogo: energia, Modo de Jogo e taxa do monitor. Dá para desfazer.</value></data>
-  <data name="ObTourGames" xml:space="preserve"><value>Meus Jogos e Preparar e jogar</value></data>
-  <data name="ObTourGamesDetail" xml:space="preserve"><value>Todos os seus jogos num lugar só. O **Preparar e jogar** arruma o PC, abre o jogo e, quando você fecha, pergunta se quer voltar ao normal.</value></data>
-  <data name="ObTourWhy" xml:space="preserve"><value>Por que está travando?</value></data>
+  <data name="ObTourGames" xml:space="preserve"><value>Meus Jogos</value></data>
+  <data name="ObTourGamesDetail" xml:space="preserve"><value>Todos os seus jogos num lugar só, com **sinopse, nota e dificuldade**, overlay de FPS e o Jogar a um clique.</value></data>
+  <data name="ObTourWhy" xml:space="preserve"><value>Por que está travando? (Ctrl + Shift + L)</value></data>
   <data name="ObTourWhyDetail" xml:space="preserve"><value>Com o jogo aberto, o Lotus mede e **diz o que está causando a travada**, junto com o que fazer.</value></data>
   <data name="ObTourScore" xml:space="preserve"><value>LOTUS SCORE</value></data>
   <data name="ObTourScoreDetail" xml:space="preserve"><value>Veja **quanto o seu PC rende** e compare com outras máquinas e peças.</value></data>
@@ -1450,4 +1450,8 @@ Condições atuais: {1}</value></data>
   <data name="Fq7Q" xml:space="preserve"><value>Por que o Lotus pede permissão de administrador às vezes?</value></data>
   <data name="Fq7A" xml:space="preserve"><value>O Lotus roda sem privilégios. Quando uma ação precisa mexer em algo do sistema (DNS, overlay do RivaTuner), um ajudante pede a permissão do Windows só para aquela ação, e você pode recusar.</value></data>
   <data name="GiNoMetacritic" xml:space="preserve"><value>Sem nota publicada</value></data>
+  <data name="ObTourList" xml:space="preserve"><value>Game list</value></data>
+  <data name="ObTourListDetail" xml:space="preserve"><value>Não sabe o que jogar? Listas em alta que se atualizam sozinhas e um **sorteio** pelo seu gosto. Fica no botão do canto superior.</value></data>
+  <data name="ObTourProfile" xml:space="preserve"><value>Seu perfil</value></data>
+  <data name="ObTourProfileDetail" xml:space="preserve"><value>Clique no seu nome: último jogo, **horas jogadas**, favoritos e anotações por jogo.</value></data>
 </root>

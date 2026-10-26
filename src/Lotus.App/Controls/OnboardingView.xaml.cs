@@ -97,7 +97,7 @@ public sealed partial class OnboardingView : UserControl
     private void BuildTour(OnboardingViewModel vm)
     {
         TourList.Children.Clear();
-        foreach (var (glyph, key) in new[] { ("", "Optimize"), ("", "Games"), ("", "Why"), ("", "Score"), ("", "Tools") })
+        foreach (var (glyph, key) in new[] { ("", "Optimize"), ("", "Games"), ("", "List"), ("", "Why"), ("", "Score"), ("", "Profile") })
         {
             var row = new Grid { ColumnSpacing = 14, Opacity = MotionEnabled ? 0 : 1, RenderTransform = new TranslateTransform() };
             row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); row.ColumnDefinitions.Add(new ColumnDefinition());
