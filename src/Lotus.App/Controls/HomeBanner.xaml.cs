@@ -16,7 +16,7 @@ namespace Lotus.App.Controls;
 // pointer, dots to jump. Everything stops with Reduce motion (slides then change only by click).
 public sealed partial class HomeBanner : UserControl
 {
-    public sealed record Slide(string Eyebrow, string Title, string Subtitle, string? Image, int Art, string? Action, Action? OnAction, string Glyph = "");
+    public sealed record Slide(string Eyebrow, string Title, string Subtitle, string? Image, int Art, string? Action, Action? OnAction, string Glyph = "", string? Fallback = null); // Fallback: art used when Image does not exist
 
     private readonly List<Slide> slides = [];
     private int index = -1;
@@ -83,26 +83,39 @@ public sealed partial class HomeBanner : UserControl
 
     // One BitmapImage per URL for the whole session: decoded once, reused by every slide change and visit.
     private static readonly Dictionary<string, BitmapImage> photos = [];
+    private static readonly HashSet<string> failed = [];
     private static BitmapImage? Photo(string url)
     {
         if (photos.TryGetValue(url, out var b)) return b;
         if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return null;
-        return photos[url] = new BitmapImage(uri);
+        var bmp = new BitmapImage(uri);
+        bmp.ImageFailed += (_, _) => { failed.Add(url); photos.Remove(url); }; // remembered so later slides skip it
+        return photos[url] = bmp;
     }
 
     // ---- Slide drawing ----
     private FrameworkElement Build(Slide s)
     {
         var g = new Grid();
-        if (s.Image is { } url && Photo(url) is { } bmp)
+        // Key art first; a URL that already failed this session goes straight to the fallback (a store screenshot).
+        var source = s.Image is { } first && !failed.Contains(first) ? first : s.Fallback is { } alt && !failed.Contains(alt) ? alt : null;
+        if (source is not null && Photo(source) is { } bmp)
         {
-            // Preloaded photos show at once (no flash of the Lotus art); others fade in when they arrive.
-            var ready = bmp.PixelWidth > 0;
-            var img = new Image { Stretch = Stretch.UniformToFill, Opacity = ready ? 1 : 0, Source = bmp, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
-            if (ready) KenBurns(img);
-            else bmp.ImageOpened += (_, _) => { Fade(img, 1, 500); KenBurns(img); };
-            bmp.ImageFailed += (_, _) => img.Visibility = Visibility.Collapsed; // the Lotus art underneath stays
-            g.Children.Add(Art(s.Art)); // shows while the photo downloads (or if it fails)
+            var img = new Image { Stretch = Stretch.UniformToFill, Opacity = bmp.PixelWidth > 0 ? 1 : 0, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+            void Attach(BitmapImage b, string url)
+            {
+                img.Source = b;
+                if (b.PixelWidth > 0) { img.Opacity = 1; KenBurns(img); return; }
+                b.ImageOpened += (_, _) => { if (ReferenceEquals(img.Source, b)) { Fade(img, 1, 500); KenBurns(img); } };
+                b.ImageFailed += (_, _) =>
+                {
+                    if (!ReferenceEquals(img.Source, b)) return;
+                    if (url != s.Fallback && s.Fallback is { } next && !failed.Contains(next) && Photo(next) is { } second) Attach(second, next);
+                    else img.Visibility = Visibility.Collapsed; // the Lotus art underneath stays
+                };
+            }
+            Attach(bmp, source);
+            g.Children.Add(Art(s.Art)); // shows while the photo downloads (or if none exists)
             g.Children.Add(img);
         }
         else g.Children.Add(Art(s.Art));

@@ -152,7 +152,7 @@ public sealed class GamesTests(ITestOutputHelper output) : IDisposable
         Assert.DoesNotContain(vm.Stores, s => s.Id == GameStores.Steam);
         var removed = await vm.RescanAsync();
         Assert.Equal(["MeuJogo", "Pokémon Arena"], removed.Select(g => g.Name));
-        Assert.Equal(vm.Text.Format("GamesRescanDone", 1), vm.Status);
+        Assert.Equal("", vm.Status); // the rescan button confirms the result itself; no extra status line
         vm.Restore(removed.Where(g => g.Store == GameStores.Steam));
         Assert.Contains(vm.Games, g => g.Name == "Pokémon Arena"); Assert.Equal(["Manual:" + exe.ToLowerInvariant()], store.Hidden);
         Assert.True(await vm.AddManualAsync(exe)); Assert.Empty(store.Hidden); Assert.Contains(vm.Games, g => g.Name == "MeuJogo");

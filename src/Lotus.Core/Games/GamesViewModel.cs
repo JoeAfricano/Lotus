@@ -92,7 +92,7 @@ public sealed class GamesViewModel : ObservableObject
     public async Task<IReadOnlyList<GameEntry>> RescanAsync()
     {
         await RefreshAsync();
-        if (status.Length == 0) { status = Text.Format("GamesRescanDone", Visible.Count()); Notify(); }
+        // The button itself confirms the result (no extra status line).
         return Removed;
     }
 

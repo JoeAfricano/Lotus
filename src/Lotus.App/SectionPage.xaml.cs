@@ -90,6 +90,17 @@ public sealed partial class SectionPage : Page
         var all = new List<Controls.HomeBanner.Slide>(); var extra = new Queue<Controls.HomeBanner.Slide>(mine);
         foreach (var h in hot) { all.Add(h); if (all.Count % 2 == 0 && extra.Count > 0) all.Add(extra.Dequeue()); }
         all.AddRange(extra);
+        // Each game slide also gets a store screenshot, used when its key art does not exist (newer games).
+        if (vm.GameList is { } gl)
+        {
+            var withFallback = await Task.WhenAll(all.Select(async s =>
+            {
+                var id = s.Image is { } url ? System.Text.RegularExpressions.Regex.Match(url, @"/apps/(\d+)/").Groups[1].Value : "";
+                return id.Length > 0 ? s with { Fallback = await gl.ScreenshotAsync(id) } : s;
+            }));
+            all = [.. withFallback];
+        }
+        if (GamesBanner is null) return;
         GamesBanner.SetSlides(all);
         bannerCache = (all, DateTime.UtcNow);
     }
@@ -117,8 +128,10 @@ public sealed partial class SectionPage : Page
         finally
         {
             spin.StopAnimation("RotationAngleInDegrees"); spin.RotationAngleInDegrees = 0;
-            HomeRescan.IsEnabled = true; HomeRescanText.Text = vm.Text.Format("HomeRescanDone", games.InstalledGames().Count);
+            HomeRescanText.Text = "✓ " + vm.Text.Format("HomeRescanDone", games.InstalledGames().Count);
             UiSound.Play(UiSound.Cue.Done);
+            var back = DispatcherQueue.CreateTimer(); back.Interval = TimeSpan.FromSeconds(3); back.IsRepeating = false;
+            back.Tick += (_, _) => { if (HomeRescan is null) return; HomeRescanText.Text = vm.Text["HomeRescan"]; HomeRescan.IsEnabled = true; }; back.Start();
         }
     }
     private void OnGuidedNavigate(object? sender, string id) => shell?.NavigateCommand.Execute(id);
