@@ -191,9 +191,11 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
 
     // Set by Home's banner: the Game list opens straight on this game's page.
     public CatalogItem? PendingOpen { get; set; }
+    public async Task<string?> ArtAsync(string appId) { try { return await catalog.ArtAsync(appId, CancellationToken.None); } catch (Exception ex) { log(ex); return null; } }
     public Task OpenAsync(CatalogItem item) => Details.LoadSteamAsync(item.AppId, item.Name, InstalledFor(item.AppId), item.Wide);
 
-    // Draws from every chart, checking details until a game matches the filters (at most 15 lookups).
+    // Draw: asks the store for games with the chosen genre/difficulty tags (top sellers first), skips the ones the
+    // player has, and confirms with the game's details before showing it. Offline, it falls back to the saved charts.
     public async Task PickAsync(Random? random = null)
     {
         if (Picking) return;
@@ -201,33 +203,47 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
         Picking = true; Picked = null; PickStatus = text["GlPicking"]; NotifyPick();
         try
         {
-            var pool = new List<CatalogItem>();
-            foreach (var id in CatalogText.Charts.Where(c => c != "upcoming"))
-                if (await Get(id, false) is { } c) pool.AddRange(c.Items);
+            var pool = (await catalog.DiscoverAsync(Genre == "any" ? null : Genre, DifficultyWanted == "any" ? null : DifficultyWanted, OnlyFree, CancellationToken.None)).ToList();
+            var fromStore = pool.Count > 0;
+            if (!fromStore)
+                foreach (var id in CatalogText.Charts.Where(c => c != "upcoming"))
+                    if (await Get(id, false) is { } c) pool.AddRange(c.Items);
             var owned = OwnedIds();
             var candidates = pool.DistinctBy(i => i.AppId).Where(i => !OnlyNotOwned || !owned.Contains(i.AppId)).OrderBy(_ => random.Next()).ToList();
-            foreach (var item in candidates.Take(15))
+            (CatalogItem Item, GameInfo Info)? gentle = null; // "easy" fallback: a game nobody calls difficult
+            foreach (var item in candidates.Take(12))
             {
                 var info = await catalog.SteamDetailsAsync(item.AppId, CancellationToken.None);
-                if (info is null || info.ComingSoon || !Matches(info)) continue;
-                Picked = item; PickStatus = "";
-                await Details.LoadSteamAsync(item.AppId, info.Name, InstalledFor(item.AppId), item.Wide);
-                return;
+                if (info is null || info.ComingSoon) continue;
+                if (!Matches(info, trustTags: fromStore))
+                {
+                    if (DifficultyWanted == "easy" && info.Difficulty is Difficulty.Medium && Matches(info with { Difficulty = Difficulty.Easy }, fromStore)) gentle ??= (item, info);
+                    continue;
+                }
+                await Show(item, info); return;
             }
+            if (gentle is { } g) { await Show(g.Item, g.Info); return; }
             PickStatus = text[candidates.Count == 0 ? "GlPickEmpty" : "GlPickNone"];
         }
         catch (Exception ex) { log(ex); PickStatus = text["GlOffline"]; }
         finally { Picking = false; NotifyPick(); }
     }
 
-    public bool Matches(GameInfo info)
+    private async Task Show(CatalogItem item, GameInfo info)
+    {
+        Picked = item; PickStatus = "";
+        await Details.LoadSteamAsync(item.AppId, info.Name, InstalledFor(item.AppId), item.Wide);
+    }
+
+    // trustTags: the pool already comes from the chosen Steam genre; difficulty is always checked on the game's top tags.
+    public bool Matches(GameInfo info, bool trustTags = false)
     {
         if (OnlyFree && !info.IsFree) return false;
-        if (Genre != "any" && !info.Genres.Concat(info.Tags).Any(g => GenreAliases(Genre).Contains(g, StringComparer.OrdinalIgnoreCase))) return false;
+        if (!trustTags && Genre != "any" && !info.Genres.Concat(info.Tags).Any(g => GenreAliases(Genre).Contains(g, StringComparer.OrdinalIgnoreCase))) return false;
         return DifficultyWanted switch
         {
             "easy" => info.Difficulty == Difficulty.Easy,
-            "medium" => info.Difficulty == Difficulty.Medium,
+            "medium" => info.Difficulty is Difficulty.Medium or Difficulty.Unknown,
             "hard" => info.Difficulty is Difficulty.Hard or Difficulty.VeryHard,
             _ => true,
         };

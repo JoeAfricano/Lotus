@@ -40,6 +40,7 @@ public sealed partial class HomeBanner : UserControl
     public void SetSlides(IEnumerable<Slide> list)
     {
         slides.Clear(); slides.AddRange(list);
+        foreach (var s in slides) if (s.Image is { } u) Photo(u); // start downloading every photo now
         Dots.Children.Clear();
         for (var i = 0; i < slides.Count; i++)
         {
@@ -52,7 +53,7 @@ public sealed partial class HomeBanner : UserControl
         }
         index = -1; Show(0);
         timer ??= DispatcherQueue.CreateTimer();
-        timer.Interval = TimeSpan.FromSeconds(7);
+        timer.Interval = TimeSpan.FromSeconds(10); // calm pace: one slide every 10 s
         timer.Tick -= OnTick; timer.Tick += OnTick;
         Restart();
     }
@@ -80,15 +81,27 @@ public sealed partial class HomeBanner : UserControl
             }
     }
 
+    // One BitmapImage per URL for the whole session: decoded once, reused by every slide change and visit.
+    private static readonly Dictionary<string, BitmapImage> photos = [];
+    private static BitmapImage? Photo(string url)
+    {
+        if (photos.TryGetValue(url, out var b)) return b;
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return null;
+        return photos[url] = new BitmapImage(uri);
+    }
+
     // ---- Slide drawing ----
     private FrameworkElement Build(Slide s)
     {
         var g = new Grid();
-        if (s.Image is { } url && Uri.TryCreate(url, UriKind.Absolute, out var uri))
+        if (s.Image is { } url && Photo(url) is { } bmp)
         {
-            var img = new Image { Stretch = Stretch.UniformToFill, Opacity = 0, Source = new BitmapImage(uri), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
-            ((BitmapImage)img.Source).ImageOpened += (_, _) => { Fade(img, 1, 500); KenBurns(img); };
-            ((BitmapImage)img.Source).ImageFailed += (_, _) => img.Visibility = Visibility.Collapsed; // the Lotus art underneath stays
+            // Preloaded photos show at once (no flash of the Lotus art); others fade in when they arrive.
+            var ready = bmp.PixelWidth > 0;
+            var img = new Image { Stretch = Stretch.UniformToFill, Opacity = ready ? 1 : 0, Source = bmp, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+            if (ready) KenBurns(img);
+            else bmp.ImageOpened += (_, _) => { Fade(img, 1, 500); KenBurns(img); };
+            bmp.ImageFailed += (_, _) => img.Visibility = Visibility.Collapsed; // the Lotus art underneath stays
             g.Children.Add(Art(s.Art)); // shows while the photo downloads (or if it fails)
             g.Children.Add(img);
         }

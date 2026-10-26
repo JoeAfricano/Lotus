@@ -60,10 +60,13 @@ public sealed partial class SectionPage : Page
     }
     private void OnReadinessLoaded(object sender, RoutedEventArgs e) { if (DataContext is SectionViewModel vm) ReadinessCard?.Attach(vm); }
 
+    private static (List<Controls.HomeBanner.Slide> Slides, DateTime At)? bannerCache;
     // ---- Meus Jogos banner: big Steam games of the moment, mixed with the player's own games ----
     private async void OnGamesBannerLoaded(object sender, RoutedEventArgs e)
     {
         if (DataContext is not SectionViewModel vm || GamesBanner is null) return;
+        // Built once per half hour: coming back to Meus Jogos shows the same slides instantly.
+        if (bannerCache is { } cached && DateTime.UtcNow - bannerCache.Value.At < TimeSpan.FromMinutes(30)) { GamesBanner.SetSlides(cached.Slides); return; }
         var t = vm.Text;
         GamesBanner.SetSlides([new(t["HbListEyebrow"], t["HbListTitle"], t["HbListBody"], null, 2, t["HbListAction"], () => shell?.NavigateCommand.Execute("gamelist"), "")]);
         var mine = new List<Controls.HomeBanner.Slide>();
@@ -88,6 +91,7 @@ public sealed partial class SectionPage : Page
         foreach (var h in hot) { all.Add(h); if (all.Count % 2 == 0 && extra.Count > 0) all.Add(extra.Dequeue()); }
         all.AddRange(extra);
         GamesBanner.SetSlides(all);
+        bannerCache = (all, DateTime.UtcNow);
     }
     // Meus Jogos opened from Home's "Details": go straight to that game's page.
     private void OnGamesListLoaded(object sender, RoutedEventArgs e)

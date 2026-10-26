@@ -66,7 +66,7 @@ public sealed partial class GameListPanel : UserControl
         await Task.WhenAll(spin, pick);
         if (vm.Picked is { } p)
         {
-            ShowCover(p.Cover);
+            ShowCover(vm.Details.Cover is { Length: > 0 } art ? art : p.Wide);
             UiSound.Play(UiSound.Cue.Score);
             PickLabel.Text = vm.Text["GlPickAgain"];
             ShowDetail(true);
@@ -80,11 +80,28 @@ public sealed partial class GameListPanel : UserControl
     }
     private void ShowCover(string url) { if (Uri.TryCreate(url, UriKind.Absolute, out var u)) { ShuffleArt.Source = new BitmapImage(u); ShuffleIdle.Visibility = Visibility.Collapsed; } }
 
-    // Some apps have no portrait art: fall back to the wide header.
-    private void OnCoverFailed(object sender, ExceptionRoutedEventArgs e)
+    // Covers load in steps: portrait art → wide header → the exact art path from the store API (newer games keep
+    // their art under hashed paths). The grid recycles cards, so each step checks the card still shows that game.
+    private static readonly Dictionary<string, string> artCache = [];
+    private void OnCoverContext(FrameworkElement sender, DataContextChangedEventArgs args)
     {
-        if (sender is Image { Tag: string wide } img && Uri.TryCreate(wide, UriKind.Absolute, out var u) && (img.Source as BitmapImage)?.UriSource != u) img.Source = new BitmapImage(u);
+        if (sender is not Image img) return;
+        img.Opacity = 0; img.Source = null;
+        if (args.NewValue is CatalogCard card) Load(img, artCache.GetValueOrDefault(card.Item.AppId) ?? card.Cover);
     }
+    private void OnCoverOpened(object sender, RoutedEventArgs e) { if (sender is Image img) { img.Opacity = 1; } }
+    private async void OnCoverFailed(object sender, ExceptionRoutedEventArgs e)
+    {
+        if (sender is not Image { DataContext: CatalogCard card } img) return;
+        var tried = (img.Source as BitmapImage)?.UriSource?.ToString() ?? "";
+        if (tried == card.Cover) { Load(img, card.Wide); return; }
+        if (Vm is { } vm && await vm.ArtAsync(card.Item.AppId) is { } art && art != tried && img.DataContext == card)
+        {
+            artCache[card.Item.AppId] = art; Load(img, art);
+        }
+        // Otherwise the name stays on the plum card underneath.
+    }
+    private static void Load(Image img, string url) { if (Uri.TryCreate(url, UriKind.Absolute, out var u)) img.Source = new BitmapImage(u); }
 
     private void OnBack(object? sender, EventArgs e) => ShowDetail(false);
     private void OnPlay(object? sender, Lotus.Core.Games.GameEntry game) => PlayRequested?.Invoke(this, game);

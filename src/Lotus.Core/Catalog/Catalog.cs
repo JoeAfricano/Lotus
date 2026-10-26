@@ -10,7 +10,7 @@ public sealed record GameInfo(
     string? StoreUrl, bool IsFree, string Source, bool ComingSoon = false);
 
 // One row of a Game list chart (enough to draw the cover; details load when opened).
-public sealed record CatalogItem(string AppId, string Name, string Cover, string Wide, int? PositivePercent = null, long? Reviews = null, long? Players = null, string? Note = null, int? Metacritic = null, bool? Free = null);
+public sealed record CatalogItem(string AppId, string Name, string Cover, string Wide, int? PositivePercent = null, long? Reviews = null, long? Players = null, string? Note = null, int? Metacritic = null, bool? Free = null, DateTime? Released = null);
 public sealed record CatalogChart(string Id, IReadOnlyList<CatalogItem> Items, DateTimeOffset FetchedAt);
 
 public interface IGameCatalog
@@ -22,6 +22,10 @@ public interface IGameCatalog
     Task<CatalogChart?> ChartAsync(string id, TimeSpan maxAge, CancellationToken token);
     // Any PC game on the Steam store by name (results carry the Metacritic score when Steam has it).
     Task<IReadOnlyList<CatalogItem>> SearchAsync(string query, CancellationToken token);
+    // "Don't know what to play": a pool of well reviewed games of a Steam genre ("Action"…, null = any), pre-filtered by difficulty ("hard"/"easy"/null).
+    Task<IReadOnlyList<CatalogItem>> DiscoverAsync(string? genre, string? difficulty, bool freeOnly, CancellationToken token);
+    // Store art that always exists (newer games keep it under a hashed path only the store API knows).
+    Task<string?> ArtAsync(string appId, CancellationToken token);
 }
 
 public static class CatalogText
