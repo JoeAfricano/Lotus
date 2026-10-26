@@ -37,6 +37,7 @@ public sealed partial class MainWindow : Window
     private readonly Lotus.Core.Tools.ToolsViewModel tools;
     private GuidedSetupViewModel? guided;
     private Lotus.Core.Catalog.GameListViewModel? gameList;
+    private Lotus.Core.Games.PlayerPanelViewModel? player;
     private Lotus.Core.Catalog.GameDetailsViewModel? gameDetails;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
@@ -60,6 +61,10 @@ public sealed partial class MainWindow : Window
         this.memoryAnalysis = memoryAnalysis;
         this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer; this.powerProfiles = powerProfiles; this.hardware = hardware; this.games = games; this.integrations = integrations; this.score = score; this.tools = tools;
         guided = new GuidedSetupViewModel(preferences, text, ex => Serilog.Log.Warning(ex, "Guided setup"), powerProfiles, tools, integrations);
+        var journal = new Lotus.Core.Games.PlayerJournal(new Lotus.Infrastructure.Games.JsonPlayerJournalStore(), ex => Serilog.Log.Warning(ex, "Player journal"));
+        games.IsFavorite = journal.IsFavorite;
+        journal.Changed += (_, _) => games.RefreshFeatured();
+        player = new Lotus.Core.Games.PlayerPanelViewModel(games, journal, text, () => Lotus.Infrastructure.Games.SteamPlaytime.Read());
         var catalog = new Lotus.Infrastructure.Catalog.SteamCatalog(language: preferences.Current.Language);
         gameList = new Lotus.Core.Catalog.GameListViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game list"), games.InstalledGames);
         gameDetails = new Lotus.Core.Catalog.GameDetailsViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game details"));
@@ -112,9 +117,10 @@ public sealed partial class MainWindow : Window
         onboarding.AccentPreview += (_, accent) => palette.ApplyAccent(accent);
         Onboarding.Closed += (_, _) => { palette.ApplyAccent(preferences.Current.Accent); ShowProfile(); ShowRoute(force: true); };
         palette.ApplyAccent(preferences.Current.Accent);
-        UiSound.Enabled = preferences.Current.UiSounds;
+        UiSound.Volume = preferences.Current.UiSoundVolume / 100.0; UiSound.Enabled = preferences.Current.UiSounds;
         ShowProfile();
         if (onboarding.NeedsWelcome) DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => OpenOnboarding(edit: false));
+        else DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => { if (AppWindow.IsVisible) UiSound.Play(UiSound.Cue.Startup); }); // soft hello (not when starting in the tray)
         ShowRoute();
         preferences.PropertyChanged += OnPreferencesChanged;
         Closed += (_, _) =>
@@ -173,7 +179,7 @@ public sealed partial class MainWindow : Window
         palette.Apply(preferences.Current.Theme);
         palette.ApplyAccent(preferences.Current.Accent);
         Motion.Enabled = !preferences.Current.ReduceMotion;
-        UiSound.Enabled = preferences.Current.UiSounds;
+        UiSound.Volume = preferences.Current.UiSoundVolume / 100.0; UiSound.Enabled = preferences.Current.UiSounds;
         ApplyStartup();
         UpdateAmbientState();
         UpdateBrandMotion();
@@ -305,13 +311,14 @@ public sealed partial class MainWindow : Window
         PreferenceWarning.Message = message;
         PreferenceWarning.IsOpen = true;
     }
-    private void OnGameListButton(object sender, RoutedEventArgs e) { Motion.Pop(GameListIcon); ViewModel.NavigateCommand.Execute("gamelist"); }
+    private void OnGameListButton(object sender, RoutedEventArgs e) { Motion.Pop(GameListIcon); UiSound.Play(UiSound.Cue.Navigate); ViewModel.NavigateCommand.Execute("gamelist"); }
     // The drag area stops where the Game list button begins.
     private void OnGameListButtonSize(object sender, SizeChangedEventArgs e) => DragRegion.Margin = new Thickness(0, 0, e.NewSize.Width + 160, 0);
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
         if (updatingNavigation || args.SelectedItem is not NavigationViewItem { Tag: string id } item) return;
         if (item.Icon is { } icon) Motion.Pop(icon); // the chosen section's icon springs
+        UiSound.Play(UiSound.Cue.Navigate);
         ViewModel.NavigateCommand.Execute(id);
         if (narrow == true && Navigation.PaneDisplayMode != NavigationViewPaneDisplayMode.Top) Navigation.IsPaneOpen = false;
     }
@@ -389,7 +396,7 @@ public sealed partial class MainWindow : Window
         if (analysing) return;
         var game = await Task.Run(games.RunningGame);
         if (game is null) { osd.Show(text["OsdNoGame"]); await Task.Delay(4000); osd.Clear(); return; }
-        analysing = true;
+        analysing = true; UiSound.Play(UiSound.Cue.Notify); // the in-game check starts
         try
         {
             const int seconds = 30, delay = 3;
@@ -434,8 +441,15 @@ public sealed partial class MainWindow : Window
         Onboarding.MotionEnabled = !preferences.Current.ReduceMotion;
         Onboarding.Open(onboarding, edit);
     }
-    private void OnProfileTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) => OpenOnboarding(edit: true);
-    // Hover feedback on the profile badge (it opens the profile editor).
+    // The profile badge opens the player panel (last game, favorites, notes); editing the profile is a button there.
+    private void OnProfileTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+    {
+        if (player is null) return;
+        var p = preferences.Current;
+        Player.Open(player, p.DisplayName is { Length: > 0 } n ? n : text["ObDefaultName"], p.AvatarPath);
+    }
+    private void OnPlayerEditProfile(object? sender, EventArgs e) => OpenOnboarding(edit: true);
+    // Hover feedback on the profile badge (it opens the player panel).
     private void OnProfileEnter(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) { if (sender is Border b) b.Background = (Brush)Application.Current.Resources["CardHoverBrush"]; }
     private void OnProfileLeave(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) { if (sender is Border b) b.Background = (Brush)Application.Current.Resources["CardBrush"]; }
     // Corner badge: the player's chosen name and picture (Steam or their own), "Player" until chosen.

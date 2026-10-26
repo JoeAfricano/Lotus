@@ -1418,4 +1418,21 @@ Condições atuais: {1}</value></data>
   <data name="RdFactCpu" xml:space="preserve"><value>CPU {0}%</value></data>
   <data name="RdFactGpu" xml:space="preserve"><value>GPU {0} °C</value></data>
   <data name="RdWaiting" xml:space="preserve"><value>Lendo os sensores...</value></data>
+  <data name="CrTitle" xml:space="preserve"><value>Créditos do desenvolvimento</value></data>
+  <data name="CrMade" xml:space="preserve"><value>Lotus foi criado por **Joeafricano**, em parceria com o **Claude** (IA da Anthropic), que escreveu o código junto com ele a cada etapa.</value></data>
+  <data name="CrOpen" xml:space="preserve"><value>O Lotus é **código aberto**: qualquer pessoa pode ler como ele funciona, conferir que nada muda sem você pedir e sugerir melhorias.</value></data>
+  <data name="CrThanks" xml:space="preserve"><value>Dados e ferramentas de terceiros: Steam e SteamSpy (listas e detalhes de jogos), Metacritic (notas, via Steam), GOG, inspiração do MyGameList (mygamelist.club), RivaTuner Statistics Server (overlay), SCSKiller (shaders), PresentMon (medição de FPS) e winget (instalação de programas).</value></data>
+  <data name="PpLast" xml:space="preserve"><value>Último jogo</value></data>
+  <data name="PpGames" xml:space="preserve"><value>Meus jogos</value></data>
+  <data name="PpGamesHint" xml:space="preserve"><value>Marque favoritos com a estrela (eles aparecem primeiro no Início) e anote o que quiser em cada jogo.</value></data>
+  <data name="PpNoGames" xml:space="preserve"><value>Nenhum jogo encontrado ainda. Use Reescanear no Início ou adicione em Meus Jogos.</value></data>
+  <data name="PpFavorite" xml:space="preserve"><value>Favorito</value></data>
+  <data name="PpNote" xml:space="preserve"><value>Anotação</value></data>
+  <data name="PpNotePlaceholder" xml:space="preserve"><value>Ex.: parei no terceiro chefe · jogar com a Ana</value></data>
+  <data name="PpNeverPlayed" xml:space="preserve"><value>Ainda não jogado pelo Lotus</value></data>
+  <data name="PpStats" xml:space="preserve"><value>{0} jogo(s) · {1} favorito(s)</value></data>
+  <data name="PpClose" xml:space="preserve"><value>Fechar</value></data>
+  <data name="PpTotal" xml:space="preserve"><value>{0} jogadas na Steam</value></data>
+  <data name="SetSoundVolume" xml:space="preserve"><value>Volume dos sons</value></data>
+  <data name="SetSoundVolumeHint" xml:space="preserve"><value>Ao soltar, o Lotus toca uma amostra.</value></data>
 </root>

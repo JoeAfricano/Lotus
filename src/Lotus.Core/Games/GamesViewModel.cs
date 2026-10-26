@@ -156,10 +156,13 @@ public sealed class GamesViewModel : ObservableObject
             Games.Add(Card(g));
         // Home shortcuts: up to 7 games, regardless of the search box.
         Featured.Clear();
-        foreach (var g in Visible.OrderBy(g => g.Name, StringComparer.CurrentCultureIgnoreCase).Take(7)) Featured.Add(Card(g));
+        foreach (var g in Visible.OrderByDescending(g => IsFavorite?.Invoke(g.Key) == true).ThenByDescending(g => g.LastPlayed ?? DateTimeOffset.MinValue).ThenBy(g => g.Name, StringComparer.CurrentCultureIgnoreCase).Take(7)) Featured.Add(Card(g));
         OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(EmptyMessage)); OnPropertyChanged(nameof(HasFeatured));
     }
     public ObservableCollection<GameCard> Featured { get; } = [];
+    // Set by the app: favorites (player journal) come first on Home, then the most recently played.
+    public Func<string, bool>? IsFavorite { get; set; }
+    public void RefreshFeatured() => ApplyFilter();
     // Installed games (not hidden), for the Game list "you have it" marks and the game page Play button.
     public IReadOnlyList<GameEntry> InstalledGames() => [.. all.Where(g => !hidden.Contains(g.Key))];
     public void Play(GameEntry game) => Launch(Card(game));

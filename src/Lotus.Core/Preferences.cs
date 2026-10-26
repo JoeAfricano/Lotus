@@ -12,7 +12,7 @@ public sealed record InterfacePreferences
     public bool StartWithWindows { get; init; }   // opens minimized to the tray at sign-in
     public bool CloseToTray { get; init; } = true; // closing the window keeps Lotus in the background (hotkey keeps working)
     public bool UiSounds { get; init; } = true;    // soft interface sounds
-    // First-run guided setup on Home (analyse, ask, apply what was accepted). Shown once; Settings can run it again.
+    public int UiSoundVolume { get; init; } = 60; // 0–100    // First-run guided setup on Home (analyse, ask, apply what was accepted). Shown once; Settings can run it again.
     public bool GuidedDone { get; init; }
     public DateTimeOffset? GuidedAt { get; init; }
     public int GuidedChanges { get; init; }
@@ -33,7 +33,8 @@ public sealed record InterfacePreferences
         ProfileSource = ProfileSource is "steam" or "custom" ? ProfileSource : "none",
         DisplayName = (DisplayName ?? "").Trim() is var n && n.Length > 32 ? n[..32] : (DisplayName ?? "").Trim(),
         Goal = Goals.Contains(Goal) ? Goal : "balanced",
-        Accent = Accents.Contains(Accent) ? Accent : "rose"
+        Accent = Accents.Contains(Accent) ? Accent : "rose",
+        UiSoundVolume = Math.Clamp(UiSoundVolume, 0, 100)
     };
 }
 
@@ -88,6 +89,7 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool StartWithWindows { get => service.Current.StartWithWindows; set { if (value != service.Current.StartWithWindows) { service.Update(service.Current with { StartWithWindows = value }); OnPropertyChanged(); } } }
     public bool CloseToTray { get => service.Current.CloseToTray; set { if (value != service.Current.CloseToTray) { service.Update(service.Current with { CloseToTray = value }); OnPropertyChanged(); } } }
     public bool UiSounds { get => service.Current.UiSounds; set { if (value != service.Current.UiSounds) { service.Update(service.Current with { UiSounds = value }); OnPropertyChanged(); } } }
+    public double UiSoundVolume { get => service.Current.UiSoundVolume; set { var v = (int)Math.Round(value); if (v != service.Current.UiSoundVolume) { service.Update(service.Current with { UiSoundVolume = v }); OnPropertyChanged(); } } }
     public string Message { get => message; private set => SetProperty(ref message, value); }
     public string PlayerName => service.Current.DisplayName;
     public PreferencesViewModel(PreferencesService service, ITextCatalog text)

@@ -1418,4 +1418,21 @@ Current conditions: {1}</value></data>
   <data name="RdFactCpu" xml:space="preserve"><value>CPU {0}%</value></data>
   <data name="RdFactGpu" xml:space="preserve"><value>GPU {0} °C</value></data>
   <data name="RdWaiting" xml:space="preserve"><value>Reading the sensors...</value></data>
+  <data name="CrTitle" xml:space="preserve"><value>Development credits</value></data>
+  <data name="CrMade" xml:space="preserve"><value>Lotus was created by **Joeafricano**, together with **Claude** (Anthropic's AI), which wrote the code alongside him at every step.</value></data>
+  <data name="CrOpen" xml:space="preserve"><value>Lotus is **open source**: anyone can read how it works, check that nothing changes unless you ask and suggest improvements.</value></data>
+  <data name="CrThanks" xml:space="preserve"><value>Third-party data and tools: Steam and SteamSpy (game lists and details), Metacritic (scores, via Steam), GOG, inspiration from MyGameList (mygamelist.club), RivaTuner Statistics Server (overlay), SCSKiller (shaders), PresentMon (FPS capture) and winget (program installs).</value></data>
+  <data name="PpLast" xml:space="preserve"><value>Last game</value></data>
+  <data name="PpGames" xml:space="preserve"><value>My games</value></data>
+  <data name="PpGamesHint" xml:space="preserve"><value>Star your favorites (they come first on Home) and jot down anything on each game.</value></data>
+  <data name="PpNoGames" xml:space="preserve"><value>No games found yet. Use Rescan on Home or add one in My Games.</value></data>
+  <data name="PpFavorite" xml:space="preserve"><value>Favorite</value></data>
+  <data name="PpNote" xml:space="preserve"><value>Note</value></data>
+  <data name="PpNotePlaceholder" xml:space="preserve"><value>E.g. stopped at the third boss · play with Ana</value></data>
+  <data name="PpNeverPlayed" xml:space="preserve"><value>Not played yet</value></data>
+  <data name="PpStats" xml:space="preserve"><value>{0} game(s) · {1} favorite(s)</value></data>
+  <data name="PpClose" xml:space="preserve"><value>Close</value></data>
+  <data name="PpTotal" xml:space="preserve"><value>{0} played on Steam</value></data>
+  <data name="SetSoundVolume" xml:space="preserve"><value>Sound volume</value></data>
+  <data name="SetSoundVolumeHint" xml:space="preserve"><value>Let go and Lotus plays a sample.</value></data>
 </root>

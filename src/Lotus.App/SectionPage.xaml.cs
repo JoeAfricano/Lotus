@@ -178,6 +178,15 @@ public sealed partial class SectionPage : Page
         catch (Exception ex) { Serilog.Log.Warning(ex, "Install failed"); SetupStatus.Text = vm.Text["SetupFailed"]; }
         finally { SetupButton.IsEnabled = true; OnSetupLoaded(sender, e); }
     }
+    // A sample plays at the new level once the slider stops moving.
+    private Microsoft.UI.Dispatching.DispatcherQueueTimer? volumeSample;
+    private void OnVolumeChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        if (e.OldValue == 0 && e.NewValue == 0 || !IsLoaded) return;
+        UiSound.Volume = e.NewValue / 100.0;
+        if (volumeSample is null) { volumeSample = DispatcherQueue.CreateTimer(); volumeSample.Interval = TimeSpan.FromMilliseconds(350); volumeSample.IsRepeating = false; volumeSample.Tick += (_, _) => UiSound.Play(UiSound.Cue.Done); }
+        volumeSample.Stop(); volumeSample.Start();
+    }
     private void OnReplayWelcome(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenOnboarding(edit: false);
     private void OnRedoGuided(object sender, RoutedEventArgs e) { if (DataContext is SectionViewModel { Guided: { } g }) { g.Restart(); shell?.NavigateCommand.Execute("home"); } }
     protected override void OnNavigatedTo(NavigationEventArgs e)

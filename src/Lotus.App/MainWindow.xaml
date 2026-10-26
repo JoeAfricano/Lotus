@@ -40,6 +40,7 @@
    </NavigationView.PaneFooter>
    <Grid Background="Transparent"><controls:LotusAmbientBackground x:Name="AmbientBackground"/><Frame x:Name="ContentFrame" Background="Transparent" HorizontalContentAlignment="Stretch"/></Grid>
   </NavigationView>
+  <controls:PlayerPanel x:Name="Player" Grid.RowSpan="3" EditProfileRequested="OnPlayerEditProfile"/>
   <controls:OnboardingView x:Name="Onboarding" Grid.RowSpan="3"/>
  </Grid>
 </Window>
