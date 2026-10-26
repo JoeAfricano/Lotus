@@ -8,6 +8,9 @@
 #ifndef SourceDir
   #define SourceDir "..\..\artifacts\dist\Lotus"
 #endif
+#ifndef SetupName
+  #define SetupName "Lotus-Setup"
+#endif
 #ifndef OutputDir
   #define OutputDir "..\..\artifacts\dist"
 #endif
@@ -30,7 +33,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0.19041
 OutputDir={#OutputDir}
-OutputBaseFilename=Lotus-Setup-{#AppVersion}
+OutputBaseFilename={#SetupName}-{#AppVersion}
 SetupIconFile=..\..\src\Lotus.App\Assets\Lotus.ico
 UninstallDisplayIcon={app}\Lotus.App.exe
 UninstallDisplayName=Lotus

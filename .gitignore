@@ -8,3 +8,6 @@ artifacts/
 
 # Local launcher created by tools/New-LotusShortcut.ps1
 Lotus.lnk
+
+# Google OAuth client for the Drive backup (tools/Build-Installer.ps1 copies it into the build)
+secrets/

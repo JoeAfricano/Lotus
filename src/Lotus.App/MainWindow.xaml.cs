@@ -44,6 +44,21 @@ public sealed partial class MainWindow : Window
     private Lotus.Core.Achievements.TrophyCenter trophies = null!;
     private Lotus.Core.Achievements.AchievementsViewModel achievements = null!;
     private Microsoft.UI.Dispatching.DispatcherQueueTimer? steamTimer;
+    private Lotus.Core.Backup.BackupViewModel backup = null!;
+    private static string AppVersionText() =>
+        (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false).FirstOrDefault() as System.Reflection.AssemblyInformationalVersionAttribute)?.InformationalVersion.Split('+')[0] ?? "";
+
+    // Starts a fresh Lotus and closes this one (after a restore). The new one waits for this one to go.
+    public void Restart()
+    {
+        try
+        {
+            if (Environment.ProcessPath is { } exe)
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exe, "--restarted") { UseShellExecute = false })?.Dispose();
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Restart"); }
+        Application.Current.Exit();
+    }
     private Lotus.Core.Catalog.GameDetailsViewModel? gameDetails;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
@@ -84,6 +99,11 @@ public sealed partial class MainWindow : Window
             async (id, token) => (await catalog.SteamDetailsAsync(id, token))?.Name);
         achievements = new Lotus.Core.Achievements.AchievementsViewModel(trophies, text);
         diaryPage.Achievements = achievements;
+        // Backup: a file on this PC and, when this build has a Google client, Google Drive.
+        backup = new Lotus.Core.Backup.BackupViewModel(new Lotus.Infrastructure.Backup.LotusBackupArchive(appVersion: AppVersionText()),
+            new Lotus.Infrastructure.Backup.GoogleDriveBackup(Lotus.Infrastructure.Backup.GoogleOAuthConfig.Load(), new WindowsTokenVault(),
+                async uri => await Windows.System.Launcher.LaunchUriAsync(uri)),
+            text, ex => Serilog.Log.Warning(ex, "Backup"));
         gameList = new Lotus.Core.Catalog.GameListViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game list"), games.InstalledGames);
         gameDetails = new Lotus.Core.Catalog.GameDetailsViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game details"));
         // Preparar e jogar: same Game profile and journal as Otimizar; the game is followed until it closes.
@@ -367,7 +387,7 @@ public sealed partial class MainWindow : Window
         if (force || displayedSectionId != group)
         {
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
-                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, GameDetails = gameDetails, Diary = diaryPage }, new SuppressNavigationTransitionInfo());
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, GameDetails = gameDetails, Diary = diaryPage, Backup = backup }, new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
             Motion.EnterPage(ContentFrame); // new section rises and fades in
         }

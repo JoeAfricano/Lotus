@@ -18,6 +18,7 @@ public sealed class SectionViewModel
     public GuidedSetupViewModel? Guided { get; init; } // first-run guided setup on Home
     public Catalog.GameListViewModel? GameList { get; init; }      // Game list tab
     public Diary.DiaryViewModel? Diary { get; init; }               // "Meu diário" page
+    public Backup.BackupViewModel? Backup { get; init; }            // Settings › Backup
     public Catalog.GameDetailsViewModel? GameDetails { get; init; } // game page in Meus Jogos
     public ITextCatalog Text { get; }
     public PreferencesViewModel Preferences { get; }

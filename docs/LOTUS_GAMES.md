@@ -148,3 +148,10 @@ Primeira entrega da versão focada no jogador leigo (ver decisões de produto em
 - Dados em `%LOCALAPPDATA%\Lotus\diary.json` (+ `.bak`, recuperado automaticamente se o arquivo estragar). Nada sai do PC.
 - **Correção**: o X do painel do perfil não fechava. Ao fechar, o painel chamava `FocusManager.TryMoveFocus` sem o parâmetro que o WinUI desktop exige, gerando erro em todo fechamento. Agora usa `FocusHelper.Commit`, e o painel abre abaixo da barra de título.
 - Validação: 351 testes; fluxo testado na tela (Quero jogar, registrar concluído com nota e análise, celebração, diário, Início, perfil).
+
+## Versão 0.2.0-alpha — "Lotus Base" (26/10/2026)
+
+- **Meu diário em destaque** ao lado do nome do jogador (com o nível), visível em todas as telas; o Início perdeu o card repetido e ficou só com a faixa "Na sua lista".
+- **Conquistas**: 54 conquistas do Lotus (Diário, Caçador, Biblioteca, Lotus e Secretas) em bronze/prata/ouro/platina, com XP; conquistas da Steam lidas da cache local da Steam (sem login, funciona com perfil privado) e raridade global; tudo soma no nível do diário (novos títulos Mito e Imortal). Diário com seções Jogos / Conquistas / Steam, "Quase lá", vitrine das mais raras, aviso ao desbloquear e conquistas do jogo na página do jogo. Detalhes técnicos: `src/Lotus.Core/Achievements/`.
+- **Backup**: Configurações › Backup, arquivo `.lotusbackup` offline (salvar/restaurar com reinício), cópia automática semanal e Google Drive opcional. Ver `docs/LOTUS_BACKUP.md`.
+- Instalador: `tools\Build-Installer.ps1 -Name "Lotus Base"` → `artifacts\dist\Lotus-Base-Setup-0.2.0-alpha.exe`. A atualização visual (pacote "Conceito Premium") sai depois como "Lotus New".

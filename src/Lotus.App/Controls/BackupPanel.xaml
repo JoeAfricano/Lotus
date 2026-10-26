@@ -1,0 +1,78 @@
+<UserControl x:Class="Lotus.App.Controls.BackupPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Root" AutomationProperties.AutomationId="settings-backup">
+ <StackPanel Spacing="16">
+  <StackPanel Spacing="4">
+   <TextBlock Text="{Binding Text[BackupCategory]}" Style="{StaticResource SectionTitleStyle}"/>
+   <TextBlock Text="{Binding Text[BkIntro]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+  </StackPanel>
+
+  <!-- This PC -->
+  <Border Style="{StaticResource CardStyle}">
+   <StackPanel Spacing="14">
+    <StackPanel Orientation="Horizontal" Spacing="12">
+     <Border Width="40" Height="40" CornerRadius="12" Background="{ThemeResource AccentGradientBrush}"><FontIcon Glyph="&#xE7F8;" FontSize="17" Foreground="White"/></Border>
+     <StackPanel VerticalAlignment="Center"><TextBlock Text="{Binding Text[BkLocalTitle]}" FontWeight="SemiBold" FontSize="16"/><TextBlock Text="{Binding Text[BkLocalHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Spacing="10">
+     <Button Click="OnSave" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="backup-save">
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE74E;" FontSize="13"/><TextBlock Text="{Binding Text[BkSave]}"/></StackPanel>
+     </Button>
+     <Button Click="OnRestoreFile" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="backup-restore">
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE777;" FontSize="13"/><TextBlock Text="{Binding Text[BkRestore]}"/></StackPanel>
+     </Button>
+     <Button Click="OnOpenFolder" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="backup-folder">
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE838;" FontSize="13"/><TextBlock Text="{Binding Text[BkOpenFolder]}"/></StackPanel>
+     </Button>
+    </StackPanel>
+    <TextBlock Text="{Binding Text[BkAutoHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+   </StackPanel>
+  </Border>
+
+  <!-- Google Drive -->
+  <Border Style="{StaticResource CardStyle}">
+   <StackPanel Spacing="14">
+    <StackPanel Orientation="Horizontal" Spacing="12">
+     <Border Width="40" Height="40" CornerRadius="12" Background="{ThemeResource GoldGradientBrush}"><FontIcon Glyph="&#xE753;" FontSize="17" Foreground="#3A0F24"/></Border>
+     <StackPanel VerticalAlignment="Center"><TextBlock Text="{Binding Text[BkCloudTitle]}" FontWeight="SemiBold" FontSize="16"/><TextBlock Text="{Binding Text[BkCloudHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+    </StackPanel>
+    <!-- Not available in this build -->
+    <TextBlock Text="{Binding Text[BkCloudNotSetUp]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" Visibility="{Binding CloudConfigured, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}"/>
+    <!-- Not connected -->
+    <StackPanel Spacing="8" Visibility="{Binding CloudCanConnect, Converter={StaticResource BooleanVisibility}}">
+     <Button Click="OnConnect" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="backup-connect">
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE77B;" FontSize="13"/><TextBlock Text="{Binding Text[BkConnect]}"/></StackPanel>
+     </Button>
+     <TextBlock Text="{Binding Text[BkConnectHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+    </StackPanel>
+    <!-- Connected -->
+    <StackPanel Spacing="12" Visibility="{Binding CloudConnected, Converter={StaticResource BooleanVisibility}}">
+     <Grid ColumnSpacing="10">
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center"><FontIcon Glyph="&#xE73E;" FontSize="13" Foreground="{ThemeResource SuccessBrush}"/><TextBlock Text="{Binding CloudAccountText}" AutomationProperties.AutomationId="backup-account"/></StackPanel>
+      <Button Grid.Column="1" Click="OnUpload" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="backup-upload">
+       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE898;" FontSize="13"/><TextBlock Text="{Binding Text[BkUpload]}"/></StackPanel>
+      </Button>
+      <Button Grid.Column="2" Content="{Binding Text[BkDisconnect]}" Click="OnDisconnect" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="backup-disconnect"/>
+     </Grid>
+     <TextBlock Text="{Binding Text[BkCloudList]}" FontWeight="SemiBold" Visibility="{Binding HasCloudItems, Converter={StaticResource BooleanVisibility}}"/>
+     <ItemsControl ItemsSource="{Binding CloudItems}" AutomationProperties.AutomationId="backup-cloud-list">
+      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate><DataTemplate>
+       <Border Style="{StaticResource SettingRowStyle}">
+        <Grid ColumnSpacing="12">
+         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+         <FontIcon Glyph="&#xE8B7;" FontSize="16" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+         <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding DateText}" FontWeight="SemiBold"/><TextBlock Style="{StaticResource CaptionStyle}"><Run Text="{Binding Name}"/><Run Text=" · "/><Run Text="{Binding SizeText}"/></TextBlock></StackPanel>
+         <Button Grid.Column="2" Click="OnRestoreCloud" Style="{StaticResource SoftButtonStyle}" Content="{Binding DataContext.Text[BkRestoreThis], ElementName=Root}"/>
+        </Grid>
+       </Border>
+      </DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+    </StackPanel>
+   </StackPanel>
+  </Border>
+
+  <ProgressBar IsIndeterminate="True" Visibility="{Binding Busy, Converter={StaticResource BooleanVisibility}}"/>
+  <TextBlock x:Name="Status" Text="{Binding Message}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" AutomationProperties.AutomationId="backup-status"/>
+ </StackPanel>
+</UserControl>

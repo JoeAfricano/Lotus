@@ -33,7 +33,7 @@ public static class AppRoutes
         "benchmark" => new("benchmark", "performance"), "history" => new("history", "performance"),
         "settings" or "settings-monitoring" => new("settings", "settings"),
         "settings-integrations" => new("settings-integrations", "settings"),
-        "settings-security" => new("settings-security", "settings"), "logs" => new("logs", "settings"), "faq" => new("faq", "settings"),
+        "settings-security" => new("settings-security", "settings"), "logs" => new("logs", "settings"), "faq" => new("faq", "settings"), "backup" => new("backup", "settings"),
         _ => null
     };
 }
@@ -51,10 +51,10 @@ public sealed class ShellViewModel : ObservableObject
     public int OptimizeTabIndex => CurrentRoute == "restore" ? 1 : 0;
     public int SettingsCategoryIndex
     {
-        get => CurrentRoute switch { "settings-integrations" => 1, "settings-security" => 2, "logs" => 3, "faq" => 4, _ => 0 };
-        set { if (value is >= 0 and <= 4) Navigate(new[] { "settings", "settings-integrations", "settings-security", "logs", "faq" }[value]); }
+        get => CurrentRoute switch { "settings-integrations" => 1, "settings-security" => 2, "logs" => 3, "faq" => 4, "backup" => 5, _ => 0 };
+        set { if (value is >= 0 and <= 5) Navigate(new[] { "settings", "settings-integrations", "settings-security", "logs", "faq", "backup" }[value]); }
     }
-    public IReadOnlyList<string> SettingsCategories => new[] { "AppearanceCategory", "IntegrationsCategory", "SafetyCategory", "AdvancedCategory", "FaqCategory" }.Select(key => Text[key]).ToArray();
+    public IReadOnlyList<string> SettingsCategories => new[] { "AppearanceCategory", "IntegrationsCategory", "SafetyCategory", "AdvancedCategory", "FaqCategory", "BackupCategory" }.Select(key => Text[key]).ToArray();
     public ShellViewModel(IAppEvents events, ITextCatalog? text = null)
     {
         this.events = events; Text = text ?? new TextCatalog();

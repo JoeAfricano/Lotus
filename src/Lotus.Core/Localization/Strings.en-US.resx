@@ -1704,4 +1704,42 @@ Current conditions: {1}</value></data>
   <data name="DyTitle8" xml:space="preserve"><value>Immortal</value></data>
   <data name="TrDetailTitle" xml:space="preserve"><value>Your achievements in this game</value></data>
   <data name="TrDetailAll" xml:space="preserve"><value>See all</value></data>
+  <data name="BackupCategory" xml:space="preserve"><value>Backup</value></data>
+  <data name="BkIntro" xml:space="preserve"><value>Keep your settings, profile, diary, achievements, favorites, notes, per-game settings and measurements in a single file. Restore whenever you like, on this PC or another one.</value></data>
+  <data name="BkLocalTitle" xml:space="preserve"><value>File on this PC</value></data>
+  <data name="BkLocalHint" xml:space="preserve"><value>Works offline. Save it wherever you like: a USB stick, another folder, another drive.</value></data>
+  <data name="BkSave" xml:space="preserve"><value>Save backup…</value></data>
+  <data name="BkRestore" xml:space="preserve"><value>Restore from a file…</value></data>
+  <data name="BkOpenFolder" xml:space="preserve"><value>Automatic copies</value></data>
+  <data name="BkAutoHint" xml:space="preserve"><value>Lotus also keeps one copy a week by itself (the 4 most recent) and a safety copy before every restore.</value></data>
+  <data name="BkCloudTitle" xml:space="preserve"><value>Google Drive</value></data>
+  <data name="BkCloudHint" xml:space="preserve"><value>A copy in the cloud, in the &quot;Lotus Backups&quot; folder of your Drive. Lotus only sees the files it created itself.</value></data>
+  <data name="BkCloudNotSetUp" xml:space="preserve"><value>Google Drive is not enabled in this version of Lotus yet. File backups work as usual.</value></data>
+  <data name="BkConnect" xml:space="preserve"><value>Connect Google account</value></data>
+  <data name="BkConnectHint" xml:space="preserve"><value>Opens your browser so you can sign in to Google. Lotus never sees your password and can be disconnected at any time.</value></data>
+  <data name="BkConnectedAs" xml:space="preserve"><value>Connected as {0}</value></data>
+  <data name="BkUpload" xml:space="preserve"><value>Save to Drive now</value></data>
+  <data name="BkDisconnect" xml:space="preserve"><value>Disconnect</value></data>
+  <data name="BkDisconnected" xml:space="preserve"><value>Google account disconnected.</value></data>
+  <data name="BkCloudList" xml:space="preserve"><value>Backups in Drive</value></data>
+  <data name="BkRestoreThis" xml:space="preserve"><value>Restore</value></data>
+  <data name="BkFileType" xml:space="preserve"><value>Lotus backup</value></data>
+  <data name="BkSaved" xml:space="preserve"><value>Backup saved ({0} files).</value></data>
+  <data name="BkSaveFailed" xml:space="preserve"><value>Could not save the backup. Try another folder.</value></data>
+  <data name="BkInvalid" xml:space="preserve"><value>This file is not a valid Lotus backup.</value></data>
+  <data name="BkNewer" xml:space="preserve"><value>This backup was made by a newer Lotus. Update Lotus to restore it.</value></data>
+  <data name="BkUploaded" xml:space="preserve"><value>Backup saved to Google Drive.</value></data>
+  <data name="BkUploadFailed" xml:space="preserve"><value>Could not upload to Google Drive. Check the internet and try again.</value></data>
+  <data name="BkListFailed" xml:space="preserve"><value>Could not read the Drive backups right now.</value></data>
+  <data name="BkDownloadFailed" xml:space="preserve"><value>Could not download that backup from Drive.</value></data>
+  <data name="BkConnectFailed" xml:space="preserve"><value>The Google connection was not completed.</value></data>
+  <data name="BkCancelled" xml:space="preserve"><value>Cancelled.</value></data>
+  <data name="BkRestoreTitle" xml:space="preserve"><value>Restore this backup?</value></data>
+  <data name="BkRestoreWarning" xml:space="preserve"><value>Lotus&apos;s current data will be replaced by this backup. A safety copy of what exists now is kept first. Lotus will restart.</value></data>
+  <data name="BkRestoreConfirm" xml:space="preserve"><value>Restore and restart</value></data>
+  <data name="BkFrom" xml:space="preserve"><value>Backup from {0} ({1})</value></data>
+  <data name="BkDiary" xml:space="preserve"><value>Games in the diary: {0}</value></data>
+  <data name="BkAchievements" xml:space="preserve"><value>Achievements: {0}</value></data>
+  <data name="BkFavorites" xml:space="preserve"><value>Favorites: {0}</value></data>
+  <data name="BkBenchmarks" xml:space="preserve"><value>FPS measurements: {0}</value></data>
 </root>

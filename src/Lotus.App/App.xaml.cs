@@ -60,7 +60,14 @@ public partial class App : Application
             Environment.Exit(ok ? 0 : 2); return;
         }
         // One Lotus at a time: a second launch (Start menu, shortcut) just brings the running one back, even from the tray.
-        single = new Mutex(true, @"Local\Lotus.App.Main", out var firstInstance);
+        bool firstInstance;
+        if (Environment.GetCommandLineArgs().Contains("--restarted"))
+        {
+            // Restarted by Lotus itself (after a restore): wait for the previous instance to close.
+            single = new Mutex(false, @"Local\Lotus.App.Main");
+            try { firstInstance = single.WaitOne(TimeSpan.FromSeconds(20)); } catch (AbandonedMutexException) { firstInstance = true; }
+        }
+        else single = new Mutex(true, @"Local\Lotus.App.Main", out firstInstance);
         if (!firstInstance)
         {
             try { using var show = EventWaitHandle.OpenExisting(@"Local\Lotus.App.Show"); show.Set(); } catch (WaitHandleCannotBeOpenedException) { }
@@ -70,6 +77,14 @@ public partial class App : Application
         var logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Logs", "lotus-.jsonl");
         Log.Logger = new LoggerConfiguration().WriteTo.File(new JsonFormatter(), logPath,
             rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, fileSizeLimitBytes: 5_000_000, rollOnFileSizeLimit: true).CreateLogger();
+        // A restored backup is applied here, before any service reads its files; then the weekly automatic copy.
+        try
+        {
+            var archive = new Lotus.Infrastructure.Backup.LotusBackupArchive();
+            if (archive.ApplyPending() is { } restored) Log.Information("Backup restored from {Created} ({Files} files)", restored.CreatedAt, restored.Files.Count);
+            _ = Task.Run(() => { try { archive.AutoBackup(TimeSpan.FromDays(7), keep: 4); } catch (Exception ex) { Log.Warning(ex, "Automatic backup"); } });
+        }
+        catch (Exception ex) { Log.Warning(ex, "Restore failed"); }
         // XAML errors inside deferred (x:Load) content are swallowed by the framework; keep them visible in the log.
         AppDomain.CurrentDomain.FirstChanceException += (_, e) => { if (e.Exception is Microsoft.UI.Xaml.Markup.XamlParseException || (e.Exception is UnauthorizedAccessException u && u.Message.Contains("Composition"))) Log.Warning(e.Exception, "XAML/composition error"); };
         services = new ServiceCollection().AddSingleton<Serilog.ILogger>(Log.Logger)

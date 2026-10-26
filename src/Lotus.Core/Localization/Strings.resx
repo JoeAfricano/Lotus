@@ -1704,4 +1704,42 @@ Condições atuais: {1}</value></data>
   <data name="DyTitle8" xml:space="preserve"><value>Imortal</value></data>
   <data name="TrDetailTitle" xml:space="preserve"><value>Suas conquistas neste jogo</value></data>
   <data name="TrDetailAll" xml:space="preserve"><value>Ver todas</value></data>
+  <data name="BackupCategory" xml:space="preserve"><value>Backup</value></data>
+  <data name="BkIntro" xml:space="preserve"><value>Guarde suas configurações, perfil, diário, conquistas, favoritos, notas, ajustes por jogo e medições em um único arquivo. Dá para restaurar quando quiser, neste ou em outro PC.</value></data>
+  <data name="BkLocalTitle" xml:space="preserve"><value>Arquivo neste PC</value></data>
+  <data name="BkLocalHint" xml:space="preserve"><value>Funciona sem internet. Salve onde preferir: pendrive, outra pasta, outro disco.</value></data>
+  <data name="BkSave" xml:space="preserve"><value>Salvar backup…</value></data>
+  <data name="BkRestore" xml:space="preserve"><value>Restaurar de um arquivo…</value></data>
+  <data name="BkOpenFolder" xml:space="preserve"><value>Cópias automáticas</value></data>
+  <data name="BkAutoHint" xml:space="preserve"><value>O Lotus também guarda sozinho uma cópia por semana (as 4 mais recentes) e uma cópia de segurança antes de cada restauração.</value></data>
+  <data name="BkCloudTitle" xml:space="preserve"><value>Google Drive</value></data>
+  <data name="BkCloudHint" xml:space="preserve"><value>Uma cópia na nuvem, na pasta &quot;Lotus Backups&quot; do seu Drive. O Lotus só enxerga os arquivos que ele mesmo criou.</value></data>
+  <data name="BkCloudNotSetUp" xml:space="preserve"><value>O Google Drive ainda não está ativado nesta versão do Lotus. O backup em arquivo funciona normalmente.</value></data>
+  <data name="BkConnect" xml:space="preserve"><value>Conectar conta Google</value></data>
+  <data name="BkConnectHint" xml:space="preserve"><value>Abre o seu navegador para você entrar na conta Google. O Lotus nunca vê a sua senha e pode ser desconectado a qualquer momento.</value></data>
+  <data name="BkConnectedAs" xml:space="preserve"><value>Conectado como {0}</value></data>
+  <data name="BkUpload" xml:space="preserve"><value>Salvar no Drive agora</value></data>
+  <data name="BkDisconnect" xml:space="preserve"><value>Desconectar</value></data>
+  <data name="BkDisconnected" xml:space="preserve"><value>Conta Google desconectada.</value></data>
+  <data name="BkCloudList" xml:space="preserve"><value>Backups no Drive</value></data>
+  <data name="BkRestoreThis" xml:space="preserve"><value>Restaurar</value></data>
+  <data name="BkFileType" xml:space="preserve"><value>Backup do Lotus</value></data>
+  <data name="BkSaved" xml:space="preserve"><value>Backup salvo ({0} arquivos).</value></data>
+  <data name="BkSaveFailed" xml:space="preserve"><value>Não deu para salvar o backup. Tente outra pasta.</value></data>
+  <data name="BkInvalid" xml:space="preserve"><value>Esse arquivo não é um backup do Lotus válido.</value></data>
+  <data name="BkNewer" xml:space="preserve"><value>Esse backup foi feito por uma versão mais nova do Lotus. Atualize o Lotus para restaurá-lo.</value></data>
+  <data name="BkUploaded" xml:space="preserve"><value>Backup salvo no Google Drive.</value></data>
+  <data name="BkUploadFailed" xml:space="preserve"><value>Não deu para enviar ao Google Drive. Confira a internet e tente de novo.</value></data>
+  <data name="BkListFailed" xml:space="preserve"><value>Não deu para ler os backups do Drive agora.</value></data>
+  <data name="BkDownloadFailed" xml:space="preserve"><value>Não deu para baixar esse backup do Drive.</value></data>
+  <data name="BkConnectFailed" xml:space="preserve"><value>A conexão com o Google não foi concluída.</value></data>
+  <data name="BkCancelled" xml:space="preserve"><value>Cancelado.</value></data>
+  <data name="BkRestoreTitle" xml:space="preserve"><value>Restaurar este backup?</value></data>
+  <data name="BkRestoreWarning" xml:space="preserve"><value>Os dados atuais do Lotus serão substituídos por este backup. Antes disso o Lotus guarda uma cópia de segurança do que existe agora. O Lotus vai reiniciar.</value></data>
+  <data name="BkRestoreConfirm" xml:space="preserve"><value>Restaurar e reiniciar</value></data>
+  <data name="BkFrom" xml:space="preserve"><value>Backup de {0} ({1})</value></data>
+  <data name="BkDiary" xml:space="preserve"><value>Jogos no diário: {0}</value></data>
+  <data name="BkAchievements" xml:space="preserve"><value>Conquistas: {0}</value></data>
+  <data name="BkFavorites" xml:space="preserve"><value>Favoritos: {0}</value></data>
+  <data name="BkBenchmarks" xml:space="preserve"><value>Medições de FPS: {0}</value></data>
 </root>

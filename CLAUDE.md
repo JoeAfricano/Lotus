@@ -26,7 +26,7 @@ Leia `AGENTS.md` e siga suas diretrizes. Responda em português brasileiro. O pr
 ## Estado em 26/10/2026 (Claude Code)
 
 - Primeira entrega **0.1.0-alpha** pronta: instalador `artifacts\dist\Lotus-Setup-0.1.0-alpha.exe` (gerar de novo com `tools\Build-Installer.ps1`). Resumo em `docs/LOTUS_GAMES.md` (seção 0.1.0-alpha).
-- Versão definida em `Directory.Build.props`. Aguardar comandos do usuário para a próxima versão.
+- Versão definida em `Directory.Build.props`. **0.2.0-alpha "Lotus Base"** (diário, conquistas, backup) em 26/10/2026: `artifactsdistotus-base-setup-0.2.0-alpha.exe`. pr�ximo: redesign visual "lotus new" a partir de `artifacts/lotus-conceito-premium-claude-code-2026-10-26.zip`.
 
 ## Atualização 24/10/2026 (Claude Code)
 
