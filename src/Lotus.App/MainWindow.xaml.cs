@@ -71,6 +71,7 @@ public sealed partial class MainWindow : Window
         diary = new Lotus.Core.Diary.GameDiary(new Lotus.Infrastructure.Games.JsonGameDiaryStore(), ex => Serilog.Log.Warning(ex, "Game diary"));
         diaryPage = new Lotus.Core.Diary.DiaryViewModel(diary, text, preferences);
         diaryEditor = new Lotus.Core.Diary.DiaryEditorViewModel(diary, text);
+        diary.Changed += (_, _) => DispatcherQueue.TryEnqueue(ShowDiaryLevel);
         var catalog = new Lotus.Infrastructure.Catalog.SteamCatalog(language: preferences.Current.Language);
         gameList = new Lotus.Core.Catalog.GameListViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game list"), games.InstalledGames);
         gameDetails = new Lotus.Core.Catalog.GameDetailsViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game details"));
@@ -260,6 +261,8 @@ public sealed partial class MainWindow : Window
         BrandHeader.Visibility = open && !top ? Visibility.Visible : Visibility.Collapsed;
         ExpandedFooter.Visibility = open ? Visibility.Visible : Visibility.Collapsed;
         CompactFooter.Visibility = open ? Visibility.Collapsed : Visibility.Visible;
+        DiaryButton.Visibility = open ? Visibility.Visible : Visibility.Collapsed;
+        ShowDiaryLevel();
         UpdateToggleAccessibility(Navigation, text[open ? "CloseNavigation" : "OpenNavigation"]);
         UpdateBrandMotion();
         DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, UpdateBrandMotion);
@@ -497,6 +500,11 @@ public sealed partial class MainWindow : Window
         else UiSound.Play(UiSound.Cue.Done);
     }
     private void OnOpenDiary(object? sender, EventArgs e) { Player.Close(); ViewModel.NavigateCommand.Execute("diary"); }
+    // Title-bar diary chip: opens the diary page and shows the player's level.
+    private void OnDiaryButton(object sender, RoutedEventArgs e) { Motion.Pop(DiaryIcon); UiSound.Play(UiSound.Cue.Navigate); OnOpenDiary(sender, EventArgs.Empty); }
+    private void ShowDiaryLevel() { if (DiaryLevel is { } t && diaryPage is { } d) t.Text = d.LevelText; }
+    private void OnDiaryEnter(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => DiaryButton.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(0x4D, 0xF2, 0x7B, 0xA8));
+    private void OnDiaryLeave(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => DiaryButton.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(0x2E, 0xF2, 0x7B, 0xA8));
     // Hover feedback on the profile badge (it opens the player panel).
     private void OnProfileEnter(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) { if (sender is Border b) b.Background = (Brush)Application.Current.Resources["CardHoverBrush"]; }
     private void OnProfileLeave(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) { if (sender is Border b) b.Background = (Brush)Application.Current.Resources["CardBrush"]; }

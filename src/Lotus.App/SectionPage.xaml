@@ -25,20 +25,6 @@
         </Grid>
        </Border>
       </Button>
-      <!-- Diary at a glance: level and XP, opens "Meu diário" -->
-      <Button x:Name="HomeDiary" Click="OnOpenDiary" Style="{StaticResource CardButtonStyle}" AutomationProperties.AutomationId="home-diary" Loaded="OnHomeDiaryLoaded">
-       <Border Style="{StaticResource CompactCardStyle}" Padding="18,14">
-        <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-         <Border Width="44" Height="44" CornerRadius="22" Background="{ThemeResource GoldGradientBrush}"><TextBlock x:Name="HomeDiaryLevel" FontWeight="Bold" FontSize="18" Foreground="#3A0F24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
-          <TextBlock x:Name="HomeDiaryTitle" FontWeight="SemiBold" FontSize="15"/>
-          <ProgressBar x:Name="HomeDiaryBar" Maximum="100" MinHeight="6" CornerRadius="3"/>
-          <TextBlock x:Name="HomeDiaryMeta" FontSize="11.5" Foreground="{ThemeResource MutedBrush}"/>
-         </StackPanel>
-         <FontIcon Grid.Column="2" Glyph="&#xE76C;" FontSize="14" Foreground="{ThemeResource GoldBrush}"/>
-        </Grid>
-       </Border>
-      </Button>
      </StackPanel>
     </Grid>
     <!-- Your games: quick shortcuts; the cover opens My Games, Play starts the game -->
@@ -67,10 +53,7 @@
     </ItemsControl>
     <!-- Diary shelf: what the player is playing and wants to play (filled in code) -->
     <StackPanel x:Name="HomeShelf" Spacing="12" Margin="0,8,0,0" Loaded="OnHomeShelfLoaded" Visibility="Collapsed">
-     <Grid>
-      <StackPanel Spacing="2"><TextBlock Text="{Binding Text[DyShelf]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[DyShelfHint]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
-      <HyperlinkButton Content="{Binding Text[DyOpen]}" Click="OnOpenDiary" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.AutomationId="home-open-diary"/>
-     </Grid>
+     <StackPanel Spacing="2"><TextBlock Text="{Binding Text[DyShelf]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[DyShelfHint]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
      <ScrollViewer HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled">
       <StackPanel x:Name="HomeShelfRow" Orientation="Horizontal" Spacing="14" Padding="0,0,0,10"/>
      </ScrollViewer>

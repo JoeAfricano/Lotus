@@ -137,9 +137,8 @@ public sealed partial class SectionPage : Page
     }
     private void OnGuidedNavigate(object? sender, string id) => shell?.NavigateCommand.Execute(id);
     private void OnDiaryGameList(object? sender, EventArgs e) => shell?.NavigateCommand.Execute("gamelist");
-    private void OnOpenDiary(object sender, RoutedEventArgs e) => shell?.NavigateCommand.Execute("diary");
 
-    // ---- Home: diary card and shelf (repainted whenever the diary changes while Home is open) ----
+    // ---- Home: diary shelf (repainted whenever the diary changes while Home is open) ----
     private void WatchDiary(FrameworkElement owner, Action paint)
     {
         if (MainWindow.Shell is not { } s) return;
@@ -147,15 +146,6 @@ public sealed partial class SectionPage : Page
         EventHandler h = (_, _) => DispatcherQueue.TryEnqueue(() => paint());
         s.Diary.Changed += h;
         owner.Unloaded += (_, _) => s.Diary.Changed -= h;
-    }
-    private void OnHomeDiaryLoaded(object sender, RoutedEventArgs e) => WatchDiary((FrameworkElement)sender, PaintHomeDiary);
-    private void PaintHomeDiary()
-    {
-        if (MainWindow.Shell?.DiaryPage is not { } d || HomeDiaryLevel is null) return;
-        HomeDiaryLevel.Text = d.Progress.Level.ToString();
-        HomeDiaryTitle.Text = d.Text["diaryTitle"] + " · " + d.TitleText;
-        HomeDiaryBar.Value = d.LevelPercent;
-        HomeDiaryMeta.Text = d.XpText + " · " + d.BadgesText;
     }
     private void OnHomeShelfLoaded(object sender, RoutedEventArgs e) => WatchDiary((FrameworkElement)sender, PaintHomeShelf);
     private void PaintHomeShelf()
