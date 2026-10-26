@@ -8,7 +8,7 @@
     <Grid x:Name="HomeTop" ColumnSpacing="20" RowSpacing="16">
      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition x:Name="HomeSideColumn" Width="360"/></Grid.ColumnDefinitions>
      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-     <controls:ContinueCard x:Name="ContinueCard" Loaded="OnContinueLoaded" DetailsRequested="OnContinueDetails" VerticalAlignment="Top" Height="372"/>
+     <controls:ContinueCard x:Name="ContinueCard" Loaded="OnContinueLoaded" DetailsRequested="OnContinueDetails" MinHeight="372"/>
      <StackPanel x:Name="HomeSide" Grid.Column="1" Spacing="16" VerticalAlignment="Top">
       <controls:GuidedSetupCard DataContext="{Binding Guided}" NavigateRequested="OnGuidedNavigate"/>
       <controls:ReadinessCard x:Name="ReadinessCard" Loaded="OnReadinessLoaded" NavigateRequested="OnGuidedNavigate" Visibility="{Binding Guided.ShowReady, Converter={StaticResource BooleanVisibility}}"/>
@@ -20,6 +20,20 @@
          <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
           <TextBlock Text="{Binding Text[HbListTitle]}" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap"/>
           <TextBlock Text="{Binding Text[HomeGameListHint]}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap"/>
+         </StackPanel>
+         <FontIcon Grid.Column="2" Glyph="&#xE76C;" FontSize="14" Foreground="{ThemeResource GoldBrush}"/>
+        </Grid>
+       </Border>
+      </Button>
+      <!-- Diary at a glance: level and XP, opens "Meu diário" -->
+      <Button x:Name="HomeDiary" Click="OnOpenDiary" Style="{StaticResource CardButtonStyle}" AutomationProperties.AutomationId="home-diary" Loaded="OnHomeDiaryLoaded">
+       <Border Style="{StaticResource CompactCardStyle}" Padding="18,14">
+        <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+         <Border Width="44" Height="44" CornerRadius="22" Background="{ThemeResource GoldGradientBrush}"><TextBlock x:Name="HomeDiaryLevel" FontWeight="Bold" FontSize="18" Foreground="#3A0F24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
+          <TextBlock x:Name="HomeDiaryTitle" FontWeight="SemiBold" FontSize="15"/>
+          <ProgressBar x:Name="HomeDiaryBar" Maximum="100" MinHeight="6" CornerRadius="3"/>
+          <TextBlock x:Name="HomeDiaryMeta" FontSize="11.5" Foreground="{ThemeResource MutedBrush}"/>
          </StackPanel>
          <FontIcon Grid.Column="2" Glyph="&#xE76C;" FontSize="14" Foreground="{ThemeResource GoldBrush}"/>
         </Grid>
@@ -51,6 +65,16 @@
       </Grid>
      </DataTemplate></ItemsControl.ItemTemplate>
     </ItemsControl>
+    <!-- Diary shelf: what the player is playing and wants to play (filled in code) -->
+    <StackPanel x:Name="HomeShelf" Spacing="12" Margin="0,8,0,0" Loaded="OnHomeShelfLoaded" Visibility="Collapsed">
+     <Grid>
+      <StackPanel Spacing="2"><TextBlock Text="{Binding Text[DyShelf]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[DyShelfHint]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+      <HyperlinkButton Content="{Binding Text[DyOpen]}" Click="OnOpenDiary" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.AutomationId="home-open-diary"/>
+     </Grid>
+     <ScrollViewer HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled">
+      <StackPanel x:Name="HomeShelfRow" Orientation="Horizontal" Spacing="14" Padding="0,0,0,10"/>
+     </ScrollViewer>
+    </StackPanel>
    </StackPanel>
 
    <StackPanel x:Name="OptimizeContent" x:Load="{x:Bind ShowOptimize}" Spacing="20">
@@ -90,6 +114,7 @@
     <controls:GameDetailView x:Name="GameDetail" Visibility="Collapsed" DataContext="{Binding GameDetails}" BackRequested="OnGameDetailBack" PlayRequested="OnPlayGame"/>
    </Grid>
    <controls:GameListPanel x:Name="GameListContent" x:Load="{x:Bind ShowGameList}" DataContext="{Binding GameList}" PlayRequested="OnPlayGame"/>
+   <controls:DiaryPanel x:Name="DiaryContent" x:Load="{x:Bind ShowDiary}" DataContext="{Binding Diary}" GameListRequested="OnDiaryGameList"/>
    <controls:ScorePanel x:Name="ScoreContent" x:Load="{x:Bind ShowScore}" DataContext="{Binding Score}"/>
    <controls:ToolsPanel x:Name="ToolsContent" x:Load="{x:Bind ShowTools}" DataContext="{Binding Tools}"/>
 

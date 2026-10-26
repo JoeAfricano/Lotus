@@ -38,6 +38,9 @@ public sealed partial class MainWindow : Window
     private GuidedSetupViewModel? guided;
     private Lotus.Core.Catalog.GameListViewModel? gameList;
     private Lotus.Core.Games.PlayerPanelViewModel? player;
+    private Lotus.Core.Diary.GameDiary diary = null!;
+    private Lotus.Core.Diary.DiaryViewModel diaryPage = null!;
+    private Lotus.Core.Diary.DiaryEditorViewModel diaryEditor = null!;
     private Lotus.Core.Catalog.GameDetailsViewModel? gameDetails;
     private BrandPulse? titlePulse;
     private BrandPulse? sidebarPulse;
@@ -65,6 +68,9 @@ public sealed partial class MainWindow : Window
         games.IsFavorite = journal.IsFavorite;
         journal.Changed += (_, _) => games.RefreshFeatured();
         player = new Lotus.Core.Games.PlayerPanelViewModel(games, journal, text, () => Lotus.Infrastructure.Games.SteamPlaytime.Read());
+        diary = new Lotus.Core.Diary.GameDiary(new Lotus.Infrastructure.Games.JsonGameDiaryStore(), ex => Serilog.Log.Warning(ex, "Game diary"));
+        diaryPage = new Lotus.Core.Diary.DiaryViewModel(diary, text, preferences);
+        diaryEditor = new Lotus.Core.Diary.DiaryEditorViewModel(diary, text);
         var catalog = new Lotus.Infrastructure.Catalog.SteamCatalog(language: preferences.Current.Language);
         gameList = new Lotus.Core.Catalog.GameListViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game list"), games.InstalledGames);
         gameDetails = new Lotus.Core.Catalog.GameDetailsViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game details"));
@@ -91,7 +97,7 @@ public sealed partial class MainWindow : Window
         AppWindow.TitleBar.ButtonHoverBackgroundColor = Windows.UI.Color.FromArgb(0x1F, 255, 255, 255);
         AppWindow.TitleBar.ButtonForegroundColor = Windows.UI.Color.FromArgb(255, 245, 239, 243);
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 820));
-        foreach (var section in ViewModel.Items.Where(s => s.Id != "gamelist")) // Game list opens from Home and the top-right button
+        foreach (var section in ViewModel.Items.Where(s => s.Id is not ("gamelist" or "diary"))) // Game list and the diary open from Home, the title bar and the profile
         {
             var item = new NavigationViewItem
             {
@@ -345,7 +351,7 @@ public sealed partial class MainWindow : Window
         if (force || displayedSectionId != group)
         {
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
-                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, GameDetails = gameDetails }, new SuppressNavigationTransitionInfo());
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, GameDetails = gameDetails, Diary = diaryPage }, new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
             Motion.EnterPage(ContentFrame); // new section rises and fades in
         }
@@ -462,8 +468,35 @@ public sealed partial class MainWindow : Window
         if (player is null) return;
         var p = preferences.Current;
         Player.Open(player, p.DisplayName is { Length: > 0 } n ? n : text["ObDefaultName"], p.AvatarPath);
+        Player.ShowDiary(diaryPage);
     }
     private void OnPlayerEditProfile(object? sender, EventArgs e) => OpenOnboarding(edit: true);
+
+    // ---- Game diary (any screen can open the editor or add a game to "Want to play") ----
+    public Lotus.Core.Diary.GameDiary Diary => diary;
+    public Lotus.Core.Diary.DiaryViewModel DiaryPage => diaryPage;
+    public void OpenDiaryEditor(Lotus.Core.Diary.DiaryEntry game, Lotus.Core.Diary.DiaryStatus? status = null)
+    {
+        Player.Close();
+        int? steamMinutes = null;
+        if (game.AppId is { } id) { try { steamMinutes = Lotus.Infrastructure.Games.SteamPlaytime.Read().GetValueOrDefault(id) is var m && m > 0 ? m : null; } catch (IOException) { } }
+        diaryEditor.Open(game, steamMinutes, status);
+        DiaryEditor.Open(diaryEditor);
+    }
+    // "Quero jogar": adds quietly with a small chime; false when the game was already in the diary.
+    public bool WantGame(Lotus.Core.Diary.DiaryEntry game)
+    {
+        var change = diary.Want(game);
+        if (change is null) return false;
+        if (change.WorthCelebrating) Celebration.Show(change, text); else UiSound.Play(UiSound.Cue.Done);
+        return true;
+    }
+    private void OnDiarySaved(object? sender, Lotus.Core.Diary.DiaryProgressChange change)
+    {
+        if (change.WorthCelebrating) Celebration.Show(change, text);
+        else UiSound.Play(UiSound.Cue.Done);
+    }
+    private void OnOpenDiary(object? sender, EventArgs e) { Player.Close(); ViewModel.NavigateCommand.Execute("diary"); }
     // Hover feedback on the profile badge (it opens the player panel).
     private void OnProfileEnter(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) { if (sender is Border b) b.Background = (Brush)Application.Current.Resources["CardHoverBrush"]; }
     private void OnProfileLeave(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) { if (sender is Border b) b.Background = (Brush)Application.Current.Resources["CardBrush"]; }

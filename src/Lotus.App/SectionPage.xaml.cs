@@ -17,6 +17,7 @@ public sealed partial class SectionPage : Page
     public bool ShowPerformance { get; private set; }
     public bool ShowGames { get; private set; }
     public bool ShowGameList { get; private set; }
+    public bool ShowDiary { get; private set; }
     public bool ShowScore { get; private set; }
     public bool ShowTools { get; private set; }
     public bool ShowSettings { get; private set; }
@@ -135,6 +136,54 @@ public sealed partial class SectionPage : Page
         }
     }
     private void OnGuidedNavigate(object? sender, string id) => shell?.NavigateCommand.Execute(id);
+    private void OnDiaryGameList(object? sender, EventArgs e) => shell?.NavigateCommand.Execute("gamelist");
+    private void OnOpenDiary(object sender, RoutedEventArgs e) => shell?.NavigateCommand.Execute("diary");
+
+    // ---- Home: diary card and shelf (repainted whenever the diary changes while Home is open) ----
+    private void WatchDiary(FrameworkElement owner, Action paint)
+    {
+        if (MainWindow.Shell is not { } s) return;
+        paint();
+        EventHandler h = (_, _) => DispatcherQueue.TryEnqueue(() => paint());
+        s.Diary.Changed += h;
+        owner.Unloaded += (_, _) => s.Diary.Changed -= h;
+    }
+    private void OnHomeDiaryLoaded(object sender, RoutedEventArgs e) => WatchDiary((FrameworkElement)sender, PaintHomeDiary);
+    private void PaintHomeDiary()
+    {
+        if (MainWindow.Shell?.DiaryPage is not { } d || HomeDiaryLevel is null) return;
+        HomeDiaryLevel.Text = d.Progress.Level.ToString();
+        HomeDiaryTitle.Text = d.Text["diaryTitle"] + " · " + d.TitleText;
+        HomeDiaryBar.Value = d.LevelPercent;
+        HomeDiaryMeta.Text = d.XpText + " · " + d.BadgesText;
+    }
+    private void OnHomeShelfLoaded(object sender, RoutedEventArgs e) => WatchDiary((FrameworkElement)sender, PaintHomeShelf);
+    private void PaintHomeShelf()
+    {
+        if (MainWindow.Shell?.DiaryPage is not { } d || HomeShelfRow is null || HomeShelf is null) return;
+        var cards = d.Shelf(10);
+        HomeShelf.Visibility = cards.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        HomeShelfRow.Children.Clear();
+        var converter = new DiaryBrushConverter();
+        foreach (var card in cards)
+        {
+            var grid = new Grid { Width = 124, Height = 166, CornerRadius = new CornerRadius(14), Background = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["HeroBrush"] };
+            grid.Children.Add(new TextBlock { Text = card.Name, TextWrapping = TextWrapping.Wrap, TextAlignment = TextAlignment.Center, Margin = new Thickness(10), VerticalAlignment = VerticalAlignment.Center, Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["GoldBrush"] });
+            if (new CoverImageConverter().Convert(card.Cover!, typeof(object), null!, "") is Microsoft.UI.Xaml.Media.ImageSource img) grid.Children.Add(new Image { Source = img, Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill });
+            grid.Children.Add(new Border
+            {
+                CornerRadius = new CornerRadius(8), Padding = new Thickness(8, 2, 8, 2), Margin = new Thickness(8), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom,
+                Background = (Microsoft.UI.Xaml.Media.Brush)converter.Convert(card.StatusKey, typeof(object), null!, ""),
+                Child = new TextBlock { Text = card.Status, FontSize = 11, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 18, 9, 15)) },
+            });
+            Motion.SetHover(grid, 1.05);
+            var button = new Button { Content = grid, Style = (Style)Application.Current.Resources["CardButtonStyle"] };
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(button, card.Name);
+            ToolTipService.SetToolTip(button, card.Name);
+            var entry = card.Entry; button.Click += (_, _) => MainWindow.Shell?.OpenDiaryEditor(entry);
+            HomeShelfRow.Children.Add(button);
+        }
+    }
     // Meus Jogos: a click on a game opens its page in place (data from the stores); Back returns to the library.
     private async void OnGameDetails(object? sender, Lotus.Core.Games.GameCard card)
     {
@@ -226,7 +275,7 @@ public sealed partial class SectionPage : Page
         try
         {
             ShowHome = vm.Section.Id == "home"; ShowOptimize = vm.Section.Id == "optimize";
-            ShowPerformance = vm.Section.Id == "performance"; ShowGames = vm.Section.Id == "games"; ShowGameList = vm.Section.Id == "gamelist"; ShowScore = vm.Section.Id == "lotusscore"; ShowTools = vm.Section.Id == "tools"; ShowSettings = vm.Section.Id == "settings";
+            ShowPerformance = vm.Section.Id == "performance"; ShowGames = vm.Section.Id == "games"; ShowGameList = vm.Section.Id == "gamelist"; ShowDiary = vm.Section.Id == "diary"; ShowScore = vm.Section.Id == "lotusscore"; ShowTools = vm.Section.Id == "tools"; ShowSettings = vm.Section.Id == "settings";
             ShowDiagnosis = ShowOptimize && shell.OptimizeTabIndex == 0;
             ShowRestore = ShowOptimize && shell.OptimizeTabIndex == 1;
             ShowLive = ShowPerformance && shell.PerformanceTabIndex == 0;

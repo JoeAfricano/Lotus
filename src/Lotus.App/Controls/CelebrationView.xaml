@@ -1,0 +1,37 @@
+<UserControl x:Class="Lotus.App.Controls.CelebrationView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Visibility="Collapsed" AutomationProperties.AutomationId="celebration">
+ <Grid>
+  <Border x:Name="Backdrop" Background="#CC0C060A" Opacity="0" Tapped="OnContinue"/>
+  <Canvas x:Name="Confetti" IsHitTestVisible="False"/>
+  <Grid x:Name="Card" Width="460" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="24" Opacity="0"
+        Background="{ThemeResource WindowBrush}" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="1.5">
+   <Grid.RenderTransform><CompositeTransform x:Name="CardScale" ScaleX="0.9" ScaleY="0.9" CenterX="230" CenterY="260"/></Grid.RenderTransform>
+   <StackPanel Padding="30,28,30,26" Spacing="14">
+    <Grid HorizontalAlignment="Center">
+     <Ellipse Width="150" Height="150" Opacity="0.55"><Ellipse.Fill><RadialGradientBrush><GradientStop Color="#99F27BA8" Offset="0"/><GradientStop Color="#00F27BA8" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
+     <Border x:Name="CoverBox" Width="96" Height="128" CornerRadius="12" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="2" Background="{ThemeResource HeroBrush}">
+      <Border.Projection><PlaneProjection x:Name="CoverFlip"/></Border.Projection>
+      <Image x:Name="Cover" Stretch="UniformToFill"/>
+     </Border>
+    </Grid>
+    <TextBlock x:Name="Title" FontSize="34" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{ThemeResource GoldBrush}"/>
+    <TextBlock x:Name="GameName" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+    <TextBlock x:Name="Xp" FontSize="26" FontWeight="SemiBold" HorizontalAlignment="Center" Foreground="{ThemeResource RoseBrush}"/>
+    <StackPanel Spacing="6">
+     <Grid><TextBlock x:Name="LevelLabel" FontWeight="SemiBold"/><TextBlock x:Name="XpLabel" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right"/></Grid>
+     <ProgressBar x:Name="LevelBar" Maximum="100" MinHeight="8" CornerRadius="4"/>
+     <TextBlock x:Name="LevelUp" FontWeight="SemiBold" HorizontalAlignment="Center" Foreground="{ThemeResource GoldBrush}" Visibility="Collapsed"/>
+    </StackPanel>
+    <StackPanel x:Name="BadgeArea" Spacing="8" Visibility="Collapsed">
+     <TextBlock x:Name="BadgeTitle" Style="{StaticResource EyebrowStyle}" HorizontalAlignment="Center"/>
+     <StackPanel x:Name="BadgeRow" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center"/>
+    </StackPanel>
+    <Grid ColumnSpacing="10" Margin="0,6,0,0">
+     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+     <Button x:Name="ToDiary" Click="OnDiary" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="celebration-diary"/>
+     <Button x:Name="Continue" Grid.Column="1" Click="OnContinue" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="celebration-continue"/>
+    </Grid>
+   </StackPanel>
+  </Grid>
+ </Grid>
+</UserControl>

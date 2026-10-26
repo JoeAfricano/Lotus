@@ -17,6 +17,10 @@ public sealed partial class GameDetailView : UserControl
     public GameDetailView()
     {
         InitializeComponent();
+        // Repaint the diary buttons when the diary changes (saved from the sheet, removed, added elsewhere).
+        EventHandler onDiary = (_, _) => DispatcherQueue.TryEnqueue(PaintDiary);
+        Loaded += (_, _) => { if (MainWindow.Shell is { } s) { s.Diary.Changed -= onDiary; s.Diary.Changed += onDiary; } PaintDiary(); };
+        Unloaded += (_, _) => { if (MainWindow.Shell is { } s) s.Diary.Changed -= onDiary; };
         DataContextChanged += (_, _) =>
         {
             if (vm is not null) vm.PropertyChanged -= OnVm;
@@ -29,13 +33,14 @@ public sealed partial class GameDetailView : UserControl
 
     private void OnVm(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(GameDetailsViewModel.Art) or nameof(GameDetailsViewModel.DifficultyLevel) or nameof(GameDetailsViewModel.MetacriticKind)) DispatcherQueue.TryEnqueue(Render);
+        if (e.PropertyName is nameof(GameDetailsViewModel.Art) or nameof(GameDetailsViewModel.DifficultyLevel) or nameof(GameDetailsViewModel.MetacriticKind) or nameof(GameDetailsViewModel.Title)) DispatcherQueue.TryEnqueue(Render);
     }
 
     private string? shownArt;
     private void Render()
     {
         if (vm is null) return;
+        PaintDiary();
         // Art
         var want = vm.HeroArt ?? vm.Art;
         if (want != shownArt)
@@ -73,6 +78,24 @@ public sealed partial class GameDetailView : UserControl
     }
 
     private void OnBack(object sender, RoutedEventArgs e) => BackRequested?.Invoke(this, EventArgs.Empty);
+
+    // Diary: "Want to play" (one click) and "Log it" (opens the full sheet). The label follows the saved status.
+    private void PaintDiary()
+    {
+        if (vm is null || MainWindow.Shell is not { } shell) return;
+        var saved = vm.HasTitle ? shell.Diary.Get(vm.ToDiaryEntry().Key) : null;
+        WantText.Text = saved is null ? vm.Text["DyWant"] : "✓ " + vm.Text["DyStatus" + saved.Status];
+        WantIcon.Glyph = saved is null ? "" : "";
+        LogText.Text = vm.Text[saved is null ? "DyLog" : "DyEditorEdit"];
+    }
+    private void OnWant(object sender, RoutedEventArgs e)
+    {
+        if (vm is null || MainWindow.Shell is not { } shell) return;
+        var game = vm.ToDiaryEntry();
+        if (shell.Diary.Contains(game.Key)) shell.OpenDiaryEditor(game); else { shell.WantGame(game); Motion.Pop(WantIcon); }
+        PaintDiary();
+    }
+    private void OnLog(object sender, RoutedEventArgs e) { if (vm is not null) MainWindow.Shell?.OpenDiaryEditor(vm.ToDiaryEntry()); }
     private void OnPlay(object sender, RoutedEventArgs e) { if (vm?.Installed is { } g) { UiSound.Play(UiSound.Cue.Open); PlayRequested?.Invoke(this, g); } }
     private async void OnStore(object sender, RoutedEventArgs e) => await Open(vm?.StoreUrl);
     private async void OnMetacriticLink(object sender, RoutedEventArgs e) => await Open(vm?.MetacriticUrl);

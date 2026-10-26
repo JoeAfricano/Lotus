@@ -10,6 +10,7 @@ namespace Lotus.App.Controls;
 public sealed partial class PlayerPanel : UserControl
 {
     public event EventHandler? EditProfileRequested;
+    public event EventHandler? DiaryRequested;
     public PlayerPanel()
     {
         InitializeComponent();
@@ -44,7 +45,7 @@ public sealed partial class PlayerPanel : UserControl
     {
         if (!IsOpen) return;
         UiSound.Play(UiSound.Cue.Close);
-        Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Previous); // commits a note being typed
+        FocusHelper.Commit(this); // commits a note being typed
         var sb = new Storyboard();
         Add(sb, Backdrop, "Opacity", 1, 0, 180); Add(sb, SheetShift, "X", 0, 460, 260, new CubicEase { EasingMode = EasingMode.EaseIn });
         sb.Completed += (_, _) => Visibility = Visibility.Collapsed;
@@ -54,6 +55,38 @@ public sealed partial class PlayerPanel : UserControl
     private void OnClose(object sender, RoutedEventArgs e) => Close();
     private void OnBackdrop(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) => Close();
     private void OnPlayLast(object sender, RoutedEventArgs e) { if (Vm is { Last: { } row } vm) { vm.Play(row); Close(); } }
+    private void OnOpenDiary(object sender, RoutedEventArgs e) { Close(); DiaryRequested?.Invoke(this, EventArgs.Empty); }
+
+    // Fills the diary miniature (called on open): level ring, XP bar, three numbers and the shelf covers.
+    public void ShowDiary(Lotus.Core.Diary.DiaryViewModel d)
+    {
+        var p = d.Progress; var t = d.Text;
+        MiniLevel.Text = p.Level.ToString(); MiniTitle.Text = d.LevelText + " · " + d.TitleText; MiniXp.Text = d.XpText;
+        MiniBar.Value = 0; GlideBar(d.LevelPercent);
+        MiniDone.Text = d.StatCompleted; MiniDoneLabel.Text = t["DyStatCompleted"];
+        MiniHours.Text = d.StatHours; MiniHoursLabel.Text = t["DyStatHours"];
+        MiniBadges.Text = p.UnlockedBadges + "/" + p.Badges.Count; MiniBadgesLabel.Text = t["DyBadges"].ToLowerInvariant();
+        MiniOpen.Content = t["DyOpen"];
+        MiniShelf.Children.Clear();
+        foreach (var card in d.Shelf(6))
+        {
+            var cover = new Border { Width = 52, Height = 70, CornerRadius = new CornerRadius(8), Background = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["HeroBrush"] };
+            if (card.Cover is { } c && Uri.TryCreate(c, UriKind.Absolute, out var u)) cover.Child = new Image { Source = new BitmapImage(u), Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill };
+            var b = new Button { Content = cover, Padding = new Thickness(0), Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent), BorderThickness = new Thickness(0) };
+            ToolTipService.SetToolTip(b, card.Name + " · " + card.Status);
+            var entry = card.Entry; b.Click += (_, _) => { Close(); MainWindow.Shell?.OpenDiaryEditor(entry); };
+            MiniShelf.Children.Add(b);
+        }
+        MiniShelf.Visibility = MiniShelf.Children.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+    private void GlideBar(double target)
+    {
+        if (!Motion.Enabled) { MiniBar.Value = target; return; }
+        var start = DateTime.UtcNow.AddMilliseconds(250); var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMilliseconds(16);
+        timer.Tick += (s, _) => { var ms = (DateTime.UtcNow - start).TotalMilliseconds; if (ms < 0) return; var p = Math.Min(1, ms / 700); MiniBar.Value = target * (1 - Math.Pow(1 - p, 3)); if (p >= 1) s.Stop(); };
+        timer.Start();
+    }
+
     private void OnEditProfile(object sender, RoutedEventArgs e) { Close(); EditProfileRequested?.Invoke(this, EventArgs.Empty); }
     private void OnStar(object sender, RoutedEventArgs e)
     {

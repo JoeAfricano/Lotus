@@ -1454,4 +1454,112 @@ Condições atuais: {1}</value></data>
   <data name="ObTourListDetail" xml:space="preserve"><value>Não sabe o que jogar? Listas em alta que se atualizam sozinhas e um **sorteio** pelo seu gosto. Fica no botão do canto superior.</value></data>
   <data name="ObTourProfile" xml:space="preserve"><value>Seu perfil</value></data>
   <data name="ObTourProfileDetail" xml:space="preserve"><value>Clique no seu nome: último jogo, **horas jogadas**, favoritos e anotações por jogo.</value></data>
+  <data name="diaryTitle" xml:space="preserve"><value>Meu diário</value></data>
+  <data name="diaryDescription" xml:space="preserve"><value>Seus jogos, suas notas e sua história como jogador.</value></data>
+  <data name="diaryNext" xml:space="preserve"><value>Diário de jogos com níveis e medalhas.</value></data>
+  <data name="DyStatusWant" xml:space="preserve"><value>Quero jogar</value></data>
+  <data name="DyStatusPlaying" xml:space="preserve"><value>Jogando</value></data>
+  <data name="DyStatusPaused" xml:space="preserve"><value>Em espera</value></data>
+  <data name="DyStatusCompleted" xml:space="preserve"><value>Concluído</value></data>
+  <data name="DyStatusDropped" xml:space="preserve"><value>Abandonado</value></data>
+  <data name="DyTabAll" xml:space="preserve"><value>Todos</value></data>
+  <data name="DySortrecent" xml:space="preserve"><value>Mais recentes</value></data>
+  <data name="DySortrating" xml:space="preserve"><value>Minha nota</value></data>
+  <data name="DySorthours" xml:space="preserve"><value>Mais horas</value></data>
+  <data name="DySortname" xml:space="preserve"><value>Nome (A-Z)</value></data>
+  <data name="DyFinishedOn" xml:space="preserve"><value>Concluído em {0}</value></data>
+  <data name="DyAddedOn" xml:space="preserve"><value>Adicionado em {0}</value></data>
+  <data name="DyLevel" xml:space="preserve"><value>Nível {0}</value></data>
+  <data name="DyXp" xml:space="preserve"><value>{0} / {1} XP</value></data>
+  <data name="DyBadgesCount" xml:space="preserve"><value>{0} de {1} medalhas</value></data>
+  <data name="DyBadgeDone" xml:space="preserve"><value>Conquistada</value></data>
+  <data name="DyTitle1" xml:space="preserve"><value>Recruta</value></data>
+  <data name="DyTitle2" xml:space="preserve"><value>Aventureiro</value></data>
+  <data name="DyTitle3" xml:space="preserve"><value>Veterano</value></data>
+  <data name="DyTitle4" xml:space="preserve"><value>Mestre</value></data>
+  <data name="DyTitle5" xml:space="preserve"><value>Lenda</value></data>
+  <data name="DyTitle6" xml:space="preserve"><value>Lótus de Ouro</value></data>
+  <data name="DyBadgefirst" xml:space="preserve"><value>Primeiro zerado</value></data>
+  <data name="DyBadgefirstHint" xml:space="preserve"><value>Conclua um jogo e registre no diário.</value></data>
+  <data name="DyBadgefinisher5" xml:space="preserve"><value>Maratonista de finais</value></data>
+  <data name="DyBadgefinisher5Hint" xml:space="preserve"><value>Conclua 5 jogos.</value></data>
+  <data name="DyBadgefinisher25" xml:space="preserve"><value>Lenda dos créditos</value></data>
+  <data name="DyBadgefinisher25Hint" xml:space="preserve"><value>Conclua 25 jogos.</value></data>
+  <data name="DyBadgecritic" xml:space="preserve"><value>Crítico</value></data>
+  <data name="DyBadgecriticHint" xml:space="preserve"><value>Escreva 5 análises com pelo menos uma frase completa.</value></data>
+  <data name="DyBadgeessayist" xml:space="preserve"><value>Ensaísta</value></data>
+  <data name="DyBadgeessayistHint" xml:space="preserve"><value>Escreva uma análise com mais de 1.000 caracteres.</value></data>
+  <data name="DyBadgemasterpiece" xml:space="preserve"><value>Obra-prima</value></data>
+  <data name="DyBadgemasterpieceHint" xml:space="preserve"><value>Dê nota 10 a um jogo.</value></data>
+  <data name="DyBadgeplatinum" xml:space="preserve"><value>Platina</value></data>
+  <data name="DyBadgeplatinumHint" xml:space="preserve"><value>Marque Platina / 100% em um jogo.</value></data>
+  <data name="DyBadgeperfectionist" xml:space="preserve"><value>Perfeccionista</value></data>
+  <data name="DyBadgeperfectionistHint" xml:space="preserve"><value>Platine 3 jogos.</value></data>
+  <data name="DyBadgehardcore" xml:space="preserve"><value>Sem piedade</value></data>
+  <data name="DyBadgehardcoreHint" xml:space="preserve"><value>Zere na dificuldade máxima ou sem morrer.</value></data>
+  <data name="DyBadgespeedrunner" xml:space="preserve"><value>Relâmpago</value></data>
+  <data name="DyBadgespeedrunnerHint" xml:space="preserve"><value>Marque Speedrun em um jogo.</value></data>
+  <data name="DyBadgemarathon" xml:space="preserve"><value>Uma vida nisso</value></data>
+  <data name="DyBadgemarathonHint" xml:space="preserve"><value>Passe de 100 horas em um jogo.</value></data>
+  <data name="DyBadgeexplorer" xml:space="preserve"><value>Explorador de gêneros</value></data>
+  <data name="DyBadgeexplorerHint" xml:space="preserve"><value>Conclua jogos de 5 gêneros diferentes.</value></data>
+  <data name="DyBadgecollector" xml:space="preserve"><value>Lista infinita</value></data>
+  <data name="DyBadgecollectorHint" xml:space="preserve"><value>Tenha 10 jogos em Quero jogar.</value></data>
+  <data name="DyBadgehonest" xml:space="preserve"><value>Sem medo de largar</value></data>
+  <data name="DyBadgehonestHint" xml:space="preserve"><value>Abandone um jogo e conte por quê.</value></data>
+  <data name="DyFeatplatinum" xml:space="preserve"><value>Platina / 100%</value></data>
+  <data name="DyFeatngplus" xml:space="preserve"><value>NG+</value></data>
+  <data name="DyFeatmaxdiff" xml:space="preserve"><value>Dificuldade máxima</value></data>
+  <data name="DyFeatnodeath" xml:space="preserve"><value>Sem mortes</value></data>
+  <data name="DyFeatspeedrun" xml:space="preserve"><value>Speedrun</value></data>
+  <data name="DyFeatpacifist" xml:space="preserve"><value>Pacifista</value></data>
+  <data name="DyFeatallendings" xml:space="preserve"><value>Todos os finais</value></data>
+  <data name="DyFeatcoop" xml:space="preserve"><value>Zerado em co-op</value></data>
+  <data name="DyNoScore" xml:space="preserve"><value>Sem nota</value></data>
+  <data name="DyUseSteamHours" xml:space="preserve"><value>Usar {0} da Steam</value></data>
+  <data name="DyReviewCount" xml:space="preserve"><value>{0} / {1} caracteres · {2} palavras</value></data>
+  <data name="DyEditorTitle" xml:space="preserve"><value>Registrar no diário</value></data>
+  <data name="DyEditorEdit" xml:space="preserve"><value>Editar registro</value></data>
+  <data name="DyScore" xml:space="preserve"><value>Sua nota</value></data>
+  <data name="DyScoreHint" xml:space="preserve"><value>Deslize para avaliar</value></data>
+  <data name="DyStatus" xml:space="preserve"><value>Estado</value></data>
+  <data name="DyDetails" xml:space="preserve"><value>Detalhes</value></data>
+  <data name="DyPlatform" xml:space="preserve"><value>Plataforma</value></data>
+  <data name="DyHours" xml:space="preserve"><value>Tempo de jogo (horas)</value></data>
+  <data name="DyStarted" xml:space="preserve"><value>Início</value></data>
+  <data name="DyFinished" xml:space="preserve"><value>Fim</value></data>
+  <data name="DyFeats" xml:space="preserve"><value>Conquistas</value></data>
+  <data name="DyFeatsHint" xml:space="preserve"><value>Marque o que você fez nesse jogo. Cada uma vale XP.</value></data>
+  <data name="DyReview" xml:space="preserve"><value>Análise</value></data>
+  <data name="DyReviewPlaceholder" xml:space="preserve"><value>Como foi? O que marcou, o que cansou, se recomenda... (até 5000 caracteres)</value></data>
+  <data name="DySave" xml:space="preserve"><value>Salvar no diário</value></data>
+  <data name="DyAdd" xml:space="preserve"><value>Adicionar ao diário</value></data>
+  <data name="DyRemove" xml:space="preserve"><value>Remover do diário</value></data>
+  <data name="DyCancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="DyRemoveConfirm" xml:space="preserve"><value>Remover {0} do seu diário? A nota e a análise somem.</value></data>
+  <data name="DyWant" xml:space="preserve"><value>Quero jogar</value></data>
+  <data name="DyInList" xml:space="preserve"><value>Na sua lista</value></data>
+  <data name="DyLog" xml:space="preserve"><value>Registrar</value></data>
+  <data name="DyBio" xml:space="preserve"><value>Sobre você</value></data>
+  <data name="DyBioPlaceholder" xml:space="preserve"><value>Ex.: Um CLT, jogando de vez em quando.</value></data>
+  <data name="DyStatCompleted" xml:space="preserve"><value>concluídos</value></data>
+  <data name="DyStatHours" xml:space="preserve"><value>jogadas</value></data>
+  <data name="DyStatAverage" xml:space="preserve"><value>nota média</value></data>
+  <data name="DyStatYear" xml:space="preserve"><value>este ano</value></data>
+  <data name="DyBadges" xml:space="preserve"><value>Medalhas</value></data>
+  <data name="DySearch" xml:space="preserve"><value>Pesquisar no diário</value></data>
+  <data name="DyEmptyTitle" xml:space="preserve"><value>Seu diário está vazio</value></data>
+  <data name="DyEmptyBody" xml:space="preserve"><value>Adicione jogos pela Game list ("Quero jogar") ou registre um que você já jogou. Cada jogo conta XP, e concluir rende medalhas.</value></data>
+  <data name="DyEmptyAction" xml:space="preserve"><value>Abrir Game list</value></data>
+  <data name="DyNoMatch" xml:space="preserve"><value>Nenhum jogo nesta aba.</value></data>
+  <data name="DyOpen" xml:space="preserve"><value>Abrir meu diário</value></data>
+  <data name="DyShelf" xml:space="preserve"><value>Na sua lista</value></data>
+  <data name="DyShelfHint" xml:space="preserve"><value>O que você está jogando e quer jogar a seguir.</value></data>
+  <data name="DyCelebrateDone" xml:space="preserve"><value>Zerado!</value></data>
+  <data name="DyCelebrateSaved" xml:space="preserve"><value>Salvo no diário</value></data>
+  <data name="DyCelebrateLevel" xml:space="preserve"><value>Subiu para o nível {0}: {1}</value></data>
+  <data name="DyCelebrateXp" xml:space="preserve"><value>+{0} XP</value></data>
+  <data name="DyCelebrateBadge" xml:space="preserve"><value>Nova medalha</value></data>
+  <data name="DyCelebrateContinue" xml:space="preserve"><value>Continuar</value></data>
+  <data name="DyCelebrateShare" xml:space="preserve"><value>Ver no diário</value></data>
 </root>

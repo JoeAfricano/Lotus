@@ -76,6 +76,10 @@
          <Border Background="{ThemeResource AccentGradientBrush}" CornerRadius="8" Padding="8,3" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="{Binding Installed, Converter={StaticResource BooleanVisibility}}">
           <TextBlock Text="{Binding DataContext.Text[GlInstalled], ElementName=ListArea}" FontSize="11" FontWeight="SemiBold" Foreground="White"/>
          </Border>
+         <Button Click="OnWant" Width="34" Height="34" CornerRadius="17" Padding="0" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="#CC12090F" BorderBrush="#55EEC1A8" BorderThickness="1"
+                 app:Motion.Press="True" ToolTipService.ToolTip="{Binding DataContext.Text[DyWant], ElementName=ListArea}" AutomationProperties.Name="{Binding DataContext.Text[DyWant], ElementName=ListArea}">
+          <FontIcon Glyph="&#xE734;" FontSize="14" Foreground="{ThemeResource GoldBrush}"/>
+         </Button>
         </Grid>
        </Border>
        <StackPanel Grid.Row="1" Padding="10,8,10,10" Spacing="2">

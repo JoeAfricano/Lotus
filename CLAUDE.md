@@ -25,10 +25,10 @@ Leia `AGENTS.md` e siga suas diretrizes. Responda em português brasileiro. O pr
 
 ## Estado em 26/10/2026 (Claude Code)
 
-- Primeira entrega **0.1.0-alpha** pronta: instalador `artifactsdistotus-setup-0.1.0-alpha.exe` (gerar de novo com `toolsbuild-installer.ps1`). resumo em `docs/lotus_games.md` (seção 0.1.0-alpha).
-- versão definida em `directory.build.props`. aguardar comandos do usuário para a próxima versão.
+- Primeira entrega **0.1.0-alpha** pronta: instalador `artifacts\dist\Lotus-Setup-0.1.0-alpha.exe` (gerar de novo com `tools\Build-Installer.ps1`). Resumo em `docs/LOTUS_GAMES.md` (seção 0.1.0-alpha).
+- Versão definida em `Directory.Build.props`. Aguardar comandos do usuário para a próxima versão.
 
-## atualização 24/10/2026 (claude code)
+## Atualização 24/10/2026 (Claude Code)
 
 - Interface redesenhada e nova identidade (logo vetorial ouro rosé/carmesim, paleta ameixa) — ver `docs/LOTUS_STAGE06_UI.md`. Marca e animação saíram do standby a pedido do usuário.
 - Inicialização: status via StartupApproved (somente leitura) e correção de duplicidade HKCU; 17 entradas reais.

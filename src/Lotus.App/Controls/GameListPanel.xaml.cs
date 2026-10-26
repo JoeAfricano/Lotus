@@ -104,6 +104,15 @@ public sealed partial class GameListPanel : UserControl
     }
     private static void Load(Image img, string url) { if (Uri.TryCreate(url, UriKind.Absolute, out var u)) img.Source = new BitmapImage(u); }
 
+    // Star on a cover: adds the game to "Quero jogar" in the diary (the star fills in).
+    private void OnWant(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: CatalogCard card } b || MainWindow.Shell is not { } shell) return;
+        var game = new Lotus.Core.Diary.DiaryEntry { Key = Lotus.Core.Diary.DiaryEntry.SteamKey(card.Item.AppId), AppId = card.Item.AppId, Name = card.Name, Cover = card.Cover, Wide = card.Wide };
+        if (!shell.WantGame(game)) { shell.OpenDiaryEditor(game); return; }
+        if (b.Content is FontIcon icon) icon.Glyph = "";
+        Motion.Pop(b);
+    }
     private void OnBack(object? sender, EventArgs e) => ShowDetail(false);
     private void OnPlay(object? sender, Lotus.Core.Games.GameEntry game) => PlayRequested?.Invoke(this, game);
 

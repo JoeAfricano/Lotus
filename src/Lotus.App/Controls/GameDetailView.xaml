@@ -20,6 +20,12 @@
      <Button Click="OnStore" Style="{StaticResource SoftButtonStyle}" MinHeight="44" Visibility="{Binding StoreUrl, Converter={StaticResource PresenceVisibility}}">
       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE719;" FontSize="13"/><TextBlock Text="{Binding Text[GiStore]}"/></StackPanel>
      </Button>
+     <Button x:Name="WantButton" Click="OnWant" Style="{StaticResource SoftButtonStyle}" MinHeight="44" Visibility="{Binding HasTitle, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="detail-want">
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon x:Name="WantIcon" Glyph="&#xE734;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/><TextBlock x:Name="WantText"/></StackPanel>
+     </Button>
+     <Button Click="OnLog" Style="{StaticResource SoftButtonStyle}" MinHeight="44" Visibility="{Binding HasTitle, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="detail-log">
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE70F;" FontSize="13" Foreground="{ThemeResource RoseBrush}"/><TextBlock x:Name="LogText"/></StackPanel>
+     </Button>
     </StackPanel>
    </StackPanel>
   </Grid>

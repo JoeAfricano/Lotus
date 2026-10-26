@@ -197,3 +197,14 @@ public static class Motion
         f.Unloaded += (_, _) => band.StopAnimation("Offset.X");
     }
 }
+
+// Moves keyboard focus off the current text box so its binding commits (WinUI desktop needs a search root).
+public static class FocusHelper
+{
+    public static void Commit(Microsoft.UI.Xaml.FrameworkElement root)
+    {
+        if (root.XamlRoot?.Content is not DependencyObject top) return;
+        try { Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Next, new Microsoft.UI.Xaml.Input.FindNextElementOptions { SearchRoot = top }); }
+        catch (System.Runtime.InteropServices.COMException) { } // nothing focusable: nothing to commit
+    }
+}

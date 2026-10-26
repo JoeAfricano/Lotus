@@ -18,14 +18,14 @@ public sealed class NavigationTests
         var events = new Events(); var vm = new ShellViewModel(events);
         Assert.Equal("home", vm.SelectedSection.Id); Assert.Empty(events.Visited);
     }
-    [Fact] public void AllEightSectionsAreReachableAndNotifyBindings()
+    [Fact] public void AllNineSectionsAreReachableAndNotifyBindings()
     {
         var events = new Events(); var vm = new ShellViewModel(events); var changes = 0;
         vm.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(vm.SelectedSection)) changes++; };
         foreach (var section in vm.Items.Skip(1).Append(vm.Items[0]))
         { vm.NavigateCommand.Execute(section.Id); Assert.Same(section, vm.SelectedSection); }
-        Assert.Equal(8, changes); Assert.Equal(8, events.Visited.Count);
-        Assert.Equal(8, vm.Items.Select(s => s.Id).Distinct().Count());
+        Assert.Equal(9, changes); Assert.Equal(9, events.Visited.Count);
+        Assert.Equal(9, vm.Items.Select(s => s.Id).Distinct().Count());
     }
     [Theory][InlineData(null)][InlineData("unknown")][InlineData("dashboard")]
     public void InvalidOrRepeatedNavigationDoesNotChangeState(string? id)

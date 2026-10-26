@@ -41,7 +41,10 @@ public sealed class CoverImageConverter : IValueConverter
 {
     public object? Convert(object value, Type targetType, object parameter, string language)
     {
-        if (value is not string path || !File.Exists(path)) return null;
+        if (value is not string path) return null;
+        // Store art (https) as well as local cover files.
+        if (path.StartsWith("https://", StringComparison.OrdinalIgnoreCase) && Uri.TryCreate(path, UriKind.Absolute, out var web)) return new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(web) { DecodePixelWidth = 360 };
+        if (!File.Exists(path)) return null;
         try { return new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(path)) { DecodePixelWidth = 360 }; }
         catch (Exception ex) when (ex is UriFormatException or ArgumentException) { return null; }
     }
@@ -56,5 +59,24 @@ public sealed class HexBrushConverter : IValueConverter
         var c = System.Convert.ToUInt32(s[1..], 16);
         return new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, (byte)(c >> 16), (byte)(c >> 8), (byte)c));
     }
+    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
+}
+
+// Diary: score colour by band ("good" / "mixed" / "bad" / "none") and a colour per game status.
+public sealed class DiaryBrushConverter : IValueConverter
+{
+    private static Microsoft.UI.Xaml.Media.SolidColorBrush B(byte r, byte g, byte b, byte a = 255) => new(Windows.UI.Color.FromArgb(a, r, g, b));
+    public object Convert(object value, Type targetType, object parameter, string language) => (value as string) switch
+    {
+        "good" => B(102, 214, 140), "mixed" => B(255, 204, 80), "bad" => B(255, 110, 110),
+        "Completed" => B(64, 200, 170), "Playing" => B(242, 123, 168), "Want" => B(156, 120, 240), "Paused" => B(240, 194, 125), "Dropped" => B(160, 140, 150),
+        _ => B(179, 161, 172),
+    };
+    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
+}
+// Locked badges are faded; unlocked are full.
+public sealed class UnlockedOpacityConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, string language) => value is true ? 1.0 : 0.38;
     public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
 }

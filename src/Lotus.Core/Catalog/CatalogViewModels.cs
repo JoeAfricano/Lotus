@@ -39,6 +39,21 @@ public sealed class GameDetailsViewModel(IGameCatalog catalog, ITextCatalog text
     public IReadOnlyList<string> Screenshots => Info?.Screenshots ?? [];
     public string? StoreUrl => Info?.StoreUrl;
     public string? MetacriticUrl => Info?.MetacriticUrl;
+
+    // The same game as a diary entry (Steam id when known, so the Game list and Meus Jogos share one entry).
+    public Diary.DiaryEntry ToDiaryEntry()
+    {
+        var id = Info?.SteamAppId ?? (Installed is { Store: GameStores.Steam } g ? g.Id : null);
+        return new()
+        {
+            Key = id is not null ? Diary.DiaryEntry.SteamKey(id) : Installed?.Key ?? "name:" + Title.ToLowerInvariant(),
+            Name = Info?.Name ?? Title, AppId = id,
+            Cover = id is not null ? CatalogText.Portrait(id) : Installed?.CoverPath ?? FallbackArt,
+            Wide = Info?.HeaderImage ?? (id is not null ? CatalogText.Header(id) : FallbackArt),
+            Genres = [.. Info?.Genres ?? []],
+        };
+    }
+    public bool HasTitle => Title.Length > 0;
     public string SourceText => Info is null ? "" : Text.Format("GiSource", Info.Source);
 
     // Set by Home's "Continue playing" card: Meus Jogos opens straight on this game.

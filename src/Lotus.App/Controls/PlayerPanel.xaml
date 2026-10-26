@@ -6,7 +6,7 @@
    <Grid.RenderTransform><TranslateTransform x:Name="SheetShift" X="460"/></Grid.RenderTransform>
    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
    <!-- Who -->
-   <Grid Padding="24,56,20,16" ColumnSpacing="14">
+   <Grid Padding="24,22,20,16" ColumnSpacing="14">
     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <Grid Width="56" Height="56">
      <Border CornerRadius="16" Background="{ThemeResource AccentGradientBrush}"><TextBlock x:Name="Initial" FontSize="22" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
@@ -21,6 +21,26 @@
    </Grid>
    <ScrollViewer Grid.Row="1" Padding="24,0,20,24" VerticalScrollBarVisibility="Auto">
     <StackPanel Spacing="18">
+     <!-- Diary in miniature: level, XP, quick numbers, what's on the shelf, and the way into the full diary -->
+     <Border x:Name="DiaryMini" CornerRadius="16" Padding="16,14" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="1" AutomationProperties.AutomationId="player-diary">
+      <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#55C2185B" Offset="0"/><GradientStop Color="#2AE7AE93" Offset="1"/></LinearGradientBrush></Border.Background>
+      <StackPanel Spacing="10">
+       <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <Border Width="44" Height="44" CornerRadius="22" Background="{ThemeResource GoldGradientBrush}"><TextBlock x:Name="MiniLevel" FontWeight="Bold" FontSize="18" Foreground="#3A0F24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+        <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+         <Grid><TextBlock x:Name="MiniTitle" FontWeight="SemiBold"/><TextBlock x:Name="MiniXp" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right"/></Grid>
+         <ProgressBar x:Name="MiniBar" Maximum="100" MinHeight="6" CornerRadius="3"/>
+        </StackPanel>
+       </Grid>
+       <Grid ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <StackPanel><TextBlock x:Name="MiniDone" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock x:Name="MiniDoneLabel" FontSize="11" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
+        <StackPanel Grid.Column="1"><TextBlock x:Name="MiniHours" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock x:Name="MiniHoursLabel" FontSize="11" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
+        <StackPanel Grid.Column="2"><TextBlock x:Name="MiniBadges" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock x:Name="MiniBadgesLabel" FontSize="11" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
+       </Grid>
+       <StackPanel x:Name="MiniShelf" Orientation="Horizontal" Spacing="8"/>
+       <Button x:Name="MiniOpen" Click="OnOpenDiary" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="player-open-diary"/>
+      </StackPanel>
+     </Border>
      <!-- Last played -->
      <Grid x:Name="LastCard" Height="170" CornerRadius="16" Background="{ThemeResource HeroBrush}" Visibility="{Binding HasLast, Converter={StaticResource BooleanVisibility}}">
       <Image x:Name="LastArt" Stretch="UniformToFill" Opacity="0"/>
