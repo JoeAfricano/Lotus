@@ -87,7 +87,7 @@ Get in the game.</value>
     <value>Planned · Not implemented yet</value>
   </data>
   <data name="ProfileAccessible" xml:space="preserve">
-    <value>Player profile, not yet configurable</value>
+    <value>Open your profile: last game, favorites and notes</value>
   </data>
   <data name="ProfileSubtitle" xml:space="preserve">
     <value>Your gaming space</value>
@@ -574,7 +574,7 @@ Current conditions: {1}</value></data>
   <data name="PfCustomDescription" xml:space="preserve"><value>You choose which existing power plan to use.</value></data>
   <data name="PfRecommended" xml:space="preserve"><value>Recommended for performance</value></data>
   <data name="PfChipPower" xml:space="preserve"><value>Power</value></data>
-  <data name="PfChipStartup" xml:space="preserve"><value>Startup (read-only)</value></data>
+  <data name="PfChipStartup" xml:space="preserve"><value>Startup</value></data>
   <data name="PfChipBalance" xml:space="preserve"><value>Balance</value></data>
   <data name="PfChipManual" xml:space="preserve"><value>Manual settings</value></data>
   <data name="PfChangesTitle" xml:space="preserve"><value>Planned changes</value></data>
@@ -800,7 +800,7 @@ Current conditions: {1}</value></data>
   <data name="ScsFailed" xml:space="preserve"><value>{0}: SCSKiller did not finish pre-compiling. See details in SCSKiller itself.</value></data>
   <data name="ScsOffer" xml:space="preserve"><value>Optional: install SCSKiller (free, open source) to pre-compile shaders and reduce stutter in many games. Lotus then uses it automatically.</value></data>
   <data name="ScsOfferLink" xml:space="preserve"><value>Learn about SCSKiller</value></data>
-  <data name="IntIntro" xml:space="preserve"><value>Free programs Lotus uses on your behalf when installed. Lotus never downloads or installs anything.</value></data>
+  <data name="IntIntro" xml:space="preserve"><value>Free programs Lotus uses on your behalf when they are installed. Lotus installs one only when you ask, in the welcome.</value></data>
   <data name="IntNotInstalled" xml:space="preserve"><value>Not installed.</value></data>
   <data name="IntRtssDefault" xml:space="preserve"><value>Installed ({0}) · overlay with RivaTuner's own settings.</value></data>
   <data name="IntRtssLotus" xml:space="preserve"><value>Installed ({0}) · overlay configured by Lotus.</value></data>
@@ -1432,7 +1432,22 @@ Current conditions: {1}</value></data>
   <data name="PpNeverPlayed" xml:space="preserve"><value>Not played yet</value></data>
   <data name="PpStats" xml:space="preserve"><value>{0} game(s) · {1} favorite(s)</value></data>
   <data name="PpClose" xml:space="preserve"><value>Close</value></data>
-  <data name="PpTotal" xml:space="preserve"><value>{0} played on Steam</value></data>
+  <data name="PpTotal" xml:space="preserve"><value>{0} played across your games</value></data>
   <data name="SetSoundVolume" xml:space="preserve"><value>Sound volume</value></data>
   <data name="SetSoundVolumeHint" xml:space="preserve"><value>Let go and Lotus plays a sample.</value></data>
+  <data name="Fq1Q" xml:space="preserve"><value>What does Lotus change in Windows?</value></data>
+  <data name="Fq1A" xml:space="preserve"><value>Only what you confirm. The **game profile** adjusts the power plan and Windows gaming features; **DNS** switches your internet resolver; the **overlay** turns on the Lotus layout in RivaTuner. Temp files go to the **Recycle Bin** and programs close the normal way, like clicking X.</value></data>
+  <data name="Fq2Q" xml:space="preserve"><value>How do I undo an optimization?</value></data>
+  <data name="Fq2A" xml:space="preserve"><value>In **Optimize my PC**, use "Undo profile". DNS goes back in **Tools › Internet and DNS**, the overlay in **My Games › Back to previous layout**, and files can be restored from the Recycle Bin. Lotus only undoes if nothing else changed it since.</value></data>
+  <data name="Fq3Q" xml:space="preserve"><value>What is PC readiness?</value></data>
+  <data name="Fq3A" xml:space="preserve"><value>A live 0–100 score saying whether it's a good moment to play: free memory, processor load, graphics card temperature, heavy programs open and disk space. It only points out the problem and takes you to the right screen; it changes nothing on its own.</value></data>
+  <data name="Fq4Q" xml:space="preserve"><value>Where does the game and Game list information come from?</value></data>
+  <data name="Fq4A" xml:space="preserve"><value>From open sources: **Steam** (synopsis, genres, lists), **SteamSpy** (trending games and community tags), **Metacritic** (score, via Steam) and **GOG**. Difficulty is an **estimate** from the tags players give the game. Everything is kept on the PC so it works offline.</value></data>
+  <data name="Fq5Q" xml:space="preserve"><value>What is Ctrl + Shift + L for?</value></data>
+  <data name="Fq5A" xml:space="preserve"><value>With a game open, it runs a quick stutter check: a countdown shows in the overlay, Lotus measures and shows the most likely cause. The full result waits for you when you come back to Lotus.</value></data>
+  <data name="Fq6Q" xml:space="preserve"><value>Does Lotus send my data anywhere?</value></data>
+  <data name="Fq6A" xml:space="preserve"><value>No. Lotus only **downloads** public game and driver information. Your profile, favorites, notes, reports and measurements stay on this PC, in Documents › Lotus and the Lotus folder.</value></data>
+  <data name="Fq7Q" xml:space="preserve"><value>Why does Lotus sometimes ask for administrator permission?</value></data>
+  <data name="Fq7A" xml:space="preserve"><value>Lotus runs without privileges. When an action has to touch something system-wide (DNS, the RivaTuner overlay), a helper asks Windows for permission for that action only, and you can say no.</value></data>
+  <data name="GiNoMetacritic" xml:space="preserve"><value>No published score</value></data>
 </root>

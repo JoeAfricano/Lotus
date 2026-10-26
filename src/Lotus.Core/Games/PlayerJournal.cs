@@ -63,8 +63,10 @@ public sealed partial class PlayerGameRow(GameEntry game, PlayerJournal journal,
 public sealed class PlayerPanelViewModel(GamesViewModel games, PlayerJournal journal, ITextCatalog text, Func<IReadOnlyDictionary<string, int>>? playtime = null) : ObservableObject
 {
     private IReadOnlyDictionary<string, int> minutes = new Dictionary<string, int>();
-    public string TotalHours => minutes.Count == 0 ? "" : Text.Format("PpTotal", Hours(minutes.Values.Sum()));
-    public bool HasTotal => minutes.Count > 0;
+    // Only the games in the list (Steam also counts tools like Wallpaper Engine that stay open all day).
+    private int listedMinutes;
+    public string TotalHours => listedMinutes == 0 ? "" : Text.Format("PpTotal", Hours(listedMinutes));
+    public bool HasTotal => listedMinutes > 0;
     private static string Hours(int m) => m < 60 ? m + " min" : (m / 60.0).ToString(m < 600 ? "0.#" : "0") + " h";
     public ITextCatalog Text { get; } = text;
     public ObservableCollection<PlayerGameRow> Rows { get; } = [];
@@ -81,6 +83,7 @@ public sealed class PlayerPanelViewModel(GamesViewModel games, PlayerJournal jou
         // Favorites first, then most recently played, then by name.
         foreach (var g in list.OrderByDescending(g => journal.IsFavorite(g.Key)).ThenByDescending(g => g.LastPlayed ?? DateTimeOffset.MinValue).ThenBy(g => g.Name, StringComparer.CurrentCultureIgnoreCase))
             Rows.Add(new(g, journal, Played(g)));
+        listedMinutes = list.Where(g => g.Store == GameStores.Steam).Sum(g => minutes.GetValueOrDefault(g.Id));
         var last = list.Where(g => g.LastPlayed is not null).MaxBy(g => g.LastPlayed);
         Last = last is null ? null : Rows.FirstOrDefault(r => r.Game.Key == last.Key);
         foreach (var n in new[] { nameof(Last), nameof(HasLast), nameof(HasGames), nameof(Stats), nameof(TotalHours), nameof(HasTotal) }) OnPropertyChanged(n);

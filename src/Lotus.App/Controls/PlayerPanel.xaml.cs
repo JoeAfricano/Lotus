@@ -55,7 +55,11 @@ public sealed partial class PlayerPanel : UserControl
     private void OnBackdrop(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) => Close();
     private void OnPlayLast(object sender, RoutedEventArgs e) { if (Vm is { Last: { } row } vm) { vm.Play(row); Close(); } }
     private void OnEditProfile(object sender, RoutedEventArgs e) { Close(); EditProfileRequested?.Invoke(this, EventArgs.Empty); }
-    private void OnStar(object sender, RoutedEventArgs e) { if (sender is FrameworkElement f) { Motion.Pop(f); UiSound.Play(UiSound.Cue.Toggle); } Vm?.NotifyStats(); }
+    private void OnStar(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: PlayerGameRow row } f) return;
+        row.Favorite = !row.Favorite; Motion.Pop(f); UiSound.Play(UiSound.Cue.Toggle); Vm?.NotifyStats();
+    }
 
     // The pencil shows the note box under the game; Enter or leaving the box saves it.
     private void OnNoteToggle(object sender, RoutedEventArgs e)

@@ -137,7 +137,13 @@ public partial class App : Application
         var preferences = services.GetRequiredService<PreferencesService>();
         services.GetRequiredService<ThemePalette>().Apply(preferences.Current.Theme);
         Log.Information("Preferences initialized {Status} {Language} {Theme}", preferences.LoadStatus, Text.Language, preferences.Current.Theme);
-        UnhandledException += (_, e) => Log.Fatal(e.Exception, "Unhandled UI exception");
+        // A glitch in one screen (an animation, a binding, an event handler) must not close the whole app: log it
+        // and keep going. Only out-of-memory still ends the process.
+        UnhandledException += (_, e) =>
+        {
+            if (e.Exception is OutOfMemoryException) { Log.Fatal(e.Exception, "Unhandled UI exception"); return; }
+            Log.Error(e.Exception, "UI error handled; Lotus keeps running"); e.Handled = true;
+        };
         window = services.GetRequiredService<MainWindow>();
         WindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(window);
         var readyToClose = false;

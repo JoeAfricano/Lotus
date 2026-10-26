@@ -151,11 +151,14 @@
     <ContentControl x:Name="SafetyContent" x:Load="{x:Bind ShowSafety}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE83D;" Style="{StaticResource BadgeIconStyle}"/></Border><TextBlock Text="{Binding Text[SafetyCategory]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxNoChangesDescription]}" Style="{StaticResource BodyStyle}"/></StackPanel></ContentControl>
     <StackPanel x:Name="FaqContent" x:Load="{x:Bind ShowFaq}" Spacing="8">
      <TextBlock Text="{Binding Text[FaqTitle]}" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,8"/>
-     <Expander Header="{Binding Text[UxProgressDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[UxProgressExplanation]}" Style="{StaticResource BodyStyle}"/></Expander>
+     <Expander Header="{Binding Text[Fq1Q]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock app:Rich.Text="{Binding Text[Fq1A]}" Style="{StaticResource BodyStyle}"/></Expander>
+     <Expander Header="{Binding Text[Fq2Q]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock app:Rich.Text="{Binding Text[Fq2A]}" Style="{StaticResource BodyStyle}"/></Expander>
+     <Expander Header="{Binding Text[Fq3Q]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock app:Rich.Text="{Binding Text[Fq3A]}" Style="{StaticResource BodyStyle}"/></Expander>
+     <Expander Header="{Binding Text[Fq4Q]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock app:Rich.Text="{Binding Text[Fq4A]}" Style="{StaticResource BodyStyle}"/></Expander>
+     <Expander Header="{Binding Text[Fq5Q]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock app:Rich.Text="{Binding Text[Fq5A]}" Style="{StaticResource BodyStyle}"/></Expander>
+     <Expander Header="{Binding Text[Fq6Q]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock app:Rich.Text="{Binding Text[Fq6A]}" Style="{StaticResource BodyStyle}"/></Expander>
+     <Expander Header="{Binding Text[Fq7Q]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock app:Rich.Text="{Binding Text[Fq7A]}" Style="{StaticResource BodyStyle}"/></Expander>
      <Expander Header="{Binding Text[FaqAmbientQuestion]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[FaqAmbientAnswer]}" Style="{StaticResource BodyStyle}"/></Expander>
-     <Expander Header="{Binding Text[FaqSafetyQuestion]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[FaqSafetyAnswer]}" Style="{StaticResource BodyStyle}"/></Expander>
-     <Expander Header="{Binding Text[FaqScopeQuestion]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[UxScope]}" Style="{StaticResource BodyStyle}"/></Expander>
-     <Expander Header="{Binding Text[FaqSolutionsQuestion]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[FaqSolutionsAnswer]}" Style="{StaticResource BodyStyle}"/></Expander>
      <!-- Development credits -->
      <Border Style="{StaticResource CardStyle}" Margin="0,12,0,0" AutomationProperties.AutomationId="settings-credits">
       <StackPanel Spacing="10">

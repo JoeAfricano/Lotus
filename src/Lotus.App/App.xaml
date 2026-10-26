@@ -38,6 +38,8 @@
   <StaticResource x:Key="TopNavigationViewItemBackgroundSelected" ResourceKey="NavigationViewItemBackgroundSelected"/><StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPointerOver" ResourceKey="NavigationViewItemBackgroundSelectedPointerOver"/>
   <StaticResource x:Key="TopNavigationViewItemBackgroundSelectedPressed" ResourceKey="NavigationViewItemBackgroundSelectedPressed"/><StaticResource x:Key="TopNavigationViewItemBackgroundPointerOver" ResourceKey="NavigationViewItemBackgroundPointerOver"/>
   <StaticResource x:Key="TopNavigationViewItemBackgroundPressed" ResourceKey="NavigationViewItemBackgroundPressed"/>
+  <!-- Keyboard focus: a thin rose-gold ring instead of the default thick white one. -->
+  <SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="#CCEEC1A8"/><SolidColorBrush x:Key="SystemControlFocusVisualSecondaryBrush" Color="#00000000"/>
   <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#F3C9AE"/>
 
   <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#D6306F"/><SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#E04C84"/><SolidColorBrush x:Key="AccentFillColorTertiaryBrush" Color="#B8255D"/><SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush" Color="#FFFFFF"/>

@@ -87,7 +87,7 @@ Entre no jogo.</value>
     <value>Planejado · Ainda não implementado</value>
   </data>
   <data name="ProfileAccessible" xml:space="preserve">
-    <value>Perfil Player, ainda não configurável</value>
+    <value>Abrir seu perfil: último jogo, favoritos e anotações</value>
   </data>
   <data name="ProfileSubtitle" xml:space="preserve">
     <value>Seu espaço de jogo</value>
@@ -574,7 +574,7 @@ Condições atuais: {1}</value></data>
   <data name="PfCustomDescription" xml:space="preserve"><value>Você escolhe manualmente qual plano de energia existente usar.</value></data>
   <data name="PfRecommended" xml:space="preserve"><value>Recomendado para desempenho</value></data>
   <data name="PfChipPower" xml:space="preserve"><value>Energia</value></data>
-  <data name="PfChipStartup" xml:space="preserve"><value>Inicialização (consulta)</value></data>
+  <data name="PfChipStartup" xml:space="preserve"><value>Inicialização</value></data>
   <data name="PfChipBalance" xml:space="preserve"><value>Equilíbrio</value></data>
   <data name="PfChipManual" xml:space="preserve"><value>Ajustes manuais</value></data>
   <data name="PfChangesTitle" xml:space="preserve"><value>Alterações previstas</value></data>
@@ -800,7 +800,7 @@ Condições atuais: {1}</value></data>
   <data name="ScsFailed" xml:space="preserve"><value>{0}: o SCSKiller não concluiu o pré-carregamento. Veja os detalhes no próprio SCSKiller.</value></data>
   <data name="ScsOffer" xml:space="preserve"><value>Opcional: instale o SCSKiller (gratuito, código aberto) para pré-carregar shaders e reduzir travadas em muitos jogos. O Lotus passa a usá-lo automaticamente.</value></data>
   <data name="ScsOfferLink" xml:space="preserve"><value>Conhecer o SCSKiller</value></data>
-  <data name="IntIntro" xml:space="preserve"><value>Programas gratuitos que o Lotus usa a seu favor quando estão instalados. Nada é baixado ou instalado pelo Lotus.</value></data>
+  <data name="IntIntro" xml:space="preserve"><value>Programas gratuitos que o Lotus usa a seu favor quando estão instalados. O Lotus só instala algum deles quando você pede, nas boas-vindas.</value></data>
   <data name="IntNotInstalled" xml:space="preserve"><value>Não instalado.</value></data>
   <data name="IntRtssDefault" xml:space="preserve"><value>Instalado ({0}) · overlay com a configuração própria do RivaTuner.</value></data>
   <data name="IntRtssLotus" xml:space="preserve"><value>Instalado ({0}) · overlay configurado pelo Lotus.</value></data>
@@ -1432,7 +1432,22 @@ Condições atuais: {1}</value></data>
   <data name="PpNeverPlayed" xml:space="preserve"><value>Ainda não jogado pelo Lotus</value></data>
   <data name="PpStats" xml:space="preserve"><value>{0} jogo(s) · {1} favorito(s)</value></data>
   <data name="PpClose" xml:space="preserve"><value>Fechar</value></data>
-  <data name="PpTotal" xml:space="preserve"><value>{0} jogadas na Steam</value></data>
+  <data name="PpTotal" xml:space="preserve"><value>{0} jogadas nos seus jogos</value></data>
   <data name="SetSoundVolume" xml:space="preserve"><value>Volume dos sons</value></data>
   <data name="SetSoundVolumeHint" xml:space="preserve"><value>Ao soltar, o Lotus toca uma amostra.</value></data>
+  <data name="Fq1Q" xml:space="preserve"><value>O que o Lotus muda no meu Windows?</value></data>
+  <data name="Fq1A" xml:space="preserve"><value>Só o que você confirma. O **perfil de jogo** ajusta o plano de energia e recursos de jogo do Windows; o **DNS** troca o servidor de internet; o **overlay** ativa o layout do Lotus no RivaTuner. Arquivos temporários vão para a **Lixeira** e programas fecham do jeito normal, como clicar no X.</value></data>
+  <data name="Fq2Q" xml:space="preserve"><value>Como desfaço uma otimização?</value></data>
+  <data name="Fq2A" xml:space="preserve"><value>Em **Otimizar meu PC**, use "Desfazer perfil". O DNS volta em **Ferramentas › Internet e DNS**, o overlay em **Meus Jogos › Voltar ao layout anterior**, e arquivos podem ser recuperados pela Lixeira. O Lotus só desfaz se nada mudou aquilo depois.</value></data>
+  <data name="Fq3Q" xml:space="preserve"><value>O que é a Prontidão do PC?</value></data>
+  <data name="Fq3A" xml:space="preserve"><value>Uma nota de 0 a 100, ao vivo, que diz se é um bom momento para jogar: memória livre, uso do processador, temperatura da placa de vídeo, programas pesados abertos e espaço em disco. Ela só aponta o problema e leva à tela certa; não muda nada sozinha.</value></data>
+  <data name="Fq4Q" xml:space="preserve"><value>De onde vêm as informações dos jogos e da Game list?</value></data>
+  <data name="Fq4A" xml:space="preserve"><value>De bases abertas: **Steam** (sinopse, gêneros, listas), **SteamSpy** (jogos em alta e tags da comunidade), **Metacritic** (nota, via Steam) e **GOG**. A dificuldade é uma **estimativa** pelas tags que os jogadores dão ao jogo. Tudo fica guardado no PC para funcionar sem internet.</value></data>
+  <data name="Fq5Q" xml:space="preserve"><value>Para que serve o atalho Ctrl + Shift + L?</value></data>
+  <data name="Fq5A" xml:space="preserve"><value>Com um jogo aberto, ele faz uma análise rápida de travamentos: uma contagem aparece no overlay, o Lotus mede e mostra a causa mais provável. O resultado completo fica esperando quando você voltar ao Lotus.</value></data>
+  <data name="Fq6Q" xml:space="preserve"><value>O Lotus envia meus dados para algum lugar?</value></data>
+  <data name="Fq6A" xml:space="preserve"><value>Não. O Lotus só **baixa** informações públicas de jogos e drivers. Seu perfil, favoritos, anotações, relatórios e medições ficam neste PC, em Documentos › Lotus e na pasta do Lotus.</value></data>
+  <data name="Fq7Q" xml:space="preserve"><value>Por que o Lotus pede permissão de administrador às vezes?</value></data>
+  <data name="Fq7A" xml:space="preserve"><value>O Lotus roda sem privilégios. Quando uma ação precisa mexer em algo do sistema (DNS, overlay do RivaTuner), um ajudante pede a permissão do Windows só para aquela ação, e você pode recusar.</value></data>
+  <data name="GiNoMetacritic" xml:space="preserve"><value>Sem nota publicada</value></data>
 </root>

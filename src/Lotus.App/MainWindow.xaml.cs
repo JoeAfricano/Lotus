@@ -198,6 +198,7 @@ public sealed partial class MainWindow : Window
             AutomationProperties.SetName(item, section.Title);
             ToolTipService.SetToolTip(item, section.Title);
         }
+        if (ShellRoot.IsLoaded) UpdateNavigationMode(ShellRoot.ActualWidth); // keep icon-only menu when narrow
         UpdatePaneChrome();
         // Replace only the current visual page, retaining the same destination and preferences VM.
         DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
@@ -223,6 +224,11 @@ public sealed partial class MainWindow : Window
     private void UpdateNavigationMode(double width)
     {
         // Top navigation at every width; NavigationView moves overflow items into its "More" menu by itself.
+        // Below ~1180 px the labels go away (icons + tooltips) so every section stays visible, none in "More".
+        var compact = width < 1180;
+        foreach (var item in Navigation.MenuItems.OfType<NavigationViewItem>())
+            if (item.Tag is string id && ViewModel.Items.FirstOrDefault(s => s.Id == id) is { } section)
+                item.Content = compact || id == "settings" ? null : NavLabel(section);
         var nowNarrow = width < 1050;
         if (narrow == nowNarrow) return;
         updatingLayout = true;
@@ -331,6 +337,10 @@ public sealed partial class MainWindow : Window
         var group = ViewModel.SelectedSection.Id;
         updatingNavigation = true;
         Navigation.SelectedItem = Navigation.MenuItems.Cast<NavigationViewItem>().FirstOrDefault(item => (string)item.Tag == group);
+        if (Navigation.SelectedItem is null) foreach (var i in Navigation.MenuItems.OfType<NavigationViewItem>()) i.IsSelected = false; // Game list: no menu item lit
+        // The control leaves its underline on the last item when nothing is selected: hide it on the Game list.
+        if (Application.Current.Resources["NavigationViewSelectionIndicatorForeground"] is SolidColorBrush indicator)
+            indicator.Color = Navigation.SelectedItem is null ? Microsoft.UI.Colors.Transparent : Windows.UI.Color.FromArgb(255, 243, 201, 174);
         updatingNavigation = false;
         if (force || displayedSectionId != group)
         {
@@ -442,7 +452,7 @@ public sealed partial class MainWindow : Window
         Onboarding.Open(onboarding, edit);
     }
     // The profile badge opens the player panel (last game, favorites, notes); editing the profile is a button there.
-    private void OnProfileTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+    private void OnProfileClick(object sender, RoutedEventArgs e)
     {
         if (player is null) return;
         var p = preferences.Current;

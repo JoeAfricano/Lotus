@@ -9,6 +9,7 @@ public sealed partial class GamesPanel : UserControl
 {
     public event EventHandler<GameCard>? DetailsRequested; // the page shows the game's details
     private void OnGameClick(object sender, ItemClickEventArgs e) { if (e.ClickedItem is GameCard card) DetailsRequested?.Invoke(this, card); }
+    private void OnDetails(object sender, RoutedEventArgs e) { if (sender is FrameworkElement { DataContext: GameCard card }) DetailsRequested?.Invoke(this, card); }
     public GamesPanel()
     {
         InitializeComponent();

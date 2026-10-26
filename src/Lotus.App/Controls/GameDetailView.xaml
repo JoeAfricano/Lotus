@@ -39,6 +39,7 @@
      <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
       <TextBlock Text="{Binding Text[GiMetacritic]}" Style="{StaticResource EyebrowStyle}"/>
       <HyperlinkButton Content="{Binding Text[GiOpenMetacritic]}" Click="OnMetacriticLink" Padding="0" FontSize="12.5" Visibility="{Binding MetacriticUrl, Converter={StaticResource PresenceVisibility}}"/>
+      <TextBlock Text="{Binding Text[GiNoMetacritic]}" Style="{StaticResource CaptionStyle}" Visibility="{Binding HasMetacritic, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}"/>
      </StackPanel>
     </Grid>
    </Border>

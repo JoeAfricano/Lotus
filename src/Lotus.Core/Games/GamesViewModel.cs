@@ -7,7 +7,7 @@ namespace Lotus.Core.Games;
 // Each card carries its own labels and commands, so item templates never depend on the parent DataContext.
 public sealed record GameCard(GameEntry Game, string Name, string Store, string Initials, string? CoverPath,
     string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove, string OptimizeLabel = "", string MeasureLabel = "",
-    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "", string PrepareLabel = "", string WhyLabel = "", string OptimizeMenuLabel = "");
+    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "", string PrepareLabel = "", string WhyLabel = "", string OptimizeMenuLabel = "", string DetailsLabel = "");
 public sealed record StoreFilter(string Id, string Label);
 // Result of "Otimizar configurações": hardware, the recommendation as readable lines, and whether Lotus can apply it.
 public sealed record GameSettingsAnalysis(SettingsRecommendation Recommendation, IReadOnlyList<string> Lines, string Hardware, GameSettingsSupport? Support, bool HasOriginal, int? PendingStep = null);
@@ -175,7 +175,7 @@ public sealed class GamesViewModel : ObservableObject
     {
         var shader = ScsKillerOutput.Match(shaderStatuses, g);
         return new(g, g.Name, g.Store, Initials(g.Name), g.CoverPath, Text["GamesPlay"], Text["GamesHide"], LaunchCommand, RemoveCommand, Text["GsMenu"], Text["GsMeasureMenu"],
-                shader is null ? null : Text["ScsState" + shader.State], shader?.State is ShaderState.Ready or ShaderState.Stale, Text["ScsPrecompile"], shader?.Id, Text["ScsOpen"], Text["PlayPrepare"], Text["WhyMenu"], Text["GamesOptimizeMenu"]);
+                shader is null ? null : Text["ScsState" + shader.State], shader?.State is ShaderState.Ready or ShaderState.Stale, Text["ScsPrecompile"], shader?.Id, Text["ScsOpen"], Text["PlayPrepare"], Text["WhyMenu"], Text["GamesOptimizeMenu"], Text["GiDetails"]);
     }
 
     public static string Normalize(string value)

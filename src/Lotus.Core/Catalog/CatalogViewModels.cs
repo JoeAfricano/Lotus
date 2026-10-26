@@ -31,6 +31,9 @@ public sealed class GameDetailsViewModel(IGameCatalog catalog, ITextCatalog text
     public bool HasDifficulty => DifficultyLevel > 0;
     public string DifficultyText => Text["GiDiff" + (Info?.Difficulty ?? Difficulty.Unknown)];
     public string TagsText => Info is { Tags.Count: > 0 } i ? string.Join(" · ", i.Tags.Take(6)) : "";
+    // Big key art first (library hero), the store page background as fallback.
+    public string? HeroArt => Info?.SteamAppId is { } id ? CatalogText.Hero(id) : null;
+    public string MetacriticNote => HasMetacritic ? Text["GiOpenMetacritic"] : Text["GiNoMetacritic"];
     public string Art => Info?.Background ?? Info?.HeaderImage ?? FallbackArt ?? "";
     public string Cover => Info?.HeaderImage ?? FallbackArt ?? "";
     public IReadOnlyList<string> Screenshots => Info?.Screenshots ?? [];

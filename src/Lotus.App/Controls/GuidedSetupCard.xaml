@@ -22,8 +22,8 @@
       </Button>
       <Button Content="{Binding Text[GdSkip]}" Click="OnClose" Style="{StaticResource SoftButtonStyle}" MinHeight="44" AutomationProperties.AutomationId="guided-skip"/>
      </StackPanel>
-     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE83D;" FontSize="13" Foreground="{ThemeResource SuccessBrush}" VerticalAlignment="Top" Margin="0,2,0,0"/>
-      <TextBlock app:Rich.Text="{Binding Text[GdSafety]}" Style="{StaticResource CaptionStyle}" MaxWidth="680"/></StackPanel>
+     <Grid ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions><FontIcon Glyph="&#xE83D;" FontSize="13" Foreground="{ThemeResource SuccessBrush}" VerticalAlignment="Top" Margin="0,2,0,0"/>
+      <TextBlock Grid.Column="1" app:Rich.Text="{Binding Text[GdSafety]}" Style="{StaticResource CaptionStyle}"/></Grid>
     </StackPanel>
 
     <!-- Analysing / applying -->

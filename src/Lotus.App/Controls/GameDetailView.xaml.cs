@@ -37,16 +37,11 @@ public sealed partial class GameDetailView : UserControl
     {
         if (vm is null) return;
         // Art
-        if (vm.Art != shownArt)
+        var want = vm.HeroArt ?? vm.Art;
+        if (want != shownArt)
         {
-            shownArt = vm.Art; HeroArt.Opacity = 0;
-            if (Uri.TryCreate(vm.Art, UriKind.Absolute, out var uri))
-            {
-                var bmp = new BitmapImage { UriSource = uri };
-                bmp.ImageOpened += (_, _) => { Fade(HeroArt, 1, 600); Zoom(HeroArt); };
-                HeroArt.Source = bmp;
-            }
-            else HeroArt.Source = null;
+            shownArt = want; HeroArt.Opacity = 0;
+            ShowArt(want, vm.Art);
         }
         // Metacritic colors (green / yellow / red, like the site)
         McBadge.Background = new SolidColorBrush(vm.MetacriticKind switch
@@ -65,6 +60,16 @@ public sealed partial class GameDetailView : UserControl
             DiffBars.Children.Add(bar);
             if (on) { bar.Opacity = 0; Fade(bar, 1, 220, 120 * i); }
         }
+    }
+
+    // Key art, then the fallback when that game has none.
+    private void ShowArt(string url, string fallback)
+    {
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) { HeroArt.Source = null; return; }
+        var bmp = new BitmapImage { UriSource = uri };
+        bmp.ImageOpened += (_, _) => { Fade(HeroArt, 1, 600); Zoom(HeroArt); };
+        bmp.ImageFailed += (_, _) => { if (url != fallback && fallback.Length > 0 && shownArt == url) ShowArt(fallback, fallback); };
+        HeroArt.Source = bmp;
     }
 
     private void OnBack(object sender, RoutedEventArgs e) => BackRequested?.Invoke(this, EventArgs.Empty);

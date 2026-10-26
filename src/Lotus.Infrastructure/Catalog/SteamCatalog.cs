@@ -173,7 +173,7 @@ public sealed class SteamCatalog : IGameCatalog
     // ---- Charts ----
     public async Task<CatalogChart?> ChartAsync(string id, TimeSpan maxAge, CancellationToken token)
     {
-        var file = Path.Combine(cache, $"chart-{id}-{language}.json");
+        var file = Path.Combine(cache, $"chart2-{id}-{language}.json"); // "2": store-search format (older caches are ignored)
         if (Fresh(file, maxAge) && ReadChart(file) is { } cached) return cached;
         try
         {

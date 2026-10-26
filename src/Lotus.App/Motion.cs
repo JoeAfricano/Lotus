@@ -25,6 +25,33 @@ public static class Motion
     // Fade in while moving up from `distance` px, on the element's Translation (layout is never touched).
     private static void Rise(UIElement element, float distance, TimeSpan duration, float fromOpacity = 0)
     {
+        // Elements with the hover lift use XAML's own Scale/Translation transitions; the compositor visual is off
+        // limits for them (Windows throws), so they rise through those transitions instead.
+        if (element.ScaleTransition is not null || element.TranslationTransition is not null) { RiseWithTransitions(element, distance, duration, fromOpacity); return; }
+        try { RiseOnVisual(element, distance, duration, fromOpacity); }
+        catch (UnauthorizedAccessException) { RiseWithTransitions(element, distance, duration, fromOpacity); } // never let an animation crash the app
+    }
+
+    private static void RiseWithTransitions(UIElement element, float distance, TimeSpan duration, float fromOpacity)
+    {
+        var translation = element.TranslationTransition;
+        element.TranslationTransition = null; element.OpacityTransition = null;
+        if (!On) { element.Translation = Vector3.Zero; element.Opacity = 1; element.TranslationTransition = translation; return; }
+        element.Translation = new Vector3(0, distance, 0); element.Opacity = fromOpacity;
+        element.DispatcherQueue.TryEnqueue(() =>
+        {
+            element.TranslationTransition = new Vector3Transition { Duration = duration };
+            element.OpacityTransition = new ScalarTransition { Duration = duration };
+            element.Translation = Vector3.Zero; element.Opacity = 1;
+            // Hand the hover lift its own (shorter) transition back once the entrance is over.
+            var timer = element.DispatcherQueue.CreateTimer(); timer.Interval = duration + TimeSpan.FromMilliseconds(40); timer.IsRepeating = false;
+            timer.Tick += (_, _) => { element.TranslationTransition = translation; element.OpacityTransition = null; };
+            timer.Start();
+        });
+    }
+
+    private static void RiseOnVisual(UIElement element, float distance, TimeSpan duration, float fromOpacity)
+    {
         ElementCompositionPreview.SetIsTranslationEnabled(element, true);
         var v = ElementCompositionPreview.GetElementVisual(element);
         if (!On) { v.Opacity = 1; v.Properties.InsertVector3("Translation", Vector3.Zero); return; }
@@ -108,6 +135,20 @@ public static class Motion
     public static void Pop(UIElement element)
     {
         if (!On || element is not FrameworkElement f) return;
+        if (element.ScaleTransition is not null)
+        {
+            // Press/hover elements: grow, then settle through their own ScaleTransition (compositor is off limits).
+            f.CenterPoint = new Vector3((float)f.ActualWidth / 2, (float)f.ActualHeight / 2, 0);
+            element.Scale = new Vector3(1.18f, 1.18f, 1);
+            var back = element.DispatcherQueue.CreateTimer(); back.Interval = TimeSpan.FromMilliseconds(140); back.IsRepeating = false;
+            back.Tick += (_, _) => element.Scale = Vector3.One; back.Start();
+            return;
+        }
+        try { PopOnVisual(f); } catch (UnauthorizedAccessException) { } // an animation must never crash the app
+    }
+    private static void PopOnVisual(FrameworkElement f)
+    {
+        UIElement element = f;
         var v = ElementCompositionPreview.GetElementVisual(element); var c = v.Compositor;
         v.CenterPoint = new Vector3((float)f.ActualWidth / 2, (float)f.ActualHeight / 2, 0);
         var a = c.CreateVector3KeyFrameAnimation();
