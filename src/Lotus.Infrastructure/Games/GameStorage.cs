@@ -49,15 +49,38 @@ public sealed class WindowsGameLauncher : IGameLauncher
         if (game.LaunchUri is { } uri)
         {
             if (!IsAllowedUri(uri)) throw new InvalidOperationException("Launch URI scheme is not allowed.");
-            var info = uri.StartsWith("shell:", StringComparison.OrdinalIgnoreCase)
-                ? new ProcessStartInfo("explorer.exe", uri) { UseShellExecute = false }
-                : new ProcessStartInfo(uri) { UseShellExecute = true };
-            Process.Start(info)?.Dispose();
+            // Windows apps, and any launcher link when Lotus runs as administrator, go through Explorer: it opens the
+            // link as the signed-in user, so an already running Steam/Epic (not elevated) accepts it.
+            if (uri.StartsWith("shell:", StringComparison.OrdinalIgnoreCase) || IsElevated()) { ViaExplorer(uri); return; }
+            try { Process.Start(new ProcessStartInfo(uri) { UseShellExecute = true })?.Dispose(); }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                // The link handler is missing or broken: Steam can still be asked directly; anything else via Explorer.
+                if (!TrySteamDirect(game)) ViaExplorer(uri);
+            }
             return;
         }
         if (game.ExePath is not { } exe || !exe.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) || !File.Exists(exe))
             throw new FileNotFoundException("Game executable not found.", game.ExePath);
         // ShellExecute keeps Windows behavior for games that request elevation in their manifest.
         Process.Start(new ProcessStartInfo(exe, game.Args ?? "") { UseShellExecute = true, WorkingDirectory = Path.GetDirectoryName(exe)! })?.Dispose();
+    }
+
+    private static void ViaExplorer(string uri) => Process.Start(new ProcessStartInfo("explorer.exe", "\"" + uri + "\"") { UseShellExecute = false })?.Dispose();
+
+    private static bool IsElevated()
+    {
+        try { using var id = System.Security.Principal.WindowsIdentity.GetCurrent(); return new System.Security.Principal.WindowsPrincipal(id).IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator); }
+        catch (Exception) { return false; }
+    }
+
+    // steam.exe -applaunch <id>, from the path Steam records for the user.
+    private static bool TrySteamDirect(GameEntry game)
+    {
+        if (game.Store != GameStores.Steam || !game.Id.All(char.IsDigit)) return false;
+        var exe = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam")?.GetValue("SteamExe") as string;
+        if (exe is null || !File.Exists(exe)) return false;
+        Process.Start(new ProcessStartInfo(exe, "-applaunch " + game.Id) { UseShellExecute = false })?.Dispose();
+        return true;
     }
 }

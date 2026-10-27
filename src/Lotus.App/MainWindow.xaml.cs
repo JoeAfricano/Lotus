@@ -115,6 +115,7 @@ public sealed partial class MainWindow : Window
         SetUpBackground();
         try { experience.QuickFacts = Lotus.Infrastructure.Tools.QuickHardwareFacts.Read(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Quick hardware facts"); }
         games.SessionEnded += OnGameSessionEnded;
+        games.LaunchFailed += (_, message) => DispatcherQueue.TryEnqueue(() => { UiSound.Play(UiSound.Cue.Fail); ShowWarning(message); });
         InitializeComponent();
         Shell = this;
         ShellRoot.DataContext = ViewModel;

@@ -1,4 +1,4 @@
-using Lotus.Core.Games;
+﻿using Lotus.Core.Games;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Storage.Pickers;
@@ -15,6 +15,12 @@ public sealed partial class GamesPanel : UserControl
         InitializeComponent();
         // The first visit scans launchers in the background; later visits reuse the result.
         Loaded += async (_, _) => { if (DataContext is GamesViewModel vm) await vm.EnsureLoadedAsync(); };
+    }
+    // Play on a cover: launches directly (no command binding, so it never starts out disabled).
+    private void OnCoverPlay(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not GamesViewModel vm || sender is not FrameworkElement { DataContext: GameCard card }) return;
+        UiSound.Play(UiSound.Cue.Open); vm.Play(card.Game);
     }
 
     private async void OnAddGame(object sender, RoutedEventArgs e)
@@ -34,7 +40,7 @@ public sealed partial class GamesPanel : UserControl
         RescanButton.IsEnabled = false; Motion.Pop(RescanIcon);
         var removed = await vm.RescanAsync();
         // Quick confirmation on the button, then back to its label.
-        RescanText.Text = "✓ " + vm.Text.Format("HomeRescanDone", vm.InstalledGames().Count); UiSound.Play(UiSound.Cue.Done);
+        RescanText.Text = "âœ“ " + vm.Text.Format("HomeRescanDone", vm.InstalledGames().Count); UiSound.Play(UiSound.Cue.Done);
         var back = DispatcherQueue.CreateTimer(); back.Interval = TimeSpan.FromSeconds(3); back.IsRepeating = false;
         back.Tick += (_, _) => { RescanText.Text = vm.Text["GamesRescan"]; RescanButton.IsEnabled = true; }; back.Start();
         if (removed.Count == 0) return;
@@ -64,7 +70,7 @@ public sealed partial class GamesPanel : UserControl
         var body = new StackPanel { Spacing = 8, MaxWidth = 430 };
         body.Children.Add(new TextBlock { Text = analysis.Hardware, Opacity = 0.75, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 6) });
         foreach (var line in analysis.Lines)
-            body.Children.Add(new TextBlock { Text = "•  " + line, TextWrapping = TextWrapping.Wrap });
+            body.Children.Add(new TextBlock { Text = "â€¢  " + line, TextWrapping = TextWrapping.Wrap });
         var support = analysis.Support is { CanApply: true } s ? vm.Text.Format("GsSupportApply", s.EngineLabel)
             : analysis.Support is { } u ? $"{u.EngineLabel}: {vm.Text[u.Detail ?? "GsSupportManual"]}" : vm.Text["GsSupportManual"];
         body.Children.Add(new TextBlock { Text = support, TextWrapping = TextWrapping.Wrap, Opacity = 0.8, FontSize = 12.5, Margin = new Thickness(0, 8, 0, 0) });
@@ -132,7 +138,7 @@ public sealed partial class GamesPanel : UserControl
             body.Children.Add(profile);
             var list = new StackPanel { Spacing = 6, Margin = new Thickness(28, 0, 0, 0) };
             foreach (var s in plan.Steps.Where(s => !s.AlreadyApplied))
-                list.Children.Add(new TextBlock { Text = $"{s.Title}: {s.From}  →  {s.To}", TextWrapping = TextWrapping.Wrap, Opacity = 0.75, FontSize = 12.5 });
+                list.Children.Add(new TextBlock { Text = $"{s.Title}: {s.From}  â†’  {s.To}", TextWrapping = TextWrapping.Wrap, Opacity = 0.75, FontSize = 12.5 });
             body.Children.Add(list);
         }
         else body.Children.Add(new TextBlock { Text = vm.Text["PlayProfileReady"], TextWrapping = TextWrapping.Wrap, Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["GoldBrush"] });
@@ -146,7 +152,7 @@ public sealed partial class GamesPanel : UserControl
         await vm.PlayAsync(plan, profile?.IsChecked == true, shaders?.IsChecked == true);
     }
 
-    // "Por que está travando?": measure while playing, then explain the likely causes in plain words.
+    // "Por que estÃ¡ travando?": measure while playing, then explain the likely causes in plain words.
     private async void OnWhyStutter(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: GameCard card } || DataContext is not GamesViewModel vm || !vm.CanMeasure) return;

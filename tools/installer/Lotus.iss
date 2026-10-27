@@ -11,6 +11,9 @@
 #ifndef SetupName
   #define SetupName "Lotus-Setup"
 #endif
+#ifndef NumericVersion
+  #define NumericVersion "0.1.0.0"
+#endif
 #ifndef OutputDir
   #define OutputDir "..\..\artifacts\dist"
 #endif
@@ -46,8 +49,8 @@ WizardSizePercent=110
 CloseApplications=force
 RestartApplications=no
 ShowLanguageDialog=auto
-VersionInfoVersion=0.1.0.0
-VersionInfoProductVersion=0.1.0.0
+VersionInfoVersion={#NumericVersion}
+VersionInfoProductVersion={#NumericVersion}
 VersionInfoDescription=Instalador do Lotus
 
 [Languages]
@@ -60,7 +63,9 @@ en.DesktopIcon=Create a desktop shortcut
 pt.Launch=Abrir o Lotus agora
 en.Launch=Open Lotus now
 pt.Welcome=Seu PC pronto para jogar. Nada no Windows muda sem você confirmar, e tudo que o Lotus mexe pode ser desfeito.
+pt.UpdateWelcome=Este assistente vai atualizar o Lotus para a versão [ver]. Seus jogos, diário, conquistas e configurações continuam como estão; não é preciso desinstalar nada.%n%nSe o Lotus estiver aberto, ele será fechado e você pode abri-lo de novo no final.
 en.Welcome=Your PC ready to play. Nothing in Windows changes without your confirmation, and everything Lotus changes can be undone.
+en.UpdateWelcome=This will update Lotus to version [ver]. Your games, diary, achievements and settings stay as they are; there is nothing to uninstall.%n%nIf Lotus is open it will be closed, and you can open it again at the end.
 
 [Messages]
 pt.WelcomeLabel2=Este assistente vai instalar o [name/ver] neste PC.%n%nSeu PC pronto para jogar. Nada no Windows muda sem você confirmar, e tudo que o Lotus mexe pode ser desfeito.%n%nVersão alpha: obrigado por testar!
@@ -103,4 +108,27 @@ function InitializeUninstall(): Boolean;
 begin
   CloseLotus();
   Result := True;
+end;
+
+// Update: when Lotus is already installed for this user, the wizard says "update", keeps the earlier choices
+// (shortcuts) and goes straight to installing. Files are replaced in place; player data is never touched.
+function IsUpdate(): Boolean;
+begin
+  Result := RegKeyExists(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{7B3E2C1A-5D4F-4E8B-9A6C-1F0D2E3B4A5C}_is1');
+end;
+
+procedure InitializeWizard();
+var Text: String;
+begin
+  if IsUpdate() then
+  begin
+    Text := CustomMessage('UpdateWelcome');
+    StringChangeEx(Text, '[ver]', '{#AppVersion}', True);
+    WizardForm.WelcomeLabel2.Caption := Text;
+  end;
+end;
+
+function ShouldSkipPage(PageID: Integer): Boolean;
+begin
+  Result := IsUpdate() and ((PageID = wpSelectTasks) or (PageID = wpReady));
 end;

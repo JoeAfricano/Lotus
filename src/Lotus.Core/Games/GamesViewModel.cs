@@ -61,7 +61,7 @@ public sealed class GamesViewModel : ObservableObject
     {
         this.library = library; this.manualStore = manualStore; this.launcher = launcher; Text = text; this.log = log;
         this.profileSource = profileSource; this.recipes = recipes ?? []; this.settingsStore = settingsStore; this.processCheck = processCheck; this.capture = capture; this.gpuSampler = gpuSampler; this.shaders = shaders;
-        LaunchCommand = new RelayCommand<GameCard>(Launch, c => c?.Game.CanLaunch == true);
+        LaunchCommand = new RelayCommand<GameCard>(Launch, c => c is null || c.Game.CanLaunch); // null: the parameter binding has not arrived yet
         RemoveCommand = new RelayCommand<GameCard>(Remove);
     }
 
@@ -133,7 +133,11 @@ public sealed class GamesViewModel : ObservableObject
     {
         if (card is null) return;
         try { launcher.Launch(card.Game); status = Text.Format("GamesLaunching", card.Name); global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Launch); }
-        catch (Exception ex) { log(ex); status = Text.Format("GamesLaunchFailed", card.Name); }
+        catch (Exception ex)
+        {
+            log(ex); status = Text.Format("GamesLaunchFailed", card.Name);
+            LaunchFailed?.Invoke(this, Text.Format("GamesLaunchFailed", card.Name)); // shown on any screen (Home has no status line)
+        }
         Notify();
     }
 
@@ -166,6 +170,7 @@ public sealed class GamesViewModel : ObservableObject
     // Installed games (not hidden), for the Game list "you have it" marks and the game page Play button.
     public IReadOnlyList<GameEntry> InstalledGames() => [.. all.Where(g => !hidden.Contains(g.Key))];
     public void Play(GameEntry game) => Launch(Card(game));
+    public event EventHandler<string>? LaunchFailed;
     // "Continue playing": the most recently played game (Steam keeps the date), else the first one in the library.
     public GameEntry? LastPlayed() => InstalledGames().OrderByDescending(g => g.LastPlayed ?? DateTimeOffset.MinValue).FirstOrDefault();
     public bool HasFeatured => Featured.Count > 0;

@@ -188,6 +188,12 @@ public sealed partial class SectionPage : Page
         if (GamesList is null || GameDetail is null) return;
         GameDetail.Visibility = Visibility.Collapsed; GamesList.Visibility = Visibility.Visible; Motion.EnterPage(GamesList);
     }
+    // Play on a Home cover: launches directly.
+    private void OnCoverPlay(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not SectionViewModel { Games: { } games } || sender is not FrameworkElement { DataContext: Lotus.Core.Games.GameCard card }) return;
+        UiSound.Play(UiSound.Cue.Open); games.Play(card.Game);
+    }
     private void OnPlayGame(object? sender, Lotus.Core.Games.GameEntry game) { if (DataContext is SectionViewModel { Games: { } games }) games.Play(game); }
     private void OnHomeGameTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
     {

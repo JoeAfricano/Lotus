@@ -11,10 +11,11 @@ $google = Join-Path $root 'secrets\google-oauth.json'
 if (Test-Path $google) { Copy-Item $google (Join-Path $out 'google-oauth.json') -Force; Write-Output "Google Drive: client included" }
 else { Remove-Item (Join-Path $out 'google-oauth.json') -ErrorAction SilentlyContinue; Write-Output "Google Drive: no client (secrets\google-oauth.json missing) - file backups only" }
 $version = (Get-Item (Join-Path $out 'Lotus.App.exe')).VersionInfo.ProductVersion -replace '\+.*$', ''
+$numeric = (Get-Item (Join-Path $out 'Lotus.App.exe')).VersionInfo.FileVersion
 $setupName = ($Name -replace '\s+', '-') + '-Setup'
 $iscc = @("$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe", "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe", "$env:ProgramFiles\Inno Setup 6\ISCC.exe") | Where-Object { Test-Path $_ } | Select-Object -First 1
 if (-not $iscc) { throw "Inno Setup 6 not found. Install it with: winget install JRSoftware.InnoSetup" }
-& $iscc "/DAppVersion=$version" "/DSourceDir=$out" "/DSetupName=$setupName" "/DOutputDir=$(Join-Path $root 'artifacts\dist')" (Join-Path $PSScriptRoot 'installer\Lotus.iss')
+& $iscc "/DAppVersion=$version" "/DNumericVersion=$numeric" "/DSourceDir=$out" "/DSetupName=$setupName" "/DOutputDir=$(Join-Path $root 'artifacts\dist')" (Join-Path $PSScriptRoot 'installer\Lotus.iss')
 if ($LASTEXITCODE -ne 0) { throw "ISCC failed ($LASTEXITCODE)" }
 $setup = Join-Path $root "artifacts\dist\$setupName-$version.exe"
 $hash = (Get-FileHash $setup -Algorithm SHA256).Hash

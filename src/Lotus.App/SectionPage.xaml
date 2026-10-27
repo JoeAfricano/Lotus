@@ -44,7 +44,7 @@
       <Grid Width="124" Height="166" CornerRadius="14" Background="{ThemeResource HeroBrush}" app:Motion.Hover="1.05" Tapped="OnHomeGameTapped" ToolTipService.ToolTip="{Binding Name}">
        <TextBlock Text="{Binding Initials}" FontFamily="Georgia" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
        <Border Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}}"><Border.Background><ImageBrush ImageSource="{Binding CoverPath, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border.Background></Border>
-       <Button Command="{Binding Launch}" CommandParameter="{Binding}" Width="40" Height="40" CornerRadius="20" Padding="0" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+       <Button Click="OnCoverPlay" Width="40" Height="40" CornerRadius="20" Padding="0" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                Background="{ThemeResource AccentGradientBrush}" BorderBrush="#66FFFFFF" BorderThickness="1.5" app:Motion.Press="True" ToolTipService.ToolTip="{Binding PlayLabel}" AutomationProperties.Name="{Binding Name}">
         <FontIcon Glyph="&#xF5B0;" FontSize="15" Foreground="White" Margin="2,0,0,0"/>
        </Button>
