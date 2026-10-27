@@ -1,0 +1,18 @@
+<UserControl x:Class="Lotus.App.Controls.AppearancePicker" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             AutomationProperties.AutomationId="settings-appearance">
+ <StackPanel Spacing="16">
+  <TextBlock x:Name="Title" Style="{StaticResource SectionTitleStyle}"/>
+  <Grid ColumnSpacing="24" RowSpacing="16">
+   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+   <!-- Theme cards: a small preview of each mode -->
+   <ItemsControl x:Name="ThemeCards" AutomationProperties.AutomationId="settings-theme-cards">
+    <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="196" ItemHeight="128"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+   </ItemsControl>
+   <StackPanel x:Name="AccentArea" Grid.Column="1" Spacing="12" MinWidth="220">
+    <TextBlock x:Name="AccentTitle" FontSize="16" FontWeight="SemiBold"/>
+    <VariableSizedWrapGrid x:Name="AccentDots" Orientation="Horizontal" ItemWidth="56" ItemHeight="56" MaximumRowsOrColumns="4" AutomationProperties.AutomationId="settings-accents"/>
+    <TextBlock x:Name="AccentName" Style="{StaticResource CaptionStyle}"/>
+   </StackPanel>
+  </Grid>
+ </StackPanel>
+</UserControl>

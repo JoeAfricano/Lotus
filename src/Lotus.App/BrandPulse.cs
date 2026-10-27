@@ -1,4 +1,4 @@
-using System.Numerics;
+﻿using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -23,6 +23,7 @@ internal sealed class BrandPulse : IDisposable
     private readonly List<CompositionObject> owned = [];
     private readonly List<(CompositionObject Target, string Property)> running = [];
 
+    public static bool LightTheme { get; set; } // set by the window when the light palette is on
     private BrandPulse(FrameworkElement element, bool animate, bool flower)
     {
         var compositor = ElementCompositionPreview.GetElementVisual(element).Compositor;
@@ -43,7 +44,7 @@ internal sealed class BrandPulse : IDisposable
         root = Own(compositor.CreateContainerVisual()); root.RelativeSizeAdjustment = Vector2.One;
         // A brushless sprite draws only its shadow: a blurred halo shaped like the mark.
         glow = Own(compositor.CreateDropShadow()); glow.Mask = mask; glow.Color = Neon; glow.Offset = Vector3.Zero;
-        glow.BlurRadius = flower ? 9 : 10; glow.Opacity = flower ? 0.35f : 0.55f;
+        glow.BlurRadius = flower ? 9 : 10; glow.Opacity = (flower ? 0.35f : 0.55f) * (LightTheme ? 0.6f : 1f);
         var halo = Own(compositor.CreateSpriteVisual()); halo.RelativeSizeAdjustment = Vector2.One; halo.Shadow = glow;
         root.Children.InsertAtBottom(halo);
         if (!flower)
@@ -53,9 +54,12 @@ internal sealed class BrandPulse : IDisposable
             // Rose-gold vertical gradient, matching the Lotus logo lettering.
             var gold = Own(compositor.CreateLinearGradientBrush());
             gold.StartPoint = Vector2.Zero; gold.EndPoint = new Vector2(0, 1);
-            gold.ColorStops.Add(Own(compositor.CreateColorGradientStop(0, Color.FromArgb(255, 248, 221, 203))));
-            gold.ColorStops.Add(Own(compositor.CreateColorGradientStop(0.6f, Color.FromArgb(255, 231, 174, 147))));
-            gold.ColorStops.Add(Own(compositor.CreateColorGradientStop(1, Color.FromArgb(255, 201, 132, 104))));
+            // Light theme: a deeper gold so the name keeps its contrast on rosy porcelain; same effects.
+            var (g0, g1, g2) = LightTheme ? (Color.FromArgb(255, 214, 150, 84), Color.FromArgb(255, 176, 108, 52), Color.FromArgb(255, 128, 72, 30))
+                : (Color.FromArgb(255, 248, 221, 203), Color.FromArgb(255, 231, 174, 147), Color.FromArgb(255, 201, 132, 104));
+            gold.ColorStops.Add(Own(compositor.CreateColorGradientStop(0, g0)));
+            gold.ColorStops.Add(Own(compositor.CreateColorGradientStop(0.6f, g1)));
+            gold.ColorStops.Add(Own(compositor.CreateColorGradientStop(1, g2)));
             ink.Source = gold;
             var crisp = Own(compositor.CreateSpriteVisual()); crisp.RelativeSizeAdjustment = Vector2.One; crisp.Brush = ink;
             root.Children.InsertAtTop(crisp);

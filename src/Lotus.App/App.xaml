@@ -10,7 +10,7 @@
   <SolidColorBrush x:Key="SuccessBrush" Color="#7FD1A8"/><SolidColorBrush x:Key="WarningBrush" Color="#F0C27D"/><SolidColorBrush x:Key="ErrorBrush" Color="#FF8FA3"/>
   <SolidColorBrush x:Key="OnRoseBrush" Color="#FFF6F9"/><SolidColorBrush x:Key="RoseBrush" Color="#F27BA8"/><SolidColorBrush x:Key="GoldBrush" Color="#EEC1A8"/>
   <SolidColorBrush x:Key="AccentSoftBrush" Color="#2ED6306F"/><SolidColorBrush x:Key="BadgeBrush" Color="#2ED6306F"/>
-  <SolidColorBrush x:Key="MutedBrush" Color="#B3A1AC"/><SolidColorBrush x:Key="MainTextBrush" Color="#F8F0F3"/>
+  <SolidColorBrush x:Key="MutedBrush" Color="#B3A1AC"/><SolidColorBrush x:Key="MainTextBrush" Color="#F8F0F3"/><SolidColorBrush x:Key="SubtleBrush" Color="#14FFFFFF"/>
   <LinearGradientBrush x:Key="HeroBrush" StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#55C2185B" Offset="0"/><GradientStop Color="#26E8378A" Offset="0.55"/><GradientStop Color="#101F0F19" Offset="1"/></LinearGradientBrush>
   <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#E8378A" Offset="0"/><GradientStop Color="#A8124F" Offset="1"/></LinearGradientBrush>
   <LinearGradientBrush x:Key="GoldGradientBrush" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#F8DDCB" Offset="0"/><GradientStop Color="#E7AE93" Offset="0.6"/><GradientStop Color="#C98468" Offset="1"/></LinearGradientBrush>

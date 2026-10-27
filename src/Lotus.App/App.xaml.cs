@@ -61,19 +61,21 @@ public partial class App : Application
         }
         // One Lotus at a time: a second launch (Start menu, shortcut) just brings the running one back, even from the tray.
         bool firstInstance;
+        // --dev-instance: a development build next to an installed Lotus (its own single-instance names).
+        var instance = Environment.GetCommandLineArgs().Contains("--dev-instance") ? @"Local\Lotus.App.Dev" : @"Local\Lotus.App";
         if (Environment.GetCommandLineArgs().Contains("--restarted"))
         {
             // Restarted by Lotus itself (after a restore): wait for the previous instance to close.
-            single = new Mutex(false, @"Local\Lotus.App.Main");
+            single = new Mutex(false, instance + ".Main");
             try { firstInstance = single.WaitOne(TimeSpan.FromSeconds(20)); } catch (AbandonedMutexException) { firstInstance = true; }
         }
-        else single = new Mutex(true, @"Local\Lotus.App.Main", out firstInstance);
+        else single = new Mutex(true, instance + ".Main", out firstInstance);
         if (!firstInstance)
         {
-            try { using var show = EventWaitHandle.OpenExisting(@"Local\Lotus.App.Show"); show.Set(); } catch (WaitHandleCannotBeOpenedException) { }
+            try { using var show = EventWaitHandle.OpenExisting(instance + ".Show"); show.Set(); } catch (WaitHandleCannotBeOpenedException) { }
             Environment.Exit(0); return;
         }
-        showSignal = new EventWaitHandle(false, EventResetMode.AutoReset, @"Local\Lotus.App.Show");
+        showSignal = new EventWaitHandle(false, EventResetMode.AutoReset, instance + ".Show");
         var logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Logs", "lotus-.jsonl");
         Log.Logger = new LoggerConfiguration().WriteTo.File(new JsonFormatter(), logPath,
             rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, fileSizeLimitBytes: 5_000_000, rollOnFileSizeLimit: true).CreateLogger();
@@ -160,7 +162,8 @@ public partial class App : Application
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);
         CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo(Text.Language);
         var preferences = services.GetRequiredService<PreferencesService>();
-        services.GetRequiredService<ThemePalette>().Apply(preferences.Current.Theme);
+        try { var palette = services.GetRequiredService<ThemePalette>(); palette.ApplyAccent(preferences.Current.Accent); palette.Apply(preferences.Current.Theme); }
+        catch (Exception ex) { Log.Error(ex, "Theme palette failed"); }
         Log.Information("Preferences initialized {Status} {Language} {Theme}", preferences.LoadStatus, Text.Language, preferences.Current.Theme);
         // A glitch in one screen (an animation, a binding, an event handler) must not close the whole app: log it
         // and keep going. Only out-of-memory still ends the process.

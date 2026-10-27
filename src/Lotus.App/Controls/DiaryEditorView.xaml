@@ -8,7 +8,7 @@
    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
 
    <!-- Header: wide art, cover, name, big score -->
-   <Grid Height="170" CornerRadius="21,21,0,0" Background="{ThemeResource HeroBrush}">
+   <Grid Height="170" CornerRadius="21,21,0,0" Background="{ThemeResource HeroBrush}" RequestedTheme="Dark">
     <Image x:Name="HeaderArt" Stretch="UniformToFill" Opacity="0.55"/>
     <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#3312090F" Offset="0"/><GradientStop Color="#FA170B13" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
     <Grid Padding="24,0,20,18" VerticalAlignment="Bottom" ColumnSpacing="16">

@@ -2,7 +2,7 @@
              xmlns:app="using:Lotus.App" AutomationProperties.AutomationId="game-detail">
  <StackPanel Spacing="18">
   <!-- Hero: store art with a plum fade, title and quick facts -->
-  <Grid x:Name="Hero" Height="300" CornerRadius="20" Background="{ThemeResource HeroBrush}">
+  <Grid x:Name="Hero" Height="300" CornerRadius="20" Background="{ThemeResource HeroBrush}" RequestedTheme="Dark">
    <Image x:Name="HeroArt" Stretch="UniformToFill" VerticalAlignment="Center" Opacity="0"/>
    <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#1012090F" Offset="0"/><GradientStop Color="#9912090F" Offset="0.55"/><GradientStop Color="#F212090F" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
    <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#CC12090F" Offset="0"/><GradientStop Color="#0012090F" Offset="0.7"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
@@ -41,7 +41,7 @@
    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
    <Border Style="{StaticResource CompactCardStyle}" Tapped="OnMetacritic">
     <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-     <Border x:Name="McBadge" Width="56" Height="56" CornerRadius="12" Background="#33FFFFFF"><TextBlock x:Name="McScore" Text="{Binding MetacriticText}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#12090F"/></Border>
+     <Border x:Name="McBadge" Width="56" Height="56" CornerRadius="12" Background="{ThemeResource SubtleBrush}"><TextBlock x:Name="McScore" Text="{Binding MetacriticText}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#12090F"/></Border>
      <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
       <TextBlock Text="{Binding Text[GiMetacritic]}" Style="{StaticResource EyebrowStyle}"/>
       <HyperlinkButton Content="{Binding Text[GiOpenMetacritic]}" Click="OnMetacriticLink" Padding="0" FontSize="12.5" Visibility="{Binding MetacriticUrl, Converter={StaticResource PresenceVisibility}}"/>

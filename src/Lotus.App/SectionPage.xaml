@@ -1,6 +1,6 @@
-<Page x:Class="Lotus.App.SectionPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:app="using:Lotus.App" xmlns:controls="using:Lotus.App.Controls" Foreground="{ThemeResource MainTextBrush}" Background="Transparent">
+﻿<Page x:Class="Lotus.App.SectionPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:app="using:Lotus.App" xmlns:controls="using:Lotus.App.Controls" Foreground="{ThemeResource MainTextBrush}" Background="Transparent">
  <ScrollViewer x:Name="PageScroll" SizeChanged="OnViewportSizeChanged" HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top">
-  <StackPanel x:Name="PageContent" Padding="32,28,32,40" Spacing="24" HorizontalAlignment="Stretch" SizeChanged="OnContentSizeChanged">
+  <StackPanel x:Name="PageContent" Padding="40,24,40,40" Spacing="24" HorizontalAlignment="Stretch" SizeChanged="OnContentSizeChanged">
    <ContentControl Content="{Binding}" ContentTemplate="{StaticResource PageHeaderTemplate}" HorizontalContentAlignment="Stretch"/>
 
    <StackPanel x:Name="HomeContent" x:Load="{x:Bind ShowHome}" Spacing="20" app:Motion.Stagger="True">
@@ -41,14 +41,18 @@
     <ItemsControl ItemsSource="{Binding Games.Featured}" Visibility="{Binding Games.HasFeatured, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="home-games">
      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="14"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
      <ItemsControl.ItemTemplate><DataTemplate>
-      <Grid Width="124" Height="166" CornerRadius="14" Background="{ThemeResource HeroBrush}" app:Motion.Hover="1.05" Tapped="OnHomeGameTapped" ToolTipService.ToolTip="{Binding Name}">
+      <StackPanel Width="168" Spacing="8">
+      <Grid Height="224" CornerRadius="16" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04" Tapped="OnHomeGameTapped" ToolTipService.ToolTip="{Binding Name}">
        <TextBlock Text="{Binding Initials}" FontFamily="Georgia" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
        <Border Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}}"><Border.Background><ImageBrush ImageSource="{Binding CoverPath, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border.Background></Border>
-       <Button Command="{Binding Launch}" CommandParameter="{Binding}" Width="40" Height="40" CornerRadius="20" Padding="0" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+       <Button Click="OnCoverPlay" Width="40" Height="40" CornerRadius="20" Padding="0" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                Background="{ThemeResource AccentGradientBrush}" BorderBrush="#66FFFFFF" BorderThickness="1.5" app:Motion.Press="True" ToolTipService.ToolTip="{Binding PlayLabel}" AutomationProperties.Name="{Binding Name}">
         <FontIcon Glyph="&#xF5B0;" FontSize="15" Foreground="White" Margin="2,0,0,0"/>
        </Button>
       </Grid>
+      <!-- Name and store under the cover (design: GameCard) -->
+      <StackPanel Spacing="1" Padding="2,0"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" TextTrimming="CharacterEllipsis" MaxLines="1"/><TextBlock Text="{Binding Store}" Style="{StaticResource CaptionStyle}" FontSize="12"/></StackPanel>
+      </StackPanel>
      </DataTemplate></ItemsControl.ItemTemplate>
     </ItemsControl>
     <!-- Diary shelf: what the player is playing and wants to play (filled in code) -->
@@ -104,6 +108,7 @@
    <StackPanel x:Name="SettingsContent" x:Load="{x:Bind ShowSettings}" Spacing="20">
     <SelectorBar x:Name="SettingsTabs" SelectionChanged="OnSettingsTabChanged" AutomationProperties.Name="{Binding Text[UxSettingsCategory]}" AutomationProperties.AutomationId="settings-category"/>
     <StackPanel x:Name="AppearanceContent" x:Load="{x:Bind ShowAppearance}" Spacing="8">
+     <controls:AppearancePicker DataContext="{Binding Preferences}" Margin="0,0,0,16"/>
      <TextBlock Text="{Binding Text[AppearanceCategory]}" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,8"/>
      <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <FontIcon Glyph="&#xE77B;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
@@ -135,11 +140,6 @@
       <FontIcon Glyph="&#xE995;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetSoundVolume]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetSoundVolumeHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
       <Slider Grid.Column="2" Minimum="0" Maximum="100" StepFrequency="5" Value="{Binding Preferences.UiSoundVolume, Mode=TwoWay}" ValueChanged="OnVolumeChanged" VerticalAlignment="Center" AutomationProperties.Name="{Binding Text[SetSoundVolume]}" AutomationProperties.AutomationId="settings-volume"/>
-     </Grid></Border>
-     <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-      <FontIcon Glyph="&#xE790;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
-      <TextBlock Grid.Column="1" Text="{Binding Text[Theme]}" VerticalAlignment="Center" TextWrapping="Wrap"/>
-      <ComboBox Grid.Column="2" MinWidth="200" SelectedIndex="{Binding Preferences.ThemeIndex, Mode=TwoWay}" ItemsSource="{Binding Preferences.ThemeOptions}" AutomationProperties.AutomationId="settings-theme" AutomationProperties.Name="{Binding Text[Theme]}"/>
      </Grid></Border>
      <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <FontIcon Glyph="&#xF2B7;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>

@@ -51,7 +51,7 @@ public sealed partial class RtssCard : UserControl
     {
         var dialog = new ContentDialog
         {
-            XamlRoot = XamlRoot, Title = title, RequestedTheme = ElementTheme.Dark, DefaultButton = ContentDialogButton.Close,
+            XamlRoot = XamlRoot, Title = title, RequestedTheme = ThemePalette.Element, DefaultButton = ContentDialogButton.Close,
             Content = new TextBlock { Text = body, TextWrapping = TextWrapping.Wrap, MaxWidth = 460 },
             PrimaryButtonText = vm.Text["FeatConfirm"], CloseButtonText = vm.Text["DlgCancel"]
         };

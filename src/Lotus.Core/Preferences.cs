@@ -22,14 +22,16 @@ public sealed record InterfacePreferences
     public string DisplayName { get; init; } = "";
     public string? AvatarPath { get; init; }
     public string Goal { get; init; } = "balanced"; // fps | competitive | balanced
-    public string Accent { get; init; } = "rose"; // rose | crimson | gold | violet | dark
+    public string Accent { get; init; } = "rose"; // rose | violet | blue | green (design) and the older crimson | gold | dark
     public static readonly string[] Goals = ["fps", "competitive", "balanced"];
-    public static readonly string[] Accents = ["rose", "crimson", "gold", "violet", "dark"];
+    public static readonly string[] Accents = ["rose", "violet", "blue", "green", "crimson", "gold", "dark"];
+    // Midnight = dark (stored name kept for older files), Light, System (follows Windows), Graphite = dark on neutral surfaces.
+    public static readonly string[] Themes = ["Midnight", "Light", "System", "Graphite"];
     public InterfacePreferences Normalize() => this with
     {
         SchemaVersion = 1,
         Language = Language == "en-US" ? "en-US" : "pt-BR",
-        Theme = Theme == "Graphite" ? "Graphite" : "Midnight",
+        Theme = Themes.Contains(Theme) ? Theme : "Midnight",
         ProfileSource = ProfileSource is "steam" or "custom" ? ProfileSource : "none",
         DisplayName = (DisplayName ?? "").Trim() is var n && n.Length > 32 ? n[..32] : (DisplayName ?? "").Trim(),
         Goal = Goals.Contains(Goal) ? Goal : "balanced",
@@ -82,22 +84,25 @@ public sealed class PreferencesViewModel : ObservableObject
     private bool reduceMotion;
     private string message = "";
     public IReadOnlyList<string> LanguageOptions { get; } = new[] { "Português (Brasil)", "English (United States)" };
-    public IReadOnlyList<string> ThemeOptions => new[] { text["Midnight"], text["Graphite"] };
+    public IReadOnlyList<string> ThemeOptions => [.. InterfacePreferences.Themes.Select(t => text[t])];
     public int LanguageIndex { get => languageIndex; set { if (value is >= 0 and <= 1 && SetProperty(ref languageIndex, value) && !synchronizing) Save(); } }
-    public int ThemeIndex { get => themeIndex; set { if (value is >= 0 and <= 1 && SetProperty(ref themeIndex, value) && !synchronizing) Save(); } }
+    public int ThemeIndex { get => themeIndex; set { if (value >= 0 && value < InterfacePreferences.Themes.Length && SetProperty(ref themeIndex, value) && !synchronizing) Save(); } }
+    // Accent color (Settings › Appearance and the welcome): applied live, kept when switching light/dark.
+    public string Accent { get => service.Current.Accent; set { if (value is not null && value != service.Current.Accent) { if (!service.Update(service.Current with { Accent = value })) Message = text["SaveFailed"]; OnPropertyChanged(); } } }
     public bool ReduceMotion { get => reduceMotion; set { if (SetProperty(ref reduceMotion, value) && !synchronizing) Save(); } }
     public bool StartWithWindows { get => service.Current.StartWithWindows; set { if (value != service.Current.StartWithWindows) { service.Update(service.Current with { StartWithWindows = value }); OnPropertyChanged(); } } }
     public bool CloseToTray { get => service.Current.CloseToTray; set { if (value != service.Current.CloseToTray) { service.Update(service.Current with { CloseToTray = value }); OnPropertyChanged(); } } }
     public bool UiSounds { get => service.Current.UiSounds; set { if (value != service.Current.UiSounds) { service.Update(service.Current with { UiSounds = value }); OnPropertyChanged(); } } }
     public double UiSoundVolume { get => service.Current.UiSoundVolume; set { var v = (int)Math.Round(value); if (v != service.Current.UiSoundVolume) { service.Update(service.Current with { UiSoundVolume = v }); OnPropertyChanged(); } } }
     public string Message { get => message; private set => SetProperty(ref message, value); }
+    public ITextCatalog Text => text;
     public string PlayerName => service.Current.DisplayName;
     public PreferencesViewModel(PreferencesService service, ITextCatalog text)
     {
         this.service = service;
         this.text = text;
         languageIndex = service.Current.Language == "en-US" ? 1 : 0;
-        themeIndex = service.Current.Theme == "Graphite" ? 1 : 0;
+        themeIndex = Math.Max(0, Array.IndexOf(InterfacePreferences.Themes, service.Current.Theme));
         reduceMotion = service.Current.ReduceMotion;
     }
     private void Save()
@@ -105,14 +110,14 @@ public sealed class PreferencesViewModel : ObservableObject
         var updated = service.Current with
         {
             Language = LanguageIndex == 1 ? "en-US" : "pt-BR",
-            Theme = ThemeIndex == 1 ? "Graphite" : "Midnight",
+            Theme = InterfacePreferences.Themes[ThemeIndex],
             ReduceMotion = ReduceMotion
         };
         if (!service.Update(updated))
         {
             synchronizing = true;
             LanguageIndex = service.Current.Language == "en-US" ? 1 : 0;
-            ThemeIndex = service.Current.Theme == "Graphite" ? 1 : 0;
+            ThemeIndex = Math.Max(0, Array.IndexOf(InterfacePreferences.Themes, service.Current.Theme));
             ReduceMotion = service.Current.ReduceMotion;
             synchronizing = false;
             Message = text["SaveFailed"];

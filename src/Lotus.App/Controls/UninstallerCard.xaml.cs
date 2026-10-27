@@ -43,7 +43,7 @@ public sealed partial class UninstallerCard : UserControl
     {
         var dialog = new ContentDialog
         {
-            XamlRoot = XamlRoot, Title = title, RequestedTheme = ElementTheme.Dark, DefaultButton = ContentDialogButton.Close,
+            XamlRoot = XamlRoot, Title = title, RequestedTheme = ThemePalette.Element, DefaultButton = ContentDialogButton.Close,
             Content = RichText.Block(body), PrimaryButtonText = primary, CloseButtonText = vm.Text["DlgCancel"]
         };
         return await dialog.ShowAsync() == ContentDialogResult.Primary;

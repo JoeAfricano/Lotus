@@ -71,7 +71,7 @@ public sealed class OnboardingViewModel : ObservableObject
     public IReadOnlyList<GoalOption> Goals => [.. InterfacePreferences.Goals.Select(g => new GoalOption(g, Text["ObGoal" + g], Text["ObGoal" + g + "Detail"], g switch { "fps" => "", "competitive" => "", _ => "" }, g == goal))];
     public string Goal { get => goal; set { if (value is not null && SetProperty(ref goal, value)) { OnPropertyChanged(nameof(GoalTitle)); OnPropertyChanged(nameof(Goals)); } } }
     public string GoalTitle => Text["ObGoal" + goal];
-    public IReadOnlyList<AccentOption> Accents => [.. new[] { ("rose", "AccentRose", "#E8378A"), ("crimson", "AccentCrimson", "#E0384C"), ("gold", "AccentGold", "#E3A350"), ("violet", "AccentViolet", "#9C5CF0"), ("dark", "AccentDark", "#3A2E35") }
+    public IReadOnlyList<AccentOption> Accents => [.. new[] { ("rose", "AccentRose", "#AD245E"), ("violet", "AccentViolet", "#6D43B5"), ("blue", "AccentBlue", "#245CC1"), ("green", "AccentGreen", "#28715A"), ("crimson", "AccentCrimson", "#B02236"), ("gold", "AccentGold", "#8F5E16"), ("dark", "AccentDark", "#3E3239") }
         .Select(a => new AccentOption(a.Item1, Text[a.Item2], a.Item3, a.Item1 == accent))];
     public string Accent { get => accent; set { if (value is not null && SetProperty(ref accent, value)) { AccentPreview?.Invoke(this, value); OnPropertyChanged(nameof(Accents)); } } }
 

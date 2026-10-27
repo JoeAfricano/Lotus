@@ -67,7 +67,7 @@ public sealed partial class BackupPanel : UserControl
         if (vm.Inspect(data) is not { } manifest) { UiSound.Play(UiSound.Cue.Fail); return; }
         var dialog = new ContentDialog
         {
-            XamlRoot = XamlRoot, RequestedTheme = ElementTheme.Dark, Title = vm.Text["BkRestoreTitle"],
+            XamlRoot = XamlRoot, RequestedTheme = ThemePalette.Element, Title = vm.Text["BkRestoreTitle"],
             Content = new TextBlock { Text = vm.Describe(manifest) + "\n\n" + vm.Text["BkRestoreWarning"], TextWrapping = TextWrapping.Wrap, MaxWidth = 460 },
             PrimaryButtonText = vm.Text["BkRestoreConfirm"], CloseButtonText = vm.Text["DyCancel"], DefaultButton = ContentDialogButton.Close,
         };

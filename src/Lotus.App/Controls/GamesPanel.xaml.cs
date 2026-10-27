@@ -16,6 +16,12 @@ public sealed partial class GamesPanel : UserControl
         // The first visit scans launchers in the background; later visits reuse the result.
         Loaded += async (_, _) => { if (DataContext is GamesViewModel vm) await vm.EnsureLoadedAsync(); };
     }
+    // Play on a cover: launches directly (no command binding, so it never starts out disabled).
+    private void OnCoverPlay(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not GamesViewModel vm || sender is not FrameworkElement { DataContext: GameCard card }) return;
+        UiSound.Play(UiSound.Cue.Open); vm.Play(card.Game);
+    }
 
     private async void OnAddGame(object sender, RoutedEventArgs e)
     {
@@ -48,7 +54,7 @@ public sealed partial class GamesPanel : UserControl
         content.Children.Add(list);
         var dialog = new ContentDialog
         {
-            XamlRoot = XamlRoot, Title = vm.Text["GamesRestoreTitle"], Content = content, RequestedTheme = ElementTheme.Dark,
+            XamlRoot = XamlRoot, Title = vm.Text["GamesRestoreTitle"], Content = content, RequestedTheme = ThemePalette.Element,
             PrimaryButtonText = vm.Text["GamesRestoreSelected"], CloseButtonText = vm.Text["DlgCancel"], DefaultButton = ContentDialogButton.Primary
         };
         if (await dialog.ShowAsync() == ContentDialogResult.Primary && list.SelectedItems.Count > 0)
@@ -70,7 +76,7 @@ public sealed partial class GamesPanel : UserControl
         body.Children.Add(new TextBlock { Text = support, TextWrapping = TextWrapping.Wrap, Opacity = 0.8, FontSize = 12.5, Margin = new Thickness(0, 8, 0, 0) });
         var dialog = new ContentDialog
         {
-            XamlRoot = XamlRoot, Title = vm.Text.Format("GsTitle", card.Name), RequestedTheme = ElementTheme.Dark,
+            XamlRoot = XamlRoot, Title = vm.Text.Format("GsTitle", card.Name), RequestedTheme = ThemePalette.Element,
             Content = body, CloseButtonText = vm.Text["GsClose"], DefaultButton = ContentDialogButton.Close
         };
         // A measured adjustment takes precedence over the hardware-based starting point.
@@ -185,7 +191,7 @@ public sealed partial class GamesPanel : UserControl
 
     private async Task<bool> Show(string title, UIElement content, string? primary, string close, bool primaryDefault = false)
     {
-        var dialog = new ContentDialog { XamlRoot = XamlRoot, Title = title, Content = content, CloseButtonText = close, RequestedTheme = ElementTheme.Dark, DefaultButton = primaryDefault ? ContentDialogButton.Primary : ContentDialogButton.Close };
+        var dialog = new ContentDialog { XamlRoot = XamlRoot, Title = title, Content = content, CloseButtonText = close, RequestedTheme = ThemePalette.Element, DefaultButton = primaryDefault ? ContentDialogButton.Primary : ContentDialogButton.Close };
         if (primary is not null) dialog.PrimaryButtonText = primary;
         return await dialog.ShowAsync() == ContentDialogResult.Primary;
     }
@@ -195,7 +201,7 @@ public sealed partial class GamesPanel : UserControl
         if (sender is not FrameworkElement { DataContext: GameCard card } || DataContext is not GamesViewModel vm) return;
         var dialog = new ContentDialog
         {
-            XamlRoot = XamlRoot, Title = vm.Text.Format("GamesRemoveConfirmTitle", card.Name), RequestedTheme = ElementTheme.Dark,
+            XamlRoot = XamlRoot, Title = vm.Text.Format("GamesRemoveConfirmTitle", card.Name), RequestedTheme = ThemePalette.Element,
             Content = new TextBlock { Text = vm.Text["GamesRemoveConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 420 },
             PrimaryButtonText = vm.Text["GamesRemoveConfirm"], CloseButtonText = vm.Text["DlgCancel"], DefaultButton = ContentDialogButton.Close
         };

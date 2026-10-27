@@ -3,7 +3,7 @@
  <Grid x:Name="Card" Width="384" Opacity="0" CornerRadius="18" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="1.5"
        PointerEntered="OnHold" PointerExited="OnRelease">
   <Grid.RenderTransform><CompositeTransform x:Name="Move" TranslateX="40"/></Grid.RenderTransform>
-  <Grid.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#FF2A1020" Offset="0"/><GradientStop Color="#FF1A0B14" Offset="1"/></LinearGradientBrush></Grid.Background>
+  <Grid.Background><StaticResource ResourceKey="ElevatedBrush"/></Grid.Background>
   <Grid Padding="16,14" ColumnSpacing="14" RowSpacing="10">
    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>

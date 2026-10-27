@@ -17,7 +17,7 @@
       <Grid ColumnSpacing="8">
        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14.5" TextTrimming="CharacterEllipsis"/>
-       <Border Grid.Column="1" CornerRadius="8" Padding="7,1" Background="#14FFFFFF" VerticalAlignment="Top">
+       <Border Grid.Column="1" CornerRadius="8" Padding="7,1" Background="{ThemeResource SubtleBrush}" VerticalAlignment="Top">
         <TextBlock Text="{Binding TierLabel}" FontSize="11" FontWeight="SemiBold" Foreground="{Binding Tier, Converter={StaticResource DiaryBrush}}"/>
        </Border>
       </Grid>

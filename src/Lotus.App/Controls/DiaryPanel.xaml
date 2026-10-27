@@ -19,7 +19,7 @@
      <TextBlock Text="{Binding Name}" FontSize="28" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
      <StackPanel Orientation="Horizontal" Spacing="8">
       <Border CornerRadius="10" Padding="10,3" Background="{ThemeResource AccentSoftBrush}"><TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"><Run Text="{Binding LevelText}"/><Run Text=" · "/><Run Text="{Binding TitleText}"/></TextBlock></Border>
-      <Border CornerRadius="10" Padding="10,3" Background="#14FFFFFF"><TextBlock Text="{Binding Achievements.SummaryText}" FontSize="12.5"/></Border>
+      <Border CornerRadius="10" Padding="10,3" Background="{ThemeResource SubtleBrush}"><TextBlock Text="{Binding Achievements.SummaryText}" FontSize="12.5"/></Border>
      </StackPanel>
      <TextBox x:Name="BioBox" Text="{Binding Bio, Mode=TwoWay}" PlaceholderText="{Binding Text[DyBioPlaceholder]}" MaxLength="160" Background="Transparent" BorderThickness="0,0,0,1" Padding="0,4" MinWidth="320" HorizontalAlignment="Left"
               AutomationProperties.Name="{Binding Text[DyBio]}" AutomationProperties.AutomationId="diary-bio"/>
@@ -92,15 +92,15 @@
        </Border>
        <StackPanel Grid.Column="1" Spacing="4">
         <StackPanel Orientation="Horizontal" Spacing="10">
-         <Border CornerRadius="6" Padding="7,1" Background="#1FFFFFFF" VerticalAlignment="Center"><TextBlock Text="{Binding Rank}" FontSize="12" FontWeight="SemiBold"/></Border>
+         <Border CornerRadius="6" Padding="7,1" Background="{ThemeResource SubtleBrush}" VerticalAlignment="Center"><TextBlock Text="{Binding Rank}" FontSize="12" FontWeight="SemiBold"/></Border>
          <TextBlock Text="{Binding Name}" FontSize="18" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
         </StackPanel>
         <TextBlock Text="{Binding Meta}" Style="{StaticResource CaptionStyle}"/>
         <TextBlock Text="{Binding DateText}" Style="{StaticResource CaptionStyle}" FontSize="11.5"/>
         <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
-         <Border CornerRadius="8" Padding="8,2" Background="#14FFFFFF"><TextBlock Text="{Binding Platform}" FontSize="11.5"/></Border>
-         <Border CornerRadius="8" Padding="8,2" Background="#1A66D68C" Visibility="{Binding HasHours, Converter={StaticResource BooleanVisibility}}">
-          <StackPanel Orientation="Horizontal" Spacing="4"><FontIcon Glyph="&#xE916;" FontSize="10" Foreground="#66D68C"/><TextBlock Text="{Binding Hours}" FontSize="11.5" Foreground="#66D68C"/></StackPanel>
+         <Border CornerRadius="8" Padding="8,2" Background="{ThemeResource SubtleBrush}"><TextBlock Text="{Binding Platform}" FontSize="11.5"/></Border>
+         <Border CornerRadius="8" Padding="8,2" Background="{ThemeResource SubtleBrush}" Visibility="{Binding HasHours, Converter={StaticResource BooleanVisibility}}">
+          <StackPanel Orientation="Horizontal" Spacing="4"><FontIcon Glyph="&#xE916;" FontSize="10" Foreground="{ThemeResource SuccessBrush}"/><TextBlock Text="{Binding Hours}" FontSize="11.5" Foreground="{ThemeResource SuccessBrush}"/></StackPanel>
          </Border>
          <ItemsControl ItemsSource="{Binding Feats}" Visibility="{Binding HasFeats, Converter={StaticResource BooleanVisibility}}">
           <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>

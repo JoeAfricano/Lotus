@@ -38,7 +38,7 @@ internal sealed class BrandMotionProof : IDisposable
         content.Children.Add(new TextBlock { Text = "1.000 ↔ 1.035 · 4.4 s · 228 ↔ 236 px", TextWrapping = TextWrapping.Wrap });
         content.Children.Add(status);
         dialog = new ContentDialog { XamlRoot = root, Title = text["BrandProofTitle"], Content = content,
-            CloseButtonText = text["BrandProofClose"], RequestedTheme = ElementTheme.Dark };
+            CloseButtonText = text["BrandProofClose"], RequestedTheme = ThemePalette.Element };
         preview.Loaded += (_, _) => Refresh();
         dialog.Opened += (_, _) => Refresh();
     }

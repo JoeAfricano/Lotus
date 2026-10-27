@@ -25,7 +25,7 @@
     <value>GPU</value>
   </data>
   <data name="Graphite" xml:space="preserve">
-    <value>Grafite / Rosê</value>
+    <value>Grafite</value>
   </data>
   <data name="Greeting" xml:space="preserve">
     <value>Olá, Player.</value>
@@ -60,13 +60,13 @@ Entre no jogo.</value>
     <value>Flor de lótus</value>
   </data>
   <data name="LotusScore" xml:space="preserve">
-    <value>LOTUS SCORE</value>
+    <value>Lotus Score</value>
   </data>
   <data name="Memory" xml:space="preserve">
     <value>MEMÓRIA</value>
   </data>
   <data name="Midnight" xml:space="preserve">
-    <value>Preto / Rosê</value>
+    <value>Escuro</value>
   </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navegação principal</value>
@@ -830,7 +830,7 @@ Condições atuais: {1}</value></data>
   <data name="IntLayoutApplied" xml:space="preserve"><value>Overlay do Lotus ativado. Abra um jogo com o RivaTuner ligado (se não mudar, reinicie o RivaTuner).</value></data>
   <data name="IntLayoutRestored" xml:space="preserve"><value>Layout anterior do RivaTuner restaurado.</value></data>
   <data name="IntLayoutExported" xml:space="preserve"><value>Arquivo salvo em {0}. No RivaTuner: Setup › Plugins › OverlayEditor › Layouts › Load.</value></data>
-  <data name="lotusscoreTitle" xml:space="preserve"><value>LOTUS SCORE</value></data>
+  <data name="lotusscoreTitle" xml:space="preserve"><value>Lotus Score</value></data>
   <data name="lotusscoreDescription" xml:space="preserve"><value>Teste o desempenho do seu PC e compare com outras máquinas.</value></data>
   <data name="lotusscoreNext" xml:space="preserve"><value>Teste de CPU e GPU com pontuação comparável.</value></data>
   <data name="ScoreIntro" xml:space="preserve"><value>Escolha os testes e clique em Iniciar. Cada um leva uns **15 segundos** e nada no Windows muda. O teste de GPU abre uma janela com a cena 3D; se fechar a janela, ele para. **Feche jogos e programas pesados antes.**</value></data>
@@ -1074,7 +1074,7 @@ Condições atuais: {1}</value></data>
   <data name="ObTourGamesDetail" xml:space="preserve"><value>Todos os seus jogos num lugar só, com **sinopse, nota e dificuldade**, overlay de FPS e o Jogar a um clique.</value></data>
   <data name="ObTourWhy" xml:space="preserve"><value>Por que está travando? (Ctrl + Shift + L)</value></data>
   <data name="ObTourWhyDetail" xml:space="preserve"><value>Com o jogo aberto, o Lotus mede e **diz o que está causando a travada**, junto com o que fazer.</value></data>
-  <data name="ObTourScore" xml:space="preserve"><value>LOTUS SCORE</value></data>
+  <data name="ObTourScore" xml:space="preserve"><value>Lotus Score</value></data>
   <data name="ObTourScoreDetail" xml:space="preserve"><value>Veja **quanto o seu PC rende** e compare com outras máquinas e peças.</value></data>
   <data name="ObTourTools" xml:space="preserve"><value>Ferramentas</value></data>
   <data name="ObTourToolsDetail" xml:space="preserve"><value>Liberar memória, limpar temporários, testar a internet e o DNS, ver a **saúde do disco** e o driver de vídeo.</value></data>
@@ -1174,7 +1174,7 @@ Condições atuais: {1}</value></data>
   <data name="RepChoose" xml:space="preserve"><value>O que incluir</value></data>
   <data name="RepPc" xml:space="preserve"><value>Meu PC</value></data>
   <data name="RepDrivers" xml:space="preserve"><value>Drivers e discos</value></data>
-  <data name="RepScore" xml:space="preserve"><value>LOTUS SCORE</value></data>
+  <data name="RepScore" xml:space="preserve"><value>Lotus Score</value></data>
   <data name="RepFps" xml:space="preserve"><value>Medições de FPS</value></data>
   <data name="RepGames" xml:space="preserve"><value>Meus jogos</value></data>
   <data name="RepNotes" xml:space="preserve"><value>Anotações</value></data>
@@ -1361,7 +1361,7 @@ Condições atuais: {1}</value></data>
   <data name="HbReadyTitle" xml:space="preserve"><value>Seu PC pronto para cada partida</value></data>
   <data name="HbReadyBody" xml:space="preserve"><value>Ajuste o Windows para jogar em poucos cliques. Tudo pode ser desfeito.</value></data>
   <data name="HbReadyAction" xml:space="preserve"><value>Otimizar meu PC</value></data>
-  <data name="HbScoreEyebrow" xml:space="preserve"><value>LOTUS SCORE</value></data>
+  <data name="HbScoreEyebrow" xml:space="preserve"><value>Lotus Score</value></data>
   <data name="HbScoreTitle" xml:space="preserve"><value>Quanto seu PC aguenta?</value></data>
   <data name="HbScoreBody" xml:space="preserve"><value>Teste CPU e GPU e veja onde sua máquina fica perto de outras.</value></data>
   <data name="HbScoreAction" xml:space="preserve"><value>Fazer o teste</value></data>
@@ -1382,7 +1382,7 @@ Condições atuais: {1}</value></data>
   <data name="HomeRescanHint" xml:space="preserve"><value>Procura de novo os jogos instalados nas lojas</value></data>
   <data name="HomeRescanning" xml:space="preserve"><value>Procurando...</value></data>
   <data name="HomeRescanDone" xml:space="preserve"><value>{0} jogos</value></data>
-  <data name="QtScore" xml:space="preserve"><value>LOTUS SCORE</value></data>
+  <data name="QtScore" xml:space="preserve"><value>Lotus Score</value></data>
   <data name="QtScoreHint" xml:space="preserve"><value>Teste CPU e GPU e compare.</value></data>
   <data name="QtList" xml:space="preserve"><value>Game list</value></data>
   <data name="QtListHint" xml:space="preserve"><value>Sorteie o próximo jogo.</value></data>
@@ -1742,4 +1742,15 @@ Condições atuais: {1}</value></data>
   <data name="BkAchievements" xml:space="preserve"><value>Conquistas: {0}</value></data>
   <data name="BkFavorites" xml:space="preserve"><value>Favoritos: {0}</value></data>
   <data name="BkBenchmarks" xml:space="preserve"><value>Medições de FPS: {0}</value></data>
+  <data name="ApThemeTitle" xml:space="preserve"><value>Tema e identidade</value></data>
+  <data name="ApAccent" xml:space="preserve"><value>Cor de destaque</value></data>
+  <data name="ApHintMidnight" xml:space="preserve"><value>Preto ameixa, para jogar à noite.</value></data>
+  <data name="ApHintLight" xml:space="preserve"><value>Porcelana rosada, para o dia.</value></data>
+  <data name="ApHintSystem" xml:space="preserve"><value>Segue o claro/escuro do Windows.</value></data>
+  <data name="ApHintGraphite" xml:space="preserve"><value>Escuro com superfícies neutras.</value></data>
+  <data name="Light" xml:space="preserve"><value>Claro</value></data>
+  <data name="System" xml:space="preserve"><value>Sistema</value></data>
+  <data name="AccentBlue" xml:space="preserve"><value>Azul</value></data>
+  <data name="AccentGreen" xml:space="preserve"><value>Verde</value></data>
+  <data name="ShellTagline" xml:space="preserve"><value>SEU ESPAÇO. SEU RITMO.</value></data>
 </root>

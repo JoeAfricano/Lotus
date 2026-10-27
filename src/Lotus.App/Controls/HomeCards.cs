@@ -17,7 +17,7 @@ public sealed partial class ContinueCard : UserControl
 {
     private readonly Grid root = new() { CornerRadius = new CornerRadius(22), MinHeight = 300 };
     public event EventHandler<GameEntry>? DetailsRequested;
-    public ContinueCard() { Content = root; root.Background = (Brush)Application.Current.Resources["HeroBrush"]; }
+    public ContinueCard() { Content = root; root.Background = (Brush)Application.Current.Resources["HeroBrush"]; RequestedTheme = ElementTheme.Dark; } // photo hero: white text and dark buttons in both themes
 
     public void Show(SectionViewModel vm)
     {

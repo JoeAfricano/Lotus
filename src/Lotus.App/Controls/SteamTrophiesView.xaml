@@ -69,7 +69,7 @@
    <Button Click="OnBack" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="steam-back">
     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE72B;" FontSize="12"/><TextBlock Text="{Binding Text[TrBack]}"/></StackPanel>
    </Button>
-   <Grid Height="170" CornerRadius="18" Background="{ThemeResource HeroBrush}">
+   <Grid Height="170" CornerRadius="18" Background="{ThemeResource HeroBrush}" RequestedTheme="Dark">
     <Image Source="{Binding Selected.Header, Converter={StaticResource CoverImage}}" Stretch="UniformToFill" Opacity="0.7"/>
     <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#2012090F" Offset="0"/><GradientStop Color="#F2170B13" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
     <StackPanel Padding="22,0,22,18" VerticalAlignment="Bottom" Spacing="6">

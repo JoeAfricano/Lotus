@@ -92,9 +92,9 @@ public sealed class PreferencesTests : IDisposable
     [Fact] public void TemporaryNoSelectionFromComboBoxCannotOverwritePreferences()
     {
         var service = new PreferencesService(CreateStore());
-        var vm = new PreferencesViewModel(service, new TextCatalog()) { LanguageIndex = 1, ThemeIndex = 1 };
+        var vm = new PreferencesViewModel(service, new TextCatalog()) { LanguageIndex = 1, ThemeIndex = 3 };
         vm.LanguageIndex = -1; vm.ThemeIndex = -1;
-        Assert.Equal(1, vm.LanguageIndex); Assert.Equal(1, vm.ThemeIndex);
+        Assert.Equal(1, vm.LanguageIndex); Assert.Equal(3, vm.ThemeIndex);
         Assert.Equal("en-US", CreateStore().Load().Value.Language);
         Assert.Equal("Graphite", CreateStore().Load().Value.Theme);
     }
@@ -102,12 +102,12 @@ public sealed class PreferencesTests : IDisposable
     {
         var service = new PreferencesService(CreateStore()); var text = new TextCatalog();
         service.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(PreferencesService.Current)) text.SetLanguage(service.Current.Language); };
-        var vm = new PreferencesViewModel(service, text) { ThemeIndex = 1 };
-        Assert.Equal("Grafite / Rosê", vm.ThemeOptions[vm.ThemeIndex]);
+        var vm = new PreferencesViewModel(service, text) { ThemeIndex = 3 };
+        Assert.Equal("Grafite", vm.ThemeOptions[vm.ThemeIndex]);
         vm.LanguageIndex = 1;
-        Assert.Equal("Graphite / Rose", vm.ThemeOptions[vm.ThemeIndex]);
+        Assert.Equal("Graphite", vm.ThemeOptions[vm.ThemeIndex]);
         vm.LanguageIndex = 0;
-        Assert.Equal("Grafite / Rosê", vm.ThemeOptions[vm.ThemeIndex]);
+        Assert.Equal("Grafite", vm.ThemeOptions[vm.ThemeIndex]);
     }
     public void Dispose()
     {

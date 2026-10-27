@@ -200,7 +200,7 @@ public sealed class D3D11GpuBenchmark : IGpuBenchmark
         using var vs = dev.CreateVertexShader(Compiler.Compile(Shader, "VS", "lotus-score.hlsl", "vs_5_0").Span);
         using var ps = dev.CreatePixelShader(Compiler.Compile(Shader, "PS", "lotus-score.hlsl", "ps_5_0").Span);
         using var cb = dev.CreateBuffer(new BufferDescription(16, BindFlags.ConstantBuffer));
-        var hwnd = SceneWindow.Create("LOTUS SCORE · GPU", 1280, 720);
+        var hwnd = SceneWindow.Create("Lotus Score · GPU", 1280, 720);
         try
         {
             using var factory = adapter.GetParent<IDXGIFactory2>();
@@ -243,7 +243,7 @@ public sealed class D3D11GpuBenchmark : IGpuBenchmark
                     if (sw.Elapsed - title > TimeSpan.FromMilliseconds(500))
                     {
                         title = sw.Elapsed;
-                        SceneWindow.SetTitle(hwnd, $"LOTUS SCORE · GPU · {(pass == 0 ? "warm-up" : $"{pass}/{passes}")} · {counted / sw.Elapsed.TotalSeconds:0} FPS");
+                        SceneWindow.SetTitle(hwnd, $"Lotus Score · GPU · {(pass == 0 ? "warm-up" : $"{pass}/{passes}")} · {counted / sw.Elapsed.TotalSeconds:0} FPS");
                     }
                 }
                 if (pass > 0) results.Add(counted / sw.Elapsed.TotalSeconds * 10);

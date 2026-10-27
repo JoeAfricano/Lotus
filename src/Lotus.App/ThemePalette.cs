@@ -5,72 +5,136 @@ using Windows.UI.ViewManagement;
 
 namespace Lotus.App;
 
-// Update shared brushes in place so existing controls change without restarting or flashing the window.
-// Lotus identity: plum-black surfaces, crimson/magenta accent, rose-gold highlights. "Graphite" keeps the same
-// accents on neutral surfaces. Surfaces stay translucent for Mica; high contrast uses opaque system colors.
-public sealed class ThemePalette(ResourceDictionary resources)
+// The one authority over Lotus colors ("Rosé Quartz" tokens): shared brushes are updated in place, so every control
+// changes live without restarting. Modes: Midnight (dark), Light, System (follows Windows) and Graphite (dark on
+// neutral surfaces). The accent is a pair: a fill for buttons/selection (white text on it) and a text color tuned per
+// mode. Success/warning/error never follow the accent. High contrast wins over everything and uses system colors.
+public sealed class ThemePalette
 {
-    public void Apply(string theme)
+    private readonly ResourceDictionary resources;
+    private readonly UISettings windows = new();
+    private string theme = "Midnight", accent = "rose";
+
+    public ThemePalette(ResourceDictionary resources)
     {
-        var hc = new AccessibilitySettings().HighContrast;
-        var system = new UISettings();
-        var graphite = theme == "Graphite";
-        var clear = Argb(0, 0, 0, 0);
-        var background = hc ? system.GetColorValue(UIColorType.Background) : graphite ? Argb(0xEB, 28, 28, 34) : Argb(0xEB, 18, 9, 15);
-        var foreground = hc ? system.GetColorValue(UIColorType.Foreground) : Argb(255, 248, 240, 243);
-        Set("WindowBrush", hc ? background : graphite ? Argb(255, 24, 24, 29) : Argb(255, 23, 11, 19));
-        Set("ShellBrush", background); Set("NavigationViewContentBackground", background);
-        Set("PaneBrush", hc ? background : clear);
-        Set("NavigationViewDefaultPaneBackground", hc ? background : clear);
-        Set("NavigationViewExpandedPaneBackground", hc ? background : clear);
-        Set("CardBrush", hc ? background : graphite ? Argb(0xB8, 42, 42, 50) : Argb(0xB8, 31, 15, 25));
-        Set("CardHoverBrush", hc ? background : graphite ? Argb(0xCC, 52, 52, 62) : Argb(0xCC, 42, 21, 33));
-        Set("ElevatedBrush", hc ? background : graphite ? Argb(0xD9, 48, 46, 56) : Argb(0xD9, 38, 19, 32));
-        Set("CardBorderBrush", hc ? foreground : Argb(0x1A, 255, 228, 238));
-        Set("NavigationViewContentGridBorderBrush", hc ? foreground : Argb(0x1A, 255, 228, 238));
-        Set("DividerBrush", hc ? foreground : Argb(0x12, 255, 228, 238));
-        Set("MainTextBrush", foreground);
-        Set("MutedBrush", hc ? foreground : Argb(255, 179, 161, 172));
-        Set("OnRoseBrush", hc ? background : Argb(255, 255, 246, 249));
-        Set("RoseBrush", hc ? foreground : Argb(255, 242, 123, 168));
-        Set("GoldBrush", hc ? foreground : Argb(255, 238, 193, 168));
-        Set("AccentSoftBrush", hc ? background : Argb(0x2E, 214, 48, 111));
-        Set("BadgeBrush", hc ? background : Argb(0x2E, 214, 48, 111));
-        Set("SuccessBrush", hc ? foreground : Argb(255, 127, 209, 168));
-        Set("WarningBrush", hc ? foreground : Argb(255, 240, 194, 125));
-        Set("ErrorBrush", hc ? foreground : Argb(255, 255, 143, 163));
+        this.resources = resources;
+        // "System" follows Windows live (light/dark switch, high contrast on/off).
+        windows.ColorValuesChanged += (_, _) => Dispatcher?.TryEnqueue(Refresh); // also fires when high contrast turns on/off
     }
 
-    // Accent color chosen by the player: buttons, selection, progress, badges and the rose text all follow it.
-    public void ApplyAccent(string accent)
+    public Microsoft.UI.Dispatching.DispatcherQueue? Dispatcher { get; set; }
+    public static ElementTheme Element { get; private set; } = ElementTheme.Dark; // for dialogs and other popups
+    public bool IsLight => Element == ElementTheme.Light;
+    public event EventHandler? Changed;
+    private static bool HighContrast => new AccessibilitySettings().HighContrast;
+
+    public void Apply(string themeName) { theme = themeName; Refresh(); }
+    public void ApplyAccent(string accentName) { accent = accentName; Refresh(); }
+
+    private bool SystemIsLight()
     {
-        if (new AccessibilitySettings().HighContrast) return;
-        var (main, light, dark, from, to) = accent switch
-        {
-            "crimson" => (Argb(255, 198, 40, 57), Argb(255, 240, 106, 122), Argb(255, 150, 24, 38), Argb(255, 224, 56, 76), Argb(255, 142, 18, 34)),
-            "gold" => (Argb(255, 196, 132, 52), Argb(255, 238, 192, 122), Argb(255, 150, 96, 30), Argb(255, 227, 163, 80), Argb(255, 154, 100, 32)),
-            "violet" => (Argb(255, 138, 79, 214), Argb(255, 183, 147, 242), Argb(255, 100, 52, 168), Argb(255, 156, 92, 240), Argb(255, 94, 42, 168)),
-            _ => (Argb(255, 214, 48, 111), Argb(255, 242, 123, 168), Argb(255, 184, 37, 93), Argb(255, 232, 55, 138), Argb(255, 168, 18, 79)),
-        };
-        var darkMode = accent == "dark";
-        if (darkMode) // dark buttons and badges; rose stays only on small details (selection, progress, highlights)
-        {
-            (from, to) = (Argb(255, 62, 50, 57), Argb(255, 36, 28, 33));
-        }
-        Set("RoseBrush", light);
-        Set("CardHoverBorderBrush", darkMode ? Argb(0x59, 242, 123, 168) : Color.FromArgb(0x66, light.R, light.G, light.B));
-        // Menu: selected item filled with the accent, band tinted with it (gold selection line stays).
-        var tint = darkMode ? Argb(255, 120, 96, 108) : main;
-        Set("NavigationViewItemBackgroundSelected", Color.FromArgb(0x73, tint.R, tint.G, tint.B)); Set("NavigationViewItemBackgroundSelectedPointerOver", Color.FromArgb(0x8C, tint.R, tint.G, tint.B));
-        Set("NavigationViewItemBackgroundSelectedPressed", Color.FromArgb(0x66, tint.R, tint.G, tint.B));
-        if (resources["NavigationViewTopPaneBackground"] is LinearGradientBrush band && band.GradientStops.Count >= 3)
-        { band.GradientStops[0].Color = Color.FromArgb(0x4D, dark.R, dark.G, dark.B); band.GradientStops[1].Color = Color.FromArgb(0x2E, (byte)(dark.R / 2), (byte)(dark.G / 2), (byte)(dark.B / 2)); }
-        var soft = darkMode ? Argb(0x22, 255, 255, 255) : Color.FromArgb(0x2E, main.R, main.G, main.B);
-        Set("AccentSoftBrush", soft); Set("BadgeBrush", soft);
-        Set("AccentFillColorDefaultBrush", main); Set("AccentFillColorSecondaryBrush", light); Set("AccentFillColorTertiaryBrush", dark);
-        resources["SystemAccentColor"] = main; resources["SystemAccentColorLight1"] = light; resources["SystemAccentColorLight2"] = light; resources["SystemAccentColorDark1"] = dark;
-        if (resources["AccentGradientBrush"] is LinearGradientBrush g && g.GradientStops.Count >= 2) { g.GradientStops[0].Color = from; g.GradientStops[1].Color = to; }
+        var bg = windows.GetColorValue(UIColorType.Background);
+        return bg.R + bg.G + bg.B > 382;
     }
+
+    private void Refresh()
+    {
+        var hc = HighContrast;
+        var light = !hc && (theme == "Light" || (theme == "System" && SystemIsLight()));
+        var graphite = !hc && !light && theme == "Graphite";
+        Element = light ? ElementTheme.Light : ElementTheme.Dark;
+        if (hc) ApplyHighContrast(); else ApplyTokens(light, graphite);
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    // Surface and text tokens per mode (design: TEMAS-E-ACESSIBILIDADE.md).
+    private void ApplyTokens(bool light, bool graphite)
+    {
+        var t = light ? Tokens.Light : graphite ? Tokens.Graphite : Tokens.Dark;
+        var (fill, textDark, textLight) = Accent(accent);
+        var accentText = light ? textLight : textDark;
+        Set("WindowBrush", t.Canvas); Set("ShellBrush", t.Canvas); Set("NavigationViewContentBackground", t.Canvas);
+        Set("PaneBrush", t.Shell); Set("NavigationViewDefaultPaneBackground", t.Shell); Set("NavigationViewExpandedPaneBackground", t.Shell);
+        Set("CardBrush", t.Card); Set("CardHoverBrush", t.Raised); Set("ElevatedBrush", t.Raised);
+        Set("CardBorderBrush", t.Border); Set("NavigationViewContentGridBorderBrush", t.Border); Set("DividerBrush", t.Divider);
+        Set("CardHoverBorderBrush", WithAlpha(accentText, 0x80));
+        Set("MainTextBrush", t.Text); Set("MutedBrush", t.TextSecondary);
+        Set("RoseBrush", accentText);
+        Set("GoldBrush", light ? Rgb(0x8E, 0x58, 0x1E) : Rgb(0xEE, 0xC1, 0xA8)); // rose-gold in the dark, a deep readable gold on porcelain
+        Set("OnRoseBrush", Rgb(255, 255, 255));
+        Set("SubtleBrush", light ? Argb(0x1F, 0xB0, 0x19, 0x5A) : Argb(0x14, 255, 255, 255));
+        Set("SuccessBrush", light ? Rgb(0x24, 0x6C, 0x4D) : Rgb(0x8A, 0xD6, 0xB3));
+        Set("WarningBrush", light ? Rgb(0x77, 0x50, 0x1B) : Rgb(0xEA, 0xC1, 0x83));
+        Set("ErrorBrush", light ? Rgb(0xB3, 0x22, 0x42) : Rgb(0xFF, 0x9C, 0xA6));
+        var soft = WithAlpha(fill, light ? (byte)0x1F : (byte)0x33);
+        Set("AccentSoftBrush", soft); Set("BadgeBrush", soft);
+        // Navigation: text, hover and the selected item.
+        Set("NavigationViewItemForeground", light ? t.Text : t.TextSecondary); Set("NavigationViewItemForegroundPointerOver", t.Text); Set("NavigationViewItemForegroundSelected", t.Text);
+        Set("TopNavigationViewItemForeground", light ? t.Text : t.TextSecondary); Set("TopNavigationViewItemForegroundPointerOver", t.Text); Set("TopNavigationViewItemForegroundPressed", t.Text);
+        Set("TopNavigationViewItemForegroundSelected", t.Text); Set("TopNavigationViewItemForegroundSelectedPointerOver", t.Text); Set("TopNavigationViewItemForegroundSelectedPressed", t.Text);
+        Set("NavigationViewItemBackgroundPointerOver", light ? WithAlpha(fill, 0x14) : Argb(0x12, 255, 255, 255));
+        Set("NavigationViewItemBackgroundPressed", light ? WithAlpha(fill, 0x22) : Argb(0x0C, 255, 255, 255));
+        var selected = light ? WithAlpha(fill, 0x2A) : t.Raised; // light: a clear rose pill on the current page
+        Set("NavigationViewItemBackgroundSelected", selected); Set("NavigationViewItemBackgroundSelectedPointerOver", selected); Set("NavigationViewItemBackgroundSelectedPressed", selected);
+        Set("NavigationViewSelectionIndicatorForeground", accentText);
+        Set("SystemControlFocusVisualPrimaryBrush", light ? Rgb(0x28, 0x1C, 0x30) : Rgb(0xF8, 0xF5, 0xFA));
+        if (resources["NavigationViewTopPaneBackground"] is LinearGradientBrush band && band.GradientStops.Count >= 3)
+            foreach (var stop in band.GradientStops) stop.Color = t.Shell;
+        // Accent fill (buttons, toggles, progress) — white text on all four design accents.
+        var dark = Darken(fill, 0.82); var hover = Lighten(fill, 0.12);
+        Set("AccentFillColorDefaultBrush", fill); Set("AccentFillColorSecondaryBrush", hover); Set("AccentFillColorTertiaryBrush", dark);
+        resources["SystemAccentColor"] = fill; resources["SystemAccentColorLight1"] = hover; resources["SystemAccentColorLight2"] = accentText; resources["SystemAccentColorDark1"] = dark;
+        if (resources["AccentGradientBrush"] is LinearGradientBrush g && g.GradientStops.Count >= 2) { g.GradientStops[0].Color = hover; g.GradientStops[1].Color = fill; }
+        if (resources["HeroBrush"] is LinearGradientBrush hero && hero.GradientStops.Count >= 3)
+        {
+            hero.GradientStops[0].Color = WithAlpha(fill, light ? (byte)0x26 : (byte)0x40);
+            hero.GradientStops[1].Color = WithAlpha(fill, light ? (byte)0x10 : (byte)0x1A);
+            hero.GradientStops[2].Color = WithAlpha(t.Card, 0x10);
+        }
+    }
+
+    private void ApplyHighContrast()
+    {
+        var bg = windows.GetColorValue(UIColorType.Background);
+        var fg = windows.GetColorValue(UIColorType.Foreground);
+        foreach (var key in new[] { "WindowBrush", "ShellBrush", "NavigationViewContentBackground", "PaneBrush", "NavigationViewDefaultPaneBackground", "NavigationViewExpandedPaneBackground",
+            "CardBrush", "CardHoverBrush", "ElevatedBrush", "OnRoseBrush", "AccentSoftBrush", "BadgeBrush", "SubtleBrush", "NavigationViewItemBackgroundPointerOver", "NavigationViewItemBackgroundPressed" })
+            Set(key, bg);
+        foreach (var key in new[] { "CardBorderBrush", "NavigationViewContentGridBorderBrush", "DividerBrush", "CardHoverBorderBrush", "MainTextBrush", "MutedBrush", "RoseBrush", "GoldBrush",
+            "SuccessBrush", "WarningBrush", "ErrorBrush", "NavigationViewItemForeground", "NavigationViewItemForegroundPointerOver", "NavigationViewItemForegroundSelected", "TopNavigationViewItemForeground",
+            "TopNavigationViewItemForegroundPointerOver", "TopNavigationViewItemForegroundPressed", "TopNavigationViewItemForegroundSelected", "TopNavigationViewItemForegroundSelectedPointerOver",
+            "TopNavigationViewItemForegroundSelectedPressed", "NavigationViewSelectionIndicatorForeground", "SystemControlFocusVisualPrimaryBrush" })
+            Set(key, fg);
+    }
+
+    // Accent: (fill with white text, text color on dark surfaces, text color on light surfaces).
+    private static (Color Fill, Color TextDark, Color TextLight) Accent(string id) => id switch
+    {
+        "violet" => (Rgb(0x6D, 0x43, 0xB5), Rgb(0xC2, 0xA5, 0xF5), Rgb(0x65, 0x40, 0xA0)),
+        "blue" => (Rgb(0x24, 0x5C, 0xC1), Rgb(0x9C, 0xBD, 0xFF), Rgb(0x24, 0x5C, 0xC1)),
+        "green" => (Rgb(0x28, 0x71, 0x5A), Rgb(0x8A, 0xD6, 0xB3), Rgb(0x24, 0x6C, 0x4D)),
+        "crimson" => (Rgb(0xB0, 0x22, 0x36), Rgb(0xF0, 0x6A, 0x7A), Rgb(0x9E, 0x1E, 0x30)),
+        "gold" => (Rgb(0x8F, 0x5E, 0x16), Rgb(0xEE, 0xC0, 0x7A), Rgb(0x7A, 0x4F, 0x12)),
+        "dark" => (Rgb(0x3E, 0x32, 0x39), Rgb(0xF2, 0x7B, 0xA8), Rgb(0x8E, 0x24, 0x52)),
+        _ => (Rgb(0xAD, 0x24, 0x5E), Rgb(0xF5, 0x8B, 0xB7), Rgb(0xB0, 0x19, 0x5A)),
+    };
+
+    private sealed record Tokens(Color Canvas, Color Shell, Color Card, Color Raised, Color Border, Color Divider, Color Text, Color TextSecondary)
+    {
+        public static readonly Tokens Dark = new(Rgb(0x10, 0x0D, 0x15), Rgb(0x17, 0x12, 0x1D), Rgb(0x21, 0x1A, 0x29), Rgb(0x2D, 0x23, 0x36),
+            Rgb(0x36, 0x2C, 0x40), Rgb(0x2B, 0x23, 0x33), Rgb(0xF8, 0xF5, 0xFA), Rgb(0xC1, 0xB5, 0xCA));
+        // Light "rosé porcelain": blush canvas, a rosier menu, warm off-white cards (no glaring pure white), rose borders,
+        // deep plum text and strong rose accents — Lotus character with comfortable contrast.
+        public static readonly Tokens Light = new(Rgb(0xF7, 0xEC, 0xF1), Rgb(0xF2, 0xE0, 0xE9), Rgb(0xFF, 0xFA, 0xFC), Rgb(0xF5, 0xDC, 0xE7),
+            Rgb(0xE3, 0xBC, 0xCD), Rgb(0xEE, 0xD3, 0xDF), Rgb(0x2B, 0x10, 0x20), Rgb(0x6A, 0x3E, 0x55));
+        public static readonly Tokens Graphite = new(Rgb(0x13, 0x13, 0x16), Rgb(0x19, 0x19, 0x1D), Rgb(0x22, 0x22, 0x28), Rgb(0x2D, 0x2D, 0x34),
+            Rgb(0x38, 0x38, 0x40), Rgb(0x2A, 0x2A, 0x31), Rgb(0xF5, 0xF5, 0xF7), Rgb(0xBC, 0xBC, 0xC6));
+    }
+
+    private static Color Rgb(byte r, byte g, byte b) => Color.FromArgb(255, r, g, b);
     private static Color Argb(byte a, byte r, byte g, byte b) => Color.FromArgb(a, r, g, b);
-    private void Set(string key, Color color) => ((SolidColorBrush)resources[key]).Color = color;
+    private static Color WithAlpha(Color c, byte a) => Color.FromArgb(a, c.R, c.G, c.B);
+    private static Color Darken(Color c, double f) => Rgb((byte)(c.R * f), (byte)(c.G * f), (byte)(c.B * f));
+    private static Color Lighten(Color c, double f) => Rgb((byte)(c.R + (255 - c.R) * f), (byte)(c.G + (255 - c.G) * f), (byte)(c.B + (255 - c.B) * f));
+    private void Set(string key, Color color) { if (resources.TryGetValue(key, out var v) && v is SolidColorBrush b) b.Color = color; }
 }

@@ -35,11 +35,11 @@
      <VisualState x:Name="Disabled"><VisualState.Setters><Setter Target="Root.Opacity" Value="0.5"/></VisualState.Setters></VisualState>
     </VisualStateGroup></VisualStateManager.VisualStateGroups>
     <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-    <Border x:Name="Hover" Opacity="0" CornerRadius="18" Background="#0AFFFFFF" IsHitTestVisible="False"/>
+    <Border x:Name="Hover" Opacity="0" CornerRadius="18" Background="{ThemeResource SubtleBrush}" IsHitTestVisible="False"/>
    </Grid>
   </ControlTemplate></Setter.Value></Setter>
  </Style>
- <Style x:Key="ChipStyle" TargetType="Border"><Setter Property="Background" Value="#12FFFFFF"/><Setter Property="BorderThickness" Value="0"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="9,5"/></Style>
+ <Style x:Key="ChipStyle" TargetType="Border"><Setter Property="Background" Value="{ThemeResource SubtleBrush}"/><Setter Property="BorderThickness" Value="0"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="9,5"/></Style>
  <Style x:Key="ChipTextStyle" TargetType="TextBlock"><Setter Property="FontSize" Value="12"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
 
  <!-- Typography -->
@@ -50,14 +50,11 @@
  <Style x:Key="EmptyIconStyle" TargetType="FontIcon"><Setter Property="FontSize" Value="28"/><Setter Property="Foreground" Value="{ThemeResource RoseBrush}"/><Setter Property="HorizontalAlignment" Value="Left"/></Style>
 
  <DataTemplate x:Key="PageHeaderTemplate">
-  <Grid ColumnSpacing="16" Margin="0,4,0,4">
-   <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-   <Border Width="52" Height="52" CornerRadius="16" Background="{ThemeResource AccentGradientBrush}" BorderBrush="#33FFFFFF" BorderThickness="1" VerticalAlignment="Top"><FontIcon Glyph="{Binding Glyph}" FontSize="24" Foreground="White" AutomationProperties.AccessibilityView="Raw"/></Border>
-   <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
-    <TextBlock Text="{Binding Title}" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.HeadingLevel="Level1"/>
-    <TextBlock Text="{Binding Subtitle}" Style="{StaticResource CaptionStyle}" FontSize="14"/>
-   </StackPanel>
-  </Grid>
+  <!-- Design: large page title (34) and a calm subtitle; no icon tile (the side menu already shows the icon). -->
+  <StackPanel Spacing="6" Margin="0,4,0,8">
+   <TextBlock Text="{Binding Title}" FontSize="34" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.HeadingLevel="Level1"/>
+   <TextBlock Text="{Binding Subtitle}" Foreground="{ThemeResource MutedBrush}" FontSize="15" TextWrapping="Wrap"/>
+  </StackPanel>
  </DataTemplate>
  <DataTemplate x:Key="MetricCardTemplate">
   <Border Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="6"><TextBlock Text="{Binding Title}" Style="{StaticResource EyebrowStyle}" TextWrapping="Wrap"/><TextBlock Text="&#x2014;" FontSize="26"/><TextBlock Text="{Binding Status}" Style="{StaticResource CaptionStyle}"/></StackPanel></Border>

@@ -1,4 +1,4 @@
-using Lotus.Core;
+﻿using Lotus.Core;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -54,7 +54,7 @@ public sealed partial class MainWindow : Window
         try
         {
             if (Environment.ProcessPath is { } exe)
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exe, "--restarted") { UseShellExecute = false })?.Dispose();
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exe, Environment.GetCommandLineArgs().Contains("--dev-instance") ? "--restarted --dev-instance" : "--restarted") { UseShellExecute = false })?.Dispose();
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Restart"); }
         Application.Current.Exit();
@@ -115,6 +115,7 @@ public sealed partial class MainWindow : Window
         SetUpBackground();
         try { experience.QuickFacts = Lotus.Infrastructure.Tools.QuickHardwareFacts.Read(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Quick hardware facts"); }
         games.SessionEnded += OnGameSessionEnded;
+        games.LaunchFailed += (_, message) => DispatcherQueue.TryEnqueue(() => { UiSound.Play(UiSound.Cue.Fail); ShowWarning(message); });
         InitializeComponent();
         Shell = this;
         ShellRoot.DataContext = ViewModel;
@@ -128,19 +129,24 @@ public sealed partial class MainWindow : Window
         AppWindow.TitleBar.ButtonInactiveForegroundColor = Windows.UI.Color.FromArgb(255, 150, 130, 142);
         AppWindow.TitleBar.ButtonHoverBackgroundColor = Windows.UI.Color.FromArgb(0x1F, 255, 255, 255);
         AppWindow.TitleBar.ButtonForegroundColor = Windows.UI.Color.FromArgb(255, 245, 239, 243);
+        // Light / dark / system: the whole window and its dialogs follow the palette live.
+        palette.Dispatcher = DispatcherQueue;
+        palette.Changed += (_, _) => ApplyElementTheme();
+        ApplyElementTheme();
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 820));
-        foreach (var section in ViewModel.Items.Where(s => s.Id is not ("gamelist" or "diary"))) // Game list and the diary open from Home, the title bar and the profile
+        foreach (var section in ViewModel.Items.OrderBy(s => s.Id is "gamelist" or "diary" ? 1 : 0)) // design order: Game list and the diary close the list; Settings sits at the bottom
         {
             var item = new NavigationViewItem
             {
-                Content = section.Id == "settings" ? null : NavLabel(section), Tag = section.Id, // settings: gear only, so every section fits
-                Icon = new FontIcon { Glyph = section.Glyph, FontSize = 17 },
+                Content = NavLabel(section), Tag = section.Id,
+                Icon = section.Id == "diary" ? new FontIcon { Glyph = section.Glyph, FontSize = 17, Foreground = (Brush)Application.Current.Resources["GoldBrush"] } : new FontIcon { Glyph = section.Glyph, FontSize = 17 },
                 MinHeight = 44, Margin = new Thickness(1, 2, 1, 2), CornerRadius = new CornerRadius(10), HorizontalContentAlignment = HorizontalAlignment.Stretch
             };
             AutomationProperties.SetName(item, section.Title);
             AutomationProperties.SetAutomationId(item, "nav-" + section.Id);
             ToolTipService.SetToolTip(item, section.Title);
-            Navigation.MenuItems.Add(item);
+            if (section.Id == "settings") Navigation.FooterMenuItems.Add(item); else Navigation.MenuItems.Add(item);
+            if (section.Id == "diary") { diaryNav = item; item.InfoBadge = new InfoBadge { Value = diaryPage.Progress.Level }; AutomationProperties.SetHelpText(item, diaryPage.LevelText); }
         }
         Navigation.RegisterPropertyChangedCallback(NavigationView.IsPaneOpenProperty, (_, _) => OnPaneStateChanged());
         initialized = true;
@@ -213,6 +219,20 @@ public sealed partial class MainWindow : Window
             }
         };
     }
+    private void ApplyElementTheme()
+    {
+        ShellRoot.RequestedTheme = ThemePalette.Element;
+        // The gold name keeps its effects in every theme; light gets a deeper gold (redrawn on a theme change).
+        if (BrandPulse.LightTheme != (ThemePalette.Element == ElementTheme.Light)) { BrandPulse.LightTheme = ThemePalette.Element == ElementTheme.Light; StopBrandMotion(); brandAnimated = null; }
+        UpdateBrandMotion();
+        var light = ThemePalette.Element == ElementTheme.Light;
+        AmbientBackground.Opacity = light ? 0 : 1; // design: the ambient art barely shows on porcelain, so names keep their contrast
+        var tb = AppWindow.TitleBar;
+        tb.ButtonForegroundColor = light ? Windows.UI.Color.FromArgb(255, 40, 28, 48) : Windows.UI.Color.FromArgb(255, 245, 239, 243);
+        tb.ButtonInactiveForegroundColor = light ? Windows.UI.Color.FromArgb(255, 120, 104, 130) : Windows.UI.Color.FromArgb(255, 150, 130, 142);
+        tb.ButtonHoverBackgroundColor = light ? Windows.UI.Color.FromArgb(0x14, 40, 28, 48) : Windows.UI.Color.FromArgb(0x1F, 255, 255, 255);
+        tb.ButtonHoverForegroundColor = tb.ButtonForegroundColor;
+    }
     private void OnPreferencesChanged(object? sender, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != nameof(PreferencesService.Current)) return;
@@ -231,10 +251,10 @@ public sealed partial class MainWindow : Window
         ViewModel.RefreshLanguage();
         monitoring.RefreshLanguage();
         experience.RefreshLanguage(); benchmark.RefreshLanguage(); optimizer.RefreshLanguage(); powerProfiles.RefreshLanguage(); hardware.RefreshLanguage(); games.RefreshLanguage(); integrations.RefreshLanguage(); score.RefreshLanguage(); tools.RefreshLanguage();
-        foreach (NavigationViewItem item in Navigation.MenuItems)
+        foreach (var item in NavItems())
         {
             var section = ViewModel.Items.Single(s => s.Id == (string)item.Tag);
-            item.Content = section.Id == "settings" ? null : NavLabel(section);
+            item.Content = NavLabel(section);
             AutomationProperties.SetName(item, section.Title);
             ToolTipService.SetToolTip(item, section.Title);
         }
@@ -263,17 +283,14 @@ public sealed partial class MainWindow : Window
     }
     private void UpdateNavigationMode(double width)
     {
-        // Top navigation at every width; NavigationView moves overflow items into its "More" menu by itself.
-        // Below ~1180 px the labels go away (icons + tooltips) so every section stays visible, none in "More".
-        var compact = width < 1180;
-        foreach (var item in Navigation.MenuItems.OfType<NavigationViewItem>())
-            if (item.Tag is string id && ViewModel.Items.FirstOrDefault(s => s.Id == id) is { } section)
-                item.Content = compact || id == "settings" ? null : NavLabel(section);
-        var nowNarrow = width < 1050;
-        if (narrow == nowNarrow) return;
+        // Side navigation (design): full menu on wide windows, icons only on medium ones, a collapsible menu on small ones.
+        var mode = width >= 1100 ? NavigationViewPaneDisplayMode.Left : width >= 720 ? NavigationViewPaneDisplayMode.LeftCompact : NavigationViewPaneDisplayMode.LeftMinimal;
+        var nowNarrow = mode != NavigationViewPaneDisplayMode.Left;
+        if (narrow == nowNarrow && Navigation.PaneDisplayMode == mode) return;
         updatingLayout = true;
         narrow = nowNarrow;
-        Navigation.PaneDisplayMode = NavigationViewPaneDisplayMode.Top;
+        Navigation.PaneDisplayMode = mode;
+        Navigation.IsPaneOpen = mode == NavigationViewPaneDisplayMode.Left;
         updatingLayout = false;
         UpdatePaneChrome();
     }
@@ -290,11 +307,12 @@ public sealed partial class MainWindow : Window
     {
         var top = Navigation.PaneDisplayMode == NavigationViewPaneDisplayMode.Top;
         var open = top || Navigation.IsPaneOpen;
-        // In top mode the brand lives in the title bar; the profile is a compact chip on the right.
+        // Open side menu: the brand sits at its top (title bar shows the tagline); closed: the title bar keeps the brand.
         BrandHeader.Visibility = open && !top ? Visibility.Visible : Visibility.Collapsed;
+        TitleBrand.Visibility = BrandHeader.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         ExpandedFooter.Visibility = open ? Visibility.Visible : Visibility.Collapsed;
         CompactFooter.Visibility = open ? Visibility.Collapsed : Visibility.Visible;
-        DiaryButton.Visibility = open ? Visibility.Visible : Visibility.Collapsed;
+        DiaryButton.Visibility = Visibility.Collapsed; // "Meu diÃ¡rio" is a menu item now (with the level badge)
         ShowDiaryLevel();
         UpdateToggleAccessibility(Navigation, text[open ? "CloseNavigation" : "OpenNavigation"]);
         UpdateBrandMotion();
@@ -378,11 +396,11 @@ public sealed partial class MainWindow : Window
     {
         var group = ViewModel.SelectedSection.Id;
         updatingNavigation = true;
-        Navigation.SelectedItem = Navigation.MenuItems.Cast<NavigationViewItem>().FirstOrDefault(item => (string)item.Tag == group);
-        if (Navigation.SelectedItem is null) foreach (var i in Navigation.MenuItems.OfType<NavigationViewItem>()) i.IsSelected = false; // Game list: no menu item lit
+        Navigation.SelectedItem = NavItems().FirstOrDefault(item => (string)item.Tag == group);
+        if (Navigation.SelectedItem is null) foreach (var i in NavItems()) i.IsSelected = false;
         // The control leaves its underline on the last item when nothing is selected: hide it on the Game list.
         if (Application.Current.Resources["NavigationViewSelectionIndicatorForeground"] is SolidColorBrush indicator)
-            indicator.Color = Navigation.SelectedItem is null ? Microsoft.UI.Colors.Transparent : Windows.UI.Color.FromArgb(255, 243, 201, 174);
+            indicator.Color = Navigation.SelectedItem is null ? Microsoft.UI.Colors.Transparent : ((SolidColorBrush)Application.Current.Resources["RoseBrush"]).Color;
         updatingNavigation = false;
         if (force || displayedSectionId != group)
         {
@@ -395,9 +413,11 @@ public sealed partial class MainWindow : Window
     }
     private void OnExperienceDemandChanged(object? sender, EventArgs args) => UpdateMonitoringDemand();
 
-    // LOTUS SCORE stands out in the menu: bold, gold, always upper case.
-    private static object NavLabel(Section section) => section.Id != "lotusscore" ? section.Title
-        : new TextBlock { Text = section.Title.ToUpperInvariant(), FontWeight = Microsoft.UI.Text.FontWeights.Bold, Foreground = (Brush)Application.Current.Resources["GoldGradientBrush"], CharacterSpacing = 40 };
+    // "Meu diário" is a main part of Lotus: its menu label and icon stand out in gold, like the name.
+    private IEnumerable<NavigationViewItem> NavItems() => Navigation.MenuItems.Concat(Navigation.FooterMenuItems).OfType<NavigationViewItem>();
+    private NavigationViewItem? diaryNav;
+    private static object NavLabel(Section section) => section.Id != "diary" ? section.Title
+        : new TextBlock { Text = section.Title, FontWeight = Microsoft.UI.Text.FontWeights.Bold, Foreground = (Brush)Application.Current.Resources["GoldBrush"] };
 
     // ---- Background mode: tray icon, close-to-tray, start with Windows, in-game hotkey ----
     private TrayIcon? tray;
@@ -490,7 +510,7 @@ public sealed partial class MainWindow : Window
             body.Children.Add(new TextBlock { Text = text[f.Key + "Title"], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, Foreground = (Brush)Application.Current.Resources["GoldBrush"] });
             body.Children.Add(RichText.Block(text.Format(f.Key + "Body", f.Detail ?? ""), opacity: 0.9));
         }
-        await new ContentDialog { XamlRoot = ShellRoot.XamlRoot, RequestedTheme = ElementTheme.Dark, Title = text.Format("WhyTitle", game.Name), Content = body, CloseButtonText = text["GsClose"] }.ShowAsync();
+        await new ContentDialog { XamlRoot = ShellRoot.XamlRoot, RequestedTheme = ThemePalette.Element, Title = text.Format("WhyTitle", game.Name), Content = body, CloseButtonText = text["GsClose"] }.ShowAsync();
     }
 
     public void OpenOnboarding(bool edit)
@@ -563,7 +583,11 @@ public sealed partial class MainWindow : Window
 
     // Title-bar diary chip: opens the diary page and shows the player's level.
     private void OnDiaryButton(object sender, RoutedEventArgs e) { Motion.Pop(DiaryIcon); UiSound.Play(UiSound.Cue.Navigate); OnOpenDiary(sender, EventArgs.Empty); }
-    private void ShowDiaryLevel() { if (DiaryLevel is { } t && diaryPage is { } d) t.Text = d.LevelText; }
+    private void ShowDiaryLevel()
+    {
+        if (DiaryLevel is { } t && diaryPage is { } d) t.Text = d.LevelText;
+        if (diaryNav?.InfoBadge is { } badge && diaryPage is { } p) { badge.Value = p.Progress.Level; AutomationProperties.SetHelpText(diaryNav, p.LevelText); }
+    }
     private void OnDiaryEnter(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => DiaryButton.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(0x4D, 0xF2, 0x7B, 0xA8));
     private void OnDiaryLeave(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => DiaryButton.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(0x2E, 0xF2, 0x7B, 0xA8));
     // Hover feedback on the profile badge (it opens the player panel).
@@ -590,7 +614,7 @@ public sealed partial class MainWindow : Window
         if (!session.ProfileApplied || ShellRoot.XamlRoot is null) return;
         var dialog = new ContentDialog
         {
-            XamlRoot = ShellRoot.XamlRoot, RequestedTheme = ElementTheme.Dark, DefaultButton = ContentDialogButton.Primary,
+            XamlRoot = ShellRoot.XamlRoot, RequestedTheme = ThemePalette.Element, DefaultButton = ContentDialogButton.Primary,
             Title = text.Format("PlayEndedTitle", session.Game.Name),
             Content = RichText.Block(text["PlayEndedBody"]),
             PrimaryButtonText = text["PlayUndo"], CloseButtonText = text["PlayKeep"]
