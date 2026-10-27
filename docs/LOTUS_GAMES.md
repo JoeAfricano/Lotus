@@ -155,3 +155,11 @@ Primeira entrega da versão focada no jogador leigo (ver decisões de produto em
 - **Conquistas**: 54 conquistas do Lotus (Diário, Caçador, Biblioteca, Lotus e Secretas) em bronze/prata/ouro/platina, com XP; conquistas da Steam lidas da cache local da Steam (sem login, funciona com perfil privado) e raridade global; tudo soma no nível do diário (novos títulos Mito e Imortal). Diário com seções Jogos / Conquistas / Steam, "Quase lá", vitrine das mais raras, aviso ao desbloquear e conquistas do jogo na página do jogo. Detalhes técnicos: `src/Lotus.Core/Achievements/`.
 - **Backup**: Configurações › Backup, arquivo `.lotusbackup` offline (salvar/restaurar com reinício), cópia automática semanal e Google Drive opcional. Ver `docs/LOTUS_BACKUP.md`.
 - Instalador: `tools\Build-Installer.ps1 -Name "Lotus Base"` → `artifacts\dist\Lotus-Base-Setup-0.2.0-alpha.exe`. A atualização visual (pacote "Conceito Premium") sai depois como "Lotus New".
+
+## Versão 0.3.0-alpha — "Lotus New" (27/10/2026)
+
+Atualização visual a partir do pacote "Conceito Premium" (Rosé Quartz):
+- **Temas** Escuro, Claro (porcelana rosada, contraste rosa forte), Sistema (segue o Windows ao vivo) e Grafite; **acentos** Rosê, Violeta, Azul, Verde (e os antigos Carmesim, Dourado, Escuro). Configurações › Aparência com cartões de tema e cores. Uma única autoridade de cores (`ThemePalette`), troca sem reiniciar; alto contraste usa as cores do sistema.
+- **Navegação lateral** (completa, só ícones ou recolhível conforme a largura), com Game list e **Meu diário em dourado** com o nível; Configurações e perfil embaixo; títulos de página grandes; heróis com foto sempre escuros; o nome **Lotus** dourado com efeitos em todos os temas; "Lotus Score" em caixa normal.
+- Inclui a correção do botão Jogar das capas (0.2.1).
+- Instalador: `tools\Build-Installer.ps1 -Name "Lotus New"` → `artifacts\dist\Lotus-New-Setup-0.3.0-alpha.exe`; instala por cima (atualização), sem desinstalar e sem tocar nos dados.
