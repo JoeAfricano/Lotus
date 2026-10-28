@@ -64,7 +64,7 @@ public sealed partial class AppearancePicker : UserControl
                 BorderBrush = selected ? (Brush)Application.Current.Resources["RoseBrush"] : (Brush)Application.Current.Resources["CardBorderBrush"],
             };
             surface.Background = id == "System"
-                ? new LinearGradientBrush(new GradientStopCollection { new() { Color = Hex("#FFFFFF"), Offset = 0.5 }, new() { Color = Hex("#211A29"), Offset = 0.5 } }, 0) { StartPoint = new(0, 0), EndPoint = new(1, 1) }
+                ? new LinearGradientBrush(new GradientStopCollection { new() { Color = Hex("#FFFFFF"), Offset = 0.56 }, new() { Color = Hex("#211A29"), Offset = 0.56 } }, 0) { StartPoint = new(0, 0), EndPoint = new(0, 1) } // light above, dark below: the hint always sits on the dark half
                 : Brush(card);
             if (id == "System") { name.Foreground = Brush("#281C30"); hint.Foreground = Brush("#F8F5FA"); hint.Opacity = 0.9; foreach (var icon in head.Children.OfType<FontIcon>()) icon.Foreground = Brush("#281C30"); }
             var button = new Button { Content = surface, Padding = new Thickness(0), Background = new SolidColorBrush(Colors.Transparent), BorderThickness = new Thickness(0), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };

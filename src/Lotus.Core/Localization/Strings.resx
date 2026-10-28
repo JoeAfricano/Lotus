@@ -1833,4 +1833,12 @@ Condições atuais: {1}</value></data>
   <data name="GlPickClear" xml:space="preserve"><value>Limpar filtros do sorteio</value></data>
   <data name="GlPickMore" xml:space="preserve"><value>Mais opções do sorteio</value></data>
   <data name="GlShowMore" xml:space="preserve"><value>Mostrar mais ({0} de {1})</value></data>
+  <data name="PpNoLast" xml:space="preserve"><value>Abra um jogo pelo Lotus e ele aparece aqui, pronto para voltar com um clique.</value></data>
+  <data name="DyDateOrder" xml:space="preserve"><value>A data de fim é anterior à de início. Ajuste uma das duas para salvar.</value></data>
+  <data name="DySaving" xml:space="preserve"><value>Salvando…</value></data>
+  <data name="DyDiscardTitle" xml:space="preserve"><value>Descartar as alterações?</value></data>
+  <data name="DyDiscardBody" xml:space="preserve"><value>O que você mudou neste registro ainda não foi salvo.</value></data>
+  <data name="DyDiscard" xml:space="preserve"><value>Descartar</value></data>
+  <data name="DyKeepEditing" xml:space="preserve"><value>Continuar editando</value></data>
+  <data name="BenchEmptyResult" xml:space="preserve"><value>O resultado aparece aqui depois de uma medição válida: FPS médio, lows e o ritmo dos frames. Com duas medições do mesmo jogo, o Lotus compara as duas. Nada é estimado ou inventado.</value></data>
 </root>

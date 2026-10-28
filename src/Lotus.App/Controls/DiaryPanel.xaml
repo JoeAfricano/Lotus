@@ -5,7 +5,7 @@
   <Border Style="{StaticResource HeroCardStyle}" Padding="26">
    <Grid ColumnSpacing="22" RowSpacing="18">
     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <Grid Width="96" Height="96">
      <Ellipse Fill="{ThemeResource AccentGradientBrush}"/>
      <TextBlock x:Name="Initial" FontSize="36" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -36,6 +36,28 @@
      <Border Grid.Column="2" Style="{StaticResource CompactCardStyle}" Padding="14,10"><StackPanel><TextBlock Text="{Binding StatAverage}" FontSize="26" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatAverage]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Border>
      <Border Grid.Column="3" Style="{StaticResource CompactCardStyle}" Padding="14,10"><StackPanel><TextBlock Text="{Binding StatYear}" FontSize="26" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatYear]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Border>
     </Grid>
+    <!-- Medals (guide 13): collapsed by default; locked ones keep their name and criterion visible -->
+    <Expander Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AutomationProperties.AutomationId="diary-medals">
+     <Expander.Header><StackPanel Orientation="Horizontal" Spacing="10" Padding="0,4"><FontIcon Glyph="&#xE734;" FontSize="15" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding BadgesText}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/></StackPanel></Expander.Header>
+     <ItemsRepeater ItemsSource="{Binding Badges}">
+      <ItemsRepeater.Layout><UniformGridLayout MinItemWidth="250" MinColumnSpacing="10" MinRowSpacing="10" ItemsStretch="Fill"/></ItemsRepeater.Layout>
+      <ItemsRepeater.ItemTemplate><DataTemplate>
+       <Border Padding="12,10" MinHeight="96" CornerRadius="12" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+        <Grid ColumnSpacing="10"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+         <Border Width="36" Height="36" CornerRadius="18" Background="{ThemeResource SubtleBrush}" VerticalAlignment="Top"><FontIcon Glyph="{Binding Glyph}" FontSize="16" Foreground="{ThemeResource GoldBrush}"/></Border>
+         <StackPanel Grid.Column="1" Spacing="3">
+          <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+          <TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+          <Grid ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+           <ProgressBar Value="{Binding Fraction}" Maximum="1" MinHeight="4" VerticalAlignment="Center"/>
+           <TextBlock Grid.Column="1" Text="{Binding ProgressText}" FontSize="11.5" Foreground="{ThemeResource MutedBrush}"/>
+          </Grid>
+         </StackPanel>
+        </Grid>
+       </Border>
+      </DataTemplate></ItemsRepeater.ItemTemplate>
+     </ItemsRepeater>
+    </Expander>
    </Grid>
   </Border>
 

@@ -27,4 +27,14 @@ public sealed partial class BenchmarkPanel : UserControl
     {
         if (args.PropertyName == nameof(BenchmarkViewModel.SelectedSession)) Chart.SetData(model?.SelectedSession?.Data?.Frames);
     }
+
+    // Side by side when there is room for both columns; otherwise the result goes below the preparation.
+    private void OnColumnsSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        var stacked = e.NewSize.Width < 900;
+        Columns.ColumnDefinitions[0].Width = stacked ? new GridLength(1, GridUnitType.Star) : new GridLength(416);
+        Columns.ColumnDefinitions[1].Width = stacked ? new GridLength(0) : new GridLength(1, GridUnitType.Star);
+        Grid.SetColumn(ResultCard, stacked ? 0 : 1); Grid.SetRow(ResultCard, stacked ? 1 : 0);
+        Columns.ColumnSpacing = stacked ? 0 : 20;
+    }
 }

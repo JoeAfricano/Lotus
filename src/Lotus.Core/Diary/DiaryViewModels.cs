@@ -189,6 +189,7 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
         Review = entry.Review; Platform = entry.Platform;
         foreach (var f in FeatToggles) f.Selected = entry.Feats.Contains(f.Id);
         foreach (var n in new[] { nameof(Name), nameof(Cover), nameof(Wide), nameof(IsNew), nameof(CanRemove), nameof(SteamMinutes), nameof(HasSteamHours), nameof(SteamHoursLabel), nameof(Status) }) OnPropertyChanged(n);
+        opened = Snapshot();
     }
 
     public void SelectStatus(DiaryStatus s)
@@ -209,4 +210,13 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
         return diary.Save(e);
     }
     public void Remove() => diary.Remove(entry.Key);
+
+    // Closing with changes asks first; incoherent dates are explained next to the fields (guide 14).
+    private string opened = "";
+    private string Snapshot() => $"{Status}|{Rating}|{Hours}|{Started?.Date}|{Finished?.Date}|{Review}|{Platform}|{string.Join(",", FeatToggles.Where(f => f.Selected).Select(f => f.Id))}";
+    public bool IsDirty => Snapshot() != opened;
+    public string DateError => Started is { } s && Finished is { } f && f.Date < s.Date ? Text["DyDateOrder"] : "";
+    public bool CanSave => DateError.Length == 0;
+    partial void OnStartedChanged(DateTimeOffset? value) { OnPropertyChanged(nameof(DateError)); OnPropertyChanged(nameof(CanSave)); }
+    partial void OnFinishedChanged(DateTimeOffset? value) { OnPropertyChanged(nameof(DateError)); OnPropertyChanged(nameof(CanSave)); }
 }

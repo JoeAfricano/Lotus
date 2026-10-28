@@ -17,7 +17,7 @@ public sealed partial class DiaryEditorView : UserControl
     public DiaryEditorView()
     {
         InitializeComponent();
-        KeyDown += (_, e) => { if (e.Key == Windows.System.VirtualKey.Escape) { Close(); e.Handled = true; } };
+        KeyDown += (_, e) => { if (e.Key == Windows.System.VirtualKey.Escape) { e.Handled = true; _ = RequestCloseAsync(); } };
     }
 
     public void Open(DiaryEditorViewModel vm)
@@ -66,14 +66,34 @@ public sealed partial class DiaryEditorView : UserControl
     }
     private void OnSteamHours(object sender, RoutedEventArgs e) => Vm?.UseSteamHours();
     private void OnScore(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e) => PaintScore();
-    private void OnBackdrop(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) => Close();
-    private void OnCancel(object sender, RoutedEventArgs e) => Close();
+    private void OnBackdrop(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) => _ = RequestCloseAsync();
+    private void OnCancel(object sender, RoutedEventArgs e) => _ = RequestCloseAsync();
+
+    // Escape, X, Cancel and the backdrop never drop typed changes silently: a dialog asks first.
+    private bool asking, saving;
+    private async Task RequestCloseAsync()
+    {
+        if (asking || Vm is not { } vm) return;
+        FocusHelper.Commit(this);
+        if (!vm.IsDirty) { Close(); return; }
+        asking = true;
+        var dialog = new ContentDialog
+        {
+            XamlRoot = XamlRoot, Title = vm.Text["DyDiscardTitle"], Content = vm.Text["DyDiscardBody"], PrimaryButtonText = vm.Text["DyDiscard"],
+            CloseButtonText = vm.Text["DyKeepEditing"], DefaultButton = ContentDialogButton.Close, RequestedTheme = ThemePalette.Element,
+        };
+        try { if (await dialog.ShowAsync() == ContentDialogResult.Primary) Close(); } finally { asking = false; }
+    }
 
     private void OnSave(object sender, RoutedEventArgs e)
     {
         if (Vm is not { } vm) return;
         FocusHelper.Commit(this); // commits the text being typed
-        var change = vm.Save();
+        if (saving || !vm.CanSave) return;
+        saving = true; SaveLabel.Text = vm.Text["DySaving"];
+        Lotus.Core.Diary.DiaryProgressChange change;
+        try { change = vm.Save(); }
+        finally { saving = false; SaveLabel.Text = vm.Text[vm.IsNew ? "DyAdd" : "DySave"]; }
         Close();
         Saved?.Invoke(this, change);
     }

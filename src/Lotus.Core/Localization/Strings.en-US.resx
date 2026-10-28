@@ -1833,4 +1833,12 @@ Current conditions: {1}</value></data>
   <data name="GlPickClear" xml:space="preserve"><value>Clear draw filters</value></data>
   <data name="GlPickMore" xml:space="preserve"><value>More draw options</value></data>
   <data name="GlShowMore" xml:space="preserve"><value>Show more ({0} of {1})</value></data>
+  <data name="PpNoLast" xml:space="preserve"><value>Launch a game from Lotus and it shows up here, one click away.</value></data>
+  <data name="DyDateOrder" xml:space="preserve"><value>The end date is before the start date. Fix one of them to save.</value></data>
+  <data name="DySaving" xml:space="preserve"><value>Saving…</value></data>
+  <data name="DyDiscardTitle" xml:space="preserve"><value>Discard your changes?</value></data>
+  <data name="DyDiscardBody" xml:space="preserve"><value>What you changed in this entry has not been saved yet.</value></data>
+  <data name="DyDiscard" xml:space="preserve"><value>Discard</value></data>
+  <data name="DyKeepEditing" xml:space="preserve"><value>Keep editing</value></data>
+  <data name="BenchEmptyResult" xml:space="preserve"><value>The result shows up here after a valid measurement: average FPS, lows and frame pacing. With two measurements of the same game, Lotus compares them. Nothing is estimated or made up.</value></data>
 </root>

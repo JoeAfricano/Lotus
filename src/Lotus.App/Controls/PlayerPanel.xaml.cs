@@ -18,6 +18,7 @@ public sealed partial class PlayerPanel : UserControl
     }
     private PlayerPanelViewModel? Vm => DataContext as PlayerPanelViewModel;
     public bool IsOpen => Visibility == Visibility.Visible;
+    private Control? returnFocus;
 
     public void Open(PlayerPanelViewModel vm, string name, string? picture)
     {
@@ -39,6 +40,9 @@ public sealed partial class PlayerPanel : UserControl
         Animate(Backdrop, "Opacity", 0, 1, 220);
         Animate(SheetShift, "X", 460, 0, 380, new CubicEase { EasingMode = EasingMode.EaseOut });
         UiSound.Play(UiSound.Cue.Open);
+        // Focus moves into the panel; Escape / close gives it back to whatever opened it.
+        returnFocus = XamlRoot is { } root ? Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(root) as Control : null;
+        DispatcherQueue.TryEnqueue(() => CloseButton.Focus(FocusState.Programmatic));
     }
 
     public void Close()
@@ -48,7 +52,7 @@ public sealed partial class PlayerPanel : UserControl
         FocusHelper.Commit(this); // commits a note being typed
         var sb = new Storyboard();
         Add(sb, Backdrop, "Opacity", 1, 0, 180); Add(sb, SheetShift, "X", 0, 460, 260, new CubicEase { EasingMode = EasingMode.EaseIn });
-        sb.Completed += (_, _) => Visibility = Visibility.Collapsed;
+        sb.Completed += (_, _) => { Visibility = Visibility.Collapsed; returnFocus?.Focus(FocusState.Programmatic); returnFocus = null; };
         sb.Begin();
     }
 

@@ -81,7 +81,10 @@ public sealed class DiaryScreenTests
         var diary = new GameDiary(new Memory(), ex => throw ex); var text = new Lotus.Core.TextCatalog();
         var editor = new DiaryEditorViewModel(diary, text);
         var game = new DiaryEntry { Key = "steam:5", AppId = "5", Name = "Hollow Knight", Genres = ["Indie"] };
-        editor.Open(game, steamMinutes: 600);
+        editor.Open(game, steamMinutes: 600); Assert.False(editor.IsDirty); // opening is not a change
+        editor.Started = new DateTimeOffset(2026, 10, 20, 0, 0, 0, TimeSpan.Zero); editor.Finished = new DateTimeOffset(2026, 10, 1, 0, 0, 0, TimeSpan.Zero);
+        Assert.True(editor.IsDirty); Assert.False(editor.CanSave); Assert.Equal(text["DyDateOrder"], editor.DateError);
+        editor.Started = null; editor.Finished = null; Assert.True(editor.CanSave); Assert.False(editor.IsDirty);
         Assert.True(editor.IsNew); Assert.Equal(DiaryStatus.Playing, editor.Status); Assert.Equal(10, editor.Hours); // Steam hours prefilled
         Assert.Equal(text["DyNoScore"], editor.RatingText);
         editor.SelectStatus(DiaryStatus.Completed); Assert.Equal(DateTimeOffset.Now.Date, editor.Finished?.Date);
