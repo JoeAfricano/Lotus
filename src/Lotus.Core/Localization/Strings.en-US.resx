@@ -1841,4 +1841,59 @@ Current conditions: {1}</value></data>
   <data name="DyDiscard" xml:space="preserve"><value>Discard</value></data>
   <data name="DyKeepEditing" xml:space="preserve"><value>Keep editing</value></data>
   <data name="BenchEmptyResult" xml:space="preserve"><value>The result shows up here after a valid measurement: average FPS, lows and frame pacing. With two measurements of the same game, Lotus compares them. Nothing is estimated or made up.</value></data>
+  <data name="ResetTitle" xml:space="preserve"><value>Restore Lotus</value></data>
+  <data name="ResetBody" xml:space="preserve"><value>Takes Lotus back to the start, with the welcome and everything to set up again. A **full safety copy** is made first and your data is **kept, not deleted**.</value></data>
+  <data name="ResetButton" xml:space="preserve"><value>Restore</value></data>
+  <data name="ResetConfirmTitle" xml:space="preserve"><value>Restore Lotus to the start?</value></data>
+  <data name="ResetConfirmBody" xml:space="preserve"><value>Lotus will restart and open the welcome, like the first time.
+
+• **Start from zero:** profile, theme, preferences, diary, achievements, favorites, notes, per-game settings and measurements.
+• **Nothing is deleted:** a copy goes to Backups first, and the old data is kept in the Reset folder. You can go back in Settings › Backup.
+• **Stays the same:** the history of Windows changes, so you can still undo what Lotus changed.
+
+Your games and Windows are not changed.</value></data>
+  <data name="ResetConfirm" xml:space="preserve"><value>Restore and restart</value></data>
+  <data name="ObStageTagline" xml:space="preserve"><value>Your PC, tuned to play.</value></data>
+  <data name="ObPromiseFps" xml:space="preserve"><value>More FPS, fewer stutters</value></data>
+  <data name="ObPromiseUndo" xml:space="preserve"><value>Everything can be undone</value></data>
+  <data name="ObPromiseDiary" xml:space="preserve"><value>Your story as a player</value></data>
+  <data name="ObWelcomeKicker" xml:space="preserve"><value>WELCOME</value></data>
+  <data name="ObWelcomeHeadline" xml:space="preserve"><value>Every match starts before the game opens.</value></data>
+  <data name="ObWelcomeLead" xml:space="preserve"><value>Lotus gets Windows ready to play, shows **what your PC delivers** and keeps **your story** with every game. In a minute it is all set your way.</value></data>
+  <data name="ObWelcomeStep1" xml:space="preserve"><value>Your profile</value></data>
+  <data name="ObWelcomeStep2" xml:space="preserve"><value>Your goal</value></data>
+  <data name="ObWelcomeStep3" xml:space="preserve"><value>Your look</value></data>
+  <data name="ObWelcomeStep4" xml:space="preserve"><value>Ready to play</value></data>
+  <data name="ObStageProfile" xml:space="preserve"><value>This is how you show up in Lotus</value></data>
+  <data name="ObStageProfileLine" xml:space="preserve"><value>Your diary starts here: every game you finish turns into XP.</value></data>
+  <data name="ObStageGoal" xml:space="preserve"><value>Example of what Lotus will prioritize</value></data>
+  <data name="ObGoalExfps1" xml:space="preserve"><value>Game profile with High performance while plugged in</value></data>
+  <data name="ObGoalExfps2" xml:space="preserve"><value>Monitor at its highest refresh rate and Game Mode on</value></data>
+  <data name="ObGoalExfps3" xml:space="preserve"><value>Estimated FPS in Lotus Score for your games</value></data>
+  <data name="ObGoalExcompetitive1" xml:space="preserve"><value>Less delay: background recording off</value></data>
+  <data name="ObGoalExcompetitive2" xml:space="preserve"><value>&quot;Why is it stuttering?&quot; one shortcut away (Ctrl + Shift + L)</value></data>
+  <data name="ObGoalExcompetitive3" xml:space="preserve"><value>Ping and DNS tested in Tools</value></data>
+  <data name="ObGoalExbalanced1" xml:space="preserve"><value>Daily profile day to day, Game only when you play</value></data>
+  <data name="ObGoalExbalanced2" xml:space="preserve"><value>Less heat and noise outside matches</value></data>
+  <data name="ObGoalExbalanced3" xml:space="preserve"><value>Diary and achievements always at hand</value></data>
+  <data name="ObThemeTitle" xml:space="preserve"><value>Theme</value></data>
+  <data name="ObStageLook" xml:space="preserve"><value>Live preview</value></data>
+  <data name="ObStageLookPlay" xml:space="preserve"><value>Play</value></data>
+  <data name="ObStageApps" xml:space="preserve"><value>Programs that work with Lotus</value></data>
+  <data name="ObStageAppsLine" xml:space="preserve"><value>Nothing is installed without your click and confirmation.</value></data>
+  <data name="ObStageTour" xml:space="preserve"><value>Example: prepare and play</value></data>
+  <data name="ObStageTourGame" xml:space="preserve"><value>Cyberpunk 2077</value></data>
+  <data name="ObStageTourLine1" xml:space="preserve"><value>Power plan: High performance</value></data>
+  <data name="ObStageTourLine2" xml:space="preserve"><value>Game Mode on</value></data>
+  <data name="ObStageTourLine3" xml:space="preserve"><value>Estimated FPS · 1080p High · 84</value></data>
+  <data name="ObStageTourNote" xml:space="preserve"><value>Illustrative example. Real numbers come from your PC.</value></data>
+  <data name="ObTourHeadline" xml:space="preserve"><value>All set. Here is where to start.</value></data>
+  <data name="ObTourOptimizeEx" xml:space="preserve"><value>E.g. Game profile, 1 click, Undo always next to it</value></data>
+  <data name="ObTourGamesEx" xml:space="preserve"><value>E.g. Play straight from the cover, with the game&apos;s profile</value></data>
+  <data name="ObTourListEx" xml:space="preserve"><value>E.g. draw a hard RPG you don&apos;t own yet</value></data>
+  <data name="ObTourWhyEx" xml:space="preserve"><value>E.g. &quot;the GPU is maxed out, set shadows to Medium&quot;</value></data>
+  <data name="ObTourScoreEx" xml:space="preserve"><value>E.g. 12,480 points, faster than 71% of graphics cards</value></data>
+  <data name="ObTourProfileEx" xml:space="preserve"><value>E.g. Level 6 · Veteran, 104 h played, 14 medals</value></data>
+  <data name="ObStageLevel" xml:space="preserve"><value>Level 1 · Recruit</value></data>
+  <data name="ObLookTitle" xml:space="preserve"><value>Your look</value></data>
 </root>

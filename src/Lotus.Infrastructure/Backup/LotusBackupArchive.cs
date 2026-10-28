@@ -110,6 +110,32 @@ public sealed class LotusBackupArchive(string? root = null, string appVersion = 
         }
     }
 
+    // "Restore Lotus" (start from zero): asked in Settings, applied at the next start before anything loads.
+    // A safety copy is made first, then the player's data moves to Reset\<date> (nothing is deleted). The history of
+    // Windows changes (Optimizer), backups, logs and caches stay, so changes made earlier can still be undone.
+    private string ResetFile => Path.Combine(root, "pending-reset");
+    public bool HasPendingReset => File.Exists(ResetFile);
+    public void StageReset() { Directory.CreateDirectory(root); File.WriteAllText(ResetFile, DateTimeOffset.Now.ToString("o")); }
+    public string? ApplyPendingReset()
+    {
+        if (!HasPendingReset) return null;
+        try
+        {
+            if (CurrentFiles().Count > 0) SafetyCopy("before-reset");
+            var dest = Path.Combine(root, "Reset", DateTime.Now.ToString("yyyy-MM-dd-HHmmss"));
+            Directory.CreateDirectory(dest);
+            foreach (var name in Files.SelectMany(f => new[] { f, f + ".bak" }))
+                if (File.Exists(Path.Combine(root, name))) File.Move(Path.Combine(root, name), Path.Combine(dest, name));
+            foreach (var name in Folders)
+                if (Directory.Exists(Path.Combine(root, name))) Directory.Move(Path.Combine(root, name), Path.Combine(dest, name));
+            return dest;
+        }
+        finally
+        {
+            try { File.Delete(ResetFile); } catch (IOException) { }
+        }
+    }
+
     // A dated copy in Backups when the last one is older than `every`; keeps the newest `keep` copies.
     public string? AutoBackup(TimeSpan every, int keep)
     {

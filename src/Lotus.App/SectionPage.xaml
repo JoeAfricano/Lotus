@@ -210,7 +210,16 @@
     </StackPanel>
     <ContentControl x:Name="MonitoringSettingsContent" x:Load="{x:Bind ShowMonitoringSettings}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><TextBlock Text="{Binding Text[MonitoringCategory]}" Style="{StaticResource SectionTitleStyle}"/><ContentControl Content="{Binding Experience.CollectorStatus}" Style="{StaticResource StatusBadgeStyle}"/><TextBlock Text="{Binding Text[UxMonitoringSettings]}" Style="{StaticResource CaptionStyle}"/></StackPanel></ContentControl>
     <controls:IntegrationsPanel x:Name="IntegrationsContent" x:Load="{x:Bind ShowIntegrations}" DataContext="{Binding Integrations}"/>
-    <ContentControl x:Name="SafetyContent" x:Load="{x:Bind ShowSafety}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE83D;" Style="{StaticResource BadgeIconStyle}"/></Border><TextBlock Text="{Binding Text[SafetyCategory]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxNoChangesDescription]}" Style="{StaticResource BodyStyle}"/></StackPanel></ContentControl>
+    <ContentControl x:Name="SafetyContent" x:Load="{x:Bind ShowSafety}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE83D;" Style="{StaticResource BadgeIconStyle}"/></Border><TextBlock Text="{Binding Text[SafetyCategory]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[UxNoChangesDescription]}" Style="{StaticResource BodyStyle}"/>
+     <!-- Restore Lotus: start over from the welcome, with the player's data archived (never deleted) -->
+     <Border Margin="0,10,0,0" Padding="18,16" CornerRadius="14" Background="{ThemeResource CardHoverBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" AutomationProperties.AutomationId="settings-reset">
+      <Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+       <FontIcon Glyph="&#xE777;" FontSize="22" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Top" Margin="0,2,0,0"/>
+       <StackPanel Grid.Column="1" Spacing="4"><TextBlock Text="{Binding Text[ResetTitle]}" FontWeight="SemiBold" FontSize="15"/><TextBlock app:Rich.Text="{Binding Text[ResetBody]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+       <Button Grid.Column="2" Click="OnResetLotus" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center" MinHeight="44" AutomationProperties.AutomationId="settings-reset-button"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE777;" FontSize="13"/><TextBlock Text="{Binding Text[ResetButton]}"/></StackPanel></Button>
+      </Grid>
+     </Border>
+    </StackPanel></ContentControl>
     <StackPanel x:Name="FaqContent" x:Load="{x:Bind ShowFaq}" Spacing="8">
      <TextBlock Text="{Binding Text[FaqTitle]}" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,8"/>
      <Expander Header="{Binding Text[Fq1Q]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock app:Rich.Text="{Binding Text[Fq1A]}" Style="{StaticResource BodyStyle}"/></Expander>

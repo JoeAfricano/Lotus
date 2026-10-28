@@ -14,6 +14,7 @@ public interface IProfileSource
 
 public sealed record AccentOption(string Id, string Label, string Hex, bool Selected);
 public sealed record GoalOption(string Id, string Title, string Detail, string Glyph, bool Selected);
+public sealed record ThemeOption(string Id, string Label, string Swatch, bool Selected);
 
 // First-run welcome in steps (and later "Edit profile", which starts at the profile step and skips the tour).
 public sealed class OnboardingViewModel : ObservableObject
@@ -26,18 +27,19 @@ public sealed class OnboardingViewModel : ObservableObject
     private bool editing;
     private string source_ = "none", customName = "";
     private string? customPicture;
-    private string goal, accent;
+    private string goal, accent, theme;
     private SteamProfile? steam;
 
     public ITextCatalog Text { get; }
     public event EventHandler? Finished;
     public event EventHandler<string>? AccentPreview; // live preview while choosing a color
+    public event EventHandler<string>? ThemePreview;  // live preview while choosing light / dark
 
     public OnboardingViewModel(PreferencesService preferences, IProfileSource source, ITextCatalog text, Action<Exception> log, RecommendedAppsViewModel? apps = null)
     {
         Apps = apps; this.preferences = preferences; this.source = source; Text = text; this.log = log;
         var p = preferences.Current;
-        goal = p.Goal; accent = p.Accent; source_ = p.ProfileSource;
+        goal = p.Goal; accent = p.Accent; theme = p.Theme; source_ = p.ProfileSource;
         customName = p.ProfileSource == "custom" ? p.DisplayName : ""; customPicture = p.ProfileSource == "custom" ? p.AvatarPath : null;
     }
 
@@ -69,8 +71,12 @@ public sealed class OnboardingViewModel : ObservableObject
 
     // Goal and accent
     public IReadOnlyList<GoalOption> Goals => [.. InterfacePreferences.Goals.Select(g => new GoalOption(g, Text["ObGoal" + g], Text["ObGoal" + g + "Detail"], g switch { "fps" => "", "competitive" => "", _ => "" }, g == goal))];
-    public string Goal { get => goal; set { if (value is not null && SetProperty(ref goal, value)) { OnPropertyChanged(nameof(GoalTitle)); OnPropertyChanged(nameof(Goals)); } } }
+    public string Goal { get => goal; set { if (value is not null && SetProperty(ref goal, value)) { OnPropertyChanged(nameof(GoalTitle)); OnPropertyChanged(nameof(Goals)); OnPropertyChanged(nameof(GoalExamples)); } } }
     public string GoalTitle => Text["ObGoal" + goal];
+    // What the chosen goal changes in practice (examples shown next to the choice).
+    public IReadOnlyList<string> GoalExamples => [Text["ObGoalEx" + goal + "1"], Text["ObGoalEx" + goal + "2"], Text["ObGoalEx" + goal + "3"]];
+    public IReadOnlyList<ThemeOption> Themes => [.. InterfacePreferences.Themes.Select(t => new ThemeOption(t, Text[t], t switch { "Light" => "#F7ECF1", "Graphite" => "#222228", "System" => "#8A7B86", _ => "#211A29" }, t == theme))];
+    public string Theme { get => theme; set { if (value is not null && SetProperty(ref theme, value)) { ThemePreview?.Invoke(this, value); OnPropertyChanged(nameof(Themes)); } } }
     public IReadOnlyList<AccentOption> Accents => [.. new[] { ("rose", "AccentRose", "#AD245E"), ("violet", "AccentViolet", "#6D43B5"), ("blue", "AccentBlue", "#245CC1"), ("green", "AccentGreen", "#28715A"), ("crimson", "AccentCrimson", "#B02236"), ("gold", "AccentGold", "#8F5E16"), ("dark", "AccentDark", "#3E3239") }
         .Select(a => new AccentOption(a.Item1, Text[a.Item2], a.Item3, a.Item1 == accent))];
     public string Accent { get => accent; set { if (value is not null && SetProperty(ref accent, value)) { AccentPreview?.Invoke(this, value); OnPropertyChanged(nameof(Accents)); } } }
@@ -119,7 +125,7 @@ public sealed class OnboardingViewModel : ObservableObject
     {
         var p = preferences.Current;
         var name = PreviewName == Text["ObDefaultName"] && source_ != "steam" ? "" : PreviewName;
-        preferences.Update(p with { Onboarded = true, ProfileSource = source_, DisplayName = name, AvatarPath = PreviewPicture, Goal = goal, Accent = accent });
+        preferences.Update(p with { Onboarded = true, ProfileSource = source_, DisplayName = name, AvatarPath = PreviewPicture, Goal = goal, Accent = accent, Theme = theme });
         Finished?.Invoke(this, EventArgs.Empty);
     }
 
@@ -130,7 +136,7 @@ public sealed class OnboardingViewModel : ObservableObject
     private void NotifyAll()
     {
         foreach (var n in new[] { nameof(Step), nameof(StepCount), nameof(StepNumber), nameof(IsWelcome), nameof(IsProfile), nameof(IsGoal), nameof(IsAccent), nameof(IsApps), nameof(IsTour),
-                     nameof(CanBack), nameof(IsLast), nameof(NextLabel), nameof(StepText), nameof(SteamFound), nameof(SteamName), nameof(SteamPicture), nameof(Goal), nameof(Accent), nameof(GoalTitle) })
+                     nameof(CanBack), nameof(IsLast), nameof(NextLabel), nameof(StepText), nameof(SteamFound), nameof(SteamName), nameof(SteamPicture), nameof(Goal), nameof(Accent), nameof(GoalTitle), nameof(GoalExamples), nameof(Theme), nameof(Themes) })
             OnPropertyChanged(n);
         NotifyProfile();
     }

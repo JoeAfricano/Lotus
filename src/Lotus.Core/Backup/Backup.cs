@@ -19,6 +19,9 @@ public interface IBackupArchive
     BackupManifest? ApplyPending();           // at startup: safety copy of the current data, then restore
     string? AutoBackup(TimeSpan every, int keep);
     string BackupFolder { get; }
+    void StageReset();                        // "Restore Lotus": applied at the next start
+    bool HasPendingReset { get; }
+    string? ApplyPendingReset();              // safety copy, then the player's data is archived (never deleted)
 }
 
 public sealed record CloudBackup(string Id, string Name, DateTimeOffset Created, long Size);

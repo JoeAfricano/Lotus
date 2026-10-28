@@ -164,7 +164,8 @@ public sealed partial class MainWindow : Window
         onboarding = new Lotus.Core.Profile.OnboardingViewModel(preferences, new Lotus.Infrastructure.Profile.LocalProfileSource(), text, ex => Serilog.Log.Warning(ex, "Profile"),
             new Lotus.Core.Profile.RecommendedAppsViewModel(new Lotus.Infrastructure.Profile.WingetAppInstaller(), text, ex => Serilog.Log.Warning(ex, "Recommended apps")));
         onboarding.AccentPreview += (_, accent) => palette.ApplyAccent(accent);
-        Onboarding.Closed += (_, _) => { palette.ApplyAccent(preferences.Current.Accent); ShowProfile(); ShowRoute(force: true); };
+        onboarding.ThemePreview += (_, theme) => palette.Apply(theme);
+        Onboarding.Closed += (_, _) => { palette.Apply(preferences.Current.Theme); palette.ApplyAccent(preferences.Current.Accent); ShowProfile(); ShowRoute(force: true); };
         palette.ApplyAccent(preferences.Current.Accent);
         UiSound.Volume = preferences.Current.UiSoundVolume / 100.0; UiSound.Enabled = preferences.Current.UiSounds;
         ShowProfile();

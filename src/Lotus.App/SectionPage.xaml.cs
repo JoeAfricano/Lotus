@@ -226,6 +226,20 @@ public sealed partial class SectionPage : Page
         SetupButton.Visibility = setup.IsInstalledCopy ? Visibility.Collapsed : Visibility.Visible;
         SetupButton.Content = vm.Text[setup.IsInstalled ? "SetupUpdate" : "SetupInstall"];
     }
+    // Restore Lotus: explained in a dialog (default button = Cancel), then staged and applied by a restart.
+    private async void OnResetLotus(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not SectionViewModel vm) return;
+        var dialog = new ContentDialog
+        {
+            XamlRoot = XamlRoot, RequestedTheme = ThemePalette.Element, Title = vm.Text["ResetConfirmTitle"], DefaultButton = ContentDialogButton.Close,
+            Content = RichText.Block(vm.Text["ResetConfirmBody"]), PrimaryButtonText = vm.Text["ResetConfirm"], CloseButtonText = vm.Text["DlgCancel"]
+        };
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
+        try { new Lotus.Infrastructure.Backup.LotusBackupArchive().StageReset(); MainWindow.Shell?.Restart(); }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Reset could not be staged"); }
+    }
+
     private async void OnInstallLotus(object sender, RoutedEventArgs e)
     {
         if (DataContext is not SectionViewModel vm) return;

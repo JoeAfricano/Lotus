@@ -3,33 +3,139 @@
  <Grid>
   <!-- Dimmed, slightly tinted backdrop over the app -->
   <Border x:Name="Backdrop" Background="#D90C060A" Opacity="0"/>
-  <Grid x:Name="Card" Width="760" MaxWidth="900" MinHeight="540" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24" Opacity="0"
+  <Grid x:Name="Card" Width="1060" MaxWidth="1120" MinHeight="640" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24" Opacity="0"
         Background="{ThemeResource WindowBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="22">
    <Grid.RenderTransform><CompositeTransform x:Name="CardTransform" ScaleX="0.96" ScaleY="0.96" TranslateY="16"/></Grid.RenderTransform>
    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <Grid.ColumnDefinitions><ColumnDefinition Width="400"/><ColumnDefinition/></Grid.ColumnDefinitions>
+   <!-- Stage (left): the Lotus art "breathes" and shows a live example for each step -->
+   <Grid x:Name="Stage" Grid.RowSpan="3" CornerRadius="21,0,0,21" Background="#160C14" RequestedTheme="Dark" AutomationProperties.AutomationId="ob-stage">
+    <Image x:Name="StageArt" Stretch="UniformToFill" RenderTransformOrigin="0.5,0.5"><Image.RenderTransform><CompositeTransform x:Name="FlowerTransform"/></Image.RenderTransform></Image>
+    <Border><Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#33160C14" Offset="0"/><GradientStop Color="#55160C14" Offset="0.45"/><GradientStop Color="#F2160C14" Offset="0.82"/></LinearGradientBrush></Border.Background></Border>
+    <!-- Brand -->
+    <StackPanel Margin="30,28,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Spacing="0">
+     <TextBlock Text="Lotus" FontFamily="Georgia" FontSize="30" FontWeight="Bold" Foreground="{StaticResource GoldGradientBrush}"/>
+     <TextBlock Text="PLAY BETTER." FontSize="10.5" FontWeight="SemiBold" CharacterSpacing="160" Foreground="#F07A9C"/>
+    </StackPanel>
+    <Grid x:Name="StageExamples" VerticalAlignment="Bottom" Padding="28,0,28,30">
+     <Grid.RenderTransform><TranslateTransform x:Name="StageShift"/></Grid.RenderTransform>
+     <!-- Welcome: three promises -->
+     <StackPanel Spacing="10" Visibility="{Binding IsWelcome, Converter={StaticResource BooleanVisibility}}">
+      <TextBlock Text="{Binding Text[ObStageTagline]}" FontSize="22" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap" Margin="0,0,0,6"/>
+      <Border Style="{StaticResource ChipStyle}" Background="#4D2A1424" BorderBrush="#66F07A9C" HorizontalAlignment="Left"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE945;" FontSize="12" Foreground="#F07A9C"/><TextBlock Text="{Binding Text[ObPromiseFps]}" FontSize="12.5" Foreground="White"/></StackPanel></Border>
+      <Border Style="{StaticResource ChipStyle}" Background="#4D2A1424" BorderBrush="#66F07A9C" HorizontalAlignment="Left"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE7A7;" FontSize="12" Foreground="#F07A9C"/><TextBlock Text="{Binding Text[ObPromiseUndo]}" FontSize="12.5" Foreground="White"/></StackPanel></Border>
+      <Border Style="{StaticResource ChipStyle}" Background="#4D2A1424" BorderBrush="#66EEC1A8" HorizontalAlignment="Left"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE736;" FontSize="12" Foreground="#EEC1A8"/><TextBlock Text="{Binding Text[ObPromiseDiary]}" FontSize="12.5" Foreground="White"/></StackPanel></Border>
+     </StackPanel>
+     <!-- Profile: the player card as it will look -->
+     <StackPanel Spacing="10" Visibility="{Binding IsProfile, Converter={StaticResource BooleanVisibility}}">
+      <TextBlock Text="{Binding Text[ObStageProfile]}" FontSize="11" FontWeight="SemiBold" CharacterSpacing="80" Foreground="#F07A9C"/>
+      <Border Padding="16" CornerRadius="16" Background="#CC21141E" BorderBrush="#55EEC1A8" BorderThickness="1">
+       <StackPanel Spacing="12">
+        <StackPanel Orientation="Horizontal" Spacing="14">
+         <Grid Width="60" Height="60">
+          <Ellipse Fill="{ThemeResource AccentGradientBrush}"/>
+          <TextBlock Text="{Binding PreviewInitial}" FontSize="24" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          <Ellipse Visibility="{Binding PreviewPicture, Converter={StaticResource PresenceVisibility}}"><Ellipse.Fill><ImageBrush ImageSource="{Binding PreviewPicture, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Ellipse.Fill></Ellipse>
+          <Ellipse Stroke="{StaticResource GoldGradientBrush}" StrokeThickness="2"/>
+         </Grid>
+         <StackPanel VerticalAlignment="Center" Spacing="4">
+          <TextBlock Text="{Binding PreviewName}" FontSize="19" FontWeight="SemiBold" Foreground="White" TextTrimming="CharacterEllipsis" MaxWidth="220"/>
+          <Border CornerRadius="9" Padding="9,2" Background="#552A1424" HorizontalAlignment="Left"><TextBlock FontSize="11.5" FontWeight="SemiBold" Foreground="#EEC1A8"><Run Text="{Binding Text[ObStageLevel]}"/></TextBlock></Border>
+         </StackPanel>
+        </StackPanel>
+        <ProgressBar Value="8" Maximum="100" MinHeight="5"/>
+        <TextBlock Text="{Binding Text[ObStageProfileLine]}" FontSize="12.5" Foreground="#E6D6DE" TextWrapping="Wrap"/>
+       </StackPanel>
+      </Border>
+     </StackPanel>
+     <!-- Goal: what changes in practice -->
+     <StackPanel Spacing="10" Visibility="{Binding IsGoal, Converter={StaticResource BooleanVisibility}}">
+      <TextBlock Text="{Binding Text[ObStageGoal]}" FontSize="11" FontWeight="SemiBold" CharacterSpacing="80" Foreground="#F07A9C"/>
+      <TextBlock Text="{Binding GoalTitle}" FontSize="24" FontWeight="SemiBold" Foreground="White"/>
+      <ItemsControl ItemsSource="{Binding GoalExamples}">
+       <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+       <ItemsControl.ItemTemplate><DataTemplate>
+        <Border Padding="12,10" CornerRadius="12" Background="#CC21141E" BorderBrush="#40F07A9C" BorderThickness="1">
+         <Grid ColumnSpacing="10"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+          <FontIcon Glyph="&#xE73E;" FontSize="12" Foreground="#8AD6B3" VerticalAlignment="Top" Margin="0,3,0,0"/>
+          <TextBlock Grid.Column="1" Text="{Binding}" FontSize="12.5" Foreground="White" TextWrapping="Wrap"/>
+         </Grid>
+        </Border>
+       </DataTemplate></ItemsControl.ItemTemplate>
+      </ItemsControl>
+     </StackPanel>
+     <!-- Look: a miniature of the app in the chosen theme and color -->
+     <StackPanel Spacing="10" Visibility="{Binding IsAccent, Converter={StaticResource BooleanVisibility}}">
+      <TextBlock Text="{Binding Text[ObStageLook]}" FontSize="11" FontWeight="SemiBold" CharacterSpacing="80" Foreground="#F07A9C"/>
+      <Border x:Name="MiniApp" CornerRadius="16" Padding="0" Background="{ThemeResource WindowBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" RequestedTheme="Default" Height="190">
+       <Grid ColumnSpacing="0"><Grid.ColumnDefinitions><ColumnDefinition Width="92"/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <StackPanel Spacing="8" Padding="12,14" Background="{ThemeResource ShellBrush}" CornerRadius="15,0,0,15">
+         <TextBlock Text="Lotus" FontFamily="Georgia" FontWeight="Bold" FontSize="14" Foreground="{StaticResource GoldGradientBrush}" Margin="0,0,0,4"/>
+         <Border Height="16" CornerRadius="5" Background="{ThemeResource AccentSoftBrush}" BorderBrush="{ThemeResource RoseBrush}" BorderThickness="2,0,0,0"/>
+         <Border Height="10" CornerRadius="4" Background="{ThemeResource SubtleBrush}" Width="58" HorizontalAlignment="Left"/>
+         <Border Height="10" CornerRadius="4" Background="{ThemeResource SubtleBrush}" Width="48" HorizontalAlignment="Left"/>
+         <Border Height="10" CornerRadius="4" Background="{ThemeResource SubtleBrush}" Width="62" HorizontalAlignment="Left"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Spacing="10" Padding="14">
+         <Border Height="12" CornerRadius="4" Background="{ThemeResource MainTextBrush}" Width="110" HorizontalAlignment="Left" Opacity="0.85"/>
+         <Border Height="64" CornerRadius="10" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+          <Border Margin="10" CornerRadius="8" Background="{ThemeResource AccentGradientBrush}" Width="70" Height="26" HorizontalAlignment="Left" VerticalAlignment="Bottom"><TextBlock Text="{Binding Text[ObStageLookPlay]}" FontSize="11" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+         </Border>
+         <ProgressBar Value="64" MinHeight="5"/>
+         <Border Height="8" CornerRadius="4" Background="{ThemeResource SubtleBrush}" Width="140" HorizontalAlignment="Left"/>
+        </StackPanel>
+       </Grid>
+      </Border>
+     </StackPanel>
+     <!-- Apps -->
+     <StackPanel Spacing="10" Visibility="{Binding IsApps, Converter={StaticResource BooleanVisibility}}">
+      <TextBlock Text="{Binding Text[ObStageApps]}" FontSize="22" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap"/>
+      <StackPanel Orientation="Horizontal" Spacing="10">
+       <Border Width="46" Height="46" CornerRadius="14" Background="#CC21141E" BorderBrush="#55F07A9C" BorderThickness="1"><FontIcon Glyph="&#xE7FC;" FontSize="18" Foreground="#F07A9C"/></Border>
+       <Border Width="46" Height="46" CornerRadius="14" Background="#CC21141E" BorderBrush="#55F07A9C" BorderThickness="1"><FontIcon Glyph="&#xE9D9;" FontSize="18" Foreground="#F07A9C"/></Border>
+       <Border Width="46" Height="46" CornerRadius="14" Background="#CC21141E" BorderBrush="#55EEC1A8" BorderThickness="1"><FontIcon Glyph="&#xE950;" FontSize="18" Foreground="#EEC1A8"/></Border>
+      </StackPanel>
+      <TextBlock Text="{Binding Text[ObStageAppsLine]}" FontSize="12.5" Foreground="#E6D6DE" TextWrapping="Wrap"/>
+     </StackPanel>
+     <!-- Tour: a worked example -->
+     <StackPanel Spacing="10" Visibility="{Binding IsTour, Converter={StaticResource BooleanVisibility}}">
+      <TextBlock Text="{Binding Text[ObStageTour]}" FontSize="11" FontWeight="SemiBold" CharacterSpacing="80" Foreground="#F07A9C"/>
+      <Border Padding="16,14" CornerRadius="16" Background="#CC21141E" BorderBrush="#55EEC1A8" BorderThickness="1">
+       <StackPanel Spacing="9">
+        <TextBlock Text="{Binding Text[ObStageTourGame]}" FontSize="19" FontWeight="SemiBold" Foreground="White"/>
+        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE73E;" FontSize="12" Foreground="#8AD6B3"/><TextBlock Text="{Binding Text[ObStageTourLine1]}" FontSize="12.5" Foreground="White"/></StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE73E;" FontSize="12" Foreground="#8AD6B3"/><TextBlock Text="{Binding Text[ObStageTourLine2]}" FontSize="12.5" Foreground="White"/></StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE9D9;" FontSize="12" Foreground="#EEC1A8"/><TextBlock Text="{Binding Text[ObStageTourLine3]}" FontSize="12.5" Foreground="#EEC1A8" FontWeight="SemiBold"/></StackPanel>
+        <Border Margin="0,4,0,0" CornerRadius="10" Height="34" Background="{ThemeResource AccentGradientBrush}"><StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center"><FontIcon Glyph="&#xF5B0;" FontSize="12" Foreground="White"/><TextBlock Text="{Binding Text[ObStageLookPlay]}" FontWeight="SemiBold" Foreground="White"/></StackPanel></Border>
+       </StackPanel>
+      </Border>
+      <TextBlock Text="{Binding Text[ObStageTourNote]}" FontSize="11.5" Foreground="#B8A5B0" TextWrapping="Wrap"/>
+     </StackPanel>
+    </Grid>
+   </Grid>
    <!-- Header: step counter, progress and skip -->
-   <Grid Padding="32,24,24,0" ColumnSpacing="16">
+   <Grid Grid.Column="1" Padding="40,28,32,0" ColumnSpacing="16">
     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <TextBlock Text="{Binding StepText}" Style="{StaticResource EyebrowStyle}" VerticalAlignment="Center"/>
     <ProgressBar x:Name="StepProgress" Grid.Column="1" Maximum="100" MinHeight="4" VerticalAlignment="Center"/>
     <HyperlinkButton Grid.Column="2" Content="{Binding Text[ObSkip]}" Click="OnSkip" Visibility="{Binding IsLast, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}" AutomationProperties.AutomationId="ob-skip"/>
    </Grid>
    <!-- Step content (animated on every step change) -->
-   <Grid x:Name="StepHost" Grid.Row="1" Padding="40,16,40,8">
+   <Grid x:Name="StepHost" Grid.Row="1" Grid.Column="1" Padding="44,18,44,8">
     <Grid.RenderTransform><TranslateTransform x:Name="StepShift"/></Grid.RenderTransform>
-    <!-- 0. Welcome -->
-    <StackPanel Visibility="{Binding IsWelcome, Converter={StaticResource BooleanVisibility}}" Spacing="16" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="560">
-     <Viewbox x:Name="WelcomeFlower" Width="112" Height="112" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.6">
-      <Viewbox.RenderTransform><CompositeTransform x:Name="FlowerTransform"/></Viewbox.RenderTransform>
-      <Canvas Width="64" Height="64">
-       <Path Fill="{StaticResource PetalBrush}" Opacity="0.82" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z"/>
-       <Path Fill="{StaticResource PetalBrush}" Data="M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z"/>
-       <Path Stroke="{StaticResource GoldGradientBrush}" StrokeThickness="1.6" StrokeLineJoin="Round" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z"/>
-      </Canvas>
-     </Viewbox>
-     <TextBlock Text="{Binding Text[ObWelcomeTitle]}" FontSize="34" FontWeight="SemiBold" TextAlignment="Center" TextWrapping="Wrap"/>
-     <TextBlock app:Rich.Text="{Binding Text[ObWelcomeBody]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}" TextAlignment="Center" TextWrapping="Wrap"/>
-     <TextBlock app:Rich.Text="{Binding Text[ObWelcomeSafety]}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextAlignment="Center" TextWrapping="Wrap" Margin="0,8,0,0"/>
+    <!-- 0. Welcome: headline, what Lotus is, and the four short steps ahead -->
+    <StackPanel x:Name="WelcomeFlower" Visibility="{Binding IsWelcome, Converter={StaticResource BooleanVisibility}}" Spacing="18" VerticalAlignment="Center" MaxWidth="560" HorizontalAlignment="Left">
+     <TextBlock Text="{Binding Text[ObWelcomeKicker]}" Style="{StaticResource EyebrowStyle}" CharacterSpacing="120"/>
+     <TextBlock Text="{Binding Text[ObWelcomeHeadline]}" FontSize="36" FontWeight="SemiBold" TextWrapping="Wrap" LineHeight="44"/>
+     <TextBlock app:Rich.Text="{Binding Text[ObWelcomeLead]}" Style="{StaticResource BodyStyle}" FontSize="15" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap"/>
+     <Grid ColumnSpacing="10" Margin="0,6,0,0">
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <Border Padding="12,12" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1"><StackPanel Spacing="6"><TextBlock Text="1" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[ObWelcomeStep1]}" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
+      <Border Grid.Column="1" Padding="12,12" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1"><StackPanel Spacing="6"><TextBlock Text="2" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[ObWelcomeStep2]}" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
+      <Border Grid.Column="2" Padding="12,12" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1"><StackPanel Spacing="6"><TextBlock Text="3" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[ObWelcomeStep3]}" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
+      <Border Grid.Column="3" Padding="12,12" CornerRadius="14" Background="{ThemeResource AccentSoftBrush}" BorderBrush="{ThemeResource RoseBrush}" BorderThickness="1"><StackPanel Spacing="6"><FontIcon Glyph="&#xE7FC;" FontSize="18" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left" Margin="0,2,0,2"/><TextBlock Text="{Binding Text[ObWelcomeStep4]}" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
+     </Grid>
+     <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,4,0,0"><FontIcon Glyph="&#xEA18;" FontSize="15" Foreground="{ThemeResource GoldBrush}"/><TextBlock app:Rich.Text="{Binding Text[ObWelcomeSafety]}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" MaxWidth="520"/></StackPanel>
     </StackPanel>
     <!-- 1. Profile -->
     <StackPanel Visibility="{Binding IsProfile, Converter={StaticResource BooleanVisibility}}" Spacing="16">
@@ -100,7 +206,7 @@
      <ItemsControl ItemsSource="{Binding Goals}" AutomationProperties.AutomationId="ob-goals">
       <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="12"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
       <ItemsControl.ItemTemplate><DataTemplate>
-       <Button Tag="{Binding Id}" Click="OnPickGoal" Width="214" Height="164" Padding="18" CornerRadius="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top"
+       <Button Tag="{Binding Id}" Click="OnPickGoal" Width="180" Height="178" Padding="16" CornerRadius="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top"
                Background="{ThemeResource CardBrush}" BorderThickness="2" BorderBrush="{Binding Selected, Converter={StaticResource SelectedBorder}}" AutomationProperties.Name="{Binding Title}">
         <StackPanel Spacing="8">
          <FontIcon Glyph="{Binding Glyph}" FontSize="22" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
@@ -113,25 +219,31 @@
     </StackPanel>
     <!-- 3. Accent color (applied live) -->
     <StackPanel Visibility="{Binding IsAccent, Converter={StaticResource BooleanVisibility}}" Spacing="16">
-     <TextBlock Text="{Binding Text[ObAccentTitle]}" FontSize="26" FontWeight="SemiBold"/>
+     <TextBlock Text="{Binding Text[ObLookTitle]}" FontSize="26" FontWeight="SemiBold"/>
      <TextBlock app:Rich.Text="{Binding Text[ObAccentBody]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
-     <ItemsControl ItemsSource="{Binding Accents}" AutomationProperties.AutomationId="ob-accents">
-      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="12"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+     <TextBlock Text="{Binding Text[ObThemeTitle]}" FontWeight="SemiBold"/>
+     <ItemsControl ItemsSource="{Binding Themes}" AutomationProperties.AutomationId="ob-themes">
+      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="10"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
       <ItemsControl.ItemTemplate><DataTemplate>
-       <Button Tag="{Binding Id}" Click="OnPickAccent" Width="150" Padding="16" CornerRadius="16" HorizontalContentAlignment="Stretch"
+       <Button Tag="{Binding Id}" Click="OnPickTheme" Width="120" Padding="12,10" CornerRadius="14" HorizontalContentAlignment="Stretch"
+               Background="{ThemeResource CardBrush}" BorderThickness="2" BorderBrush="{Binding Selected, Converter={StaticResource SelectedBorder}}" AutomationProperties.Name="{Binding Label}">
+        <StackPanel Spacing="8"><Border Height="26" CornerRadius="7" Background="{Binding Swatch, Converter={StaticResource HexBrush}}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1"/><TextBlock Text="{Binding Label}" FontWeight="SemiBold" FontSize="13"/></StackPanel>
+       </Button>
+      </DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="{Binding Text[ObAccentTitle]}" FontWeight="SemiBold" Margin="0,4,0,0"/>
+     <ItemsControl ItemsSource="{Binding Accents}" AutomationProperties.AutomationId="ob-accents">
+      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate><DataTemplate>
+       <Button Tag="{Binding Id}" Click="OnPickAccent" Width="74" Padding="8,10" CornerRadius="14" HorizontalContentAlignment="Center"
                Background="{ThemeResource CardBrush}" BorderThickness="2" BorderBrush="{Binding Selected, Converter={StaticResource SelectedBorder}}" AutomationProperties.Name="{Binding Label}">
         <StackPanel Spacing="10">
-         <Ellipse Width="44" Height="44" HorizontalAlignment="Left" Fill="{Binding Hex, Converter={StaticResource HexBrush}}"/>
-         <TextBlock Text="{Binding Label}" FontWeight="SemiBold"/>
+         <Ellipse Width="34" Height="34" HorizontalAlignment="Center" Fill="{Binding Hex, Converter={StaticResource HexBrush}}"/>
+         <TextBlock Text="{Binding Label}" FontWeight="SemiBold" FontSize="11" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/>
         </StackPanel>
        </Button>
       </DataTemplate></ItemsControl.ItemTemplate>
      </ItemsControl>
-     <!-- Sample of the accent on real controls -->
-     <StackPanel Orientation="Horizontal" Spacing="10">
-      <Button Content="{Binding Text[PlayPrepare]}" Style="{StaticResource PrimaryButtonStyle}" IsHitTestVisible="False"/>
-      <ProgressBar Width="220" Value="64" VerticalAlignment="Center"/>
-     </StackPanel>
     </StackPanel>
     <!-- 4. Recommended programs (install only on click + confirmation) -->
     <StackPanel Visibility="{Binding IsApps, Converter={StaticResource BooleanVisibility}}" Spacing="12">
@@ -163,12 +275,12 @@
     </StackPanel>
     <!-- 5. Tour -->
     <StackPanel Visibility="{Binding IsTour, Converter={StaticResource BooleanVisibility}}" Spacing="14">
-     <TextBlock Text="{Binding Text[ObTourTitle]}" FontSize="26" FontWeight="SemiBold"/>
-     <StackPanel x:Name="TourList" Spacing="10"/>
+     <TextBlock Text="{Binding Text[ObTourHeadline]}" FontSize="26" FontWeight="SemiBold"/>
+     <Grid x:Name="TourList" ColumnSpacing="12" RowSpacing="12"/>
     </StackPanel>
    </Grid>
    <!-- Footer buttons -->
-   <Grid Grid.Row="2" Padding="40,12,40,28" ColumnSpacing="10">
+   <Grid Grid.Row="2" Grid.Column="1" Padding="44,12,44,30" ColumnSpacing="10">
     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <Button Content="{Binding Text[ObBack]}" Click="OnBack" Style="{StaticResource SoftButtonStyle}" MinWidth="110" MinHeight="42" Visibility="{Binding CanBack, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="ob-back"/>
     <Button Grid.Column="2" Content="{Binding NextLabel}" Click="OnNext" Style="{StaticResource PrimaryButtonStyle}" MinWidth="160" MinHeight="42" AutomationProperties.AutomationId="ob-next"/>

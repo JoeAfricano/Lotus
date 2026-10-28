@@ -54,6 +54,23 @@ public sealed class BackupTests : IDisposable
         Assert.Equal("journal", Get("Optimizer/journal.db"));                              // untouched
     }
 
+    [Fact] public void ResetArchivesPlayerDataAndKeepsWindowsHistory()
+    {
+        Put("preferences.json", """{"Onboarded":true}"""); Put("diary.json", "{}"); Put("diary.json.bak", "old");
+        Put("Profiles/games.json", "{}"); Put("Optimizer/journal.db", "journal"); Put("Logs/lotus.jsonl", "log");
+        var archive = new LotusBackupArchive(Root);
+        Assert.Null(archive.ApplyPendingReset());                          // nothing asked yet
+        archive.StageReset(); Assert.True(archive.HasPendingReset);
+        var kept = archive.ApplyPendingReset();
+        Assert.NotNull(kept); Assert.False(archive.HasPendingReset);
+        Assert.False(File.Exists(Path.Combine(Root, "preferences.json")));  // the welcome shows again
+        Assert.False(Directory.Exists(Path.Combine(Root, "Profiles")));
+        Assert.True(File.Exists(Path.Combine(kept!, "diary.json")) && File.Exists(Path.Combine(kept!, "diary.json.bak")) && File.Exists(Path.Combine(kept!, "Profiles", "games.json")));
+        Assert.Equal("journal", Get("Optimizer/journal.db"));              // Windows changes can still be undone
+        Assert.Equal("log", Get("Logs/lotus.jsonl"));
+        Assert.Single(Directory.GetFiles(archive.BackupFolder, "before-reset-*"));
+    }
+
     [Fact] public void RefusesBadFilesAndUnsafePaths()
     {
         var archive = new LotusBackupArchive(Root);

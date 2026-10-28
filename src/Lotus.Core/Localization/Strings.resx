@@ -1841,4 +1841,59 @@ Condições atuais: {1}</value></data>
   <data name="DyDiscard" xml:space="preserve"><value>Descartar</value></data>
   <data name="DyKeepEditing" xml:space="preserve"><value>Continuar editando</value></data>
   <data name="BenchEmptyResult" xml:space="preserve"><value>O resultado aparece aqui depois de uma medição válida: FPS médio, lows e o ritmo dos frames. Com duas medições do mesmo jogo, o Lotus compara as duas. Nada é estimado ou inventado.</value></data>
+  <data name="ResetTitle" xml:space="preserve"><value>Restaurar o Lotus</value></data>
+  <data name="ResetBody" xml:space="preserve"><value>Volta o Lotus ao começo, com as boas-vindas e tudo para configurar de novo. Antes, uma **cópia de segurança completa** é feita e seus dados ficam **guardados, não apagados**.</value></data>
+  <data name="ResetButton" xml:space="preserve"><value>Restaurar</value></data>
+  <data name="ResetConfirmTitle" xml:space="preserve"><value>Restaurar o Lotus para o início?</value></data>
+  <data name="ResetConfirmBody" xml:space="preserve"><value>O Lotus vai reiniciar e abrir as boas-vindas, como na primeira vez.
+
+• **Começam do zero:** perfil, tema, preferências, diário, conquistas, favoritos, notas, configurações por jogo e medições.
+• **Nada é apagado:** antes é feita uma cópia em Backups, e os dados antigos ficam guardados na pasta Reset. Dá para voltar em Configurações › Backup.
+• **Continua igual:** o histórico de mudanças no Windows, para você ainda poder desfazer o que o Lotus alterou.
+
+Seus jogos e o Windows não são alterados.</value></data>
+  <data name="ResetConfirm" xml:space="preserve"><value>Restaurar e reiniciar</value></data>
+  <data name="ObStageTagline" xml:space="preserve"><value>Seu PC, afinado para jogar.</value></data>
+  <data name="ObPromiseFps" xml:space="preserve"><value>Mais FPS, menos travadas</value></data>
+  <data name="ObPromiseUndo" xml:space="preserve"><value>Tudo pode ser desfeito</value></data>
+  <data name="ObPromiseDiary" xml:space="preserve"><value>Sua história como jogador</value></data>
+  <data name="ObWelcomeKicker" xml:space="preserve"><value>BEM-VINDO</value></data>
+  <data name="ObWelcomeHeadline" xml:space="preserve"><value>Cada partida começa antes do jogo abrir.</value></data>
+  <data name="ObWelcomeLead" xml:space="preserve"><value>O Lotus deixa o Windows pronto para jogar, mostra **o que o seu PC entrega** e guarda **a sua história** com cada jogo. Em um minuto fica tudo do seu jeito.</value></data>
+  <data name="ObWelcomeStep1" xml:space="preserve"><value>Seu perfil</value></data>
+  <data name="ObWelcomeStep2" xml:space="preserve"><value>Seu objetivo</value></data>
+  <data name="ObWelcomeStep3" xml:space="preserve"><value>Seu visual</value></data>
+  <data name="ObWelcomeStep4" xml:space="preserve"><value>Pronto para jogar</value></data>
+  <data name="ObStageProfile" xml:space="preserve"><value>Assim você aparece no Lotus</value></data>
+  <data name="ObStageProfileLine" xml:space="preserve"><value>Seu diário começa aqui: cada jogo concluído vira XP.</value></data>
+  <data name="ObStageGoal" xml:space="preserve"><value>Exemplo do que o Lotus vai priorizar</value></data>
+  <data name="ObGoalExfps1" xml:space="preserve"><value>Perfil Jogo com Alto desempenho quando o PC está na tomada</value></data>
+  <data name="ObGoalExfps2" xml:space="preserve"><value>Taxa máxima do monitor e Modo de Jogo ligados</value></data>
+  <data name="ObGoalExfps3" xml:space="preserve"><value>FPS estimado no Lotus Score para os seus jogos</value></data>
+  <data name="ObGoalExcompetitive1" xml:space="preserve"><value>Menos atraso: gravação em segundo plano desligada</value></data>
+  <data name="ObGoalExcompetitive2" xml:space="preserve"><value>&quot;Por que está travando?&quot; a um atalho (Ctrl + Shift + L)</value></data>
+  <data name="ObGoalExcompetitive3" xml:space="preserve"><value>Ping e DNS testados nas Ferramentas</value></data>
+  <data name="ObGoalExbalanced1" xml:space="preserve"><value>Perfil Diário no dia a dia, Jogo só na hora de jogar</value></data>
+  <data name="ObGoalExbalanced2" xml:space="preserve"><value>Menos calor e ruído fora das partidas</value></data>
+  <data name="ObGoalExbalanced3" xml:space="preserve"><value>Diário e conquistas sempre à mão</value></data>
+  <data name="ObThemeTitle" xml:space="preserve"><value>Tema</value></data>
+  <data name="ObStageLook" xml:space="preserve"><value>Prévia ao vivo</value></data>
+  <data name="ObStageLookPlay" xml:space="preserve"><value>Jogar</value></data>
+  <data name="ObStageApps" xml:space="preserve"><value>Programas que conversam com o Lotus</value></data>
+  <data name="ObStageAppsLine" xml:space="preserve"><value>Nada é instalado sem o seu clique e a sua confirmação.</value></data>
+  <data name="ObStageTour" xml:space="preserve"><value>Exemplo: preparar e jogar</value></data>
+  <data name="ObStageTourGame" xml:space="preserve"><value>Cyberpunk 2077</value></data>
+  <data name="ObStageTourLine1" xml:space="preserve"><value>Plano de energia: Alto desempenho</value></data>
+  <data name="ObStageTourLine2" xml:space="preserve"><value>Modo de Jogo ligado</value></data>
+  <data name="ObStageTourLine3" xml:space="preserve"><value>FPS estimado · 1080p Alto · 84</value></data>
+  <data name="ObStageTourNote" xml:space="preserve"><value>Exemplo ilustrativo. Os números reais saem do seu PC.</value></data>
+  <data name="ObTourHeadline" xml:space="preserve"><value>Tudo pronto. Veja por onde começar.</value></data>
+  <data name="ObTourOptimizeEx" xml:space="preserve"><value>Ex.: Perfil Jogo, 1 clique, Desfazer sempre ao lado</value></data>
+  <data name="ObTourGamesEx" xml:space="preserve"><value>Ex.: Jogar direto da capa, com o perfil do jogo</value></data>
+  <data name="ObTourListEx" xml:space="preserve"><value>Ex.: sortear um RPG difícil que você ainda não tem</value></data>
+  <data name="ObTourWhyEx" xml:space="preserve"><value>Ex.: &quot;a GPU está no limite, baixe sombras para Médio&quot;</value></data>
+  <data name="ObTourScoreEx" xml:space="preserve"><value>Ex.: 12 480 pontos, mais rápido que 71% das placas</value></data>
+  <data name="ObTourProfileEx" xml:space="preserve"><value>Ex.: Nível 6 · Veterano, 104 h jogadas, 14 medalhas</value></data>
+  <data name="ObStageLevel" xml:space="preserve"><value>Nível 1 · Recruta</value></data>
+  <data name="ObLookTitle" xml:space="preserve"><value>Seu visual</value></data>
 </root>

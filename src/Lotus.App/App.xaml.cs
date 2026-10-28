@@ -83,6 +83,7 @@ public partial class App : Application
         try
         {
             var archive = new Lotus.Infrastructure.Backup.LotusBackupArchive();
+            if (archive.ApplyPendingReset() is { } archived) Log.Information("Lotus restored to the start; earlier data kept in {Folder}", archived);
             if (archive.ApplyPending() is { } restored) Log.Information("Backup restored from {Created} ({Files} files)", restored.CreatedAt, restored.Files.Count);
             _ = Task.Run(() => { try { archive.AutoBackup(TimeSpan.FromDays(7), keep: 4); } catch (Exception ex) { Log.Warning(ex, "Automatic backup"); } });
         }
