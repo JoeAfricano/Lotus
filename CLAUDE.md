@@ -26,7 +26,7 @@ Leia `AGENTS.md` e siga suas diretrizes. Responda em português brasileiro. O pr
 ## Estado em 26/10/2026 (Claude Code)
 
 - Primeira entrega **0.1.0-alpha** pronta: instalador `artifacts\dist\Lotus-Setup-0.1.0-alpha.exe` (gerar de novo com `tools\Build-Installer.ps1`). Resumo em `docs/LOTUS_GAMES.md` (seção 0.1.0-alpha).
-- Versão definida em `Directory.Build.props`. **0.2.0-alpha "Lotus Base"** (diário, conquistas, backup) em 26/10/2026: `artifactsdistotus-base-setup-0.2.0-alpha.exe`. pr�ximo: redesign visual "lotus new" a partir de `artifacts/lotus-conceito-premium-claude-code-2026-10-26.zip`.
+- Versão definida em `Directory.Build.props`. **0.2.x-alpha "Lotus Base"** (diário, conquistas, backup; 0.2.1 corrige o Jogar na capa) no worktree `C:\Projetos\Lotus-base`, instalador `artifacts\dist\Lotus-Base-Setup-*.exe`.
 
 ## Atualização 24/10/2026 (Claude Code)
 
@@ -58,3 +58,9 @@ O ZIP contém o diretório do projeto com histórico `.git`, arquivos rastreados
 Dados de execução em `%LOCALAPPDATA%/Lotus` e ferramentas do ambiente do Codex estão fora do repositório e não fazem parte deste pacote.
 Extraia o ZIP, abra a pasta `Lotus` no Claude Code e peça para ler este arquivo e `AGENTS.md`. Os binários Windows exigem Windows x64 e as dependências declaradas no projeto.
 O pedido de exportação não autoriza aplicar otimizações ao Windows nem descartar alterações locais.
+
+## Estado em 28/10/2026 (Claude Code)
+
+- **0.3.0-alpha "Lotus New"**: redesign do ZIP `Lotus-Conceito-Premium` concluído (guias 01–15): tema rosé porcelana/escuro/grafite/sistema, navegação lateral, Início, perfis com confirmação animada, Meus Jogos com aba Overlay, Lotus Score com detalhes, FPS estimado (busca de qualquer jogo via requisitos da Steam, fontes com link) e gargalo, Game list (hero, filtros com indicação textual, até 100 jogos com rolagem contínua), painel do jogador, medalhas do diário, editor do diário com proteção de alterações, Comparar em duas colunas.
+- Instalador de atualização: `artifacts\dist\Lotus-New-Setup-0.3.0-alpha.exe` (gerar de novo com `tools\Build-Installer.ps1 -Name "Lotus New"`). Nunca instalar no PC.
+- 369 testes aprovados (Debug). Animação de "perfil aplicado" não foi vista com mudança real do Windows (exige aprovação).
