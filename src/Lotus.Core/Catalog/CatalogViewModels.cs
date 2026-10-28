@@ -134,6 +134,19 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     public bool HideOwned { get => hideOwned; set { if (SetProperty(ref hideOwned, value)) ApplyFilters(); } }
     public bool FreeOnly { get => freeOnly; set { if (SetProperty(ref freeOnly, value)) ApplyFilters(); } }
     public bool IsEmpty => !Loading && Items.Count == 0;
+    // Filters always have a textual indicator (guide 10), and one action clears them all.
+    public bool HasActiveFilters => hideOwned || freeOnly || minRating != "0" || sort != "rank";
+    public string ActiveFilters => !HasActiveFilters ? text["GlFiltersNone"] : text.Format("GlFiltersActive", string.Join(" · ", new[]
+    {
+        sort != "rank" ? text["GlSort" + sort] : null, minRating != "0" ? text["GlMin" + minRating] : null,
+        hideOwned ? text["GlHideOwned"] : null, freeOnly ? text["GlFreeOnly"] : null,
+    }.OfType<string>()));
+    public void ClearFilters()
+    {
+        sort = "rank"; minRating = "0"; hideOwned = freeOnly = false;
+        foreach (var n in new[] { nameof(Sort), nameof(MinRating), nameof(HideOwned), nameof(FreeOnly) }) OnPropertyChanged(n);
+        ApplyFilters();
+    }
 
     public async Task ShowAsync(bool force = false)
     {
@@ -182,9 +195,21 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
             "name" => rows.OrderBy(r => r.item.Name, StringComparer.CurrentCultureIgnoreCase),
             _ => rows.OrderBy(r => r.index),
         };
+        // Shown in pages: a long chart never realizes every cover at once (the page asks for more while scrolling).
+        filtered = [.. rows.Select(r => new CatalogCard(r.item, Meta(r.item), owned.Contains(r.item.AppId)) { Rank = Searching ? "" : (r.index + 1).ToString() })];
         Items.Clear();
-        foreach (var (item, index) in rows) Items.Add(new(item, Meta(item), owned.Contains(item.AppId)) { Rank = Searching ? "" : (index + 1).ToString() });
-        OnPropertyChanged(nameof(IsEmpty));
+        foreach (var card in filtered.Take(PageSize)) Items.Add(card);
+        OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(ActiveFilters)); OnPropertyChanged(nameof(HasActiveFilters)); OnPropertyChanged(nameof(CanShowMore)); OnPropertyChanged(nameof(MoreText));
+    }
+    public const int PageSize = 48;
+    private List<CatalogCard> filtered = [];
+    public bool CanShowMore => Items.Count < filtered.Count;
+    public string MoreText => text.Format("GlShowMore", Items.Count, filtered.Count);
+    public void ShowMore()
+    {
+        if (!CanShowMore) return;
+        foreach (var card in filtered.Skip(Items.Count).Take(PageSize).ToList()) Items.Add(card);
+        OnPropertyChanged(nameof(CanShowMore)); OnPropertyChanged(nameof(MoreText));
     }
 
     // Home banner: a chart without touching the visible list.

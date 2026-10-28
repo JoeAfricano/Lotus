@@ -1826,4 +1826,11 @@ Current conditions: {1}</value></data>
   <data name="PfResultUndoPartial" xml:space="preserve"><value>Partly undone</value></data>
   <data name="PfResultNone" xml:space="preserve"><value>Nothing to undo</value></data>
   <data name="PfSwitched" xml:space="preserve"><value>{0} selected. Tap Apply profile to turn it on.</value></data>
+  <data name="GlFilters" xml:space="preserve"><value>Filters</value></data>
+  <data name="GlFiltersNone" xml:space="preserve"><value>No filters: full list in source order.</value></data>
+  <data name="GlFiltersActive" xml:space="preserve"><value>Active filters: {0}</value></data>
+  <data name="GlFilterClear" xml:space="preserve"><value>Clear filters</value></data>
+  <data name="GlPickClear" xml:space="preserve"><value>Clear draw filters</value></data>
+  <data name="GlPickMore" xml:space="preserve"><value>More draw options</value></data>
+  <data name="GlShowMore" xml:space="preserve"><value>Show more ({0} of {1})</value></data>
 </root>

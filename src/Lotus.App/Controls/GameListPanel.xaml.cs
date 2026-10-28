@@ -14,6 +14,7 @@ public sealed partial class GameListPanel : UserControl
     public GameListPanel()
     {
         InitializeComponent();
+        HeroArt.Source = new BitmapImage(new Uri(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "Concept", "lotus-sculpture.png"))) { DecodePixelWidth = 1200 };
         Loaded += OnLoaded;
         Unloaded += (_, _) => refresh?.Stop();
     }
@@ -21,6 +22,7 @@ public sealed partial class GameListPanel : UserControl
 
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
+        HookScroll();
         if (Vm is not { } vm) return;
         if (ChartBar.Items.Count == 0)
         {
@@ -36,6 +38,9 @@ public sealed partial class GameListPanel : UserControl
         await vm.ShowAsync();
     }
 
+    // Clearing restores every list filter / the draw filters; nothing else (search, chart) changes.
+    private void OnClearFilters(object sender, RoutedEventArgs e) => Vm?.ClearFilters();
+    private void OnClearPick(object sender, RoutedEventArgs e) { GenreBox.SelectedIndex = 0; DiffBox.SelectedIndex = 0; OnlyNewBox.IsChecked = false; OnlyFreeBox.IsChecked = false; }
     private void OnChart(SelectorBar sender, SelectorBarSelectionChangedEventArgs args) { if (Vm is { } vm && sender.SelectedItem?.Tag is string id) vm.Chart = id; }
     private void OnSearch(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args) { if (Vm is { } vm && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput) vm.Query = sender.Text; }
     private void OnSearchSubmit(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) { if (Vm is { } vm) vm.Query = sender.Text; }
@@ -102,7 +107,21 @@ public sealed partial class GameListPanel : UserControl
         }
         // Otherwise the name stays on the plum card underneath.
     }
-    private static void Load(Image img, string url) { if (Uri.TryCreate(url, UriKind.Absolute, out var u)) img.Source = new BitmapImage(u); }
+    // Covers decode at card size (not the full 600x900 art): far less memory with long lists.
+    private static void Load(Image img, string url) { if (Uri.TryCreate(url, UriKind.Absolute, out var u)) img.Source = new BitmapImage(u) { DecodePixelWidth = 220, DecodePixelType = DecodePixelType.Logical }; }
+    private void OnShowMore(object sender, RoutedEventArgs e) => Vm?.ShowMore();
+    // Endless list: the next page arrives when the page scroll gets close to the end.
+    private ScrollViewer? pageScroll;
+    private void HookScroll()
+    {
+        if (pageScroll is not null) return;
+        for (var p = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(this); p is not null; p = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(p))
+            if (p is ScrollViewer sv) { pageScroll = sv; break; }
+        if (pageScroll is not null) pageScroll.ViewChanged += (s, _) =>
+        {
+            if (ListArea.Visibility == Visibility.Visible && Vm is { CanShowMore: true } vm && pageScroll.ScrollableHeight - pageScroll.VerticalOffset < 700) vm.ShowMore();
+        };
+    }
 
     // Star on a cover: adds the game to "Quero jogar" in the diary (the star fills in).
     private void OnWant(object sender, RoutedEventArgs e)

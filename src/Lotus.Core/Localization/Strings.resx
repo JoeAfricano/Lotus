@@ -1826,4 +1826,11 @@ Condições atuais: {1}</value></data>
   <data name="PfResultUndoPartial" xml:space="preserve"><value>Desfeito em parte</value></data>
   <data name="PfResultNone" xml:space="preserve"><value>Nada para desfazer</value></data>
   <data name="PfSwitched" xml:space="preserve"><value>{0} selecionado. Toque em Aplicar perfil para ativar.</value></data>
+  <data name="GlFilters" xml:space="preserve"><value>Filtros</value></data>
+  <data name="GlFiltersNone" xml:space="preserve"><value>Sem filtros: lista completa na ordem da fonte.</value></data>
+  <data name="GlFiltersActive" xml:space="preserve"><value>Filtros ativos: {0}</value></data>
+  <data name="GlFilterClear" xml:space="preserve"><value>Limpar filtros</value></data>
+  <data name="GlPickClear" xml:space="preserve"><value>Limpar filtros do sorteio</value></data>
+  <data name="GlPickMore" xml:space="preserve"><value>Mais opções do sorteio</value></data>
+  <data name="GlShowMore" xml:space="preserve"><value>Mostrar mais ({0} de {1})</value></data>
 </root>

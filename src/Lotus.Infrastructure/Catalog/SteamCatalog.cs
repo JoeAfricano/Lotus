@@ -100,7 +100,7 @@ public sealed class SteamCatalog : IGameCatalog
     }
 
     // Store search page as JSON (up to 50 games, no DLC/bundles: category1=998).
-    private string StoreSearch(string query) => $"https://store.steampowered.com/search/results/?infinite=1&start=0&count=50&category1=998&cc={country}&l={language}&{query}";
+    private string StoreSearch(string query) => $"https://store.steampowered.com/search/results/?infinite=1&start=0&count=100&category1=998&cc={country}&l={language}&{query}";
 
     // Draw pool from SteamSpy's full lists: every game of a Steam genre (or the 1,000 most owned), well reviewed,
     // most reviewed first. "Hard" keeps games the community tags Difficult; "easy" drops them. The final difficulty
@@ -185,7 +185,7 @@ public sealed class SteamCatalog : IGameCatalog
     // ---- Charts ----
     public async Task<CatalogChart?> ChartAsync(string id, TimeSpan maxAge, CancellationToken token)
     {
-        var file = Path.Combine(cache, $"chart2-{id}-{language}.json"); // "2": store-search format (older caches are ignored)
+        var file = Path.Combine(cache, $"chart3-{id}-{language}.json"); // "3": up to 100 items per chart (older caches are ignored)
         if (Fresh(file, maxAge) && ReadChart(file) is { } cached) return cached;
         try
         {
@@ -197,8 +197,8 @@ public sealed class SteamCatalog : IGameCatalog
                 "topsellers" => Results(await JsonAsync(StoreSearch("filter=topsellers"), null, maxAge, token)),
                 "upcoming" => Results(await JsonAsync(StoreSearch("filter=popularcomingsoon"), null, maxAge, token)),
                 // "New": best sellers released in the last 120 days (English page so the dates parse).
-                "new" => [.. Results(await JsonAsync(StoreSearch("filter=topsellers").Replace("count=50", "count=100").Replace("l=" + language, "l=english"), null, maxAge, token))
-                    .Where(i => i.Released is { } d && d <= DateTime.Today && DateTime.Today - d <= TimeSpan.FromDays(120)).Take(50)],
+                "new" => [.. Results(await JsonAsync(StoreSearch("filter=topsellers").Replace("l=" + language, "l=english"), null, maxAge, token))
+                    .Where(i => i.Released is { } d && d <= DateTime.Today && DateTime.Today - d <= TimeSpan.FromDays(120)).Take(100)],
                 _ => null,
             };
             if (items is { Count: > 0 })
@@ -222,7 +222,7 @@ public sealed class SteamCatalog : IGameCatalog
             .Select(a => (Id: Long(a["appid"]).ToString(), Name: a["name"]?.GetValue<string>() ?? "", Pos: Long(a["positive"]), Neg: Long(a["negative"]), Ccu: Long(a["ccu"])))
             .Where(a => a.Name.Length > 0 && !NotGames.Contains(a.Id));
         var ordered = byRating ? rows.Where(a => a.Pos + a.Neg >= 20000).OrderByDescending(a => a.Pos * 1.0 / (a.Pos + a.Neg)) : rows.OrderByDescending(a => a.Ccu);
-        return [.. ordered.Take(60).Select(a => new CatalogItem(a.Id, a.Name, CatalogText.Portrait(a.Id), CatalogText.Header(a.Id),
+        return [.. ordered.Take(100).Select(a => new CatalogItem(a.Id, a.Name, CatalogText.Portrait(a.Id), CatalogText.Header(a.Id),
             a.Pos + a.Neg > 0 ? (int)Math.Round(a.Pos * 100.0 / (a.Pos + a.Neg)) : null, a.Pos + a.Neg, a.Ccu > 0 ? a.Ccu : null))];
     }
 

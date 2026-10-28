@@ -3,69 +3,84 @@
  <Grid>
   <!-- Lists -->
   <StackPanel x:Name="ListArea" Spacing="16">
-   <!-- "I don't know what to play" -->
-   <Border Style="{StaticResource HeroCardStyle}" Padding="24">
-    <Grid ColumnSpacing="24">
-     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-     <StackPanel Spacing="12">
-      <StackPanel Orientation="Horizontal" Spacing="12">
-       <Border Width="44" Height="44" CornerRadius="14" Background="{ThemeResource AccentGradientBrush}"><FontIcon x:Name="DiceIcon" Glyph="&#xE8B1;" FontSize="20" Foreground="White"/></Border>
-       <StackPanel VerticalAlignment="Center"><TextBlock Text="{Binding Text[GlPickTitle]}" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[GlPickBody]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
-      </StackPanel>
-      <StackPanel Orientation="Horizontal" Spacing="12">
-       <ComboBox x:Name="GenreBox" Header="{Binding Text[GlGenre]}" ItemsSource="{Binding GenreChips}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedIndex="0" MinWidth="160" SelectionChanged="OnGenre" AutomationProperties.AutomationId="pick-genre"/>
-       <ComboBox x:Name="DiffBox" Header="{Binding Text[GlDifficulty]}" MinWidth="150" SelectedIndex="0" SelectionChanged="OnDifficulty" AutomationProperties.AutomationId="pick-difficulty"/>
-       <StackPanel VerticalAlignment="Bottom" Spacing="0">
-        <CheckBox Content="{Binding Text[GlOnlyNew]}" IsChecked="{Binding OnlyNotOwned, Mode=TwoWay}"/>
-        <CheckBox Content="{Binding Text[GlOnlyFree]}" IsChecked="{Binding OnlyFree, Mode=TwoWay}"/>
+   <!-- Pick a game (guide 09): dark photo hero, filters in one row, secondary options below -->
+   <Border CornerRadius="20" Height="260" BorderThickness="1" BorderBrush="{ThemeResource CardBorderBrush}" Background="#160C14" RequestedTheme="Dark" AutomationProperties.AutomationId="pick-hero">
+    <Grid>
+     <Image x:Name="HeroArt" Stretch="UniformToFill" HorizontalAlignment="Right" Width="620" Opacity="0.9"/>
+     <Border CornerRadius="20"><Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#F2160C14" Offset="0.3"/><GradientStop Color="#99160C14" Offset="0.62"/><GradientStop Color="#00160C14" Offset="1"/></LinearGradientBrush></Border.Background></Border>
+     <Grid Padding="32,28" ColumnSpacing="24">
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <StackPanel Spacing="14" VerticalAlignment="Center">
+       <StackPanel Spacing="4"><TextBlock Text="{Binding Text[GlPickTitle]}" FontSize="30" FontWeight="SemiBold" Foreground="White"/><TextBlock Text="{Binding Text[GlPickBody]}" FontSize="15" Foreground="#E6D6DE" TextWrapping="Wrap"/></StackPanel>
+       <StackPanel Orientation="Horizontal" Spacing="12">
+        <ComboBox x:Name="GenreBox" Header="{Binding Text[GlGenre]}" ItemsSource="{Binding GenreChips}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedIndex="0" MinWidth="190" MinHeight="44" SelectionChanged="OnGenre" AutomationProperties.AutomationId="pick-genre"/>
+        <ComboBox x:Name="DiffBox" Header="{Binding Text[GlDifficulty]}" MinWidth="190" MinHeight="44" SelectedIndex="0" SelectionChanged="OnDifficulty" AutomationProperties.AutomationId="pick-difficulty"/>
+        <Button Click="OnPick" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" MinWidth="190" VerticalAlignment="Bottom" AutomationProperties.AutomationId="pick-go">
+         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon x:Name="DiceIcon" Glyph="&#xE8B1;" FontSize="14"/><TextBlock x:Name="PickLabel" Text="{Binding Text[GlPick]}"/></StackPanel>
+        </Button>
+       </StackPanel>
+       <StackPanel Orientation="Horizontal" Spacing="18">
+        <CheckBox x:Name="OnlyNewBox" Content="{Binding Text[GlOnlyNew]}" IsChecked="{Binding OnlyNotOwned, Mode=TwoWay}" Foreground="#E6D6DE"/>
+        <CheckBox x:Name="OnlyFreeBox" Content="{Binding Text[GlOnlyFree]}" IsChecked="{Binding OnlyFree, Mode=TwoWay}" Foreground="#E6D6DE"/>
+       </StackPanel>
+       <StackPanel Orientation="Horizontal" Spacing="12" Visibility="{Binding PickStatus, Converter={StaticResource PresenceVisibility}}">
+        <ProgressRing IsActive="{Binding Picking}" Width="18" Height="18" Visibility="{Binding Picking, Converter={StaticResource BooleanVisibility}}"/>
+        <TextBlock Text="{Binding PickStatus}" FontSize="13" Foreground="#E6D6DE" VerticalAlignment="Center" MaxWidth="460" TextWrapping="Wrap" app:Motion.Settle="True"/>
+        <HyperlinkButton Content="{Binding Text[GlPickClear]}" Click="OnClearPick" Padding="6,2"/>
        </StackPanel>
       </StackPanel>
-      <StackPanel Orientation="Horizontal" Spacing="12">
-       <Button Click="OnPick" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" AutomationProperties.AutomationId="pick-go">
-        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8B1;" FontSize="14"/><TextBlock x:Name="PickLabel" Text="{Binding Text[GlPick]}"/></StackPanel>
-       </Button>
-       <ProgressRing IsActive="{Binding Picking}" Width="20" Height="20" Visibility="{Binding Picking, Converter={StaticResource BooleanVisibility}}"/>
-       <TextBlock Text="{Binding PickStatus}" Style="{StaticResource CaptionStyle}" VerticalAlignment="Center" MaxWidth="420" app:Motion.Settle="True"/>
-      </StackPanel>
-     </StackPanel>
-     <!-- Shuffling covers while drawing -->
-     <Grid Grid.Column="1" Width="150" Height="200" CornerRadius="14" Background="{ThemeResource CardBrush}">
-      <Image x:Name="ShuffleArt" Stretch="UniformToFill"/>
-      <FontIcon x:Name="ShuffleIdle" Glyph="&#xE7FC;" FontSize="40" Foreground="{ThemeResource RoseBrush}" Opacity="0.6"/>
+      <!-- Shuffling covers while drawing -->
+      <Grid Grid.Column="1" Width="138" Height="184" CornerRadius="14" Background="#66160C14" BorderBrush="#40EEC1A8" BorderThickness="1" VerticalAlignment="Center">
+       <Image x:Name="ShuffleArt" Stretch="UniformToFill"/>
+       <FontIcon x:Name="ShuffleIdle" Glyph="&#xE7FC;" FontSize="38" Foreground="#F07A9C" Opacity="0.7"/>
+      </Grid>
      </Grid>
     </Grid>
    </Border>
 
-   <!-- Search + charts + filters -->
+   <!-- Charts, then a persistent toolbar (guide 10) -->
+   <SelectorBar x:Name="ChartBar" SelectionChanged="OnChart" Margin="0,8,0,0" Visibility="{Binding Searching, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}" AutomationProperties.AutomationId="gamelist-charts"/>
    <Grid ColumnSpacing="12">
-    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-    <AutoSuggestBox x:Name="Search" PlaceholderText="{Binding Text[GlSearchPlaceholder]}" QueryIcon="Find" TextChanged="OnSearch" QuerySubmitted="OnSearchSubmit" AutomationProperties.AutomationId="gamelist-search"/>
-    <Button Grid.Column="1" Click="OnRefresh" Style="{StaticResource SoftButtonStyle}" ToolTipService.ToolTip="{Binding Text[GlRefresh]}" AutomationProperties.Name="{Binding Text[GlRefresh]}">
+    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <AutoSuggestBox x:Name="Search" PlaceholderText="{Binding Text[GlSearchPlaceholder]}" QueryIcon="Find" TextChanged="OnSearch" QuerySubmitted="OnSearchSubmit" VerticalAlignment="Center" AutomationProperties.AutomationId="gamelist-search"/>
+    <DropDownButton Grid.Column="1" MinHeight="44" MinWidth="150" AutomationProperties.AutomationId="gamelist-filters" AutomationProperties.Name="{Binding Text[GlFilters]}">
+     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE71C;" FontSize="13"/><TextBlock Text="{Binding Text[GlFilters]}"/><Ellipse Width="7" Height="7" Fill="{ThemeResource RoseBrush}" VerticalAlignment="Center" Visibility="{Binding HasActiveFilters, Converter={StaticResource BooleanVisibility}}"/></StackPanel>
+     <DropDownButton.Flyout><Flyout Placement="BottomEdgeAlignedRight"><StackPanel Spacing="14" Width="300">
+      <ComboBox x:Name="SortBox" Header="{Binding Text[GlSortBy]}" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedValue="{Binding Sort, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
+      <ComboBox Header="{Binding Text[GlMinRating]}" ItemsSource="{Binding RatingOptions}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedValue="{Binding MinRating, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
+      <CheckBox Content="{Binding Text[GlHideOwned]}" IsChecked="{Binding HideOwned, Mode=TwoWay}"/>
+      <CheckBox Content="{Binding Text[GlFreeOnly]}" IsChecked="{Binding FreeOnly, Mode=TwoWay}"/>
+      <Button Content="{Binding Text[GlFilterClear]}" Click="OnClearFilters" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" IsEnabled="{Binding HasActiveFilters}"/>
+     </StackPanel></Flyout></DropDownButton.Flyout>
+    </DropDownButton>
+    <Button Grid.Column="2" Click="OnRefresh" Style="{StaticResource SoftButtonStyle}" MinHeight="44" ToolTipService.ToolTip="{Binding Text[GlRefresh]}" AutomationProperties.Name="{Binding Text[GlRefresh]}">
      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon x:Name="RefreshIcon" Glyph="&#xE72C;" FontSize="13"/><TextBlock Text="{Binding Text[GlRefresh]}"/></StackPanel>
     </Button>
    </Grid>
-   <SelectorBar x:Name="ChartBar" SelectionChanged="OnChart" Visibility="{Binding Searching, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}" AutomationProperties.AutomationId="gamelist-charts"/>
-   <StackPanel Orientation="Horizontal" Spacing="12">
-    <ComboBox x:Name="SortBox" Header="{Binding Text[GlSortBy]}" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedValue="{Binding Sort, Mode=TwoWay}" MinWidth="190"/>
-    <ComboBox Header="{Binding Text[GlMinRating]}" ItemsSource="{Binding RatingOptions}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedValue="{Binding MinRating, Mode=TwoWay}" MinWidth="150"/>
-    <StackPanel VerticalAlignment="Bottom">
-     <CheckBox Content="{Binding Text[GlHideOwned]}" IsChecked="{Binding HideOwned, Mode=TwoWay}"/>
-     <CheckBox Content="{Binding Text[GlFreeOnly]}" IsChecked="{Binding FreeOnly, Mode=TwoWay}"/>
+   <!-- Origin, update time and active filters stay visible as text -->
+   <Grid ColumnSpacing="16">
+    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <StackPanel Orientation="Horizontal" Spacing="10">
+     <ProgressRing IsActive="{Binding Loading}" Width="16" Height="16" Visibility="{Binding Loading, Converter={StaticResource BooleanVisibility}}"/>
+     <TextBlock Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"><Run Text="{Binding ChartHint}"/><Run Text="  "/><Run Text="{Binding Status}" Foreground="{ThemeResource MutedBrush}"/></TextBlock>
     </StackPanel>
+    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" AutomationProperties.AutomationId="gamelist-active-filters">
+     <TextBlock Text="{Binding ActiveFilters}" Style="{StaticResource CaptionStyle}" VerticalAlignment="Center" Foreground="{ThemeResource RoseBrush}" Visibility="{Binding HasActiveFilters, Converter={StaticResource BooleanVisibility}}"/>
+     <HyperlinkButton Content="{Binding Text[GlFilterClear]}" Click="OnClearFilters" Padding="6,2" Visibility="{Binding HasActiveFilters, Converter={StaticResource BooleanVisibility}}"/>
+    </StackPanel>
+   </Grid>
+   <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{Binding IsEmpty, Converter={StaticResource BooleanVisibility}}">
+    <TextBlock Text="{Binding Text[GlEmpty]}" Style="{StaticResource CaptionStyle}" FontSize="14" VerticalAlignment="Center"/>
+    <HyperlinkButton Content="{Binding Text[GlFilterClear]}" Click="OnClearFilters" Visibility="{Binding HasActiveFilters, Converter={StaticResource BooleanVisibility}}"/>
    </StackPanel>
-   <StackPanel Orientation="Horizontal" Spacing="10">
-    <ProgressRing IsActive="{Binding Loading}" Width="16" Height="16" Visibility="{Binding Loading, Converter={StaticResource BooleanVisibility}}"/>
-    <TextBlock Style="{StaticResource CaptionStyle}"><Run Text="{Binding ChartHint}"/><Run Text="  "/><Run Text="{Binding Status}" Foreground="{ThemeResource MutedBrush}"/></TextBlock>
-   </StackPanel>
-   <TextBlock Text="{Binding Text[GlEmpty]}" Style="{StaticResource CaptionStyle}" FontSize="14" Visibility="{Binding IsEmpty, Converter={StaticResource BooleanVisibility}}"/>
 
    <GridView ItemsSource="{Binding Items}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="OnItem" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0" AutomationProperties.AutomationId="gamelist-grid">
     <GridView.ItemContainerTransitions><TransitionCollection><EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="20"/><RepositionThemeTransition/></TransitionCollection></GridView.ItemContainerTransitions>
     <GridView.ItemContainerStyle><Style TargetType="GridViewItem"><Setter Property="Margin" Value="0,0,14,14"/><Setter Property="Padding" Value="0"/></Style></GridView.ItemContainerStyle>
     <GridView.ItemTemplate><DataTemplate>
-     <Border Width="164" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04" AutomationProperties.Name="{Binding Name}">
+     <Border Width="196" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04" AutomationProperties.Name="{Binding Name}">
       <Grid>
-       <Grid.RowDefinitions><RowDefinition Height="218"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+       <Grid.RowDefinitions><RowDefinition Height="262"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
        <Border CornerRadius="13,13,0,0" Background="{ThemeResource HeroBrush}">
         <Grid>
          <TextBlock Text="{Binding Name}" TextWrapping="Wrap" TextAlignment="Center" Margin="12" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{ThemeResource GoldBrush}"/>
@@ -82,14 +97,15 @@
          </Button>
         </Grid>
        </Border>
-       <StackPanel Grid.Row="1" Padding="10,8,10,10" Spacing="2">
-        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Name}"/>
+       <StackPanel Grid.Row="1" Padding="14,10,14,14" Spacing="4" Height="80">
+        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Name}"/>
         <TextBlock Text="{Binding Meta}" FontSize="11.5" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis"/>
        </StackPanel>
       </Grid>
      </Border>
     </DataTemplate></GridView.ItemTemplate>
    </GridView>
+   <Button Click="OnShowMore" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Center" MinHeight="44" MinWidth="240" Visibility="{Binding CanShowMore, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="gamelist-more"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE70D;" FontSize="13"/><TextBlock Text="{Binding MoreText}"/></StackPanel></Button>
 
    <!-- Credits -->
    <Border Style="{StaticResource SettingRowStyle}">
