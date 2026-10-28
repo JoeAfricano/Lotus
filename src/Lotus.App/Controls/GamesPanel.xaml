@@ -56,7 +56,8 @@
       <!-- Cover or initials -->
       <Border CornerRadius="15,15,0,0" Background="{ThemeResource HeroBrush}">
        <Grid>
-        <TextBlock Text="{Binding Initials}" FontFamily="Georgia" FontSize="44" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
+        <Image Source="{Binding Name, Converter={StaticResource FallbackCover}}" Stretch="UniformToFill" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}" AutomationProperties.AccessibilityView="Raw"/>
+        <TextBlock Text="{Binding Initials}" FontFamily="Georgia" FontSize="44" FontWeight="SemiBold" Foreground="#FFF6F9" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
         <Border CornerRadius="15,15,0,0" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}}">
          <Border.Background><ImageBrush ImageSource="{Binding CoverPath, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border.Background>
         </Border>

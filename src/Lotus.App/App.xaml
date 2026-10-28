@@ -1,7 +1,7 @@
 <Application x:Class="Lotus.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ui="using:Windows.UI" xmlns:local="using:Lotus.App" RequestedTheme="Dark">
  <Application.Resources><ResourceDictionary>
   <ResourceDictionary.MergedDictionaries><XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/><ResourceDictionary Source="Controls/Foundation.xaml"/></ResourceDictionary.MergedDictionaries>
-  <local:BooleanVisibilityConverter x:Key="BooleanVisibility"/><local:PresenceVisibilityConverter x:Key="PresenceVisibility"/><local:CoverImageConverter x:Key="CoverImage"/><local:HexBrushConverter x:Key="HexBrush"/><local:BooleanOpacityConverter x:Key="DimWhenTrue"/><local:DiaryBrushConverter x:Key="DiaryBrush"/><local:UnlockedOpacityConverter x:Key="UnlockedOpacity"/><local:TierFillConverter x:Key="TierFill"/>
+  <local:BooleanVisibilityConverter x:Key="BooleanVisibility"/><local:PresenceVisibilityConverter x:Key="PresenceVisibility"/><local:CoverImageConverter x:Key="CoverImage"/><local:HexBrushConverter x:Key="HexBrush"/><local:BooleanOpacityConverter x:Key="DimWhenTrue"/><local:DiaryBrushConverter x:Key="DiaryBrush"/><local:UnlockedOpacityConverter x:Key="UnlockedOpacity"/><local:TierFillConverter x:Key="TierFill"/><local:FallbackCoverConverter x:Key="FallbackCover"/>
   <!-- Lotus identity: plum-black surfaces, crimson/magenta accent, rose-gold brand and highlights.
        ThemePalette mutates these brushes in place; translucent values let Mica and the ambient layer show through. -->
   <SolidColorBrush x:Key="WindowBrush" Color="#FF170B13"/><SolidColorBrush x:Key="ShellBrush" Color="#EB12090F"/><SolidColorBrush x:Key="PaneBrush" Color="#00000000"/>
@@ -15,7 +15,7 @@
   <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#E8378A" Offset="0"/><GradientStop Color="#A8124F" Offset="1"/></LinearGradientBrush>
   <LinearGradientBrush x:Key="GoldGradientBrush" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#F8DDCB" Offset="0"/><GradientStop Color="#E7AE93" Offset="0.6"/><GradientStop Color="#C98468" Offset="1"/></LinearGradientBrush>
   <LinearGradientBrush x:Key="PetalBrush" StartPoint="0.5,0" EndPoint="0.5,1"><GradientStop Color="#F0479A" Offset="0"/><GradientStop Color="#C2185B" Offset="0.55"/><GradientStop Color="#5E0A2E" Offset="1"/></LinearGradientBrush>
-  <local:BooleanChoiceConverter x:Key="SelectedBorder" TrueValue="{StaticResource GoldBrush}" FalseValue="{StaticResource CardBorderBrush}"/>
+  <local:BooleanChoiceConverter x:Key="SelectedBorder" TrueValue="{StaticResource RoseBrush}" FalseValue="{StaticResource CardBorderBrush}"/>
   <local:BooleanChoiceConverter x:Key="AttentionBrush" TrueValue="{StaticResource WarningBrush}" FalseValue="{StaticResource RoseBrush}"/>
   <local:BooleanChoiceConverter x:Key="SelectedSurface" TrueValue="{StaticResource HeroBrush}" FalseValue="{StaticResource CardBrush}"/>
 

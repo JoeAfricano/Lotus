@@ -1,0 +1,7 @@
+<Project>
+  <!-- Lotus New concept art (Conceito Premium package): ambient/hero fallback, sculpture for empty states, abstract covers.
+       Kept here so the project file itself stays untouched. -->
+  <ItemGroup>
+    <Content Include="Assets\Concept\*.png;Assets\Concept\*.svg" CopyToOutputDirectory="PreserveNewest"/>
+  </ItemGroup>
+</Project>

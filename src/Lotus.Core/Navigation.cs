@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Lotus.Core;
@@ -12,7 +12,7 @@ public static class Sections
         new Section(item.Id, text[item.Id + "Title"], item.Glyph, text[item.Id + "Description"], text[item.Id + "Next"])).ToArray());
     private static IEnumerable<(string Id, string Glyph)> Definitions => new[]
     {
-        ("home", "\uE80F"), ("optimize", "\uE945"), ("games", "\uE7FC"), ("gamelist", "\uE8FD"), ("diary", "\uE8F1"), ("lotusscore", "\uEC4A"), ("tools", "\uE90F"),
+        ("home", "\uE80F"), ("optimize", "\uE945"), ("games", "\uE7FC"), ("gamelist", "\uE721"), ("diary", "\uE736"), ("lotusscore", "\uEC4A"), ("tools", "\uE90F"),
         ("performance", "\uE9D2"), ("settings", "\uE713")
     };
 }

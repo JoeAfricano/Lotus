@@ -1,4 +1,4 @@
-﻿<Page x:Class="Lotus.App.SectionPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:app="using:Lotus.App" xmlns:controls="using:Lotus.App.Controls" Foreground="{ThemeResource MainTextBrush}" Background="Transparent">
+<Page x:Class="Lotus.App.SectionPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:app="using:Lotus.App" xmlns:controls="using:Lotus.App.Controls" Foreground="{ThemeResource MainTextBrush}" Background="Transparent">
  <ScrollViewer x:Name="PageScroll" SizeChanged="OnViewportSizeChanged" HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top">
   <StackPanel x:Name="PageContent" Padding="40,24,40,40" Spacing="24" HorizontalAlignment="Stretch" SizeChanged="OnContentSizeChanged">
    <ContentControl Content="{Binding}" ContentTemplate="{StaticResource PageHeaderTemplate}" HorizontalContentAlignment="Stretch"/>
@@ -38,12 +38,15 @@
       <HyperlinkButton Content="{Binding Text[HomeGamesAll]}" Click="OnOpenGames" AutomationProperties.AutomationId="home-games-all"/>
      </StackPanel>
     </Grid>
+    <Grid ColumnSpacing="20">
+     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="360"/></Grid.ColumnDefinitions>
     <ItemsControl ItemsSource="{Binding Games.Featured}" Visibility="{Binding Games.HasFeatured, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="home-games">
      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="14"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
      <ItemsControl.ItemTemplate><DataTemplate>
       <StackPanel Width="168" Spacing="8">
       <Grid Height="224" CornerRadius="16" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04" Tapped="OnHomeGameTapped" ToolTipService.ToolTip="{Binding Name}">
-       <TextBlock Text="{Binding Initials}" FontFamily="Georgia" FontSize="32" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
+       <Image Source="{Binding Name, Converter={StaticResource FallbackCover}}" Stretch="UniformToFill" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}" AutomationProperties.AccessibilityView="Raw"/>
+       <TextBlock Text="{Binding Initials}" FontFamily="Georgia" FontSize="32" FontWeight="SemiBold" Foreground="#FFF6F9" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
        <Border Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}}"><Border.Background><ImageBrush ImageSource="{Binding CoverPath, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border.Background></Border>
        <Button Click="OnCoverPlay" Width="40" Height="40" CornerRadius="20" Padding="0" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                Background="{ThemeResource AccentGradientBrush}" BorderBrush="#66FFFFFF" BorderThickness="1.5" app:Motion.Press="True" ToolTipService.ToolTip="{Binding PlayLabel}" AutomationProperties.Name="{Binding Name}">
@@ -55,6 +58,11 @@
       </StackPanel>
      </DataTemplate></ItemsControl.ItemTemplate>
     </ItemsControl>
+     <!-- "Antes de começar" (design): the promise that nothing changes without the player -->
+     <Border Grid.Column="1" Style="{StaticResource CardStyle}" VerticalAlignment="Top" AutomationProperties.AutomationId="home-before">
+      <StackPanel Spacing="10"><FontIcon Glyph="&#xE945;" FontSize="26" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/><TextBlock Text="{Binding Text[HbBeforeTitle]}" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[HbBeforeBody]}" Style="{StaticResource BodyStyle}" TextWrapping="Wrap"/></StackPanel>
+     </Border>
+    </Grid>
     <!-- Diary shelf: what the player is playing and wants to play (filled in code) -->
     <StackPanel x:Name="HomeShelf" Spacing="12" Margin="0,8,0,0" Loaded="OnHomeShelfLoaded" Visibility="Collapsed">
      <StackPanel Spacing="2"><TextBlock Text="{Binding Text[DyShelf]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[DyShelfHint]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
@@ -69,19 +77,37 @@
     <SelectorBar x:Name="OptimizeTabs" SelectionChanged="OnOptimizeTabChanged" AutomationProperties.Name="{Binding Text[UxOptimizeSections]}">
      <SelectorBarItem Text="{Binding Text[UxResultsTab]}"/><SelectorBarItem Text="{Binding Text[UxRestoreTab]}"/>
     </SelectorBar>
-    <ContentControl x:Name="DiagnosisContent" x:Load="{x:Bind ShowDiagnosis}" Style="{StaticResource CardControlStyle}">
-     <StackPanel Spacing="16">
-      <TextBlock Text="{Binding Text[UxResultsTitle]}" Style="{StaticResource SectionTitleStyle}"/>
-      <ContentControl Content="{Binding Experience.Finding}" Style="{StaticResource StatusBadgeStyle}"/>
-      <controls:OperationProgress DataContext="{Binding Experience}" Visibility="{Binding Experience.IsAnalyzing, Converter={StaticResource BooleanVisibility}}"/>
-      <TextBlock Text="{Binding Experience.Advice}" FontSize="17" TextWrapping="Wrap"/>
-      <TextBlock Text="{Binding Experience.LastAnalysis}" Style="{StaticResource CaptionStyle}"/>
-      <TextBlock Text="{Binding Text[UxAdviceInformational]}" Style="{StaticResource CaptionStyle}"/>
-      <Expander Visibility="{Binding Experience.HasResult, Converter={StaticResource BooleanVisibility}}" Header="{Binding Text[UxTechnicalDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
-       <StackPanel Spacing="12"><TextBlock Text="{Binding Text[RamAvailableLabel]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Experience.Available}" Style="{StaticResource MetricValueStyle}"/><TextBlock Text="{Binding Text[RamCapacityLabel]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Experience.Capacity}"/><TextBlock Text="{Binding Text[RamMinimumLabel]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Experience.MinimumAvailable}"/><TextBlock Text="{Binding Experience.Evidence}" Style="{StaticResource BodyStyle}"/><TextBlock Text="{Binding Text[RamMethod]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[RamCacheExplanation]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[RamLimits]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Experience.Source}" Style="{StaticResource CaptionStyle}"/></StackPanel>
-      </Expander>
-     </StackPanel>
-    </ContentControl>
+    <!-- Result (design 03): the analysis on the left, safety and reversal on the right -->
+    <Grid x:Name="DiagnosisContent" x:Load="{x:Bind ShowDiagnosis}" ColumnSpacing="24" RowSpacing="24">
+     <Grid.ColumnDefinitions><ColumnDefinition Width="1.8*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+     <Border Style="{StaticResource CardStyle}">
+      <StackPanel Spacing="14">
+       <FontIcon Glyph="&#xE9D9;" FontSize="26" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
+       <TextBlock Text="{Binding Text[UxResultsTitle]}" FontSize="22" FontWeight="SemiBold"/>
+       <ContentControl Content="{Binding Experience.Finding}" Style="{StaticResource StatusBadgeStyle}"/>
+       <controls:OperationProgress DataContext="{Binding Experience}" Visibility="{Binding Experience.IsAnalyzing, Converter={StaticResource BooleanVisibility}}"/>
+       <TextBlock Text="{Binding Experience.Advice}" FontSize="16" TextWrapping="Wrap"/>
+       <TextBlock Text="{Binding Experience.LastAnalysis}" Style="{StaticResource CaptionStyle}"/>
+       <StackPanel Orientation="Horizontal" Spacing="10">
+        <Button Command="{Binding Experience.AnalyzeCommand}" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" Visibility="{Binding Experience.IsAnalyzing, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}" AutomationProperties.AutomationId="result-analyze">
+         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE9D9;" FontSize="14"/><TextBlock Text="{Binding Text[UxAnalyzeNow]}"/></StackPanel>
+        </Button>
+        <Button Content="{Binding Text[UxCancel]}" Command="{Binding Experience.CancelCommand}" Style="{StaticResource SoftButtonStyle}" MinHeight="44" Visibility="{Binding Experience.IsAnalyzing, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="result-cancel"/>
+       </StackPanel>
+       <TextBlock Text="{Binding Text[UxAdviceInformational]}" Style="{StaticResource CaptionStyle}"/>
+       <Expander Visibility="{Binding Experience.HasResult, Converter={StaticResource BooleanVisibility}}" Header="{Binding Text[UxTechnicalDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+        <StackPanel Spacing="12"><TextBlock Text="{Binding Text[RamAvailableLabel]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Experience.Available}" Style="{StaticResource MetricValueStyle}"/><TextBlock Text="{Binding Text[RamCapacityLabel]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Experience.Capacity}"/><TextBlock Text="{Binding Text[RamMinimumLabel]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Experience.MinimumAvailable}"/><TextBlock Text="{Binding Experience.Evidence}" Style="{StaticResource BodyStyle}"/><TextBlock Text="{Binding Text[RamMethod]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[RamCacheExplanation]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[RamLimits]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Experience.Source}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+       </Expander>
+      </StackPanel>
+     </Border>
+     <Border Grid.Column="1" Style="{StaticResource CardStyle}" VerticalAlignment="Stretch">
+      <StackPanel Spacing="12">
+       <FontIcon Glyph="&#xE945;" FontSize="26" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
+       <TextBlock Text="{Binding Text[SafetyCategory]}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap"/>
+       <TextBlock Text="{Binding Text[UxNoChangesDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
+      </StackPanel>
+     </Border>
+    </Grid>
     <controls:OptimizationPanel x:Name="RestoreContent" x:Load="{x:Bind ShowRestore}" DataContext="{Binding Optimizer}"/>
    </StackPanel>
 

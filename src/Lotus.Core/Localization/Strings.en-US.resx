@@ -368,7 +368,7 @@ Get in the game.</value>
   <data name="homeDescription" xml:space="preserve"><value>Know your PC. Focus on your game.</value></data>
   <data name="homeNext" xml:space="preserve"><value>Start with a read-only analysis.</value></data>
   <data name="optimizeTitle" xml:space="preserve"><value>Optimize my PC</value></data>
-  <data name="optimizeDescription" xml:space="preserve"><value>From diagnosis to your next step.</value></data>
+  <data name="optimizeDescription" xml:space="preserve"><value>Choose a profile and review every change before applying it.</value></data>
   <data name="optimizeNext" xml:space="preserve"><value>Analyze first and understand the guidance.</value></data>
   <data name="performanceTitle" xml:space="preserve"><value>Performance</value></data>
   <data name="performanceDescription" xml:space="preserve"><value>See how your PC behaves, in real time.</value></data>
@@ -1211,8 +1211,8 @@ Current conditions: {1}</value></data>
   <data name="RecConfirmBody" xml:space="preserve"><value>Lotus will download {0} through winget, from an official source, and install it without you clicking anything. By confirming you accept the publisher's terms. If Windows asks for administrator permission, that's the installer asking.</value></data>
   <data name="HomeGames" xml:space="preserve"><value>Your games</value></data>
   <data name="HomeGamesAll" xml:space="preserve"><value>See all</value></data>
-  <data name="GdIntroTitle" xml:space="preserve"><value>Let's get your PC ready to play.</value></data>
-  <data name="GdIntroBody" xml:space="preserve"><value>Lotus takes a look at the PC, asks what you want to change and does the rest. Takes about 30 seconds.</value></data>
+  <data name="GdIntroTitle" xml:space="preserve"><value>Prepare your PC</value></data>
+  <data name="GdIntroBody" xml:space="preserve"><value>Analyze first. Review the suggestions and choose what to change. Takes about 30 seconds.</value></data>
   <data name="GdStart" xml:space="preserve"><value>Analyze my PC</value></data>
   <data name="GdSkip" xml:space="preserve"><value>Not now</value></data>
   <data name="GdSafety" xml:space="preserve"><value>**Nothing changes until you answer.** Everything Lotus touches can be undone, and files go to the Recycle Bin.</value></data>
@@ -1753,4 +1753,15 @@ Current conditions: {1}</value></data>
   <data name="AccentBlue" xml:space="preserve"><value>Blue</value></data>
   <data name="AccentGreen" xml:space="preserve"><value>Green</value></data>
   <data name="ShellTagline" xml:space="preserve"><value>YOUR SPACE. YOUR PACE.</value></data>
+  <data name="HcTagline" xml:space="preserve"><value>Your next session starts here.</value></data>
+  <data name="HbBeforeTitle" xml:space="preserve"><value>Before you start</value></data>
+  <data name="HbBeforeBody" xml:space="preserve"><value>Lotus asks for your confirmation before changing Windows. Your library stays at the center of the experience.</value></data>
+  <data name="PfSelected" xml:space="preserve"><value>Selected</value></data>
+  <data name="PfAvailable" xml:space="preserve"><value>Available</value></data>
+  <data name="PfDecideTitle" xml:space="preserve"><value>You decide</value></data>
+  <data name="PfDecideBody" xml:space="preserve"><value>Check the impact of each action. A profile does not guarantee more FPS. Restoring respects changes made afterwards.</value></data>
+  <data name="OptActivity" xml:space="preserve"><value>Activity</value></data>
+  <data name="OptNoActivity" xml:space="preserve"><value>No changes recorded</value></data>
+  <data name="OptNoActivityHint" xml:space="preserve"><value>Actions appear here after a confirmation.</value></data>
+  <data name="OptConflictNote" xml:space="preserve"><value>If something changed since, Lotus explains what changed and asks for a review before restoring. Nothing is overwritten silently.</value></data>
 </root>

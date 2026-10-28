@@ -12,7 +12,7 @@
    <Button x:Name="GameCard" Style="{StaticResource CardButtonStyle}" Command="{Binding SelectProfileCommand}" CommandParameter="game" AutomationProperties.AutomationId="profile-game" AutomationProperties.Name="{Binding Text[PfGameTitle]}">
     <Border CornerRadius="18" Padding="22" BorderThickness="1.5" BorderBrush="{Binding IsGame, Converter={StaticResource SelectedBorder}}" Background="{Binding IsGame, Converter={StaticResource SelectedSurface}}">
      <Grid RowSpacing="12"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-      <Grid><FontIcon Glyph="&#xE7FC;" FontSize="40" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
+      <Grid><FontIcon Glyph="&#xE7FC;" FontSize="28" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
        <Border Width="24" Height="24" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="1.5" BorderBrush="{Binding IsGame, Converter={StaticResource SelectedBorder}}"><Border CornerRadius="5" Margin="2" Background="{ThemeResource AccentGradientBrush}" Visibility="{Binding IsGame, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xE73E;" FontSize="11" Foreground="{ThemeResource OnRoseBrush}"/></Border></Border>
       </Grid>
       <StackPanel Grid.Row="1" Spacing="10">
@@ -21,7 +21,7 @@
       </StackPanel>
       <TextBlock Grid.Row="2" Text="{Binding Text[PfGameDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
       <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
-       <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipPower]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
+       <Border Style="{StaticResource ChipStyle}" BorderThickness="1" BorderBrush="{Binding IsGame, Converter={StaticResource SelectedBorder}}"><TextBlock Text="{Binding GameStatus}" Style="{StaticResource ChipTextStyle}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/></Border><Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipPower]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
        <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE7E8;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipStartup]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
       </StackPanel>
      </Grid>
@@ -30,13 +30,13 @@
    <Button x:Name="DailyCard" Grid.Column="1" Style="{StaticResource CardButtonStyle}" Command="{Binding SelectProfileCommand}" CommandParameter="daily" AutomationProperties.AutomationId="profile-daily" AutomationProperties.Name="{Binding Text[PfDailyTitle]}">
     <Border CornerRadius="18" Padding="22" BorderThickness="1.5" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}" Background="{Binding IsDaily, Converter={StaticResource SelectedSurface}}">
      <Grid RowSpacing="12"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-      <Grid><FontIcon Glyph="&#xE7F4;" FontSize="40" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
+      <Grid><FontIcon Glyph="&#xE7F4;" FontSize="28" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
        <Border Width="24" Height="24" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="1.5" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}"><Border CornerRadius="5" Margin="2" Background="{ThemeResource AccentGradientBrush}" Visibility="{Binding IsDaily, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xE73E;" FontSize="11" Foreground="{ThemeResource OnRoseBrush}"/></Border></Border>
       </Grid>
       <TextBlock Grid.Row="1" Text="{Binding Text[PfDailyTitle]}" FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap"/>
       <TextBlock Grid.Row="2" Text="{Binding Text[PfDailyDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
       <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
-       <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipBalance]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
+       <Border Style="{StaticResource ChipStyle}" BorderThickness="1" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}"><TextBlock Text="{Binding DailyStatus}" Style="{StaticResource ChipTextStyle}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/></Border><Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipBalance]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
        <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE7E8;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipStartup]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
       </StackPanel>
      </Grid>
@@ -45,13 +45,13 @@
    <Button x:Name="CustomCard" Grid.Column="2" Style="{StaticResource CardButtonStyle}" Command="{Binding SelectProfileCommand}" CommandParameter="custom" AutomationProperties.AutomationId="profile-custom" AutomationProperties.Name="{Binding Text[PfCustomTitle]}">
     <Border CornerRadius="18" Padding="22" BorderThickness="1.5" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}" Background="{Binding IsCustom, Converter={StaticResource SelectedSurface}}">
      <Grid RowSpacing="12"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-      <Grid><FontIcon Glyph="&#xE9E9;" FontSize="40" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
+      <Grid><FontIcon Glyph="&#xE9E9;" FontSize="28" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
        <Border Width="24" Height="24" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="1.5" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}"><Border CornerRadius="5" Margin="2" Background="{ThemeResource AccentGradientBrush}" Visibility="{Binding IsCustom, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xE73E;" FontSize="11" Foreground="{ThemeResource OnRoseBrush}"/></Border></Border>
       </Grid>
       <TextBlock Grid.Row="1" Text="{Binding Text[PfCustomTitle]}" FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap"/>
       <TextBlock Grid.Row="2" Text="{Binding Text[PfCustomDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
       <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
-       <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE713;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipManual]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
+       <Border Style="{StaticResource ChipStyle}" BorderThickness="1" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}"><TextBlock Text="{Binding CustomStatus}" Style="{StaticResource ChipTextStyle}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/></Border><Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE713;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipManual]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
       </StackPanel>
      </Grid>
     </Border>
@@ -61,7 +61,7 @@
   <!-- Planned changes + actions -->
   <Border Style="{StaticResource CardStyle}">
    <Grid x:Name="ChangesGrid" ColumnSpacing="20" RowSpacing="16" SizeChanged="OnChangesSizeChanged">
-    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="260"/></Grid.ColumnDefinitions>
+    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="340"/></Grid.ColumnDefinitions>
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <StackPanel Spacing="14">
      <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
@@ -146,6 +146,8 @@
     </StackPanel>
 
     <StackPanel x:Name="ActionsColumn" Grid.Column="1" Spacing="10" VerticalAlignment="Top">
+     <!-- "Você decide" (design): impact and reversal stay next to the action -->
+     <StackPanel Spacing="8" Margin="0,0,0,8"><FontIcon Glyph="&#xE945;" FontSize="24" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/><TextBlock Text="{Binding Text[PfDecideTitle]}" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[PfDecideBody]}" Style="{StaticResource CaptionStyle}" FontSize="13.5" TextWrapping="Wrap"/></StackPanel>
      <Button Click="OnApplyProfile" IsEnabled="{Binding CanEdit}" AutomationProperties.AutomationId="profile-apply" AutomationProperties.Name="{Binding Text[PfApply]}" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE768;" FontSize="14"/><TextBlock Text="{Binding Text[PfApply]}"/></StackPanel></Button>
      <Button Click="OnUndoProfile" IsEnabled="{Binding CanUndoProfile}" AutomationProperties.AutomationId="profile-undo-all" AutomationProperties.Name="{Binding Text[PfUndo]}" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE7A7;" FontSize="14"/><TextBlock Text="{Binding Text[PfUndo]}"/></StackPanel></Button>
      <Button Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE8A5;" FontSize="14"/><TextBlock Text="{Binding Text[PfDetails]}"/></StackPanel>

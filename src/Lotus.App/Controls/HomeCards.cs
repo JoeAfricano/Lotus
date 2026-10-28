@@ -26,10 +26,13 @@ public sealed partial class ContinueCard : UserControl
         var game = games?.LastPlayed();
         // Art: Steam hero when the game is from Steam, otherwise its cover.
         var url = game is { Store: GameStores.Steam } ? Lotus.Core.Catalog.CatalogText.Hero(game.Id) : game?.CoverPath;
+        // Lotus art (design package) under the game art: shown when there is no game, no art or the art fails.
+        var lotus = new Image { Stretch = Stretch.UniformToFill, Source = new BitmapImage(new Uri(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "Concept", "lotus-ambient.png"))) { DecodePixelWidth = 1400 } };
+        root.Children.Add(lotus);
         if (url is not null && Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var uri) && (uri.IsAbsoluteUri || File.Exists(url)))
         {
             var img = new Image { Stretch = Stretch.UniformToFill, Opacity = 0, Source = new BitmapImage(uri.IsAbsoluteUri ? uri : new Uri(System.IO.Path.GetFullPath(url))) };
-            ((BitmapImage)img.Source).ImageOpened += (_, _) => { HomeMotion.Fade(img, 1, 600); HomeMotion.Drift(img); };
+            ((BitmapImage)img.Source).ImageOpened += (_, _) => { HomeMotion.Fade(img, 1, 600); HomeMotion.Drift(img); lotus.Visibility = Visibility.Collapsed; };
             ((BitmapImage)img.Source).ImageFailed += (_, _) => img.Visibility = Visibility.Collapsed;
             root.Children.Add(img);
         }
@@ -37,9 +40,19 @@ public sealed partial class ContinueCard : UserControl
         root.Children.Add(new Rectangle { Fill = HomeMotion.Gradient(new(0, 0), new(0, 1), (0.45, Color.FromArgb(0, 18, 9, 15)), (1, Color.FromArgb(0xCC, 18, 9, 15))) });
 
         var text = new StackPanel { Spacing = 8, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(32, 0, 32, 28), MaxWidth = 520, HorizontalAlignment = HorizontalAlignment.Left };
-        text.Children.Add(new TextBlock { Text = t[game is null ? "HcEmptyEyebrow" : "HcEyebrow"].ToUpperInvariant(), FontSize = 11.5, CharacterSpacing = 160, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = (Brush)Application.Current.Resources["GoldBrush"] });
-        text.Children.Add(new TextBlock { Text = game?.Name ?? t["HcEmptyTitle"], FontSize = 34, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis, Foreground = new SolidColorBrush(Colors.White) });
-        text.Children.Add(new TextBlock { Text = game is null ? t["HcEmptyBody"] : When(t, game.LastPlayed), FontSize = 14, Foreground = new SolidColorBrush(Color.FromArgb(0xD9, 255, 240, 246)) });
+        text.Children.Add(new TextBlock { Text = t[game is null ? "HcEmptyEyebrow" : "HcEyebrow"].ToUpperInvariant(), FontSize = 11.5, CharacterSpacing = 160, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Color.FromArgb(255, 0xF5, 0x8B, 0xB7)) }); // rose eyebrow on the dark photo
+        var title = new TextBlock { Text = game?.Name ?? t["HcEmptyTitle"], FontSize = 42, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis, Foreground = new SolidColorBrush(Colors.White) };
+        ToolTipService.SetToolTip(title, title.Text); // two lines at most; the full name on hover
+        text.Children.Add(title);
+        text.Children.Add(new TextBlock { Text = game is null ? t["HcEmptyBody"] : t["HcTagline"], FontSize = 16, TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromArgb(0xE6, 255, 240, 246)) });
+        if (game is not null) // when it was last played, as a small pill (hidden when unknown)
+        {
+            var when = When(t, game.LastPlayed);
+            if (game.LastPlayed is not null)
+                text.Children.Add(new Border { CornerRadius = new CornerRadius(12), Padding = new Thickness(12, 4, 12, 4), HorizontalAlignment = HorizontalAlignment.Left, Margin = new Thickness(0, 4, 0, 0),
+                    Background = new SolidColorBrush(Color.FromArgb(0x59, 0x6B, 0x22, 0x46)), BorderBrush = new SolidColorBrush(Color.FromArgb(0x66, 0xF5, 0x8B, 0xB7)), BorderThickness = new Thickness(1),
+                    Child = new TextBlock { Text = when, FontSize = 12.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Color.FromArgb(255, 0xF8, 0xD6, 0xE5)) } });
+        }
         var buttons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, Margin = new Thickness(0, 8, 0, 0) };
         if (game is not null && games is not null)
         {

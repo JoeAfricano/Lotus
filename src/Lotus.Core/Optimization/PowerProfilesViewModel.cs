@@ -43,6 +43,10 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public bool IsGame => profileId == "game";
     public bool IsDaily => profileId == "daily";
     public bool IsCustom => profileId == "custom";
+    // Text indicator on each card (the selection never depends on color alone).
+    public string GameStatus => Text[IsGame ? "PfSelected" : "PfAvailable"];
+    public string DailyStatus => Text[IsDaily ? "PfSelected" : "PfAvailable"];
+    public string CustomStatus => Text[IsCustom ? "PfSelected" : "PfAvailable"];
     public string ProfileName => Text["PowerProfile" + profileId];
     public string SchemeLabel => PowerEnabled ? SelectedScheme?.Name ?? Text["PowerSelect"] : Text["PfRowPowerOff"];
     public string ActiveName => Schemes.FirstOrDefault(s => s.Id == active)?.Name ?? active?.ToString() ?? "—";
@@ -152,7 +156,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
         var p = profiles.GetValueOrDefault(id) ?? new(id, ProfileSuggestions.Suggest(id, Schemes, ac));
         scheme = Schemes.FirstOrDefault(s => s.Id == p.PowerSchemeId); enabled = p.PowerEnabled;
         InvalidatePlan(); OnPropertyChanged(nameof(SelectedScheme)); OnPropertyChanged(nameof(PowerEnabled));
-        foreach (var name in new[] { nameof(IsGame), nameof(IsDaily), nameof(IsCustom), nameof(ProfileName) }) OnPropertyChanged(name);
+        foreach (var name in new[] { nameof(IsGame), nameof(IsDaily), nameof(IsCustom), nameof(ProfileName), nameof(GameStatus), nameof(DailyStatus), nameof(CustomStatus) }) OnPropertyChanged(name);
         BuildFeatureRows();
     }
     private Task SaveAsync()

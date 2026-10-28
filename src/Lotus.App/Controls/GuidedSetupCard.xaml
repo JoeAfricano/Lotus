@@ -5,8 +5,8 @@
   <Border Style="{StaticResource HeroCardStyle}" Padding="22" Visibility="{Binding ShowWizard, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="guided">
    <StackPanel Spacing="16">
     <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-     <Border x:Name="Badge" Width="44" Height="44" CornerRadius="14" Background="{ThemeResource AccentGradientBrush}" VerticalAlignment="Top">
-      <FontIcon x:Name="BadgeIcon" Glyph="&#xE9D9;" FontSize="20" Foreground="White" AutomationProperties.AccessibilityView="Raw"/>
+     <Border x:Name="Badge" Width="36" Height="44" VerticalAlignment="Top">
+      <FontIcon x:Name="BadgeIcon" Glyph="&#xE9D9;" FontSize="26" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AccessibilityView="Raw"/>
      </Border>
      <StackPanel Grid.Column="1" Spacing="6">
       <TextBlock Text="{Binding Heading}" FontSize="21" FontWeight="SemiBold" TextWrapping="Wrap" app:Motion.Settle="True" AutomationProperties.HeadingLevel="Level2"/>
@@ -20,7 +20,7 @@
       <Button Click="OnAnalyze" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" AutomationProperties.AutomationId="guided-start">
        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE9D9;" FontSize="14"/><TextBlock Text="{Binding Text[GdStart]}"/></StackPanel>
       </Button>
-      <Button Content="{Binding Text[GdSkip]}" Click="OnClose" Style="{StaticResource SoftButtonStyle}" MinHeight="44" AutomationProperties.AutomationId="guided-skip"/>
+      <HyperlinkButton Content="{Binding Text[GdSkip]}" Click="OnClose" MinHeight="44" AutomationProperties.AutomationId="guided-skip"/>
      </StackPanel>
      <Grid ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions><FontIcon Glyph="&#xE83D;" FontSize="13" Foreground="{ThemeResource SuccessBrush}" VerticalAlignment="Top" Margin="0,2,0,0"/>
       <TextBlock Grid.Column="1" app:Rich.Text="{Binding Text[GdSafety]}" Style="{StaticResource CaptionStyle}"/></Grid>

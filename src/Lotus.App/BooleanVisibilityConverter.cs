@@ -104,3 +104,15 @@ public sealed class UnlockedOpacityConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, string language) => value is true ? 1.0 : 0.38;
     public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
 }
+// Design package fallback art for games without a cover: one of three abstract Lotus covers, picked by the name
+// (stable per game). Never presented as the game's own art.
+public sealed class FallbackCoverConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, string language)
+    {
+        var name = value as string ?? "";
+        var n = 1 + (int)((uint)name.Aggregate(17, (h, c) => h * 31 + c) % 3);
+        return new Microsoft.UI.Xaml.Media.Imaging.SvgImageSource(new Uri(Path.Combine(AppContext.BaseDirectory, "Assets", "Concept", $"capa-{n}.svg")));
+    }
+    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
+}

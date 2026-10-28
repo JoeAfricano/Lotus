@@ -13,6 +13,10 @@ public sealed class OptimizationViewModel : ObservableObject
     private bool error;
     public ITextCatalog Text { get; }
     public ObservableCollection<OptimizationPlan> Plans { get; } = [];
+    // "Atividade" list (design 03): when, what and the current stage of each recorded change.
+    public IEnumerable<ActivityRow> Activity => Plans.Select(p => new ActivityRow(p.CreatedUtc.ToLocalTime().ToString("g", System.Globalization.CultureInfo.GetCultureInfo(Text.Language)), p.ActionId, Text["OptStage" + p.Stage]));
+    public bool HasActivity => Plans.Count > 0;
+    public bool NoActivity => Plans.Count == 0;
     public OptimizationPlan? Selected { get => selected; set { SetProperty(ref selected, value); Confirmed = false; Notify(); } }
     public bool Confirmed { get => confirmed; set { SetProperty(ref confirmed, value); Notify(); } }
     public bool CanEdit => !busy;
@@ -50,9 +54,10 @@ public sealed class OptimizationViewModel : ObservableObject
     public void RefreshLanguage() => Notify();
     private void Notify()
     {
-        OnPropertyChanged(nameof(Status)); OnPropertyChanged(nameof(CanEdit));
+        OnPropertyChanged(nameof(Status)); OnPropertyChanged(nameof(CanEdit)); OnPropertyChanged(nameof(Activity)); OnPropertyChanged(nameof(HasActivity)); OnPropertyChanged(nameof(NoActivity));
         AnalyzeCommand?.NotifyCanExecuteChanged(); ApplyCommand?.NotifyCanExecuteChanged();
         RevertCommand?.NotifyCanExecuteChanged(); RefreshCommand?.NotifyCanExecuteChanged();
     }
 }
 
+public sealed record ActivityRow(string When, string Action, string Stage);
