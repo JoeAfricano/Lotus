@@ -25,7 +25,7 @@ AppVersion={#AppVersion}
 AppVerName=Lotus {#AppVersion}
 AppPublisher=Joeafricano
 AppCopyright=Lotus · código aberto · feito por Joeafricano com o Claude
-AppComments=Seu PC pronto para jogar: otimização reversível, Meus Jogos, Game list, LOTUS SCORE e ferramentas.
+AppComments=Seu PC pronto para jogar: otimização reversível, Meus Jogos, Game list, Lotus Score e ferramentas.
 DefaultDirName={localappdata}\Programs\Lotus
 DisableDirPage=yes
 DefaultGroupName=Lotus
@@ -43,8 +43,18 @@ UninstallDisplayName=Lotus
 Compression=lzma2/ultra64
 SolidCompression=yes
 LZMAUseSeparateProcess=yes
-WizardStyle=modern
+; Lotus look: forced dark mode in the app's plum, the crystal lotus on the side, the gold logo and the ambient art behind the pages.
+; Artwork is made from the app's concept art by tools\installer\Make-InstallerArt.ps1.
+WizardStyle=modern dark hidebevels
+WizardBackColor=#1A0F18
+WizardBackImageFile=art\background.png
+WizardBackImageOpacity=110
+WizardImageFile=art\wizard-100.png,art\wizard-150.png,art\wizard-200.png,art\wizard-250.png
+WizardImageBackColor=#1A0F18
+WizardSmallImageFile=art\small-100.png,art\small-150.png,art\small-200.png,art\small-250.png
 WizardSizePercent=110
+; The welcome page shows the lotus art and says install or update.
+DisableWelcomePage=no
 ; A running Lotus (often hidden in the tray) is closed by [Code] below before files are touched.
 CloseApplications=force
 RestartApplications=no
@@ -68,6 +78,14 @@ en.Welcome=Your PC ready to play. Nothing in Windows changes without your confir
 en.UpdateWelcome=This will update Lotus to version [ver]. Your games, diary, achievements and settings stay as they are; there is nothing to uninstall.%n%nIf Lotus is open it will be closed, and you can open it again at the end.
 
 [Messages]
+pt.WelcomeLabel1=Bem-vindo ao Lotus
+en.WelcomeLabel1=Welcome to Lotus
+pt.FinishedHeadingLabel=Tudo pronto. Bom jogo!
+en.FinishedHeadingLabel=All set. Have a great game!
+pt.FinishedLabel=O Lotus está instalado. Seus dados de jogador ficam guardados no seu PC e nada no Windows muda sem você confirmar.
+en.FinishedLabel=Lotus is installed. Your player data stays on your PC and nothing in Windows changes without your confirmation.
+pt.FinishedLabelNoIcons=O Lotus está instalado. Seus dados de jogador ficam guardados no seu PC e nada no Windows muda sem você confirmar.
+en.FinishedLabelNoIcons=Lotus is installed. Your player data stays on your PC and nothing in Windows changes without your confirmation.
 pt.WelcomeLabel2=Este assistente vai instalar o [name/ver] neste PC.%n%nSeu PC pronto para jogar. Nada no Windows muda sem você confirmar, e tudo que o Lotus mexe pode ser desfeito.%n%nVersão alpha: obrigado por testar!
 en.WelcomeLabel2=This will install [name/ver] on this PC.%n%nYour PC ready to play. Nothing in Windows changes without your confirmation, and everything Lotus changes can be undone.%n%nAlpha version: thanks for testing!
 
