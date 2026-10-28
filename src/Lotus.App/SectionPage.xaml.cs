@@ -194,6 +194,16 @@ public sealed partial class SectionPage : Page
         if (DataContext is not SectionViewModel { Games: { } games } || sender is not FrameworkElement { DataContext: Lotus.Core.Games.GameCard card }) return;
         UiSound.Play(UiSound.Cue.Open); games.Play(card.Game);
     }
+    // My Games: Library / Overlay tabs (design 04-05).
+    private void OnGamesTabChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    {
+        if (OverlaySummary is null || OverlayArea is null) return;
+        var overlay = sender.Items.IndexOf(sender.SelectedItem) == 1;
+        OverlaySummary.Visibility = overlay ? Visibility.Collapsed : Visibility.Visible;
+        OverlayArea.Visibility = overlay ? Visibility.Visible : Visibility.Collapsed;
+        if (overlay) Motion.EnterPage(OverlayArea);
+    }
+    private void OnOverlayConfigure(object sender, RoutedEventArgs e) { if (GamesTabs is { } tabs) tabs.SelectedItem = tabs.Items[1]; }
     private void OnPlayGame(object? sender, Lotus.Core.Games.GameEntry game) { if (DataContext is SectionViewModel { Games: { } games }) games.Play(game); }
     private void OnHomeGameTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
     {

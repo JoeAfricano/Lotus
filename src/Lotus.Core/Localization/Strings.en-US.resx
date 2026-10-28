@@ -165,7 +165,7 @@ Get in the game.</value>
     <value>Dashboard</value>
   </data>
   <data name="gamesDescription" xml:space="preserve">
-    <value>A space for your games, profiles and results.</value>
+    <value>Your library, your profiles and your results.</value>
   </data>
   <data name="gamesNext" xml:space="preserve">
     <value>Authorized discovery of installations and individual profiles.</value>
@@ -693,7 +693,7 @@ Current conditions: {1}</value></data>
   <data name="GamesRestored" xml:space="preserve"><value>{0} game(s) back on the list.</value></data>
   <data name="PfPreviewTitle" xml:space="preserve"><value>Apply the {0}?</value></data>
   <data name="PfPreviewIntro" xml:space="preserve"><value>Lotus will make these changes and verify each one. Everything can be undone later with "Undo profile".</value></data>
-  <data name="PfPreviewNothing" xml:space="preserve"><value>Everything already matches the profile; nothing was changed.</value></data>
+  <data name="PfPreviewNothing" xml:space="preserve"><value>Your PC already matched the profile, nothing needed to change.</value></data>
   <data name="PfAlready" xml:space="preserve"><value>already set</value></data>
   <data name="PfApplyConfirm" xml:space="preserve"><value>Apply</value></data>
   <data name="PfApplied" xml:space="preserve"><value>{0} change(s) applied and verified. More FPS is not guaranteed; use the benchmark to compare.</value></data>
@@ -831,7 +831,7 @@ Current conditions: {1}</value></data>
   <data name="IntLayoutRestored" xml:space="preserve"><value>RivaTuner's previous layout restored.</value></data>
   <data name="IntLayoutExported" xml:space="preserve"><value>File saved to {0}. In RivaTuner: Setup › Plugins › OverlayEditor › Layouts › Load.</value></data>
   <data name="lotusscoreTitle" xml:space="preserve"><value>Lotus Score</value></data>
-  <data name="lotusscoreDescription" xml:space="preserve"><value>Test your PC's performance and compare it with other machines.</value></data>
+  <data name="lotusscoreDescription" xml:space="preserve"><value>Results, references and context to compare with care.</value></data>
   <data name="lotusscoreNext" xml:space="preserve"><value>CPU and GPU test with a comparable score.</value></data>
   <data name="ScoreIntro" xml:space="preserve"><value>Choose the tests and click Start. Each takes about 15 seconds and nothing in Windows is changed. The GPU test opens a window with the 3D scene; closing it cancels. Close games and heavy apps first.</value></data>
   <data name="ScoreStart" xml:space="preserve"><value>Start test</value></data>
@@ -1764,4 +1764,66 @@ Current conditions: {1}</value></data>
   <data name="OptNoActivity" xml:space="preserve"><value>No changes recorded</value></data>
   <data name="OptNoActivityHint" xml:space="preserve"><value>Actions appear here after a confirmation.</value></data>
   <data name="OptConflictNote" xml:space="preserve"><value>If something changed since, Lotus explains what changed and asks for a review before restoring. Nothing is overwritten silently.</value></data>
+  <data name="GmTabLibrary" xml:space="preserve"><value>Library</value></data>
+  <data name="GmTabOverlay" xml:space="preserve"><value>Overlay</value></data>
+  <data name="GmOverlayTitle" xml:space="preserve"><value>Lotus overlay</value></data>
+  <data name="GmOverlayHint" xml:space="preserve"><value>Reach the layout and its options without leaving the library.</value></data>
+  <data name="GmOverlayConfigure" xml:space="preserve"><value>Configure</value></data>
+  <data name="GmOverlayPreviewHint" xml:space="preserve"><value>What the overlay shows in game. Values appear while you play, with the active RivaTuner layout.</value></data>
+  <data name="GmFps" xml:space="preserve"><value>FPS</value></data>
+  <data name="GmGpu" xml:space="preserve"><value>GPU</value></data>
+  <data name="GmCpu" xml:space="preserve"><value>CPU</value></data>
+  <data name="GmMemory" xml:space="preserve"><value>MEMORY</value></data>
+  <data name="GmFrametimeUnit" xml:space="preserve"><value>frametime (ms)</value></data>
+  <data name="ToolOpen" xml:space="preserve"><value>Open tool</value></data>
+  <data name="ScoreDetailsTitle" xml:space="preserve"><value>Test details</value></data>
+  <data name="ScoreDetailsHint" xml:space="preserve"><value>Separate graphics and CPU scores, rank in the parts database, stability between passes and sensors during the test.</value></data>
+  <data name="ScoreGraphics" xml:space="preserve"><value>Graphics score</value></data>
+  <data name="ScoreCpuScore" xml:space="preserve"><value>CPU score</value></data>
+  <data name="ScoreBeatsGpus" xml:space="preserve"><value>Beats {0}% of the graphics cards in the database</value></data>
+  <data name="ScoreBeatsCpus" xml:space="preserve"><value>Beats {0}% of the processors in the database</value></data>
+  <data name="ScoreNoReading" xml:space="preserve"><value>— not read in this test</value></data>
+  <data name="ScoreStability" xml:space="preserve"><value>Stability</value></data>
+  <data name="ScoreStablePass" xml:space="preserve"><value>Passed: the passes were consistent (97% minimum).</value></data>
+  <data name="ScoreStableFail" xml:space="preserve"><value>Below 97%: something interfered (an open app, heat or power). Run again with the PC idle.</value></data>
+  <data name="ScoreSensors" xml:space="preserve"><value>During the test</value></data>
+  <data name="ScoreSensorsLine" xml:space="preserve"><value>GPU up to {0} · {1} · CPU average {2}</value></data>
+  <data name="ScoreFpsTitle" xml:space="preserve"><value>Estimated FPS in games</value></data>
+  <data name="ScoreFpsHint" xml:space="preserve"><value>Calculated from your result, like FPS calculators do. Your games come first.</value></data>
+  <data name="ScoreFpsNote" xml:space="preserve"><value>Estimate with a ±20% margin. High preset, no ray tracing or frame generation. Real FPS depends on the game, driver and scene.</value></data>
+  <data name="ScoreFpsGame" xml:space="preserve"><value>Game</value></data>
+  <data name="ScoreFpsRes" xml:space="preserve"><value>Resolution</value></data>
+  <data name="ScorePresetLow" xml:space="preserve"><value>Low</value></data>
+  <data name="ScorePresetMedium" xml:space="preserve"><value>Medium</value></data>
+  <data name="ScorePresetHigh" xml:space="preserve"><value>High</value></data>
+  <data name="ScorePresetUltra" xml:space="preserve"><value>Ultra</value></data>
+  <data name="ScoreFpsLimit" xml:space="preserve"><value>Limit</value></data>
+  <data name="ScoreResP1080" xml:space="preserve"><value>1080p</value></data>
+  <data name="ScoreResP1440" xml:space="preserve"><value>1440p</value></data>
+  <data name="ScoreResP2160" xml:space="preserve"><value>4K</value></data>
+  <data name="ScoreLimitCpu" xml:space="preserve"><value>CPU-bound</value></data>
+  <data name="ScoreLimitGpu" xml:space="preserve"><value>GPU-bound</value></data>
+  <data name="ScoreLimitCap" xml:space="preserve"><value>Game cap</value></data>
+  <data name="ScoreLimitBalanced" xml:space="preserve"><value>Balanced</value></data>
+  <data name="ScoreBottleTitle" xml:space="preserve"><value>Bottleneck</value></data>
+  <data name="ScoreBottleHint" xml:space="preserve"><value>How much the slower part holds the other back across popular games.</value></data>
+  <data name="ScoreBottleCpu" xml:space="preserve"><value>The CPU holds the graphics card back by ~{0}%</value></data>
+  <data name="ScoreBottleGpu" xml:space="preserve"><value>The graphics card is the limit by ~{0}%</value></data>
+  <data name="ScoreBottleBalanced" xml:space="preserve"><value>Balanced</value></data>
+  <data name="ScoreInsightsEmpty" xml:space="preserve"><value>Run the full test (CPU single, all cores and GPU) to see estimated FPS, bottleneck and details.</value></data>
+  <data name="ScoreSensorsNext" xml:space="preserve"><value>Recorded from the next test on.</value></data>
+  <data name="ScoreFpsSearch" xml:space="preserve"><value>Search any game…</value></data>
+  <data name="ScoreFpsSearching" xml:space="preserve"><value>Looking up the game and its requirements on Steam…</value></data>
+  <data name="ScoreFpsNotFound" xml:space="preserve"><value>Could not find &quot;{0}&quot; on Steam.</value></data>
+  <data name="ScoreFpsNoParts" xml:space="preserve"><value>{0}: the requirements name no graphics card Lotus knows.</value></data>
+  <data name="ScoreFpsSearchFailed" xml:space="preserve"><value>Could not reach Steam right now.</value></data>
+  <data name="ScoreFpsSourceTable" xml:space="preserve"><value>Source: public benchmark averages, the same basis FPS calculators use:</value></data>
+  <data name="ScoreFpsSourceSteam" xml:space="preserve"><value>Source: recommended requirements on Steam ({0}), taken as ~60 FPS at 1080p High and scaled to your PC.</value></data>
+  <data name="PfResultApplied" xml:space="preserve"><value>{0} is on</value></data>
+  <data name="PfResultReady" xml:space="preserve"><value>{0} is already on</value></data>
+  <data name="PfResultPartial" xml:space="preserve"><value>{0} partly applied</value></data>
+  <data name="PfResultUndone" xml:space="preserve"><value>Changes undone</value></data>
+  <data name="PfResultUndoPartial" xml:space="preserve"><value>Partly undone</value></data>
+  <data name="PfResultNone" xml:space="preserve"><value>Nothing to undo</value></data>
+  <data name="PfSwitched" xml:space="preserve"><value>{0} selected. Tap Apply profile to turn it on.</value></data>
 </root>

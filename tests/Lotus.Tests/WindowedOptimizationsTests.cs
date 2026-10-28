@@ -122,13 +122,14 @@ public sealed class WindowedOptimizationsTests : IDisposable
     [Fact] public async Task OneClickProfileAppliesEverythingThenUndoesEverything()
     {
         var power = new MutablePower(); var dx = new FakeDx("AutoHDREnable=1;"); var vm = ProfileVm(power, dx);
-        await vm.RefreshAsync(); Assert.True(vm.IsGame); Assert.False(vm.CanUndoProfile);
+        await vm.RefreshAsync(); Assert.True(vm.IsGame); Assert.False(vm.CanUndoProfile); Assert.Equal("", vm.Status); // no stale "analyze first" hint
+        var shown = 0; vm.ResultShown += (_, _) => shown++;
         var changes = await vm.PreviewProfileAsync();
         Assert.Equal(2, changes.Count(c => !c.AlreadyApplied));
         Assert.Contains(changes, c => c.From == "Balanced" && c.To == "High performance");
         Assert.Equal(ProfileSuggestions.Balanced, power.Current); Assert.Equal(0, dx.Writes); // preview never mutates
         await vm.ApplyProfileAsync(changes);
-        Assert.Equal(vm.Text.Format("PfApplied", 2), vm.ProfileStatus);
+        Assert.Equal(vm.Text.Format("PfApplied", 2), vm.ProfileStatus); Assert.Equal(vm.Text.Format("PfResultApplied", vm.Text["PfGameTitle"]), vm.ResultTitle); Assert.True(vm.ResultOk); Assert.Equal(1, shown);
         Assert.Equal(ProfileSuggestions.HighPerformance, power.Current); Assert.True(WindowedOptimizationsAction.IsEnabled(dx.Value));
         Assert.True(vm.CanUndoProfile); Assert.False(vm.Features.Single().NeedsAttention);
         var again = await vm.PreviewProfileAsync(); Assert.All(again, c => Assert.True(c.AlreadyApplied));

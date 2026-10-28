@@ -121,7 +121,35 @@
    <Grid x:Name="GamesArea" x:Load="{x:Bind ShowGames}">
     <StackPanel x:Name="GamesList" Spacing="16" Loaded="OnGamesListLoaded">
      <controls:HomeBanner x:Name="GamesBanner" Height="300" Loaded="OnGamesBannerLoaded"/>
-     <controls:RtssCard DataContext="{Binding Integrations}"/>
+     <!-- Library / Overlay (design 04-05): the overlay is condensed in the library and complete in its own tab -->
+     <SelectorBar x:Name="GamesTabs" SelectionChanged="OnGamesTabChanged" AutomationProperties.AutomationId="games-tabs">
+      <SelectorBarItem Text="{Binding Text[GmTabLibrary]}" IsSelected="True"/><SelectorBarItem Text="{Binding Text[GmTabOverlay]}"/>
+     </SelectorBar>
+     <Border x:Name="OverlaySummary" Style="{StaticResource CardStyle}" Padding="22,16" AutomationProperties.AutomationId="games-overlay-summary">
+      <Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+       <FontIcon Glyph="&#xE9D9;" FontSize="24" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+       <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2"><TextBlock Text="{Binding Text[GmOverlayTitle]}" FontSize="17" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[GmOverlayHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/><TextBlock Text="{Binding Integrations.LayoutStatus}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap"/></StackPanel>
+       <Button Grid.Column="2" Content="{Binding Text[GmOverlayConfigure]}" Click="OnOverlayConfigure" Style="{StaticResource SoftButtonStyle}" MinHeight="44" MinWidth="180" VerticalAlignment="Center" AutomationProperties.AutomationId="games-overlay-configure"/>
+      </Grid>
+     </Border>
+     <StackPanel x:Name="OverlayArea" Spacing="16" Visibility="Collapsed">
+      <Border Style="{StaticResource CardStyle}" AutomationProperties.AutomationId="games-overlay-preview">
+       <Grid ColumnSpacing="28" RowSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <StackPanel Spacing="10"><FontIcon Glyph="&#xE9D9;" FontSize="26" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/><TextBlock Text="{Binding Text[GmOverlayTitle]}" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[GmOverlayPreviewHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+        <StackPanel Grid.Column="1" Spacing="12" VerticalAlignment="Center">
+         <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="170" ItemHeight="64">
+        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmFps]}"/><Run Text=" —"/></TextBlock></Border>
+        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmGpu]}"/><Run Text=" —"/></TextBlock></Border>
+        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmCpu]}"/><Run Text=" —"/></TextBlock></Border>
+        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmMemory]}"/><Run Text=" —"/></TextBlock></Border>
+         </VariableSizedWrapGrid>
+         <TextBlock Text="FRAMEPACER" FontSize="12" FontWeight="SemiBold" CharacterSpacing="80" Foreground="{ThemeResource RoseBrush}"/>
+         <Grid><Rectangle Height="1" Fill="{ThemeResource DividerBrush}" VerticalAlignment="Center"/><TextBlock Text="{Binding Text[GmFrametimeUnit]}" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right" Margin="0,-22,0,0"/></Grid>
+        </StackPanel>
+       </Grid>
+      </Border>
+      <controls:RtssCard DataContext="{Binding Integrations}"/>
+     </StackPanel>
      <controls:GamesPanel x:Name="GamesContent" DataContext="{Binding Games}" DetailsRequested="OnGameDetails"/>
     </StackPanel>
     <controls:GameDetailView x:Name="GameDetail" Visibility="Collapsed" DataContext="{Binding GameDetails}" BackRequested="OnGameDetailBack" PlayRequested="OnPlayGame"/>

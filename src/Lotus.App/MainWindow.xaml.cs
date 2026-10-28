@@ -1,4 +1,4 @@
-﻿using Lotus.Core;
+using Lotus.Core;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -116,6 +116,11 @@ public sealed partial class MainWindow : Window
         try { experience.QuickFacts = Lotus.Infrastructure.Tools.QuickHardwareFacts.Read(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Quick hardware facts"); }
         games.SessionEnded += OnGameSessionEnded;
         games.LaunchFailed += (_, message) => DispatcherQueue.TryEnqueue(() => { UiSound.Play(UiSound.Cue.Fail); ShowWarning(message); });
+        // Lotus Score: sensors during the tests (3DMark-style) and the player's games for the FPS estimates.
+        score.Sensors = () => { var s = monitoring.Snapshot; var g = s?.Gpu.Devices.FirstOrDefault(); return (s?.Cpu.TotalUtilizationPercent.Value, g?.Get(Lotus.Core.Telemetry.GpuSensor.Temperature)?.Value, g?.Get(Lotus.Core.Telemetry.GpuSensor.Power)?.Value); };
+        score.FindGame = (q, t) => catalog.RequirementsAsync(q, t);
+        score.InstalledGames = () => games.InstalledGames().Select(g => (g.Name, g.Store == Lotus.Core.Games.GameStores.Steam ? (string?)g.Id : null));
+        score.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(score.Busy)) DispatcherQueue.TryEnqueue(UpdateMonitoringDemand); };
         InitializeComponent();
         Shell = this;
         ShellRoot.DataContext = ViewModel;
@@ -628,7 +633,7 @@ public sealed partial class MainWindow : Window
         if (!visible) experience.Interrupt();
         var demand = MonitoringDemand.For(ViewModel.CurrentRoute, visible, experience.IsAnalyzing);
         memoryAnalysis.SetActive(demand.Analyze);
-        monitoring.SetActive(demand.Collect);
+        monitoring.SetActive(demand.Collect || score.Busy); // the Score reads temperature/power while its tests run
     }
     public void PrepareForClose()
     {

@@ -31,15 +31,19 @@ public sealed partial class ToolsPanel : UserControl
         })
         {
             if (id == "unin" && vm.Uninstall is null) continue;
-            var badge = new Border { Width = 46, Height = 46, CornerRadius = new CornerRadius(14), Background = (Brush)Application.Current.Resources["AccentGradientBrush"], HorizontalAlignment = HorizontalAlignment.Left,
-                Child = new FontIcon { Glyph = glyph, FontSize = 20, Foreground = new SolidColorBrush(Microsoft.UI.Colors.White) } };
-            var name = new TextBlock { Text = vm.Text[title], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 15, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis };
-            var line = new TextBlock { FontSize = 12, Opacity = 0.75, TextWrapping = TextWrapping.Wrap, MaxLines = 3, TextTrimming = TextTrimming.CharacterEllipsis };
+            var badge = new FontIcon { Glyph = glyph, FontSize = 26, Foreground = (Brush)Application.Current.Resources["RoseBrush"], HorizontalAlignment = HorizontalAlignment.Left }; // design: outline accent icon
+            var name = new TextBlock { Text = vm.Text[title], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 21, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis };
+            var line = new TextBlock { FontSize = 13.5, Foreground = (Brush)Application.Current.Resources["MutedBrush"], TextWrapping = TextWrapping.Wrap, MaxLines = 3, TextTrimming = TextTrimming.CharacterEllipsis };
             line.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath(status) });
-            var content = new StackPanel { Spacing = 10 }; content.Children.Add(badge); content.Children.Add(name); content.Children.Add(line);
+            var info = new StackPanel { Spacing = 10 }; info.Children.Add(badge); info.Children.Add(name); info.Children.Add(line);
+            // "Abrir ferramenta →" at the bottom of each card (design 07)
+            var open = new Border { Background = (Brush)Application.Current.Resources["ElevatedBrush"], BorderBrush = (Brush)Application.Current.Resources["CardBorderBrush"], BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(10), Padding = new Thickness(16, 11, 16, 11), VerticalAlignment = VerticalAlignment.Bottom,
+                Child = new TextBlock { Text = vm.Text["ToolOpen"] + "  →", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 14 } };
+            var content = new Grid { RowSpacing = 14 }; content.RowDefinitions.Add(new RowDefinition()); content.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            content.Children.Add(info); Grid.SetRow(open, 1); content.Children.Add(open);
             var tile = new Button
             {
-                Width = 212, Height = 210, Padding = new Thickness(18), CornerRadius = new CornerRadius(18), HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Top,
+                Width = 340, Height = 250, Padding = new Thickness(22), CornerRadius = new CornerRadius(16), HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch,
                 Background = (Brush)Application.Current.Resources["CardBrush"], BorderBrush = (Brush)Application.Current.Resources["CardBorderBrush"], BorderThickness = new Thickness(1), Content = content, Tag = id
             };
             Motion.SetHover(tile, 1.04); Motion.SetPress(tile, true);

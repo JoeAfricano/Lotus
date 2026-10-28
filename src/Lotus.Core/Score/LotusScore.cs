@@ -13,7 +13,9 @@ public interface IScoreHistory { IReadOnlyList<ScoreRun> Load(); void Save(IRead
 public interface IScoreMachine { string Cpu(); string Gpu(); }
 
 // Null fields = test not run (the user chose a subset); Total only when the full set ran.
-public sealed record ScoreRun(DateTime Date, int? Cpu1, int? CpuAll, int? Gpu, int? Total, double VariationPct, string CpuName, string GpuName);
+// Peak GPU temperature/power and average CPU use while the tests ran (3DMark-style monitoring); null when unread.
+public sealed record ScoreRun(DateTime Date, int? Cpu1, int? CpuAll, int? Gpu, int? Total, double VariationPct, string CpuName, string GpuName,
+    double? PeakGpuTemp = null, double? PeakGpuPower = null, double? AvgCpuUse = null);
 public sealed record ScoreReference(string Tier, string Example, int Cpu1, int CpuAll, int Gpu)
 {
     public int Total => LotusScale.Total(Cpu1, CpuAll, Gpu);
@@ -122,6 +124,9 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         var stages = (doCpu1 ? 1 : 0) + (doCpuAll ? 1 : 0) + (doGpu ? 1 : 0); var stage = 0;
         Busy = true; Progress = 0; Reliability = ""; Verdict = ""; Notify();
         RunTask.Start();
+        // Watch the sensors while the tests run (peak GPU temperature/power, average CPU use), like 3DMark monitoring.
+        using var sampling = new CancellationTokenSource();
+        var sampler = Watch(sampling.Token);
         try
         {
             var threads = Environment.ProcessorCount;
@@ -149,7 +154,8 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
             var full = c1 is not null && ca is not null && (g is not null || gpu.Adapter() is null);
             int? total = full ? LotusScale.Total(c1!.Value, ca!.Value, g) : null;
             var variation = new[] { single?.VariationPct ?? 0, multi?.VariationPct ?? 0, graphics?.VariationPct ?? 0 }.Max();
-            last = new ScoreRun(DateTime.Now, c1, ca, g, total, Math.Round(variation, 1), machine.Cpu(), machine.Gpu());
+            sampling.Cancel(); var watched = await sampler;
+            last = new ScoreRun(DateTime.Now, c1, ca, g, total, Math.Round(variation, 1), machine.Cpu(), machine.Gpu(), watched.PeakTemp, watched.PeakPower, watched.AvgCpu);
             history.Save([last, .. history.Load().Take(19)]); global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Score);
             Verdict = total is { } t ? VerdictFor(t) : Text["ScorePartial"];
             Reliability = Text.Format(variation < 3 ? "ScoreReliable" : "ScoreUnstable", variation);
@@ -159,7 +165,27 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         }
         catch (OperationCanceledException) { Phase = Text["ScoreCancelled"]; RunTask.Fail(); }
         catch (Exception ex) { log(ex); Phase = Text["ScoreFailed"]; RunTask.Fail(); }
-        finally { Busy = false; ShowCpuPreview = false; Progress = 100; cts?.Dispose(); cts = null; Rebuild(); SearchParts(); }
+        finally { sampling.Cancel(); Busy = false; ShowCpuPreview = false; Progress = 100; cts?.Dispose(); cts = null; Rebuild(); SearchParts(); }
+    }
+
+    // Live sensors (set by the app): CPU use %, GPU temperature °C, GPU power W; null when unread.
+    public Func<(double? CpuUse, double? GpuTemp, double? GpuPower)>? Sensors { get; set; }
+    private async Task<(double? PeakTemp, double? PeakPower, double? AvgCpu)> Watch(CancellationToken token)
+    {
+        double? temp = null, power = null; double cpuSum = 0; var cpuCount = 0;
+        while (Sensors is { } read && !token.IsCancellationRequested)
+        {
+            try
+            {
+                var (c, t, p) = read();
+                if (t is { } tv) temp = Math.Max(temp ?? tv, tv);
+                if (p is { } pv) power = Math.Max(power ?? pv, pv);
+                if (c is { } cv) { cpuSum += cv; cpuCount++; }
+            }
+            catch (Exception ex) { log(ex); }
+            try { await Task.Delay(500, token); } catch (OperationCanceledException) { break; }
+        }
+        return (temp is null ? null : Math.Round(temp.Value), power is null ? null : Math.Round(power.Value, 1), cpuCount == 0 ? null : Math.Round(cpuSum / cpuCount));
     }
 
     private string PhaseText(Func<string, string> phase, int i) => phase(i == 0 ? Text["ScoreWarmup"] : Text.Format("ScorePass", i, Passes));
@@ -200,6 +226,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
                 History.Add(new(h.Date.ToString("g", Culture), Text.Format("ScoreHistoryLine", Points(h.Total), Points(h.Cpu1), Points(h.CpuAll), Points(h.Gpu))));
         }
         catch (Exception ex) { log(ex); }
+        BuildInsights();
         Notify();
     }
 
@@ -241,6 +268,99 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         ];
     }
 
+
+    // ---- Deeper reading (FPS calculators and 3DMark): sub-scores, rank, stability, sensors, bottleneck, FPS per game ----
+    public sealed record FpsRowView(string Resolution, string Low, string Medium, string High, string Ultra, string LowKind, string MediumKind, string HighKind, string UltraKind, string Limiter);
+    public sealed record BottleneckView(string Resolution, string Text, double Percent, string Kind);
+    public Func<IEnumerable<(string Name, string? SteamId)>>? InstalledGames { get; set; }
+    private IReadOnlyList<GameDemand> gameList = ScoreInsights.Games;
+    private int gameIndex;
+    public IReadOnlyList<string> GameNames => [.. gameList.Select(g => g.Name)];
+    public int GameIndex { get => gameIndex; set { if (value >= 0 && value < gameList.Count && SetProperty(ref gameIndex, value)) { picked = true; BuildFps(); } } }
+    private bool picked; // the player chose a game: keep it when the list is rebuilt
+    public ObservableCollection<FpsRowView> FpsRows { get; } = [];
+    public ObservableCollection<BottleneckView> BottleneckRows { get; } = [];
+    public bool HasInsights => last is { Cpu1: > 0, CpuAll: > 0, Gpu: > 0 };
+    public bool NoInsights => !HasInsights;
+    public string GraphicsScore => Points(last?.Gpu);
+    public string CpuScoreText => last is { Cpu1: { } s, CpuAll: { } m } ? ScoreInsights.CpuScore(s, m).ToString("N0", Culture) : "—";
+    public string GpuRankText => last?.Gpu is { } g ? Text.Format("ScoreBeatsGpus", ScoreInsights.BeatsGpus(g)) : Text["ScoreNoReading"];
+    public double GpuRank => last?.Gpu is { } g ? ScoreInsights.BeatsGpus(g) : 0;
+    public string CpuRankText => last is { Cpu1: { } s, CpuAll: { } m } ? Text.Format("ScoreBeatsCpus", ScoreInsights.BeatsCpus(s, m)) : Text["ScoreNoReading"];
+    public double CpuRank => last is { Cpu1: { } s, CpuAll: { } m } ? ScoreInsights.BeatsCpus(s, m) : 0;
+    public string StabilityText => last is null ? "—" : ScoreInsights.Stability(last.VariationPct).ToString("0.0", Culture) + "%";
+    public string StabilityVerdict => last is null ? "" : Text[ScoreInsights.StabilityPasses(last.VariationPct) ? "ScoreStablePass" : "ScoreStableFail"];
+    public string SensorsText => last is null ? "—" : last is { PeakGpuTemp: null, PeakGpuPower: null, AvgCpuUse: null } ? Text["ScoreSensorsNext"] : Text.Format("ScoreSensorsLine",
+        last.PeakGpuTemp is { } t ? t.ToString("0", Culture) + " °C" : "—", last.PeakGpuPower is { } p ? p.ToString("0.#", Culture) + " W" : "—", last.AvgCpuUse is { } c ? c.ToString("0", Culture) + "%" : "—");
+    public string FpsNote => Text["ScoreFpsNote"];
+    // Any game: searched on Steam, estimated from its recommended requirements (the source is shown and linked).
+    public Func<string, CancellationToken, Task<(string Name, string AppId, string? Requirements)?>>? FindGame { get; set; }
+    private readonly List<GameDemand> searched = [];
+    public string FpsSearchStatus { get; private set; } = "";
+    private GameDemand? CurrentGame => gameIndex < gameList.Count ? gameList[gameIndex] : null;
+    public string FpsSource => CurrentGame?.Basis is { } basis ? Text.Format("ScoreFpsSourceSteam", basis) : Text["ScoreFpsSourceTable"];
+    public string SourceALabel => CurrentGame?.Basis is null ? "pc-builds" : "Steam";
+    public string SourceAUrl => CurrentGame is { Basis: not null, SteamAppId: { } id } ? $"https://store.steampowered.com/app/{id}/" : "https://pc-builds.com/pt/fps-calculator/";
+    public string SourceBLabel => CurrentGame?.Basis is null ? "How Many FPS" : "pc-builds";
+    public string SourceBUrl => CurrentGame?.Basis is null ? "https://howmanyfps.com/" : "https://pc-builds.com/pt/fps-calculator/";
+    public async Task SearchGameAsync(string query)
+    {
+        query = (query ?? "").Trim();
+        if (query.Length < 2 || FindGame is null) return;
+        FpsSearchStatus = Text["ScoreFpsSearching"]; OnPropertyChanged(nameof(FpsSearchStatus));
+        try
+        {
+            var found = await FindGame(query, CancellationToken.None);
+            var demand = found is { } f ? ScoreInsights.FromRequirements(f.Name, f.AppId, f.Requirements) : null;
+            if (demand is null) FpsSearchStatus = Text.Format(found is null ? "ScoreFpsNotFound" : "ScoreFpsNoParts", found?.Name ?? query);
+            else
+            {
+                searched.RemoveAll(g => g.SteamAppId == demand.SteamAppId); searched.Insert(0, demand);
+                FpsSearchStatus = "";
+                picked = false; BuildInsights(); // the searched game comes first and is selected
+            }
+        }
+        catch (Exception ex) { log(ex); FpsSearchStatus = Text["ScoreFpsSearchFailed"]; }
+        OnPropertyChanged(nameof(FpsSearchStatus));
+    }
+
+    private void BuildInsights()
+    {
+        try
+        {
+            var current = gameIndex < gameList.Count ? gameList[gameIndex].Name : null;
+            gameList = [.. searched, .. ScoreInsights.Ordered(InstalledGames?.Invoke() ?? [])];
+            var keep = !picked || current is null ? 0 : gameList.ToList().FindIndex(g => g.Name == current);
+            gameIndex = Math.Max(0, keep);
+        }
+        catch (Exception ex) { log(ex); }
+        BottleneckRows.Clear();
+        if (last is { Cpu1: { } s, CpuAll: { } m, Gpu: { } g })
+            foreach (var b in ScoreInsights.Bottlenecks(s, m, g))
+                BottleneckRows.Add(new(Text["ScoreRes" + b.Resolution], b.Limiter switch
+                {
+                    Limiter.Cpu => Text.Format("ScoreBottleCpu", b.Percent), Limiter.Gpu => Text.Format("ScoreBottleGpu", b.Percent), _ => Text["ScoreBottleBalanced"],
+                }, Math.Min(100, b.Percent * 2), b.Limiter == Limiter.Balanced ? "good" : "mixed"));
+        BuildFps();
+        foreach (var n in new[] { nameof(GameNames), nameof(GameIndex), nameof(HasInsights), nameof(NoInsights), nameof(GraphicsScore), nameof(CpuScoreText), nameof(GpuRankText), nameof(GpuRank),
+            nameof(CpuRankText), nameof(CpuRank), nameof(StabilityText), nameof(StabilityVerdict), nameof(SensorsText) }) OnPropertyChanged(n);
+    }
+
+    private void BuildFps()
+    {
+        FpsRows.Clear();
+        if (last is not { Cpu1: { } s, CpuAll: { } m, Gpu: { } g } || gameIndex >= gameList.Count) return;
+        var game = gameList[gameIndex];
+        foreach (var n in new[] { nameof(FpsSource), nameof(SourceALabel), nameof(SourceAUrl), nameof(SourceBLabel), nameof(SourceBUrl) }) OnPropertyChanged(n);
+        static string Kind(int fps) => fps >= 60 ? "good" : fps >= 30 ? "mixed" : "bad";
+        foreach (var r in Enum.GetValues<Resolution>())
+        {
+            var cells = Enum.GetValues<Preset>().Select(p => ScoreInsights.Estimate(game, r, p, s, m, g)).ToArray();
+            var limiter = cells[2].Limiter switch { Limiter.Cpu => Text["ScoreLimitCpu"], Limiter.Gpu => Text["ScoreLimitGpu"], Limiter.Cap => Text["ScoreLimitCap"], _ => Text["ScoreLimitBalanced"] };
+            FpsRows.Add(new(Text["ScoreRes" + r], cells[0].Fps.ToString(Culture), cells[1].Fps.ToString(Culture), cells[2].Fps.ToString(Culture), cells[3].Fps.ToString(Culture),
+                Kind(cells[0].Fps), Kind(cells[1].Fps), Kind(cells[2].Fps), Kind(cells[3].Fps), limiter));
+        }
+    }
     private void Notify()
     {
         RunTask.Report(Progress);

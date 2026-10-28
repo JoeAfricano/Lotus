@@ -84,4 +84,10 @@ public sealed partial class ScorePanel : UserControl
         await vm.ToggleAsync();
         if (starting && vm.HasResult && vm.Idle) UiSound.Play(UiSound.Cue.Score); // finished, not cancelled
     }
+    // FPS estimate: any game (Steam requirements) and the source sites.
+    private async void OnFpsSearch(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) { if (DataContext is Lotus.Core.Score.LotusScoreViewModel vm) await vm.SearchGameAsync(args.QueryText); }
+    private async void OnFpsSourceLink(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: string url } && Uri.TryCreate(url, UriKind.Absolute, out var u) && u.Scheme == "https") await Windows.System.Launcher.LaunchUriAsync(u);
+    }
 }

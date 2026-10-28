@@ -25,8 +25,16 @@ public static class ScoreParts
         C("AMD Ryzen 7 7700X", 2000, 19700), C("AMD Ryzen 7 7800X3D", 1800, 18000), C("AMD Ryzen 9 7900X", 2000, 29000),
         C("AMD Ryzen 9 7950X", 2050, 38500), C("AMD Ryzen 5 9600X", 2150, 16500), C("AMD Ryzen 7 9700X", 2150, 20500),
         C("AMD Ryzen 7 9800X3D", 2050, 23000), C("AMD Ryzen 9 9950X", 2250, 42000),
+        // Older parts that game requirements often cite (estimates on the same scale)
+        C("Intel Core i5-2500K", 800, 3000), C("Intel Core i7-3770", 900, 4200), C("Intel Core i5-4460", 900, 3300), C("Intel Core i7-4770", 1000, 4800),
+        C("Intel Core i5-6600K", 1050, 4100), C("Intel Core i7-6700K", 1150, 6000), C("Intel Core i5-8400", 1100, 6500), C("Intel Core i7-8700K", 1250, 8800),
+        C("Intel Core i5-9600K", 1250, 6800), C("Intel Core i7-9700K", 1300, 9300), C("AMD Ryzen 3 1200", 700, 3000), C("AMD Ryzen 5 1600", 800, 5600),
+        C("AMD Ryzen 7 1700", 800, 7000), C("AMD Ryzen 7 2700X", 950, 8500), C("AMD Ryzen 7 3700X", 1250, 11500),
 
-        G("NVIDIA GeForce GTX 1050 Ti", 2400), G("NVIDIA GeForce GTX 1650", 3500), G("NVIDIA GeForce GTX 1650 Super", 5000),
+        G("NVIDIA GeForce GTX 1050 Ti", 2400), G("NVIDIA GeForce GTX 960", 2600), G("NVIDIA GeForce GTX 970", 4100), G("NVIDIA GeForce GTX 1060", 4800),
+        G("NVIDIA GeForce GTX 1070", 6300), G("NVIDIA GeForce GTX 1070 Ti", 7000), G("NVIDIA GeForce GTX 1080", 7600), G("NVIDIA GeForce GTX 1080 Ti", 10000),
+        G("NVIDIA GeForce RTX 2070", 9300), G("NVIDIA GeForce RTX 2080", 11000), G("AMD Radeon RX 470", 3800), G("AMD Radeon RX 570", 4100),
+        G("AMD Radeon RX 5500 XT", 4800), G("AMD Radeon RX Vega 56", 6300), G("AMD Radeon RX Vega 64", 7200), G("NVIDIA GeForce GTX 1650", 3500), G("NVIDIA GeForce GTX 1650 Super", 5000),
         G("NVIDIA GeForce GTX 1660", 5400), G("NVIDIA GeForce GTX 1660 Super", 6000), G("NVIDIA GeForce RTX 2060", 7600),
         G("NVIDIA GeForce RTX 2060 Super", 8800), G("NVIDIA GeForce RTX 2070 Super", 10000), G("NVIDIA GeForce RTX 2080 Ti", 13500),
         G("NVIDIA GeForce RTX 3050", 6200), G("NVIDIA GeForce RTX 3060", 9000), G("NVIDIA GeForce RTX 3060 Ti", 11500),
@@ -52,8 +60,11 @@ public static class ScoreParts
     public static PartScore? Find(string windowsName, PartKind kind)
     {
         var name = " " + Normalize(windowsName) + " ";
-        return All.Where(p => p.Kind == kind && name.Contains(" " + Model(p.Name) + " ")).OrderByDescending(p => Model(p.Name).Length).FirstOrDefault();
+        return All.Where(p => p.Kind == kind && name.Contains(" " + Model(p.Name) + " ")).OrderByDescending(p => Model(p.Name).Length).FirstOrDefault()
+            // Requirement texts often drop the brand ("GTX 1060", "RX 580"): match the bare model then.
+            ?? All.Where(p => p.Kind == kind && Bare(p.Name).Length > 3 && name.Contains(" " + Bare(p.Name) + " ")).OrderByDescending(p => Bare(p.Name).Length).FirstOrDefault();
     }
+    private static string Bare(string name) { var m = Model(name); foreach (var b in new[] { "geforce ", "radeon " }) if (m.StartsWith(b)) m = m[b.Length..]; return m; }
     private static string Model(string name)
     {
         var n = Normalize(name.Replace("(integrada)", ""));

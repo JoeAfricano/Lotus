@@ -10,6 +10,53 @@ public sealed partial class PowerProfilesPanel : UserControl
         InitializeComponent();
         // Loads power plans, saved profiles and journal history (read-only queries).
         Loaded += async (_, _) => { if (DataContext is Lotus.Core.Optimization.PowerProfilesViewModel model) await model.RefreshAsync(); };
+        DataContextChanged += (_, _) => Attach(DataContext as Lotus.Core.Optimization.PowerProfilesViewModel);
+    }
+
+    // Visual confirmation: the chosen card's check springs when the profile changes; applying/undoing
+    // shows the result card with a badge pop and a ring ripple (skipped when animations are off).
+    private Lotus.Core.Optimization.PowerProfilesViewModel? attached;
+    private void Attach(Lotus.Core.Optimization.PowerProfilesViewModel? vm)
+    {
+        if (ReferenceEquals(vm, attached)) return;
+        if (attached is not null) { attached.ResultShown -= OnResultShown; attached.PropertyChanged -= OnVmChanged; }
+        attached = vm;
+        if (vm is not null) { vm.ResultShown += OnResultShown; vm.PropertyChanged += OnVmChanged; }
+    }
+    private void OnVmChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        // IsCustom is the last of the three notifications a switch raises: react once per switch.
+        if (sender is not Lotus.Core.Optimization.PowerProfilesViewModel vm || e.PropertyName != "IsCustom") return;
+        var check = vm.IsGame ? GameCheck : vm.IsDaily ? DailyCheck : CustomCheck;
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            // Neutral hint style (the success/warning look belongs to a finished apply or undo).
+            ResultIcon.Glyph = ""; ResultIcon.Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["RoseBrush"];
+            ResultBadge.Background = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["AccentSoftBrush"];
+            ResultCard.BorderBrush = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["DividerBrush"];
+            Motion.Pop(check); Motion.Settle(ResultCard);
+        });
+    }
+    private void OnResultShown(object? sender, EventArgs e)
+    {
+        if (sender is not Lotus.Core.Optimization.PowerProfilesViewModel vm) return;
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            var brush = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources[vm.ResultOk ? "SuccessBrush" : "WarningBrush"];
+            ResultIcon.Glyph = vm.ResultOk ? "" : ""; ResultIcon.Foreground = brush; ResultRing.Stroke = brush;
+            ResultBadge.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(((Microsoft.UI.Xaml.Media.SolidColorBrush)brush).Color) { Opacity = 0.18 };
+            ResultCard.BorderBrush = brush;
+            Motion.Settle(ResultCard); Motion.Pop(ResultBadge);
+            if (!Motion.Enabled) return;
+            var sb = new Microsoft.UI.Xaml.Media.Animation.Storyboard();
+            void Anim(DependencyObject target, string prop, double from, double to)
+            {
+                var a = new Microsoft.UI.Xaml.Media.Animation.DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(700), EasingFunction = new Microsoft.UI.Xaml.Media.Animation.QuadraticEase { EasingMode = Microsoft.UI.Xaml.Media.Animation.EasingMode.EaseOut } };
+                Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTarget(a, target); Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(a, prop); sb.Children.Add(a);
+            }
+            Anim(ResultRingScale, "ScaleX", 1, 2.1); Anim(ResultRingScale, "ScaleY", 1, 2.1); Anim(ResultRing, "Opacity", 0.8, 0);
+            sb.Begin();
+        });
     }
 
     // Opens only Windows Settings pages (ms-settings:); nothing is changed by Lotus.

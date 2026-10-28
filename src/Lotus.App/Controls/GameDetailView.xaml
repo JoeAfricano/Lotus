@@ -10,7 +10,7 @@
     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE72B;" FontSize="13"/><TextBlock Text="{Binding Text[GiBack]}"/></StackPanel>
    </Button>
    <StackPanel VerticalAlignment="Bottom" Padding="28,0,28,24" Spacing="8">
-    <TextBlock Text="{Binding Genres}" Style="{StaticResource EyebrowStyle}" Foreground="{ThemeResource GoldBrush}"/>
+    <TextBlock Text="{Binding Genres}" Style="{StaticResource EyebrowStyle}" Foreground="#F58BB7"/>
     <TextBlock Text="{Binding Title}" FontSize="38" FontWeight="SemiBold" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
     <TextBlock Style="{StaticResource CaptionStyle}" FontSize="13.5"><Run Text="{Binding Release}"/><Run Text="   "/><Run Text="{Binding Studio}"/></TextBlock>
     <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,6,0,0">
@@ -21,7 +21,7 @@
       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE719;" FontSize="13"/><TextBlock Text="{Binding Text[GiStore]}"/></StackPanel>
      </Button>
      <Button x:Name="WantButton" Click="OnWant" Style="{StaticResource SoftButtonStyle}" MinHeight="44" Visibility="{Binding HasTitle, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="detail-want">
-      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon x:Name="WantIcon" Glyph="&#xE734;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/><TextBlock x:Name="WantText"/></StackPanel>
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon x:Name="WantIcon" Glyph="&#xE734;" FontSize="13" Foreground="#EEC1A8"/><TextBlock x:Name="WantText"/></StackPanel>
      </Button>
      <Button Click="OnLog" Style="{StaticResource SoftButtonStyle}" MinHeight="44" Visibility="{Binding HasTitle, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="detail-log">
       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE70F;" FontSize="13" Foreground="{ThemeResource RoseBrush}"/><TextBlock x:Name="LogText"/></StackPanel>

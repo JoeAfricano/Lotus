@@ -51,6 +51,6 @@
   <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="CardBrush"/><StaticResource x:Key="ExpanderContentBackground" ResourceKey="CardBrush"/>
   <StaticResource x:Key="ExpanderHeaderBorderBrush" ResourceKey="CardBorderBrush"/><StaticResource x:Key="ExpanderContentBorderBrush" ResourceKey="CardBorderBrush"/>
 
-  <Style x:Key="EyebrowStyle" TargetType="TextBlock"><Setter Property="Foreground" Value="{ThemeResource MutedBrush}"/><Setter Property="FontSize" Value="11"/><Setter Property="CharacterSpacing" Value="80"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+  <Style x:Key="EyebrowStyle" TargetType="TextBlock"><Setter Property="Foreground" Value="{ThemeResource RoseBrush}"/><Setter Property="FontSize" Value="11.5"/><Setter Property="CharacterSpacing" Value="80"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
  </ResourceDictionary></Application.Resources>
 </Application>

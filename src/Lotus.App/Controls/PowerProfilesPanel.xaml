@@ -13,7 +13,8 @@
     <Border CornerRadius="18" Padding="22" BorderThickness="1.5" BorderBrush="{Binding IsGame, Converter={StaticResource SelectedBorder}}" Background="{Binding IsGame, Converter={StaticResource SelectedSurface}}">
      <Grid RowSpacing="12"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <Grid><FontIcon Glyph="&#xE7FC;" FontSize="28" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
-       <Border Width="24" Height="24" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="1.5" BorderBrush="{Binding IsGame, Converter={StaticResource SelectedBorder}}"><Border CornerRadius="5" Margin="2" Background="{ThemeResource AccentGradientBrush}" Visibility="{Binding IsGame, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xE73E;" FontSize="11" Foreground="{ThemeResource OnRoseBrush}"/></Border></Border>
+       <Border Style="{StaticResource ChipStyle}" BorderThickness="1" BorderBrush="{Binding IsGame, Converter={StaticResource SelectedBorder}}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,34,0"><TextBlock Text="{Binding GameStatus}" Style="{StaticResource ChipTextStyle}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/></Border>
+       <Border x:Name="GameCheck" Width="24" Height="24" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="1.5" BorderBrush="{Binding IsGame, Converter={StaticResource SelectedBorder}}"><Border CornerRadius="5" Margin="2" Background="{ThemeResource AccentGradientBrush}" Visibility="{Binding IsGame, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xE73E;" FontSize="11" Foreground="{ThemeResource OnRoseBrush}"/></Border></Border>
       </Grid>
       <StackPanel Grid.Row="1" Spacing="10">
        <Border Style="{StaticResource ChipStyle}" BorderBrush="{ThemeResource RoseBrush}" Background="{ThemeResource AccentSoftBrush}" HorizontalAlignment="Left"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE735;" FontSize="10" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[PfRecommended]}" Style="{StaticResource ChipTextStyle}" FontSize="11" Foreground="{ThemeResource RoseBrush}"/></StackPanel></Border>
@@ -21,7 +22,7 @@
       </StackPanel>
       <TextBlock Grid.Row="2" Text="{Binding Text[PfGameDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
       <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
-       <Border Style="{StaticResource ChipStyle}" BorderThickness="1" BorderBrush="{Binding IsGame, Converter={StaticResource SelectedBorder}}"><TextBlock Text="{Binding GameStatus}" Style="{StaticResource ChipTextStyle}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/></Border><Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipPower]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
+       <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipPower]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
        <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE7E8;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipStartup]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
       </StackPanel>
      </Grid>
@@ -31,12 +32,13 @@
     <Border CornerRadius="18" Padding="22" BorderThickness="1.5" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}" Background="{Binding IsDaily, Converter={StaticResource SelectedSurface}}">
      <Grid RowSpacing="12"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <Grid><FontIcon Glyph="&#xE7F4;" FontSize="28" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
-       <Border Width="24" Height="24" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="1.5" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}"><Border CornerRadius="5" Margin="2" Background="{ThemeResource AccentGradientBrush}" Visibility="{Binding IsDaily, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xE73E;" FontSize="11" Foreground="{ThemeResource OnRoseBrush}"/></Border></Border>
+       <Border Style="{StaticResource ChipStyle}" BorderThickness="1" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,34,0"><TextBlock Text="{Binding DailyStatus}" Style="{StaticResource ChipTextStyle}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/></Border>
+       <Border x:Name="DailyCheck" Width="24" Height="24" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="1.5" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}"><Border CornerRadius="5" Margin="2" Background="{ThemeResource AccentGradientBrush}" Visibility="{Binding IsDaily, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xE73E;" FontSize="11" Foreground="{ThemeResource OnRoseBrush}"/></Border></Border>
       </Grid>
       <TextBlock Grid.Row="1" Text="{Binding Text[PfDailyTitle]}" FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap"/>
       <TextBlock Grid.Row="2" Text="{Binding Text[PfDailyDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
       <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
-       <Border Style="{StaticResource ChipStyle}" BorderThickness="1" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}"><TextBlock Text="{Binding DailyStatus}" Style="{StaticResource ChipTextStyle}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/></Border><Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipBalance]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
+       <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipBalance]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
        <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE7E8;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipStartup]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
       </StackPanel>
      </Grid>
@@ -46,12 +48,13 @@
     <Border CornerRadius="18" Padding="22" BorderThickness="1.5" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}" Background="{Binding IsCustom, Converter={StaticResource SelectedSurface}}">
      <Grid RowSpacing="12"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <Grid><FontIcon Glyph="&#xE9E9;" FontSize="28" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
-       <Border Width="24" Height="24" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="1.5" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}"><Border CornerRadius="5" Margin="2" Background="{ThemeResource AccentGradientBrush}" Visibility="{Binding IsCustom, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xE73E;" FontSize="11" Foreground="{ThemeResource OnRoseBrush}"/></Border></Border>
+       <Border Style="{StaticResource ChipStyle}" BorderThickness="1" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,34,0"><TextBlock Text="{Binding CustomStatus}" Style="{StaticResource ChipTextStyle}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/></Border>
+       <Border x:Name="CustomCheck" Width="24" Height="24" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="1.5" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}"><Border CornerRadius="5" Margin="2" Background="{ThemeResource AccentGradientBrush}" Visibility="{Binding IsCustom, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xE73E;" FontSize="11" Foreground="{ThemeResource OnRoseBrush}"/></Border></Border>
       </Grid>
       <TextBlock Grid.Row="1" Text="{Binding Text[PfCustomTitle]}" FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap"/>
       <TextBlock Grid.Row="2" Text="{Binding Text[PfCustomDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
       <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
-       <Border Style="{StaticResource ChipStyle}" BorderThickness="1" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}"><TextBlock Text="{Binding CustomStatus}" Style="{StaticResource ChipTextStyle}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/></Border><Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE713;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipManual]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
+       <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE713;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipManual]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
       </StackPanel>
      </Grid>
     </Border>
@@ -139,22 +142,36 @@
       <StackPanel Spacing="12">
        <ComboBox Header="{Binding Text[OptHistory]}" ItemsSource="{Binding Operations}" SelectedItem="{Binding SelectedOperation, Mode=TwoWay}" DisplayMemberPath="Label" HorizontalAlignment="Stretch" IsEnabled="{Binding CanEdit}"/>
        <TextBlock Text="{Binding Details}" Style="{StaticResource BodyStyle}"/>
+       <TextBlock Text="{Binding Status}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" Visibility="{Binding Status, Converter={StaticResource PresenceVisibility}}" AutomationProperties.LiveSetting="Polite" AutomationProperties.AutomationId="profile-status"/>
        <TextBlock Text="{Binding Text[PowerLimits]}" Style="{StaticResource CaptionStyle}"/>
        <StackPanel Orientation="Horizontal" Spacing="8"><Button Content="{Binding Text[PowerUndo]}" Click="OnUndoOperation" IsEnabled="{Binding CanEdit}" AutomationProperties.AutomationId="profile-undo" Style="{StaticResource SoftButtonStyle}"/><Button Content="{Binding Text[PowerRefresh]}" Command="{Binding RefreshCommand}" Style="{StaticResource SoftButtonStyle}"/></StackPanel>
       </StackPanel>
      </Expander>
     </StackPanel>
 
-    <StackPanel x:Name="ActionsColumn" Grid.Column="1" Spacing="10" VerticalAlignment="Top">
+    <StackPanel x:Name="ActionsColumn" Grid.Column="1" Spacing="14" VerticalAlignment="Top">
      <!-- "Você decide" (design): impact and reversal stay next to the action -->
-     <StackPanel Spacing="8" Margin="0,0,0,8"><FontIcon Glyph="&#xE945;" FontSize="24" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/><TextBlock Text="{Binding Text[PfDecideTitle]}" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[PfDecideBody]}" Style="{StaticResource CaptionStyle}" FontSize="13.5" TextWrapping="Wrap"/></StackPanel>
+     <StackPanel Spacing="6"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE945;" FontSize="20" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[PfDecideTitle]}" FontSize="20" FontWeight="SemiBold"/></StackPanel><TextBlock Text="{Binding Text[PfDecideBody]}" Style="{StaticResource CaptionStyle}" FontSize="13" TextWrapping="Wrap"/></StackPanel>
      <Button Click="OnApplyProfile" IsEnabled="{Binding CanEdit}" AutomationProperties.AutomationId="profile-apply" AutomationProperties.Name="{Binding Text[PfApply]}" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE768;" FontSize="14"/><TextBlock Text="{Binding Text[PfApply]}"/></StackPanel></Button>
-     <Button Click="OnUndoProfile" IsEnabled="{Binding CanUndoProfile}" AutomationProperties.AutomationId="profile-undo-all" AutomationProperties.Name="{Binding Text[PfUndo]}" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE7A7;" FontSize="14"/><TextBlock Text="{Binding Text[PfUndo]}"/></StackPanel></Button>
-     <Button Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE8A5;" FontSize="14"/><TextBlock Text="{Binding Text[PfDetails]}"/></StackPanel>
-      <Button.Flyout><Flyout><StackPanel Spacing="10" MaxWidth="380"><TextBlock Text="{Binding Summary}" Style="{StaticResource BodyStyle}"/><TextBlock Text="{Binding Details}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[PowerRisk]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Flyout></Button.Flyout>
-     </Button>
-     <TextBlock Text="{Binding ProfileStatus}" Style="{StaticResource BodyStyle}" FontSize="13" Foreground="{ThemeResource GoldBrush}" AutomationProperties.LiveSetting="Polite" app:Motion.Settle="True" AutomationProperties.AutomationId="profile-result"/>
-     <TextBlock Text="{Binding Status}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite" app:Motion.Settle="True" AutomationProperties.AutomationId="profile-status"/>
+     <!-- Result: animated confirmation after applying / undoing; a quiet hint after switching profiles -->
+     <Border x:Name="ResultCard" CornerRadius="14" Padding="14,12" BorderThickness="1" BorderBrush="{ThemeResource DividerBrush}" Background="{ThemeResource CardHoverBrush}" Visibility="{Binding HasResult, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="profile-result-card">
+      <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <Grid Width="36" Height="36" VerticalAlignment="Top">
+        <Ellipse x:Name="ResultRing" StrokeThickness="2" Stroke="{ThemeResource SuccessBrush}" Opacity="0" RenderTransformOrigin="0.5,0.5"><Ellipse.RenderTransform><ScaleTransform x:Name="ResultRingScale"/></Ellipse.RenderTransform></Ellipse>
+        <Border x:Name="ResultBadge" CornerRadius="18" Background="{ThemeResource AccentSoftBrush}"><FontIcon x:Name="ResultIcon" Glyph="&#xE946;" FontSize="16" Foreground="{ThemeResource RoseBrush}"/></Border>
+       </Grid>
+       <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+        <TextBlock Text="{Binding ResultTitle}" FontWeight="SemiBold" FontSize="15" TextWrapping="Wrap" Visibility="{Binding ResultTitle, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="profile-result-title"/>
+        <TextBlock Text="{Binding ProfileStatus}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" AutomationProperties.AutomationId="profile-result"/>
+       </StackPanel>
+      </Grid>
+     </Border>
+     <Grid ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <Button Click="OnUndoProfile" IsEnabled="{Binding CanUndoProfile}" AutomationProperties.AutomationId="profile-undo-all" AutomationProperties.Name="{Binding Text[PfUndo]}" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="40" Padding="8,4"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE7A7;" FontSize="13"/><TextBlock Text="{Binding Text[PfUndo]}" TextTrimming="CharacterEllipsis"/></StackPanel></Button>
+      <Button Grid.Column="1" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="40" Padding="8,4"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8A5;" FontSize="13"/><TextBlock Text="{Binding Text[PfDetails]}" TextTrimming="CharacterEllipsis"/></StackPanel>
+       <Button.Flyout><Flyout><StackPanel Spacing="10" MaxWidth="380"><TextBlock Text="{Binding Summary}" Style="{StaticResource BodyStyle}"/><TextBlock Text="{Binding Details}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[PowerRisk]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Flyout></Button.Flyout>
+      </Button>
+     </Grid>
     </StackPanel>
    </Grid>
   </Border>

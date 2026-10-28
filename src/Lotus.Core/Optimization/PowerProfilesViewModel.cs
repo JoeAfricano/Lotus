@@ -37,6 +37,18 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public string FeaturesSummary { get; private set; } = "";
     public string FeatureStatus { get; private set; } = "";
     public string ProfileStatus { get; private set; } = "";
+    // Result card shown after applying or undoing (title + detail), and the view animates it on ResultShown.
+    public string ResultTitle { get; private set; } = "";
+    public bool ResultOk { get; private set; } = true;
+    public bool HasResult => ResultTitle.Length > 0 || ProfileStatus.Length > 0;
+    public event EventHandler? ResultShown;
+    private string ProfileTitle => Text[IsGame ? "PfGameTitle" : IsDaily ? "PfDailyTitle" : "PfCustomTitle"];
+    private void ShowResult(string titleKey, bool ok, string detail)
+    {
+        ResultTitle = Text.Format(titleKey, ProfileTitle); ResultOk = ok; ProfileStatus = detail;
+        foreach (var n in new[] { nameof(ResultTitle), nameof(ResultOk), nameof(ProfileStatus), nameof(HasResult) }) OnPropertyChanged(n);
+        ResultShown?.Invoke(this, EventArgs.Empty);
+    }
     public bool CanUndoProfile => !busy && (LastPowerApplied is not null || featureApplied.Values.Any(p => p is not null));
     private OptimizationPlan? LastPowerApplied => LastApplied(Operations.Select(o => o.Plan).ToList());
     public bool CanEdit => !busy;
@@ -54,7 +66,8 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public bool PowerEnabled { get => enabled; set { if (SetProperty(ref enabled, value)) InvalidatePlan(); } }
     public bool Confirmed { get => confirmed; set { SetProperty(ref confirmed, value); Notify(); } }
     public OperationChoice? SelectedOperation { get => operation; set { SetProperty(ref operation, value); Confirmed = false; Notify(); } }
-    public string Status => SelectedOperation is { } o && error.Length == 0 ? Text["PowerStage" + o.Plan.Stage] : Text[messageKey];
+    // Idle ("ready") shows nothing: the profile flow no longer has a separate analysis step.
+    public string Status => SelectedOperation is { } o && error.Length == 0 ? Text["PowerStage" + o.Plan.Stage] : messageKey == "PowerReady" ? "" : Text[messageKey];
     public string Summary => SelectedOperation is { } o
         ? o.Plan.Stage == OperationStage.Applied
             ? Text.Format("PowerUndoDifference", Name(o.Plan.Desired.Value), Name(o.Plan.Before.Value))
@@ -157,6 +170,9 @@ public sealed class PowerProfilesViewModel : ObservableObject
         scheme = Schemes.FirstOrDefault(s => s.Id == p.PowerSchemeId); enabled = p.PowerEnabled;
         InvalidatePlan(); OnPropertyChanged(nameof(SelectedScheme)); OnPropertyChanged(nameof(PowerEnabled));
         foreach (var name in new[] { nameof(IsGame), nameof(IsDaily), nameof(IsCustom), nameof(ProfileName), nameof(GameStatus), nameof(DailyStatus), nameof(CustomStatus) }) OnPropertyChanged(name);
+        // The previous result belonged to the other profile: replace it with a "selected" hint (no animation).
+        ResultTitle = ""; ProfileStatus = Text.Format("PfSwitched", ProfileTitle);
+        foreach (var n in new[] { nameof(ResultTitle), nameof(ProfileStatus), nameof(HasResult) }) OnPropertyChanged(n);
         BuildFeatureRows();
     }
     private Task SaveAsync()
@@ -226,8 +242,9 @@ public sealed class PowerProfilesViewModel : ObservableObject
             if (result.Stage == OperationStage.Applied) applied++; else failed++;
         }
         await AfterProfileChange();
-        ProfileStatus = failed == 0 ? (applied == 0 ? Text["PfPreviewNothing"] : Text.Format("PfApplied", applied)) : Text.Format("PfAppliedWithConflicts", applied, failed);
-        OnPropertyChanged(nameof(ProfileStatus));
+        if (failed > 0) ShowResult("PfResultPartial", false, Text.Format("PfAppliedWithConflicts", applied, failed));
+        else if (applied == 0) ShowResult("PfResultReady", true, Text["PfPreviewNothing"]);
+        else ShowResult("PfResultApplied", true, Text.Format("PfApplied", applied));
     });
 
     // Restores the latest Lotus change of each action, only where nothing changed it afterwards.
@@ -239,8 +256,9 @@ public sealed class PowerProfilesViewModel : ObservableObject
             if (featureApplied.GetValueOrDefault(id) is { } plan)
             { if ((await featureEngine.RevertAsync(plan.Id, confirmed: true)).Stage == OperationStage.Reverted) restored++; else failed++; }
         await AfterProfileChange();
-        ProfileStatus = failed == 0 ? (restored == 0 ? Text["PfNothingToUndo"] : Text.Format("PfUndone", restored)) : Text.Format("PfUndoConflict", restored, failed);
-        OnPropertyChanged(nameof(ProfileStatus));
+        if (failed > 0) ShowResult("PfResultUndoPartial", false, Text.Format("PfUndoConflict", restored, failed));
+        else if (restored == 0) ShowResult("PfResultNone", true, Text["PfNothingToUndo"]);
+        else ShowResult("PfResultUndone", true, Text.Format("PfUndone", restored));
     });
 
     private async Task AfterProfileChange()

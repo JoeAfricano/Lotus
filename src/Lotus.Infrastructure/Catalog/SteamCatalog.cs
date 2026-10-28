@@ -35,6 +35,18 @@ public sealed class SteamCatalog : IGameCatalog
         return gog is null ? steam with { Source = steam.Source + " (por nome)" } : steam with { Summary = steam.Summary.Length > 0 ? steam.Summary : gog.Summary, Source = "GOG + Steam" };
     }
 
+    // Any game for the Lotus Score FPS estimate: first store hit and its recommended (else minimum) PC requirements as text.
+    public async Task<(string Name, string AppId, string? Requirements)?> RequirementsAsync(string query, CancellationToken token)
+    {
+        var hit = (await SearchAsync(query, token)).FirstOrDefault();
+        if (hit is null) return null;
+        var store = await JsonAsync($"https://store.steampowered.com/api/appdetails?appids={hit.AppId}&l={language}&cc={country}", $"app-{hit.AppId}-{language}.json", DetailsAge, token);
+        var req = store?[hit.AppId]?["data"]?["pc_requirements"];
+        var html = (req?["recommended"] ?? req?["minimum"])?.ToString();
+        var text = html is null ? null : System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(html.Replace("<br>", "\n").Replace("<li>", "\n"), "<[^>]+>", " "));
+        return (hit.Name, hit.AppId, text);
+    }
+
     public async Task<GameInfo?> SteamDetailsAsync(string appId, CancellationToken token)
     {
         var store = await JsonAsync($"https://store.steampowered.com/api/appdetails?appids={appId}&l={language}&cc={country}", $"app-{appId}-{language}.json", DetailsAge, token);

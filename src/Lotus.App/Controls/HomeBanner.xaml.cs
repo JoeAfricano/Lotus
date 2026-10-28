@@ -124,7 +124,7 @@ public sealed partial class HomeBanner : UserControl
         g.Children.Add(new Rectangle { Fill = Gradient(new(0, 0), new(0, 1), (0.5, Color.FromArgb(0, 18, 9, 15)), (1, Color.FromArgb(0xB3, 18, 9, 15))) });
 
         var text = new StackPanel { Spacing = 8, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(40, 0, 40, 0), MaxWidth = 560, HorizontalAlignment = HorizontalAlignment.Left };
-        text.Children.Add(new TextBlock { Text = s.Eyebrow.ToUpperInvariant(), FontSize = 11.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, CharacterSpacing = 160, Foreground = (Brush)Application.Current.Resources["GoldBrush"] });
+        text.Children.Add(new TextBlock { Text = s.Eyebrow.ToUpperInvariant(), FontSize = 11.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, CharacterSpacing = 160, Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 0xF5, 0x8B, 0xB7)) });
         text.Children.Add(new TextBlock { Text = s.Title, FontSize = 36, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis, Foreground = new SolidColorBrush(Colors.White) });
         text.Children.Add(new TextBlock { Text = s.Subtitle, FontSize = 15, TextWrapping = TextWrapping.Wrap, MaxLines = 3, Foreground = new SolidColorBrush(Color.FromArgb(0xD9, 255, 240, 246)) });
         if (s.Action is { } label && s.OnAction is { } act)
