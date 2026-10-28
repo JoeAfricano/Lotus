@@ -1,20 +1,31 @@
 # Lotus
 
-Aplicativo nativo Windows em C#/.NET 10 e WinUI 3, com MVVM, injeção de dependências e logging estruturado. Fundação visual em preto, grafite e rosê. Cinco áreas: Início, Otimizar, Meus Jogos, Desempenho e Configurações. CPU/RAM e GPU NVIDIA são coletadas em Desempenho > Ao vivo ou durante uma análise iniciada pelo usuário. Início não mantém sensores ativos. Não calcula score, executa benchmark, limpa memória/arquivos ou altera configurações do Windows.
+Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hardware, diagnostica gargalos, cria perfis de jogos e aplica ajustes reversíveis, com benchmarks de antes e depois. Sem placebo, sem FPS inventado.
 
-[Fundo ambiental Lótus + Aurora: política, testes e consumo](docs/LOTUS_AMBIENT_BACKGROUND.md). Em execução normal, respeita as preferências de movimento do Windows e do Lotus.
+**Versão atual: 0.3.0-alpha "Lotus New"**. Baixe o instalador em [Releases](../../releases).
 
-[Redesign UX, progresso temporal, FAQ e validação](docs/LOTUS_UX_REDESIGN.md). A análise leva diretamente ao resultado; ações automáticas continuam futuras.
+## O que o Lotus faz
 
-Diagnóstico inicial de RAM: [regra, evidências, 77 testes por configuração e plano de jogos](docs/LOTUS_RAM_DIAGNOSTICS.md). Dados e reinício da contagem confirmados pelo usuário; não comprova gargalo de jogo.
+- **Otimizar meu PC.** Perfis Jogo, Diário e Personalizado. Mostra cada mudança antes de aplicar e verifica o resultado. Tudo pode ser desfeito e nada muda no Windows sem confirmação.
+- **Meus Jogos.** Biblioteca de Steam, Epic, GOG e outras lojas, com Jogar direto da capa, perfil por jogo e overlay de FPS (RTSS).
+- **Lotus Score.** Teste de CPU e GPU com notas separadas, estabilidade entre passadas e sensores. Também mostra o FPS estimado por jogo e resolução, inclusive buscando qualquer jogo pelos requisitos da Steam, sempre com as fontes. E aponta o gargalo.
+- **Desempenho.** CPU, RAM, GPU e VRAM ao vivo. Mede o FPS real com PresentMon e compara sessões.
+- **Por que está travando?** (Ctrl + Shift + L). Mede com o jogo aberto e diz o que está causando a travada.
+- **Game list.** Listas da Steam (em alta, mais bem avaliados, mais vendidos, lançamentos, em breve), busca e sorteio de jogos por gênero e dificuldade.
+- **Meu diário.** Notas, análises, horas, medalhas e 54 conquistas, além das conquistas da Steam lidas localmente, sem login.
+- **Ferramentas.** Liberar memória, limpar temporários, testar internet e DNS, ver a saúde do disco, o driver de vídeo e desinstalar programas.
+- **Backup.** Arquivo `.lotusbackup` local e cópia opcional no Google Drive. A opção "Restaurar o Lotus" volta ao início sem apagar nada.
+- Temas Escuro, Claro (porcelana rosé), Sistema e Grafite, com cores de destaque. Português e inglês.
 
-Estado atual: [Etapa 03 — resultados e verificações pendentes](docs/LOTUS_STAGE03_VALIDATION.md). CPU/RAM preservados e GPU NVIDIA por NVML do driver instalado, somente leitura. Interface compacta com detalhes expansíveis e gráficos reais dos últimos 60 s. Ausência aparece como travessão/status; nenhum dado simulado no aplicativo. Não há driver adicional ou novo pacote NuGet. [Fontes, unidades e limitações de GPU](docs/LOTUS_GPU_TELEMETRY.md). A validação visual atual depende de conferência manual porque a ferramenta de inspeção Windows não iniciou nesta sessão. [Etapa 02](docs/LOTUS_STAGE02_VALIDATION.md) e [Etapa 00](docs/LOTUS_STAGE00_AUDIT.md) preservadas como histórico.
+## Instalar
 
-## Abrir e executar
+Baixe `Lotus-New-Setup-<versão>.exe` em [Releases](../../releases) e execute. A instalação é por usuário, sem administrador, em `%LOCALAPPDATA%\Programs\Lotus`. Para atualizar, rode o instalador novo por cima, sem desinstalar. Os dados do jogador ficam em `%LOCALAPPDATA%\Lotus` e nunca são apagados pelo instalador.
 
-Abra `C:/Projetos/Lotus/Lotus.slnx` no Visual Studio. Defina Lotus.App como projeto inicial, Debug/x64 e F5. A pasta antiga `Lotus/` foi preservada e não pertence à solução atual.
+Requer Windows 10 2004 (19041) ou mais novo, x64.
 
-Na raiz do projeto, com a instância da mesma configuração fechada:
+## Compilar
+
+Requisitos: Windows x64, SDK .NET 10 e Windows SDK 10.0.26100.0.
 
 ```powershell
 dotnet restore Lotus.slnx -p:Platform=x64
@@ -25,35 +36,28 @@ dotnet build Lotus.slnx -c Debug -p:Platform=x64 --no-restore
 Testes:
 
 ```powershell
-dotnet test tests/Lotus.Tests/Lotus.Tests.csproj -c Debug --logger trx
+dotnet test tests/Lotus.Tests -c Debug -p:Platform=x64
 ```
 
-Requisitos: Windows x64, SDK .NET 10.0.401, Windows SDK 10.0.26100.0 e runtime .NET 10. Windows App SDK incluído na saída. Executar sem privilégios administrativos. Build não equivale a instalador; o primeiro restore precisa de acesso ao NuGet.
-
-## Componentes existentes
-
-- `Lotus.App`: shell WinUI, Frame, templates compartilhados, layout adaptativo e animações do compositor.
-- `Lotus.Core`: navegação, localização, preferências, snapshots, cálculos, serviço compartilhado e ViewModels testáveis.
-- `Lotus.Infrastructure`: JSON de preferências, eventos Serilog e provedor Windows nativo de CPU/RAM e adaptador NVIDIA NVML.
-- `Lotus.Tests`: navegação, recursos, autosave, falhas de arquivo, backup, logging, CPU/RAM, GPU, histórico, ciclo de vida e falhas de provedores.
-
-Configurações: português inicial e inglês; temas Preto/Rosê e Grafite/Rosê; redução de movimento; sidebar persistente na janela ampla. Aplicação e gravação imediatas, sem botão Salvar ou reinício. Arquivo `%LOCALAPPDATA%/Lotus/preferences.json`; versão anterior `.bak`. SQLite é futuro para sessões/histórico, sem dependência adicionada agora.
-
-Logs: `%LOCALAPPDATA%/Lotus/Logs/lotus-AAAAMMDD.jsonl`, rotação diária/5 MB/sete arquivos. A página Logs informa o local; visualizador ainda planejado. Perfil Player não editável. Demais módulos exibem sua condição de planejados, sem métricas simuladas.
-
-Mínimo de janela 600 × 480 DIP com rolagem; menu compacto em telas estreitas. Marca Lotus neon com esmaecimento e pequenos pixels luminosos no compositor; páginas com entrada curta. Reduzir animações mantém o neon estático. Não há alegação de ganho de FPS/consumo.
-
-Veja [arquitetura](docs/LOTUS_ARCHITECTURE.md), [decisões](docs/LOTUS_TECHNICAL_DECISIONS.md) e [roadmap](docs/LOTUS_ROADMAP.md). Não avançar automaticamente para a próxima etapa.
-
-Checkpoints usam a identidade técnica local Lotus Development <lotus@localhost> apenas no comando de commit; configuração global Git permanece intacta.
-
-
-Ensaio prolongado do coletor real (opcional; não substitui observação da UI):
+Instalador (Inno Setup 6.7+):
 
 ```powershell
-$env:LOTUS_GPU_SOAK_SECONDS = '900'
-dotnet test tests/Lotus.Tests/Lotus.Tests.csproj -c Release --filter "FullyQualifiedName~NativeGpuContinuousSessionKeepsHistoryBoundedAndReleases" --logger trx
-Remove-Item Env:LOTUS_GPU_SOAK_SECONDS
+.\tools\Build-Installer.ps1 -Name "Lotus New"
 ```
 
-Sem essa variável o teste faz um ensaio curto de 2 s; a suíte comum não exige esperar 15 minutos. Em máquinas sem NVML instalada, os testes de integração específicos são marcados como ignorados, sem tentar instalar nada; testes de contratos/falhas continuam válidos. Nesta máquina NVIDIA a integração foi efetivamente executada.
+O resultado fica em `artifacts\dist\`. O backup no Google Drive só fica ativo quando existe `secrets\google-oauth.json` (um cliente OAuth "Desktop app"). Essa pasta fica fora do git.
+
+## Estrutura
+
+- `src/Lotus.App`: interface WinUI 3 (shell, telas, temas, animações).
+- `src/Lotus.Core`: ViewModels, regras e cálculos testáveis (perfis, Score, diário, conquistas, catálogo).
+- `src/Lotus.Infrastructure`: Windows e serviços (planos de energia, journal SQLite, telemetria, Steam, PresentMon, backup).
+- `tests/Lotus.Tests`: testes xUnit.
+- `tools/`: instalador e utilitários.
+- `docs/`: decisões técnicas e relatórios ([arquitetura](docs/LOTUS_ARCHITECTURE.md), [otimizador](docs/LOTUS_OPTIMIZER.md), [jogos](docs/LOTUS_GAMES.md), [backup](docs/LOTUS_BACKUP.md)).
+
+## Princípios
+
+- Nenhuma alteração no Windows sem confirmação explícita. Cada mudança é registrada e pode ser desfeita.
+- Sem permissões de administrador (`asInvoker`).
+- Sem números inventados. Estimativas aparecem como estimativas, com as fontes.
