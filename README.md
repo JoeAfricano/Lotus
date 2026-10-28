@@ -61,3 +61,7 @@ O resultado fica em `artifacts\dist\`. O backup no Google Drive só fica ativo q
 - Nenhuma alteração no Windows sem confirmação explícita. Cada mudança é registrada e pode ser desfeita.
 - Sem permissões de administrador (`asInvoker`).
 - Sem números inventados. Estimativas aparecem como estimativas, com as fontes.
+
+## Licença
+
+MIT, veja [LICENSE](LICENSE). Créditos e licenças de terceiros em [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

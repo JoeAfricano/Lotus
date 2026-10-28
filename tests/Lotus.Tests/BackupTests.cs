@@ -130,9 +130,9 @@ public sealed class BackupTests : IDisposable
     [Fact] public async Task DriveUploadsListsAndDownloadsWithStoredSession()
     {
         var fake = new FakeGoogle();
-        var vault = new MemoryVault { Value = "joe@gmail.com\nREFRESH" };
+        var vault = new MemoryVault { Value = "joe@example.com\nREFRESH" };
         var drive = new GoogleDriveBackup(new("id", "secret"), vault, _ => Task.CompletedTask, new HttpClient(fake));
-        Assert.True(drive.Configured); Assert.Equal("joe@gmail.com", drive.Account);
+        Assert.True(drive.Configured); Assert.Equal("joe@example.com", drive.Account);
         var up = await drive.UploadAsync(new MemoryStream([9, 9]), "b.lotusbackup", default);
         Assert.Equal("f1", up.Id); Assert.Equal(1, fake.Uploaded);
         Assert.Single(await drive.ListAsync(default));

@@ -63,7 +63,7 @@ dotnet build Lotus.slnx -c Debug -p:Platform=x64 --no-restore
 dotnet test Lotus.slnx -c Debug -p:Platform=x64 --no-build --no-restore --logger trx
 ```
 
-Restore aprovado; build aprovado com 0 avisos e 0 erros (12,24 s); seis testes aprovados, nenhum ignorado, 37 ms reportados para os testes. TRX: `tests/Lotus.Tests/TestResults/JUNIOR_DESKTOP-41CMO49_2026-10-21_20_41_37_net10.0.trx`. O tempo de build não mede inicialização do produto.
+Restore aprovado; build aprovado com 0 avisos e 0 erros (12,24 s); seis testes aprovados, nenhum ignorado, 37 ms reportados para os testes. TRX: `tests/Lotus.Tests/TestResults/MAQUINA_2026-10-21_20_41_37_net10.0.trx`. O tempo de build não mede inicialização do produto.
 
 Cobertura efetiva: estado inicial, dez rotas no ViewModel/notificação, navegação nula/desconhecida/repetida, JSON estruturado em arquivo. Não cobre sensores, XAML visual, desempenho, SQLite ou reversão. Nesta auditoria não se iniciou jogo nem aplicativo; execução visual anterior está registrada em `VISUAL-DIRECTION.md`. Release, máquina limpa, idiomas e consumo permanecem pendentes.
 

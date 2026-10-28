@@ -114,8 +114,8 @@ Não validados nesta etapa: dez destinos individualmente na UI (somente amostrag
 
 Logs dos comandos, TRX e extratos das sessões foram salvos em `artifacts/etapa00/`, ignorado pelo Git. Testes:
 
-- `tests-debug/JUNIOR_DESKTOP-41CMO49_2026-10-21_20_55_51_net10.0.trx`
-- `tests-release/JUNIOR_DESKTOP-41CMO49_2026-10-21_20_56_13_net10.0.trx`
+- `tests-debug/MAQUINA_2026-10-21_20_55_51_net10.0.trx`
+- `tests-release/MAQUINA_2026-10-21_20_56_13_net10.0.trx`
 
 Estado inicial do Git: branch master, três `.csproj` modificados localmente e `Lotus.slnx.backup-20261021-200919-583` não rastreado. Os diffs dos projetos acrescentavam `Platforms=AnyCPU;x64`, além de formatação. Foram preservados sem nova edição e incluídos no checkpoint da auditoria por comporem a configuração efetivamente validada. O backup original permanece no disco e fora do commit. Histórico preservado; nenhum reset, descarte ou recriação de solução.
 
