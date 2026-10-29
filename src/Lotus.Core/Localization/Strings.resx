@@ -2006,4 +2006,5 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="LlCapUpdate" xml:space="preserve"><value>recomendado agora: {0} FPS (ative de novo para atualizar)</value></data>
   <data name="SyncLineNone" xml:space="preserve"><value>Monitor sem G-Sync/FreeSync (detectado pelo driver)</value></data>
   <data name="SyncHintEdidNone" xml:space="preserve"><value>pela identificação do monitor, ele não parece ter FreeSync/G-Sync. Se o menu do monitor tiver FreeSync ou Adaptive-Sync, ative e escolha a primeira opção; se não, escolha &quot;Monitor sem G-Sync/FreeSync&quot;.</value></data>
+  <data name="TuneTopTip" xml:space="preserve"><value>Maior impacto</value></data>
 </root>

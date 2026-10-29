@@ -123,13 +123,17 @@ public sealed partial class GameTunePanel : UserControl
         {
             var row = new Grid { ColumnSpacing = 12 };
             row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); row.ColumnDefinitions.Add(new ColumnDefinition());
-            var badge = new Border { Width = 28, Height = 28, CornerRadius = new CornerRadius(14), VerticalAlignment = VerticalAlignment.Top, Background = n == 1 ? Res("AccentGradientBrush") : Res("SubtleBrush"),
-                Child = new TextBlock { Text = n.ToString(), FontSize = 12.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = n == 1 ? new SolidColorBrush(Microsoft.UI.Colors.White) : Res("MainTextBrush") } };
+            var badge = new Border { Width = 28, Height = 28, CornerRadius = new CornerRadius(14), VerticalAlignment = VerticalAlignment.Top, Background = Res("SubtleBrush"),
+                Child = new TextBlock { Text = n.ToString(), FontSize = 12.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = Res("MainTextBrush") } };
             var s = new StackPanel { Spacing = 3 }; Grid.SetColumn(s, 1);
-            s.Children.Add(new TextBlock { Text = title, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
+            // Not a selection: every card looks the same; the first one only carries a small "biggest impact" label.
+            var titleRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+            titleRow.Children.Add(new TextBlock { Text = title, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, MaxWidth = n == 1 ? 300 : 400 });
+            if (n == 1) titleRow.Children.Add(new Border { CornerRadius = new CornerRadius(8), Padding = new Thickness(8, 1, 8, 2), VerticalAlignment = VerticalAlignment.Top, Background = Res("AccentSoftBrush"), Child = new TextBlock { Text = vm!.Text["TuneTopTip"], FontSize = 11, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("RoseBrush") } });
+            s.Children.Add(titleRow);
             s.Children.Add(new TextBlock { Text = body, FontSize = 12.5, Opacity = 0.82, TextWrapping = TextWrapping.Wrap });
             row.Children.Add(badge); row.Children.Add(s);
-            var card = new Border { Padding = new Thickness(14, 12, 14, 12), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1), Background = Res("CardBrush"), BorderBrush = n == 1 ? Res("RoseBrush") : Res("CardBorderBrush"), Child = row };
+            var card = new Border { Padding = new Thickness(14, 12, 14, 12), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1), Background = Res("CardBrush"), BorderBrush = Res("CardBorderBrush"), Child = row };
             list.Children.Add(card); n++;
         }
         var support = t.Settings.Support is { CanApply: true } sp ? vm!.Text.Format("TuneCanApply", sp.EngineLabel) : vm!.Text["TuneManual"];

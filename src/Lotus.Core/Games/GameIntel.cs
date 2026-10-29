@@ -60,7 +60,9 @@ public static class InGameAdvisor
             else if (tech.Xess) tips.Add(new("IgXess", [mode.ToString()], gpuBound ? 90 : 70));
             else if (tech.Dlss && !rtx) tips.Add(new("IgDlssNoRtx", [], 40));
         }
-        if (tech.FrameGen && frameGenGpu && goal != "competitive") tips.Add(new("IgFrameGen", [], gpuBound ? 85 : 55));
+        // Frame generation needs VRR: on a fixed-rate monitor with a locked cap it would start from half the cap (below the
+        // ~50 FPS it needs) and many games grey it out. Suggested only when it can really be used.
+        if (tech.FrameGen && frameGenGpu && r.AdaptiveSync && goal != "competitive") tips.Add(new("IgFrameGen", [], gpuBound ? 85 : 55));
         // Bottleneck-specific settings.
         if (gpuBound) tips.Add(new("IgGpuHeavy", [], 90));
         if (cpuBound) tips.Add(new("IgCpuHeavy", [], 90));
