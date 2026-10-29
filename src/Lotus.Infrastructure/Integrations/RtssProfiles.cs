@@ -197,26 +197,40 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
     // 3 NVIDIA Reflex (checked in RTSS 7.3.7 on 29/10/2026: the profile shows "NVIDIA Reflex"). RTSS documents that the
     // Reflex limiter also enables Reflex low-latency in games without native
     // Reflex; it works on NVIDIA GPUs with Direct3D 11/12 and falls back to async elsewhere.
-    public const string ReflexLimiter = "3";
-    public bool? LowLatencyOn(string exe)
+    public const string ReflexLimiter = "3", FrontEdgeLimiter = "1";
+    // "fluid" (front edge sync: flat frame pacing) | "responsive" (NVIDIA Reflex) | null when this game has no Lotus limiter.
+    public string? LimiterMode(string exe)
     {
         try { RtssProfiles.Validate(new(exe, [])); } catch (InvalidOperationException) { return null; }
-        if (RtssProfiles.Read(exe, Profiles) is not { } raw) return false;
+        if (RtssProfiles.Read(exe, Profiles) is not { } raw) return null;
         var ini = new IniText(raw);
-        return ini.Get("Framerate", "SyncLimiter") == ReflexLimiter && int.TryParse(ini.Get("Framerate", "Limit"), out var cap) && cap > 0;
+        if (!int.TryParse(ini.Get("Framerate", "Limit"), out var limit) || limit <= 0) return null;
+        return ini.Get("Framerate", "SyncLimiter") switch { ReflexLimiter => "responsive", FrontEdgeLimiter => "fluid", _ => null };
     }
-    public async Task<bool> EnableLowLatencyAsync(string exe, int fpsCap)
+    public double? LimiterCap(string exe)
     {
-        if (fpsCap is < 30 or > 1000) return false;
-        RtssChange[] changes = [new("Framerate", "Limit", fpsCap.ToString(System.Globalization.CultureInfo.InvariantCulture)), new("Framerate", "LimitDenominator", "1"), new("Framerate", "SyncLimiter", ReflexLimiter)];
+        try { RtssProfiles.Validate(new(exe, [])); } catch (InvalidOperationException) { return null; }
+        if (RtssProfiles.Read(exe, Profiles) is not { } raw) return null;
+        var ini = new IniText(raw);
+        if (!int.TryParse(ini.Get("Framerate", "Limit"), out var limit) || limit <= 0) return null;
+        return int.TryParse(ini.Get("Framerate", "LimitDenominator"), out var d) && d > 1 ? limit / (double)d : limit;
+    }
+    // The cap may be fractional (37.5 on 75 Hz): RTSS stores Limit / LimitDenominator.
+    public async Task<bool> EnableLimiterAsync(string exe, double fpsCap, string mode)
+    {
+        if (fpsCap is < 20 or > 1000 || mode is not ("fluid" or "responsive")) return false;
+        var whole = Math.Abs(fpsCap - Math.Round(fpsCap)) < 0.001;
+        var limit = whole ? (int)Math.Round(fpsCap) : (int)Math.Round(fpsCap * 100);
+        RtssChange[] changes = [new("Framerate", "Limit", limit.ToString(System.Globalization.CultureInfo.InvariantCulture)), new("Framerate", "LimitDenominator", whole ? "1" : "100"),
+            new("Framerate", "SyncLimiter", mode == "fluid" ? FrontEdgeLimiter : ReflexLimiter)];
         var dir = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(Backups))!, "Requests");
         Directory.CreateDirectory(dir);
         var request = Path.Combine(dir, "rtss-" + Guid.NewGuid().ToString("N") + ".json");
         await File.WriteAllTextAsync(request, JsonSerializer.Serialize(new RtssRequest(exe, changes)));
-        try { return await RunElevated(["--rtss-apply", request]) == 0 && LowLatencyOn(exe) == true; }
+        try { return await RunElevated(["--rtss-apply", request]) == 0 && LimiterMode(exe) == mode; }
         finally { File.Delete(request); }
     }
-    public async Task<bool> DisableLowLatencyAsync(string exe) => await RunElevated(["--rtss-restore", exe]) == 0 && LowLatencyOn(exe) != true;
+    public async Task<bool> DisableLowLatencyAsync(string exe) => await RunElevated(["--rtss-restore", exe]) == 0 && LimiterMode(exe) is null;
 
     // Relaunches Lotus elevated (UAC) only for this operation; the helper exits without opening a window.
     private Task<int> RunElevated(string[] args) => elevatedRunner?.Invoke(args) ?? Task.Run(() =>

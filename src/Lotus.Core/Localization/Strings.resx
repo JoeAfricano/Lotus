@@ -1962,11 +1962,11 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="TuneScoreHint" xml:space="preserve"><value>Faça o teste completo do Lotus Score para ver quanto FPS este jogo deve dar no seu PC.</value></data>
   <data name="GsReasonMonitorCap" xml:space="preserve"><value>O limite fica 3 FPS abaixo da taxa do seu monitor: com G-Sync/FreeSync a imagem fica lisa, sem o atraso do V-Sync e sem tearing.</value></data>
   <data name="TuneScoreSearch" xml:space="preserve"><value>Este jogo ainda não está na base do Lotus Score. Busque o nome dele em Lotus Score › FPS estimado e o FPS esperado aparece aqui.</value></data>
-  <data name="LlTitle" xml:space="preserve"><value>Baixa latência</value></data>
+  <data name="LlTitle" xml:space="preserve"><value>Fluidez e resposta</value></data>
   <data name="LlStateOff" xml:space="preserve"><value>Desligado neste jogo</value></data>
-  <data name="LlStateOn" xml:space="preserve"><value>Ligado: Reflex com limite de {0} FPS</value></data>
+  <data name="LlStateOn" xml:space="preserve"><value>Resposta ligada: Reflex com limite de {0} FPS</value></data>
   <data name="LlBody" xml:space="preserve"><value>Usa o limitador NVIDIA Reflex do RivaTuner só neste jogo. Ele diminui a fila de quadros entre o seu clique e a tela e, em jogos sem Reflex no menu, liga o modo de baixa latência do Reflex. O limite segue o seu monitor.</value></data>
-  <data name="LlEnable" xml:space="preserve"><value>Ativar baixa latência</value></data>
+  <data name="LlEnable" xml:space="preserve"><value>Ativar Resposta (Reflex)</value></data>
   <data name="LlDisable" xml:space="preserve"><value>Desativar e restaurar</value></data>
   <data name="LlNote" xml:space="preserve"><value>Perfil do RivaTuner: {0}. Funciona em placas NVIDIA com jogos DirectX 11 ou 12; nos outros, o RivaTuner volta sozinho ao modo normal. Se o jogo tem Reflex no menu, prefira o do jogo. O Windows pede permissão porque o RivaTuner fica em Arquivos de Programas. Deixe o RivaTuner aberto enquanto joga.</value></data>
   <data name="LlNoRtss" xml:space="preserve"><value>Precisa do RivaTuner Statistics Server instalado. Veja em Configurações › Integrações.</value></data>
@@ -1975,4 +1975,35 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="LlOn" xml:space="preserve"><value>Baixa latência ligada neste jogo. Abra o jogo com o RivaTuner aberto.</value></data>
   <data name="LlOff" xml:space="preserve"><value>Baixa latência desligada; o perfil do RivaTuner voltou ao que era.</value></data>
   <data name="LlFailed" xml:space="preserve"><value>Não foi possível mudar o perfil do RivaTuner (permissão negada ou arquivo em uso).</value></data>
+  <data name="SyncAskTitle" xml:space="preserve"><value>Seu monitor está com FreeSync ou G-Sync ligado?</value></data>
+  <data name="SyncAskBody" xml:space="preserve"><value>O Lotus ajusta o limite de FPS e o ritmo dos quadros pela sua resposta. **Com FreeSync ou G-Sync**, a tela acompanha o jogo. **Sem**, o FPS precisa bater com a taxa do monitor para a imagem ficar lisa, como em console.</value></data>
+  <data name="SyncHintOn" xml:space="preserve"><value>o driver da NVIDIA indica que o G-Sync já está ligado.</value></data>
+  <data name="SyncHintAvailable" xml:space="preserve"><value>o driver indica que o seu monitor suporta G-Sync (G-Sync Compatible), mas ele está desligado. **Recomendamos ativar** no Painel de Controle da NVIDIA › Exibir › Configurar G-SYNC: fica mais liso e com menos atraso.</value></data>
+  <data name="SyncHintFreeSync" xml:space="preserve"><value>a identificação do monitor indica suporte a FreeSync. **Recomendamos ativar** no menu do próprio monitor e no painel da placa de vídeo, se ainda não estiver ligado.</value></data>
+  <data name="SyncHintUnknown" xml:space="preserve"><value>se não souber, procure FreeSync, Adaptive-Sync ou G-Sync no menu do monitor. Se existir, **recomendamos ativar**. Na dúvida, responda Não sei: o Lotus usa o ajuste seguro para monitores sem essa função.</value></data>
+  <data name="SyncYes" xml:space="preserve"><value>Sim, G-Sync/FreeSync ligado</value></data>
+  <data name="SyncNo" xml:space="preserve"><value>Monitor sem G-Sync/FreeSync</value></data>
+  <data name="SyncDontKnow" xml:space="preserve"><value>Não sei</value></data>
+  <data name="SyncLineOn" xml:space="preserve"><value>FreeSync/G-Sync: ligado</value></data>
+  <data name="SyncLineOff" xml:space="preserve"><value>FreeSync/G-Sync: desligado</value></data>
+  <data name="SyncChange" xml:space="preserve"><value>Alterar</value></data>
+  <data name="GsReasonFixedCap" xml:space="preserve"><value>Sem FreeSync/G-Sync, o limite fica igual à taxa do monitor com V-Sync: cada quadro aparece pelo mesmo tempo, sem trepidação.</value></data>
+  <data name="GsReasonHalfRate" xml:space="preserve"><value>O seu PC não sustenta a taxa do monitor, então o limite fica numa fração exata dela: menos FPS, mas cravado e liso, como em console.</value></data>
+  <data name="IgVsyncTitle" xml:space="preserve"><value>Ligue o V-Sync e trave em {0} FPS</value></data>
+  <data name="IgVsyncBody" xml:space="preserve"><value>Sem FreeSync/G-Sync, o segredo da fluidez de console é o FPS cravado na taxa do monitor (ou na metade). Ligue o V-Sync no jogo e use o modo Fluidez do Lotus abaixo: a linha do framepacer fica reta.</value></data>
+  <data name="IgVrrVsyncTitle" xml:space="preserve"><value>Com FreeSync/G-Sync: V-Sync no driver, não no jogo</value></data>
+  <data name="IgVrrVsyncBody" xml:space="preserve"><value>Deixe o V-Sync ligado no painel da placa de vídeo e desligado no jogo. Com o limite 3 FPS abaixo da taxa do monitor, a tela acompanha cada quadro sem tearing e sem o atraso do V-Sync.</value></data>
+  <data name="IgEnableVrrTitle" xml:space="preserve"><value>Ative o FreeSync/G-Sync do seu monitor</value></data>
+  <data name="IgEnableVrrBody" xml:space="preserve"><value>O seu monitor suporta, mas você está jogando sem. É o ajuste que mais deixa o jogo liso: a tela passa a acompanhar o jogo. NVIDIA: Painel de Controle › Exibir › Configurar G-SYNC. AMD: AMD Software › Tela › FreeSync. Depois, em Otimizar, marque que está ligado.</value></data>
+  <data name="LlStateFluid" xml:space="preserve"><value>Fluidez ligada: ritmo cravado em {0} FPS</value></data>
+  <data name="LlEnableFluid" xml:space="preserve"><value>Ativar Fluidez (estilo console)</value></data>
+  <data name="LlBodyFixed" xml:space="preserve"><value>Fluidez usa o limitador do RivaTuner com sincronia de borda (front edge sync): cada quadro fica na tela pelo mesmo tempo, como em console, e a linha do framepacer fica reta. Resposta usa o NVIDIA Reflex: menos atraso, mas o ritmo oscila mais. O limite segue o seu monitor sem FreeSync/G-Sync.</value></data>
+  <data name="LlBodyVrr" xml:space="preserve"><value>Fluidez usa o limitador do RivaTuner com sincronia de borda (front edge sync): cada quadro fica na tela pelo mesmo tempo e a linha do framepacer fica reta. Resposta usa o NVIDIA Reflex: menos atraso, ritmo um pouco menos estável. Com FreeSync/G-Sync, o limite fica 3 FPS abaixo da taxa do monitor.</value></data>
+  <data name="LlNoteFixed" xml:space="preserve"><value>Perfil do RivaTuner: {0}. Ligue o V-Sync no jogo. O Windows pede permissão porque o RivaTuner fica em Arquivos de Programas. Deixe o RivaTuner aberto enquanto joga.</value></data>
+  <data name="LlNoteVrr" xml:space="preserve"><value>Perfil do RivaTuner: {0}. Deixe o V-Sync ligado no painel da placa e desligado no jogo. O Windows pede permissão porque o RivaTuner fica em Arquivos de Programas. Deixe o RivaTuner aberto enquanto joga.</value></data>
+  <data name="LlFluidOn" xml:space="preserve"><value>Fluidez ligada neste jogo. Ligue o V-Sync no jogo e abra-o com o RivaTuner aberto.</value></data>
+  <data name="SyncHintNone" xml:space="preserve"><value>o driver da NVIDIA indica que este monitor não tem G-Sync/FreeSync disponível. Escolha "Monitor sem G-Sync/FreeSync": o Lotus trava o FPS na taxa do monitor para ficar liso.</value></data>
+  <data name="LlCapUpdate" xml:space="preserve"><value>recomendado agora: {0} FPS (ative de novo para atualizar)</value></data>
+  <data name="SyncLineNone" xml:space="preserve"><value>Monitor sem G-Sync/FreeSync (detectado pelo driver)</value></data>
+  <data name="SyncHintEdidNone" xml:space="preserve"><value>pela identificação do monitor, ele não parece ter FreeSync/G-Sync. Se o menu do monitor tiver FreeSync ou Adaptive-Sync, ative e escolha a primeira opção; se não, escolha &quot;Monitor sem G-Sync/FreeSync&quot;.</value></data>
 </root>

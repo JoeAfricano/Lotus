@@ -23,7 +23,7 @@ public sealed class GameSettingsTests(Xunit.Abstractions.ITestOutputHelper outpu
     [Fact] public void RecommendationsScaleFromEntryToHighEnd()
     {
         var mid = SettingsAdvisor.Recommend(new("NVIDIA GeForce RTX 5060", 8192, 12, 16_000, 1920, 1080, 75));
-        Assert.Equal((QualityTier.High, QualityTier.High, Upscaler.Dlss, UpscaleMode.Quality, 72), (mid.Tier, mid.TextureTier, mid.Upscaler, mid.Mode, mid.FpsCap));
+        Assert.Equal((QualityTier.High, QualityTier.High, Upscaler.Dlss, UpscaleMode.Quality, 75), (mid.Tier, mid.TextureTier, mid.Upscaler, mid.Mode, mid.FpsCap));
         var top = SettingsAdvisor.Recommend(new("NVIDIA GeForce RTX 4090", 24576, 32, 64_000, 2560, 1440, 144));
         Assert.Equal((QualityTier.High, Upscaler.Dlss, UpscaleMode.Balanced, 144), (top.Tier, top.Upscaler, top.Mode, top.TargetFps));
         var entry = SettingsAdvisor.Recommend(new("NVIDIA GeForce GTX 1650", 4096, 4, 8_000, 1920, 1080, 144));
@@ -57,7 +57,7 @@ public sealed class GameSettingsTests(Xunit.Abstractions.ITestOutputHelper outpu
         var ini = new IniText(recipe.Transform(File.ReadAllText(config), r));
         Assert.Equal("2", ini.Get("ScalabilityGroups", "sg.ShadowQuality")); Assert.Equal("2", ini.Get("ScalabilityGroups", "sg.TextureQuality"));
         Assert.Equal("100", ini.Get("ScalabilityGroups", "sg.ResolutionQuality"));
-        Assert.Equal("72.000000", ini.Get("/Script/Engine.GameUserSettings", "FrameRateLimit")); // 3 below the 75 Hz monitor
+        Assert.Equal("75.000000", ini.Get("/Script/Engine.GameUserSettings", "FrameRateLimit")); // the 75 Hz rate (no VRR)
         Assert.Equal("False", ini.Get("/Script/Engine.GameUserSettings", "bUseVSync")); Assert.Equal("1", ini.Get("Custom", "Keep"));
         Assert.Null(recipe.Probe(new GameEntry(GameStores.Steam, "2", "Other", Path.Combine(root, "Nope"))));
     }
@@ -151,7 +151,7 @@ public sealed class GameSettingsTests(Xunit.Abstractions.ITestOutputHelper outpu
     {
         var r = SettingsAdvisor.Recommend(new("NVIDIA GeForce RTX 5060", 8192, 12, 16_000, 1920, 1080, 75));
         var json = NoRestForTheWickedRecipe.TransformJson(Nrftw, r);
-        Assert.Contains("\"FrameRateCap\":72", json); Assert.Contains("\"QualityPreset\":4", json); // initial apply never lowers quality
+        Assert.Contains("\"FrameRateCap\":75", json); Assert.Contains("\"QualityPreset\":4", json); // initial apply never lowers quality
         Assert.Contains("\"OverallVolume\":1.0", json); Assert.Contains("-2.384185791015625e-7", json);
         var recipe = new NoRestForTheWickedRecipe(@"Software\Lotus.Tests.Nonexistent");
         Assert.Contains("\"QualityPreset\":3", recipe.StepQuality(Nrftw, -1)); Assert.Null(recipe.StepQuality(Nrftw, +1));

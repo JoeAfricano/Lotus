@@ -69,6 +69,8 @@ public static class InGameAdvisor
         else if (stutter) tips.Add(new("IgStutterCap", [r.FpsCap.ToString()], 70));
         // Starting preset for this PC, and textures limited by VRAM.
         tips.Add(new("IgPreset", [r.Tier.ToString(), r.TextureTier.ToString(), r.FpsCap.ToString()], 60));
+        // Pacing: without VRR, V-Sync on at the exact cap keeps frames even (console-like); with VRR, V-Sync in the driver.
+        tips.Add(r.AdaptiveSync ? new("IgVrrVsync", [], 62) : new("IgVsync", [r.FpsCap.ToString()], 78));
         if (goal == "competitive") tips.Add(new("IgCompetitive", [], 65));
         return [.. tips.OrderByDescending(t => t.Weight)];
     }

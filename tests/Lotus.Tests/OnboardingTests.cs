@@ -72,7 +72,8 @@ public sealed class OnboardingTests : IDisposable
         var pc = new SystemProfile("NVIDIA GeForce RTX 5060", 8192, 12, 16_000, 1920, 1080, 75);
         var balanced = SettingsAdvisor.Recommend(pc); var fps = SettingsAdvisor.Recommend(pc, "fps"); var comp = SettingsAdvisor.Recommend(pc, "competitive");
         Assert.True(fps.Tier < balanced.Tier || balanced.Tier == QualityTier.Low); Assert.True(comp.Tier <= fps.Tier);
-        Assert.Equal(72, balanced.FpsCap); Assert.Equal(72, fps.FpsCap); Assert.Equal(72, comp.FpsCap); // 3 below the 75 Hz monitor
+        Assert.Equal(75, balanced.FpsCap); Assert.Equal(75, fps.FpsCap); Assert.Equal(75, comp.FpsCap); // no VRR: the 75 Hz rate itself
+        Assert.Equal(72, SettingsAdvisor.Recommend(pc, "balanced", adaptiveSync: true).FpsCap);           // FreeSync/G-Sync: 3 below
         Assert.Contains("GsReasonGoalCompetitive", comp.ReasonKeys);
     }
 

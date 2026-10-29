@@ -20,8 +20,10 @@ public interface IRtssIntegration
     Task<bool> RestoreLayoutAsync();
     // Low latency per game (RivaTuner NVIDIA Reflex frame limiter, which also turns on Reflex low-latency in games
     // without native Reflex). Only that game's profile changes; disabling restores the profile exactly as it was.
-    bool? LowLatencyOn(string exe) => null;
-    Task<bool> EnableLowLatencyAsync(string exe, int fpsCap) => Task.FromResult(false);
+    // Mode: "fluid" = front edge sync (flat frame pacing, any GPU) | "responsive" = NVIDIA Reflex limiter.
+    string? LimiterMode(string exe) => null;
+    double? LimiterCap(string exe) => null; // the cap written in that game's profile
+    Task<bool> EnableLimiterAsync(string exe, double fpsCap, string mode) => Task.FromResult(false);
     Task<bool> DisableLowLatencyAsync(string exe) => Task.FromResult(false);
 }
 public interface IToolDetector { ToolState Afterburner(); ToolState ScsKiller(); }

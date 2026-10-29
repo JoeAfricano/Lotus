@@ -112,6 +112,8 @@ public sealed partial class MainWindow : Window
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
         games.TechScanner = new Lotus.Infrastructure.Games.GameTechScanner();
         games.Rtss = integrations.Rtss;
+        games.AdaptiveSync = () => preferences.Current.AdaptiveSync;
+        games.Display = new Lotus.Infrastructure.Games.WindowsDisplaySync();
         games.ScoreLine = (g, r, pc) =>
         {
             var res = pc.Height >= 2000 ? Lotus.Core.Score.Resolution.P2160 : pc.Height >= 1400 ? Lotus.Core.Score.Resolution.P1440 : Lotus.Core.Score.Resolution.P1080;
@@ -540,6 +542,8 @@ public sealed partial class MainWindow : Window
     }
 
     public Controls.GameTunePanel Tune => TunePanel;
+    // FreeSync/G-Sync answer used by the game settings ("on" | "off" | null = not asked yet).
+    public string? AdaptiveSync { get => preferences.Current.AdaptiveSync; set => preferences.Update(preferences.Current with { AdaptiveSync = value }); }
     public void OpenOnboarding(bool edit)
     {
         Onboarding.MotionEnabled = !preferences.Current.ReduceMotion;

@@ -38,6 +38,7 @@ public sealed partial class GameTunePanel : UserControl
         Visibility = Visibility.Visible;
         Animate(Backdrop, "Opacity", 0, 1, 220); Animate(SheetShift, "X", 560, 0, 380, new CubicEase { EasingMode = EasingMode.EaseOut });
         DispatcherQueue.TryEnqueue(() => CloseButton.Focus(FocusState.Programmatic));
+        if (MainWindow.Shell?.AdaptiveSync is null && XamlRoot is { } xamlRoot) await AskAdaptiveSyncAsync(xamlRoot, model);
         await Reload();
     }
 
@@ -102,6 +103,14 @@ public sealed partial class GameTunePanel : UserControl
         line.Children.Add(new TextBlock { Text = t.ScoreLine ?? t.ScoreHint ?? text["TuneScoreHint"], FontSize = 12.5, FontWeight = t.ScoreLine is null ? Microsoft.UI.Text.FontWeights.Normal : Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, MaxWidth = 430 });
         score.Child = line;
         var hwPanel = new StackPanel { Spacing = 8 }; hwPanel.Children.Add(score); hwPanel.Children.Add(Caption(t.Settings.Hardware));
+        // The FreeSync/G-Sync answer the settings are based on, with a way to change it.
+        var sync = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
+        var noVrr = vm!.MonitorSync() is { Source: "nvapi", VrrPossible: false };
+        sync.Children.Add(new TextBlock { Text = text[noVrr ? "SyncLineNone" : r.AdaptiveSync ? "SyncLineOn" : "SyncLineOff"], FontSize = 12, Opacity = 0.7, VerticalAlignment = VerticalAlignment.Center });
+        var change = new HyperlinkButton { Content = text["SyncChange"], Padding = new Thickness(6, 2, 6, 2), FontSize = 12 };
+        change.Click += async (_, _) => { if (XamlRoot is { } root && await AskAdaptiveSyncAsync(root, vm!)) await Reload(); };
+        if (!noVrr) sync.Children.Add(change);
+        hwPanel.Children.Add(sync);
         Grid.SetRow(hwPanel, 2); Grid.SetColumnSpan(hwPanel, 2); grid.Children.Add(hwPanel);
         return grid;
     }
@@ -128,37 +137,94 @@ public sealed partial class GameTunePanel : UserControl
         return list;
     }
 
-    // Low latency: RivaTuner's NVIDIA Reflex limiter for this game only, with the monitor-based cap; one click to undo.
+    // Frame pacing: RivaTuner's limiter for this game only, at the exact paced cap. "Fluid" (front edge sync) keeps every
+    // frame on screen for the same time, like a console; "Responsive" (NVIDIA Reflex) trades that for less delay.
     private UIElement LowLatency(GamesViewModel.GameTune t)
     {
-        var text = vm!.Text; var info = t.LowLatency;
+        var text = vm!.Text; var info = t.LowLatency; var r = t.Settings.Recommendation;
+        var culture = System.Globalization.CultureInfo.GetCultureInfo(text.Language);
+        var cap = r.PacedCap > 0 ? r.PacedCap : r.FpsCap;
+        var capText = cap.ToString(Math.Abs(cap - Math.Round(cap)) < 0.001 ? "0" : "0.0", culture);
         var box = new Border { Padding = new Thickness(16, 14, 16, 14), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1), Background = Res("CardBrush"), BorderBrush = info is { On: true } ? Res("SuccessBrush") : Res("CardBorderBrush") };
         var s = new StackPanel { Spacing = 8 }; box.Child = s;
         var head = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
         head.Children.Add(new FontIcon { Glyph = "", FontSize = 18, Foreground = Res(info is { On: true } ? "SuccessBrush" : "RoseBrush") });
-        head.Children.Add(new TextBlock { Text = info is { On: true } ? text.Format("LlStateOn", t.Settings.Recommendation.FpsCap) : text["LlStateOff"], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap });
+        // The state shows the cap actually written in RivaTuner (it may differ from today's recommendation).
+        var current = info?.Cap is { } written ? written.ToString(Math.Abs(written - Math.Round(written)) < 0.001 ? "0" : "0.0", culture) : capText;
+        var state = info?.Mode switch { "fluid" => text.Format("LlStateFluid", current), "responsive" => text.Format("LlStateOn", current), _ => text["LlStateOff"] };
+        if (info is { On: true, Cap: { } w } && Math.Abs(w - cap) > 0.01) state += " · " + text.Format("LlCapUpdate", capText);
+        head.Children.Add(new TextBlock { Text = state, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap });
         s.Children.Add(head);
-        s.Children.Add(new TextBlock { Text = text["LlBody"], FontSize = 12.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap });
-        switch (info?.State)
+        s.Children.Add(new TextBlock { Text = text[r.AdaptiveSync ? "LlBodyVrr" : "LlBodyFixed"], FontSize = 12.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap });
+        if (info?.State != "ok") { s.Children.Add(Caption(text[info?.State == "noRtss" ? "LlNoRtss" : "LlNoExe"])); return box; }
+
+        var buttons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, Margin = new Thickness(0, 4, 0, 0) };
+        Button Make(string label, string? mode, bool primary, string id)
         {
-            case "ok":
-                var button = new Button { Content = text[info.On ? "LlDisable" : "LlEnable"], Style = (Style)Application.Current.Resources[info.On ? "SoftButtonStyle" : "PrimaryButtonStyle"], MinHeight = 40, Margin = new Thickness(0, 4, 0, 0), HorizontalAlignment = HorizontalAlignment.Left };
-                AutomationProperties.SetAutomationId(button, "tune-lowlatency");
-                button.Click += async (_, _) =>
-                {
-                    button.IsEnabled = false;
-                    await vm.SetLowLatencyAsync(info.Exe!, !info.On, t.Settings.Recommendation.FpsCap);
-                    await Reload();
-                    if (vm.Status is { Length: > 0 } status) Body.Children.Insert(0, new TextBlock { Text = status, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("GoldBrush"), TextWrapping = TextWrapping.Wrap });
-                };
-                s.Children.Add(button);
-                s.Children.Add(Caption(text.Format("LlNote", info.Exe!)));
-                break;
-            case "noRtss": s.Children.Add(Caption(text["LlNoRtss"])); break;
-            case "notNvidia": s.Children.Add(Caption(text["LlAmd"])); break;
-            default: s.Children.Add(Caption(text["LlNoExe"])); break;
+            var b = new Button { Content = label, Style = (Style)Application.Current.Resources[primary ? "PrimaryButtonStyle" : "SoftButtonStyle"], MinHeight = 40 };
+            AutomationProperties.SetAutomationId(b, id);
+            b.Click += async (_, _) =>
+            {
+                foreach (var other in buttons.Children.OfType<Button>()) other.IsEnabled = false;
+                await vm.SetLimiterAsync(info.Exe!, mode, cap);
+                await Reload();
+                if (vm.Status is { Length: > 0 } status) Body.Children.Insert(0, new TextBlock { Text = status, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("GoldBrush"), TextWrapping = TextWrapping.Wrap });
+            };
+            return b;
         }
+        if (info.Mode != "fluid") buttons.Children.Add(Make(text["LlEnableFluid"], "fluid", info.Mode is null, "tune-fluid"));
+        if (info.Mode != "responsive" && info.Nvidia) buttons.Children.Add(Make(text["LlEnable"], "responsive", false, "tune-lowlatency"));
+        if (info.On) buttons.Children.Add(Make(text["LlDisable"], null, false, "tune-limiter-off"));
+        s.Children.Add(buttons);
+        s.Children.Add(Caption(text.Format(r.AdaptiveSync ? "LlNoteVrr" : "LlNoteFixed", info.Exe!)));
+        if (!info.Nvidia) s.Children.Add(Caption(text["LlAmd"]));
         return box;
+    }
+
+    // Asked before the first analysis (and from "Change" next to the monitor line): is FreeSync/G-Sync on?
+    // The monitor probe only adds a recommendation (e.g. "supported but off: turn it on"); the answer decides.
+    public static async Task<bool> AskAdaptiveSyncAsync(XamlRoot root, GamesViewModel model)
+    {
+        if (MainWindow.Shell is not { } shell) return false;
+        var text = model.Text; var probe = await Task.Run(model.MonitorSync);
+        // The NVIDIA driver says this monitor has no VRR: nothing to ask, nothing to offer.
+        if (probe is { Source: "nvapi", VrrPossible: false }) { shell.AdaptiveSync = "off"; return true; }
+        var body = new StackPanel { Spacing = 10, MaxWidth = 460 };
+        body.Children.Add(RichText.Block(text["SyncAskBody"]));
+        var hint = probe switch
+        {
+            { Source: "nvapi", VrrEnabled: true } => text["SyncHintOn"],
+            { Source: "nvapi", VrrPossible: false } => text["SyncHintNone"],
+            { VrrAvailableButOff: true } => text["SyncHintAvailable"],
+            { Source: "edid", VrrPossible: true } => text["SyncHintFreeSync"],
+            { Source: "edid", VrrPossible: false } => text["SyncHintEdidNone"],
+            _ => text["SyncHintUnknown"],
+        };
+        body.Children.Add(new Border
+        {
+            Padding = new Thickness(12, 10, 12, 10), CornerRadius = new CornerRadius(10), Background = Res("AccentSoftBrush"),
+            Child = RichText.Block(probe.MonitorName is { Length: > 0 } name ? $"{name}: {hint}" : hint, 12.5),
+        });
+        // Three explicit, full-width choices (dialog buttons would cut the long labels); the probe pre-selects one.
+        var dialog = new ContentDialog { XamlRoot = root, RequestedTheme = ThemePalette.Element, Title = text["SyncAskTitle"], Content = body, CloseButtonText = text["DlgCancel"] };
+        string? choice = null;
+        var suggested = probe is { VrrEnabled: true } ? "on" : "off";
+        Serilog.Log.Information("Adaptive sync question: probe {Source} possible {Possible} enabled {Enabled}", probe.Source, probe.VrrPossible, probe.VrrEnabled);
+        foreach (var (id, label) in new[] { ("on", text["SyncYes"]), ("off", text["SyncNo"]), ("unknown", text["SyncDontKnow"]) })
+        {
+            var option = new Button
+            {
+                Content = label, HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Left, MinHeight = 44, Padding = new Thickness(16, 8, 16, 8),
+                Style = (Style)Application.Current.Resources[id == suggested ? "PrimaryButtonStyle" : "SoftButtonStyle"],
+            };
+            AutomationProperties.SetAutomationId(option, "sync-" + id);
+            option.Click += (_, _) => { choice = id; Serilog.Log.Information("Adaptive sync answer {Choice}", id); dialog.Hide(); };
+            body.Children.Add(option);
+        }
+        await dialog.ShowAsync();
+        if (choice is null) return false;                                // closed without answering: ask again next time
+        shell.AdaptiveSync = choice == "on" ? "on" : "off";              // "don't know" plays safe: fixed-rate pacing
+        return true;
     }
 
     private UIElement LastCheck(GamesViewModel.GameTune t)

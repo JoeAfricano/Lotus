@@ -206,7 +206,7 @@ public sealed class GamesViewModel : ObservableObject
             return await Task.Run(() =>
             {
                 var p = profileSource.Read();
-                var r = SettingsAdvisor.Recommend(p, Goal?.Invoke() ?? "balanced");
+                var r = SettingsAdvisor.Recommend(p, Goal?.Invoke() ?? "balanced", AdaptiveSync?.Invoke() == "on");
                 var (recipe, support) = Recipe(game);
                 var lines = new List<string>
                 {
@@ -285,7 +285,7 @@ public sealed class GamesViewModel : ObservableObject
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
             var canRaise = raw is not null && recipe!.StepQuality(raw, +1) is not null;
             var canLower = raw is not null && recipe!.StepQuality(raw, -1) is not null;
-            var target = SettingsAdvisor.Recommend(profileSource!.Read(), Goal?.Invoke() ?? "balanced").TargetFps;
+            var target = SettingsAdvisor.Recommend(profileSource!.Read(), Goal?.Invoke() ?? "balanced", AdaptiveSync?.Invoke() == "on").TargetFps;
             var decision = QualityTuner.Decide(s.AverageFps, s.Low1Fps, target, gpuBusy, canRaise, canLower);
             if (decision.Step != 0) pendingSteps[game.Key] = decision.Step; else pendingSteps.Remove(game.Key);
             var summary = Text.Format("GsMeasureSummary", s.AverageFps, s.Low1Fps, gpuBusy is { } g ? $"{g:0}%" : "?", target);
@@ -321,7 +321,7 @@ public sealed class GamesViewModel : ObservableObject
     public StutterReport? LastReport(GameEntry game) => lastReports.GetValueOrDefault(game.Key);
     public sealed record GameTune(GameSettingsAnalysis Settings, GameTech Tech, IReadOnlyList<string> TechChips, IReadOnlyList<(string Title, string Body)> Tips, StutterReport? Last, bool Running, string? ScoreLine = null, string? ScoreHint = null, LowLatencyInfo? LowLatency = null);
     // Low latency through RivaTuner: State = "ok" | "noRtss" | "notNvidia" | "noExe"; On = current state of that game's profile.
-    public sealed record LowLatencyInfo(string State, string? Exe, bool On);
+    public sealed record LowLatencyInfo(string State, string? Exe, string? Mode, bool Nvidia, double? Cap = null) { public bool On => Mode is not null; }
     public Lotus.Core.Integrations.IRtssIntegration? Rtss { get; set; }
 
     public async Task<GameTune?> TuneAsync(GameEntry game)
@@ -336,7 +336,11 @@ public sealed class GamesViewModel : ObservableObject
                 if (tech.Engine is { } engine) chips.Add(engine);
                 if (tech.Dlss) chips.Add("DLSS"); if (tech.FrameGen) chips.Add(Text["IgChipFrameGen"]); if (tech.Fsr) chips.Add("FSR"); if (tech.Xess) chips.Add("XeSS");
                 var last = LastReport(game);
-                var tips = InGameAdvisor.Advise(tech, settings.Recommendation, profileSource!.Read(), last?.Findings, Goal?.Invoke() ?? "balanced")
+                var monitor = MonitorSync();
+                var advice = InGameAdvisor.Advise(tech, settings.Recommendation, profileSource!.Read(), last?.Findings, Goal?.Invoke() ?? "balanced").ToList();
+                // Monitor supports FreeSync/G-Sync but the player runs without it: turning it on comes first.
+                if (!settings.Recommendation.AdaptiveSync && monitor.VrrPossible == true) advice.Insert(0, new("IgEnableVrr", [], 120));
+                var tips = advice
                     .Select(t => { object[] a = [.. t.Args.Select(Localize)]; return (Text.Format(t.Key + "Title", a), Text.Format(t.Key + "Body", a)); }).ToList();
                 var pc = profileSource.Read();
                 return new GameTune(settings, tech, chips, tips, last, processCheck?.FirstRunning([game]) is not null, ScoreLine?.Invoke(game, settings.Recommendation, pc), ScoreHint?.Invoke(), LowLatencyFor(tech, pc));
@@ -348,27 +352,28 @@ public sealed class GamesViewModel : ObservableObject
             : Enum.TryParse<QualityTier>(a, out var q) && !int.TryParse(a, out _) ? Text["GsTier" + q] : a;
     }
 
+    // Frame limiter per game: "fluid" works on any GPU; "responsive" (Reflex) only on NVIDIA.
     private LowLatencyInfo LowLatencyFor(GameTech tech, SystemProfile pc)
     {
         var nvidia = System.Text.RegularExpressions.Regex.IsMatch(pc.GpuName, "NVIDIA|GeForce|RTX|GTX", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-        if (!nvidia) return new("notNvidia", tech.MainExe, false);
-        if (Rtss?.State().Installed != true) return new("noRtss", tech.MainExe, false);
-        if (tech.MainExe is not { } exe) return new("noExe", null, false);
-        return new("ok", exe, Rtss.LowLatencyOn(exe) == true);
+        if (Rtss?.State().Installed != true) return new("noRtss", tech.MainExe, null, nvidia);
+        if (tech.MainExe is not { } exe) return new("noExe", null, null, nvidia);
+        return new("ok", exe, Rtss.LimiterMode(exe), nvidia, Rtss.LimiterCap(exe));
     }
 
-    // Turns the RivaTuner Reflex limiter on (cap = monitor-based FPS cap) or restores that game's profile.
-    public async Task<bool> SetLowLatencyAsync(string exe, bool on, int fpsCap)
+    // mode: "fluid" | "responsive" turns the limiter on (cap = exact paced cap), null restores that game's profile.
+    public async Task<bool> SetLimiterAsync(string exe, string? mode, double fpsCap)
     {
         if (Rtss is null) return false;
         try
         {
-            var ok = on ? await Rtss.EnableLowLatencyAsync(exe, fpsCap) : await Rtss.DisableLowLatencyAsync(exe);
-            status = Text[ok ? (on ? "LlOn" : "LlOff") : "LlFailed"]; Notify();
+            var ok = mode is null ? await Rtss.DisableLowLatencyAsync(exe) : await Rtss.EnableLimiterAsync(exe, fpsCap, mode);
+            status = Text[ok ? mode switch { "fluid" => "LlFluidOn", "responsive" => "LlOn", _ => "LlOff" } : "LlFailed"]; Notify();
             return ok;
         }
         catch (Exception ex) { log(ex); status = Text["LlFailed"]; Notify(); return false; }
     }
+
     // ---- Optional shader pre-compilation (SCSKiller) ----
     public const string ScsKillerReleases = "https://github.com/BlueHeisenberg/SCSKiller/releases/latest";
     public bool ShaderToolInstalled => shaders?.IsAvailable == true;
@@ -393,7 +398,7 @@ public sealed class GamesViewModel : ObservableObject
             var (recipe, support) = Recipe(game);
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
             var canLower = raw is not null && recipe!.StepQuality(raw, -1) is not null;
-            var target = SettingsAdvisor.Recommend(profileSource!.Read(), Goal?.Invoke() ?? "balanced").TargetFps;
+            var target = SettingsAdvisor.Recommend(profileSource!.Read(), Goal?.Invoke() ?? "balanced", AdaptiveSync?.Invoke() == "on").TargetFps;
             var pending = GameProfile is null ? 0 : (await GameProfile.PreviewAsync()).Count(p => !p.AlreadyApplied);
             var (load, apps) = Memory is null ? (0d, (IReadOnlyList<string>)[]) : await Task.Run(() => Memory.Read(game), token);
             var findings = StutterDiagnosis.Analyze(new(s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds, gpuBusy, target,
@@ -418,6 +423,12 @@ public sealed class GamesViewModel : ObservableObject
 
     // ---- Preparar e jogar ----
     public Func<string>? Goal { get; set; } // player profile goal: fps | competitive | balanced
+    // FreeSync/G-Sync answer ("on" | "off" | null = not asked) and the monitor probe used to recommend turning it on.
+    public Func<string?>? AdaptiveSync { get; set; }
+    public IDisplaySyncProbe? Display { get; set; }
+    private DisplaySync? display;
+    public DisplaySync MonitorSync() => display ??= SafeDisplay();
+    private DisplaySync SafeDisplay() { try { return Display?.Read() ?? DisplaySync.Unknown; } catch (Exception ex) { log(ex); return DisplaySync.Unknown; } }
     public IGameProfile? GameProfile { get; set; }
     public IGameWatch? Watch { get; set; }
     public event EventHandler<PlaySessionEnded>? SessionEnded;

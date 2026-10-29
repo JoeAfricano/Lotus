@@ -9,8 +9,9 @@ public enum UpscaleMode { Off, Quality, Balanced, Performance }
 // What the PC can do: GPU class/VRAM, CPU threads, RAM and the display the game runs on.
 public sealed record SystemProfile(string GpuName, long VramMb, int CpuThreads, long RamMb, int Width, int Height, int RefreshHz);
 
+// PacedCap: exact cap for a frame limiter (can be fractional, e.g. 37.5 on 75 Hz); AdaptiveSync: computed for a VRR monitor.
 public sealed record SettingsRecommendation(QualityTier Tier, QualityTier TextureTier, Upscaler Upscaler, UpscaleMode Mode, int FpsCap, int TargetFps,
-    int GpuScore, IReadOnlyList<string> ReasonKeys);
+    int GpuScore, IReadOnlyList<string> ReasonKeys, double PacedCap = 0, bool AdaptiveSync = false);
 
 // Relative GPU performance (≈100 = RTX 3060 class). A coarse, documented heuristic; the measurement loop corrects it on the real PC.
 public static partial class GpuScore
@@ -61,7 +62,8 @@ public static class SettingsAdvisor
 {
     // goal (player profile): "balanced" = steady FPS at the monitor rate; "fps" = one quality level lower, higher cap;
     // "competitive" = two levels lower and the highest cap, for latency.
-    public static SettingsRecommendation Recommend(SystemProfile p, string goal = "balanced")
+    // adaptiveSync: the player said FreeSync/G-Sync is on (asked before the analysis).
+    public static SettingsRecommendation Recommend(SystemProfile p, string goal = "balanced", bool adaptiveSync = false)
     {
         var reasons = new List<string>();
         var score = GpuScore.Estimate(p.GpuName, p.VramMb);
@@ -87,9 +89,14 @@ public static class SettingsAdvisor
         if (native < 40) reasons.Add("GsReasonLowEnd");
         if (p.CpuThreads is > 0 and <= 4) reasons.Add("GsReasonCpu");
         if (p.RamMb is > 0 and < 12_000) reasons.Add("GsReasonRam");
-        // FPS cap follows the monitor: 3 below its refresh rate (VRR stays engaged, no V-Sync lag, no tearing);
-        // a PC that cannot feed the monitor keeps its steady target instead. The goal changes quality, not the cap.
-        var cap = target < refresh ? target : Math.Max(57, refresh - 3);
+        // FPS cap follows the monitor. With FreeSync/G-Sync: 3 below the refresh rate (VRR stays engaged, no V-Sync lag,
+        // no tearing). Without it: the refresh rate itself, or an exact fraction of it (1/2, 1/3) when the PC cannot hold
+        // it, so every frame stays on screen for the same time (console-like pacing, no judder); V-Sync on in the game.
+        // The goal changes quality, not the cap.
+        double paced;
+        if (adaptiveSync) paced = target < refresh ? target : Math.Max(57, refresh - 3);
+        else { var n = 1; while (refresh / (double)n > target + 0.5 && refresh / (double)(n + 1) >= 30) n++; paced = refresh / (double)n; }
+        var cap = (int)Math.Floor(paced);
         if (goal is "fps" or "competitive")
         {
             var drop = goal == "fps" ? 1 : 2;
@@ -98,8 +105,8 @@ public static class SettingsAdvisor
             reasons.Add(goal == "fps" ? "GsReasonGoalFps" : "GsReasonGoalCompetitive");
         }
         else reasons.Add("GsReasonCap");
-        if (cap == refresh - 3) reasons.Add("GsReasonMonitorCap");
-        return new(tier, textures, upscaler, mode, cap, target, score, reasons);
+        reasons.Add(adaptiveSync ? "GsReasonMonitorCap" : paced < refresh ? "GsReasonHalfRate" : "GsReasonFixedCap");
+        return new(tier, textures, upscaler, mode, cap, target, score, reasons, paced, adaptiveSync);
     }
 }
 

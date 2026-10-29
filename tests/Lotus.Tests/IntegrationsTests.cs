@@ -63,18 +63,22 @@ public sealed class IntegrationsTests : IDisposable
         Assert.False(await declined.ApplyLotusOverlayAsync()); Assert.Equal(Global, File.ReadAllText(Path.Combine(Profiles, "Global")));
     }
 
-    [Fact] public async Task LowLatencyWritesOnlyThatGamesProfileAndRestoresIt()
+    [Fact] public async Task FrameLimiterWritesOnlyThatGamesProfileAndRestoresIt()
     {
         var rtss = new WindowsRtssIntegration(Profiles, Backups, FakeElevated);
-        Assert.False(rtss.LowLatencyOn("Cyberpunk2077.exe")); Assert.Null(rtss.LowLatencyOn("..\evil.exe"));
-        Assert.True(await rtss.EnableLowLatencyAsync("Cyberpunk2077.exe", 72));
+        Assert.Null(rtss.LimiterMode("Cyberpunk2077.exe")); Assert.Null(rtss.LimiterMode("..\evil.exe"));
+        Assert.True(await rtss.EnableLimiterAsync("Cyberpunk2077.exe", 75, "fluid"));
         var ini = new IniText(File.ReadAllText(Path.Combine(Profiles, "Cyberpunk2077.exe.cfg")));
-        Assert.Equal("72", ini.Get("Framerate", "Limit")); Assert.Equal(WindowsRtssIntegration.ReflexLimiter, ini.Get("Framerate", "SyncLimiter"));
+        Assert.Equal("75", ini.Get("Framerate", "Limit")); Assert.Equal(WindowsRtssIntegration.FrontEdgeLimiter, ini.Get("Framerate", "SyncLimiter"));
         Assert.Equal(Global, File.ReadAllText(Path.Combine(Profiles, "Global")));            // Global untouched
-        Assert.True(rtss.LowLatencyOn("Cyberpunk2077.exe"));
+        Assert.True(await rtss.EnableLimiterAsync("Cyberpunk2077.exe", 37.5, "responsive")); // switch mode, fractional cap
+        ini = new IniText(File.ReadAllText(Path.Combine(Profiles, "Cyberpunk2077.exe.cfg")));
+        Assert.Equal(("3750", "100", WindowsRtssIntegration.ReflexLimiter), (ini.Get("Framerate", "Limit"), ini.Get("Framerate", "LimitDenominator"), ini.Get("Framerate", "SyncLimiter")));
+        Assert.Equal("responsive", rtss.LimiterMode("Cyberpunk2077.exe"));
         Assert.True(await rtss.DisableLowLatencyAsync("Cyberpunk2077.exe"));
-        Assert.False(File.Exists(Path.Combine(Profiles, "Cyberpunk2077.exe.cfg")));               // the profile did not exist before
-        Assert.False(await rtss.EnableLowLatencyAsync("game.exe", 5));                          // nonsense cap refused
+        Assert.False(File.Exists(Path.Combine(Profiles, "Cyberpunk2077.exe.cfg")));           // the profile did not exist before
+        Assert.False(await rtss.EnableLimiterAsync("game.exe", 5, "fluid"));                     // nonsense cap refused
+        Assert.False(await rtss.EnableLimiterAsync("game.exe", 60, "turbo"));                    // unknown mode refused
     }
 
     private sealed class FakeRtss(bool installed, bool? configured, bool backup) : IRtssIntegration

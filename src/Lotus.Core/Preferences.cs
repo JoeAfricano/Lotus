@@ -22,6 +22,7 @@ public sealed record InterfacePreferences
     public string DisplayName { get; init; } = "";
     public string? AvatarPath { get; init; }
     public string Goal { get; init; } = "balanced"; // fps | competitive | balanced
+    public string? AdaptiveSync { get; init; } // FreeSync/G-Sync on: "on" | "off" | null (not asked yet; asked before the first game analysis)
     public string Accent { get; init; } = "rose"; // rose | violet | blue | green (design) and the older crimson | gold | dark
     public static readonly string[] Goals = ["fps", "competitive", "balanced"];
     public static readonly string[] Accents = ["rose", "violet", "blue", "green", "crimson", "gold", "dark"];
@@ -35,6 +36,7 @@ public sealed record InterfacePreferences
         ProfileSource = ProfileSource is "steam" or "custom" ? ProfileSource : "none",
         DisplayName = (DisplayName ?? "").Trim() is var n && n.Length > 32 ? n[..32] : (DisplayName ?? "").Trim(),
         Goal = Goals.Contains(Goal) ? Goal : "balanced",
+        AdaptiveSync = AdaptiveSync is "on" or "off" ? AdaptiveSync : null,
         Accent = Accents.Contains(Accent) ? Accent : "rose",
         UiSoundVolume = Math.Clamp(UiSoundVolume, 0, 100)
     };
