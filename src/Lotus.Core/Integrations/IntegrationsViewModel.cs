@@ -18,11 +18,17 @@ public interface IRtssIntegration
     bool HasLayoutBackup();
     Task<bool> ActivateLayoutAsync(string variant = "top");
     Task<bool> RestoreLayoutAsync();
+    // Low latency per game (RivaTuner NVIDIA Reflex frame limiter, which also turns on Reflex low-latency in games
+    // without native Reflex). Only that game's profile changes; disabling restores the profile exactly as it was.
+    bool? LowLatencyOn(string exe) => null;
+    Task<bool> EnableLowLatencyAsync(string exe, int fpsCap) => Task.FromResult(false);
+    Task<bool> DisableLowLatencyAsync(string exe) => Task.FromResult(false);
 }
 public interface IToolDetector { ToolState Afterburner(); ToolState ScsKiller(); }
 
 public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector tools, ITextCatalog text, Action<Exception> log, Func<bool>? openOverlayPreview = null) : ObservableObject
 {
+    public IRtssIntegration Rtss => rtss; // shared with the game panel (low latency per game)
     public ITextCatalog Text { get; } = text;
     public string RtssStatus { get; private set; } = "";
     public string AfterburnerStatus { get; private set; } = "";

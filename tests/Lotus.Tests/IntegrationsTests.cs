@@ -62,6 +62,20 @@ public sealed class IntegrationsTests : IDisposable
         Assert.False(await declined.ApplyLotusOverlayAsync()); Assert.Equal(Global, File.ReadAllText(Path.Combine(Profiles, "Global")));
     }
 
+    [Fact] public async Task LowLatencyWritesOnlyThatGamesProfileAndRestoresIt()
+    {
+        var rtss = new WindowsRtssIntegration(Profiles, Backups, FakeElevated);
+        Assert.False(rtss.LowLatencyOn("Cyberpunk2077.exe")); Assert.Null(rtss.LowLatencyOn("..\evil.exe"));
+        Assert.True(await rtss.EnableLowLatencyAsync("Cyberpunk2077.exe", 72));
+        var ini = new IniText(File.ReadAllText(Path.Combine(Profiles, "Cyberpunk2077.exe")));
+        Assert.Equal("72", ini.Get("Framerate", "Limit")); Assert.Equal(WindowsRtssIntegration.ReflexLimiter, ini.Get("Framerate", "SyncLimiter"));
+        Assert.Equal(Global, File.ReadAllText(Path.Combine(Profiles, "Global")));            // Global untouched
+        Assert.True(rtss.LowLatencyOn("Cyberpunk2077.exe"));
+        Assert.True(await rtss.DisableLowLatencyAsync("Cyberpunk2077.exe"));
+        Assert.False(File.Exists(Path.Combine(Profiles, "Cyberpunk2077.exe")));               // the profile did not exist before
+        Assert.False(await rtss.EnableLowLatencyAsync("game.exe", 5));                          // nonsense cap refused
+    }
+
     private sealed class FakeRtss(bool installed, bool? configured, bool backup) : IRtssIntegration
     {
         public ToolState State() => new(installed, installed ? "7.3.7" : null);

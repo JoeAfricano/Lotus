@@ -2,7 +2,7 @@ namespace Lotus.Core.Games;
 
 // What Lotus can tell about a game from its install folder (read-only): the upscalers and frame generation it ships,
 // and the engine. Libraries are what these features install next to the game, so the signal is real, not guessed.
-public sealed record GameTech(bool Dlss, bool FrameGen, bool Fsr, bool Xess, string? Engine)
+public sealed record GameTech(bool Dlss, bool FrameGen, bool Fsr, bool Xess, string? Engine, string? MainExe = null)
 {
     public static readonly GameTech Unknown = new(false, false, false, false, null);
     public bool AnyUpscaler => Dlss || Fsr || Xess;

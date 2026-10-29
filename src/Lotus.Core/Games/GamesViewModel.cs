@@ -319,7 +319,10 @@ public sealed class GamesViewModel : ObservableObject
     public Func<string>? ScoreHint { get; set; } // shown when there is no estimate (no full test yet, or a game the Score does not know)
     private readonly Dictionary<string, StutterReport> lastReports = new(StringComparer.OrdinalIgnoreCase);
     public StutterReport? LastReport(GameEntry game) => lastReports.GetValueOrDefault(game.Key);
-    public sealed record GameTune(GameSettingsAnalysis Settings, GameTech Tech, IReadOnlyList<string> TechChips, IReadOnlyList<(string Title, string Body)> Tips, StutterReport? Last, bool Running, string? ScoreLine = null, string? ScoreHint = null);
+    public sealed record GameTune(GameSettingsAnalysis Settings, GameTech Tech, IReadOnlyList<string> TechChips, IReadOnlyList<(string Title, string Body)> Tips, StutterReport? Last, bool Running, string? ScoreLine = null, string? ScoreHint = null, LowLatencyInfo? LowLatency = null);
+    // Low latency through RivaTuner: State = "ok" | "noRtss" | "notNvidia" | "noExe"; On = current state of that game's profile.
+    public sealed record LowLatencyInfo(string State, string? Exe, bool On);
+    public Lotus.Core.Integrations.IRtssIntegration? Rtss { get; set; }
 
     public async Task<GameTune?> TuneAsync(GameEntry game)
     {
@@ -336,13 +339,35 @@ public sealed class GamesViewModel : ObservableObject
                 var tips = InGameAdvisor.Advise(tech, settings.Recommendation, profileSource!.Read(), last?.Findings, Goal?.Invoke() ?? "balanced")
                     .Select(t => { object[] a = [.. t.Args.Select(Localize)]; return (Text.Format(t.Key + "Title", a), Text.Format(t.Key + "Body", a)); }).ToList();
                 var pc = profileSource.Read();
-                return new GameTune(settings, tech, chips, tips, last, processCheck?.FirstRunning([game]) is not null, ScoreLine?.Invoke(game, settings.Recommendation, pc), ScoreHint?.Invoke());
+                return new GameTune(settings, tech, chips, tips, last, processCheck?.FirstRunning([game]) is not null, ScoreLine?.Invoke(game, settings.Recommendation, pc), ScoreHint?.Invoke(), LowLatencyFor(tech, pc));
             });
         }
         catch (Exception ex) { log(ex); return null; }
         // Advisor arguments are enum names (modes, tiers) or numbers; show them in the player's language.
         string Localize(string a) => Enum.TryParse<UpscaleMode>(a, out var m) && !int.TryParse(a, out _) ? Text["GsMode" + m]
             : Enum.TryParse<QualityTier>(a, out var q) && !int.TryParse(a, out _) ? Text["GsTier" + q] : a;
+    }
+
+    private LowLatencyInfo LowLatencyFor(GameTech tech, SystemProfile pc)
+    {
+        var nvidia = System.Text.RegularExpressions.Regex.IsMatch(pc.GpuName, "NVIDIA|GeForce|RTX|GTX", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (!nvidia) return new("notNvidia", tech.MainExe, false);
+        if (Rtss?.State().Installed != true) return new("noRtss", tech.MainExe, false);
+        if (tech.MainExe is not { } exe) return new("noExe", null, false);
+        return new("ok", exe, Rtss.LowLatencyOn(exe) == true);
+    }
+
+    // Turns the RivaTuner Reflex limiter on (cap = monitor-based FPS cap) or restores that game's profile.
+    public async Task<bool> SetLowLatencyAsync(string exe, bool on, int fpsCap)
+    {
+        if (Rtss is null) return false;
+        try
+        {
+            var ok = on ? await Rtss.EnableLowLatencyAsync(exe, fpsCap) : await Rtss.DisableLowLatencyAsync(exe);
+            status = Text[ok ? (on ? "LlOn" : "LlOff") : "LlFailed"]; Notify();
+            return ok;
+        }
+        catch (Exception ex) { log(ex); status = Text["LlFailed"]; Notify(); return false; }
     }
     // ---- Optional shader pre-compilation (SCSKiller) ----
     public const string ScsKillerReleases = "https://github.com/BlueHeisenberg/SCSKiller/releases/latest";

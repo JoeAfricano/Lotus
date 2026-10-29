@@ -1962,4 +1962,17 @@ Your games and Windows are not changed.</value></data>
   <data name="TuneScoreHint" xml:space="preserve"><value>Run the full Lotus Score test to see how much FPS this game should get on your PC.</value></data>
   <data name="GsReasonMonitorCap" xml:space="preserve"><value>The cap sits 3 FPS below your monitor refresh rate: with G-Sync/FreeSync the picture stays smooth, without V-Sync delay or tearing.</value></data>
   <data name="TuneScoreSearch" xml:space="preserve"><value>This game is not in the Lotus Score database yet. Search for it in Lotus Score › Estimated FPS and the expected FPS shows up here.</value></data>
+  <data name="LlTitle" xml:space="preserve"><value>Low latency</value></data>
+  <data name="LlStateOff" xml:space="preserve"><value>Off in this game</value></data>
+  <data name="LlStateOn" xml:space="preserve"><value>On: Reflex with a {0} FPS cap</value></data>
+  <data name="LlBody" xml:space="preserve"><value>Uses RivaTuner&apos;s NVIDIA Reflex limiter for this game only. It shortens the queue of frames between your click and the screen and, in games without Reflex in the menu, turns on Reflex low-latency mode. The cap follows your monitor.</value></data>
+  <data name="LlEnable" xml:space="preserve"><value>Turn on low latency</value></data>
+  <data name="LlDisable" xml:space="preserve"><value>Turn off and restore</value></data>
+  <data name="LlNote" xml:space="preserve"><value>RivaTuner profile: {0}. Works on NVIDIA cards with DirectX 11 or 12 games; elsewhere RivaTuner falls back to its normal mode by itself. If the game has Reflex in its menu, prefer the game&apos;s. Windows asks for permission because RivaTuner lives in Program Files. Keep RivaTuner running while you play.</value></data>
+  <data name="LlNoRtss" xml:space="preserve"><value>Needs RivaTuner Statistics Server installed. See Settings › Integrations.</value></data>
+  <data name="LlAmd" xml:space="preserve"><value>This option is for NVIDIA cards. On AMD, turn on Radeon Anti-Lag in AMD Software (Adrenalin), under Gaming › Graphics; on Intel, XeLL when the game offers it.</value></data>
+  <data name="LlNoExe" xml:space="preserve"><value>Could not identify this game&apos;s executable. Open the game once and try again.</value></data>
+  <data name="LlOn" xml:space="preserve"><value>Low latency is on for this game. Open the game with RivaTuner running.</value></data>
+  <data name="LlOff" xml:space="preserve"><value>Low latency is off; the RivaTuner profile is back to what it was.</value></data>
+  <data name="LlFailed" xml:space="preserve"><value>Could not change the RivaTuner profile (permission denied or file in use).</value></data>
 </root>

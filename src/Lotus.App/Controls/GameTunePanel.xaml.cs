@@ -1,5 +1,6 @@
 using Lotus.Core.Games;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -58,6 +59,7 @@ public sealed partial class GameTunePanel : UserControl
         BuildChips(tune);
         Body.Children.Add(Section(vm.Text["TuneRecommended"], RecommendedTiles(tune)));
         Body.Children.Add(Section(vm.Text["TuneTips"], TipList(tune)));
+        Body.Children.Add(Section(vm.Text["LlTitle"], LowLatency(tune)));
         Body.Children.Add(Section(vm.Text["TuneLast"], LastCheck(tune)));
         Body.Children.Add(Links());
         BuildFooter(tune);
@@ -124,6 +126,39 @@ public sealed partial class GameTunePanel : UserControl
         var support = t.Settings.Support is { CanApply: true } sp ? vm!.Text.Format("TuneCanApply", sp.EngineLabel) : vm!.Text["TuneManual"];
         list.Children.Add(Caption(support));
         return list;
+    }
+
+    // Low latency: RivaTuner's NVIDIA Reflex limiter for this game only, with the monitor-based cap; one click to undo.
+    private UIElement LowLatency(GamesViewModel.GameTune t)
+    {
+        var text = vm!.Text; var info = t.LowLatency;
+        var box = new Border { Padding = new Thickness(16, 14, 16, 14), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1), Background = Res("CardBrush"), BorderBrush = info is { On: true } ? Res("SuccessBrush") : Res("CardBorderBrush") };
+        var s = new StackPanel { Spacing = 8 }; box.Child = s;
+        var head = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
+        head.Children.Add(new FontIcon { Glyph = "", FontSize = 18, Foreground = Res(info is { On: true } ? "SuccessBrush" : "RoseBrush") });
+        head.Children.Add(new TextBlock { Text = info is { On: true } ? text.Format("LlStateOn", t.Settings.Recommendation.FpsCap) : text["LlStateOff"], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap });
+        s.Children.Add(head);
+        s.Children.Add(new TextBlock { Text = text["LlBody"], FontSize = 12.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap });
+        switch (info?.State)
+        {
+            case "ok":
+                var button = new Button { Content = text[info.On ? "LlDisable" : "LlEnable"], Style = (Style)Application.Current.Resources[info.On ? "SoftButtonStyle" : "PrimaryButtonStyle"], MinHeight = 40, Margin = new Thickness(0, 4, 0, 0), HorizontalAlignment = HorizontalAlignment.Left };
+                AutomationProperties.SetAutomationId(button, "tune-lowlatency");
+                button.Click += async (_, _) =>
+                {
+                    button.IsEnabled = false;
+                    await vm.SetLowLatencyAsync(info.Exe!, !info.On, t.Settings.Recommendation.FpsCap);
+                    await Reload();
+                    if (vm.Status is { Length: > 0 } status) Body.Children.Insert(0, new TextBlock { Text = status, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("GoldBrush"), TextWrapping = TextWrapping.Wrap });
+                };
+                s.Children.Add(button);
+                s.Children.Add(Caption(text.Format("LlNote", info.Exe!)));
+                break;
+            case "noRtss": s.Children.Add(Caption(text["LlNoRtss"])); break;
+            case "notNvidia": s.Children.Add(Caption(text["LlAmd"])); break;
+            default: s.Children.Add(Caption(text["LlNoExe"])); break;
+        }
+        return box;
     }
 
     private UIElement LastCheck(GamesViewModel.GameTune t)

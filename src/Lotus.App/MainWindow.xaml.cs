@@ -111,6 +111,7 @@ public sealed partial class MainWindow : Window
         games.Watch = new Lotus.Core.Games.PollingGameWatch(new Lotus.Infrastructure.Games.WindowsGameProcessCheck());
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
         games.TechScanner = new Lotus.Infrastructure.Games.GameTechScanner();
+        games.Rtss = integrations.Rtss;
         games.ScoreLine = (g, r, pc) =>
         {
             var res = pc.Height >= 2000 ? Lotus.Core.Score.Resolution.P2160 : pc.Height >= 1400 ? Lotus.Core.Score.Resolution.P1440 : Lotus.Core.Score.Resolution.P1080;

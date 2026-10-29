@@ -16,7 +16,7 @@ public static partial class RtssProfiles
     {
         ["OSD"] = ["EnableOSD", "EnableBgnd", "EnableFill", "BaseColor", "BgndColor", "FillColor", "PositionX", "PositionY", "ZoomRatio",
                    "EnableFrametimeHistory", "FrametimeHistoryWidth", "FrametimeHistoryHeight", "FrametimeHistoryStyle", "RefreshPeriod", "IntegerFramerate"],
-        ["Framerate"] = ["Limit", "LimitDenominator", "ReflexSleep"]
+        ["Framerate"] = ["Limit", "LimitDenominator", "ReflexSleep", "SyncLimiter"]
     };
     [GeneratedRegex(@"^(Global|[A-Za-z0-9 _.\-]{1,120}\.exe)$")] private static partial Regex ProfileName();
     [GeneratedRegex(@"^-?[0-9A-Fa-f]{1,10}$")] private static partial Regex SafeValue();
@@ -188,6 +188,31 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
         finally { File.Delete(request); }
     }
     public async Task<bool> RestoreAsync() => await RunElevated(["--rtss-restore", "Global"]) == 0 && !HasBackup();
+
+    // ---- Low latency per game ----
+    // [Framerate] SyncLimiter follows the order of RTSS's limiter modes: 0 async, 1 front edge sync, 2 back edge sync,
+    // 3 NVIDIA Reflex. RTSS documents that the Reflex limiter also enables Reflex low-latency in games without native
+    // Reflex; it works on NVIDIA GPUs with Direct3D 11/12 and falls back to async elsewhere.
+    public const string ReflexLimiter = "3";
+    public bool? LowLatencyOn(string exe)
+    {
+        try { RtssProfiles.Validate(new(exe, [])); } catch (InvalidOperationException) { return null; }
+        if (RtssProfiles.Read(exe, Profiles) is not { } raw) return false;
+        var ini = new IniText(raw);
+        return ini.Get("Framerate", "SyncLimiter") == ReflexLimiter && int.TryParse(ini.Get("Framerate", "Limit"), out var cap) && cap > 0;
+    }
+    public async Task<bool> EnableLowLatencyAsync(string exe, int fpsCap)
+    {
+        if (fpsCap is < 30 or > 1000) return false;
+        RtssChange[] changes = [new("Framerate", "Limit", fpsCap.ToString(System.Globalization.CultureInfo.InvariantCulture)), new("Framerate", "LimitDenominator", "1"), new("Framerate", "SyncLimiter", ReflexLimiter)];
+        var dir = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(Backups))!, "Requests");
+        Directory.CreateDirectory(dir);
+        var request = Path.Combine(dir, "rtss-" + Guid.NewGuid().ToString("N") + ".json");
+        await File.WriteAllTextAsync(request, JsonSerializer.Serialize(new RtssRequest(exe, changes)));
+        try { return await RunElevated(["--rtss-apply", request]) == 0 && LowLatencyOn(exe) == true; }
+        finally { File.Delete(request); }
+    }
+    public async Task<bool> DisableLowLatencyAsync(string exe) => await RunElevated(["--rtss-restore", exe]) == 0 && LowLatencyOn(exe) != true;
 
     // Relaunches Lotus elevated (UAC) only for this operation; the helper exits without opening a window.
     private Task<int> RunElevated(string[] args) => elevatedRunner?.Invoke(args) ?? Task.Run(() =>

@@ -1962,4 +1962,17 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="TuneScoreHint" xml:space="preserve"><value>Faça o teste completo do Lotus Score para ver quanto FPS este jogo deve dar no seu PC.</value></data>
   <data name="GsReasonMonitorCap" xml:space="preserve"><value>O limite fica 3 FPS abaixo da taxa do seu monitor: com G-Sync/FreeSync a imagem fica lisa, sem o atraso do V-Sync e sem tearing.</value></data>
   <data name="TuneScoreSearch" xml:space="preserve"><value>Este jogo ainda não está na base do Lotus Score. Busque o nome dele em Lotus Score › FPS estimado e o FPS esperado aparece aqui.</value></data>
+  <data name="LlTitle" xml:space="preserve"><value>Baixa latência</value></data>
+  <data name="LlStateOff" xml:space="preserve"><value>Desligado neste jogo</value></data>
+  <data name="LlStateOn" xml:space="preserve"><value>Ligado: Reflex com limite de {0} FPS</value></data>
+  <data name="LlBody" xml:space="preserve"><value>Usa o limitador NVIDIA Reflex do RivaTuner só neste jogo. Ele diminui a fila de quadros entre o seu clique e a tela e, em jogos sem Reflex no menu, liga o modo de baixa latência do Reflex. O limite segue o seu monitor.</value></data>
+  <data name="LlEnable" xml:space="preserve"><value>Ativar baixa latência</value></data>
+  <data name="LlDisable" xml:space="preserve"><value>Desativar e restaurar</value></data>
+  <data name="LlNote" xml:space="preserve"><value>Perfil do RivaTuner: {0}. Funciona em placas NVIDIA com jogos DirectX 11 ou 12; nos outros, o RivaTuner volta sozinho ao modo normal. Se o jogo tem Reflex no menu, prefira o do jogo. O Windows pede permissão porque o RivaTuner fica em Arquivos de Programas. Deixe o RivaTuner aberto enquanto joga.</value></data>
+  <data name="LlNoRtss" xml:space="preserve"><value>Precisa do RivaTuner Statistics Server instalado. Veja em Configurações › Integrações.</value></data>
+  <data name="LlAmd" xml:space="preserve"><value>Esta opção é para placas NVIDIA. Na AMD, ative o Radeon Anti-Lag no AMD Software (Adrenalin), em Jogos › Gráficos; na Intel, o XeLL quando o jogo oferecer.</value></data>
+  <data name="LlNoExe" xml:space="preserve"><value>Não foi possível identificar o executável deste jogo. Abra o jogo uma vez e tente de novo.</value></data>
+  <data name="LlOn" xml:space="preserve"><value>Baixa latência ligada neste jogo. Abra o jogo com o RivaTuner aberto.</value></data>
+  <data name="LlOff" xml:space="preserve"><value>Baixa latência desligada; o perfil do RivaTuner voltou ao que era.</value></data>
+  <data name="LlFailed" xml:space="preserve"><value>Não foi possível mudar o perfil do RivaTuner (permissão negada ou arquivo em uso).</value></data>
 </root>
