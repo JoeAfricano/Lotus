@@ -2,20 +2,70 @@
 
 Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hardware, diagnostica gargalos, cria perfis de jogos e aplica ajustes reversíveis, com benchmarks de antes e depois. Sem placebo, sem FPS inventado.
 
-**Versão atual: 0.3.0-alpha "Lotus New"**. Baixe o instalador em [Releases](../../releases).
+**Versão atual: 0.3.1-alpha "Lotus New"**. Baixe o instalador em [Releases](../../releases). O que mudou em cada versão está no [CHANGELOG](CHANGELOG.md).
 
 ## O que o Lotus faz
 
-- **Otimizar meu PC.** Perfis Jogo, Diário e Personalizado. Mostra cada mudança antes de aplicar e verifica o resultado. Tudo pode ser desfeito e nada muda no Windows sem confirmação.
-- **Meus Jogos.** Biblioteca de Steam, Epic, GOG e outras lojas, com Jogar direto da capa, perfil por jogo e overlay de FPS (RTSS).
-- **Lotus Score.** Teste de CPU e GPU com notas separadas, estabilidade entre passadas e sensores. Também mostra o FPS estimado por jogo e resolução, inclusive buscando qualquer jogo pelos requisitos da Steam, sempre com as fontes. E aponta o gargalo.
-- **Desempenho.** CPU, RAM, GPU e VRAM ao vivo. Mede o FPS real com PresentMon e compara sessões.
-- **Por que está travando?** (Ctrl + Shift + L). Mede com o jogo aberto e diz o que está causando a travada.
-- **Game list.** Listas da Steam (em alta, mais bem avaliados, mais vendidos, lançamentos, em breve), busca e sorteio de jogos por gênero e dificuldade.
-- **Meu diário.** Notas, análises, horas, medalhas e 54 conquistas, além das conquistas da Steam lidas localmente, sem login.
-- **Ferramentas.** Liberar memória, limpar temporários, testar internet e DNS, ver a saúde do disco, o driver de vídeo e desinstalar programas.
-- **Backup.** Arquivo `.lotusbackup` local e cópia opcional no Google Drive. A opção "Restaurar o Lotus" volta ao início sem apagar nada.
+### Otimizar o PC
+- **Perfis Jogo, Diário e Personalizado.** Antes de aplicar, mostra cada mudança (plano de energia, Modo de Jogo, gravação em segundo plano, taxa do monitor). Depois, verifica o resultado e confirma com uma animação.
+- **Tudo pode ser desfeito.** Nada muda no Windows sem confirmação, e cada mudança fica registrada.
+- **Inicialização.** Lista os programas que abrem com o Windows e permite desligar cada um, com confirmação.
+
+### Meus Jogos
+- **Biblioteca** de Steam, Epic, GOG e outras lojas, com Jogar direto da capa e perfil por jogo.
+- **Otimizar este jogo:** painel lateral de cada jogo.
+  - **O que o jogo tem**, lido dos arquivos dele: DLSS, Geração de quadros, FSR, XeSS e o motor (Unreal, Unity…).
+  - **Configurações para o seu PC:** qualidade, texturas, upscaling e limite de FPS.
+  - **FPS esperado,** a partir do seu Lotus Score.
+  - **Ajustes dentro do jogo:** em ordem de impacto, com o nome exato das opções nos menus.
+  - **Última análise em jogo,** aplicar ou restaurar configurações (quando o Lotus sabe editar o arquivo do jogo) e pré-carregar shaders.
+- **Fluidez e resposta**, pelo limitador do RivaTuner, num perfil só daquele jogo:
+  - **Fluidez (estilo console):** ritmo de quadros cravado (front edge sync) e linha do framepacer reta. Funciona em qualquer placa.
+  - **Resposta:** NVIDIA Reflex, com menos atraso, mesmo em jogos sem Reflex no menu.
+  - **Desativar e restaurar** devolve o perfil exatamente como era.
+- **Limite de FPS pelo seu monitor:**
+  - **Com FreeSync/G-Sync:** 3 FPS abaixo da taxa do monitor.
+  - **Sem:** a própria taxa, ou uma fração exata dela (por exemplo 37,5 em 75 Hz), com V-Sync, para não trepidar.
+- **FreeSync/G-Sync.** O Lotus pergunta uma vez. Numa placa NVIDIA, o driver responde sozinho. Na AMD e na Intel, a identificação do monitor (EDID) indica se ele suporta e recomenda ativar.
+- **Overlay de FPS** pelo RivaTuner (layout Lotus).
+
+### Análise em jogo (Ctrl + Shift + L)
+- Mede o jogo por 30 segundos, com uma barra de progresso no próprio jogo.
+- Mostra o resultado na tela: FPS médio, 1% low, travadas, a causa mais provável e uma dica.
+- Os detalhes ficam em Meus Jogos › Otimizar.
+
+### Lotus Score
+- **Teste de CPU e GPU** com notas separadas, estabilidade entre passadas e sensores durante o teste.
+- **FPS estimado** por jogo, resolução e predefinição. Busca qualquer jogo pelos requisitos da Steam e sempre mostra as fontes (pc-builds, How Many FPS, Steam).
+- **Gargalo** em cada resolução.
+
+### Desempenho
+- CPU, RAM, GPU e VRAM ao vivo.
+- **Comparar:** mede o FPS real com PresentMon e compara sessões.
+
+### Game list
+- Listas da Steam (em alta, mais bem avaliados, mais vendidos, lançamentos, em breve), com até 100 jogos e rolagem contínua.
+- Busca, filtros indicados por texto e sorteio de jogo por gênero e dificuldade.
+
+### Meu diário
+- Notas, análises, horas, datas e conquistas pessoais por jogo.
+- 14 medalhas com critério e progresso, mais 54 conquistas do Lotus.
+- Conquistas da Steam lidas do próprio PC, sem login.
+
+### Ferramentas
+- Liberar memória, limpar temporários, testar internet e DNS.
+- Saúde do disco, driver de vídeo, desinstalar programas.
+
+### Configurações e conta
 - Temas Escuro, Claro (porcelana rosé), Sistema e Grafite, com cores de destaque. Português e inglês.
+- **Backup** em arquivo `.lotusbackup` e cópia opcional no Google Drive.
+- **Restaurar o Lotus:** volta ao início sem apagar nada. Faz uma cópia antes e guarda os dados antigos.
+- Tutorial inicial com exemplos em cada passo.
+
+### Leve enquanto você joga
+- Com um jogo aberto, ou com o Lotus minimizado, ele entra no **modo eficiência** do Windows, baixa a própria prioridade e devolve a memória que não está usando (cerca de 20 MB minimizado).
+- Ao voltar para a janela, recarrega tudo.
+- Nunca reduz nada durante uma medição.
 
 ## Instalar
 
