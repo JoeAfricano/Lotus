@@ -175,7 +175,7 @@ public sealed class GamesViewModel : ObservableObject
     public GameEntry? LastPlayed() => InstalledGames().OrderByDescending(g => g.LastPlayed ?? DateTimeOffset.MinValue).FirstOrDefault();
     public bool HasFeatured => Featured.Count > 0;
     // The library game that is running now (used by the in-game hotkey), or null.
-    public GameEntry? RunningGame() => processCheck is null ? null : all.Where(g => !hidden.Contains(g.Key)).FirstOrDefault(g => processCheck.IsRunning(g));
+    public GameEntry? RunningGame() => processCheck?.FirstRunning([.. all.Where(g => !hidden.Contains(g.Key))]);
     private GameCard Card(GameEntry g)
     {
         var shader = ScsKillerOutput.Match(shaderStatuses, g);
@@ -311,6 +311,38 @@ public sealed class GamesViewModel : ObservableObject
             return step > 0 ? "GsStepRaised" : "GsStepLowered";
         });
 
+
+    // ---- Game panel ("Otimizar este jogo"): what the game supports, settings for this PC, in-game tips, last check ----
+    public IGameTechScanner? TechScanner { get; set; }
+    // Expected FPS line from the Lotus Score (set by the window); null when there is no full test or the game is unknown.
+    public Func<GameEntry, SettingsRecommendation, SystemProfile, string?>? ScoreLine { get; set; }
+    private readonly Dictionary<string, StutterReport> lastReports = new(StringComparer.OrdinalIgnoreCase);
+    public StutterReport? LastReport(GameEntry game) => lastReports.GetValueOrDefault(game.Key);
+    public sealed record GameTune(GameSettingsAnalysis Settings, GameTech Tech, IReadOnlyList<string> TechChips, IReadOnlyList<(string Title, string Body)> Tips, StutterReport? Last, bool Running, string? ScoreLine = null);
+
+    public async Task<GameTune?> TuneAsync(GameEntry game)
+    {
+        if (await AnalyzeSettingsAsync(game) is not { } settings) return null;
+        try
+        {
+            return await Task.Run(() =>
+            {
+                var tech = TechScanner?.Scan(game) ?? GameTech.Unknown;
+                var chips = new List<string>();
+                if (tech.Engine is { } engine) chips.Add(engine);
+                if (tech.Dlss) chips.Add("DLSS"); if (tech.FrameGen) chips.Add(Text["IgChipFrameGen"]); if (tech.Fsr) chips.Add("FSR"); if (tech.Xess) chips.Add("XeSS");
+                var last = LastReport(game);
+                var tips = InGameAdvisor.Advise(tech, settings.Recommendation, profileSource!.Read(), last?.Findings, Goal?.Invoke() ?? "balanced")
+                    .Select(t => { object[] a = [.. t.Args.Select(Localize)]; return (Text.Format(t.Key + "Title", a), Text.Format(t.Key + "Body", a)); }).ToList();
+                var pc = profileSource.Read();
+                return new GameTune(settings, tech, chips, tips, last, processCheck?.IsRunning(game) == true, ScoreLine?.Invoke(game, settings.Recommendation, pc));
+            });
+        }
+        catch (Exception ex) { log(ex); return null; }
+        // Advisor arguments are enum names (modes, tiers) or numbers; show them in the player's language.
+        string Localize(string a) => Enum.TryParse<UpscaleMode>(a, out var m) && !int.TryParse(a, out _) ? Text["GsMode" + m]
+            : Enum.TryParse<QualityTier>(a, out var q) && !int.TryParse(a, out _) ? Text["GsTier" + q] : a;
+    }
     // ---- Optional shader pre-compilation (SCSKiller) ----
     public const string ScsKillerReleases = "https://github.com/BlueHeisenberg/SCSKiller/releases/latest";
     public bool ShaderToolInstalled => shaders?.IsAvailable == true;
@@ -318,7 +350,7 @@ public sealed class GamesViewModel : ObservableObject
 
     // ---- Por que está travando? ----
     public IMemoryPressure? Memory { get; set; }
-    public sealed record StutterReport(string Summary, IReadOnlyList<StutterFinding> Findings);
+    public sealed record StutterReport(string Summary, IReadOnlyList<StutterFinding> Findings, double AverageFps = 0, double Low1Fps = 0, int Spikes = 0, DateTimeOffset? When = null);
 
     // Measures the running game, then ranks likely causes. Changes nothing; fixes are offered separately.
     public async Task<StutterReport?> DiagnoseAsync(GameEntry game, int seconds = 30, int startDelaySeconds = 5, CancellationToken token = default)
@@ -341,9 +373,10 @@ public sealed class GamesViewModel : ObservableObject
             var findings = StutterDiagnosis.Analyze(new(s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds, gpuBusy, target,
                 ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower));
             if (findings.Any(f => f.Fix == StutterFix.LowerQuality)) pendingSteps[game.Key] = -1; // ready for "Otimizar configurações" after closing
+            lastReports[game.Key] = new(Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds), findings, s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now);
             var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds);
             status = summary; Notify();
-            return new(summary, findings);
+            return new(summary, findings, s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now);
         }
         catch (OperationCanceledException) { status = ""; Notify(); return null; }
         catch (Exception ex) { log(ex); status = Text["GsMeasureFailed"]; Notify(); return null; }

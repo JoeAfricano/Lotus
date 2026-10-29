@@ -110,6 +110,14 @@ public sealed partial class MainWindow : Window
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
         games.Watch = new Lotus.Core.Games.PollingGameWatch(new Lotus.Infrastructure.Games.WindowsGameProcessCheck());
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
+        games.TechScanner = new Lotus.Infrastructure.Games.GameTechScanner();
+        games.ScoreLine = (g, r, pc) =>
+        {
+            var res = pc.Height >= 2000 ? Lotus.Core.Score.Resolution.P2160 : pc.Height >= 1400 ? Lotus.Core.Score.Resolution.P1440 : Lotus.Core.Score.Resolution.P1080;
+            var preset = (Lotus.Core.Score.Preset)(int)r.Tier;
+            return score.EstimateFor(g.Name, g.Store == Lotus.Core.Games.GameStores.Steam ? g.Id : null, res, preset) is { Fps: > 0 } cell
+                ? text.Format("TuneScoreLine", cell.Fps, text["ScoreRes" + res], text["ScorePreset" + preset]) : null;
+        };
         games.Goal = () => preferences.Current.Goal;
         _ = games.EnsureLoadedAsync(); // Home shows game shortcuts right away
         SetUpBackground();
@@ -155,6 +163,7 @@ public sealed partial class MainWindow : Window
         }
         Navigation.RegisterPropertyChangedCallback(NavigationView.IsPaneOpenProperty, (_, _) => OnPaneStateChanged());
         initialized = true;
+        StartLightMode();
         UpdatePaneChrome();
         if (preferences.LoadStatus is not ("Loaded" or "Missing")) ShowWarning(text["LoadWarning"]);
         ViewModel.PropertyChanged += OnRouteChanged;
@@ -187,13 +196,14 @@ public sealed partial class MainWindow : Window
         Activated += (_, args) =>
         {
             windowActive = args.WindowActivationState != WindowActivationState.Deactivated;
+            UpdateLightMode();
             if (windowActive && trophies.LastSync is { } synced && DateTimeOffset.Now - synced > TimeSpan.FromMinutes(3)) _ = trophies.SyncAsync(); // back from a game: new achievements?
             UpdateAmbientState();
             // Deactivation alone does not interrupt an explicit analysis.
             UpdateBrandMotion();
             DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, UpdateMonitoringDemand);
         };
-        AppWindow.Changed += (_, _) => { UpdateMonitoringDemand(); UpdateBrandMotion(); UpdateAmbientState(); };
+        AppWindow.Changed += (_, _) => { UpdateMonitoringDemand(); UpdateBrandMotion(); UpdateAmbientState(); UpdateLightMode(); };
         TitleLogo.SizeChanged += (_, _) => UpdateBrandMotion();
         BrandLogo.SizeChanged += (_, _) => UpdateBrandMotion();
         BrandFlower.SizeChanged += (_, _) => UpdateBrandMotion();
@@ -488,7 +498,7 @@ public sealed partial class MainWindow : Window
             {
                 for (var left = seconds + delay; left > 0 && !stop.IsCancellationRequested; left--)
                 {
-                    osd.Show(left > seconds ? string.Format(text["OsdStarting"], left - seconds) : string.Format(text["OsdCounting"], left));
+                    osd.Show(left > seconds ? string.Format(text["OsdStarting"], left - seconds) : string.Format(text["OsdCounting"], left, OsdBar(seconds - left, seconds)));
                     try { await Task.Delay(1000, stop.Token); } catch (OperationCanceledException) { }
                 }
             });
@@ -498,13 +508,21 @@ public sealed partial class MainWindow : Window
             else
             {
                 var top = report.Findings[0];
-                osd.Show(string.Format(text["OsdResult"], text[top.Key + "Title"])); UiSound.Play(UiSound.Cue.Done);
+                var numbers = string.Format(System.Globalization.CultureInfo.GetCultureInfo(text.Language), text["OsdNumbers"], report.AverageFps, report.Low1Fps, report.Spikes);
+                osd.Show(string.Format(text["OsdResult"], text[top.Key + "Title"], numbers, text[top.Key + "Tip"])); UiSound.Play(UiSound.Cue.Done);
                 pendingGame = game; pendingReport = report;
                 tray?.Notify(text["TrayReportTitle"], text[top.Key + "Title"]);
             }
             await Task.Delay(9000);
         }
         finally { osd.Clear(); analysing = false; }
+    }
+    // In-game progress bar for RivaTuner's OSD: 24 bars, rose for the measured part, dim plum for the rest.
+    private static string OsdBar(int done, int total)
+    {
+        const int width = 24;
+        var filled = total <= 0 ? 0 : Math.Clamp((int)Math.Round(width * (double)done / total), 0, width);
+        return "<C=F27BA8>" + new string('|', filled) + "<C><C=4A3A44>" + new string('|', width - filled) + "<C>";
     }
     private async Task ShowReportAsync(Lotus.Core.Games.GameEntry game, Lotus.Core.Games.GamesViewModel.StutterReport report)
     {
@@ -519,6 +537,7 @@ public sealed partial class MainWindow : Window
         await new ContentDialog { XamlRoot = ShellRoot.XamlRoot, RequestedTheme = ThemePalette.Element, Title = text.Format("WhyTitle", game.Name), Content = body, CloseButtonText = text["GsClose"] }.ShowAsync();
     }
 
+    public Controls.GameTunePanel Tune => TunePanel;
     public void OpenOnboarding(bool edit)
     {
         Onboarding.MotionEnabled = !preferences.Current.ReduceMotion;
@@ -638,6 +657,7 @@ public sealed partial class MainWindow : Window
     }
     public void PrepareForClose()
     {
+        lightTimer?.Stop();
         initialized = false;
         experience.Interrupt();
         AmbientBackground.Dispose();

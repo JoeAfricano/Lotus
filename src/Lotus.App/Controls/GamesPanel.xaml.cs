@@ -61,6 +61,16 @@ public sealed partial class GamesPanel : UserControl
             vm.Restore(list.SelectedItems.Cast<GameEntry>().ToList());
     }
 
+    // "Otimizar este jogo": the side panel with everything for this game; tools that need this page's dialogs are passed in.
+    private void OnOpenTune(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: GameCard card } || DataContext is not GamesViewModel vm || MainWindow.Shell is not { } shell) return;
+        RoutedEventArgs args = new();
+        Task Run(RoutedEventHandler handler) { handler(new Border { DataContext = card }, args); return Task.CompletedTask; }
+        shell.Tune.Open(vm, card, new Controls.TuneActions(
+            () => Run(OnWhyStutter), () => Run(OnPrecompile), () => Run(OnMeasureGame), () => vm.OpenShaderTool(), () => Run(OnRemoveGame)));
+    }
+
     // Recommendation first; "Aplicar no jogo" only when a recipe can edit the settings safely.
     private async void OnOptimizeSettings(object sender, RoutedEventArgs e)
     {

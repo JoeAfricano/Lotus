@@ -346,6 +346,16 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
             nameof(CpuRankText), nameof(CpuRank), nameof(StabilityText), nameof(StabilityVerdict), nameof(SensorsText) }) OnPropertyChanged(n);
     }
 
+    // For other screens (the game panel): expected FPS of a game on this PC from the last full test, when the game is
+    // in the benchmark table or was searched here. Null without a full test or for an unknown game.
+    public FpsCell? EstimateFor(string name, string? steamAppId, Resolution resolution, Preset preset)
+    {
+        if (last is not { Cpu1: { } s, CpuAll: { } m, Gpu: { } g }) return null;
+        var demand = searched.Concat(ScoreInsights.Games).FirstOrDefault(d => (steamAppId is not null && d.SteamAppId == steamAppId)
+            || string.Equals(d.Name, name, StringComparison.OrdinalIgnoreCase));
+        return demand is null ? null : ScoreInsights.Estimate(demand, resolution, preset, s, m, g);
+    }
+
     private void BuildFps()
     {
         FpsRows.Clear();

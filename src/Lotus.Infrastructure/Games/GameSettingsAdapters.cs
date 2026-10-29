@@ -163,6 +163,38 @@ public sealed class WindowsGameProcessCheck : IGameProcessCheck
         }
         return best;
     }
+    // One pass over the processes, reading each image path with the light query (no module enumeration): cheap enough
+    // for the background watcher that puts Lotus in light mode while a game runs.
+    public GameEntry? FirstRunning(IReadOnlyList<GameEntry> games)
+    {
+        var dirs = games.Where(g => g.InstallDir is { Length: > 3 }).Select(g => (Game: g, Dir: Path.GetFullPath(g.InstallDir!).TrimEnd('\\') + "\\")).ToList();
+        if (dirs.Count == 0) return null;
+        var buffer = new StringBuilder(1024);
+        foreach (var p in Process.GetProcesses())
+        {
+            using (p)
+            {
+                if (p.Id <= 4) continue;
+                var handle = OpenProcess(QueryLimited, false, p.Id);
+                if (handle == IntPtr.Zero) continue;
+                try
+                {
+                    buffer.Clear(); var size = buffer.Capacity;
+                    if (!QueryFullProcessImageName(handle, 0, buffer, ref size)) continue;
+                    var path = buffer.ToString();
+                    foreach (var (game, dir) in dirs) if (path.StartsWith(dir, StringComparison.OrdinalIgnoreCase)) return game;
+                }
+                finally { CloseHandle(handle); }
+            }
+        }
+        return null;
+    }
+    private const uint QueryLimited = 0x1000; // PROCESS_QUERY_LIMITED_INFORMATION
+    [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)] private static extern IntPtr OpenProcess(uint access, bool inherit, int pid);
+    [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
+    private static extern bool QueryFullProcessImageName(IntPtr process, int flags, StringBuilder name, ref int size);
+    [System.Runtime.InteropServices.DllImport("kernel32.dll")] private static extern bool CloseHandle(IntPtr handle);
+
     public bool IsRunning(GameEntry game)
     {
         var dir = game.InstallDir is { Length: > 0 } d ? Path.GetFullPath(d).TrimEnd('\\') + "\\" : null;

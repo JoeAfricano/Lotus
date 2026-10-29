@@ -941,19 +941,19 @@ Current conditions: {1}</value></data>
   <data name="WhyConfirmBody" xml:space="preserve"><value>Go back to the game and play normally, ideally where it stutters. In 5 seconds Lotus measures for 30 seconds and then explains what it found. Nothing is changed while measuring.</value></data>
   <data name="WhyMeasuring" xml:space="preserve"><value>Measuring for {0} seconds. Keep playing...</value></data>
   <data name="WhySummary" xml:space="preserve"><value>{0:0} FPS average · 1% low {1:0} FPS · {2} hitches in {3:0} s</value></data>
-  <data name="WhyShadersTitle" xml:space="preserve"><value>Shaders compiling while you play</value></data>
+  <data name="WhyShadersTitle" xml:space="preserve"><value>The game is compiling shaders</value></data>
   <data name="WhyShadersBody" xml:space="preserve"><value>The sudden hitches match the game compiling shaders on the fly. Close the game and use "Pre-load shaders": the next matches run smoother.</value></data>
-  <data name="WhyMemoryTitle" xml:space="preserve"><value>RAM almost full</value></data>
+  <data name="WhyMemoryTitle" xml:space="preserve"><value>RAM is almost full</value></data>
   <data name="WhyMemoryBody" xml:space="preserve"><value>Windows is almost out of free memory, which causes stutter. Programs using the most right now: {0}. Close what you don't need while playing.</value></data>
-  <data name="WhyProfileTitle" xml:space="preserve"><value>PC not in the Game profile</value></data>
+  <data name="WhyProfileTitle" xml:space="preserve"><value>Windows is not in the Game profile</value></data>
   <data name="WhyProfileBody" xml:space="preserve"><value>Some Windows settings are not ideal for gaming (power plan, Game Mode, background recording or refresh rate). Lotus can apply the Game profile now, with undo.</value></data>
-  <data name="WhyGpuLimitTitle" xml:space="preserve"><value>Graphics card at its limit</value></data>
+  <data name="WhyGpuLimitTitle" xml:space="preserve"><value>The graphics card is maxed out</value></data>
   <data name="WhyGpuLimitBody" xml:space="preserve"><value>The graphics card is near 100% and FPS is below the ideal. Lowering one quality level fixes it. Close the game and use "Optimize settings": the adjustment is ready.</value></data>
-  <data name="WhyCpuLimitTitle" xml:space="preserve"><value>Processor or background programs holding it back</value></data>
+  <data name="WhyCpuLimitTitle" xml:space="preserve"><value>The processor is limiting FPS</value></data>
   <data name="WhyCpuLimitBody" xml:space="preserve"><value>The graphics card has headroom but FPS is low: the processor or other programs are holding the game back. Close heavy programs and use the Game profile.</value></data>
-  <data name="WhyUnknownStutterTitle" xml:space="preserve"><value>Stutter without a clear cause</value></data>
+  <data name="WhyUnknownStutterTitle" xml:space="preserve"><value>There are stutters without a clear cause</value></data>
   <data name="WhyUnknownStutterBody" xml:space="preserve"><value>Lotus saw hitches but none of the common causes. Updating the graphics driver and verifying the game files in the launcher usually helps.</value></data>
-  <data name="WhyAllGoodTitle" xml:space="preserve"><value>Nothing wrong found</value></data>
+  <data name="WhyAllGoodTitle" xml:space="preserve"><value>All good: the game ran steady</value></data>
   <data name="WhyAllGoodBody" xml:space="preserve"><value>The game ran steadily during the measurement. If it stutters elsewhere, measure there.</value></data>
   <data name="WhyApplyProfile" xml:space="preserve"><value>Apply Game profile now</value></data>
   <data name="WhyProfileApplied" xml:space="preserve"><value>Game profile applied. You can undo it in Optimize.</value></data>
@@ -1080,7 +1080,7 @@ Current conditions: {1}</value></data>
   <data name="ObTourToolsDetail" xml:space="preserve"><value>Free memory, clean temp files, test internet and DNS, disk health and driver.</value></data>
   <data name="ObReplay" xml:space="preserve"><value>Replay welcome</value></data>
   <data name="AccentDark" xml:space="preserve"><value>Dark</value></data>
-  <data name="GsReasonGoalFps" xml:space="preserve"><value>You picked more FPS: one quality level lower and a higher FPS cap.</value></data>
+  <data name="GsReasonGoalFps" xml:space="preserve"><value>You picked more FPS: one quality level lower to leave headroom.</value></data>
   <data name="GsReasonGoalCompetitive" xml:space="preserve"><value>You picked competitive: lower quality for less delay and high, steady FPS.</value></data>
   <data name="ObSteamAsk" xml:space="preserve"><value>Want to use your Steam account?</value></data>
   <data name="ObSteamAskNote" xml:space="preserve"><value>No Steam account found on this PC. Sign in to Steam and your account shows up here by itself in a few seconds.</value></data>
@@ -1162,11 +1162,20 @@ Current conditions: {1}</value></data>
   <data name="TrayTitle" xml:space="preserve"><value>Lotus is still here</value></data>
   <data name="TrayBody" xml:space="preserve"><value>It stays next to the clock. In a game, press Ctrl + Shift + L to analyze stutter.</value></data>
   <data name="TrayReportTitle" xml:space="preserve"><value>Game analysis ready</value></data>
-  <data name="OsdNoGame" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  No game from your library is open</value></data>
-  <data name="OsdStarting" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Analysis starts in {0}... keep playing</value></data>
-  <data name="OsdCounting" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Analyzing  &lt;C=EEC1A8>{0} s&lt;C&gt;</value></data>
-  <data name="OsdResult" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  {0}  ·  details in Lotus</value></data>
-  <data name="OsdFailed" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Couldn't measure right now</value></data>
+  <data name="OsdNoGame" xml:space="preserve"><value>&lt;C=F27BA8&gt;LOTUS&lt;C&gt;  &lt;S=72&gt;&lt;C=B8A5B0&gt;IN-GAME CHECK&lt;C&gt;&lt;S&gt;
+No game from your library is open right now.</value></data>
+  <data name="OsdStarting" xml:space="preserve"><value>&lt;C=F27BA8&gt;LOTUS&lt;C&gt;  &lt;S=72&gt;&lt;C=B8A5B0&gt;IN-GAME CHECK&lt;C&gt;&lt;S&gt;
+Measuring starts in &lt;C=EEC1A8&gt;{0} s&lt;C&gt;. Keep playing as usual.</value></data>
+  <data name="OsdCounting" xml:space="preserve"><value>&lt;C=F27BA8&gt;LOTUS&lt;C&gt;  &lt;S=72&gt;&lt;C=B8A5B0&gt;IN-GAME CHECK&lt;C&gt;&lt;S&gt;
+Measuring performance  &lt;C=EEC1A8&gt;{0} s&lt;C&gt;
+{1}</value></data>
+  <data name="OsdResult" xml:space="preserve"><value>&lt;C=F27BA8&gt;LOTUS&lt;C&gt;  &lt;S=72&gt;&lt;C=B8A5B0&gt;RESULT&lt;C&gt;&lt;S&gt;
+&lt;C=EEC1A8&gt;{0}&lt;C&gt;
+{1}
+&lt;S=80&gt;{2}&lt;S&gt;
+&lt;S=72&gt;&lt;C=B8A5B0&gt;Details and fixes in My Games&lt;C&gt;&lt;S&gt;</value></data>
+  <data name="OsdFailed" xml:space="preserve"><value>&lt;C=F27BA8&gt;LOTUS&lt;C&gt;  &lt;S=72&gt;&lt;C=B8A5B0&gt;IN-GAME CHECK&lt;C&gt;&lt;S&gt;
+Could not measure right now. Try again in a few seconds.</value></data>
   <data name="RepTitle" xml:space="preserve"><value>Custom report</value></data>
   <data name="RepWhat" xml:space="preserve"><value>Choose what goes in and Lotus builds a single-page report of your PC. It opens in the browser, you can **save it as PDF** with Print, and it stays in Documents › Lotus. **Nothing is sent.**</value></data>
   <data name="RepNameHeader" xml:space="preserve"><value>Report title</value></data>
@@ -1896,4 +1905,60 @@ Your games and Windows are not changed.</value></data>
   <data name="ObTourProfileEx" xml:space="preserve"><value>E.g. Level 6 · Veteran, 104 h played, 14 medals</value></data>
   <data name="ObStageLevel" xml:space="preserve"><value>Level 1 · Recruit</value></data>
   <data name="ObLookTitle" xml:space="preserve"><value>Your look</value></data>
+  <data name="TitlePlaying" xml:space="preserve"><value>Playing now · {0}</value></data>
+  <data name="TitlePlayingHint" xml:space="preserve"><value>Lotus is in light mode while you play: it uses less memory and CPU and goes back to normal when you open the window.</value></data>
+  <data name="OsdNumbers" xml:space="preserve"><value>{0:0} FPS average  ·  1% low {1:0}  ·  {2} stutters</value></data>
+  <data name="WhyShadersTip" xml:space="preserve"><value>Tip: after closing the game, use Precompile shaders.</value></data>
+  <data name="WhyMemoryTip" xml:space="preserve"><value>Tip: close the browser and heavy programs while you play.</value></data>
+  <data name="WhyProfileTip" xml:space="preserve"><value>Tip: apply the Game profile in Lotus; it can be undone.</value></data>
+  <data name="WhyGpuLimitTip" xml:space="preserve"><value>Tip: turn on DLSS, FSR or XeSS and lower shadows one step.</value></data>
+  <data name="WhyCpuLimitTip" xml:space="preserve"><value>Tip: lower view distance and crowd density.</value></data>
+  <data name="WhyUnknownStutterTip" xml:space="preserve"><value>Tip: update the graphics driver and verify the game files.</value></data>
+  <data name="WhyAllGoodTip" xml:space="preserve"><value>Tip: if it stutters somewhere else, measure there with Ctrl + Shift + L.</value></data>
+  <data name="IgChipFrameGen" xml:space="preserve"><value>Frame generation</value></data>
+  <data name="IgDlssTitle" xml:space="preserve"><value>Turn on DLSS in {0} mode</value></data>
+  <data name="IgDlssBody" xml:space="preserve"><value>This game ships DLSS and your card is an RTX. In the graphics menu, look for Upscaling, Super Resolution or DLSS and pick {0}. It is the setting that gives the most FPS for the least image loss.</value></data>
+  <data name="IgDlssNoRtxTitle" xml:space="preserve"><value>This game&apos;s DLSS won&apos;t run on your card</value></data>
+  <data name="IgDlssNoRtxBody" xml:space="preserve"><value>The game has DLSS, but it needs an NVIDIA RTX card. If FSR or XeSS is in the menu, use one of them.</value></data>
+  <data name="IgFsrTitle" xml:space="preserve"><value>Turn on FSR in {0} mode</value></data>
+  <data name="IgFsrBody" xml:space="preserve"><value>This game ships AMD FSR, which works on any card. In the graphics menu, look for Upscaling or FidelityFX Super Resolution and pick {0}.</value></data>
+  <data name="IgXessTitle" xml:space="preserve"><value>Turn on XeSS in {0} mode</value></data>
+  <data name="IgXessBody" xml:space="preserve"><value>This game ships Intel XeSS. In the graphics menu, look for Upscaling or XeSS and pick {0}. It looks even better on Intel Arc cards.</value></data>
+  <data name="IgFrameGenTitle" xml:space="preserve"><value>Try frame generation</value></data>
+  <data name="IgFrameGenBody" xml:space="preserve"><value>The game has DLSS Frame Generation and your card supports it. It can almost double the FPS you see. It works best with at least 50 FPS before turning it on and adds a little delay, so avoid it in competitive games.</value></data>
+  <data name="IgGpuHeavyTitle" xml:space="preserve"><value>Lower what weighs most on the graphics card first</value></data>
+  <data name="IgGpuHeavyBody" xml:space="preserve"><value>The check showed the card maxed out. In this order: Ray tracing, Shadows, Global illumination, Reflections and Clouds/Volumetrics. Textures barely cost FPS if they fit in video memory.</value></data>
+  <data name="IgCpuHeavyTitle" xml:space="preserve"><value>The processor is the limit: these settings help</value></data>
+  <data name="IgCpuHeavyBody" xml:space="preserve"><value>Lower View distance, Crowd/NPC density, Physics and Object detail. Lowering resolution or upscaling barely helps here. Capping FPS a bit below what you reach makes the game steadier.</value></data>
+  <data name="IgUnrealTitle" xml:space="preserve"><value>Unreal Engine game: shader stutters are common</value></data>
+  <data name="IgUnrealBody" xml:space="preserve"><value>The first sessions often hitch while the game prepares its shaders; it gets better over time. Use Precompile shaders with the game closed and, if the game offers it, let shader compilation finish in the menu before playing.</value></data>
+  <data name="IgStutterCapTitle" xml:space="preserve"><value>Cap FPS at {0} for a steadier pace</value></data>
+  <data name="IgStutterCapBody" xml:space="preserve"><value>With uncapped FPS, swings between frames feel like stutters. Cap at {0} in the game menu (or the graphics driver panel) and keep V-Sync or G-Sync/FreeSync on if your monitor has it.</value></data>
+  <data name="IgPresetTitle" xml:space="preserve"><value>Starting point for your PC</value></data>
+  <data name="IgPresetBody" xml:space="preserve"><value>{0} preset, {1} textures and a {2} FPS cap. Start here and fine-tune with the in-game check (Ctrl + Shift + L).</value></data>
+  <data name="IgCompetitiveTitle" xml:space="preserve"><value>For competitive play</value></data>
+  <data name="IgCompetitiveBody" xml:space="preserve"><value>If the game has NVIDIA Reflex or AMD Anti-Lag, keep it on. Turn off Motion blur, Depth of field and Chromatic aberration: the picture gets cleaner at no cost.</value></data>
+  <data name="TuneTitle" xml:space="preserve"><value>Optimize {0}</value></data>
+  <data name="TuneDetected" xml:space="preserve"><value>What Lotus found in the game</value></data>
+  <data name="TuneNothingDetected" xml:space="preserve"><value>No upscaler found in the game files. The tips use your hardware.</value></data>
+  <data name="TuneRecommended" xml:space="preserve"><value>Settings for your PC</value></data>
+  <data name="TuneQuality" xml:space="preserve"><value>Quality</value></data>
+  <data name="TuneTextures" xml:space="preserve"><value>Textures</value></data>
+  <data name="TuneUpscaler" xml:space="preserve"><value>Upscaling</value></data>
+  <data name="TuneCap" xml:space="preserve"><value>FPS cap</value></data>
+  <data name="TuneTips" xml:space="preserve"><value>In-game settings</value></data>
+  <data name="TuneLast" xml:space="preserve"><value>Last in-game check</value></data>
+  <data name="TuneNoLast" xml:space="preserve"><value>Open the game and press Ctrl + Shift + L. In 30 seconds Lotus measures the game, shows the result in the game itself, and the tips here get more precise.</value></data>
+  <data name="TuneAnalyze" xml:space="preserve"><value>Check now</value></data>
+  <data name="TuneApply" xml:space="preserve"><value>Apply to the game</value></data>
+  <data name="TuneRestore" xml:space="preserve"><value>Restore originals</value></data>
+  <data name="TunePrecompile" xml:space="preserve"><value>Precompile shaders</value></data>
+  <data name="TuneManual" xml:space="preserve"><value>Lotus does not edit this game&apos;s files: apply the tips in its graphics menu.</value></data>
+  <data name="TuneCanApply" xml:space="preserve"><value>Lotus can apply these settings to the game&apos;s file ({0}), keeping a copy of the original.</value></data>
+  <data name="TuneLastWhen" xml:space="preserve"><value>Measured {0}</value></data>
+  <data name="TuneOpen" xml:space="preserve"><value>Optimize this game</value></data>
+  <data name="IgSpikes" xml:space="preserve"><value>stutters</value></data>
+  <data name="TuneScoreLine" xml:space="preserve"><value>From your Lotus Score, this game should run at about {0} FPS at {1} on {2}, without upscaling.</value></data>
+  <data name="TuneScoreHint" xml:space="preserve"><value>Run the full Lotus Score test to see how much FPS this game should get on your PC.</value></data>
+  <data name="GsReasonMonitorCap" xml:space="preserve"><value>The cap sits 3 FPS below your monitor refresh rate: with G-Sync/FreeSync the picture stays smooth, without V-Sync delay or tearing.</value></data>
 </root>

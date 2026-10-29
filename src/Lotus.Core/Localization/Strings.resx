@@ -941,19 +941,19 @@ Condições atuais: {1}</value></data>
   <data name="WhyConfirmBody" xml:space="preserve"><value>Volte para o jogo e jogue normal, de preferência **na parte que trava**. Em 5 segundos o Lotus mede por **30 segundos** e depois conta o que achou. Nada muda durante a medição.</value></data>
   <data name="WhyMeasuring" xml:space="preserve"><value>Medindo por {0} segundos. Continue jogando...</value></data>
   <data name="WhySummary" xml:space="preserve"><value>{0:0} FPS em média · 1% low {1:0} FPS · {2} travadas em {3:0} s</value></data>
-  <data name="WhyShadersTitle" xml:space="preserve"><value>Shaders sendo compilados durante o jogo</value></data>
+  <data name="WhyShadersTitle" xml:space="preserve"><value>O jogo está compilando shaders</value></data>
   <data name="WhyShadersBody" xml:space="preserve"><value>As travadas bruscas batem com o jogo **compilando shaders na hora**. Feche o jogo e use **Pré-carregar shaders**: as próximas partidas ficam mais lisas.</value></data>
-  <data name="WhyMemoryTitle" xml:space="preserve"><value>Memória RAM quase cheia</value></data>
+  <data name="WhyMemoryTitle" xml:space="preserve"><value>A memória RAM está quase cheia</value></data>
   <data name="WhyMemoryBody" xml:space="preserve"><value>O Windows está quase **sem memória livre**, e isso causa travadas. Quem mais está usando agora: {0}. Feche o que não precisar enquanto joga.</value></data>
-  <data name="WhyProfileTitle" xml:space="preserve"><value>PC fora do perfil Jogo</value></data>
+  <data name="WhyProfileTitle" xml:space="preserve"><value>O Windows não está no perfil Jogo</value></data>
   <data name="WhyProfileBody" xml:space="preserve"><value>Algumas configurações do Windows **não estão no ideal para jogar** (energia, Modo de Jogo, gravação em segundo plano ou taxa do monitor). Dá para aplicar o perfil Jogo agora e desfazer depois.</value></data>
-  <data name="WhyGpuLimitTitle" xml:space="preserve"><value>Placa de vídeo no limite</value></data>
+  <data name="WhyGpuLimitTitle" xml:space="preserve"><value>A placa de vídeo está no limite</value></data>
   <data name="WhyGpuLimitBody" xml:space="preserve"><value>A placa de vídeo está **trabalhando no limite** e o FPS fica abaixo do ideal. Baixar um nível de qualidade resolve. Feche o jogo e use **Otimizar configurações**: o ajuste já está pronto.</value></data>
-  <data name="WhyCpuLimitTitle" xml:space="preserve"><value>Processador ou programas em segundo plano limitando</value></data>
+  <data name="WhyCpuLimitTitle" xml:space="preserve"><value>O processador está limitando o FPS</value></data>
   <data name="WhyCpuLimitBody" xml:space="preserve"><value>A placa de vídeo tem folga, mas o FPS está baixo. O **processador ou outros programas** estão segurando o jogo. Feche o que estiver pesado e use o perfil Jogo.</value></data>
-  <data name="WhyUnknownStutterTitle" xml:space="preserve"><value>Travadas sem causa clara</value></data>
+  <data name="WhyUnknownStutterTitle" xml:space="preserve"><value>Há travadas sem uma causa clara</value></data>
   <data name="WhyUnknownStutterBody" xml:space="preserve"><value>Deu para ver travadas, mas **nenhuma causa comum**. Atualizar o driver de vídeo e verificar os arquivos do jogo no launcher costuma ajudar.</value></data>
-  <data name="WhyAllGoodTitle" xml:space="preserve"><value>Nada de errado encontrado</value></data>
+  <data name="WhyAllGoodTitle" xml:space="preserve"><value>Tudo certo: o jogo rodou estável</value></data>
   <data name="WhyAllGoodBody" xml:space="preserve"><value>O jogo rodou **estável** durante a medição. Se a travada acontece em outro lugar, meça lá.</value></data>
   <data name="WhyApplyProfile" xml:space="preserve"><value>Aplicar perfil Jogo agora</value></data>
   <data name="WhyProfileApplied" xml:space="preserve"><value>Perfil Jogo aplicado. Dá para desfazer em Otimizar.</value></data>
@@ -1080,7 +1080,7 @@ Condições atuais: {1}</value></data>
   <data name="ObTourToolsDetail" xml:space="preserve"><value>Liberar memória, limpar temporários, testar a internet e o DNS, ver a **saúde do disco** e o driver de vídeo.</value></data>
   <data name="ObReplay" xml:space="preserve"><value>Rever boas-vindas</value></data>
   <data name="AccentDark" xml:space="preserve"><value>Escuro</value></data>
-  <data name="GsReasonGoalFps" xml:space="preserve"><value>Você escolheu mais FPS: um nível de qualidade abaixo e limite de FPS mais alto.</value></data>
+  <data name="GsReasonGoalFps" xml:space="preserve"><value>Você escolheu mais FPS: um nível de qualidade abaixo para sobrar desempenho.</value></data>
   <data name="GsReasonGoalCompetitive" xml:space="preserve"><value>Você escolheu competitivo: qualidade mais baixa para ter menos atraso e FPS alto e estável.</value></data>
   <data name="ObSteamAsk" xml:space="preserve"><value>Quer usar sua conta Steam?</value></data>
   <data name="ObSteamAskNote" xml:space="preserve"><value>Não encontrei uma conta Steam neste PC. Entre na Steam e ela **aparece aqui sozinha** em alguns segundos.</value></data>
@@ -1162,11 +1162,20 @@ Condições atuais: {1}</value></data>
   <data name="TrayTitle" xml:space="preserve"><value>O Lotus continua aqui</value></data>
   <data name="TrayBody" xml:space="preserve"><value>Ele fica perto do relógio. No jogo, aperte Ctrl + Shift + L para analisar travadas.</value></data>
   <data name="TrayReportTitle" xml:space="preserve"><value>Análise do jogo pronta</value></data>
-  <data name="OsdNoGame" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Nenhum jogo da sua biblioteca aberto</value></data>
-  <data name="OsdStarting" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Análise começa em {0}... continue jogando</value></data>
-  <data name="OsdCounting" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Analisando  &lt;C=EEC1A8>{0} s&lt;C&gt;</value></data>
-  <data name="OsdResult" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  {0}  ·  detalhes no Lotus</value></data>
-  <data name="OsdFailed" xml:space="preserve"><value>&lt;C=F27BA8>LOTUS&lt;C&gt;  Não foi possível medir agora</value></data>
+  <data name="OsdNoGame" xml:space="preserve"><value>&lt;C=F27BA8&gt;LOTUS&lt;C&gt;  &lt;S=72&gt;&lt;C=B8A5B0&gt;ANÁLISE EM JOGO&lt;C&gt;&lt;S&gt;
+Nenhum jogo da sua biblioteca está aberto agora.</value></data>
+  <data name="OsdStarting" xml:space="preserve"><value>&lt;C=F27BA8&gt;LOTUS&lt;C&gt;  &lt;S=72&gt;&lt;C=B8A5B0&gt;ANÁLISE EM JOGO&lt;C&gt;&lt;S&gt;
+A medição começa em &lt;C=EEC1A8&gt;{0} s&lt;C&gt;. Continue jogando normalmente.</value></data>
+  <data name="OsdCounting" xml:space="preserve"><value>&lt;C=F27BA8&gt;LOTUS&lt;C&gt;  &lt;S=72&gt;&lt;C=B8A5B0&gt;ANÁLISE EM JOGO&lt;C&gt;&lt;S&gt;
+Medindo o desempenho  &lt;C=EEC1A8&gt;{0} s&lt;C&gt;
+{1}</value></data>
+  <data name="OsdResult" xml:space="preserve"><value>&lt;C=F27BA8&gt;LOTUS&lt;C&gt;  &lt;S=72&gt;&lt;C=B8A5B0&gt;RESULTADO&lt;C&gt;&lt;S&gt;
+&lt;C=EEC1A8&gt;{0}&lt;C&gt;
+{1}
+&lt;S=80&gt;{2}&lt;S&gt;
+&lt;S=72&gt;&lt;C=B8A5B0&gt;Detalhes e ajustes em Meus Jogos&lt;C&gt;&lt;S&gt;</value></data>
+  <data name="OsdFailed" xml:space="preserve"><value>&lt;C=F27BA8&gt;LOTUS&lt;C&gt;  &lt;S=72&gt;&lt;C=B8A5B0&gt;ANÁLISE EM JOGO&lt;C&gt;&lt;S&gt;
+Não foi possível medir agora. Tente de novo em alguns segundos.</value></data>
   <data name="RepTitle" xml:space="preserve"><value>Relatório personalizado</value></data>
   <data name="RepWhat" xml:space="preserve"><value>Escolha o que entra e o Lotus monta um relatório do seu PC numa página só. Abre no navegador, dá para **salvar em PDF** pela opção imprimir e fica guardado em Documentos › Lotus. **Nada é enviado.**</value></data>
   <data name="RepNameHeader" xml:space="preserve"><value>Título do relatório</value></data>
@@ -1896,4 +1905,60 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="ObTourProfileEx" xml:space="preserve"><value>Ex.: Nível 6 · Veterano, 104 h jogadas, 14 medalhas</value></data>
   <data name="ObStageLevel" xml:space="preserve"><value>Nível 1 · Recruta</value></data>
   <data name="ObLookTitle" xml:space="preserve"><value>Seu visual</value></data>
+  <data name="TitlePlaying" xml:space="preserve"><value>Jogando agora · {0}</value></data>
+  <data name="TitlePlayingHint" xml:space="preserve"><value>O Lotus está em modo leve enquanto você joga: usa menos memória e processador e volta ao normal quando você abre a janela.</value></data>
+  <data name="OsdNumbers" xml:space="preserve"><value>{0:0} FPS em média  ·  1% low {1:0}  ·  {2} travadas</value></data>
+  <data name="WhyShadersTip" xml:space="preserve"><value>Dica: depois de fechar o jogo, use Pré-carregar shaders.</value></data>
+  <data name="WhyMemoryTip" xml:space="preserve"><value>Dica: feche navegador e programas pesados enquanto joga.</value></data>
+  <data name="WhyProfileTip" xml:space="preserve"><value>Dica: aplique o perfil Jogo no Lotus, dá para desfazer.</value></data>
+  <data name="WhyGpuLimitTip" xml:space="preserve"><value>Dica: ative DLSS, FSR ou XeSS e baixe sombras um nível.</value></data>
+  <data name="WhyCpuLimitTip" xml:space="preserve"><value>Dica: baixe distância de visão e densidade de NPCs.</value></data>
+  <data name="WhyUnknownStutterTip" xml:space="preserve"><value>Dica: atualize o driver de vídeo e verifique os arquivos do jogo.</value></data>
+  <data name="WhyAllGoodTip" xml:space="preserve"><value>Dica: se trava em outro lugar, meça lá com Ctrl + Shift + L.</value></data>
+  <data name="IgChipFrameGen" xml:space="preserve"><value>Geração de quadros</value></data>
+  <data name="IgDlssTitle" xml:space="preserve"><value>Ative o DLSS no modo {0}</value></data>
+  <data name="IgDlssBody" xml:space="preserve"><value>Este jogo tem DLSS e a sua placa é RTX. No menu de gráficos, procure Upscaling, Super Resolution ou DLSS e escolha {0}. É o ajuste que mais rende FPS com a menor perda de imagem.</value></data>
+  <data name="IgDlssNoRtxTitle" xml:space="preserve"><value>O DLSS deste jogo não funciona na sua placa</value></data>
+  <data name="IgDlssNoRtxBody" xml:space="preserve"><value>O jogo tem DLSS, mas ele exige uma placa NVIDIA RTX. Se houver FSR ou XeSS no menu, use um deles.</value></data>
+  <data name="IgFsrTitle" xml:space="preserve"><value>Ative o FSR no modo {0}</value></data>
+  <data name="IgFsrBody" xml:space="preserve"><value>Este jogo tem AMD FSR, que funciona em qualquer placa. No menu de gráficos, procure Upscaling ou FidelityFX Super Resolution e escolha {0}.</value></data>
+  <data name="IgXessTitle" xml:space="preserve"><value>Ative o XeSS no modo {0}</value></data>
+  <data name="IgXessBody" xml:space="preserve"><value>Este jogo tem Intel XeSS. No menu de gráficos, procure Upscaling ou XeSS e escolha {0}. Nas placas Intel Arc ele fica ainda melhor.</value></data>
+  <data name="IgFrameGenTitle" xml:space="preserve"><value>Experimente a geração de quadros</value></data>
+  <data name="IgFrameGenBody" xml:space="preserve"><value>O jogo tem DLSS Frame Generation e a sua placa suporta. Ela pode quase dobrar o FPS mostrado. Funciona melhor com pelo menos 50 FPS antes de ligar e acrescenta um pouco de atraso, por isso evite em jogos competitivos.</value></data>
+  <data name="IgGpuHeavyTitle" xml:space="preserve"><value>Baixe primeiro o que mais pesa na placa de vídeo</value></data>
+  <data name="IgGpuHeavyBody" xml:space="preserve"><value>A medição mostrou a placa no limite. Nesta ordem: Ray tracing, Sombras, Iluminação global, Reflexos e Nuvens/Volumétricos. Texturas quase não custam FPS se couberem na memória de vídeo.</value></data>
+  <data name="IgCpuHeavyTitle" xml:space="preserve"><value>O processador é o limite: estes ajustes ajudam</value></data>
+  <data name="IgCpuHeavyBody" xml:space="preserve"><value>Baixe Distância de visão, Densidade de multidão/NPCs, Física e Detalhe de objetos. Baixar a resolução ou o upscaling quase não muda nada nesse caso. Limitar o FPS um pouco abaixo do que você alcança deixa o jogo mais estável.</value></data>
+  <data name="IgUnrealTitle" xml:space="preserve"><value>Jogo em Unreal Engine: travadas de shader são comuns</value></data>
+  <data name="IgUnrealBody" xml:space="preserve"><value>As primeiras partidas costumam ter engasgos enquanto o jogo prepara os shaders; com o tempo isso diminui. Use Pré-carregar shaders com o jogo fechado e, se o jogo oferecer, deixe a compilação de shaders terminar no menu antes de jogar.</value></data>
+  <data name="IgStutterCapTitle" xml:space="preserve"><value>Limite o FPS em {0} para um ritmo mais estável</value></data>
+  <data name="IgStutterCapBody" xml:space="preserve"><value>Com o FPS livre, a variação entre quadros aparece como travadas. Limite em {0} no menu do jogo (ou no painel da placa de vídeo) e deixe o V-Sync ou o G-Sync/FreeSync ligado, se o seu monitor tiver.</value></data>
+  <data name="IgPresetTitle" xml:space="preserve"><value>Ponto de partida para o seu PC</value></data>
+  <data name="IgPresetBody" xml:space="preserve"><value>Predefinição {0}, texturas em {1} e limite de {2} FPS. Comece por aqui e ajuste com a análise em jogo (Ctrl + Shift + L).</value></data>
+  <data name="IgCompetitiveTitle" xml:space="preserve"><value>Para jogar competitivo</value></data>
+  <data name="IgCompetitiveBody" xml:space="preserve"><value>Se o jogo tiver NVIDIA Reflex ou AMD Anti-Lag, deixe ligado. Desligue Desfoque de movimento, Profundidade de campo e Aberração cromática: deixam a imagem mais limpa sem custo.</value></data>
+  <data name="TuneTitle" xml:space="preserve"><value>Otimizar {0}</value></data>
+  <data name="TuneDetected" xml:space="preserve"><value>O que o Lotus encontrou no jogo</value></data>
+  <data name="TuneNothingDetected" xml:space="preserve"><value>Nenhum upscaler encontrado nos arquivos do jogo. As dicas usam o seu hardware.</value></data>
+  <data name="TuneRecommended" xml:space="preserve"><value>Configurações para o seu PC</value></data>
+  <data name="TuneQuality" xml:space="preserve"><value>Qualidade</value></data>
+  <data name="TuneTextures" xml:space="preserve"><value>Texturas</value></data>
+  <data name="TuneUpscaler" xml:space="preserve"><value>Upscaling</value></data>
+  <data name="TuneCap" xml:space="preserve"><value>Limite de FPS</value></data>
+  <data name="TuneTips" xml:space="preserve"><value>Ajustes dentro do jogo</value></data>
+  <data name="TuneLast" xml:space="preserve"><value>Última análise em jogo</value></data>
+  <data name="TuneNoLast" xml:space="preserve"><value>Abra o jogo e aperte Ctrl + Shift + L. Em 30 segundos o Lotus mede o jogo, mostra o resultado no próprio jogo e as dicas aqui ficam mais certeiras.</value></data>
+  <data name="TuneAnalyze" xml:space="preserve"><value>Analisar agora</value></data>
+  <data name="TuneApply" xml:space="preserve"><value>Aplicar no jogo</value></data>
+  <data name="TuneRestore" xml:space="preserve"><value>Restaurar originais</value></data>
+  <data name="TunePrecompile" xml:space="preserve"><value>Pré-carregar shaders</value></data>
+  <data name="TuneManual" xml:space="preserve"><value>O Lotus não edita os arquivos deste jogo: aplique as dicas no menu de gráficos dele.</value></data>
+  <data name="TuneCanApply" xml:space="preserve"><value>O Lotus pode aplicar estas configurações no arquivo do jogo ({0}), com cópia do original.</value></data>
+  <data name="TuneLastWhen" xml:space="preserve"><value>Medido {0}</value></data>
+  <data name="TuneOpen" xml:space="preserve"><value>Otimizar este jogo</value></data>
+  <data name="IgSpikes" xml:space="preserve"><value>travadas</value></data>
+  <data name="TuneScoreLine" xml:space="preserve"><value>Pelo seu Lotus Score, este jogo deve rodar a cerca de {0} FPS em {1} no {2}, sem upscaling.</value></data>
+  <data name="TuneScoreHint" xml:space="preserve"><value>Faça o teste completo do Lotus Score para ver quanto FPS este jogo deve dar no seu PC.</value></data>
+  <data name="GsReasonMonitorCap" xml:space="preserve"><value>O limite fica 3 FPS abaixo da taxa do seu monitor: com G-Sync/FreeSync a imagem fica lisa, sem o atraso do V-Sync e sem tearing.</value></data>
 </root>

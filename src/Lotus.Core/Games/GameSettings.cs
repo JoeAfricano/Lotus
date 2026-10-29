@@ -87,16 +87,18 @@ public static class SettingsAdvisor
         if (native < 40) reasons.Add("GsReasonLowEnd");
         if (p.CpuThreads is > 0 and <= 4) reasons.Add("GsReasonCpu");
         if (p.RamMb is > 0 and < 12_000) reasons.Add("GsReasonRam");
-        var cap = target;
+        // FPS cap follows the monitor: 3 below its refresh rate (VRR stays engaged, no V-Sync lag, no tearing);
+        // a PC that cannot feed the monitor keeps its steady target instead. The goal changes quality, not the cap.
+        var cap = target < refresh ? target : Math.Max(57, refresh - 3);
         if (goal is "fps" or "competitive")
         {
             var drop = goal == "fps" ? 1 : 2;
             tier = (QualityTier)Math.Max((int)QualityTier.Low, (int)tier - drop);
             textures = (QualityTier)Math.Min((int)textures, Math.Max((int)tier, (int)textures - drop + 1));
-            cap = Math.Min(goal == "fps" ? 240 : 300, refresh * 2);
             reasons.Add(goal == "fps" ? "GsReasonGoalFps" : "GsReasonGoalCompetitive");
         }
         else reasons.Add("GsReasonCap");
+        if (cap == refresh - 3) reasons.Add("GsReasonMonitorCap");
         return new(tier, textures, upscaler, mode, cap, target, score, reasons);
     }
 }
@@ -125,6 +127,8 @@ public interface IGameProcessCheck
 {
     bool IsRunning(GameEntry game);
     RunningGame? Find(GameEntry game) => null; // main game process, used by the measurement loop
+    // First library game with a process running; one pass over the process list when the implementation can.
+    GameEntry? FirstRunning(IReadOnlyList<GameEntry> games) => games.FirstOrDefault(IsRunning);
 }
 
 // ---- Measurement loop ----
