@@ -194,7 +194,8 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
 
     // ---- Low latency per game ----
     // [Framerate] SyncLimiter follows the order of RTSS's limiter modes: 0 async, 1 front edge sync, 2 back edge sync,
-    // 3 NVIDIA Reflex. RTSS documents that the Reflex limiter also enables Reflex low-latency in games without native
+    // 3 NVIDIA Reflex (checked in RTSS 7.3.7 on 29/10/2026: the profile shows "NVIDIA Reflex"). RTSS documents that the
+    // Reflex limiter also enables Reflex low-latency in games without native
     // Reflex; it works on NVIDIA GPUs with Direct3D 11/12 and falls back to async elsewhere.
     public const string ReflexLimiter = "3";
     public bool? LowLatencyOn(string exe)
