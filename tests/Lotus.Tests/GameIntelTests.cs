@@ -38,6 +38,9 @@ public sealed class GameIntelTests
         var weak = SettingsAdvisor.Recommend(new("NVIDIA GeForce GTX 1650", 4096, 4, 8_000, 1920, 1080, 75));
         Assert.Equal(37.5, weak.PacedCap); Assert.Contains("GsReasonHalfRate", weak.ReasonKeys);           // cannot hold 75: exact half
         Assert.Equal(60, SettingsAdvisor.Recommend(new("NVIDIA GeForce GTX 1650", 4096, 4, 8_000, 1920, 1080, 144), "balanced", adaptiveSync: true).FpsCap);
+        var fast = new SystemProfile("NVIDIA GeForce RTX 4090", 24576, 32, 64_000, 1920, 1080, 240);
+        Assert.Equal(237, SettingsAdvisor.Recommend(fast, "balanced", adaptiveSync: true).FpsCap);           // 240 Hz is not cut to 144
+        Assert.Equal(0, 240 % (int)SettingsAdvisor.Recommend(fast).PacedCap);                                   // fixed rate: an exact fraction of 240
     }
 
     [Fact] public void EdidRevealsNameRangeAndFreeSync()

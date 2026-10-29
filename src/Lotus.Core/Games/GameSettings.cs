@@ -67,7 +67,8 @@ public static class SettingsAdvisor
     {
         var reasons = new List<string>();
         var score = GpuScore.Estimate(p.GpuName, p.VramMb);
-        var refresh = Math.Clamp(p.RefreshHz <= 0 ? 60 : p.RefreshHz, 60, 144);
+        // The real refresh rate of the player's monitor (60 when Windows does not report it); 165, 240 Hz and up are kept.
+        var refresh = Math.Clamp(p.RefreshHz <= 0 ? 60 : p.RefreshHz, 50, 500);
         double Capability(int fps) => score / Math.Max(0.5, Math.Max(1, p.Width) * Math.Max(1, p.Height) / (1920.0 * 1080.0) * (fps / 60.0));
         // Weak PCs aim for a steady 60 instead of chasing a high-refresh monitor they cannot feed.
         var target = refresh > 60 && Capability(refresh) < 70 ? 60 : refresh;
