@@ -54,7 +54,7 @@ public sealed partial class DiaryPanel : UserControl
         if (Vm is not { } vm) return;
         Initial.Text = vm.Name.Length > 0 ? char.ToUpperInvariant(vm.Name[0]).ToString() : "P";
         Picture.Visibility = Visibility.Collapsed;
-        if (vm.Avatar is { Length: > 0 } a && File.Exists(a)) { PictureBrush.ImageSource = new BitmapImage(new Uri(a)); Picture.Visibility = Visibility.Visible; }
+        if (vm.Avatar is { Length: > 0 } a && File.Exists(a)) { PictureBrush.ImageSource = new BitmapImage(new Uri(a)) { DecodePixelWidth = 200 }; Picture.Visibility = Visibility.Visible; }
         // XP bar glides to its value.
         var target = vm.LevelPercent; var from = XpBar.Value; var start = DateTime.UtcNow;
         if (!Motion.Enabled) { XpBar.Value = target; }

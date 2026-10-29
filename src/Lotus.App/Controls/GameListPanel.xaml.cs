@@ -84,7 +84,7 @@ public sealed partial class GameListPanel : UserControl
         ShuffleIdle.Visibility = Visibility.Collapsed;
         for (var i = 0; i < covers.Count; i++) { ShowCover(covers[i]); Motion.Pop(ShuffleArt); await Task.Delay(90 + i * 18); }
     }
-    private void ShowCover(string url) { if (Uri.TryCreate(url, UriKind.Absolute, out var u)) { ShuffleArt.Source = new BitmapImage(u); ShuffleIdle.Visibility = Visibility.Collapsed; } }
+    private void ShowCover(string url) { if (Uri.TryCreate(url, UriKind.Absolute, out var u)) { ShuffleArt.Source = new BitmapImage(u) { DecodePixelWidth = 280 }; ShuffleIdle.Visibility = Visibility.Collapsed; } }
 
     // Covers load in steps: portrait art → wide header → the exact art path from the store API (newer games keep
     // their art under hashed paths). The grid recycles cards, so each step checks the card still shows that game.

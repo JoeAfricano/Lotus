@@ -65,7 +65,7 @@ public sealed partial class TrophyToast : UserControl
         MedalGlyph.Glyph = item.Glyph;
         MedalFill.Fill = (Microsoft.UI.Xaml.Media.Brush)new TierFillConverter().Convert(item.Tier, typeof(object), null!, "");
         ArtFrame.Visibility = Visibility.Collapsed;
-        if (item.Art is { } art && Uri.TryCreate(art, UriKind.Absolute, out var u)) { Art.ImageSource = new BitmapImage(u); ArtFrame.Visibility = Visibility.Visible; }
+        if (item.Art is { } art && Uri.TryCreate(art, UriKind.Absolute, out var u)) { Art.ImageSource = new BitmapImage(u) { DecodePixelWidth = 160 }; ArtFrame.Visibility = Visibility.Visible; }
         Visibility = Visibility.Visible;
         var sb = new Storyboard();
         Add(sb, Card, "Opacity", 0, 1, 260);

@@ -1961,4 +1961,5 @@ Your games and Windows are not changed.</value></data>
   <data name="TuneScoreLine" xml:space="preserve"><value>From your Lotus Score, this game should run at about {0} FPS at {1} on {2}, without upscaling.</value></data>
   <data name="TuneScoreHint" xml:space="preserve"><value>Run the full Lotus Score test to see how much FPS this game should get on your PC.</value></data>
   <data name="GsReasonMonitorCap" xml:space="preserve"><value>The cap sits 3 FPS below your monitor refresh rate: with G-Sync/FreeSync the picture stays smooth, without V-Sync delay or tearing.</value></data>
+  <data name="TuneScoreSearch" xml:space="preserve"><value>This game is not in the Lotus Score database yet. Search for it in Lotus Score › Estimated FPS and the expected FPS shows up here.</value></data>
 </root>

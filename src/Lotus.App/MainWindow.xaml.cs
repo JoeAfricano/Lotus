@@ -118,6 +118,7 @@ public sealed partial class MainWindow : Window
             return score.EstimateFor(g.Name, g.Store == Lotus.Core.Games.GameStores.Steam ? g.Id : null, res, preset) is { Fps: > 0 } cell
                 ? text.Format("TuneScoreLine", cell.Fps, text["ScoreRes" + res], text["ScorePreset" + preset]) : null;
         };
+        games.ScoreHint = () => text[score.HasFullTest ? "TuneScoreSearch" : "TuneScoreHint"];
         games.Goal = () => preferences.Current.Goal;
         _ = games.EnsureLoadedAsync(); // Home shows game shortcuts right away
         SetUpBackground();
@@ -128,7 +129,7 @@ public sealed partial class MainWindow : Window
         score.Sensors = () => { var s = monitoring.Snapshot; var g = s?.Gpu.Devices.FirstOrDefault(); return (s?.Cpu.TotalUtilizationPercent.Value, g?.Get(Lotus.Core.Telemetry.GpuSensor.Temperature)?.Value, g?.Get(Lotus.Core.Telemetry.GpuSensor.Power)?.Value); };
         score.FindGame = (q, t) => catalog.RequirementsAsync(q, t);
         score.InstalledGames = () => games.InstalledGames().Select(g => (g.Name, g.Store == Lotus.Core.Games.GameStores.Steam ? (string?)g.Id : null));
-        score.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(score.Busy)) DispatcherQueue.TryEnqueue(UpdateMonitoringDemand); };
+        score.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(score.Busy)) DispatcherQueue.TryEnqueue(() => { UpdateMonitoringDemand(); UpdateLightMode(); }); };
         InitializeComponent();
         Shell = this;
         ShellRoot.DataContext = ViewModel;
@@ -489,7 +490,7 @@ public sealed partial class MainWindow : Window
         if (analysing) return;
         var game = await Task.Run(games.RunningGame);
         if (game is null) { osd.Show(text["OsdNoGame"]); await Task.Delay(4000); osd.Clear(); return; }
-        analysing = true; UiSound.Play(UiSound.Cue.Notify); // the in-game check starts
+        analysing = true; UpdateLightMode(); UiSound.Play(UiSound.Cue.Notify); // the in-game check starts
         try
         {
             const int seconds = 30, delay = 3;
@@ -515,7 +516,7 @@ public sealed partial class MainWindow : Window
             }
             await Task.Delay(9000);
         }
-        finally { osd.Clear(); analysing = false; }
+        finally { osd.Clear(); analysing = false; UpdateLightMode(); }
     }
     // In-game progress bar for RivaTuner's OSD: 24 bars, rose for the measured part, dim plum for the rest.
     private static string OsdBar(int done, int total)

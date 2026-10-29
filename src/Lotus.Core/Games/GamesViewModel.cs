@@ -316,9 +316,10 @@ public sealed class GamesViewModel : ObservableObject
     public IGameTechScanner? TechScanner { get; set; }
     // Expected FPS line from the Lotus Score (set by the window); null when there is no full test or the game is unknown.
     public Func<GameEntry, SettingsRecommendation, SystemProfile, string?>? ScoreLine { get; set; }
+    public Func<string>? ScoreHint { get; set; } // shown when there is no estimate (no full test yet, or a game the Score does not know)
     private readonly Dictionary<string, StutterReport> lastReports = new(StringComparer.OrdinalIgnoreCase);
     public StutterReport? LastReport(GameEntry game) => lastReports.GetValueOrDefault(game.Key);
-    public sealed record GameTune(GameSettingsAnalysis Settings, GameTech Tech, IReadOnlyList<string> TechChips, IReadOnlyList<(string Title, string Body)> Tips, StutterReport? Last, bool Running, string? ScoreLine = null);
+    public sealed record GameTune(GameSettingsAnalysis Settings, GameTech Tech, IReadOnlyList<string> TechChips, IReadOnlyList<(string Title, string Body)> Tips, StutterReport? Last, bool Running, string? ScoreLine = null, string? ScoreHint = null);
 
     public async Task<GameTune?> TuneAsync(GameEntry game)
     {
@@ -335,7 +336,7 @@ public sealed class GamesViewModel : ObservableObject
                 var tips = InGameAdvisor.Advise(tech, settings.Recommendation, profileSource!.Read(), last?.Findings, Goal?.Invoke() ?? "balanced")
                     .Select(t => { object[] a = [.. t.Args.Select(Localize)]; return (Text.Format(t.Key + "Title", a), Text.Format(t.Key + "Body", a)); }).ToList();
                 var pc = profileSource.Read();
-                return new GameTune(settings, tech, chips, tips, last, processCheck?.IsRunning(game) == true, ScoreLine?.Invoke(game, settings.Recommendation, pc));
+                return new GameTune(settings, tech, chips, tips, last, processCheck?.FirstRunning([game]) is not null, ScoreLine?.Invoke(game, settings.Recommendation, pc), ScoreHint?.Invoke());
             });
         }
         catch (Exception ex) { log(ex); return null; }

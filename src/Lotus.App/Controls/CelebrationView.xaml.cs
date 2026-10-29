@@ -26,7 +26,7 @@ public sealed partial class CelebrationView : UserControl
         var e = change.Entry;
         Title.Text = t[change.JustCompleted ? "DyCelebrateDone" : "DyCelebrateSaved"];
         GameName.Text = e.Name;
-        Cover.Source = e.Cover is { } c && Uri.TryCreate(c, UriKind.Absolute, out var u) ? new BitmapImage(u) : null;
+        Cover.Source = e.Cover is { } c && Uri.TryCreate(c, UriKind.Absolute, out var u) ? new BitmapImage(u) { DecodePixelWidth = 320 } : null;
         ToDiary.Content = t["DyCelebrateShare"]; Continue.Content = t["DyCelebrateContinue"];
         var after = Progression.LevelStart(change.LevelAfter); var next = Progression.LevelStart(change.LevelAfter + 1);
         LevelLabel.Text = t.Format("DyLevel", change.LevelAfter) + " · " + t[Progression.TitleKey(change.LevelAfter)];

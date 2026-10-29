@@ -25,7 +25,7 @@ public sealed partial class DiaryEditorView : UserControl
         DataContext = vm;
         Eyebrow.Text = vm.Text[vm.IsNew ? "DyEditorTitle" : "DyEditorEdit"].ToUpperInvariant();
         SaveLabel.Text = vm.Text[vm.IsNew ? "DyAdd" : "DySave"];
-        Load(CoverArt, vm.Cover ?? vm.Wide); Load(HeaderArt, vm.Wide ?? vm.Cover);
+        Load(CoverArt, vm.Cover ?? vm.Wide); Load(HeaderArt, vm.Wide ?? vm.Cover, 1100);
         syncing = true; StartPicker.Date = vm.Started; EndPicker.Date = vm.Finished; syncing = false; // null shows an empty picker
         vm.PropertyChanged -= OnVmDates; vm.PropertyChanged += OnVmDates;
         PaintScore();
@@ -124,11 +124,11 @@ public sealed partial class DiaryEditorView : UserControl
         ScoreBig.FontSize = vm.RatingKind == "none" ? 22 : 44;
     }
 
-    private static void Load(Image target, string? url)
+    private static void Load(Image target, string? url, int width = 320)
     {
         target.Source = null;
         if (url is null) return;
-        if (Uri.TryCreate(url, UriKind.Absolute, out var u)) target.Source = new BitmapImage(u);
+        if (Uri.TryCreate(url, UriKind.Absolute, out var u)) target.Source = new BitmapImage(u) { DecodePixelWidth = width };
     }
     private static void Fade(UIElement e, double from, double to, int ms) { var sb = new Storyboard(); Add(sb, e, "Opacity", from, to, ms); sb.Begin(); }
     private static void Animate(DependencyObject target, string property, double from, double to, int ms, EasingFunctionBase ease) { var sb = new Storyboard(); Add(sb, target, property, from, to, ms, ease); sb.Begin(); }

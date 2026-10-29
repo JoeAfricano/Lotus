@@ -1961,4 +1961,5 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="TuneScoreLine" xml:space="preserve"><value>Pelo seu Lotus Score, este jogo deve rodar a cerca de {0} FPS em {1} no {2}, sem upscaling.</value></data>
   <data name="TuneScoreHint" xml:space="preserve"><value>Faça o teste completo do Lotus Score para ver quanto FPS este jogo deve dar no seu PC.</value></data>
   <data name="GsReasonMonitorCap" xml:space="preserve"><value>O limite fica 3 FPS abaixo da taxa do seu monitor: com G-Sync/FreeSync a imagem fica lisa, sem o atraso do V-Sync e sem tearing.</value></data>
+  <data name="TuneScoreSearch" xml:space="preserve"><value>Este jogo ainda não está na base do Lotus Score. Busque o nome dele em Lotus Score › FPS estimado e o FPS esperado aparece aqui.</value></data>
 </root>

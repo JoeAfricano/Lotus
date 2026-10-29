@@ -97,7 +97,7 @@ public sealed partial class GameTunePanel : UserControl
         var score = new Border { Padding = new Thickness(14, 10, 14, 10), CornerRadius = new CornerRadius(12), BorderThickness = new Thickness(1), Background = Res("AccentSoftBrush"), BorderBrush = Res("RoseBrush") };
         var line = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
         line.Children.Add(new FontIcon { Glyph = "", FontSize = 16, Foreground = Res("RoseBrush"), VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, 2, 0, 0) });
-        line.Children.Add(new TextBlock { Text = t.ScoreLine ?? text["TuneScoreHint"], FontSize = 12.5, FontWeight = t.ScoreLine is null ? Microsoft.UI.Text.FontWeights.Normal : Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, MaxWidth = 430 });
+        line.Children.Add(new TextBlock { Text = t.ScoreLine ?? t.ScoreHint ?? text["TuneScoreHint"], FontSize = 12.5, FontWeight = t.ScoreLine is null ? Microsoft.UI.Text.FontWeights.Normal : Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, MaxWidth = 430 });
         score.Child = line;
         var hwPanel = new StackPanel { Spacing = 8 }; hwPanel.Children.Add(score); hwPanel.Children.Add(Caption(t.Settings.Hardware));
         Grid.SetRow(hwPanel, 2); Grid.SetColumnSpan(hwPanel, 2); grid.Children.Add(hwPanel);

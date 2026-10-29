@@ -25,14 +25,14 @@ public sealed partial class PlayerPanel : UserControl
         DataContext = vm; vm.Refresh();
         PlayerName.Text = name; Initial.Text = name.Length > 0 ? char.ToUpperInvariant(name[0]).ToString() : "P";
         Picture.Visibility = Visibility.Collapsed;
-        if (picture is { Length: > 0 } && File.Exists(picture)) { PictureBrush.ImageSource = new BitmapImage(new Uri(picture)); Picture.Visibility = Visibility.Visible; }
+        if (picture is { Length: > 0 } && File.Exists(picture)) { PictureBrush.ImageSource = new BitmapImage(new Uri(picture)) { DecodePixelWidth = 128 }; Picture.Visibility = Visibility.Visible; }
         LastArt.Opacity = 0;
         if (vm.Last?.Game is { } g)
         {
             var url = g.Store == GameStores.Steam ? Lotus.Core.Catalog.CatalogText.Hero(g.Id) : g.CoverPath;
             if (url is not null && Uri.TryCreate(url, UriKind.Absolute, out var u))
             {
-                var bmp = new BitmapImage(u); bmp.ImageOpened += (_, _) => Animate(LastArt, "Opacity", 0, 1, 400);
+                var bmp = new BitmapImage(u) { DecodePixelWidth = 900 }; bmp.ImageOpened += (_, _) => Animate(LastArt, "Opacity", 0, 1, 400);
                 LastArt.Source = bmp;
             }
         }
@@ -76,7 +76,7 @@ public sealed partial class PlayerPanel : UserControl
         foreach (var card in d.Shelf(6))
         {
             var cover = new Border { Width = 52, Height = 70, CornerRadius = new CornerRadius(8), Background = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["HeroBrush"] };
-            if (card.Cover is { } c && Uri.TryCreate(c, UriKind.Absolute, out var u)) cover.Child = new Image { Source = new BitmapImage(u), Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill };
+            if (card.Cover is { } c && Uri.TryCreate(c, UriKind.Absolute, out var u)) cover.Child = new Image { Source = new BitmapImage(u) { DecodePixelWidth = 96 }, Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill };
             var b = new Button { Content = cover, Padding = new Thickness(0), Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent), BorderThickness = new Thickness(0) };
             ToolTipService.SetToolTip(b, card.Name + " · " + card.Status);
             var entry = card.Entry; b.Click += (_, _) => { Close(); MainWindow.Shell?.OpenDiaryEditor(entry); };

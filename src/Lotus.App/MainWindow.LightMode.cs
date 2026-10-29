@@ -54,11 +54,13 @@ public sealed partial class MainWindow
         if (visible && pageReleased) { pageReleased = false; ShowRoute(force: true); }
 
         // Hidden or minimized always counts as "not in front" (releasing the page can raise a spurious activation).
-        var wantEfficiency = !visible || (!windowActive && lightGame is not null);
+        // Never while something is being measured: throttling Lotus would skew a Score test, a capture or the in-game check.
+        var measuring = analysing || score.Busy || benchmark.Busy || experience.IsAnalyzing;
+        var wantEfficiency = !measuring && (!visible || (!windowActive && lightGame is not null));
         if (wantEfficiency != efficiency) { efficiency = wantEfficiency; SetEfficiency(efficiency); }
 
         // Minimized or in the tray for 20 s: release the page (not while an analysis or a Score test runs on it).
-        if (!visible && !pageReleased && hiddenSince is { } since && DateTimeOffset.Now - since > TimeSpan.FromSeconds(20) && !analysing && !score.Busy)
+        if (!visible && !pageReleased && hiddenSince is { } since && DateTimeOffset.Now - since > TimeSpan.FromSeconds(20) && !measuring)
         {
             pageReleased = true;
             ContentFrame.Content = null; ContentFrame.BackStack.Clear(); displayedSectionId = null;

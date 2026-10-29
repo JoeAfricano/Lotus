@@ -31,7 +31,7 @@ public sealed partial class ContinueCard : UserControl
         root.Children.Add(lotus);
         if (url is not null && Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var uri) && (uri.IsAbsoluteUri || File.Exists(url)))
         {
-            var img = new Image { Stretch = Stretch.UniformToFill, Opacity = 0, Source = new BitmapImage(uri.IsAbsoluteUri ? uri : new Uri(System.IO.Path.GetFullPath(url))) };
+            var img = new Image { Stretch = Stretch.UniformToFill, Opacity = 0, Source = new BitmapImage(uri.IsAbsoluteUri ? uri : new Uri(System.IO.Path.GetFullPath(url))) { DecodePixelWidth = 640 } };
             ((BitmapImage)img.Source).ImageOpened += (_, _) => { HomeMotion.Fade(img, 1, 600); HomeMotion.Drift(img); lotus.Visibility = Visibility.Collapsed; };
             ((BitmapImage)img.Source).ImageFailed += (_, _) => img.Visibility = Visibility.Collapsed;
             root.Children.Add(img);

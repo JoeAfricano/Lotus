@@ -88,7 +88,7 @@ public sealed partial class HomeBanner : UserControl
     {
         if (photos.TryGetValue(url, out var b)) return b;
         if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return null;
-        var bmp = new BitmapImage(uri);
+        var bmp = new BitmapImage(uri) { DecodePixelWidth = 1600 }; // banner width, not the full photo
         bmp.ImageFailed += (_, _) => { failed.Add(url); photos.Remove(url); }; // remembered so later slides skip it
         return photos[url] = bmp;
     }
