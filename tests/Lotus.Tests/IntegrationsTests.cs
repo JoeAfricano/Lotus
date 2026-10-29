@@ -40,7 +40,8 @@ public sealed class IntegrationsTests : IDisposable
         Assert.True(RtssProfiles.Restore("Global", Profiles, Backups));
         Assert.Equal(Global, File.ReadAllText(Path.Combine(Profiles, "Global"))); Assert.False(RtssProfiles.Restore("Global", Profiles, Backups));
         RtssProfiles.Apply(new("game.exe", [new("Framerate", "Limit", "60")]), Profiles, Backups);
-        Assert.True(RtssProfiles.Restore("game.exe", Profiles, Backups)); Assert.False(File.Exists(Path.Combine(Profiles, "game.exe"))); // new profile removed on restore
+        Assert.True(File.Exists(Path.Combine(Profiles, "game.exe.cfg"))); // RTSS names game profiles "<game>.exe.cfg"
+        Assert.True(RtssProfiles.Restore("game.exe", Profiles, Backups)); Assert.False(File.Exists(Path.Combine(Profiles, "game.exe.cfg"))); // new profile removed on restore
     }
 
     // Simulates the elevated helper in-process against the temp folders (tests never request admin rights).
@@ -67,12 +68,12 @@ public sealed class IntegrationsTests : IDisposable
         var rtss = new WindowsRtssIntegration(Profiles, Backups, FakeElevated);
         Assert.False(rtss.LowLatencyOn("Cyberpunk2077.exe")); Assert.Null(rtss.LowLatencyOn("..\evil.exe"));
         Assert.True(await rtss.EnableLowLatencyAsync("Cyberpunk2077.exe", 72));
-        var ini = new IniText(File.ReadAllText(Path.Combine(Profiles, "Cyberpunk2077.exe")));
+        var ini = new IniText(File.ReadAllText(Path.Combine(Profiles, "Cyberpunk2077.exe.cfg")));
         Assert.Equal("72", ini.Get("Framerate", "Limit")); Assert.Equal(WindowsRtssIntegration.ReflexLimiter, ini.Get("Framerate", "SyncLimiter"));
         Assert.Equal(Global, File.ReadAllText(Path.Combine(Profiles, "Global")));            // Global untouched
         Assert.True(rtss.LowLatencyOn("Cyberpunk2077.exe"));
         Assert.True(await rtss.DisableLowLatencyAsync("Cyberpunk2077.exe"));
-        Assert.False(File.Exists(Path.Combine(Profiles, "Cyberpunk2077.exe")));               // the profile did not exist before
+        Assert.False(File.Exists(Path.Combine(Profiles, "Cyberpunk2077.exe.cfg")));               // the profile did not exist before
         Assert.False(await rtss.EnableLowLatencyAsync("game.exe", 5));                          // nonsense cap refused
     }
 

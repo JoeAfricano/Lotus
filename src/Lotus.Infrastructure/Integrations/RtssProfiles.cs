@@ -32,11 +32,14 @@ public static partial class RtssProfiles
                 throw new InvalidOperationException($"Change not allowed: [{c.Section}] {c.Key}.");
     }
 
-    // Applies allowed changes, keeping the first original copy in backupDir. New per-game profiles start from the Global profile.
+    // Applies allowed changes, keeping the first original copy in backupDir. A new per-game profile holds only these keys:
+    // RTSS reads everything else from Global (its own templates work the same way).
+    // On disk the global profile is "Global" and a game profile is "<game>.exe.cfg" (as RTSS names them).
+    public static string FileName(string profile) => profile == "Global" ? profile : profile + ".cfg";
     public static void Apply(RtssRequest request, string profilesDir, string backupDir)
     {
         Validate(request);
-        var path = Path.Combine(profilesDir, request.Profile);
+        var path = Path.Combine(profilesDir, FileName(request.Profile));
         Directory.CreateDirectory(backupDir);
         BackupOnce(path, Path.Combine(backupDir, request.Profile + ".original"));
         var ini = new IniText(File.Exists(path) ? ReadAnsi(path) : "");
@@ -47,10 +50,10 @@ public static partial class RtssProfiles
     public static bool Restore(string profile, string profilesDir, string backupDir)
     {
         Validate(new(profile, []));
-        return RestoreBackup(Path.Combine(backupDir, profile + ".original"), Path.Combine(profilesDir, profile));
+        return RestoreBackup(Path.Combine(backupDir, profile + ".original"), Path.Combine(profilesDir, FileName(profile)));
     }
 
-    public static string? Read(string profile, string profilesDir) { var p = Path.Combine(profilesDir, profile); return File.Exists(p) ? ReadAnsi(p) : null; }
+    public static string? Read(string profile, string profilesDir) { var p = Path.Combine(profilesDir, FileName(profile)); return File.Exists(p) ? ReadAnsi(p) : null; }
 
     // RTSS files are ANSI. Latin-1 maps every byte to one char, so untouched lines are written back byte for byte.
     public static string ReadAnsi(string path) => File.ReadAllText(path, System.Text.Encoding.Latin1);
