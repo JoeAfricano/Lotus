@@ -81,6 +81,10 @@ public sealed class ThemePalette
         Set("MainTextBrush", t.Text); Set("MutedBrush", t.TextSecondary);
         Set("RoseBrush", accentText);
         Set("GoldBrush", gold);
+        // The Lotus logo never follows the theme: fixed brand colors, only a deeper shade on light backgrounds so it stays readable.
+        Set("BrandGoldBrush", light ? Rgb(0x8E, 0x58, 0x1E) : Rgb(0xEE, 0xC1, 0xA8));
+        Set("BrandRoseBrush", light ? Rgb(0xB0, 0x19, 0x5A) : Rgb(0xF5, 0x8B, 0xB7));
+        Set("BrandSoftBrush", light ? Argb(0x1F, 0xAD, 0x24, 0x5E) : Argb(0x33, 0xAD, 0x24, 0x5E));
         Set("OnRoseBrush", onAccent); Set("TextOnAccentFillColorPrimaryBrush", onAccent);
         Set("SubtleBrush", light ? Argb(0x1F, 0xB0, 0x19, 0x5A) : Argb(0x14, 255, 255, 255));
         Set("SuccessBrush", success); Set("WarningBrush", warning); Set("ErrorBrush", error);
@@ -138,7 +142,7 @@ public sealed class ThemePalette
         foreach (var key in new[] { "CardBorderBrush", "NavigationViewContentGridBorderBrush", "DividerBrush", "CardHoverBorderBrush", "MainTextBrush", "MutedBrush", "RoseBrush", "GoldBrush",
             "SuccessBrush", "WarningBrush", "ErrorBrush", "NavigationViewItemForeground", "NavigationViewItemForegroundPointerOver", "NavigationViewItemForegroundSelected", "TopNavigationViewItemForeground",
             "TopNavigationViewItemForegroundPointerOver", "TopNavigationViewItemForegroundPressed", "TopNavigationViewItemForegroundSelected", "TopNavigationViewItemForegroundSelectedPointerOver",
-            "TopNavigationViewItemForegroundSelectedPressed", "NavigationViewSelectionIndicatorForeground", "SystemControlFocusVisualPrimaryBrush" })
+            "TopNavigationViewItemForegroundSelectedPressed", "NavigationViewSelectionIndicatorForeground", "SystemControlFocusVisualPrimaryBrush", "BrandGoldBrush", "BrandRoseBrush" })
             Set(key, fg);
     }
 

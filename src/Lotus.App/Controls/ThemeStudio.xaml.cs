@@ -200,7 +200,7 @@ public sealed partial class ThemeStudio : UserControl
     private Brush KindPreview(string id)
     {
         if (id == "none") return new SolidColorBrush(ToColor(spec.Canvas));
-        if (id == "lotus") return (Brush)Application.Current.Resources["PetalBrush"];
+        if (id == "lotus") return (Brush)Application.Current.Resources["BrandPetalBrush"];
         var stops = new GradientStopCollection();
         var cs = spec.Backdrop.Colors;
         for (var i = 0; i < cs.Count; i++) stops.Add(new GradientStop { Color = ToColor(cs[i]), Offset = cs.Count == 1 ? 0 : (double)i / (cs.Count - 1) });

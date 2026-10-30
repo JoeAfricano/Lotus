@@ -15,6 +15,10 @@
   <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#E8378A" Offset="0"/><GradientStop Color="#A8124F" Offset="1"/></LinearGradientBrush>
   <LinearGradientBrush x:Key="GoldGradientBrush" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#F8DDCB" Offset="0"/><GradientStop Color="#E7AE93" Offset="0.6"/><GradientStop Color="#C98468" Offset="1"/></LinearGradientBrush>
   <LinearGradientBrush x:Key="PetalBrush" StartPoint="0.5,0" EndPoint="0.5,1"><GradientStop Color="#F0479A" Offset="0"/><GradientStop Color="#C2185B" Offset="0.55"/><GradientStop Color="#5E0A2E" Offset="1"/></LinearGradientBrush>
+  <!-- Brand: the Lotus logo (flower, name, "PLAY BETTER.") keeps these colors in every theme; ThemePalette never recolors them (only light/dark readability) -->
+  <LinearGradientBrush x:Key="BrandPetalBrush" StartPoint="0.5,0" EndPoint="0.5,1"><GradientStop Color="#F0479A" Offset="0"/><GradientStop Color="#C2185B" Offset="0.55"/><GradientStop Color="#5E0A2E" Offset="1"/></LinearGradientBrush>
+  <LinearGradientBrush x:Key="BrandGoldGradientBrush" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#F8DDCB" Offset="0"/><GradientStop Color="#E7AE93" Offset="0.6"/><GradientStop Color="#C98468" Offset="1"/></LinearGradientBrush>
+  <SolidColorBrush x:Key="BrandGoldBrush" Color="#EEC1A8"/><SolidColorBrush x:Key="BrandRoseBrush" Color="#F58BB7"/><SolidColorBrush x:Key="BrandSoftBrush" Color="#33AD245E"/>
   <local:BooleanChoiceConverter x:Key="SelectedBorder" TrueValue="{StaticResource RoseBrush}" FalseValue="{StaticResource CardBorderBrush}"/>
   <local:BooleanChoiceConverter x:Key="AttentionBrush" TrueValue="{StaticResource WarningBrush}" FalseValue="{StaticResource RoseBrush}"/>
   <local:BooleanChoiceConverter x:Key="SelectedSurface" TrueValue="{StaticResource HeroBrush}" FalseValue="{StaticResource CardBrush}"/>
