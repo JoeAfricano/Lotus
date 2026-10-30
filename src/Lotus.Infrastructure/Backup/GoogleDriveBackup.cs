@@ -35,8 +35,9 @@ public interface ITokenVault { string? Read(); void Write(string value); void Cl
 
 // Google Drive copy of the backup. Sign-in happens in the player's browser (OAuth for desktop apps: loopback redirect
 // with PKCE); Lotus never sees the password. Scope drive.file: Lotus only sees the files it created itself.
-public sealed class GoogleDriveBackup(GoogleOAuthConfig? config, ITokenVault vault, Func<Uri, Task> openBrowser, HttpClient? http = null) : ICloudBackup
+public sealed class GoogleDriveBackup(GoogleOAuthConfig? initial, ITokenVault vault, Func<Uri, Task> openBrowser, HttpClient? http = null) : ICloudBackup
 {
+    private GoogleOAuthConfig? config = initial;
     private const string Scope = "https://www.googleapis.com/auth/drive.file openid email";
     private const string FolderName = "Lotus Backups";
     private readonly HttpClient http = http ?? new HttpClient { Timeout = TimeSpan.FromSeconds(60) };
@@ -44,6 +45,26 @@ public sealed class GoogleDriveBackup(GoogleOAuthConfig? config, ITokenVault vau
     private DateTimeOffset accessUntil;
 
     public bool Configured => config is not null;
+
+    // The Google Cloud "Desktop app" client file (as Google offers it for download), kept in %LOCALAPPDATA%\Lotus so
+    // this PC can use Google Drive even in a build that has no client inside.
+    public bool ImportClient(string path)
+    {
+        var folder = Path.Combine(Path.GetTempPath(), "lotus-client-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            Directory.CreateDirectory(folder);
+            File.Copy(path, Path.Combine(folder, "google-oauth.json"));
+            if (GoogleOAuthConfig.Load(folder) is not { } loaded) return false;
+            var target = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "google-oauth.json");
+            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+            File.Copy(path, target, overwrite: true);
+            config = loaded;
+            return true;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return false; }
+        finally { try { Directory.Delete(folder, true); } catch (IOException) { } }
+    }
     // vault value: "<email>\n<refresh token>"
     public string? Account => vault.Read()?.Split('\n', 2)[0] is { Length: > 0 } a ? a : null;
 
@@ -106,7 +127,7 @@ public sealed class GoogleDriveBackup(GoogleOAuthConfig? config, ITokenVault vau
         body.Add(file);
         using var doc = await Send(HttpMethod.Post, "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,createdTime,size", body, token);
         var created = Item(doc.RootElement);
-        await PruneAsync(folder, keep: 10, token);
+        await PruneAsync(folder, keep: 5, token); // the 5 newest stay in Drive, so it never fills up
         return created;
     }
 
@@ -127,6 +148,15 @@ public sealed class GoogleDriveBackup(GoogleOAuthConfig? config, ITokenVault vau
         using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
         response.EnsureSuccessStatusCode();
         await response.Content.CopyToAsync(target, token);
+    }
+
+    // Only files Lotus created itself can be seen (drive.file), so only Lotus backups can be deleted here.
+    public async Task DeleteAsync(string id, CancellationToken token)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Delete, $"https://www.googleapis.com/drive/v3/files/{Uri.EscapeDataString(id)}");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await AccessAsync(token));
+        using var response = await http.SendAsync(request, token);
+        response.EnsureSuccessStatusCode();
     }
 
     // The "Lotus Backups" folder (created on first use).

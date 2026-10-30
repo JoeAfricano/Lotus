@@ -101,12 +101,20 @@ Name: "{userdesktop}\Lotus"; Filename: "{app}\Lotus.App.exe"; WorkingDir: "{app}
 
 [Run]
 Filename: "{app}\Lotus.App.exe"; Description: "{cm:Launch}"; Flags: nowait postinstall skipifsilent
+; Update started from inside Lotus (/relaunch=1): open Lotus again once the files are in place.
+Filename: "{app}\Lotus.App.exe"; Flags: nowait; Check: RelaunchAfterUpdate
 
 [UninstallRun]
 ; Removes the "start with Windows" entry if the player turned it on (HKCU Run value written by Lotus).
 Filename: "{sys}\reg.exe"; Parameters: "delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v Lotus /f"; Flags: runhidden; RunOnceId: "LotusRun"
 
 [Code]
+// In-app update: Lotus runs this setup silently with /relaunch=1 and expects to be opened again afterwards.
+function RelaunchAfterUpdate(): Boolean;
+begin
+  Result := WizardSilent() and (ExpandConstant('{param:relaunch|0}') = '1');
+end;
+
 // Lotus keeps running in the tray when its window is closed, so the installer and the uninstaller close it first
 // (otherwise its files are in use). Only Lotus.App.exe is touched.
 procedure CloseLotus();

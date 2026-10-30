@@ -14,6 +14,9 @@ public sealed class LotusBackupArchive(string? root = null, string appVersion = 
     private static readonly string[] Files = ["preferences.json", "player.json", "diary.json", "achievements.json", "games-hidden.json", "score-history.json", "benchmarks.db", "resume-notes.json", "save-protection.json", "game-prefs.json"];
     private static readonly string[] Folders = ["Profiles", "Library", "Overlays", "Profile", "Benchmarks"];
     private const string ManifestName = "manifest.json", AvatarPrefix = "external/avatar";
+    // Save protection: the newest valid copy of each game's saves travels in the backup (SaveBackups/<game>/<id>/...).
+    // Restoring puts it back among the game's copies; the game's own save folder is only changed from 'Backup de saves'.
+    private const string SavesFolder = "SaveBackups";
     private readonly string root = root ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus");
 
     public string FileExtension => ".lotusbackup";
@@ -36,19 +39,81 @@ public sealed class LotusBackupArchive(string? root = null, string appVersion = 
         return list;
     }
 
+    // The newest verified copy of each protected game (by its manifest date); unfinished or damaged copies never go in.
+    private List<string> LatestSaves()
+    {
+        var list = new List<string>();
+        var saves = Path.Combine(root, SavesFolder);
+        if (!Directory.Exists(saves)) return list;
+        foreach (var game in Directory.EnumerateDirectories(saves))
+        {
+            string? best = null; var bestDate = DateTimeOffset.MinValue;
+            foreach (var snap in Directory.EnumerateDirectories(game).Where(d => !d.EndsWith(".partial", StringComparison.OrdinalIgnoreCase)))
+            {
+                try
+                {
+                    var node = JsonNode.Parse(File.ReadAllText(Path.Combine(snap, ManifestName)));
+                    if (node?["Validation"]?.GetValue<string>() != "valid" || node["Created"]?.GetValue<DateTimeOffset>() is not { } created) continue;
+                    if (created > bestDate) { bestDate = created; best = snap; }
+                }
+                catch (Exception ex) when (ex is IOException or JsonException or InvalidOperationException or FormatException or UnauthorizedAccessException) { }
+            }
+            if (best is null) continue;
+            list.AddRange(Directory.EnumerateFiles(best, "*", SearchOption.AllDirectories)
+                .Where(f => new FileInfo(f).LinkTarget is null)
+                .Select(f => Path.GetRelativePath(root, f).Replace('\\', '/'))
+                .Where(Allowed));
+        }
+        return list;
+    }
+
+    // Save copies from a backup join the game's copies; a copy that is already here is left as it is.
+    private void RestoreSaves(ZipArchive zip)
+    {
+        foreach (var group in zip.Entries.Where(e => !e.FullName.EndsWith('/') && Allowed(e.FullName) && e.FullName.StartsWith(SavesFolder + "/", StringComparison.OrdinalIgnoreCase))
+                     .GroupBy(e => string.Join('/', e.FullName.Split('/').Take(3)), StringComparer.OrdinalIgnoreCase))
+        {
+            var final = Path.GetFullPath(Path.Combine(root, group.Key.Replace('/', Path.DirectorySeparatorChar)));
+            if (!final.StartsWith(Path.GetFullPath(root) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) || Directory.Exists(final)) continue;
+            var partial = final + ".partial";
+            try
+            {
+                if (Directory.Exists(partial)) Directory.Delete(partial, true);
+                foreach (var entry in group)
+                {
+                    var rel = entry.FullName[(group.Key.Length + 1)..];
+                    var target = Path.GetFullPath(Path.Combine(partial, rel.Replace('/', Path.DirectorySeparatorChar)));
+                    if (!target.StartsWith(partial + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)) continue;
+                    Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                    entry.ExtractToFile(target, overwrite: true);
+                }
+                if (File.Exists(Path.Combine(partial, ManifestName))) Directory.Move(partial, final); // complete copies only
+            }
+            catch (IOException) { }
+            finally { try { if (Directory.Exists(partial)) Directory.Delete(partial, true); } catch (IOException) { } }
+        }
+    }
+
     // Only paths a backup may contain; anything else (or "..") is refused.
     public static bool Allowed(string path)
     {
         if (path.Contains("..") || path.Contains(':') || path.StartsWith('/') || path.Contains('\\')) return false;
         if (Files.Contains(path, StringComparer.OrdinalIgnoreCase)) return true;
         if (path.StartsWith(AvatarPrefix, StringComparison.OrdinalIgnoreCase) && !path[AvatarPrefix.Length..].Contains('/')) return true;
-        var first = path.Split('/')[0];
-        return path.Contains('/') && Folders.Contains(first, StringComparer.OrdinalIgnoreCase);
+        var parts = path.Split('/');
+        if (string.Equals(parts[0], SavesFolder, StringComparison.OrdinalIgnoreCase))
+            return parts.Length >= 4 && parts.All(p => p.Length > 0 && p != ".") && !parts[2].EndsWith(".partial", StringComparison.OrdinalIgnoreCase)
+                && (parts.Length == 4 && parts[3] == ManifestName || parts.Length > 4 && parts[3] == "files");
+        return path.Contains('/') && Folders.Contains(parts[0], StringComparer.OrdinalIgnoreCase);
     }
 
-    public BackupManifest Write(Stream output)
+    public BackupManifest Write(Stream output) => Write(output, includeSaves: true);
+
+    // Safety and automatic copies stay small: the save copies are already on this PC.
+    private BackupManifest Write(Stream output, bool includeSaves)
     {
         var files = CurrentFiles();
+        if (includeSaves) files.AddRange(LatestSaves());
         var avatar = AvatarOutsideRoot();
         using var zip = new ZipArchive(output, ZipArchiveMode.Create, leaveOpen: true);
         var stored = new List<string>();
@@ -95,7 +160,7 @@ public sealed class LotusBackupArchive(string? root = null, string appVersion = 
             SafetyCopy("before-restore");
             foreach (var entry in zip.Entries.Where(e => e.FullName != ManifestName && e.Length >= 0 && !e.FullName.EndsWith('/')))
             {
-                if (!Allowed(entry.FullName) || entry.FullName.StartsWith(AvatarPrefix, StringComparison.OrdinalIgnoreCase)) continue;
+                if (!Allowed(entry.FullName) || entry.FullName.StartsWith(AvatarPrefix, StringComparison.OrdinalIgnoreCase) || entry.FullName.StartsWith(SavesFolder + "/", StringComparison.OrdinalIgnoreCase)) continue;
                 var target = Path.GetFullPath(Path.Combine(root, entry.FullName.Replace('/', Path.DirectorySeparatorChar)));
                 if (!target.StartsWith(Path.GetFullPath(root) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)) continue;
                 Directory.CreateDirectory(Path.GetDirectoryName(target)!);
@@ -104,6 +169,7 @@ public sealed class LotusBackupArchive(string? root = null, string appVersion = 
                 File.Move(tmp, target, overwrite: true);
             }
             RestoreAvatar(zip, manifest);
+            RestoreSaves(zip);
             return manifest;
         }
         finally
@@ -155,7 +221,7 @@ public sealed class LotusBackupArchive(string? root = null, string appVersion = 
     {
         Directory.CreateDirectory(BackupFolder);
         var path = Path.Combine(BackupFolder, $"{kind}-{DateTime.Now:yyyy-MM-dd-HHmmss}{FileExtension}");
-        using (var file = File.Create(path)) Write(file);
+        using (var file = File.Create(path)) Write(file, includeSaves: false);
         foreach (var old in Directory.GetFiles(BackupFolder, "before-restore-*" + FileExtension).OrderByDescending(File.GetLastWriteTimeUtc).Skip(5))
             try { File.Delete(old); } catch (IOException) { }
         return path;
@@ -226,7 +292,8 @@ public sealed class LotusBackupArchive(string? root = null, string appVersion = 
             (diary?["Entries"] as JsonArray)?.Count ?? 0,
             (ach?["Earned"] as JsonObject)?.Count ?? 0,
             (player?["Favorites"] as JsonArray)?.Count ?? 0,
-            files.Count(f => f.StartsWith("Benchmarks/", StringComparison.OrdinalIgnoreCase) && f.EndsWith("result.json", StringComparison.OrdinalIgnoreCase)));
+            files.Count(f => f.StartsWith("Benchmarks/", StringComparison.OrdinalIgnoreCase) && f.EndsWith("result.json", StringComparison.OrdinalIgnoreCase)),
+            files.Where(f => f.StartsWith(SavesFolder + "/", StringComparison.OrdinalIgnoreCase)).Select(f => f.Split('/')[1]).Distinct(StringComparer.OrdinalIgnoreCase).Count());
     }
 }
 

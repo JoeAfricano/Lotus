@@ -19,7 +19,8 @@ public sealed class SectionViewModel
     public Catalog.GameListViewModel? GameList { get; init; }      // Game list tab
     public global::Lotus.Core.Saves.SaveLibraryViewModel? Saves { get; init; }        // "Backup de saves" tab
     public Diary.DiaryViewModel? Diary { get; init; }               // "Meu diário" page
-    public Backup.BackupViewModel? Backup { get; init; }            // Settings › Backup
+    public Backup.BackupViewModel? Backup { get; init; }
+    public global::Lotus.Core.Updates.UpdateViewModel? Updates { get; init; } // Settings › Atualizações            // Settings › Backup
     public Catalog.GameDetailsViewModel? GameDetails { get; init; } // game page in Meus Jogos
     public ITextCatalog Text { get; }
     public PreferencesViewModel Preferences { get; }

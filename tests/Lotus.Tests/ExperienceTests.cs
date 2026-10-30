@@ -33,7 +33,7 @@ public sealed class ExperienceTests
         text.SetLanguage("en-US"); shell.RefreshLanguage(); Assert.Equal("history", shell.CurrentRoute);
         shell.NavigateCommand.Execute("restore"); Assert.Equal(1, shell.OptimizeTabIndex);
         shell.SettingsCategoryIndex = 3; Assert.Equal("logs", shell.CurrentRoute);
-        Assert.Equal("Advanced", shell.SettingsCategories[3]); Assert.Equal(6, shell.SettingsCategories.Count);
+        Assert.Equal("Advanced", shell.SettingsCategories[3]); Assert.Equal(7, shell.SettingsCategories.Count);
         shell.SettingsCategoryIndex = -1; Assert.Equal("logs", shell.CurrentRoute);
     }
     [Theory]

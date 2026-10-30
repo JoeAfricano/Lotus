@@ -2,6 +2,34 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 0.7.0-alpha "Lotus" (30/10/2026)
+
+A partir desta versão o produto se chama só **Lotus** (o instalador é `Lotus-Setup-<versão>.exe`). Para atualizar a partir da 0.6, rode o instalador por cima: tudo continua como está.
+
+### Novo: Atualizações (Configurações › Atualizações)
+- **Procurar atualizações:** o Lotus compara a versão instalada com a mais nova publicada nas releases oficiais do GitHub.
+- **Aviso de versão nova:** um aviso discreto com "Ver novidades" e um ponto em Configurações. O Lotus confere sozinho um pouco depois de abrir e a cada 12 horas.
+- **Novidades na tela:** as notas da versão aparecem antes de você atualizar, com link para a página no GitHub.
+- **Baixar e instalar com um clique**, com animação: um anel se enche em volta da flor do Lotus, com porcentagem, velocidade e tempo restante.
+  - Cada instalador é conferido pelo SHA-256 publicado junto. Um arquivo diferente é descartado e nada é instalado.
+  - O Lotus fecha, atualiza e abre de novo sozinho.
+- **Atualizar automaticamente (opcional):** baixa sozinho e instala em seguida, sempre com aviso e opção de adiar, e nunca com um jogo aberto.
+- Com "Efeitos de animação" desligado no Windows, o anel só se enche, sem brilho nem faísca.
+
+### Backup do Lotus com os saves
+- O arquivo `.lotusbackup` agora leva **a cópia mais recente e conferida de cada jogo protegido**.
+- Ao restaurar (neste ou em outro PC), essa cópia volta para a aba **Backup de saves**, de onde você restaura no jogo quando quiser. Os saves do jogo nunca são trocados sem você confirmar.
+- As cópias automáticas semanais continuam pequenas (não levam saves) e a prévia da restauração mostra quantos jogos têm saves no backup.
+
+### Google Drive
+- **Você decide quando enviar:** o Lotus nunca manda nada ao Drive sozinho. O Drive guarda as 5 cópias mais recentes para não ocupar espaço demais.
+- **Carregar backup do Drive:** mostra os backups guardados no seu Drive para escolher qual restaurar, e cada um pode ser **excluído** do Drive.
+- O backup enviado inclui o último save de cada jogo protegido.
+- Para conectar, a versão do Lotus precisa da credencial do Google Cloud. Enquanto ela não vem no instalador, dá para ativar escolhendo o arquivo do cliente "App para computador".
+
+### Também
+- A aba **Backup de saves** (no menu, abaixo da Game list) mostra todos os jogos em capas, com o selo de proteção, filtros, busca e os totais. Clique num jogo para ver, criar, restaurar ou excluir cópias.
+
 ## 0.6.0-alpha "Lotus New" (30/10/2026)
 
 Esta versão é para quem joga sem tempo para configurar nada: o Lotus lembra onde você parou, confere o PC antes de jogar e guarda cópias dos seus saves.

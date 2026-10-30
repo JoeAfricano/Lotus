@@ -36,7 +36,12 @@
      <StackPanel VerticalAlignment="Center"><TextBlock Text="{Binding Text[BkCloudTitle]}" FontWeight="SemiBold" FontSize="16"/><TextBlock Text="{Binding Text[BkCloudHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
     </StackPanel>
     <!-- Not available in this build -->
-    <TextBlock Text="{Binding Text[BkCloudNotSetUp]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" Visibility="{Binding CloudConfigured, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}"/>
+    <StackPanel Spacing="8" Visibility="{Binding CloudConfigured, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}">
+     <TextBlock Text="{Binding Text[BkCloudNotSetUp]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+     <Button Click="OnImportClient" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="backup-client">
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8E5;" FontSize="13"/><TextBlock Text="{Binding Text[BkUseClient]}"/></StackPanel>
+     </Button>
+    </StackPanel>
     <!-- Not connected -->
     <StackPanel Spacing="8" Visibility="{Binding CloudCanConnect, Converter={StaticResource BooleanVisibility}}">
      <Button Click="OnConnect" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="backup-connect">
@@ -44,26 +49,50 @@
      </Button>
      <TextBlock Text="{Binding Text[BkConnectHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
     </StackPanel>
-    <!-- Connected -->
-    <StackPanel Spacing="12" Visibility="{Binding CloudConnected, Converter={StaticResource BooleanVisibility}}">
+    <!-- Connected: the player sends a copy when they want, and loads one back from the list -->
+    <StackPanel Spacing="14" Visibility="{Binding CloudConnected, Converter={StaticResource BooleanVisibility}}">
      <Grid ColumnSpacing="10">
-      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center"><FontIcon Glyph="&#xE73E;" FontSize="13" Foreground="{ThemeResource SuccessBrush}"/><TextBlock Text="{Binding CloudAccountText}" AutomationProperties.AutomationId="backup-account"/></StackPanel>
-      <Button Grid.Column="1" Click="OnUpload" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="backup-upload">
-       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE898;" FontSize="13"/><TextBlock Text="{Binding Text[BkUpload]}"/></StackPanel>
-      </Button>
-      <Button Grid.Column="2" Content="{Binding Text[BkDisconnect]}" Click="OnDisconnect" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="backup-disconnect"/>
+      <Button Grid.Column="1" Content="{Binding Text[BkDisconnect]}" Click="OnDisconnect" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="backup-disconnect"/>
+     </Grid>
+     <Grid ColumnSpacing="12">
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <!-- Send -->
+      <Border Style="{StaticResource SettingRowStyle}" Padding="16,14">
+       <StackPanel Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE898;" FontSize="16" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[BkSendTitle]}" FontWeight="SemiBold"/></StackPanel>
+        <TextBlock Text="{Binding Text[BkSendHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+        <Button Click="OnUpload" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="backup-upload">
+         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE898;" FontSize="13"/><TextBlock Text="{Binding Text[BkUpload]}"/></StackPanel>
+        </Button>
+       </StackPanel>
+      </Border>
+      <!-- Load -->
+      <Border Grid.Column="1" Style="{StaticResource SettingRowStyle}" Padding="16,14">
+       <StackPanel Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE896;" FontSize="16" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[BkLoadTitle]}" FontWeight="SemiBold"/></StackPanel>
+        <TextBlock Text="{Binding Text[BkLoadHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+        <Button Click="OnLoadCloud" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="backup-load">
+         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE72C;" FontSize="13"/><TextBlock Text="{Binding Text[BkLoad]}"/></StackPanel>
+        </Button>
+       </StackPanel>
+      </Border>
      </Grid>
      <TextBlock Text="{Binding Text[BkCloudList]}" FontWeight="SemiBold" Visibility="{Binding HasCloudItems, Converter={StaticResource BooleanVisibility}}"/>
      <ItemsControl ItemsSource="{Binding CloudItems}" AutomationProperties.AutomationId="backup-cloud-list">
       <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
       <ItemsControl.ItemTemplate><DataTemplate>
        <Border Style="{StaticResource SettingRowStyle}">
-        <Grid ColumnSpacing="12">
-         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-         <FontIcon Glyph="&#xE8B7;" FontSize="16" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+        <Grid ColumnSpacing="10">
+         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+         <FontIcon Glyph="&#xE753;" FontSize="16" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
          <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding DateText}" FontWeight="SemiBold"/><TextBlock Style="{StaticResource CaptionStyle}"><Run Text="{Binding Name}"/><Run Text=" · "/><Run Text="{Binding SizeText}"/></TextBlock></StackPanel>
-         <Button Grid.Column="2" Click="OnRestoreCloud" Style="{StaticResource SoftButtonStyle}" Content="{Binding DataContext.Text[BkRestoreThis], ElementName=Root}"/>
+         <Button Grid.Column="2" Click="OnRestoreCloud" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="backup-cloud-restore">
+          <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE896;" FontSize="12"/><TextBlock Text="{Binding DataContext.Text[BkRestoreThis], ElementName=Root}"/></StackPanel>
+         </Button>
+         <Button Grid.Column="3" Click="OnDeleteCloud" Style="{StaticResource SoftButtonStyle}" Padding="10,6" ToolTipService.ToolTip="{Binding DataContext.Text[SpDelete], ElementName=Root}"
+                 AutomationProperties.Name="{Binding DataContext.Text[SpDelete], ElementName=Root}" AutomationProperties.AutomationId="backup-cloud-delete"><FontIcon Glyph="&#xE74D;" FontSize="14"/></Button>
         </Grid>
        </Border>
       </DataTemplate></ItemsControl.ItemTemplate>

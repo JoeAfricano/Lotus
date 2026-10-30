@@ -1,7 +1,7 @@
 namespace Lotus.Core.Backup;
 
 // What a backup holds, shown before restoring.
-public sealed record BackupSummary(string Player, int DiaryGames, int Achievements, int Favorites, int Benchmarks);
+public sealed record BackupSummary(string Player, int DiaryGames, int Achievements, int Favorites, int Benchmarks, int Saves = 0); // Saves: games whose latest save copy is inside
 public sealed record BackupManifest(int Format, string AppVersion, DateTimeOffset CreatedAt, string Machine, IReadOnlyList<string> Files, BackupSummary Summary, string? AvatarOriginal = null)
 {
     public const int CurrentFormat = 1;
@@ -36,6 +36,8 @@ public interface ICloudBackup
     Task<CloudBackup> UploadAsync(Stream data, string name, CancellationToken token);
     Task<IReadOnlyList<CloudBackup>> ListAsync(CancellationToken token);
     Task DownloadAsync(string id, Stream target, CancellationToken token);
+    bool ImportClient(string path) => false;
+    Task DeleteAsync(string id, CancellationToken token) => throw new NotSupportedException(); // a Google Cloud client file chosen by the player
 }
 
 public sealed class BackupFormatException(string message) : Exception(message);

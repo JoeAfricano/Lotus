@@ -35,6 +35,7 @@ public sealed partial class BackupViewModel(IBackupArchive archive, ICloudBackup
         parts.Add(Text.Format("BkAchievements", m.Summary.Achievements));
         parts.Add(Text.Format("BkFavorites", m.Summary.Favorites));
         if (m.Summary.Benchmarks > 0) parts.Add(Text.Format("BkBenchmarks", m.Summary.Benchmarks));
+        if (m.Summary.Saves > 0) parts.Add(Text.Format("BkSaves", m.Summary.Saves));
         return string.Join(" · ", parts);
     }
 
@@ -77,13 +78,43 @@ public sealed partial class BackupViewModel(IBackupArchive archive, ICloudBackup
     {
         await Run(async () =>
         {
-            using var data = new MemoryStream();
-            archive.Write(data);
-            data.Position = 0;
-            await cloud.UploadAsync(data, SuggestedName + Extension, CancellationToken.None);
+            await UploadNowAsync();
             Say(Text["BkUploaded"]);
             await LoadCloudAsync();
         }, "BkUploadFailed");
+    }
+
+    // Saves can make the backup large: it is written to a temporary file (deleted afterwards), not kept in memory.
+    private async Task UploadNowAsync()
+    {
+        var tmp = Path.Combine(Path.GetTempPath(), $"lotus-upload-{Guid.NewGuid():N}{Extension}");
+        try
+        {
+            await Task.Run(() => { using var file = File.Create(tmp); archive.Write(file); });
+            await using var data = File.OpenRead(tmp);
+            await cloud.UploadAsync(data, SuggestedName + Extension, CancellationToken.None);
+        }
+        finally { try { File.Delete(tmp); } catch (IOException) { } }
+    }
+
+    // The player decides when a copy goes to Drive; old ones can be deleted from the list.
+    public async Task DeleteCloudAsync(string id)
+    {
+        await Run(async () => { await cloud.DeleteAsync(id, CancellationToken.None); Say(Text["BkCloudDeleted"]); await LoadCloudAsync(); }, "BkCloudDeleteFailed");
+    }
+
+    // "Carregar backup do Drive": reads the list again (the player then picks one to restore).
+    public async Task LoadFromCloudAsync()
+    {
+        await Run(async () => { await LoadCloudAsync(); Say(Text[CloudItems.Count == 0 ? "BkCloudEmpty" : "BkCloudPick"]); }, "BkListFailed");
+    }
+    // A Google Cloud "Desktop app" client file turns Google Drive on for this PC.
+    public bool ImportClient(string path)
+    {
+        var ok = cloud.ImportClient(path);
+        Say(Text[ok ? "BkClientOk" : "BkClientInvalid"], error: !ok);
+        Notify();
+        return ok;
     }
 
     public async Task RefreshCloudAsync()

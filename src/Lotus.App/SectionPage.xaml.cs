@@ -34,6 +34,7 @@ public sealed partial class SectionPage : Page
     public bool ShowAdvanced { get; private set; }
     public bool ShowFaq { get; private set; }
     public bool ShowBackup { get; private set; }
+    public bool ShowUpdates { get; private set; }
     public SectionPage() => InitializeComponent();
     private void OnEditProfile(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenOnboarding(edit: true);
     // Home game shortcuts: the cover opens My Games (Play on the cover starts the game itself).
@@ -306,7 +307,7 @@ public sealed partial class SectionPage : Page
             ShowMonitoringSettings = false;
             ShowIntegrations = ShowSettings && shell.SettingsCategoryIndex == 1;
             ShowSafety = ShowSettings && shell.SettingsCategoryIndex == 2; ShowAdvanced = ShowSettings && shell.SettingsCategoryIndex == 3;
-            ShowFaq = ShowSettings && shell.SettingsCategoryIndex == 4; ShowBackup = ShowSettings && shell.SettingsCategoryIndex == 5;
+            ShowFaq = ShowSettings && shell.SettingsCategoryIndex == 4; ShowBackup = ShowSettings && shell.SettingsCategoryIndex == 5; ShowUpdates = ShowSettings && shell.SettingsCategoryIndex == 6;
             Bindings.Update();
             if (ShowOptimize) OptimizeTabs.SelectedItem = OptimizeTabs.Items[shell.OptimizeTabIndex];
             if (ShowPerformance) PerformanceTabs.SelectedItem = PerformanceTabs.Items[shell.PerformanceTabIndex];

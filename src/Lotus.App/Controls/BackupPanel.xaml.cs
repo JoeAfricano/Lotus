@@ -41,6 +41,30 @@ public sealed partial class BackupPanel : UserControl
         UiSound.Play(vm.IsError ? UiSound.Cue.Fail : UiSound.Cue.Done);
     }
 
+    private async void OnLoadCloud(object sender, RoutedEventArgs e) { if (Vm is { } vm) await vm.LoadFromCloudAsync(); }
+
+    private async void OnDeleteCloud(object sender, RoutedEventArgs e)
+    {
+        if (Vm is not { } vm || sender is not FrameworkElement { DataContext: CloudBackupItem item }) return;
+        var dialog = new ContentDialog
+        {
+            XamlRoot = XamlRoot, RequestedTheme = ThemePalette.Element, Title = vm.Text["BkCloudDeleteTitle"],
+            Content = new TextBlock { Text = vm.Text.Format("BkCloudDeleteBody", item.DateText), TextWrapping = TextWrapping.Wrap },
+            PrimaryButtonText = vm.Text["SpDelete"], CloseButtonText = vm.Text["DlgCancel"], DefaultButton = ContentDialogButton.Close,
+        };
+        if (await dialog.ShowAsync() == ContentDialogResult.Primary) await vm.DeleteCloudAsync(item.Id);
+    }
+
+    private async void OnImportClient(object sender, RoutedEventArgs e)
+    {
+        if (Vm is not { } vm) return;
+        var picker = new Windows.Storage.Pickers.FileOpenPicker { SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads };
+        picker.FileTypeFilter.Add(".json");
+        WinRT.Interop.InitializeWithWindow.Initialize(picker, Hwnd);
+        var file = await picker.PickSingleFileAsync();
+        if (file is not null) UiSound.Play(vm.ImportClient(file.Path) ? UiSound.Cue.Done : UiSound.Cue.Fail);
+    }
+
     private async void OnRestoreFile(object sender, RoutedEventArgs e)
     {
         if (Vm is not { } vm) return;

@@ -1714,7 +1714,7 @@ Could not measure right now. Try again in a few seconds.</value></data>
   <data name="TrDetailTitle" xml:space="preserve"><value>Your achievements in this game</value></data>
   <data name="TrDetailAll" xml:space="preserve"><value>See all</value></data>
   <data name="BackupCategory" xml:space="preserve"><value>Backup</value></data>
-  <data name="BkIntro" xml:space="preserve"><value>Keep your settings, profile, diary, achievements, favorites, notes, per-game settings and measurements in a single file. Restore whenever you like, on this PC or another one.</value></data>
+  <data name="BkIntro" xml:space="preserve"><value>Keep your settings, profile, diary, achievements, favorites, notes, per-game tweaks, measurements and the latest save of each protected game in one file. Restore it whenever you like, on this PC or another.</value></data>
   <data name="BkLocalTitle" xml:space="preserve"><value>File on this PC</value></data>
   <data name="BkLocalHint" xml:space="preserve"><value>Works offline. Save it wherever you like: a USB stick, another folder, another drive.</value></data>
   <data name="BkSave" xml:space="preserve"><value>Save backup…</value></data>
@@ -1723,7 +1723,7 @@ Could not measure right now. Try again in a few seconds.</value></data>
   <data name="BkAutoHint" xml:space="preserve"><value>Lotus also keeps one copy a week by itself (the 4 most recent) and a safety copy before every restore.</value></data>
   <data name="BkCloudTitle" xml:space="preserve"><value>Google Drive</value></data>
   <data name="BkCloudHint" xml:space="preserve"><value>A copy in the cloud, in the &quot;Lotus Backups&quot; folder of your Drive. Lotus only sees the files it created itself.</value></data>
-  <data name="BkCloudNotSetUp" xml:space="preserve"><value>Google Drive is not enabled in this version of Lotus yet. File backups work as usual.</value></data>
+  <data name="BkCloudNotSetUp" xml:space="preserve"><value>Google Drive needs a Google Cloud credential. If you have the file (&quot;Desktop app&quot; client JSON), turn it on here.</value></data>
   <data name="BkConnect" xml:space="preserve"><value>Connect Google account</value></data>
   <data name="BkConnectHint" xml:space="preserve"><value>Opens your browser so you can sign in to Google. Lotus never sees your password and can be disconnected at any time.</value></data>
   <data name="BkConnectedAs" xml:space="preserve"><value>Connected as {0}</value></data>
@@ -2360,7 +2360,7 @@ Your games and Windows are not changed.</value></data>
   <data name="SpStateAvailable" xml:space="preserve"><value>Saves found. Turn on to keep copies of your progress.</value></data>
   <data name="SpStateUnsupported" xml:space="preserve"><value>Xbox / Game Pass games keep saves in a protected place synced by Microsoft. Lotus doesn&apos;t touch them.</value></data>
   <data name="SpStateNotFound" xml:space="preserve"><value>We couldn&apos;t find the save folder safely. You can pick the folder.</value></data>
-  <data name="SpWhere" xml:space="preserve"><value>Backups stay on this PC only, in %LOCALAPPDATA%\Lotus\SaveBackups. They don&apos;t go online or into the Lotus backup file.</value></data>
+  <data name="SpWhere" xml:space="preserve"><value>All copies stay on this PC, in %LOCALAPPDATA%\Lotus\SaveBackups. The newest one of each game also goes into the Lotus backup (Settings › Backup) and, if you connect it, to Google Drive.</value></data>
   <data name="SpFolderLabel" xml:space="preserve"><value>Save folder</value></data>
   <data name="SpFolderInfo" xml:space="preserve"><value>{0} files · {1} · changed {2}</value></data>
   <data name="SpCloudNote" xml:space="preserve"><value>This folder is synced by the store&apos;s cloud. After a restore, the cloud may ask which version to keep or replace the files again.</value></data>
@@ -2452,4 +2452,56 @@ Your games and Windows are not changed.</value></data>
   <data name="SlDays" xml:space="preserve"><value>{0} days ago</value></data>
   <data name="SlBack" xml:space="preserve"><value>Back</value></data>
   <data name="SlManage" xml:space="preserve"><value>Manage</value></data>
+  <data name="BkSaves" xml:space="preserve"><value>Game saves: {0}</value></data>
+  <data name="BkUseClient" xml:space="preserve"><value>Turn on with the Google Cloud file…</value></data>
+  <data name="BkClientOk" xml:space="preserve"><value>Google Drive is on for this PC. Now connect your account.</value></data>
+  <data name="BkClientInvalid" xml:space="preserve"><value>That file isn&apos;t a valid Google client. Use the &quot;Desktop app&quot; client JSON downloaded from Google Cloud.</value></data>
+  <data name="UpdatesCategory" xml:space="preserve"><value>Updates</value></data>
+  <data name="UpIntro" xml:space="preserve"><value>Lotus looks for new versions in the official GitHub releases. Every installer is checked (SHA-256) before it is used.</value></data>
+  <data name="UpCurrent" xml:space="preserve"><value>INSTALLED VERSION · {0}</value></data>
+  <data name="UpHeadIdle" xml:space="preserve"><value>Keep Lotus up to date</value></data>
+  <data name="UpHeadChecking" xml:space="preserve"><value>Looking for updates…</value></data>
+  <data name="UpHeadUpToDate" xml:space="preserve"><value>You have the latest version</value></data>
+  <data name="UpHeadDownloading" xml:space="preserve"><value>Downloading the new version</value></data>
+  <data name="UpHeadReady" xml:space="preserve"><value>Ready to install</value></data>
+  <data name="UpHeadInstalling" xml:space="preserve"><value>Installing…</value></data>
+  <data name="UpCheck" xml:space="preserve"><value>Check for updates</value></data>
+  <data name="UpChecking" xml:space="preserve"><value>Checking the releases on GitHub…</value></data>
+  <data name="UpToDate" xml:space="preserve"><value>No update available.</value></data>
+  <data name="UpCheckFailed" xml:space="preserve"><value>Couldn&apos;t check right now. Check your internet and try again.</value></data>
+  <data name="UpAvailable" xml:space="preserve"><value>Version {0} is available.</value></data>
+  <data name="UpNewVersion" xml:space="preserve"><value>Lotus {0}</value></data>
+  <data name="UpPublished" xml:space="preserve"><value>Published on {0}</value></data>
+  <data name="UpDownloading" xml:space="preserve"><value>Downloading safely from GitHub…</value></data>
+  <data name="UpVerifying" xml:space="preserve"><value>Checking the file…</value></data>
+  <data name="UpReady" xml:space="preserve"><value>Download checked. Lotus closes, updates and opens again by itself.</value></data>
+  <data name="UpInstalling" xml:space="preserve"><value>Starting the installer…</value></data>
+  <data name="UpBadFile" xml:space="preserve"><value>The downloaded file doesn&apos;t match the published one and was discarded. Nothing was installed.</value></data>
+  <data name="UpDownloadFailed" xml:space="preserve"><value>The download didn&apos;t finish. Try again.</value></data>
+  <data name="UpInstallFailed" xml:space="preserve"><value>Couldn&apos;t start the installer.</value></data>
+  <data name="UpCancelled" xml:space="preserve"><value>Download cancelled.</value></data>
+  <data name="UpProgress" xml:space="preserve"><value>{0} of {1} · {2} · {3} left</value></data>
+  <data name="UpLastChecked" xml:space="preserve"><value>Last checked at {0}</value></data>
+  <data name="UpDownloadInstall" xml:space="preserve"><value>Download and install</value></data>
+  <data name="UpInstallNow" xml:space="preserve"><value>Install now</value></data>
+  <data name="UpLater" xml:space="preserve"><value>Later</value></data>
+  <data name="UpOpenPage" xml:space="preserve"><value>View on GitHub</value></data>
+  <data name="UpAuto" xml:space="preserve"><value>Update automatically</value></data>
+  <data name="UpAutoHint" xml:space="preserve"><value>When there&apos;s a new version, Lotus downloads and installs it by itself, never while a game is open. You can always postpone from the notice.</value></data>
+  <data name="UpNoticeTitle" xml:space="preserve"><value>Lotus {0} is available</value></data>
+  <data name="UpNoticeBody" xml:space="preserve"><value>A new version of Lotus was released. See what&apos;s new and update in Settings.</value></data>
+  <data name="UpNoticeOpen" xml:space="preserve"><value>See what&apos;s new</value></data>
+  <data name="UpAutoTitle" xml:space="preserve"><value>Lotus {0} downloaded</value></data>
+  <data name="UpAutoBody" xml:space="preserve"><value>Lotus will close, update and open again in a few seconds.</value></data>
+  <data name="BkSendTitle" xml:space="preserve"><value>Send to Drive</value></data>
+  <data name="BkSendHint" xml:space="preserve"><value>Only when you click. Drive keeps the 5 newest copies so it doesn&apos;t take up too much space.</value></data>
+  <data name="BkLoadTitle" xml:space="preserve"><value>Load a backup from Drive</value></data>
+  <data name="BkLoadHint" xml:space="preserve"><value>Shows the backups kept in your Drive so you can pick one to restore on this PC.</value></data>
+  <data name="BkLoad" xml:space="preserve"><value>Load backups</value></data>
+  <data name="BkCloudPick" xml:space="preserve"><value>Pick below the backup you want to restore.</value></data>
+  <data name="BkCloudEmpty" xml:space="preserve"><value>There are no backups in your Drive yet.</value></data>
+  <data name="BkCloudDeleted" xml:space="preserve"><value>Backup deleted from Drive.</value></data>
+  <data name="BkCloudDeleteFailed" xml:space="preserve"><value>Couldn&apos;t delete that backup from Drive right now.</value></data>
+  <data name="BkCloudDeleteTitle" xml:space="preserve"><value>Delete this backup from Drive?</value></data>
+  <data name="BkCloudDeleteBody" xml:space="preserve"><value>The backup from {0} will be removed from your Google Drive. The data on this PC doesn&apos;t change.</value></data>
 </root>

@@ -339,4 +339,31 @@ public sealed class SaveProtectionTests : IDisposable
         await page.LoadAsync();
         Assert.Equal("Stardew Valley", page.SelectedTile!.Name); Assert.Null(page.PendingOpen);
     }
+
+    // The newest verified copy of each game travels in the .lotusbackup and comes back among the game's copies.
+    [Fact] public async Task LotusBackupCarriesTheLatestSaveOfEachGame()
+    {
+        var lotus = Path.Combine(dir, "Lotus"); var vault = new SaveVault(Path.Combine(lotus, "SaveBackups")) { MaxAttempts = 1, RetryDelay = TimeSpan.Zero };
+        Put("a.sav", "old"); await vault.CreateAsync(Key, "G", Src, SnapshotManifest.Auto, 5);
+        Put("a.sav", "newest"); Put("slot/b.sav", "b"); var newest = (await vault.CreateAsync(Key, "G", Src, SnapshotManifest.Auto, 5)).Manifest!;
+        Directory.CreateDirectory(Path.Combine(lotus, "SaveBackups", SaveVault.FolderFor(Key), "20990101-000000-000-abcdef-auto.partial")); // unfinished: never included
+        File.WriteAllText(Path.Combine(lotus, "preferences.json"), "{}");
+        var archive = new LotusBackupArchive(lotus);
+        using var data = new MemoryStream();
+        var manifest = archive.Write(data);
+        var saves = manifest.Files.Where(f => f.StartsWith("SaveBackups/")).ToList();
+        Assert.Equal(1, manifest.Summary.Saves);
+        Assert.All(saves, f => Assert.Contains(newest.Id, f));
+        Assert.Contains(saves, f => f.EndsWith("files/slot/b.sav"));
+        // Restored on another PC: the copy is back and verifies; a copy already there is left alone.
+        var other = Path.Combine(dir, "Other"); var target = new LotusBackupArchive(other);
+        data.Position = 0; target.Stage(data); target.ApplyPending();
+        var otherVault = new SaveVault(Path.Combine(other, "SaveBackups"));
+        Assert.Equal(newest.Id, Assert.Single(otherVault.List(Key)).Id);
+        Assert.True(otherVault.Verify(Key, newest.Id));
+        Assert.Empty(Directory.EnumerateDirectories(Path.Combine(other, "SaveBackups"), "*.partial", SearchOption.AllDirectories));
+        Assert.False(LotusBackupArchive.Allowed("SaveBackups/g/id/../../x"));
+        Assert.False(LotusBackupArchive.Allowed("SaveBackups/g/id.partial/manifest.json"));
+        Assert.False(LotusBackupArchive.Allowed("SaveBackups/g/id/other.txt"));
+    }
 }

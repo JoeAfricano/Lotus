@@ -117,6 +117,7 @@ public sealed partial class MainWindow : Window
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
         SetUpPreparation();
         SetUpSaves();
+        SetUpUpdates();
         games.TechScanner = new Lotus.Infrastructure.Games.GameTechScanner();
         var overlayScanner = new Lotus.Infrastructure.Games.WindowsOverlayScanner();
         games.Overlays = overlayScanner;
@@ -440,7 +441,7 @@ public sealed partial class MainWindow : Window
         if (force || displayedSectionId != group)
         {
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
-                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, Saves = saveLibrary, GameDetails = gameDetails, Diary = diaryPage, Backup = backup }, new SuppressNavigationTransitionInfo());
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, Saves = saveLibrary, GameDetails = gameDetails, Diary = diaryPage, Backup = backup, Updates = updates }, new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
             Motion.EnterPage(ContentFrame); // new section rises and fades in
         }
