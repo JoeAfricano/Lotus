@@ -29,6 +29,11 @@ public sealed class DiaryCard(DiaryEntry e, ITextCatalog t, int rank)
     public bool HasFeats => Feats.Count > 0;
     public string Review => Entry.Review;
     public bool HasReview => Entry.Review.Length > 0;
+    // Table columns.
+    public string StartedText => Entry.Started?.ToString("d", Culture(t)) ?? "—";
+    public string FinishedText => Entry.Finished?.ToString("d", Culture(t)) ?? "—";
+    public string HoursOrDash => Entry.Minutes > 0 ? DiaryText.Hours(Entry.Minutes) : "—";
+    public string Genre => Entry.Genres.FirstOrDefault() ?? "—";
     private static CultureInfo Culture(ITextCatalog t) => CultureInfo.GetCultureInfo(t.Language);
 }
 
@@ -62,7 +67,7 @@ public sealed class DiaryViewModel : ObservableObject
     public ObservableCollection<DiaryCard> Items { get; } = [];
     public ObservableCollection<DiaryTab> Tabs { get; } = [];
     public IReadOnlyList<BadgeView> Badges { get; private set; } = [];
-    public IReadOnlyList<DiaryTab> SortOptions => [.. new[] { "recent", "rating", "hours", "name" }.Select(s => new DiaryTab(s, Text["DySort" + s], 0))];
+    public IReadOnlyList<DiaryTab> SortOptions => [.. new[] { "recent", "rating", "hours", "finished", "name" }.Select(s => new DiaryTab(s, Text["DySort" + s], 0))];
 
     public string Name => Preferences.Current.DisplayName is { Length: > 0 } n ? n : Text["ObDefaultName"];
     public string? Avatar => Preferences.Current.AvatarPath;
@@ -83,6 +88,72 @@ public sealed class DiaryViewModel : ObservableObject
     public string Query { get => query; set { if (SetProperty(ref query, value ?? "")) Fill(); } }
     public string Sort { get => sort; set { if (value is not null && SetProperty(ref sort, value)) Fill(); } }
 
+    // ---- Layout and filters ----
+    // Layout: "grid" (cover wall) | "list" (detailed cards) | "table" (one row per game); remembered in preferences.
+    public string ViewMode
+    {
+        get => Preferences.Current.DiaryView;
+        set { if (value is "grid" or "list" or "table" && value != Preferences.Current.DiaryView) { Preferences.Update(Preferences.Current with { DiaryView = value }); NotifyView(); } }
+    }
+    public bool IsGrid => ViewMode == "grid"; public bool IsList => ViewMode == "list"; public bool IsTable => ViewMode == "table";
+    private void NotifyView() { foreach (var n in new[] { nameof(ViewMode), nameof(IsGrid), nameof(IsList), nameof(IsTable) }) OnPropertyChanged(n); }
+
+    // Filter values (null = any). Options come from the player's own entries, with counts.
+    private string? genre, platform, store, rating, year;
+    public string? Genre { get => genre; set { if (SetProperty(ref genre, value)) Fill(); } }
+    public string? Platform { get => platform; set { if (SetProperty(ref platform, value)) Fill(); } }
+    public string? Store { get => store; set { if (SetProperty(ref store, value)) Fill(); } }
+    public string? RatingBand { get => rating; set { if (SetProperty(ref rating, value)) Fill(); } }
+    public string? Year { get => year; set { if (SetProperty(ref year, value)) Fill(); } }
+    public IReadOnlyList<DiaryTab> GenreOptions { get; private set; } = [];
+    public IReadOnlyList<DiaryTab> PlatformOptions { get; private set; } = [];
+    public IReadOnlyList<DiaryTab> StoreOptions { get; private set; } = [];
+    public IReadOnlyList<DiaryTab> YearOptions { get; private set; } = [];
+    public IReadOnlyList<DiaryTab> RatingOptions { get; private set; } = [];
+    public static string StoreOf(DiaryEntry e) => e.Key.Split(':')[0].ToLowerInvariant() switch
+    {
+        "steam" => "Steam", "epic" => "Epic", "gog" => "GOG", "xbox" or "microsoft" or "ms" => "Xbox", "ea" or "origin" => "EA", "ubisoft" or "uplay" => "Ubisoft", "battlenet" or "battle.net" => "Battle.net",
+        _ => "Other",
+    };
+    private static string? YearOf(DiaryEntry e) => (e.Finished ?? e.Started)?.Year.ToString(CultureInfo.InvariantCulture);
+    private static bool InBand(double? r, string band) => band switch { "9" => r >= 9, "7.5" => r >= 7.5, "5" => r is >= 5 and < 7.5, "low" => r < 5, "none" => r is null, _ => true };
+    private void BuildOptions()
+    {
+        var all = diary.Entries;
+        IReadOnlyList<DiaryTab> Group(IEnumerable<string> values, Func<string, string>? label = null) =>
+            [.. values.GroupBy(v => v).OrderByDescending(g => g.Count()).ThenBy(g => g.Key).Select(g => new DiaryTab(g.Key, label?.Invoke(g.Key) ?? g.Key, g.Count()))];
+        GenreOptions = Group(all.SelectMany(e => e.Genres.Take(3)));
+        PlatformOptions = Group(all.Select(e => e.Platform));
+        StoreOptions = Group(all.Select(StoreOf), s => s == "Other" ? Text["DyStoreOther"] : s);
+        YearOptions = [.. all.Select(YearOf).OfType<string>().GroupBy(y => y).OrderByDescending(g => g.Key).Select(g => new DiaryTab(g.Key, g.Key, g.Count()))];
+        RatingOptions = [.. new[] { "9", "7.5", "5", "low", "none" }.Select(b => new DiaryTab(b, Text["DyBand" + b.Replace(".", "")], all.Count(e => InBand(e.Rating, b))))];
+        foreach (var n in new[] { nameof(GenreOptions), nameof(PlatformOptions), nameof(StoreOptions), nameof(YearOptions), nameof(RatingOptions) }) OnPropertyChanged(n);
+    }
+    public bool HasFilters => genre is not null || platform is not null || store is not null || rating is not null || year is not null;
+    // Filters always shown as text ("Filters: RPG · PC · 9+"), never only as a highlighted chip.
+    public string ActiveFilters => !HasFilters ? "" : Text.Format("DyFiltersActive", string.Join(" · ", new[]
+    {
+        genre, platform, store is null ? null : store == "Other" ? Text["DyStoreOther"] : store, rating is null ? null : Text["DyBand" + rating.Replace(".", "")], year,
+    }.OfType<string>()));
+    public void ClearFilters()
+    {
+        genre = platform = store = rating = year = null;
+        foreach (var n in new[] { nameof(Genre), nameof(Platform), nameof(Store), nameof(RatingBand), nameof(Year) }) OnPropertyChanged(n);
+        Fill();
+    }
+
+    // Saved filters (kept in the diary file, so they travel with the backup).
+    public IReadOnlyList<DiaryFilter> SavedFilters => diary.Filters;
+    public bool HasSavedFilters => diary.Filters.Count > 0;
+    public void SaveCurrentFilter(string name) => diary.SaveFilter(new DiaryFilter { Name = name, Tab = tab, Genre = genre, Platform = platform, Store = store, Rating = rating, Year = year, Sort = sort });
+    public void ApplyFilter(DiaryFilter f)
+    {
+        tab = f.Tab; genre = f.Genre; platform = f.Platform; store = f.Store; rating = f.Rating; year = f.Year; sort = f.Sort;
+        foreach (var n in new[] { nameof(Tab), nameof(Genre), nameof(Platform), nameof(Store), nameof(RatingBand), nameof(Year), nameof(Sort) }) OnPropertyChanged(n);
+        Fill();
+    }
+    public void DeleteFilter(string name) => diary.DeleteFilter(name);
+
     // Home and the profile panel: what the player is playing now and wants to play next.
     public IReadOnlyList<DiaryCard> Shelf(int max = 8) => [.. diary.Entries
         .Where(e => e.Status is DiaryStatus.Playing or DiaryStatus.Want)
@@ -100,6 +171,7 @@ public sealed class DiaryViewModel : ObservableObject
         Badges = [.. Progress.Badges.OrderByDescending(b => b.Unlocked).ThenByDescending(b => b.Fraction).Select(b =>
             new BadgeView(b.Id, b.Glyph, Text["DyBadge" + b.Id], Text["DyBadge" + b.Id + "Hint"], b.Unlocked,
                 b.Unlocked ? Text["DyBadgeDone"] : $"{b.Current}/{b.Goal}", b.Fraction))];
+        BuildOptions();
         Fill();
         foreach (var p in typeof(DiaryViewModel).GetProperties().Where(p => p.Name is not (nameof(Items) or nameof(Tabs) or nameof(Text) or nameof(Preferences) or nameof(Diary) or nameof(Tab) or nameof(Query) or nameof(Sort) or nameof(Section) or nameof(Achievements))))
             OnPropertyChanged(p.Name);
@@ -117,17 +189,24 @@ public sealed class DiaryViewModel : ObservableObject
         IEnumerable<DiaryEntry> rows = diary.Entries;
         if (tab != "all" && Enum.TryParse<DiaryStatus>(tab, out var st)) rows = rows.Where(e => e.Status == st);
         if (query.Trim() is { Length: > 0 } q) rows = rows.Where(e => e.Name.Contains(q, StringComparison.CurrentCultureIgnoreCase) || e.Review.Contains(q, StringComparison.CurrentCultureIgnoreCase));
+        if (genre is not null) rows = rows.Where(e => e.Genres.Contains(genre));
+        if (platform is not null) rows = rows.Where(e => e.Platform == platform);
+        if (store is not null) rows = rows.Where(e => StoreOf(e) == store);
+        if (rating is not null) rows = rows.Where(e => InBand(e.Rating, rating));
+        if (year is not null) rows = rows.Where(e => YearOf(e) == year);
         rows = sort switch
         {
             "rating" => rows.OrderByDescending(e => e.Rating ?? -1).ThenBy(e => e.Name),
             "hours" => rows.OrderByDescending(e => e.Minutes),
             "name" => rows.OrderBy(e => e.Name, StringComparer.CurrentCultureIgnoreCase),
+            "finished" => rows.OrderByDescending(e => e.Finished ?? DateTime.MinValue).ThenByDescending(e => e.Updated),
             _ => rows.OrderByDescending(e => e.Updated),
         };
         Items.Clear();
         var i = 1; foreach (var e in rows) Items.Add(new(e, Text, i++));
-        OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(NoMatch));
+        foreach (var n in new[] { nameof(IsEmpty), nameof(NoMatch), nameof(HasFilters), nameof(ActiveFilters), nameof(ResultCount) }) OnPropertyChanged(n);
     }
+    public string ResultCount => Text.Format("DyResultCount", Items.Count);
 }
 
 public sealed partial class StatusOption(DiaryStatus status, string label, string glyph) : ObservableObject

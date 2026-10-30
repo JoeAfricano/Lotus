@@ -82,11 +82,33 @@
     </DataTemplate></ItemsControl.ItemTemplate>
    </ItemsControl>
   </ScrollViewer>
+  <!-- Toolbar: search, sort and the layout switch (grid / list / table) -->
   <Grid ColumnSpacing="12">
-   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="200"/></Grid.ColumnDefinitions>
-   <AutoSuggestBox PlaceholderText="{Binding Text[DySearch]}" QueryIcon="Find" TextChanged="OnSearch" AutomationProperties.AutomationId="diary-search"/>
-   <ComboBox Grid.Column="1" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedValue="{Binding Sort, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
+   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="200"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+   <AutoSuggestBox PlaceholderText="{Binding Text[DySearch]}" QueryIcon="Find" TextChanged="OnSearch" VerticalAlignment="Center" AutomationProperties.AutomationId="diary-search"/>
+   <ComboBox Grid.Column="1" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedValue="{Binding Sort, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+   <Border Grid.Column="2" CornerRadius="12" Padding="3" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" AutomationProperties.AutomationId="diary-view">
+    <StackPanel Orientation="Horizontal" Spacing="2">
+     <Button x:Name="ViewGrid" Tag="grid" Click="OnView" Padding="12,6" CornerRadius="9" BorderThickness="0" ToolTipService.ToolTip="{Binding Text[DyViewGrid]}" AutomationProperties.Name="{Binding Text[DyViewGrid]}" AutomationProperties.AutomationId="diary-view-grid"><FontIcon Glyph="&#xF0E2;" FontSize="15"/></Button>
+     <Button x:Name="ViewList" Tag="list" Click="OnView" Padding="12,6" CornerRadius="9" BorderThickness="0" ToolTipService.ToolTip="{Binding Text[DyViewList]}" AutomationProperties.Name="{Binding Text[DyViewList]}" AutomationProperties.AutomationId="diary-view-list"><FontIcon Glyph="&#xE8FD;" FontSize="15"/></Button>
+     <Button x:Name="ViewTable" Tag="table" Click="OnView" Padding="12,6" CornerRadius="9" BorderThickness="0" ToolTipService.ToolTip="{Binding Text[DyViewTable]}" AutomationProperties.Name="{Binding Text[DyViewTable]}" AutomationProperties.AutomationId="diary-view-table"><FontIcon Glyph="&#xE80A;" FontSize="15"/></Button>
+    </StackPanel>
+   </Border>
   </Grid>
+  <!-- Filter chips (built from the player's own games), saved filters, and the active filters as text -->
+  <StackPanel Spacing="8">
+   <ScrollViewer HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled">
+    <StackPanel x:Name="FilterChips" Orientation="Horizontal" Spacing="8" AutomationProperties.AutomationId="diary-filters"/>
+   </ScrollViewer>
+   <Grid ColumnSpacing="12">
+    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <StackPanel Orientation="Horizontal" Spacing="4">
+     <TextBlock Text="{Binding ActiveFilters}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center" Visibility="{Binding HasFilters, Converter={StaticResource BooleanVisibility}}"/>
+     <HyperlinkButton Content="{Binding Text[DyFilterClear]}" Click="OnClearFilters" Padding="6,2" Visibility="{Binding HasFilters, Converter={StaticResource BooleanVisibility}}"/>
+    </StackPanel>
+    <TextBlock Grid.Column="1" Text="{Binding ResultCount}" Style="{StaticResource CaptionStyle}" VerticalAlignment="Center"/>
+   </Grid>
+  </StackPanel>
 
   <!-- Empty -->
   <Border Style="{StaticResource CardStyle}" Visibility="{Binding IsEmpty, Converter={StaticResource BooleanVisibility}}">
@@ -99,8 +121,66 @@
   </Border>
   <TextBlock Text="{Binding Text[DyNoMatch]}" Style="{StaticResource CaptionStyle}" FontSize="14" Visibility="{Binding NoMatch, Converter={StaticResource BooleanVisibility}}"/>
 
+  <!-- Grid: cover wall (status and rating over the cover; hover shows hours and platform) -->
+  <GridView x:Name="DiaryGrid" ItemsSource="{Binding Items}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="OnGridItem" Padding="0"
+            ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" Visibility="{Binding IsGrid, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="diary-grid">
+   <GridView.ItemContainerTransitions><TransitionCollection><EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="18"/><RepositionThemeTransition/></TransitionCollection></GridView.ItemContainerTransitions>
+   <GridView.ItemContainerStyle><Style TargetType="GridViewItem"><Setter Property="Margin" Value="0,0,14,14"/><Setter Property="Padding" Value="0"/></Style></GridView.ItemContainerStyle>
+   <GridView.ItemTemplate><DataTemplate>
+    <Grid Width="168" Height="252" CornerRadius="14" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04" AutomationProperties.Name="{Binding Name}" RequestedTheme="Dark">
+     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" TextAlignment="Center" Margin="14" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{ThemeResource GoldBrush}"/>
+     <Image Source="{Binding Cover, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/>
+     <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#00160C14" Offset="0.5"/><GradientStop Color="#F0160C14" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
+     <!-- Rating, top right -->
+     <Border CornerRadius="10" Padding="8,2" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top" Background="#D912090F" BorderThickness="1" BorderBrush="{Binding RatingKind, Converter={StaticResource DiaryBrush}}">
+      <TextBlock Text="{Binding Rating}" FontSize="15" FontWeight="Bold" Foreground="{Binding RatingKind, Converter={StaticResource DiaryBrush}}"/>
+     </Border>
+     <!-- Name, status and hours at the bottom -->
+     <StackPanel VerticalAlignment="Bottom" Padding="12,0,12,12" Spacing="6">
+      <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" Foreground="White" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
+      <StackPanel Orientation="Horizontal" Spacing="6">
+       <Border CornerRadius="8" Padding="8,2" Background="{Binding StatusKey, Converter={StaticResource DiaryBrush}}"><TextBlock Text="{Binding Status}" FontSize="11" FontWeight="SemiBold" Foreground="#12090F"/></Border>
+       <Border CornerRadius="8" Padding="7,2" Background="#8012090F" Visibility="{Binding HasHours, Converter={StaticResource BooleanVisibility}}"><TextBlock Text="{Binding Hours}" FontSize="11" Foreground="#E6D6DE"/></Border>
+      </StackPanel>
+     </StackPanel>
+    </Grid>
+   </DataTemplate></GridView.ItemTemplate>
+  </GridView>
+
+  <!-- Table: one row per game, columns sort with a click on the header -->
+  <StackPanel x:Name="DiaryTable" Spacing="4" Visibility="{Binding IsTable, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="diary-table">
+   <Grid Padding="12,6" ColumnSpacing="12">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="3*"/><ColumnDefinition Width="1.3*"/><ColumnDefinition Width="0.8*"/><ColumnDefinition Width="0.9*"/><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions>
+    <HyperlinkButton Grid.Column="1" Content="{Binding Text[DyColGame]}" Tag="name" Click="OnColumnSort" Padding="0" FontSize="11.5" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" CharacterSpacing="40"/>
+    <TextBlock Grid.Column="2" Text="{Binding Text[DyColStatus]}" Style="{StaticResource EyebrowStyle}" VerticalAlignment="Center"/>
+    <HyperlinkButton Grid.Column="3" Content="{Binding Text[DyColRating]}" Tag="rating" Click="OnColumnSort" Padding="0" FontSize="11.5" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" CharacterSpacing="40"/>
+    <HyperlinkButton Grid.Column="4" Content="{Binding Text[DyColHours]}" Tag="hours" Click="OnColumnSort" Padding="0" FontSize="11.5" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" CharacterSpacing="40"/>
+    <TextBlock Grid.Column="5" Text="{Binding Text[DyColStarted]}" Style="{StaticResource EyebrowStyle}" VerticalAlignment="Center"/>
+    <HyperlinkButton Grid.Column="6" Content="{Binding Text[DyColFinished]}" Tag="finished" Click="OnColumnSort" Padding="0" FontSize="11.5" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" CharacterSpacing="40"/>
+    <TextBlock Grid.Column="7" Text="{Binding Text[DyColPlatform]}" Style="{StaticResource EyebrowStyle}" VerticalAlignment="Center"/>
+   </Grid>
+   <ItemsControl ItemsSource="{Binding Items}">
+    <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="4"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+    <ItemsControl.ItemTemplate><DataTemplate>
+     <Button Click="OnEntry" Style="{StaticResource CardButtonStyle}" AutomationProperties.Name="{Binding Name}">
+      <Grid Padding="12,6" ColumnSpacing="12" CornerRadius="10" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+       <Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="3*"/><ColumnDefinition Width="1.3*"/><ColumnDefinition Width="0.8*"/><ColumnDefinition Width="0.9*"/><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions>
+       <Border Width="32" Height="44" CornerRadius="6" Background="{ThemeResource HeroBrush}"><Image Source="{Binding Cover, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border>
+       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Genre}" FontSize="11.5" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis"/></StackPanel>
+       <Border Grid.Column="2" CornerRadius="8" Padding="8,2" HorizontalAlignment="Left" VerticalAlignment="Center" Background="{Binding StatusKey, Converter={StaticResource DiaryBrush}}"><TextBlock Text="{Binding Status}" FontSize="11" FontWeight="SemiBold" Foreground="#12090F"/></Border>
+       <TextBlock Grid.Column="3" Text="{Binding Rating}" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Foreground="{Binding RatingKind, Converter={StaticResource DiaryBrush}}"/>
+       <TextBlock Grid.Column="4" Text="{Binding HoursOrDash}" VerticalAlignment="Center"/>
+       <TextBlock Grid.Column="5" Text="{Binding StartedText}" VerticalAlignment="Center" Foreground="{ThemeResource MutedBrush}"/>
+       <TextBlock Grid.Column="6" Text="{Binding FinishedText}" VerticalAlignment="Center" Foreground="{ThemeResource MutedBrush}"/>
+       <TextBlock Grid.Column="7" Text="{Binding Platform}" VerticalAlignment="Center" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis"/>
+      </Grid>
+     </Button>
+    </DataTemplate></ItemsControl.ItemTemplate>
+   </ItemsControl>
+  </StackPanel>
+
   <!-- Entries -->
-  <ItemsControl ItemsSource="{Binding Items}" AutomationProperties.AutomationId="diary-list">
+  <ItemsControl ItemsSource="{Binding Items}" Visibility="{Binding IsList, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="diary-list">
    <ItemsControl.ItemContainerTransitions><TransitionCollection><EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="18"/><RepositionThemeTransition/></TransitionCollection></ItemsControl.ItemContainerTransitions>
    <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="12"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
    <ItemsControl.ItemTemplate><DataTemplate>

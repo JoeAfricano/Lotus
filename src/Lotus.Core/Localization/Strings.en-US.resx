@@ -2007,4 +2007,36 @@ Your games and Windows are not changed.</value></data>
   <data name="SyncLineNone" xml:space="preserve"><value>Monitor without G-Sync/FreeSync (detected by the driver)</value></data>
   <data name="SyncHintEdidNone" xml:space="preserve"><value>from the monitor&apos;s identification, it does not seem to have FreeSync/G-Sync. If the monitor menu has FreeSync or Adaptive-Sync, turn it on and pick the first option; otherwise pick &quot;Monitor without G-Sync/FreeSync&quot;.</value></data>
   <data name="TuneTopTip" xml:space="preserve"><value>Biggest impact</value></data>
+  <data name="DyStoreOther" xml:space="preserve"><value>Other</value></data>
+  <data name="DyBand9" xml:space="preserve"><value>Rated 9 or more</value></data>
+  <data name="DyBand75" xml:space="preserve"><value>Rated 7.5 or more</value></data>
+  <data name="DyBand5" xml:space="preserve"><value>Rated 5 to 7.4</value></data>
+  <data name="DyBandlow" xml:space="preserve"><value>Rated below 5</value></data>
+  <data name="DyBandnone" xml:space="preserve"><value>No rating</value></data>
+  <data name="DyFiltersActive" xml:space="preserve"><value>Filters: {0}</value></data>
+  <data name="DyResultCount" xml:space="preserve"><value>{0} games</value></data>
+  <data name="DySortfinished" xml:space="preserve"><value>Completion date</value></data>
+  <data name="DyFilterGenre" xml:space="preserve"><value>Genre</value></data>
+  <data name="DyFilterPlatform" xml:space="preserve"><value>Platform</value></data>
+  <data name="DyFilterStore" xml:space="preserve"><value>Store</value></data>
+  <data name="DyFilterRating" xml:space="preserve"><value>Rating</value></data>
+  <data name="DyFilterYear" xml:space="preserve"><value>Year</value></data>
+  <data name="DyFilterAny" xml:space="preserve"><value>Any</value></data>
+  <data name="DyFilterClear" xml:space="preserve"><value>Clear filters</value></data>
+  <data name="DySaved" xml:space="preserve"><value>Saved filters</value></data>
+  <data name="DySaveFilter" xml:space="preserve"><value>Save these filters</value></data>
+  <data name="DySaveFilterTitle" xml:space="preserve"><value>Save filters</value></data>
+  <data name="DySaveFilterName" xml:space="preserve"><value>Name (e.g. RPGs rated 9+)</value></data>
+  <data name="DySavedNone" xml:space="preserve"><value>No saved filters yet. Combine filters and use Save these filters.</value></data>
+  <data name="DyDeleteFilter" xml:space="preserve"><value>Delete</value></data>
+  <data name="DyViewGrid" xml:space="preserve"><value>Grid</value></data>
+  <data name="DyViewList" xml:space="preserve"><value>List</value></data>
+  <data name="DyViewTable" xml:space="preserve"><value>Table</value></data>
+  <data name="DyColGame" xml:space="preserve"><value>Game</value></data>
+  <data name="DyColStatus" xml:space="preserve"><value>Status</value></data>
+  <data name="DyColRating" xml:space="preserve"><value>Rating</value></data>
+  <data name="DyColHours" xml:space="preserve"><value>Hours</value></data>
+  <data name="DyColStarted" xml:space="preserve"><value>Started</value></data>
+  <data name="DyColFinished" xml:space="preserve"><value>Finished</value></data>
+  <data name="DyColPlatform" xml:space="preserve"><value>Platform</value></data>
 </root>

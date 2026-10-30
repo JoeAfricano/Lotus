@@ -104,4 +104,27 @@ public sealed class DiaryScreenTests
         editor.Open(game); Assert.False(editor.IsNew); Assert.Equal(8.5, editor.Rating); Assert.True(editor.FeatToggles.Single(f => f.Id == "nodeath").Selected);
         editor.Remove(); Assert.False(diary.Contains("steam:5"));
     }
+
+    [Fact] public void DiaryFiltersCombineSaveAndRememberTheLayout()
+    {
+        var diary = new GameDiary(new Memory(), ex => throw ex); var text = new Lotus.Core.TextCatalog();
+        diary.Save(new DiaryEntry { Key = "steam:1", Name = "Elden Ring", Genres = ["RPG"], Rating = 9.5, Status = DiaryStatus.Completed, Finished = new DateTime(2025, 3, 1) });
+        diary.Save(new DiaryEntry { Key = "epic:2", Name = "Hades", Genres = ["Roguelike"], Rating = 8, Status = DiaryStatus.Completed, Finished = new DateTime(2026, 5, 1), Platform = "Steam Deck" });
+        diary.Save(new DiaryEntry { Key = "steam:3", Name = "Starfield", Genres = ["RPG"], Status = DiaryStatus.Dropped });
+        var prefs = new Lotus.Core.PreferencesService(new Prefs());
+        var page = new DiaryViewModel(diary, text, prefs);
+        Assert.Equal(["RPG", "Roguelike"], page.GenreOptions.Select(o => o.Id));                    // most used first
+        page.Genre = "RPG"; Assert.Equal(2, page.Items.Count);
+        page.RatingBand = "9"; Assert.Equal(["Elden Ring"], page.Items.Select(i => i.Name));
+        Assert.Contains("RPG", page.ActiveFilters); Assert.True(page.HasFilters);
+        page.SaveCurrentFilter("RPGs nota 9+");
+        page.ClearFilters(); Assert.Equal(3, page.Items.Count); Assert.False(page.HasFilters);
+        page.Store = "Epic"; Assert.Equal(["Hades"], page.Items.Select(i => i.Name));
+        page.ClearFilters(); page.RatingBand = "none"; Assert.Equal(["Starfield"], page.Items.Select(i => i.Name));
+        page.ApplyFilter(page.SavedFilters.Single()); Assert.Equal(["Elden Ring"], page.Items.Select(i => i.Name)); // saved filter restored
+        page.ClearFilters(); page.Year = "2026"; Assert.Equal(["Hades"], page.Items.Select(i => i.Name));
+        Assert.Equal("grid", page.ViewMode); page.ViewMode = "table"; Assert.True(page.IsTable);
+        Assert.Equal("table", new DiaryViewModel(diary, text, prefs).ViewMode);                       // layout remembered
+        page.DeleteFilter("RPGs nota 9+"); Assert.False(page.HasSavedFilters);
+    }
 }

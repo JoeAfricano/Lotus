@@ -37,6 +37,20 @@ public sealed class DiaryData
 {
     public List<DiaryEntry> Entries { get; set; } = [];
     public string Bio { get; set; } = "";
+    public List<DiaryFilter> Filters { get; set; } = []; // filters the player saved with a name
+}
+
+// A saved combination of diary filters (any field left null means "any").
+public sealed class DiaryFilter
+{
+    public string Name { get; set; } = "";
+    public string Tab { get; set; } = "all";
+    public string? Genre { get; set; }
+    public string? Platform { get; set; }
+    public string? Store { get; set; }
+    public string? Rating { get; set; }
+    public string? Year { get; set; }
+    public string Sort { get; set; } = "recent";
 }
 
 public interface IGameDiaryStore { DiaryData Load(); void Save(DiaryData data); }
@@ -89,6 +103,18 @@ public sealed class GameDiary(IGameDiaryStore store, Action<Exception> log)
     {
         if (Get(key) is { } e) { data.Entries.Remove(e); Persist(); }
     }
+
+    // Saved filters: a new one with the same name replaces the old one.
+    public IReadOnlyList<DiaryFilter> Filters => data.Filters;
+    public void SaveFilter(DiaryFilter filter)
+    {
+        var name = (filter.Name ?? "").Trim();
+        if (name.Length == 0) return;
+        filter.Name = name.Length > 40 ? name[..40] : name;
+        data.Filters.RemoveAll(f => string.Equals(f.Name, filter.Name, StringComparison.CurrentCultureIgnoreCase));
+        data.Filters.Add(filter); Persist();
+    }
+    public void DeleteFilter(string name) { if (data.Filters.RemoveAll(f => f.Name == name) > 0) Persist(); }
 
     public void SetBio(string? bio)
     {

@@ -23,6 +23,8 @@ public sealed partial class DiaryPanel : UserControl
     {
         if (e.PropertyName is nameof(DiaryViewModel.LevelPercent) or nameof(DiaryViewModel.Progress)) DispatcherQueue.TryEnqueue(Render);
         if (e.PropertyName is nameof(DiaryViewModel.Section)) DispatcherQueue.TryEnqueue(() => ShowSection(animate: true));
+        if (e.PropertyName is nameof(DiaryViewModel.GenreOptions) or nameof(DiaryViewModel.ActiveFilters) or nameof(DiaryViewModel.Tab)) DispatcherQueue.TryEnqueue(BuildChips);
+        if (e.PropertyName is nameof(DiaryViewModel.ViewMode)) DispatcherQueue.TryEnqueue(PaintView);
     }
 
     // Games, achievements or Steam. The bar follows the view model (a toast can open "Conquistas" directly).
@@ -65,6 +67,7 @@ public sealed partial class DiaryPanel : UserControl
             timer.Start();
         }
         PaintTabs();
+        BuildChips(); PaintView();
         ShowSection(animate: false);
     }
 
@@ -91,5 +94,96 @@ public sealed partial class DiaryPanel : UserControl
     }
     private void OnSearch(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args) { if (Vm is { } vm && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput) vm.Query = sender.Text; }
     private void OnEntry(object sender, RoutedEventArgs e) { if (sender is FrameworkElement { DataContext: DiaryCard card }) MainWindow.Shell?.OpenDiaryEditor(card.Entry); }
+
+    // ---- Layout switch ----
+    private void OnView(object sender, RoutedEventArgs e)
+    {
+        if (Vm is not { } vm || sender is not FrameworkElement { Tag: string mode } f || mode == vm.ViewMode) return;
+        vm.ViewMode = mode; UiSound.Play(UiSound.Cue.Toggle); Motion.Pop(f);
+    }
+    // The active layout button is filled with the accent; the others stay plain.
+    private void PaintView()
+    {
+        if (Vm is not { } vm) return;
+        foreach (var b in new[] { ViewGrid, ViewList, ViewTable })
+        {
+            var on = (string)b.Tag == vm.ViewMode;
+            b.Background = on ? (Brush)Application.Current.Resources["AccentSoftBrush"] : new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+            b.Foreground = (Brush)Application.Current.Resources[on ? "RoseBrush" : "MutedBrush"];
+        }
+    }
+    private void OnGridItem(object sender, ItemClickEventArgs e) { if (e.ClickedItem is DiaryCard card) MainWindow.Shell?.OpenDiaryEditor(card.Entry); }
+    // Table headers sort by that column (a second click on the same column goes back to "recent").
+    private void OnColumnSort(object sender, RoutedEventArgs e)
+    {
+        if (Vm is not { } vm || sender is not FrameworkElement { Tag: string sort }) return;
+        vm.Sort = vm.Sort == sort ? "recent" : sort;
+    }
+    private void OnClearFilters(object sender, RoutedEventArgs e) { Vm?.ClearFilters(); UiSound.Play(UiSound.Cue.Toggle); }
+
+    // ---- Filter chips: one dropdown per dimension, built from the player's own games ----
+    private void BuildChips()
+    {
+        if (Vm is not { } vm) return;
+        FilterChips.Children.Clear();
+        Chip(vm.Text["DyFilterGenre"], vm.GenreOptions, vm.Genre, v => vm.Genre = v, "genre");
+        Chip(vm.Text["DyFilterPlatform"], vm.PlatformOptions, vm.Platform, v => vm.Platform = v, "platform");
+        Chip(vm.Text["DyFilterStore"], vm.StoreOptions, vm.Store, v => vm.Store = v, "store");
+        Chip(vm.Text["DyFilterRating"], vm.RatingOptions, vm.RatingBand, v => vm.RatingBand = v, "rating");
+        Chip(vm.Text["DyFilterYear"], vm.YearOptions, vm.Year, v => vm.Year = v, "year");
+        SavedChip(vm);
+
+        void Chip(string title, IReadOnlyList<DiaryTab> options, string? current, Action<string?> set, string id)
+        {
+            if (options.Count == 0) return;
+            var label = current is null ? title : $"{title}: {options.FirstOrDefault(o => o.Id == current)?.Label ?? current}";
+            var menu = new MenuFlyout();
+            var any = new RadioMenuFlyoutItem { Text = vm.Text["DyFilterAny"], GroupName = id, IsChecked = current is null };
+            any.Click += (_, _) => set(null); menu.Items.Add(any);
+            foreach (var o in options)
+            {
+                var item = new RadioMenuFlyoutItem { Text = $"{o.Label}  ({o.Count})", GroupName = id, IsChecked = o.Id == current };
+                item.Click += (_, _) => set(o.Id); menu.Items.Add(item);
+            }
+            FilterChips.Children.Add(ChipButton(label, current is not null, menu, "diary-filter-" + id));
+        }
+    }
+    private void SavedChip(DiaryViewModel vm)
+    {
+        var menu = new MenuFlyout();
+        foreach (var f in vm.SavedFilters)
+        {
+            var sub = new MenuFlyoutSubItem { Text = f.Name };
+            var apply = new MenuFlyoutItem { Text = f.Name, Icon = new FontIcon { Glyph = "\uE71C" } }; apply.Click += (_, _) => vm.ApplyFilter(f);
+            var delete = new MenuFlyoutItem { Text = vm.Text["DyDeleteFilter"], Icon = new FontIcon { Glyph = "\uE74D" } }; delete.Click += (_, _) => vm.DeleteFilter(f.Name);
+            sub.Items.Add(apply); sub.Items.Add(delete); menu.Items.Add(sub);
+        }
+        if (vm.SavedFilters.Count == 0) menu.Items.Add(new MenuFlyoutItem { Text = vm.Text["DySavedNone"], IsEnabled = false });
+        menu.Items.Add(new MenuFlyoutSeparator());
+        var save = new MenuFlyoutItem { Text = vm.Text["DySaveFilter"], Icon = new FontIcon { Glyph = "\uE74E" }, IsEnabled = vm.HasFilters || vm.Tab != "all" };
+        save.Click += async (_, _) => await AskFilterName(vm);
+        menu.Items.Add(save);
+        FilterChips.Children.Add(ChipButton("★ " + vm.Text["DySaved"], false, menu, "diary-filter-saved"));
+    }
+    private Button ChipButton(string label, bool active, MenuFlyout menu, string id)
+    {
+        var b = new Button
+        {
+            Content = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6, Children = { new TextBlock { Text = label, FontSize = 12.5, FontWeight = active ? Microsoft.UI.Text.FontWeights.SemiBold : Microsoft.UI.Text.FontWeights.Normal }, new FontIcon { Glyph = "\uE70D", FontSize = 9 } } },
+            Padding = new Thickness(12, 5, 10, 6), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1), Flyout = menu,
+            Background = (Brush)Application.Current.Resources[active ? "AccentSoftBrush" : "CardBrush"],
+            BorderBrush = (Brush)Application.Current.Resources[active ? "RoseBrush" : "CardBorderBrush"],
+            Foreground = (Brush)Application.Current.Resources[active ? "RoseBrush" : "MainTextBrush"],
+        };
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(b, id);
+        return b;
+    }
+    private async Task AskFilterName(DiaryViewModel vm)
+    {
+        var box = new TextBox { PlaceholderText = vm.Text["DySaveFilterName"], MaxLength = 40, MinWidth = 320 };
+        var dialog = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = ThemePalette.Element, Title = vm.Text["DySaveFilterTitle"], Content = box, PrimaryButtonText = vm.Text["DySave"], CloseButtonText = vm.Text["DlgCancel"], DefaultButton = ContentDialogButton.Primary };
+        box.TextChanged += (_, _) => dialog.IsPrimaryButtonEnabled = box.Text.Trim().Length > 0; dialog.IsPrimaryButtonEnabled = false;
+        if (await dialog.ShowAsync() == ContentDialogResult.Primary) { vm.SaveCurrentFilter(box.Text); UiSound.Play(UiSound.Cue.Done); BuildChips(); }
+    }
     private void OnOpenGameList(object sender, RoutedEventArgs e) => GameListRequested?.Invoke(this, EventArgs.Empty);
 }

@@ -22,6 +22,7 @@ public sealed record InterfacePreferences
     public string DisplayName { get; init; } = "";
     public string? AvatarPath { get; init; }
     public string Goal { get; init; } = "balanced"; // fps | competitive | balanced
+    public string DiaryView { get; init; } = "grid"; // diary layout: grid | list | table
     public string? AdaptiveSync { get; init; } // FreeSync/G-Sync on: "on" | "off" | null (not asked yet; asked before the first game analysis)
     public string Accent { get; init; } = "rose"; // rose | violet | blue | green (design) and the older crimson | gold | dark
     public static readonly string[] Goals = ["fps", "competitive", "balanced"];
@@ -37,6 +38,7 @@ public sealed record InterfacePreferences
         DisplayName = (DisplayName ?? "").Trim() is var n && n.Length > 32 ? n[..32] : (DisplayName ?? "").Trim(),
         Goal = Goals.Contains(Goal) ? Goal : "balanced",
         AdaptiveSync = AdaptiveSync is "on" or "off" ? AdaptiveSync : null,
+        DiaryView = DiaryView is "grid" or "list" or "table" ? DiaryView : "grid",
         Accent = Accents.Contains(Accent) ? Accent : "rose",
         UiSoundVolume = Math.Clamp(UiSoundVolume, 0, 100)
     };
