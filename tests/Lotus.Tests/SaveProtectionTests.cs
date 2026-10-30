@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text.Json;
 using Lotus.Core;
 using Lotus.Core.Games;
@@ -304,5 +304,39 @@ public sealed class SaveProtectionTests : IDisposable
         var file = Path.Combine(VaultDir, SaveVault.FolderFor(Key), r.Manifest!.Id, "manifest.json");
         File.WriteAllText(file, JsonSerializer.Serialize(r.Manifest with { Format = SnapshotManifest.CurrentFormat + 1 }));
         Assert.Empty(vault.List(Key)); // a format this version does not know is never restored blindly
+    }
+
+    // ---------- "Backup de saves" page ----------
+    [Fact] public async Task SavesPageListsFiltersAndKeepsUninstalledProtectedGames()
+    {
+        var root = Path.Combine(dir, "Profile");
+        var stardew = Path.Combine(root, "AppData", "StardewValley", "Saves"); Directory.CreateDirectory(stardew); File.WriteAllText(Path.Combine(stardew, "Farm"), "save");
+        Put("old.sav", "x");
+        var protection = new SaveProtection(new SettingsMemory(), Vault(), new SaveDiscovery(new Folders(root)), ex => throw ex);
+        var gone = new GameEntry(GameStores.Steam, "999", "Old Game");
+        await protection.EnableAsync(gone, protection.Discovery.Manual(Src)!, auto: true, keep: 5);
+        GameEntry[] installed = [new(GameStores.Steam, "413150", "Stardew Valley"), new(GameStores.Steam, "292030", "The Witcher 3"), new(GameStores.Xbox, "x", "Halo")];
+        var page = new SaveLibraryViewModel(protection, () => installed, new TextCatalog(), _ => false);
+        await page.LoadAsync();
+        Assert.Equal(4, page.Items.Count);
+        Assert.Equal("Steam:999", page.Items[0].Game.Key);                       // protected first, even though uninstalled
+        Assert.True(page.Items[0].IsProtected); Assert.False(page.Items[0].Installed); Assert.Equal(1, page.BackupCount);
+        Assert.Equal(SaveTileKind.Found, page.Items.Single(t => t.Game.Id == "413150").Kind);
+        Assert.Equal(SaveTileKind.Unsupported, page.Items.Single(t => t.Game.Store == GameStores.Xbox).Kind);
+        page.Filter = "protected"; Assert.Single(page.Items);
+        page.Filter = "none"; Assert.Equal(2, page.Items.Count); Assert.Equal(2, page.CountFor("none"));
+        page.Filter = "all"; page.Search = "star"; Assert.Equal("Stardew Valley", Assert.Single(page.Items).Name);
+        // Opening a game shows its own saves; after a backup there, the list is updated on the way back.
+        page.Search = "";
+        await page.OpenAsync(page.Items.Single(t => t.Game.Id == "413150"));
+        Assert.True(page.HasSelection); Assert.Equal(stardew, page.Selected!.FolderPath);
+        await page.Selected.EnableAsync();
+        await page.CloseAsync();
+        Assert.False(page.HasSelection);
+        Assert.Equal(2, page.ProtectedCount); Assert.Equal(2, page.BackupCount);
+        // A game's page can ask for one game to open directly.
+        page.PendingOpen = "steam:413150";
+        await page.LoadAsync();
+        Assert.Equal("Stardew Valley", page.SelectedTile!.Name); Assert.Null(page.PendingOpen);
     }
 }

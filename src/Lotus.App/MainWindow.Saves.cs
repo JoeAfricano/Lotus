@@ -9,6 +9,8 @@ public sealed partial class MainWindow
 {
     private SaveProtection saves = null!;
     public SaveProtection Saves => saves;
+    private SaveLibraryViewModel? saveLibrary;
+    public SaveLibraryViewModel? SaveLibrary => saveLibrary;
 
     // Unsure counts as running: a restore is never done over an open game.
     public bool IsGameRunning(GameEntry game) =>
@@ -19,6 +21,7 @@ public sealed partial class MainWindow
         var root = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "SaveBackups");
         saves = new SaveProtection(new Lotus.Infrastructure.Games.JsonSaveSettingsStore(), new SaveVault(root),
             new SaveDiscovery(new Lotus.Infrastructure.Games.WindowsKnownFolders()), ex => Serilog.Log.Warning(ex, "Save protection"));
+        saveLibrary = new SaveLibraryViewModel(saves, games.InstalledGames, text, IsGameRunning);
         if (games.Preparation is { } preparation) preparation.SaveWarning = game => saves.Warning(game, text);
         sessionHub.Stopped += (_, e) => _ = AutoBackupAsync(e.Game);
         var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromSeconds(20); timer.IsRepeating = false;

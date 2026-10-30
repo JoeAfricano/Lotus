@@ -161,7 +161,7 @@ public sealed partial class MainWindow : Window
         palette.Changed += (_, _) => ApplyElementTheme();
         ApplyElementTheme();
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 820));
-        foreach (var section in ViewModel.Items.OrderBy(s => s.Id is "gamelist" or "diary" ? 1 : 0)) // design order: Game list and the diary close the list; Settings sits at the bottom
+        foreach (var section in ViewModel.Items.OrderBy(s => s.Id is "gamelist" or "saves" or "diary" ? 1 : 0)) // design order: Game list and the diary close the list; Settings sits at the bottom
         {
             var item = new NavigationViewItem
             {
@@ -440,7 +440,7 @@ public sealed partial class MainWindow : Window
         if (force || displayedSectionId != group)
         {
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
-                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, GameDetails = gameDetails, Diary = diaryPage, Backup = backup }, new SuppressNavigationTransitionInfo());
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, Saves = saveLibrary, GameDetails = gameDetails, Diary = diaryPage, Backup = backup }, new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
             Motion.EnterPage(ContentFrame); // new section rises and fades in
         }

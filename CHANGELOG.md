@@ -27,6 +27,15 @@ Esta versão é para quem joga sem tempo para configurar nada: o Lotus lembra on
 - **Perfil Jogo automático (opcional, por jogo):** você autoriza uma vez, vendo cada mudança. O Lotus aplica o perfil antes de jogar e desfaz depois, inclusive na próxima abertura se o PC ou o Lotus fecharem no meio.
 - Cartão "Preparar e jogar" na página de cada jogo instalado e chave geral em Configurações.
 
+### Novo: aba "Backup de saves"
+- **Nova aba no menu, logo abaixo da Game list**, com todos os seus jogos em capas.
+  - No topo, um destaque com o total de jogos protegidos, backups guardados e espaço usado.
+  - Filtros Todos, Protegidos, Saves encontrados e Sem saves, com a contagem de cada um, e busca por nome.
+  - Cada capa mostra um selo de estado (Protegido, Atenção, Saves encontrados, Sem saves) e quantos backups existem, com a data do último.
+  - Jogos protegidos que foram desinstalados continuam na lista, para os backups não sumirem.
+- **Ao clicar num jogo:** banner com a arte dele, estado e ações à esquerda, e a lista de backups à direita com Restaurar e Excluir.
+- Na página de cada jogo, a linha "Backup de saves" tem o botão **Gerenciar**, que abre a aba direto naquele jogo.
+
 ### Novo: Proteção de progresso (saves)
 - **Encontra a pasta de saves com segurança**, nunca adivinhando pelo nome do jogo:
   - catálogo de 18 jogos conhecidos da Steam (Stardew Valley, Elden Ring, Cyberpunk 2077, The Witcher 3, Baldur's Gate 3 e outros);

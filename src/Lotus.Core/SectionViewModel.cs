@@ -17,6 +17,7 @@ public sealed class SectionViewModel
     public Tools.ToolsViewModel? Tools { get; }
     public GuidedSetupViewModel? Guided { get; init; } // first-run guided setup on Home
     public Catalog.GameListViewModel? GameList { get; init; }      // Game list tab
+    public global::Lotus.Core.Saves.SaveLibraryViewModel? Saves { get; init; }        // "Backup de saves" tab
     public Diary.DiaryViewModel? Diary { get; init; }               // "Meu diário" page
     public Backup.BackupViewModel? Backup { get; init; }            // Settings › Backup
     public Catalog.GameDetailsViewModel? GameDetails { get; init; } // game page in Meus Jogos

@@ -155,6 +155,7 @@
     <controls:GameDetailView x:Name="GameDetail" Visibility="Collapsed" DataContext="{Binding GameDetails}" BackRequested="OnGameDetailBack" PlayRequested="OnPlayGame"/>
    </Grid>
    <controls:GameListPanel x:Name="GameListContent" x:Load="{x:Bind ShowGameList}" DataContext="{Binding GameList}" PlayRequested="OnPlayGame"/>
+   <controls:SavesPanel x:Name="SavesContent" x:Load="{x:Bind ShowSaves}" DataContext="{Binding Saves}"/>
    <controls:DiaryPanel x:Name="DiaryContent" x:Load="{x:Bind ShowDiary}" DataContext="{Binding Diary}" GameListRequested="OnDiaryGameList"/>
    <controls:ScorePanel x:Name="ScoreContent" x:Load="{x:Bind ShowScore}" DataContext="{Binding Score}"/>
    <controls:ToolsPanel x:Name="ToolsContent" x:Load="{x:Bind ShowTools}" DataContext="{Binding Tools}"/>

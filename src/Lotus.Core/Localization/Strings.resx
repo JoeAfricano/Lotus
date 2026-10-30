@@ -2418,4 +2418,38 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="SpWarnFailed" xml:space="preserve"><value>O último backup dos saves deste jogo não deu certo.</value></data>
   <data name="SpOpen" xml:space="preserve"><value>Abrir pasta</value></data>
   <data name="SpTitleHint" xml:space="preserve"><value>Guarde cópias dos seus saves neste PC.</value></data>
+  <data name="savesTitle" xml:space="preserve"><value>Backup de saves</value></data>
+  <data name="savesDescription" xml:space="preserve"><value>Cópias do seu progresso guardadas neste PC. Escolha um jogo para ver, criar ou restaurar.</value></data>
+  <data name="savesNext" xml:space="preserve"><value>Proteja os saves dos seus jogos.</value></data>
+  <data name="SlHeroEyebrow" xml:space="preserve"><value>PROTEÇÃO DE PROGRESSO</value></data>
+  <data name="SlHeroTitle" xml:space="preserve"><value>Seus saves, sempre a salvo</value></data>
+  <data name="SlHeroBody" xml:space="preserve"><value>O Lotus guarda cópias conferidas depois de cada sessão e devolve seu progresso com um clique, sem mexer em nada antes de você confirmar.</value></data>
+  <data name="SlStatProtected" xml:space="preserve"><value>jogos protegidos</value></data>
+  <data name="SlStatBackups" xml:space="preserve"><value>backups guardados</value></data>
+  <data name="SlStatSpace" xml:space="preserve"><value>espaço usado</value></data>
+  <data name="SlFilters" xml:space="preserve"><value>Filtrar jogos</value></data>
+  <data name="SlFilterAll" xml:space="preserve"><value>Todos</value></data>
+  <data name="SlFilterProtected" xml:space="preserve"><value>Protegidos</value></data>
+  <data name="SlFilterFound" xml:space="preserve"><value>Saves encontrados</value></data>
+  <data name="SlFilterNone" xml:space="preserve"><value>Sem saves</value></data>
+  <data name="SlSearch" xml:space="preserve"><value>Buscar jogo</value></data>
+  <data name="SlLoading" xml:space="preserve"><value>Procurando os saves dos seus jogos…</value></data>
+  <data name="SlEmpty" xml:space="preserve"><value>Nenhum jogo neste filtro.</value></data>
+  <data name="SlBadgeProtected" xml:space="preserve"><value>Protegido</value></data>
+  <data name="SlBadgeAttention" xml:space="preserve"><value>Atenção</value></data>
+  <data name="SlBadgeFound" xml:space="preserve"><value>Saves encontrados</value></data>
+  <data name="SlBadgeOff" xml:space="preserve"><value>Desativado</value></data>
+  <data name="SlBadgeNone" xml:space="preserve"><value>Sem saves</value></data>
+  <data name="SlBadgeXbox" xml:space="preserve"><value>Xbox · não suportado</value></data>
+  <data name="SlBackups" xml:space="preserve"><value>{0} backups</value></data>
+  <data name="SlBackupOne" xml:space="preserve"><value>1 backup</value></data>
+  <data name="SlNoBackupsYet" xml:space="preserve"><value>Nenhum backup ainda</value></data>
+  <data name="SlNotInstalled" xml:space="preserve"><value>Não instalado</value></data>
+  <data name="SlNow" xml:space="preserve"><value>agora</value></data>
+  <data name="SlMinutes" xml:space="preserve"><value>há {0} min</value></data>
+  <data name="SlHours" xml:space="preserve"><value>há {0} h</value></data>
+  <data name="SlYesterday" xml:space="preserve"><value>ontem</value></data>
+  <data name="SlDays" xml:space="preserve"><value>há {0} dias</value></data>
+  <data name="SlBack" xml:space="preserve"><value>Voltar</value></data>
+  <data name="SlManage" xml:space="preserve"><value>Gerenciar</value></data>
 </root>

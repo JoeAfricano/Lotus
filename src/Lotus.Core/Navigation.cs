@@ -12,7 +12,7 @@ public static class Sections
         new Section(item.Id, text[item.Id + "Title"], item.Glyph, text[item.Id + "Description"], text[item.Id + "Next"])).ToArray());
     private static IEnumerable<(string Id, string Glyph)> Definitions => new[]
     {
-        ("home", "\uE80F"), ("optimize", "\uE945"), ("games", "\uE7FC"), ("gamelist", "\uE721"), ("diary", "\uE736"), ("lotusscore", "\uEC4A"), ("tools", "\uE90F"),
+        ("home", "\uE80F"), ("optimize", "\uE945"), ("games", "\uE7FC"), ("gamelist", "\uE721"), ("saves", "\uE74E"), ("diary", "\uE736"), ("lotusscore", "\uEC4A"), ("tools", "\uE90F"),
         ("performance", "\uE9D2"), ("settings", "\uE713")
     };
 }
@@ -28,7 +28,7 @@ public static class AppRoutes
         "home" or "dashboard" => new("home", "home"),
         "optimize" or "optimizations" or "analysis" => new("analysis", "optimize"),
         "advice" => new("analysis", "optimize"), "restore" => new("restore", "optimize"),
-        "games" => new("games", "games"), "gamelist" => new("gamelist", "gamelist"), "diary" => new("diary", "diary"), "score" or "lotusscore" => new("lotusscore", "lotusscore"), "tools" => new("tools", "tools"),
+        "games" => new("games", "games"), "gamelist" => new("gamelist", "gamelist"), "saves" => new("saves", "saves"), "diary" => new("diary", "diary"), "score" or "lotusscore" => new("lotusscore", "lotusscore"), "tools" => new("tools", "tools"),
         "performance" or "monitoring" => new("monitoring", "performance"),
         "benchmark" => new("benchmark", "performance"), "history" => new("history", "performance"),
         "settings" or "settings-monitoring" => new("settings", "settings"),

@@ -150,6 +150,7 @@ public sealed class SaveProtection
     }
 
     public GameSaveSettings Get(string key) => data.Games.GetValueOrDefault(key) ?? new();
+    public IReadOnlyList<string> Keys => [.. data.Games.Keys];
     public bool IsBusy(string key) => busy.Contains(key);
     private bool Put(string key, GameSaveSettings s)
     {

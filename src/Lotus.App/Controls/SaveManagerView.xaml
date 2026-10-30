@@ -1,0 +1,98 @@
+<UserControl x:Class="Lotus.App.Controls.SaveManagerView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="using:Lotus.App" x:Name="Root" AutomationProperties.AutomationId="saves-manager">
+ <!-- One game's saves: status and actions, folder, automatic copies (left); saved backups (right) -->
+ <Grid ColumnSpacing="18" RowSpacing="18">
+  <Grid.ColumnDefinitions><ColumnDefinition Width="5*"/><ColumnDefinition Width="6*"/></Grid.ColumnDefinitions>
+  <StackPanel Spacing="18">
+   <!-- Status and actions -->
+   <Border Style="{StaticResource CardStyle}">
+    <StackPanel Spacing="14">
+     <Grid ColumnSpacing="14">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <Border Style="{StaticResource IconBadgeStyle}" VerticalAlignment="Top"><FontIcon x:Name="StateIcon" Glyph="&#xEA18;" Style="{StaticResource BadgeIconStyle}"/></Border>
+      <StackPanel Grid.Column="1" Spacing="3">
+       <TextBlock Text="{Binding Text[SpTitle]}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" FontWeight="SemiBold" CharacterSpacing="40"/>
+       <TextBlock Text="{Binding Summary}" TextWrapping="Wrap" FontSize="15" FontWeight="SemiBold" AutomationProperties.AutomationId="saves-status" AutomationProperties.LiveSetting="Polite"/>
+      </StackPanel>
+     </Grid>
+     <StackPanel Orientation="Horizontal" Spacing="8">
+      <Button Style="{StaticResource PrimaryButtonStyle}" Click="OnEnable" IsEnabled="{Binding CanEnable}" Visibility="{Binding CanEnable, Converter={StaticResource BooleanVisibility}}" app:Motion.Press="True" AutomationProperties.AutomationId="saves-enable">
+       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xEA18;" FontSize="14"/><TextBlock Text="{Binding Text[SpEnable]}"/></StackPanel>
+      </Button>
+      <Button Style="{StaticResource PrimaryButtonStyle}" Click="OnRecover" Visibility="{Binding Interrupted, Converter={StaticResource BooleanVisibility}}" Content="{Binding Text[SpRecover]}" AutomationProperties.AutomationId="saves-recover"/>
+      <Button Style="{StaticResource PrimaryButtonStyle}" Click="OnBackup" IsEnabled="{Binding CanBackup}" Visibility="{Binding IsOn, Converter={StaticResource BooleanVisibility}}" app:Motion.Press="True" AutomationProperties.AutomationId="saves-backup">
+       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE74E;" FontSize="14"/><TextBlock Text="{Binding Text[SpBackupNow]}"/></StackPanel>
+      </Button>
+      <Button Style="{StaticResource SoftButtonStyle}" Click="OnOff" Visibility="{Binding IsOn, Converter={StaticResource BooleanVisibility}}" Content="{Binding Text[SpTurnOff]}" AutomationProperties.AutomationId="saves-off"/>
+      <ProgressRing IsActive="{Binding Busy}" Width="20" Height="20" VerticalAlignment="Center"/>
+     </StackPanel>
+     <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource MainTextBrush}" Visibility="{Binding HasMessage, Converter={StaticResource BooleanVisibility}}"
+                app:Motion.Settle="True" AutomationProperties.AutomationId="saves-message" AutomationProperties.LiveSetting="Polite"/>
+    </StackPanel>
+   </Border>
+   <!-- Folder -->
+   <Border Style="{StaticResource CardStyle}" Visibility="{Binding Supported, Converter={StaticResource BooleanVisibility}}">
+    <StackPanel Spacing="6">
+     <TextBlock Text="{Binding Text[SpFolderLabel]}" FontWeight="SemiBold"/>
+     <TextBlock Text="{Binding FolderPath}" IsTextSelectionEnabled="True" TextWrapping="Wrap" FontSize="12.5" Foreground="{ThemeResource MutedBrush}" Visibility="{Binding FolderPath, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="saves-folder"/>
+     <TextBlock Text="{Binding FolderInfo}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" Visibility="{Binding FolderInfo, Converter={StaticResource PresenceVisibility}}"/>
+     <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
+      <Button Style="{StaticResource SoftButtonStyle}" Click="OnOpen" Visibility="{Binding FolderPath, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="saves-open">
+       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE838;" FontSize="13"/><TextBlock Text="{Binding Text[SpOpen]}"/></StackPanel>
+      </Button>
+      <Button Style="{StaticResource SoftButtonStyle}" Click="OnPick" IsEnabled="{Binding CanEnable}" Content="{Binding Text[SpPickFolder]}" AutomationProperties.AutomationId="saves-pick"/>
+     </StackPanel>
+     <Grid ColumnSpacing="10" Margin="0,8,0,0" Visibility="{Binding CloudSynced, Converter={StaticResource BooleanVisibility}}">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <FontIcon Glyph="&#xE753;" FontSize="14" VerticalAlignment="Top" Margin="0,2,0,0" Foreground="{ThemeResource RoseBrush}"/>
+      <TextBlock Grid.Column="1" Text="{Binding Text[SpCloudNote]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+     </Grid>
+    </StackPanel>
+   </Border>
+   <!-- Automatic copies -->
+   <Border Style="{StaticResource CardStyle}" Visibility="{Binding IsOn, Converter={StaticResource BooleanVisibility}}">
+    <StackPanel Spacing="6">
+     <ToggleSwitch x:Name="AutoSwitch" Header="{Binding Text[SpAuto]}" Toggled="OnAuto" AutomationProperties.AutomationId="saves-auto"/>
+     <ComboBox x:Name="KeepBox" Header="{Binding Text[SpKeep]}" SelectionChanged="OnKeep" MinWidth="220" AutomationProperties.AutomationId="saves-keep"/>
+    </StackPanel>
+   </Border>
+   <TextBlock Text="{Binding Text[SpWhere]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" FontSize="11.5"/>
+  </StackPanel>
+
+  <!-- Saved backups -->
+  <Border Grid.Column="1" Style="{StaticResource CardStyle}" VerticalAlignment="Top" Visibility="{Binding Supported, Converter={StaticResource BooleanVisibility}}">
+   <StackPanel Spacing="12">
+    <Grid>
+     <TextBlock Text="{Binding Text[SpManage]}" FontWeight="SemiBold" FontSize="16"/>
+     <TextBlock x:Name="CountText" HorizontalAlignment="Right" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" VerticalAlignment="Center"/>
+    </Grid>
+    <StackPanel x:Name="NoBackups" Spacing="10" Padding="0,18" HorizontalAlignment="Center">
+     <FontIcon Glyph="&#xE81C;" FontSize="34" Foreground="{ThemeResource RoseBrush}" Opacity="0.7"/>
+     <TextBlock Text="{Binding Text[SpNoBackups]}" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Center"/>
+    </StackPanel>
+    <ItemsControl ItemsSource="{Binding Backups}" AutomationProperties.AutomationId="saves-list">
+     <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+     <ItemsControl.ItemTemplate>
+      <DataTemplate>
+       <Grid ColumnSpacing="12" Padding="14,10" CornerRadius="12" Background="{ThemeResource ElevatedBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.01">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <Border Width="36" Height="36" CornerRadius="18" Background="{ThemeResource HeroBrush}" VerticalAlignment="Center">
+         <FontIcon Glyph="&#xE81C;" FontSize="15" Foreground="{ThemeResource GoldBrush}"/>
+        </Border>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
+         <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="13.5"/>
+         <TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+        </StackPanel>
+        <Button Grid.Column="2" Tag="{Binding Id}" Click="OnRestore" IsEnabled="{Binding CanRestore}" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="saves-restore">
+         <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE777;" FontSize="12"/><TextBlock Text="{Binding DataContext.Text[SpRestore], ElementName=Root}"/></StackPanel>
+        </Button>
+        <Button Grid.Column="3" Tag="{Binding Id}" Click="OnDelete" Style="{StaticResource SoftButtonStyle}" Padding="10,6" VerticalAlignment="Center"
+                ToolTipService.ToolTip="{Binding DataContext.Text[SpDelete], ElementName=Root}" AutomationProperties.Name="{Binding DataContext.Text[SpDelete], ElementName=Root}" AutomationProperties.AutomationId="saves-delete"><FontIcon Glyph="&#xE74D;" FontSize="14"/></Button>
+       </Grid>
+      </DataTemplate>
+     </ItemsControl.ItemTemplate>
+    </ItemsControl>
+   </StackPanel>
+  </Border>
+ </Grid>
+</UserControl>

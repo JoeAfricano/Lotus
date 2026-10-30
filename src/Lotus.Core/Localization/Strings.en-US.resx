@@ -2418,4 +2418,38 @@ Your games and Windows are not changed.</value></data>
   <data name="SpWarnFailed" xml:space="preserve"><value>The last backup of this game&apos;s saves didn&apos;t work.</value></data>
   <data name="SpOpen" xml:space="preserve"><value>Open folder</value></data>
   <data name="SpTitleHint" xml:space="preserve"><value>Keep copies of your saves on this PC.</value></data>
+  <data name="savesTitle" xml:space="preserve"><value>Save backups</value></data>
+  <data name="savesDescription" xml:space="preserve"><value>Copies of your progress kept on this PC. Pick a game to view, create or restore them.</value></data>
+  <data name="savesNext" xml:space="preserve"><value>Protect your games&apos; saves.</value></data>
+  <data name="SlHeroEyebrow" xml:space="preserve"><value>PROGRESS PROTECTION</value></data>
+  <data name="SlHeroTitle" xml:space="preserve"><value>Your saves, always safe</value></data>
+  <data name="SlHeroBody" xml:space="preserve"><value>Lotus keeps checked copies after each session and brings your progress back in one click, without touching anything until you confirm.</value></data>
+  <data name="SlStatProtected" xml:space="preserve"><value>protected games</value></data>
+  <data name="SlStatBackups" xml:space="preserve"><value>backups kept</value></data>
+  <data name="SlStatSpace" xml:space="preserve"><value>space used</value></data>
+  <data name="SlFilters" xml:space="preserve"><value>Filter games</value></data>
+  <data name="SlFilterAll" xml:space="preserve"><value>All</value></data>
+  <data name="SlFilterProtected" xml:space="preserve"><value>Protected</value></data>
+  <data name="SlFilterFound" xml:space="preserve"><value>Saves found</value></data>
+  <data name="SlFilterNone" xml:space="preserve"><value>No saves</value></data>
+  <data name="SlSearch" xml:space="preserve"><value>Search game</value></data>
+  <data name="SlLoading" xml:space="preserve"><value>Looking for your games&apos; saves…</value></data>
+  <data name="SlEmpty" xml:space="preserve"><value>No games in this filter.</value></data>
+  <data name="SlBadgeProtected" xml:space="preserve"><value>Protected</value></data>
+  <data name="SlBadgeAttention" xml:space="preserve"><value>Attention</value></data>
+  <data name="SlBadgeFound" xml:space="preserve"><value>Saves found</value></data>
+  <data name="SlBadgeOff" xml:space="preserve"><value>Off</value></data>
+  <data name="SlBadgeNone" xml:space="preserve"><value>No saves</value></data>
+  <data name="SlBadgeXbox" xml:space="preserve"><value>Xbox · not supported</value></data>
+  <data name="SlBackups" xml:space="preserve"><value>{0} backups</value></data>
+  <data name="SlBackupOne" xml:space="preserve"><value>1 backup</value></data>
+  <data name="SlNoBackupsYet" xml:space="preserve"><value>No backups yet</value></data>
+  <data name="SlNotInstalled" xml:space="preserve"><value>Not installed</value></data>
+  <data name="SlNow" xml:space="preserve"><value>just now</value></data>
+  <data name="SlMinutes" xml:space="preserve"><value>{0} min ago</value></data>
+  <data name="SlHours" xml:space="preserve"><value>{0} h ago</value></data>
+  <data name="SlYesterday" xml:space="preserve"><value>yesterday</value></data>
+  <data name="SlDays" xml:space="preserve"><value>{0} days ago</value></data>
+  <data name="SlBack" xml:space="preserve"><value>Back</value></data>
+  <data name="SlManage" xml:space="preserve"><value>Manage</value></data>
 </root>
