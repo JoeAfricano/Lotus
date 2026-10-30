@@ -2,6 +2,11 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 0.7.1-alpha "Lotus" (30/10/2026)
+
+- **Google Drive fica de fora por enquanto:** a opção saiu de Configurações › Backup enquanto a conexão com o Google é ajustada. O backup em arquivo (`.lotusbackup`, com o último save de cada jogo protegido) continua igual.
+- Quem está na 0.7.0 recebe esta versão pelo próprio Lotus, em Configurações › Atualizações.
+
 ## 0.7.0-alpha "Lotus" (30/10/2026)
 
 A partir desta versão o produto se chama só **Lotus** (o instalador é `Lotus-Setup-<versão>.exe`). Para atualizar a partir da 0.6, rode o instalador por cima: tudo continua como está.

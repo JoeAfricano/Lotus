@@ -2360,7 +2360,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="SpStateAvailable" xml:space="preserve"><value>Saves encontrados. Ative para guardar cópias do seu progresso.</value></data>
   <data name="SpStateUnsupported" xml:space="preserve"><value>Jogos do Xbox / Game Pass guardam os saves num local protegido e sincronizado pela Microsoft. O Lotus não mexe neles.</value></data>
   <data name="SpStateNotFound" xml:space="preserve"><value>Não encontramos a pasta de saves com segurança. Você pode escolher a pasta.</value></data>
-  <data name="SpWhere" xml:space="preserve"><value>Todas as cópias ficam neste PC, em %LOCALAPPDATA%\Lotus\SaveBackups. A mais recente de cada jogo também entra no backup do Lotus (Configurações › Backup) e, se você conectar, no Google Drive.</value></data>
+  <data name="SpWhere" xml:space="preserve"><value>Todas as cópias ficam neste PC, em %LOCALAPPDATA%\Lotus\SaveBackups. A mais recente de cada jogo também entra no backup do Lotus (Configurações › Backup).</value></data>
   <data name="SpFolderLabel" xml:space="preserve"><value>Pasta dos saves</value></data>
   <data name="SpFolderInfo" xml:space="preserve"><value>{0} arquivos · {1} · alterado em {2}</value></data>
   <data name="SpCloudNote" xml:space="preserve"><value>Esta pasta é sincronizada pela nuvem da loja. Ao restaurar, a nuvem pode perguntar qual versão manter ou trocar os arquivos de novo.</value></data>

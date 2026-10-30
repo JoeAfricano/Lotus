@@ -2360,7 +2360,7 @@ Your games and Windows are not changed.</value></data>
   <data name="SpStateAvailable" xml:space="preserve"><value>Saves found. Turn on to keep copies of your progress.</value></data>
   <data name="SpStateUnsupported" xml:space="preserve"><value>Xbox / Game Pass games keep saves in a protected place synced by Microsoft. Lotus doesn&apos;t touch them.</value></data>
   <data name="SpStateNotFound" xml:space="preserve"><value>We couldn&apos;t find the save folder safely. You can pick the folder.</value></data>
-  <data name="SpWhere" xml:space="preserve"><value>All copies stay on this PC, in %LOCALAPPDATA%\Lotus\SaveBackups. The newest one of each game also goes into the Lotus backup (Settings › Backup) and, if you connect it, to Google Drive.</value></data>
+  <data name="SpWhere" xml:space="preserve"><value>All copies stay on this PC, in %LOCALAPPDATA%\Lotus\SaveBackups. The newest one of each game also goes into the Lotus backup (Settings › Backup).</value></data>
   <data name="SpFolderLabel" xml:space="preserve"><value>Save folder</value></data>
   <data name="SpFolderInfo" xml:space="preserve"><value>{0} files · {1} · changed {2}</value></data>
   <data name="SpCloudNote" xml:space="preserve"><value>This folder is synced by the store&apos;s cloud. After a restore, the cloud may ask which version to keep or replace the files again.</value></data>

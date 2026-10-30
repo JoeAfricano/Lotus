@@ -18,7 +18,7 @@ public sealed partial class BackupPanel : UserControl
             if (Vm is not { } vm) return;
             vm.PropertyChanged -= OnVm; vm.PropertyChanged += OnVm;
             vm.Notify();
-            _ = vm.RefreshCloudAsync();
+            // Google Drive is hidden for now: no list is read.
         };
     }
     private void OnVm(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

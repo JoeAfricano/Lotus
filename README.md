@@ -2,7 +2,7 @@
 
 Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hardware, diagnostica gargalos, cria perfis de jogos e aplica ajustes reversíveis, com benchmarks de antes e depois. Sem placebo, sem FPS inventado.
 
-**Versão atual: 0.7.0-alpha**. Baixe o instalador em [Releases](../../releases). O que mudou em cada versão está no [CHANGELOG](CHANGELOG.md).
+**Versão atual: 0.7.1-alpha**. Baixe o instalador em [Releases](../../releases). O que mudou em cada versão está no [CHANGELOG](CHANGELOG.md).
 
 ## O que o Lotus faz
 
@@ -79,7 +79,7 @@ Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hard
 
 ### Configurações e conta
 - Português e inglês.
-- **Backup** em arquivo `.lotusbackup`, com o último save de cada jogo protegido, e cópia no Google Drive quando você quiser (enviar, carregar e excluir backups do Drive).
+- **Backup** em arquivo `.lotusbackup`, com o último save de cada jogo protegido. (A cópia no Google Drive volta numa próxima versão.)
 - **Atualizações:** procura a versão mais nova nas releases do GitHub, mostra as novidades, baixa com animação, confere o SHA-256 e reinstala sozinho. Opcional: atualizar automaticamente (nunca com um jogo aberto).
 - **Restaurar o Lotus:** volta ao início sem apagar nada. Faz uma cópia antes e guarda os dados antigos.
 - Tutorial inicial com exemplos em cada passo, temas prontos e um tour pelas áreas principais.
