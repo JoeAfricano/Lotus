@@ -1062,7 +1062,7 @@ Current conditions: {1}</value></data>
   <data name="ObGoalbalanced" xml:space="preserve"><value>Balanced</value></data>
   <data name="ObGoalbalancedDetail" xml:space="preserve"><value>Good looks with steady FPS at your monitor's rate, and a quieter PC.</value></data>
   <data name="ObAccentTitle" xml:space="preserve"><value>Pick your color</value></data>
-  <data name="ObAccentBody" xml:space="preserve"><value>The color shows on buttons, bars and highlights. See it live while you choose.</value></data>
+  <data name="ObAccentBody" xml:space="preserve"><value>Pick a mode and a color, or a **ready-made theme** with an animated background. **You see the change right away.**</value></data>
   <data name="AccentRose" xml:space="preserve"><value>Rose</value></data>
   <data name="AccentCrimson" xml:space="preserve"><value>Crimson</value></data>
   <data name="AccentGold" xml:space="preserve"><value>Gold</value></data>
@@ -1073,7 +1073,7 @@ Current conditions: {1}</value></data>
   <data name="ObTourGames" xml:space="preserve"><value>My Games</value></data>
   <data name="ObTourGamesDetail" xml:space="preserve"><value>All your games in one place, with **synopsis, score and difficulty**, FPS overlay and one-click Play.</value></data>
   <data name="ObTourWhy" xml:space="preserve"><value>Why is it stuttering? (Ctrl + Shift + L)</value></data>
-  <data name="ObTourWhyDetail" xml:space="preserve"><value>With the game open, Lotus measures and explains the cause of the stutter with a suggested fix.</value></data>
+  <data name="ObTourWhyDetail" xml:space="preserve"><value>With the game open, Lotus measures and **tells you what is causing the stutter**, heavy overlays included, and what to do.</value></data>
   <data name="ObTourScore" xml:space="preserve"><value>Lotus Score</value></data>
   <data name="ObTourScoreDetail" xml:space="preserve"><value>Test your PC's performance and compare it with other machines and parts.</value></data>
   <data name="ObTourTools" xml:space="preserve"><value>Tools</value></data>
@@ -1890,12 +1890,12 @@ Your games and Windows are not changed.</value></data>
   <data name="ObStageLookPlay" xml:space="preserve"><value>Play</value></data>
   <data name="ObStageApps" xml:space="preserve"><value>Programs that work with Lotus</value></data>
   <data name="ObStageAppsLine" xml:space="preserve"><value>Nothing is installed without your click and confirmation.</value></data>
-  <data name="ObStageTour" xml:space="preserve"><value>Example: prepare and play</value></data>
+  <data name="ObStageTour" xml:space="preserve"><value>Example: your diary working on its own</value></data>
   <data name="ObStageTourGame" xml:space="preserve"><value>Cyberpunk 2077</value></data>
-  <data name="ObStageTourLine1" xml:space="preserve"><value>Power plan: High performance</value></data>
-  <data name="ObStageTourLine2" xml:space="preserve"><value>Game Mode on</value></data>
-  <data name="ObStageTourLine3" xml:space="preserve"><value>Estimated FPS · 1080p High · 84</value></data>
-  <data name="ObStageTourNote" xml:space="preserve"><value>Illustrative example. Real numbers come from your PC.</value></data>
+  <data name="ObStageTourLine1" xml:space="preserve"><value>1h 40min session added to your diary</value></data>
+  <data name="ObStageTourLine2" xml:space="preserve"><value>Status moved to &quot;Playing&quot; by itself</value></data>
+  <data name="ObStageTourLine3" xml:space="preserve"><value>For tonight: Hades, you&apos;re in the middle of it</value></data>
+  <data name="ObStageTourNote" xml:space="preserve"><value>Illustrative example. Sessions only count games in your library, and you can turn them off in Settings.</value></data>
   <data name="ObTourHeadline" xml:space="preserve"><value>All set. Here is where to start.</value></data>
   <data name="ObTourOptimizeEx" xml:space="preserve"><value>E.g. Game profile, 1 click, Undo always next to it</value></data>
   <data name="ObTourGamesEx" xml:space="preserve"><value>E.g. Play straight from the cover, with the game&apos;s profile</value></data>
@@ -2278,4 +2278,11 @@ Your games and Windows are not changed.</value></data>
   <data name="TsDiscardBody" xml:space="preserve"><value>The theme goes back to the one in use. Changes made in the studio will be lost.</value></data>
   <data name="TsDiscard" xml:space="preserve"><value>Discard</value></data>
   <data name="TsKeepEditing" xml:space="preserve"><value>Keep editing</value></data>
+  <data name="ObStageTourOpen" xml:space="preserve"><value>Open in the diary</value></data>
+  <data name="ObWelcomeStepApps" xml:space="preserve"><value>Your programs</value></data>
+  <data name="ObFeaturedTitle" xml:space="preserve"><value>Ready-made themes</value></data>
+  <data name="ObFeaturedHint" xml:space="preserve"><value>More themes and the Theme Studio are in Settings › Appearance.</value></data>
+  <data name="ObTourDiary" xml:space="preserve"><value>My diary</value></data>
+  <data name="ObTourDiaryDetail" xml:space="preserve"><value>Your scores and your story with each game. **Sessions are added by themselves** while you play, and the diary suggests **what to play now**.</value></data>
+  <data name="ObTourDiaryEx" xml:space="preserve"><value>Ex.: a yearly recap with hours, favorite genre and top score</value></data>
 </root>

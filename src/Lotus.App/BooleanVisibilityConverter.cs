@@ -127,3 +127,17 @@ public sealed class ScaleConverter : IValueConverter
     }
     public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
 }
+// "#AABBCC,#112233,…" to a diagonal gradient (theme swatches).
+public sealed class GradientListConverter : IValueConverter
+{
+    public object? Convert(object value, Type targetType, object parameter, string language)
+    {
+        if (value is not string list) return null;
+        var colors = list.Split(',').Select(h => Lotus.Core.Themes.ThemeColor.TryParse(h, out var c) ? Windows.UI.Color.FromArgb(255, c.R, c.G, c.B) : (Windows.UI.Color?)null).OfType<Windows.UI.Color>().ToList();
+        if (colors.Count == 0) return null;
+        var stops = new Microsoft.UI.Xaml.Media.GradientStopCollection();
+        for (var i = 0; i < colors.Count; i++) stops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = colors[i], Offset = colors.Count == 1 ? 0 : (double)i / (colors.Count - 1) });
+        return new Microsoft.UI.Xaml.Media.LinearGradientBrush(stops, 30);
+    }
+    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
+}

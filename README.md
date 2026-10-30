@@ -2,7 +2,7 @@
 
 Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hardware, diagnostica gargalos, cria perfis de jogos e aplica ajustes reversíveis, com benchmarks de antes e depois. Sem placebo, sem FPS inventado.
 
-**Versão atual: 0.4.0-alpha "Lotus New"**. Baixe o instalador em [Releases](../../releases). O que mudou em cada versão está no [CHANGELOG](CHANGELOG.md).
+**Versão atual: 0.5.0-alpha "Lotus New"**. Baixe o instalador em [Releases](../../releases). O que mudou em cada versão está no [CHANGELOG](CHANGELOG.md).
 
 ## O que o Lotus faz
 
@@ -65,11 +65,20 @@ Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hard
 - Saúde do disco, driver de vídeo, desinstalar programas.
 - **Overlays e travadas:** mostra o que costuma causar travadas (Discord com aceleração de hardware, overlays da NVIDIA e da AMD, captura do Xbox, Overwolf, Medal, OBS, papéis de parede animados, apps de RGB) e explica como desligar. Também entra no "Por que está travando?".
 
+### Temas
+- **Modos** Escuro, Claro (porcelana rosé), Sistema e Grafite, com 7 cores de destaque.
+- **Galeria com 12 temas prontos** (Lotus Rosé, Sakura, Synthwave, Cyberpunk, Aurora, Oceano, Floresta, Ouro Real, Monocromático, Vampiro, Gelo e Porcelana), cada um com cores e fundo animado próprios.
+- **Estúdio de temas:** cinco cores (fundo, superfície, texto, destaque e detalhe), base escura ou clara, "começar de uma cor" e transparência dos cartões, com o app inteiro como prévia ao vivo.
+- **Leitura garantida:** o Lotus confere o contraste (padrão WCAG) e ajusta sozinho o que ficaria ilegível, avisando o que mudou.
+- **Fundos animados:** degradê de 2 a 5 cores, pétalas, aurora, partículas, ondas neon ou a flor de lótus, com velocidade, intensidade e granulado. Pausam com a janela inativa e respeitam "Reduzir animações".
+- **Compartilhar:** cada tema vira um código para copiar e colar numa conversa; os seus ficam em "Meus temas".
+- O logo do Lotus mantém as cores da marca em qualquer tema.
+
 ### Configurações e conta
-- Temas Escuro, Claro (porcelana rosé), Sistema e Grafite, com cores de destaque. Português e inglês.
+- Português e inglês.
 - **Backup** em arquivo `.lotusbackup` e cópia opcional no Google Drive.
 - **Restaurar o Lotus:** volta ao início sem apagar nada. Faz uma cópia antes e guarda os dados antigos.
-- Tutorial inicial com exemplos em cada passo.
+- Tutorial inicial com exemplos em cada passo, temas prontos e um tour pelas áreas principais.
 
 ### Leve enquanto você joga
 - Com um jogo aberto, ou com o Lotus minimizado, ele entra no **modo eficiência** do Windows, baixa a própria prioridade e devolve a memória que não está usando (cerca de 20 MB minimizado).

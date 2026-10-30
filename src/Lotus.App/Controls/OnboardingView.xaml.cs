@@ -100,7 +100,7 @@ public sealed partial class OnboardingView : UserControl
     {
         TourList.Children.Clear(); TourList.ColumnDefinitions.Clear(); TourList.RowDefinitions.Clear();
         TourList.ColumnDefinitions.Add(new ColumnDefinition()); TourList.ColumnDefinitions.Add(new ColumnDefinition());
-        var items = new[] { ("", "Optimize"), ("", "Games"), ("", "List"), ("", "Why"), ("", "Score"), ("", "Profile") };
+        var items = new[] { ("", "Optimize"), ("", "Games"), ("", "List"), ("", "Why"), ("", "Score"), ("\uE8F1", "Diary") };
         for (var r = 0; r < items.Length / 2; r++) TourList.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         for (var i = 0; i < items.Length; i++)
         {
@@ -140,6 +140,7 @@ public sealed partial class OnboardingView : UserControl
         if (animate) { Animate(StageShift, "Y", 18, 0, 420, Spring()); Animate(StageExamples, "Opacity", 0, 1, 300); }
     }
     private void OnPickTheme(object sender, RoutedEventArgs e) { if (Vm is { } vm && sender is FrameworkElement { Tag: string id }) vm.Theme = id; }
+    private void OnPickFeatured(object sender, RoutedEventArgs e) { if (Vm is { } vm && sender is FrameworkElement { Tag: string id } f) { vm.PickFeatured(id); Motion.Pop(f); UiSound.Play(UiSound.Cue.Toggle); } }
     // Rows arrive one after another (60 ms apart).
     private void StaggerTour()
     {

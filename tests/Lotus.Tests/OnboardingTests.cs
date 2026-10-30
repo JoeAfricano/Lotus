@@ -91,6 +91,24 @@ public sealed class OnboardingTests : IDisposable
         Assert.Throws<InvalidOperationException>(() => source.ImportPicture(Path.Combine(root, "evil.exe")));
         Assert.Null(new LocalProfileSource(Path.Combine(root, "none")).ReadSteam());
     }
+
+    [Fact] public void ReadyMadeThemeIsPreviewedSavedAndAColorGoesBackToTheMode()
+    {
+        var store = new MemoryStore(); var prefs = new PreferencesService(store);
+        var vm = new OnboardingViewModel(prefs, new Source(null), new TextCatalog(), ex => throw ex);
+        Lotus.Core.Themes.ThemeSpec? previewed = null; string? mode = null;
+        vm.CustomThemePreview += (_, s) => previewed = s; vm.ThemePreview += (_, t) => mode = t;
+        vm.Theme = "Graphite";
+        Assert.Equal(6, vm.Featured.Count);
+        vm.PickFeatured("aurora");
+        Assert.Equal("Aurora", previewed?.Name); Assert.Equal("Custom", vm.Theme);
+        Assert.True(vm.Featured.Single(f => f.Id == "aurora").Selected); Assert.DoesNotContain(vm.Themes, t => t.Selected); Assert.DoesNotContain(vm.Accents, a => a.Selected);
+        vm.Accent = vm.Accent; // the same color again still goes back to the mode
+        Assert.Equal("Graphite", vm.Theme); Assert.Equal("Graphite", mode); Assert.DoesNotContain(vm.Featured, f => f.Selected);
+        vm.PickFeatured("synthwave");
+        vm.Skip();
+        Assert.Equal("Custom", prefs.Current.Theme); Assert.Equal("Synthwave", prefs.Current.ActiveCustom()?.Name);
+    }
 }
 
 public sealed class BackgroundPreferencesTests

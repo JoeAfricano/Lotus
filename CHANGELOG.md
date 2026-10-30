@@ -2,6 +2,38 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 0.5.0-alpha "Lotus New" (30/10/2026)
+
+Esta versão é sobre o **visual**: o Lotus passa a ter temas completos e editáveis, com fundos animados.
+
+### Novo: temas
+- **Galeria com 12 temas prontos**, cada um com cores e fundo animado próprios:
+  - escuros: Lotus Rosé, Synthwave, Cyberpunk, Aurora, Oceano, Floresta, Ouro Real, Monocromático e Vampiro;
+  - claros: Sakura, Gelo e Porcelana.
+- **Estúdio de temas** (Configurações › Aparência › Criar tema):
+  - cinco cores à sua escolha: fundo, superfície, texto, destaque e detalhe;
+  - base escura ou clara e "Começar de uma cor", que monta o tema inteiro a partir de uma cor;
+  - transparência dos cartões, para o fundo aparecer por trás;
+  - o app inteiro funciona como prévia ao vivo enquanto você edita; "Cancelar" pergunta antes de descartar.
+- **Leitura garantida:** o Lotus confere o contraste de cada texto (padrão WCAG), inclusive com cartões transparentes, ajusta sozinho o que ficaria ilegível e avisa o que mudou. Em destaques claros (amarelo neon, verde-menta), os botões usam texto escuro.
+- **Fundos animados:**
+  - degradê de 2 a 5 cores, pétalas caindo, aurora, partículas, ondas neon ou a flor de lótus original;
+  - velocidade, intensidade e granulado ajustáveis;
+  - pausam com a janela minimizada ou inativa e ficam parados com "Reduzir animações".
+- **Compartilhar temas:** "Copiar código" gera um texto para mandar numa conversa; "Colar código" aplica o tema e o guarda em "Meus temas" (com usar, editar, copiar e excluir).
+- O banner de destaque acompanha as cores do tema.
+- **O logo do Lotus nunca muda:** flor, nome e "PLAY BETTER." mantêm as cores da marca em qualquer tema.
+
+### Tutorial inicial melhorado
+- As boas-vindas mostram as 5 etapas reais (perfil, objetivo, visual, programas e pronto).
+- "Seu visual" ganhou **6 temas prontos** aplicados ao vivo, além dos modos e cores; escolher uma cor volta ao modo anterior.
+- Programas recomendados em duas colunas, sem precisar rolar.
+- O tour final mostra o **Meu diário** (sessões que entram sozinhas, "O que jogar agora?" e retrospectiva) no lugar do exemplo "preparar e jogar", e o "Por que está travando?" cita os overlays.
+
+### Corrigido
+- O fundo animado não recomeça mais a cada mudança de preferência (por exemplo, ao mexer no volume).
+- Botões principais e superfícies de destaque usam a cor de texto calculada pelo tema, em vez de branco fixo.
+
 ## 0.4.0-alpha "Lotus New" (30/10/2026)
 
 Esta versão é sobre o **Meu diário**: ficou mais bonito, mais esperto e passou a trabalhar sozinho enquanto você joga.

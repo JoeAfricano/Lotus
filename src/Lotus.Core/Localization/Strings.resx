@@ -1062,7 +1062,7 @@ Condições atuais: {1}</value></data>
   <data name="ObGoalbalanced" xml:space="preserve"><value>Equilíbrio</value></data>
   <data name="ObGoalbalancedDetail" xml:space="preserve"><value>Jogo bonito e **FPS estável** na taxa do seu monitor, com o PC mais silencioso.</value></data>
   <data name="ObAccentTitle" xml:space="preserve"><value>Escolha a sua cor</value></data>
-  <data name="ObAccentBody" xml:space="preserve"><value>A cor aparece nos botões, nas barras e nos destaques. **Você vê a mudança na hora.**</value></data>
+  <data name="ObAccentBody" xml:space="preserve"><value>Escolha o modo e a cor, ou um **tema pronto** com fundo animado. **Você vê a mudança na hora.**</value></data>
   <data name="AccentRose" xml:space="preserve"><value>Rosé</value></data>
   <data name="AccentCrimson" xml:space="preserve"><value>Carmesim</value></data>
   <data name="AccentGold" xml:space="preserve"><value>Dourado</value></data>
@@ -1073,7 +1073,7 @@ Condições atuais: {1}</value></data>
   <data name="ObTourGames" xml:space="preserve"><value>Meus Jogos</value></data>
   <data name="ObTourGamesDetail" xml:space="preserve"><value>Todos os seus jogos num lugar só, com **sinopse, nota e dificuldade**, overlay de FPS e o Jogar a um clique.</value></data>
   <data name="ObTourWhy" xml:space="preserve"><value>Por que está travando? (Ctrl + Shift + L)</value></data>
-  <data name="ObTourWhyDetail" xml:space="preserve"><value>Com o jogo aberto, o Lotus mede e **diz o que está causando a travada**, junto com o que fazer.</value></data>
+  <data name="ObTourWhyDetail" xml:space="preserve"><value>Com o jogo aberto, o Lotus mede e **diz o que está causando a travada**, inclusive overlays que pesam, junto com o que fazer.</value></data>
   <data name="ObTourScore" xml:space="preserve"><value>Lotus Score</value></data>
   <data name="ObTourScoreDetail" xml:space="preserve"><value>Veja **quanto o seu PC rende** e compare com outras máquinas e peças.</value></data>
   <data name="ObTourTools" xml:space="preserve"><value>Ferramentas</value></data>
@@ -1890,12 +1890,12 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="ObStageLookPlay" xml:space="preserve"><value>Jogar</value></data>
   <data name="ObStageApps" xml:space="preserve"><value>Programas que conversam com o Lotus</value></data>
   <data name="ObStageAppsLine" xml:space="preserve"><value>Nada é instalado sem o seu clique e a sua confirmação.</value></data>
-  <data name="ObStageTour" xml:space="preserve"><value>Exemplo: preparar e jogar</value></data>
+  <data name="ObStageTour" xml:space="preserve"><value>Exemplo: seu diário trabalhando sozinho</value></data>
   <data name="ObStageTourGame" xml:space="preserve"><value>Cyberpunk 2077</value></data>
-  <data name="ObStageTourLine1" xml:space="preserve"><value>Plano de energia: Alto desempenho</value></data>
-  <data name="ObStageTourLine2" xml:space="preserve"><value>Modo de Jogo ligado</value></data>
-  <data name="ObStageTourLine3" xml:space="preserve"><value>FPS estimado · 1080p Alto · 84</value></data>
-  <data name="ObStageTourNote" xml:space="preserve"><value>Exemplo ilustrativo. Os números reais saem do seu PC.</value></data>
+  <data name="ObStageTourLine1" xml:space="preserve"><value>Sessão de 1h 40min anotada no diário</value></data>
+  <data name="ObStageTourLine2" xml:space="preserve"><value>Status mudou para &quot;Jogando&quot; sozinho</value></data>
+  <data name="ObStageTourLine3" xml:space="preserve"><value>Para hoje à noite: Hades, você está no meio dele</value></data>
+  <data name="ObStageTourNote" xml:space="preserve"><value>Exemplo ilustrativo. As sessões só contam jogos da sua biblioteca, e dá para desligar em Configurações.</value></data>
   <data name="ObTourHeadline" xml:space="preserve"><value>Tudo pronto. Veja por onde começar.</value></data>
   <data name="ObTourOptimizeEx" xml:space="preserve"><value>Ex.: Perfil Jogo, 1 clique, Desfazer sempre ao lado</value></data>
   <data name="ObTourGamesEx" xml:space="preserve"><value>Ex.: Jogar direto da capa, com o perfil do jogo</value></data>
@@ -2278,4 +2278,11 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="TsDiscardBody" xml:space="preserve"><value>O tema volta a ser o que estava em uso. As mudanças feitas no estúdio serão perdidas.</value></data>
   <data name="TsDiscard" xml:space="preserve"><value>Descartar</value></data>
   <data name="TsKeepEditing" xml:space="preserve"><value>Continuar editando</value></data>
+  <data name="ObStageTourOpen" xml:space="preserve"><value>Abrir no diário</value></data>
+  <data name="ObWelcomeStepApps" xml:space="preserve"><value>Seus programas</value></data>
+  <data name="ObFeaturedTitle" xml:space="preserve"><value>Temas prontos</value></data>
+  <data name="ObFeaturedHint" xml:space="preserve"><value>Mais temas e o Estúdio de temas ficam em Configurações › Aparência.</value></data>
+  <data name="ObTourDiary" xml:space="preserve"><value>Meu diário</value></data>
+  <data name="ObTourDiaryDetail" xml:space="preserve"><value>Suas notas e sua história com cada jogo. As **sessões entram sozinhas** enquanto você joga, e o diário sugere **o que jogar agora**.</value></data>
+  <data name="ObTourDiaryEx" xml:space="preserve"><value>Ex.: retrospectiva do ano com horas, gênero favorito e maior nota</value></data>
 </root>

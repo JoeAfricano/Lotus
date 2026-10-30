@@ -106,7 +106,7 @@
         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE73E;" FontSize="12" Foreground="#8AD6B3"/><TextBlock Text="{Binding Text[ObStageTourLine1]}" FontSize="12.5" Foreground="White"/></StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE73E;" FontSize="12" Foreground="#8AD6B3"/><TextBlock Text="{Binding Text[ObStageTourLine2]}" FontSize="12.5" Foreground="White"/></StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE9D9;" FontSize="12" Foreground="#EEC1A8"/><TextBlock Text="{Binding Text[ObStageTourLine3]}" FontSize="12.5" Foreground="#EEC1A8" FontWeight="SemiBold"/></StackPanel>
-        <Border Margin="0,4,0,0" CornerRadius="10" Height="34" Background="{ThemeResource AccentGradientBrush}"><StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center"><FontIcon Glyph="&#xF5B0;" FontSize="12" Foreground="{ThemeResource OnRoseBrush}"/><TextBlock Text="{Binding Text[ObStageLookPlay]}" FontWeight="SemiBold" Foreground="White"/></StackPanel></Border>
+        <Border Margin="0,4,0,0" CornerRadius="10" Height="34" Background="{ThemeResource AccentGradientBrush}"><StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center"><FontIcon Glyph="&#xE70F;" FontSize="12" Foreground="{ThemeResource OnRoseBrush}"/><TextBlock Text="{Binding Text[ObStageTourOpen]}" FontWeight="SemiBold" Foreground="White"/></StackPanel></Border>
        </StackPanel>
       </Border>
       <TextBlock Text="{Binding Text[ObStageTourNote]}" FontSize="11.5" Foreground="#B8A5B0" TextWrapping="Wrap"/>
@@ -129,11 +129,12 @@
      <TextBlock Text="{Binding Text[ObWelcomeHeadline]}" FontSize="36" FontWeight="SemiBold" TextWrapping="Wrap" LineHeight="44"/>
      <TextBlock app:Rich.Text="{Binding Text[ObWelcomeLead]}" Style="{StaticResource BodyStyle}" FontSize="15" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap"/>
      <Grid ColumnSpacing="10" Margin="0,6,0,0">
-      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
       <Border Padding="12,12" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1"><StackPanel Spacing="6"><TextBlock Text="1" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[ObWelcomeStep1]}" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
       <Border Grid.Column="1" Padding="12,12" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1"><StackPanel Spacing="6"><TextBlock Text="2" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[ObWelcomeStep2]}" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
       <Border Grid.Column="2" Padding="12,12" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1"><StackPanel Spacing="6"><TextBlock Text="3" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[ObWelcomeStep3]}" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
-      <Border Grid.Column="3" Padding="12,12" CornerRadius="14" Background="{ThemeResource AccentSoftBrush}" BorderBrush="{ThemeResource RoseBrush}" BorderThickness="1"><StackPanel Spacing="6"><FontIcon Glyph="&#xE7FC;" FontSize="18" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left" Margin="0,2,0,2"/><TextBlock Text="{Binding Text[ObWelcomeStep4]}" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
+      <Border Grid.Column="3" Padding="12,12" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1"><StackPanel Spacing="6"><TextBlock Text="4" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[ObWelcomeStepApps]}" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
+      <Border Grid.Column="4" Padding="12,12" CornerRadius="14" Background="{ThemeResource AccentSoftBrush}" BorderBrush="{ThemeResource RoseBrush}" BorderThickness="1"><StackPanel Spacing="6"><FontIcon Glyph="&#xE7FC;" FontSize="18" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left" Margin="0,2,0,2"/><TextBlock Text="{Binding Text[ObWelcomeStep4]}" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
      </Grid>
      <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,4,0,0"><FontIcon Glyph="&#xEA18;" FontSize="15" Foreground="{ThemeResource GoldBrush}"/><TextBlock app:Rich.Text="{Binding Text[ObWelcomeSafety]}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" MaxWidth="520"/></StackPanel>
     </StackPanel>
@@ -244,13 +245,25 @@
        </Button>
       </DataTemplate></ItemsControl.ItemTemplate>
      </ItemsControl>
+     <!-- Ready-made themes (colors + animated background), applied live -->
+     <TextBlock Text="{Binding Text[ObFeaturedTitle]}" FontWeight="SemiBold" Margin="0,4,0,0"/>
+     <ItemsControl ItemsSource="{Binding Featured}" AutomationProperties.AutomationId="ob-featured">
+      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate><DataTemplate>
+       <Button Tag="{Binding Id}" Click="OnPickFeatured" AutomationProperties.AutomationId="{Binding Id}" Width="88" Padding="6,6,6,8" CornerRadius="14" HorizontalContentAlignment="Stretch"
+               Background="{ThemeResource CardBrush}" BorderThickness="2" BorderBrush="{Binding Selected, Converter={StaticResource SelectedBorder}}" AutomationProperties.Name="{Binding Label}">
+        <StackPanel Spacing="7"><Border Height="34" CornerRadius="9" Background="{Binding Colors, Converter={StaticResource GradientList}}"/><TextBlock Text="{Binding Label}" FontWeight="SemiBold" FontSize="11" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/></StackPanel>
+       </Button>
+      </DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="{Binding Text[ObFeaturedHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
     </StackPanel>
     <!-- 4. Recommended programs (install only on click + confirmation) -->
     <StackPanel Visibility="{Binding IsApps, Converter={StaticResource BooleanVisibility}}" Spacing="12">
      <TextBlock Text="{Binding Text[RecTitle]}" FontSize="26" FontWeight="SemiBold"/>
      <TextBlock app:Rich.Text="{Binding Text[RecBody]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
      <ItemsControl x:Name="AppList" ItemsSource="{Binding Apps.Rows}" AutomationProperties.AutomationId="ob-apps">
-      <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="336" ItemHeight="128" MaximumRowsOrColumns="2"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+      <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="285" ItemHeight="136" MaximumRowsOrColumns="2"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
       <ItemsControl.ItemTemplate><DataTemplate>
        <Border Margin="0,0,10,10" Padding="14,12" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.02">
         <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>

@@ -15,6 +15,7 @@ public interface IProfileSource
 public sealed record AccentOption(string Id, string Label, string Hex, bool Selected);
 public sealed record GoalOption(string Id, string Title, string Detail, string Glyph, bool Selected);
 public sealed record ThemeOption(string Id, string Label, string Swatch, bool Selected);
+public sealed record FeaturedTheme(string Id, string Label, string Colors, bool Selected); // Colors: the background colors, comma separated (for the swatch)
 
 // First-run welcome in steps (and later "Edit profile", which starts at the profile step and skips the tour).
 public sealed class OnboardingViewModel : ObservableObject
@@ -34,12 +35,15 @@ public sealed class OnboardingViewModel : ObservableObject
     public event EventHandler? Finished;
     public event EventHandler<string>? AccentPreview; // live preview while choosing a color
     public event EventHandler<string>? ThemePreview;  // live preview while choosing light / dark
+    public event EventHandler<Lotus.Core.Themes.ThemeSpec>? CustomThemePreview; // live preview of a ready-made theme
 
     public OnboardingViewModel(PreferencesService preferences, IProfileSource source, ITextCatalog text, Action<Exception> log, RecommendedAppsViewModel? apps = null)
     {
         Apps = apps; this.preferences = preferences; this.source = source; Text = text; this.log = log;
         var p = preferences.Current;
         goal = p.Goal; accent = p.Accent; theme = p.Theme; source_ = p.ProfileSource;
+        customCode = p.CustomTheme;
+        lastMode = InterfacePreferences.Themes.Contains(p.Theme) ? p.Theme : "Midnight";
         customName = p.ProfileSource == "custom" ? p.DisplayName : ""; customPicture = p.ProfileSource == "custom" ? p.AvatarPath : null;
     }
 
@@ -76,10 +80,35 @@ public sealed class OnboardingViewModel : ObservableObject
     // What the chosen goal changes in practice (examples shown next to the choice).
     public IReadOnlyList<string> GoalExamples => [Text["ObGoalEx" + goal + "1"], Text["ObGoalEx" + goal + "2"], Text["ObGoalEx" + goal + "3"]];
     public IReadOnlyList<ThemeOption> Themes => [.. InterfacePreferences.Themes.Select(t => new ThemeOption(t, Text[t], t switch { "Light" => "#F7ECF1", "Graphite" => "#222228", "System" => "#8A7B86", _ => "#211A29" }, t == theme))];
-    public string Theme { get => theme; set { if (value is not null && SetProperty(ref theme, value)) { ThemePreview?.Invoke(this, value); OnPropertyChanged(nameof(Themes)); } } }
+    public string Theme { get => theme; set { if (value is not null && SetProperty(ref theme, value)) { if (InterfacePreferences.Themes.Contains(value)) lastMode = value; ThemePreview?.Invoke(this, value); OnPropertyChanged(nameof(Themes)); OnPropertyChanged(nameof(Featured)); } } }
+    // Ready-made themes from the gallery (the rest, and the Theme Studio, are in Settings).
+    public static readonly string[] FeaturedIds = ["sakura", "synthwave", "cyberpunk", "aurora", "ocean", "gold"];
+    private string? customCode;
+    private string lastMode = "Midnight";
+    public IReadOnlyList<FeaturedTheme> Featured => [.. FeaturedIds.Select(id => Lotus.Core.Themes.ThemeGallery.Find(id)!).Select(p =>
+        new FeaturedTheme(p.Id, Text["ThPreset" + p.Id], string.Join(",", p.Spec.Backdrop.Colors), theme == "Custom" && customCode == Lotus.Core.Themes.ThemeEngine.ToCode(p.Spec)))];
+    public void PickFeatured(string id)
+    {
+        if (Lotus.Core.Themes.ThemeGallery.Find(id) is not { } p) return;
+        customCode = Lotus.Core.Themes.ThemeEngine.ToCode(p.Spec);
+        theme = "Custom";
+        CustomThemePreview?.Invoke(this, p.Spec);
+        OnPropertyChanged(nameof(Theme)); OnPropertyChanged(nameof(Themes)); OnPropertyChanged(nameof(Featured)); OnPropertyChanged(nameof(Accents));
+    }
     public IReadOnlyList<AccentOption> Accents => [.. new[] { ("rose", "AccentRose", "#AD245E"), ("violet", "AccentViolet", "#6D43B5"), ("blue", "AccentBlue", "#245CC1"), ("green", "AccentGreen", "#28715A"), ("crimson", "AccentCrimson", "#B02236"), ("gold", "AccentGold", "#8F5E16"), ("dark", "AccentDark", "#3E3239") }
-        .Select(a => new AccentOption(a.Item1, Text[a.Item2], a.Item3, a.Item1 == accent))];
-    public string Accent { get => accent; set { if (value is not null && SetProperty(ref accent, value)) { AccentPreview?.Invoke(this, value); OnPropertyChanged(nameof(Accents)); } } }
+        .Select(a => new AccentOption(a.Item1, Text[a.Item2], a.Item3, a.Item1 == accent && theme != "Custom"))]; // a ready-made theme has its own colors
+    // Picking a color while a ready-made theme is on goes back to the last mode (the color only applies to the modes).
+    public string Accent
+    {
+        get => accent;
+        set
+        {
+            if (value is null) return;
+            var back = theme == "Custom";
+            if (back) { theme = lastMode; ThemePreview?.Invoke(this, theme); OnPropertyChanged(nameof(Theme)); OnPropertyChanged(nameof(Themes)); OnPropertyChanged(nameof(Featured)); }
+            if (SetProperty(ref accent, value) || back) { AccentPreview?.Invoke(this, value); OnPropertyChanged(nameof(Accents)); }
+        }
+    }
 
     public void Start(bool edit)
     {
@@ -125,7 +154,7 @@ public sealed class OnboardingViewModel : ObservableObject
     {
         var p = preferences.Current;
         var name = PreviewName == Text["ObDefaultName"] && source_ != "steam" ? "" : PreviewName;
-        preferences.Update(p with { Onboarded = true, ProfileSource = source_, DisplayName = name, AvatarPath = PreviewPicture, Goal = goal, Accent = accent, Theme = theme });
+        preferences.Update(p with { Onboarded = true, ProfileSource = source_, DisplayName = name, AvatarPath = PreviewPicture, Goal = goal, Accent = accent, Theme = theme, CustomTheme = theme == "Custom" ? customCode : p.CustomTheme });
         Finished?.Invoke(this, EventArgs.Empty);
     }
 

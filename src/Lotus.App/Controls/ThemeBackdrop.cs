@@ -43,10 +43,14 @@ public sealed class ThemeBackdrop : Grid
     // null = no animated background (built-in modes, "none" or the Lotus flower, which has its own control).
     public void Apply(BackdropSpec? backdrop, bool lightTheme)
     {
-        if (backdrop == spec && lightTheme == light && scene.Children.Count > 0) return;
+        if (Same(backdrop, spec) && lightTheme == light && (spec is null || scene.Children.Count > 0)) return;
         spec = backdrop; light = lightTheme;
         Build();
     }
+
+    // By value: preferences are read again on any change (a new list each time), which must not restart the animation.
+    private static bool Same(BackdropSpec? a, BackdropSpec? b) =>
+        ReferenceEquals(a, b) || (a is not null && b is not null && a.Kind == b.Kind && a.Speed == b.Speed && a.Intensity == b.Intensity && a.Grain == b.Grain && a.Colors.SequenceEqual(b.Colors));
 
     public void SetState(bool run, bool reduceMotion)
     {
