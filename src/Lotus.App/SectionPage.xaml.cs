@@ -125,7 +125,7 @@ public sealed partial class SectionPage : Page
         var spin = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(HomeRescanIcon);
         spin.CenterPoint = new System.Numerics.Vector3(6, 6, 0);
         var a = spin.Compositor.CreateScalarKeyFrameAnimation(); a.InsertKeyFrame(1, 360, spin.Compositor.CreateLinearEasingFunction()); a.Duration = TimeSpan.FromMilliseconds(900); a.IterationBehavior = Microsoft.UI.Composition.AnimationIterationBehavior.Forever;
-        if (Motion.Enabled) spin.StartAnimation("RotationAngleInDegrees", a);
+        if (Motion.Active) spin.StartAnimation("RotationAngleInDegrees", a);
         try { await games.RefreshAsync(); }
         finally
         {

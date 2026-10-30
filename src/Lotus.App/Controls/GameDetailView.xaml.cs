@@ -132,13 +132,13 @@ public sealed partial class GameDetailView : UserControl
 
     private static void Fade(UIElement e, double to, int ms, int delay = 0)
     {
-        var a = new Microsoft.UI.Xaml.Media.Animation.DoubleAnimation { To = to, Duration = TimeSpan.FromMilliseconds(Motion.Enabled ? ms : 0), BeginTime = TimeSpan.FromMilliseconds(Motion.Enabled ? delay : 0) };
+        var a = new Microsoft.UI.Xaml.Media.Animation.DoubleAnimation { To = to, Duration = TimeSpan.FromMilliseconds(Motion.Active ? ms : 0), BeginTime = TimeSpan.FromMilliseconds(Motion.Active ? delay : 0) };
         var sb = new Microsoft.UI.Xaml.Media.Animation.Storyboard(); Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTarget(a, e); Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(a, "Opacity"); sb.Children.Add(a); sb.Begin();
     }
     // Slow "Ken Burns" push on the hero art.
     private static void Zoom(FrameworkElement e)
     {
-        if (!Motion.Enabled) return;
+        if (!Motion.Active) return;
         var v = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(e); var c = v.Compositor;
         v.StartAnimation("CenterPoint", c.CreateExpressionAnimation("Vector3(this.Target.Size.X * 0.5, this.Target.Size.Y * 0.5, 0)"));
         var a = c.CreateVector3KeyFrameAnimation(); a.InsertKeyFrame(0, new(1.0f, 1.0f, 1)); a.InsertKeyFrame(1, new(1.08f, 1.08f, 1));

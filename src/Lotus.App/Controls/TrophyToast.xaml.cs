@@ -14,7 +14,6 @@ public sealed partial class TrophyToast : UserControl
     private sealed record Item(string Eyebrow, string Title, string Body, string Xp, string Glyph, string Tier, string? Art, string View, bool Steam);
     private double seconds = 7;
     private readonly Queue<Item> queue = new();
-    private Microsoft.UI.Dispatching.DispatcherQueueTimer? timer;
     private bool visible, held;
     private double left;
     public event EventHandler<bool>? ViewRequested; // true: Steam section
@@ -75,23 +74,25 @@ public sealed partial class TrophyToast : UserControl
         UiSound.Play(UiSound.Cue.Score);
         seconds = item.Eyebrow == "STEAM" && item.Body.Length > 0 ? 12 : 7; // the first import gets more time
         left = seconds; held = false; TimerScale.ScaleX = 1;
-        timer ??= DispatcherQueue.CreateTimer();
-        timer.Interval = TimeSpan.FromMilliseconds(50);
-        timer.Tick -= OnTick; timer.Tick += OnTick;
-        timer.Start();
+        // The countdown bar shrinks on every frame; holding the pointer over the toast pauses it.
+        long last = -1;
+        Motion.OnFrames(this, ms => { var step = last < 0 ? 0 : (ms - last) / 1000.0; last = (long)ms; return OnFrame(step); });
     }
 
-    private void OnTick(Microsoft.UI.Dispatching.DispatcherQueueTimer sender, object args)
+    private bool OnFrame(double elapsedSeconds)
     {
-        if (held) return;
-        left -= 0.05;
+        if (!visible) return false;
+        if (held) return true;
+        left -= elapsedSeconds;
         TimerScale.ScaleX = Math.Max(0, left / seconds);
-        if (left <= 0) Hide();
+        if (left > 0) return true;
+        Hide();
+        return false;
     }
 
     private void Hide()
     {
-        timer?.Stop();
+        Motion.StopFrames(this);
         var sb = new Storyboard();
         Add(sb, Card, "Opacity", 1, 0, 200);
         Add(sb, Move, "TranslateX", 0, 30, 220);
@@ -112,7 +113,7 @@ public sealed partial class TrophyToast : UserControl
 
     private static void Add(Storyboard sb, DependencyObject target, string property, double from, double to, int ms, EasingFunctionBase? ease = null)
     {
-        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(Motion.Enabled ? ms : 0), EasingFunction = ease ?? new CubicEase { EasingMode = EasingMode.EaseOut } };
+        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(Motion.Active ? ms : 0), EasingFunction = ease ?? Motion.Decelerate() };
         Storyboard.SetTarget(a, target); Storyboard.SetTargetProperty(a, property); sb.Children.Add(a);
     }
 }

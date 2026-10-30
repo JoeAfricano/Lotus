@@ -35,13 +35,13 @@ public sealed partial class TaskProgressView : UserControl
         DonePart.Visibility = s is { Done: true } ? Visibility.Visible : Visibility.Collapsed;
         if (s is null) return;
         Bar.Value = s.Percent; PercentLabel.Text = s.PercentText; DoneLabel.Text = s.DoneText;
-        if (animate && Motion.Enabled && new Windows.UI.ViewManagement.UISettings().AnimationsEnabled)
+        if (animate && Motion.Active && new Windows.UI.ViewManagement.UISettings().AnimationsEnabled)
         {
             var sb = new Storyboard();
             Add(sb, CheckScale, "ScaleX", 0.3, 1, 420, new BackEase { Amplitude = 0.45, EasingMode = EasingMode.EaseOut });
             Add(sb, CheckScale, "ScaleY", 0.3, 1, 420, new BackEase { Amplitude = 0.45, EasingMode = EasingMode.EaseOut });
-            Add(sb, Check, "Opacity", 0, 1, 180, new CubicEase { EasingMode = EasingMode.EaseOut });
-            var label = new DoubleAnimation { From = 0, To = 1, BeginTime = TimeSpan.FromMilliseconds(120), Duration = TimeSpan.FromMilliseconds(260), EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+            Add(sb, Check, "Opacity", 0, 1, 180, Motion.Decelerate());
+            var label = new DoubleAnimation { From = 0, To = 1, BeginTime = TimeSpan.FromMilliseconds(120), Duration = TimeSpan.FromMilliseconds(260), EasingFunction = Motion.Decelerate() };
             Storyboard.SetTarget(label, DoneLabel); Storyboard.SetTargetProperty(label, "Opacity"); sb.Children.Add(label);
             sb.Begin();
         }

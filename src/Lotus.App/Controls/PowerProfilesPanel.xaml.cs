@@ -47,7 +47,7 @@ public sealed partial class PowerProfilesPanel : UserControl
             ResultBadge.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(((Microsoft.UI.Xaml.Media.SolidColorBrush)brush).Color) { Opacity = 0.18 };
             ResultCard.BorderBrush = brush;
             Motion.Settle(ResultCard); Motion.Pop(ResultBadge);
-            if (!Motion.Enabled) return;
+            if (!Motion.Active) return;
             var sb = new Microsoft.UI.Xaml.Media.Animation.Storyboard();
             void Anim(DependencyObject target, string prop, double from, double to)
             {

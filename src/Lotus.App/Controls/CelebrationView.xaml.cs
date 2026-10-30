@@ -68,15 +68,8 @@ public sealed partial class CelebrationView : UserControl
 
     private void CountXp(int gained, ITextCatalog t)
     {
-        if (!Motion.Enabled || gained <= 0) { Xp.Text = t.Format("DyCelebrateXp", Math.Max(0, gained)); return; }
-        var start = DateTime.UtcNow; var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMilliseconds(16);
-        timer.Tick += (s, _) =>
-        {
-            var p = Math.Min(1, (DateTime.UtcNow - start).TotalMilliseconds / 900);
-            Xp.Text = t.Format("DyCelebrateXp", (int)Math.Round(gained * (1 - Math.Pow(1 - p, 3))));
-            if (p >= 1) s.Stop();
-        };
-        timer.Start();
+        if (gained <= 0) { Xp.Text = t.Format("DyCelebrateXp", 0); return; }
+        Motion.Tween(Xp, TimeSpan.FromMilliseconds(900), p => Xp.Text = t.Format("DyCelebrateXp", (int)Math.Round(gained * p)), Motion.EaseOutQuart);
     }
 
     // Before → after; on a level up the bar fills to the end, flashes and starts again from the new level.
@@ -84,24 +77,17 @@ public sealed partial class CelebrationView : UserControl
     {
         double Pct(int xp, int level) { var a = Progression.LevelStart(level); var b = Progression.LevelStart(level + 1); return Math.Clamp((xp - a) * 100.0 / Math.Max(1, b - a), 0, 100); }
         var target = Pct(c.XpAfter, c.LevelAfter);
-        if (!Motion.Enabled) { LevelBar.Value = target; return; }
-        var phases = c.LevelUp ? new[] { (Pct(c.XpBefore, c.LevelBefore), 100.0), (0.0, target) } : [(Pct(c.XpBefore, c.LevelBefore), target)];
-        var phase = 0; var start = DateTime.UtcNow.AddMilliseconds(350); var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMilliseconds(16);
-        timer.Tick += (s, _) =>
-        {
-            var ms = (DateTime.UtcNow - start).TotalMilliseconds; if (ms < 0) return;
-            var (from, to) = phases[phase]; var p = Math.Min(1, ms / 700);
-            LevelBar.Value = from + (to - from) * (1 - Math.Pow(1 - p, 3));
-            if (p < 1) return;
-            if (++phase >= phases.Length) { s.Stop(); return; }
-            start = DateTime.UtcNow; Motion.Pop(LevelUp); UiSound.Play(UiSound.Cue.Notify);
-        };
-        timer.Start();
+        var before = Pct(c.XpBefore, c.LevelBefore);
+        if (!Motion.Active) { LevelBar.Value = target; return; }
+        void Glide(double from, double to, TimeSpan delay, Action? done) => Motion.Tween(LevelBar, TimeSpan.FromMilliseconds(700), p => LevelBar.Value = from + (to - from) * p, done: done, delay: delay);
+        if (!c.LevelUp) { Glide(before, target, TimeSpan.FromMilliseconds(350), null); return; }
+        // Level up: fill to the end, pop the badge with a chime, then fill again from the new level.
+        Glide(before, 100, TimeSpan.FromMilliseconds(350), () => { Motion.Pop(LevelUp); UiSound.Play(UiSound.Cue.Notify); Glide(0, target, TimeSpan.FromMilliseconds(120), null); });
     }
 
     private FrameworkElement BadgeTile(Badge b, ITextCatalog t)
     {
-        var panel = new StackPanel { Spacing = 4, Width = 96, Opacity = Motion.Enabled ? 0 : 1 };
+        var panel = new StackPanel { Spacing = 4, Width = 96, Opacity = Motion.Active ? 0 : 1 };
         var circle = new Border { Width = 54, Height = 54, CornerRadius = new CornerRadius(27), HorizontalAlignment = HorizontalAlignment.Center,
             Background = (Brush)Application.Current.Resources["GoldGradientBrush"], Child = new FontIcon { Glyph = b.Glyph, FontSize = 22, Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 58, 15, 36)) } };
         panel.Children.Add(circle);
@@ -111,7 +97,7 @@ public sealed partial class CelebrationView : UserControl
     }
     private void PopLater(FrameworkElement f, int delayMs)
     {
-        if (!Motion.Enabled) return;
+        if (!Motion.Active) return;
         var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMilliseconds(delayMs); timer.IsRepeating = false;
         timer.Tick += (_, _) => { f.Opacity = 1; Motion.Pop(f); UiSound.Play(UiSound.Cue.Toggle); };
         timer.Start();
@@ -120,7 +106,7 @@ public sealed partial class CelebrationView : UserControl
     // ~80 petals and sparks in the Lotus colours fall, drift and spin.
     private void Burst()
     {
-        if (!Motion.Enabled) return;
+        if (!Motion.Active) return;
         Confetti.Children.Clear();
         // Measured from the window (this control was collapsed until now, so its own size is still 0).
         var w = Math.Max(400, XamlRoot?.Size.Width ?? ActualWidth); var h = Math.Max(400, XamlRoot?.Size.Height ?? ActualHeight);
@@ -144,7 +130,7 @@ public sealed partial class CelebrationView : UserControl
 
     private static void Add(Storyboard sb, DependencyObject target, string property, double from, double to, int ms, EasingFunctionBase? ease = null, int delay = 0)
     {
-        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(Motion.Enabled ? ms : 0), BeginTime = TimeSpan.FromMilliseconds(Motion.Enabled ? delay : 0), EasingFunction = ease ?? new CubicEase { EasingMode = EasingMode.EaseOut } };
+        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(Motion.Active ? ms : 0), BeginTime = TimeSpan.FromMilliseconds(Motion.Active ? delay : 0), EasingFunction = ease ?? Motion.Decelerate() };
         Storyboard.SetTarget(a, target); Storyboard.SetTargetProperty(a, property); sb.Children.Add(a);
     }
 }

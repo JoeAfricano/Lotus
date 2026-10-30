@@ -38,7 +38,7 @@ public sealed partial class PlayerPanel : UserControl
         }
         Visibility = Visibility.Visible;
         Animate(Backdrop, "Opacity", 0, 1, 220);
-        Animate(SheetShift, "X", 460, 0, 380, new CubicEase { EasingMode = EasingMode.EaseOut });
+        Animate(SheetShift, "X", 460, 0, 380, Motion.Decelerate());
         UiSound.Play(UiSound.Cue.Open);
         // Focus moves into the panel; Escape / close gives it back to whatever opened it.
         returnFocus = XamlRoot is { } root ? Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(root) as Control : null;
@@ -51,7 +51,7 @@ public sealed partial class PlayerPanel : UserControl
         UiSound.Play(UiSound.Cue.Close);
         FocusHelper.Commit(this); // commits a note being typed
         var sb = new Storyboard();
-        Add(sb, Backdrop, "Opacity", 1, 0, 180); Add(sb, SheetShift, "X", 0, 460, 260, new CubicEase { EasingMode = EasingMode.EaseIn });
+        Add(sb, Backdrop, "Opacity", 1, 0, 180); Add(sb, SheetShift, "X", 0, 460, 260, Motion.Accelerate());
         sb.Completed += (_, _) => { Visibility = Visibility.Collapsed; returnFocus?.Focus(FocusState.Programmatic); returnFocus = null; };
         sb.Begin();
     }
@@ -86,10 +86,7 @@ public sealed partial class PlayerPanel : UserControl
     }
     private void GlideBar(double target)
     {
-        if (!Motion.Enabled) { MiniBar.Value = target; return; }
-        var start = DateTime.UtcNow.AddMilliseconds(250); var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMilliseconds(16);
-        timer.Tick += (s, _) => { var ms = (DateTime.UtcNow - start).TotalMilliseconds; if (ms < 0) return; var p = Math.Min(1, ms / 700); MiniBar.Value = target * (1 - Math.Pow(1 - p, 3)); if (p >= 1) s.Stop(); };
-        timer.Start();
+        Motion.Tween(MiniBar, TimeSpan.FromMilliseconds(800), p => MiniBar.Value = target * p, Motion.EaseOutQuart, delay: TimeSpan.FromMilliseconds(250));
     }
 
     private void OnEditProfile(object sender, RoutedEventArgs e) { Close(); EditProfileRequested?.Invoke(this, EventArgs.Empty); }
@@ -135,7 +132,7 @@ public sealed partial class PlayerPanel : UserControl
     }
     private static void Add(Storyboard sb, DependencyObject target, string property, double from, double to, int ms, EasingFunctionBase? ease = null)
     {
-        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(Motion.Enabled ? ms : 0), EasingFunction = ease ?? new CubicEase { EasingMode = EasingMode.EaseOut } };
+        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(Motion.Active ? ms : 0), EasingFunction = ease ?? Motion.Decelerate() };
         Storyboard.SetTarget(a, target); Storyboard.SetTargetProperty(a, property); sb.Children.Add(a);
     }
 }

@@ -35,7 +35,7 @@ public sealed partial class DiaryEditorView : UserControl
         StartDrift();
         StatusList.UpdateLayout(); PaintStatus(); // containers exist only after layout
         Fade(Backdrop, 0, 1, 200); Fade(Card, 0, 1, 260);
-        Animate(CardMove, "TranslateY", 24, 0, 360, new CubicEase { EasingMode = EasingMode.EaseOut });
+        Animate(CardMove, "TranslateY", 24, 0, 360, Motion.Decelerate());
         UiSound.Play(UiSound.Cue.Open);
         ScoreSlider.Focus(FocusState.Programmatic);
     }
@@ -130,10 +130,7 @@ public sealed partial class DiaryEditorView : UserControl
         ScoreBig.FontSize = vm.RatingKind == "none" ? 16 : 32;
         ScoreArc.Stroke = brush; ScoreSlider.Foreground = brush;
         var target = vm.Rating / 10; var from = ringFrom; ringFrom = target;
-        if (!Motion.Enabled) { DrawArc(target); return; }
-        var start = DateTime.UtcNow; var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMilliseconds(16);
-        timer.Tick += (t, _) => { var p = Math.Min(1, (DateTime.UtcNow - start).TotalMilliseconds / 320); DrawArc(from + (target - from) * (1 - Math.Pow(1 - p, 3))); if (p >= 1) t.Stop(); };
-        timer.Start();
+        Motion.Tween(ScoreArc, TimeSpan.FromMilliseconds(380), p => DrawArc(from + (target - from) * p), Motion.EaseOutQuart);
     }
     // The score ring: an arc from the top, clockwise, for 0..1 of the circle (104 px, 7 px stroke).
     private void DrawArc(double fraction)
@@ -169,7 +166,7 @@ public sealed partial class DiaryEditorView : UserControl
     private void StartDrift()
     {
         drift?.Stop(); HeaderZoom.ScaleX = HeaderZoom.ScaleY = 1;
-        if (!Motion.Enabled) return;
+        if (!Motion.Active) return;
         drift = new Storyboard { RepeatBehavior = RepeatBehavior.Forever, AutoReverse = true };
         var ease = new SineEase { EasingMode = EasingMode.EaseInOut };
         Add(drift, HeaderZoom, "ScaleX", 1, 1.08, 16000, ease); Add(drift, HeaderZoom, "ScaleY", 1, 1.08, 16000, ease);
@@ -214,7 +211,7 @@ public sealed partial class DiaryEditorView : UserControl
     private static void Animate(DependencyObject target, string property, double from, double to, int ms, EasingFunctionBase ease) { var sb = new Storyboard(); Add(sb, target, property, from, to, ms, ease); sb.Begin(); }
     private static void Add(Storyboard sb, DependencyObject target, string property, double from, double to, int ms, EasingFunctionBase? ease = null)
     {
-        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(Motion.Enabled ? ms : 0), EasingFunction = ease ?? new CubicEase { EasingMode = EasingMode.EaseOut } };
+        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(Motion.Active ? ms : 0), EasingFunction = ease ?? Motion.Decelerate() };
         Storyboard.SetTarget(a, target); Storyboard.SetTargetProperty(a, property); sb.Children.Add(a);
     }
 }

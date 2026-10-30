@@ -42,7 +42,7 @@ public sealed partial class DiaryPanel : UserControl
         if (target == TrophiesArea) TrophiesArea.Celebrate();
         // Opened on one game (from a game page): bring that game into view.
         if (target == SteamArea && vm.Achievements?.HasSelected == true)
-            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => SteamArea.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = Motion.Enabled, VerticalAlignmentRatio = 0 }));
+            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => SteamArea.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = Motion.Active, VerticalAlignmentRatio = 0 }));
     }
     private void OnRecap(object? sender, int year) => MainWindow.Shell?.OpenDiaryRecap(year);
     private void OnSection(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
@@ -64,14 +64,8 @@ public sealed partial class DiaryPanel : UserControl
         }
         PaintHeader();
         // XP bar glides to its value.
-        var target = vm.LevelPercent; var from = XpBar.Value; var start = DateTime.UtcNow;
-        if (!Motion.Enabled) { XpBar.Value = FullXpBar.Value = target; }
-        else
-        {
-            var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMilliseconds(16);
-            timer.Tick += (s, _) => { var p = Math.Min(1, (DateTime.UtcNow - start).TotalMilliseconds / 700); XpBar.Value = FullXpBar.Value = from + (target - from) * (1 - Math.Pow(1 - p, 3)); if (p >= 1) s.Stop(); };
-            timer.Start();
-        }
+        var target = vm.LevelPercent; var from = XpBar.Value;
+        Motion.Tween(XpBar, TimeSpan.FromMilliseconds(800), p => XpBar.Value = FullXpBar.Value = from + (target - from) * p, Motion.EaseOutQuart);
         PaintTabs();
         BuildChips(); PaintView();
         _ = vm.Deals?.RefreshAsync();

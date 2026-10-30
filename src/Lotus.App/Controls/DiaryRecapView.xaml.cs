@@ -11,7 +11,6 @@ public sealed partial class DiaryRecapView : UserControl
 {
     private DiaryRecapViewModel? vm;
     private int index;
-    private DispatcherTimer? auto;
     private DateTime slideStart;
     private static readonly TimeSpan SlideTime = TimeSpan.FromSeconds(6);
     private Storyboard? blobs;
@@ -53,10 +52,8 @@ public sealed partial class DiaryRecapView : UserControl
         sb.Begin();
         StartBlobs();
         Show(0, forward: true);
-        auto?.Stop();
-        auto = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
-        auto.Tick += (_, _) => Tick();
-        auto.Start();
+        // Progress segments fill on every frame (smooth), not on a timer.
+        Motion.OnFrames(this, _ => { if (!IsOpen) return false; Tick(); return true; });
         UiSound.Play(UiSound.Cue.Open);
         NextButton.Focus(FocusState.Programmatic);
     }
@@ -64,7 +61,7 @@ public sealed partial class DiaryRecapView : UserControl
     public void Close()
     {
         if (!IsOpen) return;
-        auto?.Stop(); blobs?.Stop();
+        Motion.StopFrames(this); blobs?.Stop();
         var sb = new Storyboard();
         Add(sb, Backdrop, "Opacity", 1, 0, 180); Add(sb, Card, "Opacity", 1, 0, 180); Add(sb, CardMove, "TranslateY", 0, 20, 220);
         sb.Completed += (_, _) => Visibility = Visibility.Collapsed;
@@ -104,7 +101,7 @@ public sealed partial class DiaryRecapView : UserControl
         SlideGlyph.Glyph = s.Glyph; SlideEyebrow.Text = s.Eyebrow; SlideTitle.Text = s.Title; SlideDetail.Text = s.Detail;
         SlideBig.FontSize = s.Big.Length > 14 ? 40 : s.Big.Length > 8 ? 52 : 72;
         SlideBig.LineHeight = SlideBig.FontSize * 1.1;
-        if (s.CountTo is { } n && Motion.Enabled) Motion.CountTo(SlideBig, n, v => v + s.Suffix, TimeSpan.FromMilliseconds(1100)); else SlideBig.Text = s.Big;
+        if (s.CountTo is { } n && Motion.Active) Motion.CountTo(SlideBig, n, v => v + s.Suffix, TimeSpan.FromMilliseconds(1100)); else SlideBig.Text = s.Big;
         // Art: the game's own art on game screens, the best game's art behind the summary.
         var art = summary ? vm.SummaryArt : s.Art;
         artFallback = summary ? vm.SummaryArtFallback : s.ArtFallback;
@@ -129,7 +126,7 @@ public sealed partial class DiaryRecapView : UserControl
     private void StartBlobs()
     {
         blobs?.Stop();
-        if (!Motion.Enabled) return;
+        if (!Motion.Active) return;
         blobs = new Storyboard { RepeatBehavior = RepeatBehavior.Forever, AutoReverse = true };
         var ease = new SineEase { EasingMode = EasingMode.EaseInOut };
         Add(blobs, BlobAMove, "TranslateX", 0, 90, 7000, ease); Add(blobs, BlobAMove, "TranslateY", 0, 60, 9000, ease);
@@ -196,7 +193,7 @@ public sealed partial class DiaryRecapView : UserControl
     private static void Fade(UIElement e, double from, double to, int ms) { var sb = new Storyboard(); Add(sb, e, "Opacity", from, to, ms); sb.Begin(); }
     private static void Add(Storyboard sb, DependencyObject target, string property, double from, double to, int ms, EasingFunctionBase? ease = null)
     {
-        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(Motion.Enabled ? ms : 0), EasingFunction = ease ?? new CubicEase { EasingMode = EasingMode.EaseOut } };
+        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(Motion.Active ? ms : 0), EasingFunction = ease ?? Motion.Decelerate() };
         Storyboard.SetTarget(a, target); Storyboard.SetTargetProperty(a, property); sb.Children.Add(a);
     }
 }

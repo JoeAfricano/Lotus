@@ -44,7 +44,7 @@ public sealed partial class ThemeStudio : UserControl
         palette.Preview(spec); PaintReadability();
         Visibility = Visibility.Visible;
         var sb = new Storyboard();
-        var anim = new DoubleAnimation { From = 460, To = 0, Duration = TimeSpan.FromMilliseconds(Motion.Enabled ? 380 : 0), EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+        var anim = new DoubleAnimation { From = 460, To = 0, Duration = TimeSpan.FromMilliseconds(Motion.Active ? 380 : 0), EasingFunction = Motion.Decelerate() };
         Storyboard.SetTarget(anim, SheetShift); Storyboard.SetTargetProperty(anim, "X"); sb.Children.Add(anim); sb.Begin();
         UiSound.Play(UiSound.Cue.Open);
         NameBox.Focus(FocusState.Programmatic);
@@ -54,7 +54,7 @@ public sealed partial class ThemeStudio : UserControl
     {
         preview.Stop();
         var sb = new Storyboard();
-        var anim = new DoubleAnimation { From = 0, To = 460, Duration = TimeSpan.FromMilliseconds(Motion.Enabled ? 240 : 0), EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn } };
+        var anim = new DoubleAnimation { From = 0, To = 460, Duration = TimeSpan.FromMilliseconds(Motion.Active ? 240 : 0), EasingFunction = Motion.Accelerate() };
         Storyboard.SetTarget(anim, SheetShift); Storyboard.SetTargetProperty(anim, "X"); sb.Children.Add(anim);
         sb.Completed += (_, _) => Visibility = Visibility.Collapsed;
         sb.Begin();

@@ -71,16 +71,9 @@ public sealed partial class OnboardingView : UserControl
         if (Vm is not { } vm) return;
         var target = vm.StepNumber * 100.0 / vm.StepCount;
         if (!animate || !MotionEnabled) { StepProgress.Value = target; return; }
-        // ProgressBar.Value is not an independent property; a short timer-driven glide keeps it smooth.
-        var from = StepProgress.Value; var start = DateTime.UtcNow;
-        var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMilliseconds(16);
-        timer.Tick += (t, _) =>
-        {
-            var p = Math.Min(1, (DateTime.UtcNow - start).TotalMilliseconds / 360);
-            StepProgress.Value = from + (target - from) * (1 - Math.Pow(1 - p, 3));
-            if (p >= 1) t.Stop();
-        };
-        timer.Start();
+        // ProgressBar.Value is not an independent property: a frame-synced glide keeps it smooth.
+        var from = StepProgress.Value;
+        Motion.Tween(StepProgress, TimeSpan.FromMilliseconds(420), p => StepProgress.Value = from + (target - from) * p, Motion.EaseOutQuart);
     }
 
     // The stage art breathes slowly on every step (off with Reduce motion).
@@ -216,7 +209,7 @@ public sealed partial class OnboardingView : UserControl
     }
     private static void Add(Storyboard sb, DependencyObject target, string property, double from, double to, int ms, EasingFunctionBase? ease = null)
     {
-        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(ms), EasingFunction = ease ?? new CubicEase { EasingMode = EasingMode.EaseOut } };
+        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(ms), EasingFunction = ease ?? Motion.Decelerate() };
         Storyboard.SetTarget(a, target); Storyboard.SetTargetProperty(a, property); sb.Children.Add(a);
     }
 }

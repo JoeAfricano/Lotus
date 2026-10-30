@@ -157,17 +157,14 @@ public sealed partial class ReadinessCard : UserControl
     {
         if (Math.Abs(shown - value) < 1) return;
         var from = shown < 0 ? 0 : shown; shown = value;
-        var start = DateTime.UtcNow; var ms = Motion.Enabled ? 900.0 : 0;
-        var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMilliseconds(16);
-        void Step()
+        void Step(double p)
         {
-            var p = ms == 0 ? 1 : Math.Min(1, (DateTime.UtcNow - start).TotalMilliseconds / ms);
-            var v = from + (value - from) * (1 - Math.Pow(1 - p, 3));
+            var v = from + (value - from) * p;
             score.Text = Math.Round(v).ToString();
             arc.Data = ArcGeometry(v / 100);
         }
-        timer.Tick += (s, _) => { Step(); if ((DateTime.UtcNow - start).TotalMilliseconds >= ms) s.Stop(); };
-        Step(); timer.Start();
+        Step(0);
+        Motion.Tween(arc, TimeSpan.FromMilliseconds(1000), Step, Motion.EaseOutQuart);
     }
     private static Geometry ArcGeometry(double fraction)
     {
@@ -193,14 +190,14 @@ internal static class HomeMotion
     }
     public static void Fade(UIElement e, double to, int ms)
     {
-        if (!Motion.Enabled) { e.Opacity = to; return; }
+        if (!Motion.Active) { e.Opacity = to; return; }
         var a = new Microsoft.UI.Xaml.Media.Animation.DoubleAnimation { To = to, Duration = TimeSpan.FromMilliseconds(ms) };
         var sb = new Microsoft.UI.Xaml.Media.Animation.Storyboard(); Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTarget(a, e); Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(a, "Opacity"); sb.Children.Add(a); sb.Begin();
     }
     // Slow push-in on the art, origin bound to the real size.
     public static void Drift(UIElement e)
     {
-        if (!Motion.Enabled) return;
+        if (!Motion.Active) return;
         var v = ElementCompositionPreview.GetElementVisual(e); var c = v.Compositor;
         v.StartAnimation("CenterPoint", c.CreateExpressionAnimation("Vector3(this.Target.Size.X * 0.65, this.Target.Size.Y * 0.5, 0)"));
         var a = c.CreateVector3KeyFrameAnimation(); a.InsertKeyFrame(0, new(1.0f, 1.0f, 1)); a.InsertKeyFrame(1, new(1.08f, 1.08f, 1));
@@ -210,7 +207,7 @@ internal static class HomeMotion
     public static void Rise(UIElement e)
     {
         ElementCompositionPreview.SetIsTranslationEnabled(e, true);
-        if (!Motion.Enabled) return;
+        if (!Motion.Active) return;
         var v = ElementCompositionPreview.GetElementVisual(e); var c = v.Compositor;
         var ease = c.CreateCubicBezierEasingFunction(new(0.05f, 0.7f), new(0.1f, 1f));
         var a = c.CreateVector3KeyFrameAnimation(); a.InsertKeyFrame(0, new(0, 18, 0)); a.InsertKeyFrame(1, Vector3.Zero, ease); a.Duration = TimeSpan.FromMilliseconds(600);

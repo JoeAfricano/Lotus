@@ -36,7 +36,7 @@ public sealed partial class GameTunePanel : UserControl
         PrimaryAction.Visibility = SecondaryAction.Visibility = Footer.Visibility = Visibility.Collapsed;
         LoadArt(game);
         Visibility = Visibility.Visible;
-        Animate(Backdrop, "Opacity", 0, 1, 220); Animate(SheetShift, "X", 560, 0, 380, new CubicEase { EasingMode = EasingMode.EaseOut });
+        Animate(Backdrop, "Opacity", 0, 1, 220); Animate(SheetShift, "X", 560, 0, 380, Motion.Decelerate());
         DispatcherQueue.TryEnqueue(() => CloseButton.Focus(FocusState.Programmatic));
         if (MainWindow.Shell?.AdaptiveSync is null && XamlRoot is { } xamlRoot) await AskAdaptiveSyncAsync(xamlRoot, model);
         await Reload();
@@ -46,7 +46,7 @@ public sealed partial class GameTunePanel : UserControl
     {
         if (!IsOpen) return;
         var sb = new Storyboard();
-        Add(sb, Backdrop, "Opacity", 1, 0, 180); Add(sb, SheetShift, "X", 0, 560, 260, new CubicEase { EasingMode = EasingMode.EaseIn });
+        Add(sb, Backdrop, "Opacity", 1, 0, 180); Add(sb, SheetShift, "X", 0, 560, 260, Motion.Accelerate());
         sb.Completed += (_, _) => { Visibility = Visibility.Collapsed; HeaderArt.Source = null; returnFocus?.Focus(FocusState.Programmatic); };
         sb.Begin();
     }
@@ -340,7 +340,7 @@ public sealed partial class GameTunePanel : UserControl
     }
     private static void Add(Storyboard sb, DependencyObject target, string property, double from, double to, int ms, EasingFunctionBase? ease = null)
     {
-        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(Motion.Enabled ? ms : 0), EasingFunction = ease ?? new CubicEase { EasingMode = EasingMode.EaseOut } };
+        var a = new DoubleAnimation { From = from, To = to, Duration = TimeSpan.FromMilliseconds(Motion.Active ? ms : 0), EasingFunction = ease ?? Motion.Decelerate() };
         Storyboard.SetTarget(a, target); Storyboard.SetTargetProperty(a, property); sb.Children.Add(a);
     }
 }

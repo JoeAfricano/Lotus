@@ -50,5 +50,5 @@ public sealed partial class SteamTrophiesView : UserControl
     private void OnSearch(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args) { if (Vm is { } vm && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput) vm.SteamQuery = sender.Text; }
 
     // Opening or leaving a game scrolls the page back to this section's top.
-    private void BringTop() => StartBringIntoView(new BringIntoViewOptions { AnimationDesired = Motion.Enabled, VerticalAlignmentRatio = 0 });
+    private void BringTop() => StartBringIntoView(new BringIntoViewOptions { AnimationDesired = Motion.Active, VerticalAlignmentRatio = 0 });
 }

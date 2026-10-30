@@ -14,21 +14,91 @@ namespace Lotus.App;
 public static class Motion
 {
     public static bool Enabled { get; set; } = true;
-    private static bool On => Enabled && new Windows.UI.ViewManagement.UISettings().AnimationsEnabled;
+    // Lotus "Reduce motion" off AND Windows animations on (read once a second at most: the setting rarely changes).
+    private static bool On
+    {
+        get
+        {
+            if (!Enabled) return false;
+            var now = Environment.TickCount64;
+            if (now - systemCheckedAt > 1000) { systemAnimations = new Windows.UI.ViewManagement.UISettings().AnimationsEnabled; systemCheckedAt = now; }
+            return systemAnimations;
+        }
+    }
+    private static bool systemAnimations = true;
+    private static long systemCheckedAt = long.MinValue / 2;
+    public static bool Active => On;
     public static readonly TimeSpan Fast = TimeSpan.FromMilliseconds(120), Normal = TimeSpan.FromMilliseconds(220), Slow = TimeSpan.FromMilliseconds(360);
 
     private static CompositionEasingFunction Ease(Compositor c) => c.CreateCubicBezierEasingFunction(new Vector2(0.05f, 0.7f), new Vector2(0.1f, 1f));
 
+    // ---- Storyboard curves and durations shared by every panel (sheets, dialogs, overlays) ----
+    // Arrivals: quick start and a long soft landing. Exits: a short acceleration out (exits never linger).
+    public static EasingFunctionBase Decelerate() => new ExponentialEase { EasingMode = EasingMode.EaseOut, Exponent = 6 };
+    public static EasingFunctionBase Accelerate() => new CubicEase { EasingMode = EasingMode.EaseIn };
+    public static EasingFunctionBase Gentle() => new SineEase { EasingMode = EasingMode.EaseInOut };
+    // A duration that collapses to zero with Reduce motion / Windows animations off.
+    public static TimeSpan Ms(double milliseconds) => TimeSpan.FromMilliseconds(On ? milliseconds : 0);
+
+    // ---- Frame-synced tweens: values that are not independent properties (progress bars, arcs, counters) ----
+    // Driven by CompositionTarget.Rendering, so every step lands on a real frame (smooth on 60/120/144 Hz screens),
+    // instead of a 16 ms timer that drifts against the display. One tween per key: a new one replaces the old.
+    public static double EaseOutCubic(double p) => 1 - Math.Pow(1 - p, 3);
+    public static double EaseOutQuart(double p) => 1 - Math.Pow(1 - p, 4);
+    public static double EaseOutExpo(double p) => p >= 1 ? 1 : 1 - Math.Pow(2, -10 * p);
+    private sealed class Frame(Func<double, bool> step, long start) { public Func<double, bool> Step = step; public long Start = start; }
+    private static readonly Dictionary<object, Frame> frames = [];
+    private static readonly System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+    private static bool hooked;
+
+    // Calls `step(elapsed ms)` once per frame until it returns false (or another call reuses the key).
+    public static void OnFrames(object key, Func<double, bool> step, TimeSpan? delay = null)
+    {
+        frames[key] = new Frame(step, clock.ElapsedMilliseconds + (long)(delay?.TotalMilliseconds ?? 0));
+        if (!hooked) { Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += OnRendering; hooked = true; }
+    }
+    public static void StopFrames(object key) => frames.Remove(key);
+
+    // Animates 0 → 1 over `duration` (eased) and calls `apply` every frame; `done` runs once at the end.
+    public static void Tween(object key, TimeSpan duration, Action<double> apply, Func<double, double>? ease = null, Action? done = null, TimeSpan? delay = null)
+    {
+        if (!On || duration <= TimeSpan.Zero) { StopFrames(key); apply(1); done?.Invoke(); return; }
+        var curve = ease ?? EaseOutCubic; var total = duration.TotalMilliseconds;
+        OnFrames(key, ms =>
+        {
+            var p = Math.Min(1, ms / total);
+            apply(curve(p));
+            if (p < 1) return true;
+            done?.Invoke();
+            return false;
+        }, delay);
+    }
+
+    private static void OnRendering(object? sender, object e)
+    {
+        var now = clock.ElapsedMilliseconds;
+        foreach (var (key, f) in frames.ToArray())
+        {
+            var elapsed = now - f.Start;
+            if (elapsed < 0) continue;
+            bool more;
+            try { more = f.Step(elapsed); }
+            catch (Exception ex) { Serilog.Log.Warning(ex, "Animation step"); more = false; } // a broken animation must never break the app
+            if (!more && frames.TryGetValue(key, out var current) && ReferenceEquals(current, f)) frames.Remove(key);
+        }
+        if (frames.Count == 0) { Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= OnRendering; hooked = false; } // no cost while idle
+    }
+
     // ---- Page entrance: content rises 14 px and fades in ----
-    public static void EnterPage(UIElement element) => Rise(element, 14, Slow);
+    public static void EnterPage(UIElement element) => Rise(element, 16, TimeSpan.FromMilliseconds(420), fromScale: 0.985f);
 
     // Fade in while moving up from `distance` px, on the element's Translation (layout is never touched).
-    private static void Rise(UIElement element, float distance, TimeSpan duration, float fromOpacity = 0)
+    private static void Rise(UIElement element, float distance, TimeSpan duration, float fromOpacity = 0, float fromScale = 1)
     {
         // Elements with the hover lift use XAML's own Scale/Translation transitions; the compositor visual is off
         // limits for them (Windows throws), so they rise through those transitions instead.
         if (element.ScaleTransition is not null || element.TranslationTransition is not null) { RiseWithTransitions(element, distance, duration, fromOpacity); return; }
-        try { RiseOnVisual(element, distance, duration, fromOpacity); }
+        try { RiseOnVisual(element, distance, duration, fromOpacity, fromScale); }
         catch (UnauthorizedAccessException) { RiseWithTransitions(element, distance, duration, fromOpacity); } // never let an animation crash the app
     }
 
@@ -50,15 +120,22 @@ public static class Motion
         });
     }
 
-    private static void RiseOnVisual(UIElement element, float distance, TimeSpan duration, float fromOpacity)
+    private static void RiseOnVisual(UIElement element, float distance, TimeSpan duration, float fromOpacity, float fromScale = 1)
     {
         ElementCompositionPreview.SetIsTranslationEnabled(element, true);
         var v = ElementCompositionPreview.GetElementVisual(element);
-        if (!On) { v.Opacity = 1; v.Properties.InsertVector3("Translation", Vector3.Zero); return; }
+        if (!On) { v.Opacity = 1; v.Properties.InsertVector3("Translation", Vector3.Zero); v.Scale = Vector3.One; return; }
         var c = v.Compositor;
         var fade = c.CreateScalarKeyFrameAnimation(); fade.InsertKeyFrame(0, fromOpacity); fade.InsertKeyFrame(1, 1, Ease(c)); fade.Duration = duration;
         var rise = c.CreateVector3KeyFrameAnimation(); rise.InsertKeyFrame(0, new Vector3(0, distance, 0)); rise.InsertKeyFrame(1, Vector3.Zero, Ease(c)); rise.Duration = duration;
         v.StartAnimation("Opacity", fade); v.StartAnimation("Translation", rise);
+        // Pages also grow from 98.5 % around their top centre: depth without any blur or layout work.
+        if (fromScale < 1 && element is FrameworkElement fe)
+        {
+            v.CenterPoint = new Vector3((float)fe.ActualWidth / 2, 0, 0);
+            var grow = c.CreateVector3KeyFrameAnimation(); grow.InsertKeyFrame(0, new Vector3(fromScale, fromScale, 1)); grow.InsertKeyFrame(1, Vector3.One, Ease(c)); grow.Duration = duration;
+            v.StartAnimation("Scale", grow);
+        }
     }
 
     // ---- Staggered entrance for a panel's children (cards arrive one after another) ----
@@ -119,16 +196,8 @@ public static class Motion
     // ---- Numbers count up to their new value (scores) ----
     public static void CountTo(TextBlock block, int to, Func<int, string> format, TimeSpan? duration = null)
     {
-        if (!On) { block.Text = format(to); return; }
-        var total = (duration ?? TimeSpan.FromMilliseconds(900)).TotalMilliseconds; var start = DateTime.UtcNow;
-        var timer = block.DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMilliseconds(16);
-        timer.Tick += (t, _) =>
-        {
-            var p = Math.Min(1, (DateTime.UtcNow - start).TotalMilliseconds / total);
-            block.Text = format((int)Math.Round(to * (1 - Math.Pow(1 - p, 4)))); // ease-out quart
-            if (p >= 1) t.Stop();
-        };
-        timer.Start();
+        // Ease-out quart: the number runs fast, then settles on the final value.
+        Tween(block, duration ?? TimeSpan.FromMilliseconds(900), p => block.Text = format((int)Math.Round(to * p)), EaseOutQuart);
     }
 
     // ---- Pop: an icon springs up (1 → 1.22 → 1) to confirm a choice, e.g. the selected menu item ----

@@ -58,8 +58,8 @@ public sealed partial class HomeBanner : UserControl
         Restart();
     }
 
-    private void OnTick(Microsoft.UI.Dispatching.DispatcherQueueTimer t, object o) { if (!hovering && Motion.Enabled && slides.Count > 1) Show((index + 1) % slides.Count); }
-    private void Restart() { timer?.Stop(); if (Motion.Enabled) timer?.Start(); }
+    private void OnTick(Microsoft.UI.Dispatching.DispatcherQueueTimer t, object o) { if (!hovering && Motion.Active && slides.Count > 1) Show((index + 1) % slides.Count); }
+    private void Restart() { timer?.Stop(); if (Motion.Active) timer?.Start(); }
     private void OnPrev(object s, RoutedEventArgs e) { if (slides.Count > 0) { Show((index - 1 + slides.Count) % slides.Count); Restart(); } }
     private void OnNext(object s, RoutedEventArgs e) { if (slides.Count > 0) { Show((index + 1) % slides.Count); Restart(); } }
     private void OnEnter(object s, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) { hovering = true; Fade(Prev, 1, 200); Fade(Next, 1, 200); }
@@ -204,13 +204,13 @@ public sealed partial class HomeBanner : UserControl
     private static Visual V(UIElement e) => ElementCompositionPreview.GetElementVisual(e);
     private static void Fade(UIElement e, double to, int ms)
     {
-        if (!Motion.Enabled) { e.Opacity = to; return; }
+        if (!Motion.Active) { e.Opacity = to; return; }
         var a = new Microsoft.UI.Xaml.Media.Animation.DoubleAnimation { To = to, Duration = TimeSpan.FromMilliseconds(ms), EasingFunction = new Microsoft.UI.Xaml.Media.Animation.CubicEase { EasingMode = Microsoft.UI.Xaml.Media.Animation.EasingMode.EaseInOut } };
         var sb = new Microsoft.UI.Xaml.Media.Animation.Storyboard(); Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTarget(a, e); Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(a, "Opacity"); sb.Children.Add(a); sb.Begin();
     }
     private static void KenBurns(FrameworkElement e)
     {
-        if (!Motion.Enabled) return;
+        if (!Motion.Active) return;
         var v = V(e); var c = v.Compositor;
         // Zoom origin follows the element's real size (it can change after the photo loads).
         var center = c.CreateExpressionAnimation("Vector3(this.Target.Size.X * 0.6, this.Target.Size.Y * 0.5, 0)");
@@ -222,7 +222,7 @@ public sealed partial class HomeBanner : UserControl
     private static void Rise(UIElement e)
     {
         ElementCompositionPreview.SetIsTranslationEnabled(e, true);
-        if (!Motion.Enabled) return;
+        if (!Motion.Active) return;
         var v = V(e); var c = v.Compositor;
         var ease = c.CreateCubicBezierEasingFunction(new(0.05f, 0.7f), new(0.1f, 1f));
         var a = c.CreateVector3KeyFrameAnimation(); a.InsertKeyFrame(0, new(-24, 0, 0)); a.InsertKeyFrame(1, Vector3.Zero, ease); a.Duration = TimeSpan.FromMilliseconds(700); a.DelayTime = TimeSpan.FromMilliseconds(150);
@@ -232,7 +232,7 @@ public sealed partial class HomeBanner : UserControl
     }
     private static void Breathe(FrameworkElement e)
     {
-        if (!Motion.Enabled) return;
+        if (!Motion.Active) return;
         e.SizeChanged += (_, _) =>
         {
             var v = V(e); var c = v.Compositor; v.CenterPoint = new Vector3((float)e.ActualWidth / 2, (float)e.ActualHeight * 0.7f, 0);
@@ -244,7 +244,7 @@ public sealed partial class HomeBanner : UserControl
     private static void Drift(UIElement e, int seed)
     {
         ElementCompositionPreview.SetIsTranslationEnabled(e, true);
-        if (!Motion.Enabled) return;
+        if (!Motion.Active) return;
         var v = V(e); var c = v.Compositor;
         var a = c.CreateVector3KeyFrameAnimation(); a.InsertKeyFrame(0, Vector3.Zero); a.InsertKeyFrame(1, seed == 0 ? new(-60, 30, 0) : new(70, -20, 0));
         a.Duration = TimeSpan.FromSeconds(seed == 0 ? 9 : 11); a.Direction = AnimationDirection.Alternate; a.IterationBehavior = AnimationIterationBehavior.Forever;
@@ -252,7 +252,7 @@ public sealed partial class HomeBanner : UserControl
     }
     private static void Twinkle(UIElement e, int ms, int delay)
     {
-        if (!Motion.Enabled) return;
+        if (!Motion.Active) return;
         var v = V(e); var c = v.Compositor;
         var a = c.CreateScalarKeyFrameAnimation(); a.InsertKeyFrame(0, 0.15f); a.InsertKeyFrame(0.5f, 1f); a.InsertKeyFrame(1, 0.15f);
         a.Duration = TimeSpan.FromMilliseconds(ms); a.DelayTime = TimeSpan.FromMilliseconds(delay); a.IterationBehavior = AnimationIterationBehavior.Forever;
