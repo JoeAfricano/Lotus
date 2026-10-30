@@ -2,7 +2,7 @@
 
 Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hardware, diagnostica gargalos, cria perfis de jogos e aplica ajustes reversíveis, com benchmarks de antes e depois. Sem placebo, sem FPS inventado.
 
-**Versão atual: 0.5.0-alpha "Lotus New"**. Baixe o instalador em [Releases](../../releases). O que mudou em cada versão está no [CHANGELOG](CHANGELOG.md).
+**Versão atual: 0.6.0-alpha "Lotus New"**. Baixe o instalador em [Releases](../../releases). O que mudou em cada versão está no [CHANGELOG](CHANGELOG.md).
 
 ## O que o Lotus faz
 
@@ -13,6 +13,9 @@ Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hard
 
 ### Meus Jogos
 - **Biblioteca** de Steam, Epic, GOG e outras lojas, com Jogar direto da capa e perfil por jogo.
+- **Preparar e Jogar:** antes de abrir o jogo, confere em silêncio se ele ainda está instalado, a memória, o espaço em disco e o controle. Só pergunta algo quando há um problema de verdade. Opcionalmente aplica o perfil Jogo, autorizado por jogo, e desfaz depois.
+- **Proteção de progresso:** encontra a pasta de saves com segurança (catálogo de jogos, Steam Cloud ou pasta escolhida) e guarda cópias conferidas depois de cada sessão. Restaura mostrando o que muda, com cópia do estado atual antes e volta automática se algo falhar. As cópias ficam só no PC. Jogos do Xbox / Game Pass não são suportados.
+- **Onde eu parei?** Uma anotação por jogo, vista no Início ("Continuar jogando"), no diário e no painel do jogador. O Lotus pergunta ao fechar o jogo, se você quiser.
 - **Otimizar este jogo:** painel lateral de cada jogo.
   - **O que o jogo tem**, lido dos arquivos dele: DLSS, Geração de quadros, FSR, XeSS e o motor (Unreal, Unity…).
   - **Configurações para o seu PC:** qualidade, texturas, upscaling e limite de FPS.

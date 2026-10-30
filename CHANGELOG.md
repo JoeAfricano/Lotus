@@ -2,6 +2,58 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 0.6.0-alpha "Lotus New" (30/10/2026)
+
+Esta versão é para quem joga sem tempo para configurar nada: o Lotus lembra onde você parou, confere o PC antes de jogar e guarda cópias dos seus saves.
+
+### Novo: "Onde eu parei?"
+- **Uma anotação por jogo** (até 600 caracteres), para lembrar o que estava fazendo mesmo semanas depois.
+- Aparece em três lugares, sempre a mesma anotação:
+  - no **Início**, em "Continuar jogando", com o botão "Ver anotação";
+  - no **editor do diário**, na seção "Onde eu parei?" (funciona até para jogos que ainda não estão no diário);
+  - no **painel do jogador**.
+- **Ao fechar um jogo**, um aviso discreto pergunta se quer anotar, com "Agora não" e "Não perguntar novamente".
+  - Se o Lotus estiver escondido ou o Windows em modo "não perturbe", o aviso espera você voltar.
+  - Dá para desligar em Configurações.
+- As anotações entram no arquivo `.lotusbackup`. Backups antigos continuam restaurando normalmente.
+
+### Novo: "Preparar e Jogar"
+- **Todo botão Jogar passa a conferir o PC antes de abrir o jogo**, em silêncio:
+  - se o jogo ainda está instalado;
+  - memória quase cheia ou pouco espaço livre no disco;
+  - controle conectado (quando você pede, para aquele jogo);
+  - avisos da proteção de saves.
+- Só pergunta algo quando há um problema de verdade, e o jogo sempre pode ser aberto mesmo assim.
+- **Perfil Jogo automático (opcional, por jogo):** você autoriza uma vez, vendo cada mudança. O Lotus aplica o perfil antes de jogar e desfaz depois, inclusive na próxima abertura se o PC ou o Lotus fecharem no meio.
+- Cartão "Preparar e jogar" na página de cada jogo instalado e chave geral em Configurações.
+
+### Novo: Proteção de progresso (saves)
+- **Encontra a pasta de saves com segurança**, nunca adivinhando pelo nome do jogo:
+  - catálogo de 18 jogos conhecidos da Steam (Stardew Valley, Elden Ring, Cyberpunk 2077, The Witcher 3, Baldur's Gate 3 e outros);
+  - a pasta Steam Cloud do próprio jogo;
+  - ou uma pasta que você escolher.
+- **Ativar por jogo:** a proteção só conta como ligada depois que a primeira cópia é feita e conferida.
+- **Backup automático depois de jogar:** espera o jogo fechar de verdade e só cria uma cópia nova se algo mudou. Guarda as últimas 3, 5 ou 10 cópias.
+- **Cada cópia é conferida** arquivo por arquivo (SHA-256). Uma cópia incompleta ou danificada nunca é usada.
+- **Restaurar com segurança:**
+  - mostra arquivo por arquivo o que vai mudar;
+  - exige o jogo fechado e avisa quando a nuvem da loja também sincroniza a pasta;
+  - guarda antes uma cópia de como seus saves estão agora;
+  - se algo falhar no meio, devolve tudo como estava;
+  - se o Lotus fechar durante a restauração, avisa na próxima abertura e oferece "Recuperar estado anterior".
+- As cópias ficam só neste PC, em `%LOCALAPPDATA%\Lotus\SaveBackups`. Não vão para a internet, para o Google Drive nem para o `.lotusbackup`, que leva apenas as configurações.
+- **Não funciona para todos os jogos:** jogos do Xbox / Game Pass guardam os saves num local protegido da Microsoft, e o Lotus não mexe neles.
+
+### Animações mais fluidas
+- Todas as animações (contadores, barras de XP e de progresso, anéis de nota, retrospectiva, avisos) agora acompanham a taxa de atualização da tela e só rodam enquanto algo se mexe.
+- Painéis e janelas abrem e fecham com as mesmas curvas suaves. As páginas entram com uma leve aproximação.
+- A configuração de animações do Windows é respeitada em todo o app.
+
+### Corrigido
+- Os ícones das sensações no editor do diário apareciam como quadrados (□□□□).
+- No tutorial, as cores e os temas prontos aparecem juntos de novo: escolher um desmarca o outro.
+- Configurações gravadas por versões anteriores não perdem mais os valores padrão das opções novas.
+
 ## 0.5.0-alpha "Lotus New" (30/10/2026)
 
 Esta versão é sobre o **visual**: o Lotus passa a ter temas completos e editáveis, com fundos animados.
