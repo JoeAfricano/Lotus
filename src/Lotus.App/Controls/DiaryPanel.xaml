@@ -111,6 +111,38 @@
   <local:SteamTrophiesView x:Name="SteamArea" DataContext="{Binding Achievements}" Visibility="Collapsed"/>
 
   <StackPanel x:Name="GamesArea" Spacing="18">
+  <local:PlayNextView DataContext="{Binding PlayNext}"/>
+  <!-- "Quero jogar" games on sale on Steam (only when there is one) -->
+  <Border Style="{StaticResource CardStyle}" Padding="20,16" DataContext="{Binding Deals}" Visibility="{Binding HasDeals, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="diary-deals">
+   <StackPanel Spacing="12">
+    <StackPanel Orientation="Horizontal" Spacing="10">
+     <FontIcon Glyph="&#xE8EC;" FontSize="16" Foreground="{ThemeResource GoldBrush}"/>
+     <TextBlock Text="{Binding Title}" FontSize="16" FontWeight="SemiBold"/>
+     <TextBlock Text="{Binding Text[DlHint]}" Style="{StaticResource CaptionStyle}" VerticalAlignment="Center"/>
+    </StackPanel>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled">
+     <ItemsControl ItemsSource="{Binding Deals}">
+      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="12"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate><DataTemplate>
+       <Button Click="OnDeal" Padding="0" CornerRadius="12" Background="Transparent" BorderThickness="0" app:Motion.Hover="1.03" AutomationProperties.Name="{Binding Name}" ToolTipService.ToolTip="{Binding StoreUrl}">
+        <Grid Width="232" ColumnSpacing="12" Padding="8" CornerRadius="12" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+         <Grid Width="62" Height="88" CornerRadius="8" Background="{ThemeResource HeroBrush}"><Image Source="{Binding Cover, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Grid>
+         <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+          <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
+          <Border HorizontalAlignment="Left" CornerRadius="6" Padding="6,1" Background="{ThemeResource SuccessBrush}"><TextBlock Text="{Binding DiscountText}" FontSize="12" FontWeight="Bold" Foreground="#12090F"/></Border>
+          <StackPanel Orientation="Horizontal" Spacing="6">
+           <TextBlock Text="{Binding Final}" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
+           <TextBlock Text="{Binding Initial}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextDecorations="Strikethrough" VerticalAlignment="Center"/>
+          </StackPanel>
+         </StackPanel>
+        </Grid>
+       </Button>
+      </DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+    </ScrollViewer>
+   </StackPanel>
+  </Border>
   <!-- "Top 4" showcase: the player's favorite games, chosen by them (compact, the list stays the main content) -->
   <Grid ColumnSpacing="18" AutomationProperties.AutomationId="diary-showcase">
    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>

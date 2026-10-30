@@ -176,6 +176,7 @@ public sealed class GamesViewModel : ObservableObject
     public bool HasFeatured => Featured.Count > 0;
     // The library game that is running now (used by the in-game hotkey), or null.
     public GameEntry? RunningGame() => processCheck?.FirstRunning([.. all.Where(g => !hidden.Contains(g.Key))]);
+    public RunningGame? GameProcess(GameEntry game) => processCheck?.Find(game);
     private GameCard Card(GameEntry g)
     {
         var shader = ScsKillerOutput.Match(shaderStatuses, g);
@@ -314,6 +315,7 @@ public sealed class GamesViewModel : ObservableObject
 
     // ---- Game panel ("Otimizar este jogo"): what the game supports, settings for this PC, in-game tips, last check ----
     public IGameTechScanner? TechScanner { get; set; }
+    public IOverlayScanner? Overlays { get; set; }
     // Expected FPS line from the Lotus Score (set by the window); null when there is no full test or the game is unknown.
     public Func<GameEntry, SettingsRecommendation, SystemProfile, string?>? ScoreLine { get; set; }
     public Func<string>? ScoreHint { get; set; } // shown when there is no estimate (no full test yet, or a game the Score does not know)
@@ -401,8 +403,9 @@ public sealed class GamesViewModel : ObservableObject
             var target = SettingsAdvisor.Recommend(profileSource!.Read(), Goal?.Invoke() ?? "balanced", AdaptiveSync?.Invoke() == "on").TargetFps;
             var pending = GameProfile is null ? 0 : (await GameProfile.PreviewAsync()).Count(p => !p.AlreadyApplied);
             var (load, apps) = Memory is null ? (0d, (IReadOnlyList<string>)[]) : await Task.Run(() => Memory.Read(game), token);
+            IReadOnlyList<string> overlays = Overlays is null ? [] : await Task.Run(() => (IReadOnlyList<string>)[.. Overlays.Scan().Where(o => o.Heavy).Select(o => o.Name)], token);
             var findings = StutterDiagnosis.Analyze(new(s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds, gpuBusy, target,
-                ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower));
+                ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower, overlays));
             if (findings.Any(f => f.Fix == StutterFix.LowerQuality)) pendingSteps[game.Key] = -1; // ready for "Otimizar configurações" after closing
             lastReports[game.Key] = new(Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds), findings, s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now);
             var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds);

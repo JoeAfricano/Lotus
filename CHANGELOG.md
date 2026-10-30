@@ -2,6 +2,65 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 0.4.0-alpha "Lotus New" (30/10/2026)
+
+Esta versão é sobre o **Meu diário**: ficou mais bonito, mais esperto e passou a trabalhar sozinho enquanto você joga.
+
+### Novo no diário
+- **Três jeitos de ver os jogos:** grade de capas, lista detalhada ou tabela com colunas ordenáveis. O Lotus lembra a escolha.
+- **Filtros:**
+  - por gênero, plataforma, loja, faixa de nota e ano, montados a partir dos seus próprios jogos;
+  - os filtros ativos aparecem por escrito;
+  - **filtros salvos** com nome, guardados no arquivo do diário e incluídos no backup.
+- **Meu Top 4:** quatro favoritos escolhidos por você, em destaque.
+- **Capas especiais:**
+  - brilho e faixa "PLATINA" para jogos platinados;
+  - moldura e selo dourados para nota 10;
+  - capa esmaecida para jogos abandonados.
+- **Topo do perfil compacto ou completo**, à sua escolha, para os jogos virem primeiro.
+- **Sessões automáticas:**
+  - com um jogo da biblioteca aberto, o Lotus anota o tempo e as datas no diário e avisa perto do relógio quando a sessão termina;
+  - funciona também com jogos da Epic e da GOG;
+  - "Quero jogar" e "Pausado" passam para "Jogando"; jogos concluídos ou abandonados mantêm o status;
+  - pode ser desligado em Configurações.
+- **O que jogar agora?** Sugere um jogo da sua lista pelo tempo que você tem (pouco, algumas horas, bastante), pelo clima (relaxar, desafio, história, ação) e pelas notas que você costuma dar. Sempre diz o porquê e tem o botão "Outra sugestão".
+- **Promoções da sua lista:**
+  - jogos de "Quero jogar" em promoção na Steam aparecem no diário com o desconto e o preço;
+  - quando surge uma promoção nova, chega um aviso discreto perto do relógio.
+- **Aba Estatísticas:**
+  - números principais: jogos, concluídos, horas, nota média, tempo médio até concluir, horas por jogo concluído;
+  - gráficos: horas por mês (as sessões registradas caem no mês exato), distribuição das notas, gêneros favoritos, plataformas, médias por categoria, sensações e dificuldade.
+- **Retrospectiva do ano:**
+  - telas no estilo stories: horas, jogos, gênero do ano, o jogo que mais prendeu você, maior nota e sensação do ano;
+  - termina num cartão-resumo que vira imagem (em Imagens\Lotus) para compartilhar.
+
+### Editor de jogo redesenhado
+- **Banner** com a arte oficial da loja de onde o jogo veio (Steam, Epic ou GOG), em movimento suave.
+- **Nota** num anel colorido com rótulo, de "Ruim" a "Obra-prima".
+- **Status ilustrados**, cada um na sua cor.
+- Duas colunas que se empilham em janelas estreitas.
+- **Detalhes novos:**
+  - notas por categoria (história, jogabilidade, gráficos, som), com "usar a média";
+  - sensações (empolgante, relaxante, desafiador...);
+  - dificuldade em que jogou;
+  - outras zeradas, cada uma com datas, horas e plataforma.
+
+### Novo no PC e nos jogos
+- **Overlays e travadas** (Ferramentas):
+  - mostra o que costuma causar travadas: Discord com aceleração de hardware, overlays da NVIDIA e da AMD, captura do Xbox, Overwolf, Medal, OBS, papéis de parede animados e apps de RGB;
+  - explica como desligar cada um. Nada é alterado pelo Lotus;
+  - também entra como causa no "Por que está travando?".
+- **Prioridade ao jogo** (opcional, em Configurações):
+  - com um jogo aberto, ele fica acima do normal, e navegadores, launchers e apps de sincronização ficam abaixo do normal;
+  - tudo volta como estava quando o jogo fecha ou o Lotus é encerrado;
+  - o Discord nunca é alterado.
+
+### Corrigido
+- A cópia das configurações originais de cada jogo agora é gravada de forma segura. Antes, uma queda de energia no meio da gravação podia deixar uma cópia cortada que o "Restaurar" devolveria ao jogo.
+- A busca de jogos e o FPS estimado não falham mais quando o cache da Steam não pode ser gravado (arquivo bloqueado ou disco cheio).
+- Leitura das artes das lojas fora da tela principal, sem travadinhas ao abrir o editor.
+- Média de notas igual no topo do diário e nas estatísticas.
+
 ## 0.3.1-alpha "Lotus New" (29/10/2026)
 
 ### Novo

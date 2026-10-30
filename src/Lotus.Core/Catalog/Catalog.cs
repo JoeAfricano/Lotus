@@ -13,6 +13,8 @@ public sealed record GameInfo(
 public sealed record CatalogItem(string AppId, string Name, string Cover, string Wide, int? PositivePercent = null, long? Reviews = null, long? Players = null, string? Note = null, int? Metacritic = null, bool? Free = null, DateTime? Released = null);
 public sealed record CatalogChart(string Id, IReadOnlyList<CatalogItem> Items, DateTimeOffset FetchedAt);
 
+public sealed record GamePrice(string AppId, int Discount, string Final, string Initial);
+
 public interface IGameCatalog
 {
     // Installed game → details (Steam id direct, GOG id via GOG, anything else by name on the Steam store).
@@ -26,6 +28,8 @@ public interface IGameCatalog
     Task<IReadOnlyList<CatalogItem>> DiscoverAsync(string? genre, string? difficulty, bool freeOnly, CancellationToken token);
     // Store art that always exists (newer games keep it under a hashed path only the store API knows).
     Task<string?> ArtAsync(string appId, CancellationToken token);
+    // Current Steam price of several games (discount, price now, price before). Missing = free, not sold or unknown.
+    Task<IReadOnlyDictionary<string, GamePrice>> PricesAsync(IReadOnlyList<string> appIds, CancellationToken token) => Task.FromResult<IReadOnlyDictionary<string, GamePrice>>(new Dictionary<string, GamePrice>());
 }
 
 public static class CatalogText

@@ -2091,7 +2091,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="DyStMonthTitle" xml:space="preserve"><value>Horas por mês em {0}</value></data>
   <data name="DyStMonthSummary" xml:space="preserve"><value>{0} no ano · mês mais jogado: {1}</value></data>
   <data name="DyStMonthEmpty" xml:space="preserve"><value>Nenhuma hora registrada neste ano.</value></data>
-  <data name="DyStMonthNote" xml:space="preserve"><value>Estimativa: as horas de cada jogo são divididas entre os meses, do início ao fim.</value></data>
+  <data name="DyStMonthNote" xml:space="preserve"><value>As sessões que o Lotus registra entram no mês exato; o resto das horas é dividido entre os meses do início ao fim.</value></data>
   <data name="DyStRatingTitle" xml:space="preserve"><value>Distribuição das notas</value></data>
   <data name="DyStRatingSummary" xml:space="preserve"><value>Média {0}</value></data>
   <data name="DyStRatingEmpty" xml:space="preserve"><value>Nenhum jogo avaliado ainda.</value></data>
@@ -2143,4 +2143,59 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="DyRcFileName" xml:space="preserve"><value>Retrospectiva</value></data>
   <data name="DyStDaysLess" xml:space="preserve"><value>Menos de 1 dia</value></data>
   <data name="DyStDay" xml:space="preserve"><value>{0} dia</value></data>
+  <data name="SetAutoSessions" xml:space="preserve"><value>Registrar minhas sessões no diário</value></data>
+  <data name="SetAutoSessionsHint" xml:space="preserve"><value>Enquanto um jogo da biblioteca está aberto, o Lotus anota o tempo e as datas no seu diário. Fica só neste PC.</value></data>
+  <data name="SetGamePriority" xml:space="preserve"><value>Dar prioridade ao jogo</value></data>
+  <data name="SetGamePriorityHint" xml:space="preserve"><value>Com um jogo aberto, ele ganha prioridade acima do normal e navegadores, launchers e apps de sincronização ficam abaixo do normal. Tudo volta como estava quando o jogo fecha. O Discord não é alterado.</value></data>
+  <data name="SessionSavedTitle" xml:space="preserve"><value>Sessão registrada no diário</value></data>
+  <data name="SessionSaved" xml:space="preserve"><value>{0} de {1} anotadas no seu diário.</value></data>
+  <data name="PnTitle" xml:space="preserve"><value>O que jogar agora?</value></data>
+  <data name="PnTimeAsk" xml:space="preserve"><value>Quanto tempo você tem?</value></data>
+  <data name="PnTimeShort" xml:space="preserve"><value>Pouco tempo</value></data>
+  <data name="PnTimeEvening" xml:space="preserve"><value>Algumas horas</value></data>
+  <data name="PnTimeLong" xml:space="preserve"><value>Bastante tempo</value></data>
+  <data name="PnVibeAsk" xml:space="preserve"><value>Do que você está a fim?</value></data>
+  <data name="PnVibeanyLabel" xml:space="preserve"><value>Qualquer coisa</value></data>
+  <data name="PnViberelaxLabel" xml:space="preserve"><value>Relaxar</value></data>
+  <data name="PnVibechallengeLabel" xml:space="preserve"><value>Um desafio</value></data>
+  <data name="PnVibestoryLabel" xml:space="preserve"><value>Uma boa história</value></data>
+  <data name="PnVibeactionLabel" xml:space="preserve"><value>Ação</value></data>
+  <data name="PnViberelax" xml:space="preserve"><value>combina com relaxar</value></data>
+  <data name="PnVibechallenge" xml:space="preserve"><value>é um bom desafio</value></data>
+  <data name="PnVibestory" xml:space="preserve"><value>tem uma boa história</value></data>
+  <data name="PnVibeaction" xml:space="preserve"><value>tem ação</value></data>
+  <data name="PnSuggest" xml:space="preserve"><value>Sugestão do Lotus</value></data>
+  <data name="PnOpen" xml:space="preserve"><value>Abrir no diário</value></data>
+  <data name="PnAnother" xml:space="preserve"><value>Outra sugestão</value></data>
+  <data name="PnEmpty" xml:space="preserve"><value>Adicione jogos como &quot;Quero jogar&quot;, &quot;Jogando&quot; ou &quot;Pausado&quot; e o Lotus sugere o que jogar.</value></data>
+  <data name="PnPlaying" xml:space="preserve"><value>você está no meio dele</value></data>
+  <data name="PnMomentum" xml:space="preserve"><value>jogou nesta semana</value></data>
+  <data name="PnStartNew" xml:space="preserve"><value>bom momento para começar</value></data>
+  <data name="PnPaused" xml:space="preserve"><value>pausado desde {0}</value></data>
+  <data name="PnWaiting" xml:space="preserve"><value>na sua lista há {0} dias</value></data>
+  <data name="PnTaste" xml:space="preserve"><value>você dá notas altas para {0}</value></data>
+  <data name="OvTitle" xml:space="preserve"><value>Overlays e travadas</value></data>
+  <data name="OvWhat" xml:space="preserve"><value>Overlays, gravação e papéis de parede animados são **causas comuns de travadas**. O Lotus só verifica o que está ativo e explica como desligar; nada é alterado.</value></data>
+  <data name="OvScan" xml:space="preserve"><value>Verificar agora</value></data>
+  <data name="OvHint" xml:space="preserve"><value>Verifique com o jogo fechado ou aberto; leva só um instante.</value></data>
+  <data name="OvClear" xml:space="preserve"><value>Nada que costuma causar travadas está ativo agora.</value></data>
+  <data name="OvFound" xml:space="preserve"><value>{0} itens que podem causar travadas.</value></data>
+  <data name="OvAdvicediscord" xml:space="preserve"><value>O Discord está aberto com a **aceleração de hardware ligada**, uma causa comum de travadas. No Discord: Configurações &gt; Avançado &gt; desligue **Aceleração de hardware**; em Overlay do jogo, desligue o overlay se não usar.</value></data>
+  <data name="OvAdvicexbox" xml:space="preserve"><value>A **captura do Xbox Game Bar** está ligada. Se não grava clipes: Configurações do Windows &gt; Jogos &gt; Capturas &gt; desligue a gravação.</value></data>
+  <data name="OvAdvicenvidia" xml:space="preserve"><value>O **overlay da NVIDIA** está ativo. Se não usa gravação nem filtros: no app NVIDIA, desligue a **Sobreposição do aplicativo NVIDIA**.</value></data>
+  <data name="OvAdviceamd" xml:space="preserve"><value>O **overlay do AMD Software** está ativo. Se não usa: no AMD Software &gt; Configurações &gt; Preferências, desligue o **Overlay do jogo** e a gravação.</value></data>
+  <data name="OvAdviceoverwolf" xml:space="preserve"><value>O **Overwolf** está aberto. Ele injeta overlays nos jogos e pesa no desempenho; feche-o enquanto joga se não precisar dele.</value></data>
+  <data name="OvAdvicemedal" xml:space="preserve"><value>O **Medal** está gravando em segundo plano. Feche-o ou desligue a gravação automática se não precisar de clipes.</value></data>
+  <data name="OvAdviceobs" xml:space="preserve"><value>O **OBS Studio** está aberto. Se não estiver gravando ou transmitindo, feche-o enquanto joga.</value></data>
+  <data name="OvAdvicewallpaper" xml:space="preserve"><value>Um **papel de parede animado** está usando a placa de vídeo. Configure-o para pausar com jogos em tela cheia ou feche-o enquanto joga.</value></data>
+  <data name="OvAdvicergb" xml:space="preserve"><value>Um **app de iluminação RGB** está aberto. Alguns fazem leituras frequentes do hardware e podem causar travadinhas; feche-o se notar travadas.</value></data>
+  <data name="WhyOverlaysTitle" xml:space="preserve"><value>Overlays e gravação em segundo plano</value></data>
+  <data name="WhyOverlaysBody" xml:space="preserve"><value>Estão ativos: {0}. Overlays e gravação em segundo plano **costumam causar travadas**. Em Ferramentas &gt; Overlays e travadas o Lotus explica como desligar cada um.</value></data>
+  <data name="DlTitle" xml:space="preserve"><value>{0} jogos da sua lista em promoção</value></data>
+  <data name="DlTitleOne" xml:space="preserve"><value>1 jogo da sua lista em promoção</value></data>
+  <data name="DlHint" xml:space="preserve"><value>Preços da Steam agora</value></data>
+  <data name="DlNotifyTitle" xml:space="preserve"><value>Promoção na sua lista</value></data>
+  <data name="DlNotifyOne" xml:space="preserve"><value>{0} está em promoção ({1}): {2} na Steam.</value></data>
+  <data name="DlNotifyMany" xml:space="preserve"><value>{0} jogos da sua lista estão em promoção, como {1} ({2}).</value></data>
+  <data name="OvFoundOne" xml:space="preserve"><value>1 item que pode causar travadas.</value></data>
 </root>

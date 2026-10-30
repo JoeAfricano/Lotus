@@ -5,7 +5,7 @@ namespace Lotus.Core.Games;
 public enum StutterFix { None, Precompile, PrepareProfile, LowerQuality, CloseApps }
 public sealed record StutterFinding(string Key, StutterFix Fix, int Weight, string? Detail = null);
 public sealed record StutterInputs(double AverageFps, double Low1Fps, int SpikeCount, double DurationSeconds, double? GpuBusy, int TargetFps,
-    ShaderState? Shaders, int PendingProfileSteps, double? MemoryLoadPercent, IReadOnlyList<string> TopMemoryApps, bool CanLowerQuality);
+    ShaderState? Shaders, int PendingProfileSteps, double? MemoryLoadPercent, IReadOnlyList<string> TopMemoryApps, bool CanLowerQuality, IReadOnlyList<string>? Overlays = null);
 
 public static class StutterDiagnosis
 {
@@ -20,6 +20,8 @@ public static class StutterDiagnosis
         if (i.PendingProfileSteps > 0) list.Add(new("WhyProfile", StutterFix.PrepareProfile, stutters || lowFps ? 60 : 30));
         if (lowFps && i.GpuBusy is >= 90) list.Add(new("WhyGpuLimit", i.CanLowerQuality ? StutterFix.LowerQuality : StutterFix.None, 70));
         else if (lowFps && i.GpuBusy is < 70) list.Add(new("WhyCpuLimit", i.TopMemoryApps.Count > 0 ? StutterFix.CloseApps : StutterFix.None, 55));
+        // Heavy overlays and capture apps running (Discord with hardware acceleration, Overwolf, animated wallpapers...).
+        if (stutters && i.Overlays is { Count: > 0 } o) list.Add(new("WhyOverlays", StutterFix.None, 45, string.Join(", ", o.Take(4))));
         if (stutters && list.Count == 0) list.Add(new("WhyUnknownStutter", StutterFix.None, 20));
         if (list.Count == 0) list.Add(new("WhyAllGood", StutterFix.None, 0));
         return [.. list.OrderByDescending(f => f.Weight)];

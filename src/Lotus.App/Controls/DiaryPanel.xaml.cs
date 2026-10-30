@@ -74,6 +74,7 @@ public sealed partial class DiaryPanel : UserControl
         }
         PaintTabs();
         BuildChips(); PaintView();
+        _ = vm.Deals?.RefreshAsync();
         ShowSection(animate: false);
     }
 
@@ -118,6 +119,7 @@ public sealed partial class DiaryPanel : UserControl
             b.Foreground = (Brush)Application.Current.Resources[on ? "RoseBrush" : "MutedBrush"];
         }
     }
+    private async void OnDeal(object sender, RoutedEventArgs e) { if (sender is FrameworkElement { DataContext: DealRow d } && Uri.TryCreate(d.StoreUrl, UriKind.Absolute, out var u)) await Windows.System.Launcher.LaunchUriAsync(u); }
     private void OnGridItem(object sender, ItemClickEventArgs e) { if (e.ClickedItem is DiaryCard card) MainWindow.Shell?.OpenDiaryEditor(card.Entry); }
     // Table headers sort by that column (a second click on the same column goes back to "recent").
     private void OnColumnSort(object sender, RoutedEventArgs e)

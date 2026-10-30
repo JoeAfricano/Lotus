@@ -123,6 +123,25 @@ public sealed class SteamCatalog : IGameCatalog
         : [];
 
     // Header art: the guessed CDN path first, the store API (hashed path) when that one does not exist.
+    // One request per 40 games (the store accepts a list when only the price is asked); cached for a few hours.
+    public async Task<IReadOnlyDictionary<string, GamePrice>> PricesAsync(IReadOnlyList<string> appIds, CancellationToken token)
+    {
+        var result = new Dictionary<string, GamePrice>();
+        foreach (var chunk in appIds.Where(a => a.Length > 0 && a.All(char.IsAsciiDigit)).Distinct().Order(StringComparer.Ordinal).Chunk(40))
+        {
+            var ids = string.Join(",", chunk);
+            var node = await JsonAsync($"https://store.steampowered.com/api/appdetails?appids={ids}&filters=price_overview&cc={country}", $"prices-{country}-{Convert.ToHexString(System.Security.Cryptography.SHA1.HashData(System.Text.Encoding.UTF8.GetBytes(ids)))[..12]}.json", PriceAge, token);
+            if (node is not System.Text.Json.Nodes.JsonObject all) continue;
+            foreach (var id in chunk)
+            {
+                if (all[id]?["data"]?["price_overview"] is not System.Text.Json.Nodes.JsonObject p) continue;
+                var discount = (int?)p["discount_percent"] ?? 0;
+                result[id] = new(id, discount, (string?)p["final_formatted"] ?? "", (string?)p["initial_formatted"] ?? "");
+            }
+        }
+        return result;
+    }
+    private static readonly TimeSpan PriceAge = TimeSpan.FromHours(6);
     public async Task<string?> ArtAsync(string appId, CancellationToken token) => (await SteamDetailsAsync(appId, token))?.HeaderImage;
 
     // Store search page (infinite mode): results_html carries data-ds-appid and the title of each game.

@@ -1,0 +1,48 @@
+<UserControl x:Class="Lotus.App.Controls.PlayNextView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="using:Lotus.App" AutomationProperties.AutomationId="play-next">
+ <!-- "O que jogar agora?": time and vibe on the left, the pick (and why) on the right -->
+ <Border Style="{StaticResource HeroCardStyle}" Padding="20,16">
+  <Grid x:Name="Root" ColumnSpacing="24" RowSpacing="14">
+   <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <StackPanel x:Name="Ask" Spacing="10" VerticalAlignment="Center" MaxWidth="360">
+    <StackPanel Orientation="Horizontal" Spacing="10">
+     <FontIcon Glyph="&#xE7FC;" FontSize="18" Foreground="{ThemeResource GoldBrush}"/>
+     <TextBlock Text="{Binding Text[PnTitle]}" FontFamily="Georgia" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
+    </StackPanel>
+    <TextBlock Text="{Binding Text[PnTimeAsk]}" Style="{StaticResource CaptionStyle}"/>
+    <StackPanel Orientation="Horizontal" Spacing="6">
+     <Button x:Name="TimeShort" Tag="Short" Click="OnTime" Content="{Binding Text[PnTimeShort]}" Padding="12,5" CornerRadius="14" AutomationProperties.AutomationId="play-next-short"/>
+     <Button x:Name="TimeEvening" Tag="Evening" Click="OnTime" Content="{Binding Text[PnTimeEvening]}" Padding="12,5" CornerRadius="14" AutomationProperties.AutomationId="play-next-evening"/>
+     <Button x:Name="TimeLong" Tag="Long" Click="OnTime" Content="{Binding Text[PnTimeLong]}" Padding="12,5" CornerRadius="14" AutomationProperties.AutomationId="play-next-long"/>
+    </StackPanel>
+    <ComboBox x:Name="VibeBox" SelectionChanged="OnVibe" MinWidth="220" Header="{Binding Text[PnVibeAsk]}" AutomationProperties.AutomationId="play-next-vibe"/>
+   </StackPanel>
+
+   <!-- The pick -->
+   <Grid x:Name="PickArea" Grid.Column="1" ColumnSpacing="16" VerticalAlignment="Center" Visibility="{Binding HasPick, Converter={StaticResource BooleanVisibility}}">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+    <Grid x:Name="PickCover" Width="96" Height="136" CornerRadius="12" Background="{ThemeResource HeroBrush}">
+     <Grid.RenderTransform><CompositeTransform x:Name="PickMove"/></Grid.RenderTransform>
+     <TextBlock Text="{Binding Top.Entry.Name}" TextWrapping="Wrap" TextAlignment="Center" Margin="8" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{ThemeResource GoldBrush}"/>
+     <Image Source="{Binding Top.Entry.Cover, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/>
+     <Border CornerRadius="12" BorderThickness="2" BorderBrush="{StaticResource GoldGradientBrush}"/>
+    </Grid>
+    <StackPanel x:Name="PickText" Grid.Column="1" Spacing="6" VerticalAlignment="Center">
+     <TextBlock Text="{Binding Text[PnSuggest]}" Style="{StaticResource EyebrowStyle}"/>
+     <TextBlock Text="{Binding Top.Entry.Name}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
+     <TextBlock Text="{Binding TopReasons}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+     <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
+      <Button Style="{StaticResource PrimaryButtonStyle}" Click="OnOpen" AutomationProperties.AutomationId="play-next-open">
+       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE70F;" FontSize="13"/><TextBlock Text="{Binding Text[PnOpen]}"/></StackPanel>
+      </Button>
+      <Button Style="{StaticResource SoftButtonStyle}" Click="OnAnother" AutomationProperties.AutomationId="play-next-another">
+       <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8B1;" FontSize="13"/><TextBlock Text="{Binding Text[PnAnother]}"/></StackPanel>
+      </Button>
+     </StackPanel>
+    </StackPanel>
+   </Grid>
+   <TextBlock Grid.Column="1" Text="{Binding Text[PnEmpty]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="{Binding IsEmpty, Converter={StaticResource BooleanVisibility}}"/>
+  </Grid>
+ </Border>
+</UserControl>

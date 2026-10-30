@@ -39,7 +39,16 @@ public static class DiaryStats
         }
         foreach (var e in entries)
         {
-            Spread(e, e.Minutes, e.Started, e.Finished, e.Status == DiaryStatus.Playing);
+            // Sessions Lotus recorded land in their real month; only the rest of the time is spread.
+            var sessionMinutes = 0;
+            foreach (var s in e.Sessions)
+            {
+                sessionMinutes += s.Minutes;
+                if (s.Start.Year != year) continue;
+                months[s.Start.Month - 1] += s.Minutes;
+                perGameInYear[e] = perGameInYear.GetValueOrDefault(e) + s.Minutes;
+            }
+            Spread(e, Math.Max(0, e.Minutes - sessionMinutes), e.Started, e.Finished, e.Status == DiaryStatus.Playing);
             foreach (var r in e.Runs) Spread(e, r.Minutes, r.Started, r.Finished, false);
         }
 

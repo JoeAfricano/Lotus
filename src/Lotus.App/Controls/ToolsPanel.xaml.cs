@@ -23,14 +23,15 @@ public sealed partial class ToolsPanel : UserControl
     private void BuildTiles(ToolsViewModel vm)
     {
         if (Tiles.Items.Count > 0) return;
-        cards["mem"] = MemCard; cards["temp"] = TempCard; cards["unin"] = UninCard; cards["net"] = NetCard; cards["disk"] = DiskCard; cards["drivers"] = DriverCard;
+        cards["mem"] = MemCard; cards["temp"] = TempCard; cards["unin"] = UninCard; cards["net"] = NetCard; cards["disk"] = DiskCard; cards["drivers"] = DriverCard; cards["overlays"] = OverlayCard;
         foreach (var (id, glyph, title, status) in new[]
         {
             ("mem", "", "ToolMemTitle", "MemoryStatus"), ("temp", "", "ToolTempTitle", "TempStatus"), ("unin", "", "UninTitle", "Uninstall.Summary"),
-            ("net", "", "ToolNetTile", "NetTileStatus"), ("disk", "", "ToolDiskTitle", "DiskTileStatus"), ("drivers", "", "ToolDriverTitle", "DriverStatus")
+            ("net", "", "ToolNetTile", "NetTileStatus"), ("disk", "", "ToolDiskTitle", "DiskTileStatus"), ("drivers", "", "ToolDriverTitle", "DriverStatus"), ("overlays", "\uE7F4", "OvTitle", "Overlays.Summary")
         })
         {
             if (id == "unin" && vm.Uninstall is null) continue;
+            if (id == "overlays" && vm.Overlays is null) continue;
             var badge = new FontIcon { Glyph = glyph, FontSize = 26, Foreground = (Brush)Application.Current.Resources["RoseBrush"], HorizontalAlignment = HorizontalAlignment.Left }; // design: outline accent icon
             var name = new TextBlock { Text = vm.Text[title], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 21, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis };
             var line = new TextBlock { FontSize = 13.5, Foreground = (Brush)Application.Current.Resources["MutedBrush"], TextWrapping = TextWrapping.Wrap, MaxLines = 3, TextTrimming = TextTrimming.CharacterEllipsis };
@@ -66,6 +67,7 @@ public sealed partial class ToolsPanel : UserControl
         Motion.EnterPage(Tiles);
     }
 
+    private async void OnScanOverlays(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Overlays: { } o }) { try { await o.ScanAsync(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Overlay check"); } } }
     private async void OnRefresh(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel vm) await vm.RefreshAsync(); }
 
     // Always asks: lists the chosen apps and explains they close normally (unsaved work prompts stay with them).

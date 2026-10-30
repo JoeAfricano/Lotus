@@ -89,6 +89,7 @@ public sealed partial class MainWindow : Window
         var catalog = new Lotus.Infrastructure.Catalog.SteamCatalog(language: preferences.Current.Language);
         diary = new Lotus.Core.Diary.GameDiary(new Lotus.Infrastructure.Games.JsonGameDiaryStore(), ex => Serilog.Log.Warning(ex, "Game diary"));
         diaryPage = new Lotus.Core.Diary.DiaryViewModel(diary, text, preferences);
+        diaryPage.Deals = new Lotus.Core.Diary.DiaryDealsViewModel(diary, catalog, text, ex => Serilog.Log.Warning(ex, "Diary deals"));
         diaryEditor = new Lotus.Core.Diary.DiaryEditorViewModel(diary, text);
         diary.Changed += (_, _) => DispatcherQueue.TryEnqueue(ShowDiaryLevel);
         diary.ProgressChanged += (_, _) => DispatcherQueue.TryEnqueue(ShowDiaryLevel);
@@ -111,6 +112,9 @@ public sealed partial class MainWindow : Window
         games.Watch = new Lotus.Core.Games.PollingGameWatch(new Lotus.Infrastructure.Games.WindowsGameProcessCheck());
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
         games.TechScanner = new Lotus.Infrastructure.Games.GameTechScanner();
+        var overlayScanner = new Lotus.Infrastructure.Games.WindowsOverlayScanner();
+        games.Overlays = overlayScanner;
+        tools.Overlays = new Lotus.Core.Games.OverlayCheckViewModel(overlayScanner, text);
         games.Rtss = integrations.Rtss;
         games.AdaptiveSync = () => preferences.Current.AdaptiveSync;
         games.Display = new Lotus.Infrastructure.Games.WindowsDisplaySync();
@@ -186,9 +190,11 @@ public sealed partial class MainWindow : Window
         else DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => { if (AppWindow.IsVisible) UiSound.Play(UiSound.Cue.Startup); }); // soft hello (not when starting in the tray)
         ShowRoute();
         StartAchievements();
+        StartDealsCheck();
         preferences.PropertyChanged += OnPreferencesChanged;
         Closed += (_, _) =>
         {
+            EndGameWatch();
             initialized = false;
             memoryAnalysis.SetActive(false);
             monitoring.SetActive(false);
@@ -332,7 +338,7 @@ public sealed partial class MainWindow : Window
         TitleBrand.Visibility = BrandHeader.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         ExpandedFooter.Visibility = open ? Visibility.Visible : Visibility.Collapsed;
         CompactFooter.Visibility = open ? Visibility.Collapsed : Visibility.Visible;
-        DiaryButton.Visibility = Visibility.Collapsed; // "Meu diÃ¡rio" is a menu item now (with the level badge)
+        DiaryButton.Visibility = Visibility.Collapsed; // "Meu diário" is a menu item now (with the level badge)
         ShowDiaryLevel();
         UpdateToggleAccessibility(Navigation, text[open ? "CloseNavigation" : "OpenNavigation"]);
         UpdateBrandMotion();

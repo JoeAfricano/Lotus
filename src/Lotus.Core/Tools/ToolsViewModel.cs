@@ -58,6 +58,8 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
 {
     public ITextCatalog Text { get; } = text;
     public ObservableCollection<AppRow> Apps { get; } = [];
+    // "Overlays e travadas" (read-only check; set by the window).
+    public Games.OverlayCheckViewModel? Overlays { get; set; }
     public ObservableCollection<InfoRow> NetRows { get; } = [];
     public ObservableCollection<InfoRow> DiskRows { get; } = [];
     public string MemoryStatus { get; private set; } = "";

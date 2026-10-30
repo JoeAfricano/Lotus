@@ -186,6 +186,16 @@
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.CloseToTray, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetCloseToTray]}" AutomationProperties.AutomationId="settings-close-tray"/>
      </Grid></Border>
      <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <FontIcon Glyph="&#xE736;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetAutoSessions]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetAutoSessionsHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+      <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.AutoSessions, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetAutoSessions]}" AutomationProperties.AutomationId="settings-auto-sessions"/>
+     </Grid></Border>
+     <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <FontIcon Glyph="&#xE945;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetGamePriority]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetGamePriorityHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+      <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.GamePriority, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetGamePriority]}" AutomationProperties.AutomationId="settings-game-priority"/>
+     </Grid></Border>
+     <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <FontIcon Glyph="&#xE767;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetUiSounds]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetUiSoundsHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.UiSounds, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetUiSounds]}" AutomationProperties.AutomationId="settings-sounds"/>

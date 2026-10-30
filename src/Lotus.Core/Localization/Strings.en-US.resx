@@ -2091,7 +2091,7 @@ Your games and Windows are not changed.</value></data>
   <data name="DyStMonthTitle" xml:space="preserve"><value>Hours per month in {0}</value></data>
   <data name="DyStMonthSummary" xml:space="preserve"><value>{0} this year · most played month: {1}</value></data>
   <data name="DyStMonthEmpty" xml:space="preserve"><value>No hours logged this year.</value></data>
-  <data name="DyStMonthNote" xml:space="preserve"><value>Estimate: each game&apos;s hours are spread across the months from start to finish.</value></data>
+  <data name="DyStMonthNote" xml:space="preserve"><value>Sessions Lotus records land in their exact month; the other hours are spread from start to finish.</value></data>
   <data name="DyStRatingTitle" xml:space="preserve"><value>Rating distribution</value></data>
   <data name="DyStRatingSummary" xml:space="preserve"><value>Average {0}</value></data>
   <data name="DyStRatingEmpty" xml:space="preserve"><value>No rated games yet.</value></data>
@@ -2143,4 +2143,59 @@ Your games and Windows are not changed.</value></data>
   <data name="DyRcFileName" xml:space="preserve"><value>Recap</value></data>
   <data name="DyStDaysLess" xml:space="preserve"><value>Under a day</value></data>
   <data name="DyStDay" xml:space="preserve"><value>{0} day</value></data>
+  <data name="SetAutoSessions" xml:space="preserve"><value>Log my play sessions in the diary</value></data>
+  <data name="SetAutoSessionsHint" xml:space="preserve"><value>While a library game is open, Lotus writes the time and dates into your diary. It stays on this PC.</value></data>
+  <data name="SetGamePriority" xml:space="preserve"><value>Give the game priority</value></data>
+  <data name="SetGamePriorityHint" xml:space="preserve"><value>While a game is open it runs above normal, and browsers, launchers and sync apps run below normal. Everything goes back when the game closes. Discord is left alone.</value></data>
+  <data name="SessionSavedTitle" xml:space="preserve"><value>Session saved to your diary</value></data>
+  <data name="SessionSaved" xml:space="preserve"><value>{0} of {1} added to your diary.</value></data>
+  <data name="PnTitle" xml:space="preserve"><value>What should I play now?</value></data>
+  <data name="PnTimeAsk" xml:space="preserve"><value>How much time do you have?</value></data>
+  <data name="PnTimeShort" xml:space="preserve"><value>A little</value></data>
+  <data name="PnTimeEvening" xml:space="preserve"><value>A few hours</value></data>
+  <data name="PnTimeLong" xml:space="preserve"><value>Plenty</value></data>
+  <data name="PnVibeAsk" xml:space="preserve"><value>What are you in the mood for?</value></data>
+  <data name="PnVibeanyLabel" xml:space="preserve"><value>Anything</value></data>
+  <data name="PnViberelaxLabel" xml:space="preserve"><value>Something relaxing</value></data>
+  <data name="PnVibechallengeLabel" xml:space="preserve"><value>A challenge</value></data>
+  <data name="PnVibestoryLabel" xml:space="preserve"><value>A good story</value></data>
+  <data name="PnVibeactionLabel" xml:space="preserve"><value>Action</value></data>
+  <data name="PnViberelax" xml:space="preserve"><value>fits a relaxing mood</value></data>
+  <data name="PnVibechallenge" xml:space="preserve"><value>makes a good challenge</value></data>
+  <data name="PnVibestory" xml:space="preserve"><value>has a good story</value></data>
+  <data name="PnVibeaction" xml:space="preserve"><value>brings the action</value></data>
+  <data name="PnSuggest" xml:space="preserve"><value>Lotus suggests</value></data>
+  <data name="PnOpen" xml:space="preserve"><value>Open in the diary</value></data>
+  <data name="PnAnother" xml:space="preserve"><value>Another one</value></data>
+  <data name="PnEmpty" xml:space="preserve"><value>Add games as &quot;Want to play&quot;, &quot;Playing&quot; or &quot;Paused&quot; and Lotus will suggest what to play.</value></data>
+  <data name="PnPlaying" xml:space="preserve"><value>you&apos;re in the middle of it</value></data>
+  <data name="PnMomentum" xml:space="preserve"><value>you played it this week</value></data>
+  <data name="PnStartNew" xml:space="preserve"><value>a good time to start it</value></data>
+  <data name="PnPaused" xml:space="preserve"><value>paused since {0}</value></data>
+  <data name="PnWaiting" xml:space="preserve"><value>on your list for {0} days</value></data>
+  <data name="PnTaste" xml:space="preserve"><value>you rate {0} games highly</value></data>
+  <data name="OvTitle" xml:space="preserve"><value>Overlays and stutter</value></data>
+  <data name="OvWhat" xml:space="preserve"><value>Overlays, capture and animated wallpapers are **common causes of stutter**. Lotus only checks what is active and explains how to turn it off; nothing is changed.</value></data>
+  <data name="OvScan" xml:space="preserve"><value>Check now</value></data>
+  <data name="OvHint" xml:space="preserve"><value>Check with the game closed or open; it takes a moment.</value></data>
+  <data name="OvClear" xml:space="preserve"><value>Nothing that usually causes stutter is active right now.</value></data>
+  <data name="OvFound" xml:space="preserve"><value>{0} items that may cause stutter.</value></data>
+  <data name="OvAdvicediscord" xml:space="preserve"><value>Discord is open with **hardware acceleration on**, a common cause of stutter. In Discord: Settings &gt; Advanced &gt; turn off **Hardware acceleration**; under Game overlay, turn the overlay off if you don&apos;t use it.</value></data>
+  <data name="OvAdvicexbox" xml:space="preserve"><value>**Xbox Game Bar capture** is on. If you don&apos;t record clips: Windows Settings &gt; Gaming &gt; Captures &gt; turn recording off.</value></data>
+  <data name="OvAdvicenvidia" xml:space="preserve"><value>The **NVIDIA overlay** is active. If you don&apos;t use recording or filters: in the NVIDIA app, turn off the **NVIDIA overlay**.</value></data>
+  <data name="OvAdviceamd" xml:space="preserve"><value>The **AMD Software overlay** is active. If you don&apos;t use it: in AMD Software &gt; Settings &gt; Preferences, turn off the **In-game overlay** and recording.</value></data>
+  <data name="OvAdviceoverwolf" xml:space="preserve"><value>**Overwolf** is open. It injects overlays into games and costs performance; close it while playing if you don&apos;t need it.</value></data>
+  <data name="OvAdvicemedal" xml:space="preserve"><value>**Medal** is recording in the background. Close it or turn off auto-recording if you don&apos;t need clips.</value></data>
+  <data name="OvAdviceobs" xml:space="preserve"><value>**OBS Studio** is open. If you aren&apos;t recording or streaming, close it while playing.</value></data>
+  <data name="OvAdvicewallpaper" xml:space="preserve"><value>An **animated wallpaper** is using the graphics card. Set it to pause during fullscreen games or close it while playing.</value></data>
+  <data name="OvAdvicergb" xml:space="preserve"><value>An **RGB lighting app** is open. Some poll the hardware often and can cause hitches; close it if you notice stutter.</value></data>
+  <data name="WhyOverlaysTitle" xml:space="preserve"><value>Overlays and background capture</value></data>
+  <data name="WhyOverlaysBody" xml:space="preserve"><value>Active now: {0}. Overlays and background capture **often cause stutter**. Tools &gt; Overlays and stutter explains how to turn each one off.</value></data>
+  <data name="DlTitle" xml:space="preserve"><value>{0} games on your list are on sale</value></data>
+  <data name="DlTitleOne" xml:space="preserve"><value>1 game on your list is on sale</value></data>
+  <data name="DlHint" xml:space="preserve"><value>Steam prices right now</value></data>
+  <data name="DlNotifyTitle" xml:space="preserve"><value>A game on your list is on sale</value></data>
+  <data name="DlNotifyOne" xml:space="preserve"><value>{0} is on sale ({1}): {2} on Steam.</value></data>
+  <data name="DlNotifyMany" xml:space="preserve"><value>{0} games on your list are on sale, like {1} ({2}).</value></data>
+  <data name="OvFoundOne" xml:space="preserve"><value>1 item that may cause stutter.</value></data>
 </root>

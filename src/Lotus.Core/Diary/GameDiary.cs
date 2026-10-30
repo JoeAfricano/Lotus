@@ -27,6 +27,8 @@ public sealed class DiaryEntry
     public List<string> Moods { get; set; } = [];
     public string? Difficulty { get; set; }
     public List<Playthrough> Runs { get; set; } = [];
+    // Sessions recorded by Lotus while the game was open (when, how long); the minutes are already in Minutes.
+    public List<PlaySession> Sessions { get; set; } = [];
     public DateTimeOffset Added { get; set; } = DateTimeOffset.Now;
     public DateTimeOffset Updated { get; set; } = DateTimeOffset.Now;
 
@@ -35,10 +37,14 @@ public sealed class DiaryEntry
         var c = (DiaryEntry)MemberwiseClone();
         c.Genres = [.. Genres]; c.Feats = [.. Feats]; c.Moods = [.. Moods]; c.Categories = new(Categories); // lists are not shared with the copy
         c.Runs = [.. Runs.Select(r => r with { })];
+        c.Sessions = [.. Sessions];
         return c;
     }
     public static string SteamKey(string appId) => "steam:" + appId;
 }
+
+// One play session Lotus saw (game open from Start, for Minutes).
+public sealed record PlaySession(DateTime Start, int Minutes);
 
 // One more time through a game (Backloggd-style): its own dates, hours and platform.
 public sealed record Playthrough(DateTime? Started, DateTime? Finished, int Minutes, string Platform, string Note = "");
@@ -116,6 +122,22 @@ public sealed class GameDiary(IGameDiaryStore store, Action<Exception> log)
 
     // "Quero jogar" from the Game list: adds the game as Want (or leaves an existing entry alone).
     public DiaryProgressChange? Want(DiaryEntry game) => Contains(game.Key) ? null : Save(Seed(game, DiaryStatus.Want));
+
+    // A session Lotus saw: adds the time, starts the game in the diary if needed and moves "Want" / "Paused" to
+    // "Playing" (finished or dropped games keep their status). Null when the session is too short to count.
+    public const int SessionLimit = 400;
+    public DiaryProgressChange? RecordSession(DiaryEntry game, DateTime start, int minutes)
+    {
+        if (minutes < 1) return null;
+        var e = (Get(game.Key) ?? Seed(game, DiaryStatus.Playing)).Clone();
+        e.Minutes += minutes;
+        e.Sessions.Add(new(start, minutes));
+        if (e.Sessions.Count > SessionLimit) e.Sessions.RemoveRange(0, e.Sessions.Count - SessionLimit);
+        if (e.Status is DiaryStatus.Want or DiaryStatus.Paused) e.Status = DiaryStatus.Playing;
+        e.Started ??= start.Date;
+        e.Cover ??= game.Cover; e.Wide ??= game.Wide; e.AppId ??= game.AppId;
+        return Save(e);
+    }
 
     public void Remove(string key)
     {

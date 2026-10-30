@@ -201,4 +201,69 @@ public sealed class DiaryScreenTests
         Lotus.Infrastructure.Games.StoreArt.ParseEpicCatalog(Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json)), map);
         Assert.Equal("https://x/wide.jpg", map["Fortune"]); Assert.False(map.ContainsKey("Plain"));
     }
+
+    [Fact] public void SessionTrackerCountsRealPlayAndSkipsSleepAndShortRuns()
+    {
+        var t = new PlaySessionTracker(); var g = new Lotus.Core.Games.GameEntry("Steam", "10", "Hades");
+        var start = new DateTimeOffset(2026, 10, 1, 20, 0, 0, TimeSpan.Zero);
+        Assert.Null(t.Update(g, start));
+        for (var m = 1; m <= 30; m++) Assert.Null(t.Update(g, start.AddMinutes(m)));
+        var done = t.Update(null, start.AddMinutes(31));
+        Assert.Equal(30, done?.Minutes); Assert.Equal("Hades", done?.Game.Name);
+        // Sleep: seen at 0 and 5, then 2 hours later → first session ends at the last time it was seen.
+        for (var m = 0; m <= 5; m++) Assert.Null(t.Update(g, start.AddHours(3).AddMinutes(m)));
+        Assert.Equal(5, t.Update(g, start.AddHours(5))?.Minutes);
+        // Quick launch (1 minute) is not a session.
+        Assert.Null(t.Update(null, start.AddHours(5).AddMinutes(1)));
+        Assert.Null(t.Flush());
+    }
+
+    [Fact] public void RecordedSessionsStartTheGameAndLandInTheirMonth()
+    {
+        var diary = new GameDiary(new Memory(), ex => throw ex);
+        var g = new Lotus.Core.Games.GameEntry("Steam", "10", "Hades");
+        Assert.Equal("steam:10", DiaryGames.KeyFor(g));
+        diary.RecordSession(DiaryGames.FromGame(g), new DateTime(2026, 2, 3, 20, 0, 0), 90);
+        var e = diary.Get("steam:10")!;
+        Assert.Equal(DiaryStatus.Playing, e.Status); Assert.Equal(90, e.Minutes); Assert.Equal(new DateTime(2026, 2, 3), e.Started); Assert.Single(e.Sessions);
+        var done = e.Clone(); done.Status = DiaryStatus.Completed; diary.Save(done);
+        diary.RecordSession(DiaryGames.FromGame(g), new DateTime(2026, 5, 1), 30);
+        Assert.Equal(DiaryStatus.Completed, diary.Get("steam:10")!.Status); // finished games keep their status
+        var s = DiaryStats.Compute(diary.Entries, 2026, new DateTime(2026, 10, 30));
+        Assert.Equal(90, s.MonthMinutes[1]); Assert.Equal(30, s.MonthMinutes[4]); Assert.Equal(120, s.YearMinutes);
+    }
+
+    [Fact] public void PlayNextFitsTimeVibeAndTaste()
+    {
+        var playing = E("1", "Hades", "Ação", "Roguelike"); playing.Status = DiaryStatus.Playing;
+        var want = E("2", "Stardew Valley", "Simulação", "Casual"); want.Status = DiaryStatus.Want; want.Added = DateTimeOffset.Now.AddDays(-90);
+        var rpg = E("3", "Persona 5", "RPG"); rpg.Status = DiaryStatus.Want;
+        var loved = E("4", "Elden Ring", "RPG", "Ação"); loved.Status = DiaryStatus.Completed; loved.Rating = 10;
+        var list = new[] { playing, want, rpg, loved };
+        var today = DateTime.Today;
+        Assert.Equal("Hades", PlayNext.Suggest(list, PlayTime.Short, "any", today)[0].Entry.Name);
+        var relax = PlayNext.Suggest(list, PlayTime.Long, "relax", today)[0];
+        Assert.Equal("Stardew Valley", relax.Entry.Name); Assert.Contains(relax.Reasons, r => r.Key == "PnViberelax");
+        var story = PlayNext.Suggest(list, PlayTime.Long, "story", today)[0];
+        Assert.Equal("Persona 5", story.Entry.Name); Assert.Contains(story.Reasons, r => r.Key == "PnTaste" && r.Arg == "RPG");
+        Assert.DoesNotContain(PlayNext.Suggest(list, PlayTime.Long, "any", today, take: 10), p => p.Entry.Name == "Elden Ring");
+    }
+
+    [Fact] public void DealsOnlyForWantedGamesOnSale()
+    {
+        var a = E("1", "A"); a.Status = DiaryStatus.Want; var b = E("2", "B"); b.Status = DiaryStatus.Want; var c = E("3", "C"); c.Status = DiaryStatus.Completed;
+        var prices = new Dictionary<string, Lotus.Core.Catalog.GamePrice> { ["1"] = new("1", 0, "R$ 10", ""), ["2"] = new("2", 60, "R$ 40", "R$ 100"), ["3"] = new("3", 80, "R$ 5", "R$ 25") };
+        var deals = DiaryDealsViewModel.Pick([a, b, c], prices);
+        Assert.Equal("B", deals.Single().Name); Assert.Equal("-60%", deals[0].DiscountText); Assert.Equal("https://store.steampowered.com/app/2", deals[0].StoreUrl);
+    }
+
+    [Fact] public void OverlaysFlagHeavyAppsButNotRtss()
+    {
+        var found = Lotus.Infrastructure.Games.WindowsOverlayScanner.FromProcesses(["Discord", "wallpaper64", "RTSS", "NVIDIA Overlay", "explorer"], discordHardwareAcceleration: true, xboxCapture: true);
+        Assert.Equal(["discord", "xbox", "nvidia", "wallpaper"], found.Select(f => f.Id));
+        Assert.True(found.Single(f => f.Id == "discord").Heavy);
+        Assert.DoesNotContain(Lotus.Infrastructure.Games.WindowsOverlayScanner.FromProcesses(["Discord"], false, false), f => f.Id == "discord");
+        Assert.Contains(Lotus.Core.Games.StutterDiagnosis.Analyze(new(60, 20, 30, 60, 50, 60, null, 0, 40, [], false, ["Discord"])), f => f.Key == "WhyOverlays");
+        Assert.True(Lotus.Core.Games.GamePriorityRules.IsBackground("chrome")); Assert.False(Lotus.Core.Games.GamePriorityRules.IsBackground("Discord"));
+    }
 }

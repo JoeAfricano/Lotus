@@ -38,6 +38,7 @@ public sealed partial class MainWindow
         try { lightGame = await Task.Run(games.RunningGame); }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Light mode: game check"); }
         finally { checkingGame = false; }
+        await OnGameCheckAsync(lightGame);
         UpdateLightMode();
     }
 

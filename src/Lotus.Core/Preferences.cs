@@ -24,6 +24,8 @@ public sealed record InterfacePreferences
     public string Goal { get; init; } = "balanced"; // fps | competitive | balanced
     public string DiaryView { get; init; } = "grid"; // diary layout: grid | list | table
     public bool DiaryHeaderCompact { get; init; } = true; // diary profile header: compact band or the full layout
+    public bool AutoSessions { get; init; } = true; // record play sessions (time, dates) in the diary while a library game is open
+    public bool GamePriority { get; init; } // while a game is open: game above normal, known launchers/browsers below normal (restored after)
     public string? AdaptiveSync { get; init; } // FreeSync/G-Sync on: "on" | "off" | null (not asked yet; asked before the first game analysis)
     public string Accent { get; init; } = "rose"; // rose | violet | blue | green (design) and the older crimson | gold | dark
     public static readonly string[] Goals = ["fps", "competitive", "balanced"];
@@ -98,6 +100,8 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool StartWithWindows { get => service.Current.StartWithWindows; set { if (value != service.Current.StartWithWindows) { service.Update(service.Current with { StartWithWindows = value }); OnPropertyChanged(); } } }
     public bool CloseToTray { get => service.Current.CloseToTray; set { if (value != service.Current.CloseToTray) { service.Update(service.Current with { CloseToTray = value }); OnPropertyChanged(); } } }
     public bool UiSounds { get => service.Current.UiSounds; set { if (value != service.Current.UiSounds) { service.Update(service.Current with { UiSounds = value }); OnPropertyChanged(); } } }
+    public bool AutoSessions { get => service.Current.AutoSessions; set { if (value != service.Current.AutoSessions) { service.Update(service.Current with { AutoSessions = value }); OnPropertyChanged(); } } }
+    public bool GamePriority { get => service.Current.GamePriority; set { if (value != service.Current.GamePriority) { service.Update(service.Current with { GamePriority = value }); OnPropertyChanged(); } } }
     public double UiSoundVolume { get => service.Current.UiSoundVolume; set { var v = (int)Math.Round(value); if (v != service.Current.UiSoundVolume) { service.Update(service.Current with { UiSoundVolume = v }); OnPropertyChanged(); } } }
     public string Message { get => message; private set => SetProperty(ref message, value); }
     public ITextCatalog Text => text;

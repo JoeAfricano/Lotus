@@ -2,7 +2,7 @@
 
 Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hardware, diagnostica gargalos, cria perfis de jogos e aplica ajustes reversíveis, com benchmarks de antes e depois. Sem placebo, sem FPS inventado.
 
-**Versão atual: 0.3.1-alpha "Lotus New"**. Baixe o instalador em [Releases](../../releases). O que mudou em cada versão está no [CHANGELOG](CHANGELOG.md).
+**Versão atual: 0.4.0-alpha "Lotus New"**. Baixe o instalador em [Releases](../../releases). O que mudou em cada versão está no [CHANGELOG](CHANGELOG.md).
 
 ## O que o Lotus faz
 
@@ -48,13 +48,22 @@ Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hard
 - Busca, filtros indicados por texto e sorteio de jogo por gênero e dificuldade.
 
 ### Meu diário
-- Notas, análises, horas, datas e conquistas pessoais por jogo.
-- 14 medalhas com critério e progresso, mais 54 conquistas do Lotus.
-- Conquistas da Steam lidas do próprio PC, sem login.
+- **Três jeitos de ver:** grade de capas, lista detalhada ou tabela com colunas ordenáveis (o Lotus lembra a escolha).
+- **Filtros** por gênero, plataforma, loja, faixa de nota e ano, montados a partir dos seus jogos, e **filtros salvos** com nome.
+- **Meu Top 4:** seus favoritos em destaque. **Capas especiais** para platina, nota 10 e jogos abandonados.
+- Topo do perfil **compacto ou completo**, como preferir.
+- **Editor premium:** banner com a arte oficial da loja do jogo (Steam, Epic ou GOG), nota em anel colorido com rótulo (de Ruim a Obra-prima), status ilustrados, notas por categoria, sensações, dificuldade e **outras zeradas** com datas e horas.
+- **Sessões automáticas:** com um jogo da biblioteca aberto, o Lotus anota o tempo e as datas no diário (pode desligar em Configurações).
+- **O que jogar agora?** Sugestão da sua própria lista pelo tempo que você tem, pelo clima que quer e pelas notas que você dá, sempre dizendo o porquê.
+- **Promoções da sua lista:** jogos de "Quero jogar" em promoção na Steam aparecem no diário, com aviso discreto perto do relógio.
+- **Estatísticas:** horas por mês (com as sessões reais), distribuição das notas, gêneros, plataformas, médias por categoria, sensações e dificuldade.
+- **Retrospectiva do ano:** telas no estilo stories e um cartão-resumo que vira imagem para compartilhar.
+- 14 medalhas com critério e progresso, mais 54 conquistas do Lotus. Conquistas da Steam lidas do próprio PC, sem login.
 
 ### Ferramentas
 - Liberar memória, limpar temporários, testar internet e DNS.
 - Saúde do disco, driver de vídeo, desinstalar programas.
+- **Overlays e travadas:** mostra o que costuma causar travadas (Discord com aceleração de hardware, overlays da NVIDIA e da AMD, captura do Xbox, Overwolf, Medal, OBS, papéis de parede animados, apps de RGB) e explica como desligar. Também entra no "Por que está travando?".
 
 ### Configurações e conta
 - Temas Escuro, Claro (porcelana rosé), Sistema e Grafite, com cores de destaque. Português e inglês.
@@ -66,6 +75,7 @@ Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hard
 - Com um jogo aberto, ou com o Lotus minimizado, ele entra no **modo eficiência** do Windows, baixa a própria prioridade e devolve a memória que não está usando (cerca de 20 MB minimizado).
 - Ao voltar para a janela, recarrega tudo.
 - Nunca reduz nada durante uma medição.
+- **Prioridade ao jogo** (opcional, em Configurações): o jogo fica acima do normal e navegadores, launchers e apps de sincronização abaixo. Tudo volta como estava quando o jogo fecha; o Discord não é alterado.
 
 ## Instalar
 

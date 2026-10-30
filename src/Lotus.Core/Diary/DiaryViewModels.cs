@@ -57,7 +57,7 @@ public sealed class DiaryViewModel : ObservableObject
     private string tab = "all", query = "", sort = "recent";
     public DiaryViewModel(GameDiary diary, ITextCatalog text, PreferencesService preferences)
     {
-        this.diary = diary; Text = text; Preferences = preferences; Stats = new DiaryStatsViewModel(diary, text);
+        this.diary = diary; Text = text; Preferences = preferences; Stats = new DiaryStatsViewModel(diary, text); PlayNext = new PlayNextViewModel(diary, text);
         diary.Changed += (_, _) => Refresh();
         diary.ProgressChanged += (_, _) => RefreshProgress();
         Refresh();
@@ -71,6 +71,10 @@ public sealed class DiaryViewModel : ObservableObject
     public string Section { get => section; set { if (value is "games" or "stats" or "trophies" or "steam") SetProperty(ref section, value); } }
     // Statistics tab (charts) and the yearly recap.
     public DiaryStatsViewModel Stats { get; }
+    // "O que jogar agora?" (picks from the player's own list).
+    public PlayNextViewModel PlayNext { get; }
+    // "Quero jogar" games on sale (set by the window, which owns the store catalog).
+    public DiaryDealsViewModel? Deals { get; set; }
     public Progress Progress { get; private set; } = Progression.Of([]);
     public ObservableCollection<DiaryCard> Items { get; } = [];
     public ObservableCollection<DiaryTab> Tabs { get; } = [];
@@ -195,9 +199,9 @@ public sealed class DiaryViewModel : ObservableObject
         Badges = [.. Progress.Badges.OrderByDescending(b => b.Unlocked).ThenByDescending(b => b.Fraction).Select(b =>
             new BadgeView(b.Id, b.Glyph, Text["DyBadge" + b.Id], Text["DyBadge" + b.Id + "Hint"], b.Unlocked,
                 b.Unlocked ? Text["DyBadgeDone"] : $"{b.Current}/{b.Goal}", b.Fraction))];
-        BuildOptions(); BuildShowcase(); Stats.Refresh();
+        BuildOptions(); BuildShowcase(); Stats.Refresh(); PlayNext.Refresh(); Deals?.Invalidate();
         Fill();
-        foreach (var p in typeof(DiaryViewModel).GetProperties().Where(p => p.Name is not (nameof(Items) or nameof(Tabs) or nameof(Text) or nameof(Preferences) or nameof(Diary) or nameof(Tab) or nameof(Query) or nameof(Sort) or nameof(Section) or nameof(Achievements) or nameof(Stats))))
+        foreach (var p in typeof(DiaryViewModel).GetProperties().Where(p => p.Name is not (nameof(Items) or nameof(Tabs) or nameof(Text) or nameof(Preferences) or nameof(Diary) or nameof(Tab) or nameof(Query) or nameof(Sort) or nameof(Section) or nameof(Achievements) or nameof(Stats) or nameof(PlayNext) or nameof(Deals))))
             OnPropertyChanged(p.Name);
     }
 

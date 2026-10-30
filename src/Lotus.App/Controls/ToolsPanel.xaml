@@ -102,6 +102,29 @@
    </StackPanel>
   </Border>
   <!-- Drivers: outdated ones from trusted sources (NVIDIA's own service, Windows Update) -->
+  <!-- Overlays and capture apps that often cause stutter (read-only; explains how to turn each off) -->
+  <Border x:Name="OverlayCard" Visibility="Collapsed" Style="{StaticResource CardStyle}" DataContext="{Binding Overlays}" AutomationProperties.AutomationId="tools-overlays">
+   <StackPanel Spacing="12">
+    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE7F4;" Style="{StaticResource BadgeIconStyle}"/></Border>
+     <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[OvTitle]}" FontWeight="SemiBold"/><TextBlock app:Rich.Text="{Binding Text[OvWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+     <Button Grid.Column="2" Click="OnScanOverlays" Style="{StaticResource PrimaryButtonStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="tools-overlays-scan">
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE721;" FontSize="13"/><TextBlock Text="{Binding Text[OvScan]}"/></StackPanel>
+     </Button>
+    </Grid>
+    <TextBlock Text="{Binding Summary}" app:Motion.Settle="True" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap"/>
+    <ItemsControl ItemsSource="{Binding Rows}">
+     <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+     <ItemsControl.ItemTemplate><DataTemplate>
+      <Grid Padding="14,12" ColumnSpacing="12" CornerRadius="12" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+       <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <FontIcon Glyph="{Binding Glyph}" FontSize="16" VerticalAlignment="Top" Margin="0,2,0,0" Foreground="{Binding Heavy, Converter={StaticResource AttentionBrush}}"/>
+       <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Name}" FontWeight="SemiBold"/><TextBlock app:Rich.Text="{Binding Advice}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+      </Grid>
+     </DataTemplate></ItemsControl.ItemTemplate>
+    </ItemsControl>
+   </StackPanel>
+  </Border>
   <Border x:Name="DriverCard" Visibility="Collapsed" Style="{StaticResource CardStyle}">
    <StackPanel Spacing="10">
     <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
