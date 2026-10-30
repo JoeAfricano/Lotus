@@ -25,7 +25,7 @@ A partir desta versão o produto se chama só **Lotus** (o instalador é `Lotus-
 - **Você decide quando enviar:** o Lotus nunca manda nada ao Drive sozinho. O Drive guarda as 5 cópias mais recentes para não ocupar espaço demais.
 - **Carregar backup do Drive:** mostra os backups guardados no seu Drive para escolher qual restaurar, e cada um pode ser **excluído** do Drive.
 - O backup enviado inclui o último save de cada jogo protegido.
-- Para conectar, a versão do Lotus precisa da credencial do Google Cloud. Enquanto ela não vem no instalador, dá para ativar escolhendo o arquivo do cliente "App para computador".
+- **Google Drive ativado:** basta clicar em "Conectar conta Google" e entrar pelo navegador. O Lotus nunca vê sua senha e só enxerga os arquivos que ele mesmo criou na pasta "Lotus Backups".
 
 ### Também
 - A aba **Backup de saves** (no menu, abaixo da Game list) mostra todos os jogos em capas, com o selo de proteção, filtros, busca e os totais. Clique num jogo para ver, criar, restaurar ou excluir cópias.
