@@ -9,7 +9,9 @@ namespace Lotus.Infrastructure.Backup;
 // logs, tools and the Windows-changes journal (it describes this PC) are never part of a backup.
 public sealed class LotusBackupArchive(string? root = null, string appVersion = "") : IBackupArchive
 {
-    private static readonly string[] Files = ["preferences.json", "player.json", "diary.json", "achievements.json", "games-hidden.json", "score-history.json", "benchmarks.db"];
+    // resume-notes.json, save-protection.json (settings only, never the save files) and game-prefs.json are new in 0.6;
+    // older backups simply do not have them and still restore.
+    private static readonly string[] Files = ["preferences.json", "player.json", "diary.json", "achievements.json", "games-hidden.json", "score-history.json", "benchmarks.db", "resume-notes.json", "save-protection.json", "game-prefs.json"];
     private static readonly string[] Folders = ["Profiles", "Library", "Overlays", "Profile", "Benchmarks"];
     private const string ManifestName = "manifest.json", AvatarPrefix = "external/avatar";
     private readonly string root = root ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus");

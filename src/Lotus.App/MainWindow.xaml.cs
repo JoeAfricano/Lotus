@@ -82,7 +82,10 @@ public sealed partial class MainWindow : Window
         this.memoryAnalysis = memoryAnalysis;
         this.experience = experience; this.benchmark = benchmark; this.optimizer = optimizer; this.powerProfiles = powerProfiles; this.hardware = hardware; this.games = games; this.integrations = integrations; this.score = score; this.tools = tools;
         guided = new GuidedSetupViewModel(preferences, text, ex => Serilog.Log.Warning(ex, "Guided setup"), powerProfiles, tools, integrations);
+        // "Onde eu parei?": one store for the diary editor, Home, the player panel and the end-of-session notice.
+        resume = new Lotus.Core.Diary.ResumeNotes(new Lotus.Infrastructure.Games.JsonResumeNoteStore(), ex => Serilog.Log.Warning(ex, "Resume notes"));
         var journal = new Lotus.Core.Games.PlayerJournal(new Lotus.Infrastructure.Games.JsonPlayerJournalStore(), ex => Serilog.Log.Warning(ex, "Player journal"));
+        journal.Resume = resume;
         games.IsFavorite = journal.IsFavorite;
         journal.Changed += (_, _) => games.RefreshFeatured();
         player = new Lotus.Core.Games.PlayerPanelViewModel(games, journal, text, () => Lotus.Infrastructure.Games.SteamPlaytime.Read());
@@ -91,6 +94,7 @@ public sealed partial class MainWindow : Window
         diaryPage = new Lotus.Core.Diary.DiaryViewModel(diary, text, preferences);
         diaryPage.Deals = new Lotus.Core.Diary.DiaryDealsViewModel(diary, catalog, text, ex => Serilog.Log.Warning(ex, "Diary deals"));
         diaryEditor = new Lotus.Core.Diary.DiaryEditorViewModel(diary, text);
+        diaryEditor.Resume = resume;
         diary.Changed += (_, _) => DispatcherQueue.TryEnqueue(ShowDiaryLevel);
         diary.ProgressChanged += (_, _) => DispatcherQueue.TryEnqueue(ShowDiaryLevel);
         // Achievements: Lotus ones, Steam ones read from this PC, all feeding the diary level.
@@ -109,8 +113,10 @@ public sealed partial class MainWindow : Window
         gameDetails = new Lotus.Core.Catalog.GameDetailsViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game details"));
         // Preparar e jogar: same Game profile and journal as Otimizar; the game is followed until it closes.
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
-        games.Watch = new Lotus.Core.Games.PollingGameWatch(new Lotus.Infrastructure.Games.WindowsGameProcessCheck());
+        games.Watch = sessionHub; // the light-mode check, shared (no second polling loop)
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
+        SetUpPreparation();
+        SetUpSaves();
         games.TechScanner = new Lotus.Infrastructure.Games.GameTechScanner();
         var overlayScanner = new Lotus.Infrastructure.Games.WindowsOverlayScanner();
         games.Overlays = overlayScanner;

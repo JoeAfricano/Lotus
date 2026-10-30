@@ -15,7 +15,7 @@ public sealed record MeasureResult(string Summary, TuningDecision Decision, stri
 
 // "Meus Jogos": scans launchers in the background, filters by text and store, launches on request.
 // "Remove from list" only hides a game (launcher or manual); a later scan can bring it back. Nothing is uninstalled.
-public sealed class GamesViewModel : ObservableObject
+public sealed partial class GamesViewModel : ObservableObject
 {
     private readonly IGameLibrary library;
     private readonly IManualGameStore manualStore;
@@ -132,6 +132,12 @@ public sealed class GamesViewModel : ObservableObject
     private void Launch(GameCard? card)
     {
         if (card is null) return;
+        if (Preparation is not null && AskBeforePlay is not null) { _ = PrepareAndLaunchAsync(card); return; } // same launcher, after quick checks
+        LaunchNow(card);
+    }
+
+    private void LaunchNow(GameCard card)
+    {
         try { launcher.Launch(card.Game); status = Text.Format("GamesLaunching", card.Name); global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Launch); }
         catch (Exception ex)
         {
@@ -465,7 +471,7 @@ public sealed class GamesViewModel : ObservableObject
                 if (!applied) { status = Text["PlayApplyPartial"]; Notify(); }
             }
             if (precompile && plan.OfferShaders) await PrecompileAsync(card, token);
-            Launch(card);
+            LaunchNow(card); // everything was confirmed in this flow's own dialog
             if (Watch is null) return;
             status = Text.Format("PlayWatching", card.Name); Notify();
             var played = await Watch.WaitForSessionAsync(card.Game, TimeSpan.FromMinutes(3), token);

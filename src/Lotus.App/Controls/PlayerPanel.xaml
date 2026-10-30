@@ -48,6 +48,7 @@
       <StackPanel VerticalAlignment="Bottom" Padding="18,0,18,16" Spacing="4">
        <TextBlock Text="{Binding Text[PpLast]}" Style="{StaticResource EyebrowStyle}" Foreground="{ThemeResource GoldBrush}"/>
        <TextBlock Text="{Binding Last.Name}" FontSize="22" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="White"/>
+       <TextBlock Text="{Binding Last.Note}" FontSize="12.5" FontStyle="Italic" MaxLines="1" TextTrimming="CharacterEllipsis" Foreground="#F2FFE4EE" Visibility="{Binding Last.HasNote, Converter={StaticResource BooleanVisibility}}" ToolTipService.ToolTip="{Binding Last.Note}" AutomationProperties.AutomationId="player-last-note"/>
        <Grid ColumnSpacing="10"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
         <TextBlock Text="{Binding Last.When}" FontSize="12.5" Foreground="#D9FFF0F6" VerticalAlignment="Center"/>
         <Button Grid.Column="1" Click="OnPlayLast" Style="{StaticResource PrimaryButtonStyle}" MinHeight="34" Padding="14,4" AutomationProperties.AutomationId="player-play-last">
@@ -90,7 +91,7 @@
           </Button>
          </Grid>
          <TextBlock Text="{Binding Note}" FontSize="12.5" TextWrapping="Wrap" Foreground="{ThemeResource GoldBrush}" Visibility="{Binding HasNote, Converter={StaticResource BooleanVisibility}}" Margin="50,0,0,0"/>
-         <TextBox Visibility="Collapsed" Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" MaxLength="140" PlaceholderText="{Binding DataContext.Text[PpNotePlaceholder], ElementName=Sheet}" KeyDown="OnNoteKey" LostFocus="OnNoteDone" Margin="50,0,0,0"/>
+         <TextBox Visibility="Collapsed" Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" MaxLength="600" PlaceholderText="{Binding DataContext.Text[PpNotePlaceholder], ElementName=Sheet}" KeyDown="OnNoteKey" LostFocus="OnNoteDone" Margin="50,0,0,0"/>
         </StackPanel>
        </Border>
       </DataTemplate></ItemsControl.ItemTemplate>

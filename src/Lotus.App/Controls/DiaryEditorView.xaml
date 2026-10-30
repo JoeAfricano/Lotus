@@ -102,6 +102,44 @@
         <TextBlock Grid.Row="2" Grid.ColumnSpan="3" Text="{Binding DateError}" Foreground="{ThemeResource ErrorBrush}" FontSize="12.5" TextWrapping="Wrap" Visibility="{Binding DateError, Converter={StaticResource PresenceVisibility}}" AutomationProperties.LiveSetting="Assertive" AutomationProperties.AutomationId="diary-date-error"/>
        </Grid>
       </StackPanel>
+      <!-- "Onde eu parei?": a personal note saved on its own (never changes score, hours or status) -->
+      <StackPanel Spacing="8" Visibility="{Binding ResumeAvailable, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="diary-resume">
+       <Grid ColumnSpacing="8">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <FontIcon Glyph="&#xE8A4;" FontSize="14" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Text="{Binding Text[RnTitle]}" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
+        <Border Grid.Column="2" CornerRadius="8" Padding="8,2" Background="{ThemeResource AccentSoftBrush}" VerticalAlignment="Center" Visibility="{Binding ResumeFromLastSession, Converter={StaticResource BooleanVisibility}}">
+         <TextBlock Text="{Binding Text[RnLastSession]}" FontSize="11.5" Foreground="{ThemeResource GoldBrush}"/>
+        </Border>
+       </Grid>
+       <TextBlock Text="{Binding Text[RnHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" Visibility="{Binding ShowResumeEmpty, Converter={StaticResource BooleanVisibility}}"/>
+       <!-- Saved note -->
+       <Border Padding="14,10" CornerRadius="12" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" Visibility="{Binding ShowResumeText, Converter={StaticResource BooleanVisibility}}">
+        <StackPanel Spacing="4">
+         <TextBlock Text="{Binding ResumeText}" TextWrapping="Wrap" FontSize="14" IsTextSelectionEnabled="True" AutomationProperties.AutomationId="diary-resume-text"/>
+         <TextBlock Text="{Binding ResumeUpdatedText}" Style="{StaticResource CaptionStyle}"/>
+        </StackPanel>
+       </Border>
+       <!-- Writing -->
+       <TextBox Text="{Binding ResumeDraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="{Binding Text[RnPlaceholder]}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="72" MaxLength="{Binding ResumeLimit}"
+                Visibility="{Binding ResumeEditing, Converter={StaticResource BooleanVisibility}}" AutomationProperties.Name="{Binding Text[RnTitle]}" AutomationProperties.AutomationId="diary-resume-box"/>
+       <StackPanel Orientation="Horizontal" Spacing="8">
+        <Button Click="OnResumeWrite" Style="{StaticResource SoftButtonStyle}" Visibility="{Binding ShowResumeEmpty, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="diary-resume-write">
+         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE70F;" FontSize="13"/><TextBlock Text="{Binding Text[RnWrite]}"/></StackPanel>
+        </Button>
+        <Button Click="OnResumeSave" Style="{StaticResource PrimaryButtonStyle}" Visibility="{Binding ResumeEditing, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="diary-resume-save">
+         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE74E;" FontSize="13"/><TextBlock Text="{Binding Text[RnSave]}"/></StackPanel>
+        </Button>
+        <Button Click="OnResumeCancel" Style="{StaticResource SoftButtonStyle}" Content="{Binding Text[DlgCancel]}" Visibility="{Binding ResumeEditing, Converter={StaticResource BooleanVisibility}}"/>
+        <Button Click="OnResumeWrite" Style="{StaticResource SoftButtonStyle}" Visibility="{Binding ShowResumeText, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="diary-resume-edit">
+         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE70F;" FontSize="13"/><TextBlock Text="{Binding Text[RnEdit]}"/></StackPanel>
+        </Button>
+        <Button Click="OnResumeClear" Style="{StaticResource SoftButtonStyle}" Visibility="{Binding ShowResumeText, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="diary-resume-clear">
+         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE74D;" FontSize="13"/><TextBlock Text="{Binding Text[RnClear]}"/></StackPanel>
+        </Button>
+        <TextBlock Text="{Binding ResumeStatus}" Style="{StaticResource CaptionStyle}" VerticalAlignment="Center" app:Motion.Settle="True"/>
+       </StackPanel>
+      </StackPanel>
       <!-- Extra playthroughs -->
       <StackPanel Spacing="8">
        <Grid><TextBlock Text="{Binding Text[DyRuns]}" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
@@ -138,7 +176,7 @@
       <StackPanel Spacing="6">
        <TextBlock Text="{Binding Text[DyMoods]}" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
        <ItemsControl ItemsSource="{Binding Moods}" Margin="0,4,0,0" AutomationProperties.AutomationId="diary-moods">
-        <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="140" ItemHeight="44"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+        <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="160" ItemHeight="44"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate><DataTemplate>
          <ToggleButton IsChecked="{Binding Selected, Mode=TwoWay}" Click="OnFeat" Margin="0,0,8,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="20" AutomationProperties.Name="{Binding Label}">
           <StackPanel Orientation="Horizontal" Spacing="7"><FontIcon Glyph="{Binding Glyph}" FontSize="12"/><TextBlock Text="{Binding Label}" FontSize="12.5"/></StackPanel>

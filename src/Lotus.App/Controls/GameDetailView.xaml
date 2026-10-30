@@ -1,5 +1,5 @@
-<UserControl x:Class="Lotus.App.Controls.GameDetailView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:app="using:Lotus.App" AutomationProperties.AutomationId="game-detail">
+﻿<UserControl x:Class="Lotus.App.Controls.GameDetailView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="using:Lotus.App" xmlns:local="using:Lotus.App.Controls" AutomationProperties.AutomationId="game-detail">
  <StackPanel Spacing="18">
   <!-- Hero: store art with a plum fade, title and quick facts -->
   <Grid x:Name="Hero" Height="300" CornerRadius="20" Background="{ThemeResource HeroBrush}" RequestedTheme="Dark">
@@ -104,6 +104,9 @@
     <ItemsControl.ItemTemplate><DataTemplate><Border Width="320" Height="180" CornerRadius="12" app:Motion.Hover="1.04"><Border.Background><ImageBrush ImageSource="{Binding}" Stretch="UniformToFill"/></Border.Background></Border></DataTemplate></ItemsControl.ItemTemplate>
    </ItemsControl>
   </ScrollViewer>
+  <!-- Installed games: "Preparar e Jogar" for this game -->
+  <local:PrepareCard/>
+  <local:SaveProtectionCard/>
   <TextBlock Text="{Binding SourceText}" Style="{StaticResource CaptionStyle}" FontSize="11.5"/>
  </StackPanel>
 </UserControl>

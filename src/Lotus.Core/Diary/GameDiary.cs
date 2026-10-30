@@ -54,6 +54,8 @@ public static class DiaryOptions
     public static readonly string[] Categories = ["story", "gameplay", "visuals", "sound"];
     public static readonly (string Id, string Glyph)[] Moods = [("exciting", "E945"), ("relaxing", "E706"), ("challenging", "E7BA"), ("addictive", "E7FC"), ("emotional", "EB51"), ("scary", "E7C3"), ("beautiful", "E790"), ("funny", "E76E")];
     public static readonly string[] Difficulties = ["easy", "normal", "hard", "hardest"];
+    // Mood glyphs are kept as hex code points ("E945"); icons need the character itself.
+    public static string Glyph(string hex) => char.ConvertFromUtf32(Convert.ToInt32(hex, 16));
 }
 
 public sealed class DiaryData

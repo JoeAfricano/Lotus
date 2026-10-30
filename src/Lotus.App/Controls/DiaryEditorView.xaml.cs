@@ -182,6 +182,10 @@ public sealed partial class DiaryEditorView : UserControl
     }
     private void OnCategory(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e) => Vm?.NotifyCategories();
     private void OnUseAverage(object sender, RoutedEventArgs e) { Vm?.UseCategoryAverage(); UiSound.Play(UiSound.Cue.Toggle); }
+    private void OnResumeWrite(object sender, RoutedEventArgs e) { Vm?.EditResume(); UiSound.Play(UiSound.Cue.Toggle); }
+    private void OnResumeSave(object sender, RoutedEventArgs e) { if (Vm?.SaveResume() == true) UiSound.Play(UiSound.Cue.Done); }
+    private void OnResumeCancel(object sender, RoutedEventArgs e) => Vm?.CancelResume();
+    private void OnResumeClear(object sender, RoutedEventArgs e) { if (Vm?.ClearResume() == true) UiSound.Play(UiSound.Cue.Toggle); }
     private void OnAddRun(object sender, RoutedEventArgs e) { Vm?.AddRun(); UiSound.Play(UiSound.Cue.Toggle); }
     private void OnRemoveRun(object sender, RoutedEventArgs e) { if (sender is FrameworkElement { DataContext: RunRow run }) Vm?.RemoveRun(run); }
 

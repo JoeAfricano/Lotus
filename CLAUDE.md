@@ -64,3 +64,8 @@ O pedido de exportação não autoriza aplicar otimizações ao Windows nem desc
 - **0.3.0-alpha "Lotus New"**: redesign do ZIP `Lotus-Conceito-Premium` concluído (guias 01–15): tema rosé porcelana/escuro/grafite/sistema, navegação lateral, Início, perfis com confirmação animada, Meus Jogos com aba Overlay, Lotus Score com detalhes, FPS estimado (busca de qualquer jogo via requisitos da Steam, fontes com link) e gargalo, Game list (hero, filtros com indicação textual, até 100 jogos com rolagem contínua), painel do jogador, medalhas do diário, editor do diário com proteção de alterações, Comparar em duas colunas.
 - Instalador de atualização: `artifacts\dist\Lotus-New-Setup-0.3.0-alpha.exe` (gerar de novo com `tools\Build-Installer.ps1 -Name "Lotus New"`). Nunca instalar no PC.
 - 369 testes aprovados (Debug). Animação de "perfil aplicado" não foi vista com mudança real do Windows (exige aprovação).
+
+## Estado em 30/10/2026 (Claude Code)
+
+- Funcionalidades para jogadores casuais (Onde eu parei?, Preparar e Jogar, Proteção de progresso de saves) implementadas e NÃO commitadas; relatório em `docs/LOTUS_CASUAL_FEATURES.md`. 431 testes aprovados (Debug/Release).
+- Ativar/restaurar saves reais e aplicar perfil ao jogar exigem aprovação do usuário.

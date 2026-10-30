@@ -191,6 +191,16 @@
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.AutoSessions, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetAutoSessions]}" AutomationProperties.AutomationId="settings-auto-sessions"/>
      </Grid></Border>
      <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <FontIcon Glyph="&#xE8A4;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetResumePrompts]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetResumePromptsHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+      <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.ResumePrompts, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetResumePrompts]}" AutomationProperties.AutomationId="settings-resume-prompts"/>
+     </Grid></Border>
+     <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <FontIcon Glyph="&#xE768;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetPreparePlay]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetPreparePlayHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+      <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.PreparePlay, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetPreparePlay]}" AutomationProperties.AutomationId="settings-prepare-play"/>
+     </Grid></Border>
+     <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <FontIcon Glyph="&#xE945;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetGamePriority]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetGamePriorityHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.GamePriority, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetGamePriority]}" AutomationProperties.AutomationId="settings-game-priority"/>

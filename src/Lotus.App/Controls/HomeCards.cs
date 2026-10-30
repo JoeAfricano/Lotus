@@ -21,6 +21,9 @@ public sealed partial class ContinueCard : UserControl
 
     public void Show(SectionViewModel vm)
     {
+        // A note written elsewhere (diary, end-of-session notice, player panel) shows up here right away.
+        if (!watching && MainWindow.Shell?.Resume is { } notes) { watching = true; notes.Changed += (_, _) => DispatcherQueue.TryEnqueue(() => { if (shown is { } v && IsLoaded) Show(v); }); }
+        shown = vm;
         root.Children.Clear();
         var t = vm.Text; var games = vm.Games;
         var game = games?.LastPlayed();
@@ -44,7 +47,10 @@ public sealed partial class ContinueCard : UserControl
         var title = new TextBlock { Text = game?.Name ?? t["HcEmptyTitle"], FontSize = 42, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis, Foreground = new SolidColorBrush(Colors.White) };
         ToolTipService.SetToolTip(title, title.Text); // two lines at most; the full name on hover
         text.Children.Add(title);
-        text.Children.Add(new TextBlock { Text = game is null ? t["HcEmptyBody"] : t["HcTagline"], FontSize = 16, TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromArgb(0xE6, 255, 240, 246)) });
+        // "Onde você parou": the player's own note for this game replaces the tagline (no empty space without a note).
+        var note = game is null ? null : MainWindow.Shell?.Resume.Get(Lotus.Core.Diary.DiaryGames.KeyFor(game));
+        if (note is not null) text.Children.Add(ResumeBlock(t, note));
+        else text.Children.Add(new TextBlock { Text = game is null ? t["HcEmptyBody"] : t["HcTagline"], FontSize = 16, TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromArgb(0xE6, 255, 240, 246)) });
         if (game is not null) // when it was last played, as a small pill (hidden when unknown)
         {
             var when = When(t, game.LastPlayed);
@@ -56,14 +62,48 @@ public sealed partial class ContinueCard : UserControl
         var buttons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, Margin = new Thickness(0, 8, 0, 0) };
         if (game is not null && games is not null)
         {
-            buttons.Children.Add(HomeMotion.Button(t["GiPlay"], "", primary: true, () => { UiSound.Play(UiSound.Cue.Open); games.Play(game); }));
+            buttons.Children.Add(HomeMotion.Button(t[note is null ? "GiPlay" : "RnContinue"], "", primary: true, () => { UiSound.Play(UiSound.Cue.Open); games.Play(game); }));
             var details = HomeMotion.Button(t["GiDetails"], "", primary: false, () => DetailsRequested?.Invoke(this, game)); Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(details, "continue-details"); buttons.Children.Add(details);
+            if (note is not null)
+            {
+                Button? view = null;
+                view = HomeMotion.Button(t["RnView"], "\uE8A4", primary: false, () => ShowNote(view!, t, game, note));
+                Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(view, "continue-resume");
+                buttons.Children.Add(view);
+            }
         }
         else if (games is not null)
             buttons.Children.Add(HomeMotion.Button(t["HomeRescan"], "", primary: true, async () => { await games.RefreshAsync(); Show(vm); }));
         text.Children.Add(buttons);
         root.Children.Add(text);
         HomeMotion.Rise(text);
+    }
+
+    private bool watching;
+    private SectionViewModel? shown;
+
+    // Compact "Onde você parou" block on the photo hero: two lines at most, the full note in "Ver anotação".
+    private static FrameworkElement ResumeBlock(ITextCatalog t, Lotus.Core.Diary.ResumeNote note)
+    {
+        var box = new StackPanel { Spacing = 3 };
+        box.Children.Add(new TextBlock { Text = t["RnHomeEyebrow"].ToUpperInvariant(), FontSize = 11, CharacterSpacing = 120, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Color.FromArgb(255, 0xF5, 0x8B, 0xB7)) });
+        box.Children.Add(new TextBlock { Text = "\u201C" + note.Text.ReplaceLineEndings(" ") + "\u201D", FontSize = 16, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis, Foreground = new SolidColorBrush(Color.FromArgb(0xF2, 255, 244, 248)) });
+        return new Border { Child = box, Padding = new Thickness(14, 8, 14, 10), CornerRadius = new CornerRadius(12), HorizontalAlignment = HorizontalAlignment.Left,
+            Background = new SolidColorBrush(Color.FromArgb(0x66, 18, 9, 15)), BorderBrush = new SolidColorBrush(Color.FromArgb(0x55, 0xF5, 0x8B, 0xB7)), BorderThickness = new Thickness(1.5, 0, 0, 0) };
+    }
+
+    // The whole note without leaving Home, with a shortcut to edit it in the diary.
+    private static void ShowNote(FrameworkElement anchor, ITextCatalog t, GameEntry game, Lotus.Core.Diary.ResumeNote note)
+    {
+        var panel = new StackPanel { Spacing = 8, MaxWidth = 380, Padding = new Thickness(4) };
+        panel.Children.Add(new TextBlock { Text = t["RnTitle"], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 15 });
+        panel.Children.Add(new TextBlock { Text = note.Text, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true, FontSize = 14 });
+        panel.Children.Add(new TextBlock { Text = t.Format("RnUpdated", note.Updated.LocalDateTime.ToString("g", System.Globalization.CultureInfo.GetCultureInfo(t.Language))), FontSize = 12, Opacity = 0.7 });
+        var flyout = new Flyout { Content = panel };
+        var edit = new Button { Content = t["RnEdit"], Style = (Style)Application.Current.Resources["SoftButtonStyle"], Margin = new Thickness(0, 4, 0, 0) };
+        edit.Click += (_, _) => { flyout.Hide(); if (MainWindow.Shell is { } shell) shell.OpenDiaryEditor(shell.Diary.Get(Lotus.Core.Diary.DiaryGames.KeyFor(game)) ?? Lotus.Core.Diary.DiaryGames.FromGame(game)); };
+        panel.Children.Add(edit);
+        flyout.ShowAt(anchor);
     }
 
     private static string When(ITextCatalog t, DateTimeOffset? at)

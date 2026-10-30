@@ -64,6 +64,7 @@
   <controls:ThemeStudio x:Name="Studio" Grid.Row="1" Grid.RowSpan="2"/>
   <controls:CelebrationView x:Name="Celebration" Grid.Row="1" Grid.RowSpan="2" DiaryRequested="OnOpenDiary"/>
   <controls:TrophyToast x:Name="Toast" Grid.Row="1" Grid.RowSpan="2" ViewRequested="OnToastView"/>
+  <controls:GameNotice x:Name="Notice" Grid.Row="1" Grid.RowSpan="2"/>
   <controls:OnboardingView x:Name="Onboarding" Grid.RowSpan="3"/>
  </Grid>
 </Window>

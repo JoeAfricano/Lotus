@@ -26,6 +26,8 @@ public sealed record InterfacePreferences
     public bool DiaryHeaderCompact { get; init; } = true; // diary profile header: compact band or the full layout
     public bool AutoSessions { get; init; } = true; // record play sessions (time, dates) in the diary while a library game is open
     public bool GamePriority { get; init; } // while a game is open: game above normal, known launchers/browsers below normal (restored after)
+    public bool ResumePrompts { get; init; } = true; // after a game closes normally, offer to write "Onde eu parei?" (discreet in-app notice)
+    public bool PreparePlay { get; init; } = true; // quick read-only checks behind every Jogar button (a question only for real problems)
     public string? AdaptiveSync { get; init; } // FreeSync/G-Sync on: "on" | "off" | null (not asked yet; asked before the first game analysis)
     public string Accent { get; init; } = "rose"; // rose | violet | blue | green (design) and the older crimson | gold | dark
     public string? CustomTheme { get; init; }                 // the active custom theme (its share code), used when Theme is "Custom"
@@ -113,6 +115,8 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool UiSounds { get => service.Current.UiSounds; set { if (value != service.Current.UiSounds) { service.Update(service.Current with { UiSounds = value }); OnPropertyChanged(); } } }
     public bool AutoSessions { get => service.Current.AutoSessions; set { if (value != service.Current.AutoSessions) { service.Update(service.Current with { AutoSessions = value }); OnPropertyChanged(); } } }
     public bool GamePriority { get => service.Current.GamePriority; set { if (value != service.Current.GamePriority) { service.Update(service.Current with { GamePriority = value }); OnPropertyChanged(); } } }
+    public bool ResumePrompts { get => service.Current.ResumePrompts; set { if (value != service.Current.ResumePrompts) { service.Update(service.Current with { ResumePrompts = value }); OnPropertyChanged(); } } }
+    public bool PreparePlay { get => service.Current.PreparePlay; set { if (value != service.Current.PreparePlay) { service.Update(service.Current with { PreparePlay = value }); OnPropertyChanged(); } } }
     public double UiSoundVolume { get => service.Current.UiSoundVolume; set { var v = (int)Math.Round(value); if (v != service.Current.UiSoundVolume) { service.Update(service.Current with { UiSoundVolume = v }); OnPropertyChanged(); } } }
     public string Message { get => message; private set => SetProperty(ref message, value); }
 

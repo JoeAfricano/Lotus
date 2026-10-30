@@ -19,7 +19,23 @@ public sealed class PlayerJournal(IPlayerJournalStore store, Action<Exception> l
     public event EventHandler? Changed;
 
     public bool IsFavorite(string key) => data.Favorites.Contains(key);
-    public string Note(string key) => data.Notes.GetValueOrDefault(key, "");
+    // Per-game notes are the "Onde eu parei?" notes (one source of truth, shared with the diary and Home). Without
+    // that store (tests, older setups) the journal keeps its own short notes as before.
+    private Diary.ResumeNotes? resume;
+    public Diary.ResumeNotes? Resume
+    {
+        get => resume;
+        set
+        {
+            if (resume is not null) resume.Changed -= OnResumeChanged;
+            resume = value;
+            if (resume is null) return;
+            resume.MigratePlayerNotes(data.Notes, Diary.DiaryGames.KeyFor); // once; player.json keeps its copy
+            resume.Changed += OnResumeChanged;
+        }
+    }
+    private void OnResumeChanged(object? sender, string key) => Changed?.Invoke(this, EventArgs.Empty);
+    public string Note(string key) => resume is { } r ? r.Get(Diary.DiaryGames.KeyFor(key))?.Text ?? "" : data.Notes.GetValueOrDefault(key, "");
     public int FavoriteCount => data.Favorites.Count;
 
     public void SetFavorite(string key, bool on)
@@ -29,6 +45,7 @@ public sealed class PlayerJournal(IPlayerJournalStore store, Action<Exception> l
     }
     public void SetNote(string key, string? text)
     {
+        if (resume is { } r) { r.Set(Diary.DiaryGames.KeyFor(key), text); return; } // Changed comes back through the store
         var clean = (text ?? "").Trim().ReplaceLineEndings(" ");
         if (clean.Length > NoteLimit) clean = clean[..NoteLimit];
         if (clean == Note(key)) return;

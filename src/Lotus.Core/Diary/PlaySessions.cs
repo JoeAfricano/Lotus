@@ -3,7 +3,13 @@ using Lotus.Core.Games;
 
 namespace Lotus.Core.Diary;
 
-public sealed record FinishedSession(GameEntry Game, DateTimeOffset Start, int Minutes);
+// How a session ended: the game closed (normal), another game took its place, Lotus stopped seeing it for a while
+// (sleep, hang) or Lotus itself closed. Only a normal close counts as "the player just stopped playing".
+public enum SessionEnd { Closed, Switched, Gap, LotusClosing }
+public sealed record FinishedSession(GameEntry Game, DateTimeOffset Start, int Minutes, SessionEnd End = SessionEnd.Closed)
+{
+    public bool EndedNormally => End == SessionEnd.Closed;
+}
 
 // Turns "which library game is open now" (checked every few seconds) into play sessions. A session ends when the game
 // closes, another game takes its place, or Lotus stops seeing it for a while (sleep, Lotus closed); the end is the last
@@ -20,19 +26,24 @@ public sealed class PlaySessionTracker
     public FinishedSession? Update(GameEntry? running, DateTimeOffset now)
     {
         FinishedSession? done = null;
-        if (game is not null && (running is null || !string.Equals(running.Key, game.Key, StringComparison.OrdinalIgnoreCase) || now - seen > Gap)) done = Finish();
+        if (game is not null)
+        {
+            if (now - seen > Gap) done = Finish(SessionEnd.Gap);
+            else if (running is null) done = Finish(SessionEnd.Closed);
+            else if (!string.Equals(running.Key, game.Key, StringComparison.OrdinalIgnoreCase)) done = Finish(SessionEnd.Switched);
+        }
         if (running is not null) { if (game is null) { game = running; start = now; } seen = now; }
         return done;
     }
 
     // Lotus is closing: the session so far still counts.
-    public FinishedSession? Flush() => game is null ? null : Finish();
+    public FinishedSession? Flush() => game is null ? null : Finish(SessionEnd.LotusClosing);
 
-    private FinishedSession? Finish()
+    private FinishedSession? Finish(SessionEnd end)
     {
         var g = game!; game = null;
         var minutes = (int)Math.Round((seen - start).TotalMinutes);
-        return minutes >= MinMinutes ? new(g, start, minutes) : null;
+        return minutes >= MinMinutes ? new(g, start, minutes, end) : null;
     }
 }
 
@@ -41,6 +52,9 @@ public static class DiaryGames
     // The diary key for an installed game: Steam games use their app id (same entry as the Game list), others the
     // launcher key ("Epic Games:<name>", "GOG:<id>"...).
     public static string KeyFor(GameEntry g) => g.Store == GameStores.Steam ? DiaryEntry.SteamKey(g.Id) : g.Key;
+    // Same rule from a library key ("Steam:<appid>", "Epic Games:<name>"...), for data kept by library key (player panel).
+    public static string KeyFor(string libraryKey) =>
+        libraryKey.StartsWith(GameStores.Steam + ":", StringComparison.OrdinalIgnoreCase) ? DiaryEntry.SteamKey(libraryKey[(GameStores.Steam.Length + 1)..]) : libraryKey;
 
     public static DiaryEntry FromGame(GameEntry g)
     {

@@ -1436,7 +1436,7 @@ Não foi possível medir agora. Tente de novo em alguns segundos.</value></data>
   <data name="PpGamesHint" xml:space="preserve"><value>Marque favoritos com a estrela (eles aparecem primeiro no Início) e anote o que quiser em cada jogo.</value></data>
   <data name="PpNoGames" xml:space="preserve"><value>Nenhum jogo encontrado ainda. Use Reescanear no Início ou adicione em Meus Jogos.</value></data>
   <data name="PpFavorite" xml:space="preserve"><value>Favorito</value></data>
-  <data name="PpNote" xml:space="preserve"><value>Anotação</value></data>
+  <data name="PpNote" xml:space="preserve"><value>Onde eu parei?</value></data>
   <data name="PpNotePlaceholder" xml:space="preserve"><value>Ex.: parei no terceiro chefe · jogar com a Ana</value></data>
   <data name="PpNeverPlayed" xml:space="preserve"><value>Ainda não jogado pelo Lotus</value></data>
   <data name="PpStats" xml:space="preserve"><value>{0} jogo(s) · {1} favorito(s)</value></data>
@@ -2285,4 +2285,137 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="ObTourDiary" xml:space="preserve"><value>Meu diário</value></data>
   <data name="ObTourDiaryDetail" xml:space="preserve"><value>Suas notas e sua história com cada jogo. As **sessões entram sozinhas** enquanto você joga, e o diário sugere **o que jogar agora**.</value></data>
   <data name="ObTourDiaryEx" xml:space="preserve"><value>Ex.: retrospectiva do ano com horas, gênero favorito e maior nota</value></data>
+  <data name="RnTitle" xml:space="preserve"><value>Onde eu parei?</value></data>
+  <data name="RnHint" xml:space="preserve"><value>Anote onde você parou para lembrar quando voltar, mesmo semanas depois. Fica só neste PC.</value></data>
+  <data name="RnPlaceholder" xml:space="preserve"><value>Ex.: terminei a missão do Barão; procurar as pistas no pântano.</value></data>
+  <data name="RnWrite" xml:space="preserve"><value>Anotar</value></data>
+  <data name="RnSave" xml:space="preserve"><value>Salvar</value></data>
+  <data name="RnEdit" xml:space="preserve"><value>Editar</value></data>
+  <data name="RnClear" xml:space="preserve"><value>Limpar</value></data>
+  <data name="RnUpdated" xml:space="preserve"><value>Atualizado em {0}</value></data>
+  <data name="RnLastSession" xml:space="preserve"><value>Da última sessão</value></data>
+  <data name="RnSaved" xml:space="preserve"><value>Anotação salva.</value></data>
+  <data name="RnCleared" xml:space="preserve"><value>Anotação apagada.</value></data>
+  <data name="RnSaveFailed" xml:space="preserve"><value>Não foi possível salvar a anotação. Tente de novo.</value></data>
+  <data name="RnHomeEyebrow" xml:space="preserve"><value>Onde você parou</value></data>
+  <data name="RnContinue" xml:space="preserve"><value>Continuar jogando</value></data>
+  <data name="RnView" xml:space="preserve"><value>Ver anotação</value></data>
+  <data name="RnPromptEyebrow" xml:space="preserve"><value>Sessão encerrada</value></data>
+  <data name="RnPromptTitle" xml:space="preserve"><value>Quer registrar onde parou em {0}?</value></data>
+  <data name="RnPromptBody" xml:space="preserve"><value>Você jogou {0}. Uma frase já ajuda a retomar depois.</value></data>
+  <data name="RnPromptWrite" xml:space="preserve"><value>Anotar</value></data>
+  <data name="RnPromptLater" xml:space="preserve"><value>Agora não</value></data>
+  <data name="RnPromptNever" xml:space="preserve"><value>Não perguntar mais</value></data>
+  <data name="SetResumePrompts" xml:space="preserve"><value>Perguntar onde eu parei</value></data>
+  <data name="SetResumePromptsHint" xml:space="preserve"><value>Ao fechar um jogo, o Lotus oferece anotar onde você parou, num aviso discreto dentro da janela dele. Nada abre sobre o jogo, e o modo Não incomodar do Windows é respeitado.</value></data>
+  <data name="PrepChecking" xml:space="preserve"><value>Preparando {0}…</value></data>
+  <data name="PrepGone" xml:space="preserve"><value>{0} não está mais na biblioteca. Ele pode ter sido desinstalado ou movido.</value></data>
+  <data name="PrepMissingTitle" xml:space="preserve"><value>Não encontramos a instalação deste jogo</value></data>
+  <data name="PrepMissingBody" xml:space="preserve"><value>A pasta de {0} não está mais onde estava. Deseja procurar novamente?</value></data>
+  <data name="PrepMemoryTitle" xml:space="preserve"><value>A memória está quase cheia</value></data>
+  <data name="PrepMemoryBody" xml:space="preserve"><value>{0}% em uso agora. Quem mais usa: {1}. Fechar o que não precisa ajuda o jogo a rodar liso.</value></data>
+  <data name="PrepMemoryBodyPlain" xml:space="preserve"><value>{0}% em uso agora. Fechar o que não precisa ajuda o jogo a rodar liso.</value></data>
+  <data name="PrepSpaceTitle" xml:space="preserve"><value>Pouco espaço no disco do jogo</value></data>
+  <data name="PrepSpaceBody" xml:space="preserve"><value>Restam {0} GB. Jogos gravam saves e caches enquanto rodam; liberar espaço evita problemas.</value></data>
+  <data name="PrepControllerTitle" xml:space="preserve"><value>Seu controle não foi encontrado</value></data>
+  <data name="PrepControllerBody" xml:space="preserve"><value>Nenhum controle está conectado agora. Deseja continuar mesmo assim?</value></data>
+  <data name="PrepSavesTitle" xml:space="preserve"><value>Proteção de progresso</value></data>
+  <data name="PrepProfileTitle" xml:space="preserve"><value>Perfil Jogo</value></data>
+  <data name="PrepProfileApplied" xml:space="preserve"><value>Aplicado para esta partida. Tudo volta como estava quando você fechar o jogo.</value></data>
+  <data name="PrepProfilePartial" xml:space="preserve"><value>Parte do perfil não pôde ser aplicada. O jogo abriu normalmente.</value></data>
+  <data name="PrepAskTitle" xml:space="preserve"><value>Antes de abrir {0}</value></data>
+  <data name="PrepRescan" xml:space="preserve"><value>Procurar novamente</value></data>
+  <data name="PrepOpenAnyway" xml:space="preserve"><value>Abrir mesmo assim</value></data>
+  <data name="PrepPlayAnyway" xml:space="preserve"><value>Jogar mesmo assim</value></data>
+  <data name="PrepEyebrow" xml:space="preserve"><value>Preparar e jogar</value></data>
+  <data name="PrepAllGood" xml:space="preserve"><value>{0} está pronto para jogar</value></data>
+  <data name="PrepAllGoodBody" xml:space="preserve"><value>Tudo conferido: instalação, memória e espaço.</value></data>
+  <data name="PrepRestoreEyebrow" xml:space="preserve"><value>Fim da partida</value></data>
+  <data name="PrepRestored" xml:space="preserve"><value>Configurações restauradas depois de {0}</value></data>
+  <data name="PrepRestoredBody" xml:space="preserve"><value>O Windows voltou a ficar como estava antes da partida.</value></data>
+  <data name="PrepRestoreConflict" xml:space="preserve"><value>Configurações mantidas depois de {0}</value></data>
+  <data name="PrepRestoreConflictBody" xml:space="preserve"><value>Algo mudou essas configurações durante a partida, então o Lotus não mexeu nelas. Em Otimizar meu PC você pode conferir.</value></data>
+  <data name="PrepCardTitle" xml:space="preserve"><value>Preparar e jogar</value></data>
+  <data name="PrepCardSwitch" xml:space="preserve"><value>Preparar antes de jogar</value></data>
+  <data name="PrepCardProfile" xml:space="preserve"><value>Usar o perfil Jogo nesta partida e restaurar depois</value></data>
+  <data name="PrepCardController" xml:space="preserve"><value>Verificar meu controle</value></data>
+  <data name="PrepCardSystem" xml:space="preserve"><value>Verificar memória e espaço livre</value></data>
+  <data name="PrepCardQuiet" xml:space="preserve"><value>Avisar só quando algo precisar de atenção</value></data>
+  <data name="PrepCardNote" xml:space="preserve"><value>Vale para todos os botões Jogar. Se uma verificação não responder rápido, o jogo abre normalmente.</value></data>
+  <data name="PrepSummaryOff" xml:space="preserve"><value>Desligado: o Jogar abre o jogo direto.</value></data>
+  <data name="PrepSummaryOn" xml:space="preserve"><value>Ligado: confere o PC rapidinho e só pergunta se algo estiver errado.</value></data>
+  <data name="PrepSummaryProfile" xml:space="preserve"><value>Ligado, com o perfil Jogo nesta partida (restaurado ao fechar).</value></data>
+  <data name="PrepProfileAskTitle" xml:space="preserve"><value>Usar o perfil Jogo em {0}?</value></data>
+  <data name="PrepProfileAskBody" xml:space="preserve"><value>Antes de cada partida, o Lotus aplica só o que ainda não estiver aplicado e desfaz quando o jogo fechar. Agora mudaria:</value></data>
+  <data name="PrepProfileAllow" xml:space="preserve"><value>Autorizar</value></data>
+  <data name="SetPreparePlay" xml:space="preserve"><value>Preparar antes de jogar</value></data>
+  <data name="SetPreparePlayHint" xml:space="preserve"><value>Ao clicar em Jogar, o Lotus confere em segundos se a instalação, a memória e o espaço estão bem, e só pergunta algo se houver um problema. Cada jogo pode ter seu próprio ajuste em Meus Jogos.</value></data>
+  <data name="SpTitle" xml:space="preserve"><value>Proteção de progresso</value></data>
+  <data name="SpChecking" xml:space="preserve"><value>Procurando os saves deste jogo…</value></data>
+  <data name="SpStateActive" xml:space="preserve"><value>Protegido: uma cópia é feita depois de cada sessão.</value></data>
+  <data name="SpStateAttention" xml:space="preserve"><value>Atenção: o último backup não deu certo. Tente de novo com o jogo fechado.</value></data>
+  <data name="SpStateInterrupted" xml:space="preserve"><value>Uma restauração foi interrompida. Recupere o estado anterior antes de jogar.</value></data>
+  <data name="SpStateUnavailable" xml:space="preserve"><value>A pasta dos saves não está acessível agora (disco desconectado ou pasta movida).</value></data>
+  <data name="SpStateOff" xml:space="preserve"><value>Desativada. Os backups já feitos continuam guardados.</value></data>
+  <data name="SpStateAvailable" xml:space="preserve"><value>Saves encontrados. Ative para guardar cópias do seu progresso.</value></data>
+  <data name="SpStateUnsupported" xml:space="preserve"><value>Jogos do Xbox / Game Pass guardam os saves num local protegido e sincronizado pela Microsoft. O Lotus não mexe neles.</value></data>
+  <data name="SpStateNotFound" xml:space="preserve"><value>Não encontramos a pasta de saves com segurança. Você pode escolher a pasta.</value></data>
+  <data name="SpWhere" xml:space="preserve"><value>Os backups ficam só neste PC, em %LOCALAPPDATA%\Lotus\SaveBackups. Não vão para a internet nem para o arquivo de backup do Lotus.</value></data>
+  <data name="SpFolderLabel" xml:space="preserve"><value>Pasta dos saves</value></data>
+  <data name="SpFolderInfo" xml:space="preserve"><value>{0} arquivos · {1} · alterado em {2}</value></data>
+  <data name="SpCloudNote" xml:space="preserve"><value>Esta pasta é sincronizada pela nuvem da loja. Ao restaurar, a nuvem pode perguntar qual versão manter ou trocar os arquivos de novo.</value></data>
+  <data name="SpEnable" xml:space="preserve"><value>Ativar proteção</value></data>
+  <data name="SpPickFolder" xml:space="preserve"><value>Escolher pasta…</value></data>
+  <data name="SpBackupNow" xml:space="preserve"><value>Fazer backup agora</value></data>
+  <data name="SpTurnOff" xml:space="preserve"><value>Desativar</value></data>
+  <data name="SpAuto" xml:space="preserve"><value>Backup automático depois de jogar</value></data>
+  <data name="SpKeep" xml:space="preserve"><value>Guardar</value></data>
+  <data name="SpKeepItem" xml:space="preserve"><value>últimas {0} cópias</value></data>
+  <data name="SpManage" xml:space="preserve"><value>Backups guardados</value></data>
+  <data name="SpNoBackups" xml:space="preserve"><value>Nenhum backup ainda.</value></data>
+  <data name="SpRestore" xml:space="preserve"><value>Restaurar</value></data>
+  <data name="SpDelete" xml:space="preserve"><value>Excluir</value></data>
+  <data name="SpRecover" xml:space="preserve"><value>Recuperar estado anterior</value></data>
+  <data name="SpKindAuto" xml:space="preserve"><value>Automático</value></data>
+  <data name="SpKindManual" xml:space="preserve"><value>Manual</value></data>
+  <data name="SpKindBefore" xml:space="preserve"><value>Antes de restaurar</value></data>
+  <data name="SpFiles" xml:space="preserve"><value>{0} arquivos</value></data>
+  <data name="SpValid" xml:space="preserve"><value>verificado</value></data>
+  <data name="SpInvalid" xml:space="preserve"><value>danificado</value></data>
+  <data name="SpWorking" xml:space="preserve"><value>Trabalhando… pode continuar usando o Lotus.</value></data>
+  <data name="SpEnabled" xml:space="preserve"><value>Proteção ativada. O primeiro backup foi feito e conferido.</value></data>
+  <data name="SpBackedUp" xml:space="preserve"><value>Backup feito e conferido.</value></data>
+  <data name="SpUnchanged" xml:space="preserve"><value>Nada mudou desde o último backup; nenhuma cópia nova foi necessária.</value></data>
+  <data name="SpDeleted" xml:space="preserve"><value>Backup excluído.</value></data>
+  <data name="SpDisabled" xml:space="preserve"><value>Proteção desativada. Os backups continuam guardados.</value></data>
+  <data name="SpRestored" xml:space="preserve"><value>Progresso restaurado. Uma cópia de como estava antes também foi guardada.</value></data>
+  <data name="SpRecovered" xml:space="preserve"><value>Os saves voltaram a ficar como estavam antes da restauração interrompida.</value></data>
+  <data name="SpFolderEmpty" xml:space="preserve"><value>Essa pasta está vazia ou não pode ser lida. Escolha a pasta onde o jogo guarda os saves.</value></data>
+  <data name="SpFailNoSpace" xml:space="preserve"><value>Não há espaço livre suficiente no disco para o backup.</value></data>
+  <data name="SpFailBusy" xml:space="preserve"><value>Os arquivos estão em uso ou mudando. Feche o jogo e tente de novo.</value></data>
+  <data name="SpFailMissing" xml:space="preserve"><value>A pasta dos saves não foi encontrada.</value></data>
+  <data name="SpFailRunning" xml:space="preserve"><value>Feche o jogo antes de restaurar.</value></data>
+  <data name="SpFailInvalid" xml:space="preserve"><value>Este backup está danificado e não pode ser usado.</value></data>
+  <data name="SpFailRolledBack" xml:space="preserve"><value>A restauração falhou e seus saves foram devolvidos ao estado anterior.</value></data>
+  <data name="SpFailGeneric" xml:space="preserve"><value>Não foi possível concluir. Nada foi alterado nos seus saves.</value></data>
+  <data name="SpEnableTitle" xml:space="preserve"><value>Proteger os saves de {0}?</value></data>
+  <data name="SpEnableBody" xml:space="preserve"><value>O Lotus vai copiar esta pasta para o seu PC e conferir a cópia. Os arquivos originais não são alterados.</value></data>
+  <data name="SpRestoreTitle" xml:space="preserve"><value>Restaurar o backup de {0}?</value></data>
+  <data name="SpRestoreBody" xml:space="preserve"><value>Antes de trocar qualquer arquivo, o Lotus guarda uma cópia de como seus saves estão agora. Se algo falhar, tudo volta como estava.</value></data>
+  <data name="SpRestoreReplace" xml:space="preserve"><value>Serão substituídos ({0}):</value></data>
+  <data name="SpRestoreCreate" xml:space="preserve"><value>Serão recriados ({0}):</value></data>
+  <data name="SpRestoreKeep" xml:space="preserve"><value>Ficam como estão ({0}):</value></data>
+  <data name="SpRestoreMore" xml:space="preserve"><value>… e mais {0}</value></data>
+  <data name="SpRestoreRunning" xml:space="preserve"><value>O jogo parece estar aberto. Feche-o antes de restaurar.</value></data>
+  <data name="SpRestoreConfirm" xml:space="preserve"><value>Restaurar</value></data>
+  <data name="SpDeleteTitle" xml:space="preserve"><value>Excluir este backup?</value></data>
+  <data name="SpDeleteBody" xml:space="preserve"><value>Esta cópia será apagada do seu PC. Seus saves atuais não são alterados.</value></data>
+  <data name="SpAutoFailTitle" xml:space="preserve"><value>Backup de {0} não foi feito</value></data>
+  <data name="SpInterruptedTitle" xml:space="preserve"><value>Restauração interrompida</value></data>
+  <data name="SpInterruptedBody" xml:space="preserve"><value>Uma restauração de saves de {0} não terminou. Abra o jogo no Lotus e use &quot;Recuperar estado anterior&quot;.</value></data>
+  <data name="SpWarnInterrupted" xml:space="preserve"><value>Uma restauração de saves deste jogo foi interrompida. Recupere o estado anterior em &quot;Proteção de progresso&quot; antes de jogar.</value></data>
+  <data name="SpWarnMissing" xml:space="preserve"><value>A pasta dos saves deste jogo não está acessível; o backup automático não vai funcionar.</value></data>
+  <data name="SpWarnFailed" xml:space="preserve"><value>O último backup dos saves deste jogo não deu certo.</value></data>
+  <data name="SpOpen" xml:space="preserve"><value>Abrir pasta</value></data>
+  <data name="SpTitleHint" xml:space="preserve"><value>Guarde cópias dos seus saves neste PC.</value></data>
 </root>

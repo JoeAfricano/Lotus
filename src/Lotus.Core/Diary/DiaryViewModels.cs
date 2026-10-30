@@ -279,7 +279,7 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
     public IReadOnlyList<FeatToggle> FeatToggles { get; } = [.. Feats.All.Select(f => new FeatToggle(f.Id, f.Glyph, text["DyFeat" + f.Id]))];
     public IReadOnlyList<string> Platforms { get; } = ["PC", "Steam Deck", "Console", "Mobile"];
     public IReadOnlyList<CategoryScore> Categories { get; } = [.. DiaryOptions.Categories.Select(c => new CategoryScore(c, text["DyCat" + c]))];
-    public IReadOnlyList<FeatToggle> Moods { get; } = [.. DiaryOptions.Moods.Select(m => new FeatToggle(m.Id, m.Glyph, text["DyMood" + m.Id]))];
+    public IReadOnlyList<FeatToggle> Moods { get; } = [.. DiaryOptions.Moods.Select(m => new FeatToggle(m.Id, DiaryOptions.Glyph(m.Glyph), text["DyMood" + m.Id]))];
     public IReadOnlyList<DiaryTab> Difficulties { get; } = [new("", text["DyDiffNone"], 0), .. DiaryOptions.Difficulties.Select(d => new DiaryTab(d, text["DyDiff" + d], 0))];
     [ObservableProperty] private string difficulty = "";
     public System.Collections.ObjectModel.ObservableCollection<RunRow> Runs { get; } = [];
@@ -336,6 +336,7 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
         Runs.Clear(); foreach (var r in entry.Runs) Runs.Add(RunRow.From(r));
         NotifyCategories();
         foreach (var n in new[] { nameof(Name), nameof(Cover), nameof(Wide), nameof(IsNew), nameof(CanRemove), nameof(SteamMinutes), nameof(HasSteamHours), nameof(SteamHoursLabel), nameof(Status) }) OnPropertyChanged(n);
+        LoadResume();
         opened = Snapshot();
     }
 
@@ -349,6 +350,7 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
 
     public DiaryProgressChange Save()
     {
+        if (ResumeEditing) SaveResume(); // a note being written is kept with the rest
         var e = entry.Clone();
         e.Status = Status; e.Rating = Rating <= 0 ? null : Rating; e.Minutes = (int)Math.Round(Math.Max(0, double.IsNaN(Hours) ? 0 : Hours) * 60);
         e.Started = Started?.Date; e.Finished = Status is DiaryStatus.Completed or DiaryStatus.Dropped ? Finished?.Date : null;
@@ -365,7 +367,7 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
     // Closing with changes asks first; incoherent dates are explained next to the fields (guide 14).
     private string opened = "";
     private string Snapshot() => $"{Status}|{Rating}|{Hours}|{Started?.Date}|{Finished?.Date}|{Review}|{Platform}|{string.Join(",", FeatToggles.Where(f => f.Selected).Select(f => f.Id))}|{string.Join(",", Categories.Select(c => c.Value))}|{string.Join(",", Moods.Where(m => m.Selected).Select(m => m.Id))}|{Difficulty}|{string.Join(";", Runs.Select(r => r.Key))}";
-    public bool IsDirty => Snapshot() != opened;
+    public bool IsDirty => Snapshot() != opened || ResumeDirty;
     public string DateError => Started is { } s && Finished is { } f && f.Date < s.Date ? Text["DyDateOrder"] : "";
     public bool CanSave => DateError.Length == 0;
     partial void OnStartedChanged(DateTimeOffset? value) { OnPropertyChanged(nameof(DateError)); OnPropertyChanged(nameof(CanSave)); }

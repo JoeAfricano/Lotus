@@ -1,0 +1,69 @@
+<UserControl x:Class="Lotus.App.Controls.SaveProtectionCard" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Visibility="Collapsed" AutomationProperties.AutomationId="game-saves">
+ <!-- "Proteção de progresso": collapsed by default; the folder is only read when the card is opened -->
+ <Expander x:Name="Box" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="16" Expanding="OnExpanding" AutomationProperties.AutomationId="game-saves-box">
+  <Expander.Header>
+   <Grid ColumnSpacing="14" Padding="0,10">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+    <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE74E;" Style="{StaticResource BadgeIconStyle}"/></Border>
+    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+     <TextBlock x:Name="Title" FontWeight="SemiBold" FontSize="15"/>
+     <TextBlock x:Name="Summary" AutomationProperties.AutomationId="game-saves-status" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+    </StackPanel>
+   </Grid>
+  </Expander.Header>
+  <StackPanel Spacing="12">
+   <!-- Folder -->
+   <StackPanel Spacing="4" Visibility="{Binding Supported, Converter={StaticResource BooleanVisibility}}">
+    <TextBlock x:Name="FolderLabel" Style="{StaticResource CaptionStyle}"/>
+    <TextBlock Text="{Binding FolderPath}" IsTextSelectionEnabled="True" TextWrapping="Wrap" FontSize="13" Visibility="{Binding FolderPath, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="game-saves-folder"/>
+    <TextBlock Text="{Binding FolderInfo}" Style="{StaticResource CaptionStyle}" Visibility="{Binding FolderInfo, Converter={StaticResource PresenceVisibility}}"/>
+    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+     <Button x:Name="OpenButton" Style="{StaticResource SoftButtonStyle}" Click="OnOpen" Visibility="{Binding FolderPath, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="game-saves-open"/>
+     <Button x:Name="PickButton" Style="{StaticResource SoftButtonStyle}" Click="OnPick" IsEnabled="{Binding CanEnable}" AutomationProperties.AutomationId="game-saves-pick"/>
+    </StackPanel>
+    <Grid ColumnSpacing="10" Margin="0,6,0,0" Visibility="{Binding CloudSynced, Converter={StaticResource BooleanVisibility}}">
+     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+     <FontIcon Glyph="&#xE753;" FontSize="14" VerticalAlignment="Top" Margin="0,2,0,0" Foreground="{ThemeResource RoseBrush}"/>
+     <TextBlock x:Name="CloudNote" Grid.Column="1" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+    </Grid>
+   </StackPanel>
+   <!-- Actions -->
+   <StackPanel Orientation="Horizontal" Spacing="8">
+    <Button x:Name="EnableButton" Style="{StaticResource PrimaryButtonStyle}" Click="OnEnable" IsEnabled="{Binding CanEnable}" Visibility="{Binding CanEnable, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="game-saves-enable"/>
+    <Button x:Name="RecoverButton" Style="{StaticResource PrimaryButtonStyle}" Click="OnRecover" Visibility="{Binding Interrupted, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="game-saves-recover"/>
+    <Button x:Name="BackupButton" Style="{StaticResource SoftButtonStyle}" Click="OnBackup" IsEnabled="{Binding CanBackup}" Visibility="{Binding IsOn, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="game-saves-backup"/>
+    <Button x:Name="OffButton" Style="{StaticResource SoftButtonStyle}" Click="OnOff" Visibility="{Binding IsOn, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="game-saves-off"/>
+    <ProgressRing IsActive="{Binding Busy}" Width="20" Height="20" VerticalAlignment="Center"/>
+   </StackPanel>
+   <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource MainTextBrush}" Visibility="{Binding HasMessage, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="game-saves-message" AutomationProperties.LiveSetting="Polite"/>
+   <!-- Automatic copies -->
+   <StackPanel Spacing="4" Visibility="{Binding IsOn, Converter={StaticResource BooleanVisibility}}">
+    <ToggleSwitch x:Name="AutoSwitch" Toggled="OnAuto" AutomationProperties.AutomationId="game-saves-auto"/>
+    <ComboBox x:Name="KeepBox" SelectionChanged="OnKeep" MinWidth="200" AutomationProperties.AutomationId="game-saves-keep"/>
+   </StackPanel>
+   <!-- Saved backups -->
+   <StackPanel Spacing="6" Visibility="{Binding Supported, Converter={StaticResource BooleanVisibility}}">
+    <TextBlock x:Name="ManageLabel" FontWeight="SemiBold" Margin="0,6,0,0"/>
+    <TextBlock x:Name="NoBackups" Style="{StaticResource CaptionStyle}"/>
+    <ItemsControl x:Name="List" ItemsSource="{Binding Backups}" AutomationProperties.AutomationId="game-saves-list">
+     <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+     <ItemsControl.ItemTemplate>
+      <DataTemplate>
+       <Grid ColumnSpacing="10" Padding="12,8" CornerRadius="10" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <StackPanel VerticalAlignment="Center" Spacing="1">
+         <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="13.5"/>
+         <TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+        </StackPanel>
+        <Button Grid.Column="1" Tag="{Binding Id}" Click="OnRestore" IsEnabled="{Binding CanRestore}" Style="{StaticResource SoftButtonStyle}" Content="{Binding DataContext.Text[SpRestore], ElementName=Box}" AutomationProperties.AutomationId="game-saves-restore"/>
+        <Button Grid.Column="2" Tag="{Binding Id}" Click="OnDelete" Style="{StaticResource SoftButtonStyle}" Padding="10,6" ToolTipService.ToolTip="{Binding DataContext.Text[SpDelete], ElementName=Box}" AutomationProperties.Name="{Binding DataContext.Text[SpDelete], ElementName=Box}" AutomationProperties.AutomationId="game-saves-delete"><FontIcon Glyph="&#xE74D;" FontSize="14"/></Button>
+       </Grid>
+      </DataTemplate>
+     </ItemsControl.ItemTemplate>
+    </ItemsControl>
+   </StackPanel>
+   <TextBlock x:Name="WhereNote" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" FontSize="11.5"/>
+  </StackPanel>
+ </Expander>
+</UserControl>

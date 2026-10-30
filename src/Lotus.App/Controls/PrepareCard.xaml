@@ -1,0 +1,26 @@
+<UserControl x:Class="Lotus.App.Controls.PrepareCard" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Visibility="Collapsed" AutomationProperties.AutomationId="game-prepare">
+ <!-- "Preparar e Jogar" for this game: collapsed by default, the summary says what happens when Jogar is clicked -->
+ <Expander x:Name="Box" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" CornerRadius="16" AutomationProperties.AutomationId="game-prepare-box">
+  <Expander.Header>
+   <Grid ColumnSpacing="14" Padding="0,10">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+    <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE768;" Style="{StaticResource BadgeIconStyle}"/></Border>
+    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+     <TextBlock x:Name="Title" FontWeight="SemiBold" FontSize="15"/>
+     <TextBlock Text="{Binding Summary}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+    </StackPanel>
+   </Grid>
+  </Expander.Header>
+  <StackPanel Spacing="4">
+   <ToggleSwitch x:Name="PrepareSwitch" IsOn="{Binding Prepare, Mode=TwoWay}" AutomationProperties.AutomationId="game-prepare-on"/>
+   <StackPanel Spacing="2" Margin="0,4,0,0">
+    <CheckBox x:Name="ProfileBox" IsChecked="{Binding UseProfile, Mode=OneWay}" IsEnabled="{Binding DetailsEnabled}" Click="OnProfile" AutomationProperties.AutomationId="game-prepare-profile"/>
+    <CheckBox x:Name="ControllerBox" IsChecked="{Binding CheckController, Mode=TwoWay}" IsEnabled="{Binding DetailsEnabled}" AutomationProperties.AutomationId="game-prepare-controller"/>
+    <CheckBox x:Name="SystemBox" IsChecked="{Binding CheckSystem, Mode=TwoWay}" IsEnabled="{Binding DetailsEnabled}" AutomationProperties.AutomationId="game-prepare-system"/>
+    <CheckBox x:Name="QuietBox" IsChecked="{Binding OnlyRelevant, Mode=TwoWay}" IsEnabled="{Binding DetailsEnabled}" AutomationProperties.AutomationId="game-prepare-quiet"/>
+   </StackPanel>
+   <TextBlock x:Name="Note" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" Margin="0,6,0,0"/>
+  </StackPanel>
+ </Expander>
+</UserControl>
