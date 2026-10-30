@@ -80,8 +80,11 @@ public sealed class OnboardingViewModel : ObservableObject
     // What the chosen goal changes in practice (examples shown next to the choice).
     public IReadOnlyList<string> GoalExamples => [Text["ObGoalEx" + goal + "1"], Text["ObGoalEx" + goal + "2"], Text["ObGoalEx" + goal + "3"]];
     public IReadOnlyList<ThemeOption> Themes => [.. InterfacePreferences.Themes.Select(t => new ThemeOption(t, Text[t], t switch { "Light" => "#F7ECF1", "Graphite" => "#222228", "System" => "#8A7B86", _ => "#211A29" }, t == theme))];
-    public string Theme { get => theme; set { if (value is not null && SetProperty(ref theme, value)) { if (InterfacePreferences.Themes.Contains(value)) lastMode = value; ThemePreview?.Invoke(this, value); OnPropertyChanged(nameof(Themes)); OnPropertyChanged(nameof(Featured)); } } }
+    public string Theme { get => theme; set { if (value is not null && SetProperty(ref theme, value)) { if (InterfacePreferences.Themes.Contains(value)) lastMode = value; ThemePreview?.Invoke(this, value); OnPropertyChanged(nameof(Themes)); OnPropertyChanged(nameof(Featured)); OnPropertyChanged(nameof(IsReadyTheme)); OnPropertyChanged(nameof(ShowColors)); } } }
     // Ready-made themes from the gallery (the rest, and the Theme Studio, are in Settings).
+    // A ready-made theme brings its own colors: the color choice is hidden meanwhile.
+    public bool IsReadyTheme => theme == "Custom";
+    public bool ShowColors => !IsReadyTheme;
     public static readonly string[] FeaturedIds = ["sakura", "synthwave", "cyberpunk", "aurora", "ocean", "gold"];
     private string? customCode;
     private string lastMode = "Midnight";
@@ -93,7 +96,7 @@ public sealed class OnboardingViewModel : ObservableObject
         customCode = Lotus.Core.Themes.ThemeEngine.ToCode(p.Spec);
         theme = "Custom";
         CustomThemePreview?.Invoke(this, p.Spec);
-        OnPropertyChanged(nameof(Theme)); OnPropertyChanged(nameof(Themes)); OnPropertyChanged(nameof(Featured)); OnPropertyChanged(nameof(Accents));
+        OnPropertyChanged(nameof(Theme)); OnPropertyChanged(nameof(Themes)); OnPropertyChanged(nameof(Featured)); OnPropertyChanged(nameof(IsReadyTheme)); OnPropertyChanged(nameof(ShowColors)); OnPropertyChanged(nameof(Accents));
     }
     public IReadOnlyList<AccentOption> Accents => [.. new[] { ("rose", "AccentRose", "#AD245E"), ("violet", "AccentViolet", "#6D43B5"), ("blue", "AccentBlue", "#245CC1"), ("green", "AccentGreen", "#28715A"), ("crimson", "AccentCrimson", "#B02236"), ("gold", "AccentGold", "#8F5E16"), ("dark", "AccentDark", "#3E3239") }
         .Select(a => new AccentOption(a.Item1, Text[a.Item2], a.Item3, a.Item1 == accent && theme != "Custom"))]; // a ready-made theme has its own colors
@@ -105,7 +108,7 @@ public sealed class OnboardingViewModel : ObservableObject
         {
             if (value is null) return;
             var back = theme == "Custom";
-            if (back) { theme = lastMode; ThemePreview?.Invoke(this, theme); OnPropertyChanged(nameof(Theme)); OnPropertyChanged(nameof(Themes)); OnPropertyChanged(nameof(Featured)); }
+            if (back) { theme = lastMode; ThemePreview?.Invoke(this, theme); OnPropertyChanged(nameof(Theme)); OnPropertyChanged(nameof(Themes)); OnPropertyChanged(nameof(Featured)); OnPropertyChanged(nameof(IsReadyTheme)); OnPropertyChanged(nameof(ShowColors)); }
             if (SetProperty(ref accent, value) || back) { AccentPreview?.Invoke(this, value); OnPropertyChanged(nameof(Accents)); }
         }
     }

@@ -26,7 +26,7 @@ Esta versão é sobre o **visual**: o Lotus passa a ter temas completos e editá
 
 ### Tutorial inicial melhorado
 - As boas-vindas mostram as 5 etapas reais (perfil, objetivo, visual, programas e pronto).
-- "Seu visual" ganhou **6 temas prontos** aplicados ao vivo, além dos modos e cores; escolher uma cor volta ao modo anterior.
+- "Seu visual" ganhou **6 temas prontos** aplicados ao vivo, além dos modos e cores. Com um tema pronto escolhido, a escolha de cor some, porque o tema já tem as próprias cores.
 - Programas recomendados em duas colunas, sem precisar rolar.
 - O tour final mostra o **Meu diário** (sessões que entram sozinhas, "O que jogar agora?" e retrospectiva) no lugar do exemplo "preparar e jogar", e o "Por que está travando?" cita os overlays.
 

@@ -232,8 +232,8 @@
        </Button>
       </DataTemplate></ItemsControl.ItemTemplate>
      </ItemsControl>
-     <TextBlock Text="{Binding Text[ObAccentTitle]}" FontWeight="SemiBold" Margin="0,4,0,0"/>
-     <ItemsControl ItemsSource="{Binding Accents}" AutomationProperties.AutomationId="ob-accents">
+     <TextBlock Text="{Binding Text[ObAccentTitle]}" FontWeight="SemiBold" Margin="0,4,0,0" Visibility="{Binding ShowColors, Converter={StaticResource BooleanVisibility}}"/>
+     <ItemsControl ItemsSource="{Binding Accents}" Visibility="{Binding ShowColors, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="ob-accents">
       <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
       <ItemsControl.ItemTemplate><DataTemplate>
        <Button Tag="{Binding Id}" Click="OnPickAccent" Width="74" Padding="8,10" CornerRadius="14" HorizontalContentAlignment="Center"
@@ -256,6 +256,7 @@
        </Button>
       </DataTemplate></ItemsControl.ItemTemplate>
      </ItemsControl>
+     <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{Binding IsReadyTheme, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xE790;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[ObReadyColors]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" VerticalAlignment="Center"/></StackPanel>
      <TextBlock Text="{Binding Text[ObFeaturedHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
     </StackPanel>
     <!-- 4. Recommended programs (install only on click + confirmation) -->
