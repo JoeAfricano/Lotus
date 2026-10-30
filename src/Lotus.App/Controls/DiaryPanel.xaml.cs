@@ -54,16 +54,21 @@ public sealed partial class DiaryPanel : UserControl
     private void Render()
     {
         if (Vm is not { } vm) return;
-        Initial.Text = vm.Name.Length > 0 ? char.ToUpperInvariant(vm.Name[0]).ToString() : "P";
-        Picture.Visibility = Visibility.Collapsed;
-        if (vm.Avatar is { Length: > 0 } a && File.Exists(a)) { PictureBrush.ImageSource = new BitmapImage(new Uri(a)) { DecodePixelWidth = 200 }; Picture.Visibility = Visibility.Visible; }
+        FullInitial.Text = Initial.Text = vm.Name.Length > 0 ? char.ToUpperInvariant(vm.Name[0]).ToString() : "P";
+        Picture.Visibility = FullPicture.Visibility = Visibility.Collapsed;
+        if (vm.Avatar is { Length: > 0 } a && File.Exists(a))
+        {
+            FullPictureBrush.ImageSource = PictureBrush.ImageSource = new BitmapImage(new Uri(a)) { DecodePixelWidth = 200 };
+            Picture.Visibility = FullPicture.Visibility = Visibility.Visible;
+        }
+        PaintHeader();
         // XP bar glides to its value.
         var target = vm.LevelPercent; var from = XpBar.Value; var start = DateTime.UtcNow;
-        if (!Motion.Enabled) { XpBar.Value = target; }
+        if (!Motion.Enabled) { XpBar.Value = FullXpBar.Value = target; }
         else
         {
             var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMilliseconds(16);
-            timer.Tick += (s, _) => { var p = Math.Min(1, (DateTime.UtcNow - start).TotalMilliseconds / 700); XpBar.Value = from + (target - from) * (1 - Math.Pow(1 - p, 3)); if (p >= 1) s.Stop(); };
+            timer.Tick += (s, _) => { var p = Math.Min(1, (DateTime.UtcNow - start).TotalMilliseconds / 700); XpBar.Value = FullXpBar.Value = from + (target - from) * (1 - Math.Pow(1 - p, 3)); if (p >= 1) s.Stop(); };
             timer.Start();
         }
         PaintTabs();
@@ -184,6 +189,48 @@ public sealed partial class DiaryPanel : UserControl
         var dialog = new ContentDialog { XamlRoot = XamlRoot, RequestedTheme = ThemePalette.Element, Title = vm.Text["DySaveFilterTitle"], Content = box, PrimaryButtonText = vm.Text["DySave"], CloseButtonText = vm.Text["DlgCancel"], DefaultButton = ContentDialogButton.Primary };
         box.TextChanged += (_, _) => dialog.IsPrimaryButtonEnabled = box.Text.Trim().Length > 0; dialog.IsPrimaryButtonEnabled = false;
         if (await dialog.ShowAsync() == ContentDialogResult.Primary) { vm.SaveCurrentFilter(box.Text); UiSound.Play(UiSound.Cue.Done); BuildChips(); }
+    }
+
+    // ---- "Top 4" showcase: an empty slot lists the diary's games; a filled one opens, swaps or clears ----
+    private void OnShowcaseSlot(object sender, RoutedEventArgs e)
+    {
+        if (Vm is not { } vm || sender is not FrameworkElement { DataContext: ShowcaseSlot slot } anchor) return;
+        var menu = new MenuFlyout();
+        MenuFlyoutItemBase Pick(DiaryEntry entry)
+        {
+            var item = new MenuFlyoutItem { Text = entry.Rating is { } r ? $"{entry.Name}  ·  {r:0.#}" : entry.Name };
+            item.Click += (_, _) => { vm.SetShowcase(slot.Index, entry.Key); UiSound.Play(UiSound.Cue.Done); };
+            return item;
+        }
+        var candidates = vm.ShowcaseCandidates().Where(c => c.Key != slot.Card?.Key).Take(20).ToList();
+        if (slot.Card is { } card)
+        {
+            var open = new MenuFlyoutItem { Text = vm.Text["DyShowcaseOpen"], Icon = new FontIcon { Glyph = "\uE70F" } }; open.Click += (_, _) => MainWindow.Shell?.OpenDiaryEditor(card.Entry);
+            var swap = new MenuFlyoutSubItem { Text = vm.Text["DyShowcaseSwap"], Icon = new FontIcon { Glyph = "\uE8AB" } };
+            foreach (var c in candidates) swap.Items.Add(Pick(c));
+            var remove = new MenuFlyoutItem { Text = vm.Text["DyShowcaseRemove"], Icon = new FontIcon { Glyph = "\uE711" } }; remove.Click += (_, _) => vm.SetShowcase(slot.Index, null);
+            menu.Items.Add(open); if (candidates.Count > 0) menu.Items.Add(swap); menu.Items.Add(remove);
+        }
+        else if (candidates.Count == 0) menu.Items.Add(new MenuFlyoutItem { Text = vm.Text["DyShowcaseEmpty"], IsEnabled = false });
+        else foreach (var c in candidates) menu.Items.Add(Pick(c));
+        menu.ShowAt(anchor);
+    }
+
+    // ---- Profile header: compact band or the full layout ----
+    private void OnHeaderToggle(object sender, RoutedEventArgs e)
+    {
+        if (Vm is not { } vm) return;
+        vm.HeaderCompact = !vm.HeaderCompact; UiSound.Play(UiSound.Cue.Toggle);
+        PaintHeader(); Motion.Settle(vm.HeaderCompact ? HeaderCompact : HeaderFull);
+    }
+    private void PaintHeader()
+    {
+        if (Vm is not { } vm) return;
+        HeaderCompact.Visibility = vm.HeaderCompact ? Visibility.Visible : Visibility.Collapsed;
+        HeaderFull.Visibility = vm.HeaderCompact ? Visibility.Collapsed : Visibility.Visible;
+        HeaderToggleIcon.Glyph = vm.HeaderCompact ? "\uE740" : "\uE73F"; // expand / collapse
+        var tip = vm.Text[vm.HeaderCompact ? "DyHeaderExpand" : "DyHeaderCompact"];
+        ToolTipService.SetToolTip(HeaderToggle, tip); Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(HeaderToggle, tip);
     }
     private void OnOpenGameList(object sender, RoutedEventArgs e) => GameListRequested?.Invoke(this, EventArgs.Empty);
 }

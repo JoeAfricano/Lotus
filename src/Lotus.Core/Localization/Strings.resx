@@ -2039,4 +2039,13 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="DyColStarted" xml:space="preserve"><value>Início</value></data>
   <data name="DyColFinished" xml:space="preserve"><value>Fim</value></data>
   <data name="DyColPlatform" xml:space="preserve"><value>Plataforma</value></data>
+  <data name="DyShowcaseTitle" xml:space="preserve"><value>Meu Top 4</value></data>
+  <data name="DyShowcaseHint" xml:space="preserve"><value>Seus favoritos de todos os tempos. Toque num espaço para escolher.</value></data>
+  <data name="DyShowcaseOpen" xml:space="preserve"><value>Abrir no diário</value></data>
+  <data name="DyShowcaseSwap" xml:space="preserve"><value>Trocar jogo</value></data>
+  <data name="DyShowcaseRemove" xml:space="preserve"><value>Tirar da vitrine</value></data>
+  <data name="DyShowcaseEmpty" xml:space="preserve"><value>Adicione jogos ao diário para montar sua vitrine.</value></data>
+  <data name="DyPlatinumRibbon" xml:space="preserve"><value>PLATINA</value></data>
+  <data name="DyHeaderExpand" xml:space="preserve"><value>Mostrar o topo completo</value></data>
+  <data name="DyHeaderCompact" xml:space="preserve"><value>Deixar o topo compacto</value></data>
 </root>

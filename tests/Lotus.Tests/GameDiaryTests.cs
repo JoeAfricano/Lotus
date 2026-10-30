@@ -127,4 +127,19 @@ public sealed class DiaryScreenTests
         Assert.Equal("table", new DiaryViewModel(diary, text, prefs).ViewMode);                       // layout remembered
         page.DeleteFilter("RPGs nota 9+"); Assert.False(page.HasSavedFilters);
     }
+
+    [Fact] public void ShowcaseKeepsFourSlotsAndOneGameOnce()
+    {
+        var diary = new GameDiary(new Memory(), ex => throw ex); var text = new Lotus.Core.TextCatalog();
+        diary.Save(new DiaryEntry { Key = "steam:1", Name = "Elden Ring", Rating = 10, Feats = ["platinum"], Status = DiaryStatus.Completed });
+        diary.Save(new DiaryEntry { Key = "steam:2", Name = "Hades", Status = DiaryStatus.Dropped });
+        var page = new DiaryViewModel(diary, text, new Lotus.Core.PreferencesService(new Prefs()));
+        Assert.Equal(4, page.Showcase.Count); Assert.All(page.Showcase, s => Assert.True(s.IsEmpty));
+        page.SetShowcase(2, "steam:1"); Assert.Equal("Elden Ring", page.Showcase[2].Card!.Name);
+        page.SetShowcase(0, "steam:1"); Assert.True(page.Showcase[2].IsEmpty); Assert.Equal("Elden Ring", page.Showcase[0].Card!.Name); // moved, not copied
+        page.SetShowcase(0, null); Assert.True(page.Showcase[0].IsEmpty);
+        var elden = page.Items.Single(i => i.Name == "Elden Ring"); Assert.True(elden.IsPlatinum && elden.IsPerfect);
+        Assert.Equal(0.42, page.Items.Single(i => i.Name == "Hades").CoverOpacity);
+        Assert.True(page.HeaderCompact); page.HeaderCompact = false; Assert.False(page.HeaderCompact);
+    }
 }

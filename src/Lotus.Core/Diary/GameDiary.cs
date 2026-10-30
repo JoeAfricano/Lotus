@@ -38,6 +38,7 @@ public sealed class DiaryData
     public List<DiaryEntry> Entries { get; set; } = [];
     public string Bio { get; set; } = "";
     public List<DiaryFilter> Filters { get; set; } = []; // filters the player saved with a name
+    public List<string> Showcase { get; set; } = []; // "Top 4" favorites: up to 4 entry keys, in order (empty string = free slot)
 }
 
 // A saved combination of diary filters (any field left null means "any").
@@ -115,6 +116,18 @@ public sealed class GameDiary(IGameDiaryStore store, Action<Exception> log)
         data.Filters.Add(filter); Persist();
     }
     public void DeleteFilter(string name) { if (data.Filters.RemoveAll(f => f.Name == name) > 0) Persist(); }
+
+    // "Top 4" showcase: slot 0-3 holds an entry key; null clears the slot. A game appears in one slot only.
+    public const int ShowcaseSize = 4;
+    public IReadOnlyList<string> Showcase => data.Showcase;
+    public void SetShowcase(int slot, string? key)
+    {
+        if (slot is < 0 or >= ShowcaseSize) return;
+        while (data.Showcase.Count < ShowcaseSize) data.Showcase.Add("");
+        if (key is not null) for (var i = 0; i < ShowcaseSize; i++) if (data.Showcase[i] == key) data.Showcase[i] = "";
+        data.Showcase[slot] = key ?? "";
+        Persist();
+    }
 
     public void SetBio(string? bio)
     {

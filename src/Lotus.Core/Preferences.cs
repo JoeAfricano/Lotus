@@ -23,6 +23,7 @@ public sealed record InterfacePreferences
     public string? AvatarPath { get; init; }
     public string Goal { get; init; } = "balanced"; // fps | competitive | balanced
     public string DiaryView { get; init; } = "grid"; // diary layout: grid | list | table
+    public bool DiaryHeaderCompact { get; init; } = true; // diary profile header: compact band or the full layout
     public string? AdaptiveSync { get; init; } // FreeSync/G-Sync on: "on" | "off" | null (not asked yet; asked before the first game analysis)
     public string Accent { get; init; } = "rose"; // rose | violet | blue | green (design) and the older crimson | gold | dark
     public static readonly string[] Goals = ["fps", "competitive", "balanced"];

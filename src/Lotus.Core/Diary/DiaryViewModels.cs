@@ -7,6 +7,7 @@ namespace Lotus.Core.Diary;
 public sealed record DiaryTab(string Id, string Label, int Count);
 public sealed record BadgeView(string Id, string Glyph, string Name, string Detail, bool Unlocked, string ProgressText, double Fraction);
 public sealed record FeatChip(string Id, string Glyph, string Label);
+public sealed record ShowcaseSlot(int Index, DiaryCard? Card) { public bool IsEmpty => Card is null; public bool HasCard => Card is not null; }
 
 // One game in the diary list.
 public sealed class DiaryCard(DiaryEntry e, ITextCatalog t, int rank)
@@ -34,6 +35,11 @@ public sealed class DiaryCard(DiaryEntry e, ITextCatalog t, int rank)
     public string FinishedText => Entry.Finished?.ToString("d", Culture(t)) ?? "—";
     public string HoursOrDash => Entry.Minutes > 0 ? DiaryText.Hours(Entry.Minutes) : "—";
     public string Genre => Entry.Genres.FirstOrDefault() ?? "—";
+    // Special covers: holographic sheen for platinum, gold seal for a 10, faded art for dropped games.
+    public bool IsPlatinum => Entry.Feats.Contains("platinum");
+    public bool IsPerfect => Entry.Rating >= 10;
+    public bool IsDropped => Entry.Status == DiaryStatus.Dropped;
+    public double CoverOpacity => IsDropped ? 0.42 : 1;
     private static CultureInfo Culture(ITextCatalog t) => CultureInfo.GetCultureInfo(t.Language);
 }
 
@@ -88,6 +94,21 @@ public sealed class DiaryViewModel : ObservableObject
     public string Query { get => query; set { if (SetProperty(ref query, value ?? "")) Fill(); } }
     public string Sort { get => sort; set { if (value is not null && SetProperty(ref sort, value)) Fill(); } }
 
+
+    // ---- "Top 4" showcase ----
+    public ObservableCollection<ShowcaseSlot> Showcase { get; } = [];
+    private void BuildShowcase()
+    {
+        Showcase.Clear();
+        for (var i = 0; i < GameDiary.ShowcaseSize; i++)
+        {
+            var key = i < diary.Showcase.Count ? diary.Showcase[i] : "";
+            Showcase.Add(new(i, key.Length > 0 && diary.Get(key) is { } e ? new DiaryCard(e, Text, i + 1) : null));
+        }
+    }
+    public void SetShowcase(int slot, string? key) => diary.SetShowcase(slot, key);
+    // Candidates for a slot: best rated and most played first.
+    public IReadOnlyList<DiaryEntry> ShowcaseCandidates() => [.. diary.Entries.OrderByDescending(e => e.Rating ?? -1).ThenByDescending(e => e.Minutes)];
     // ---- Layout and filters ----
     // Layout: "grid" (cover wall) | "list" (detailed cards) | "table" (one row per game); remembered in preferences.
     public string ViewMode
@@ -95,6 +116,7 @@ public sealed class DiaryViewModel : ObservableObject
         get => Preferences.Current.DiaryView;
         set { if (value is "grid" or "list" or "table" && value != Preferences.Current.DiaryView) { Preferences.Update(Preferences.Current with { DiaryView = value }); NotifyView(); } }
     }
+    public bool HeaderCompact { get => Preferences.Current.DiaryHeaderCompact; set { if (value != Preferences.Current.DiaryHeaderCompact) { Preferences.Update(Preferences.Current with { DiaryHeaderCompact = value }); OnPropertyChanged(); } } }
     public bool IsGrid => ViewMode == "grid"; public bool IsList => ViewMode == "list"; public bool IsTable => ViewMode == "table";
     private void NotifyView() { foreach (var n in new[] { nameof(ViewMode), nameof(IsGrid), nameof(IsList), nameof(IsTable) }) OnPropertyChanged(n); }
 
@@ -171,7 +193,7 @@ public sealed class DiaryViewModel : ObservableObject
         Badges = [.. Progress.Badges.OrderByDescending(b => b.Unlocked).ThenByDescending(b => b.Fraction).Select(b =>
             new BadgeView(b.Id, b.Glyph, Text["DyBadge" + b.Id], Text["DyBadge" + b.Id + "Hint"], b.Unlocked,
                 b.Unlocked ? Text["DyBadgeDone"] : $"{b.Current}/{b.Goal}", b.Fraction))];
-        BuildOptions();
+        BuildOptions(); BuildShowcase();
         Fill();
         foreach (var p in typeof(DiaryViewModel).GetProperties().Where(p => p.Name is not (nameof(Items) or nameof(Tabs) or nameof(Text) or nameof(Preferences) or nameof(Diary) or nameof(Tab) or nameof(Query) or nameof(Sort) or nameof(Section) or nameof(Achievements))))
             OnPropertyChanged(p.Name);
