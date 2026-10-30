@@ -24,11 +24,11 @@ public static class StoreArt
         if (steamId is { Length: > 0 })
         {
             // Local hero first (no download), then the store's hero, then the store header.
-            if (WindowsGameLibrary.DefaultSteamPath() is { } steam && LocalSteamHero(steam, steamId) is { } local) list.Add(local);
+            if (await Task.Run(() => WindowsGameLibrary.DefaultSteamPath() is { } steam ? LocalSteamHero(steam, steamId) : null, cancel).ConfigureAwait(false) is { } local) list.Add(local);
             list.Add(CatalogText.Hero(steamId));
             list.Add(CatalogText.Header(steamId));
         }
-        else if (store == GameStores.Epic && EpicWide(id) is { } epic) list.Add(epic);
+        else if (store == GameStores.Epic && await Task.Run(() => EpicWide(id), cancel).ConfigureAwait(false) is { } epic) list.Add(epic); // ~1 MB catalog: parsed off the UI thread
         else if (store == GameStores.Gog && await GogBackgroundAsync(id, cancel).ConfigureAwait(false) is { } gog) list.Add(gog);
         return list;
     }

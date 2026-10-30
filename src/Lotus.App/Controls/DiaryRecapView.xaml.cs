@@ -184,7 +184,7 @@ public sealed partial class DiaryRecapView : UserControl
             }
             SavedText.Text = vm.Text.Format("DyRcSaved", file);
             UiSound.Play(UiSound.Cue.Done);
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe", $"/select,\"{file}\"") { UseShellExecute = true });
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe") { ArgumentList = { "/select,", file } })?.Dispose();
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Runtime.InteropServices.COMException or ArgumentException)
         {

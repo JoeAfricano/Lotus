@@ -134,7 +134,9 @@ public sealed class FileGameSettingsStore(string root) : IGameSettingsStore
     {
         var path = PathFor(gameKey);
         if (File.Exists(path)) return;
-        Directory.CreateDirectory(root); File.WriteAllText(path, raw, new UTF8Encoding(false));
+        // Written to a temp file first: a crash mid-write must never leave a cut copy that "Restaurar" would put back.
+        Directory.CreateDirectory(root);
+        var temp = path + ".tmp"; File.WriteAllText(temp, raw, new UTF8Encoding(false)); File.Move(temp, path, overwrite: true);
     }
     public void ClearOriginal(string gameKey) { var p = PathFor(gameKey); if (File.Exists(p)) File.Delete(p); }
 }

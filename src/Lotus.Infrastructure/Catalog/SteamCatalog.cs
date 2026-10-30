@@ -230,19 +230,20 @@ public sealed class SteamCatalog : IGameCatalog
     private async Task<JsonNode?> JsonAsync(string url, string? cacheName, TimeSpan maxAge, CancellationToken token)
     {
         var file = cacheName is null ? null : Path.Combine(cache, cacheName);
-        if (file is not null && Fresh(file, maxAge)) { try { return JsonNode.Parse(await File.ReadAllTextAsync(file, token)); } catch (JsonException) { } }
+        if (file is not null && Fresh(file, maxAge)) { try { return JsonNode.Parse(await File.ReadAllTextAsync(file, token)); } catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException) { } }
         await gate.WaitAsync(token);
         try
         {
             var text = await http.GetStringAsync(url, token);
             var node = JsonNode.Parse(text);
-            if (file is not null && node is not null) await File.WriteAllTextAsync(file, text, token);
+            // A cache that cannot be written (locked, disk full) must not throw away a good download.
+            if (file is not null && node is not null) { try { await File.WriteAllTextAsync(file, text, CancellationToken.None); } catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { Serilog.Log.Warning(ex, "Catalog cache write {File}", file); } }
             return node;
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
         {
             Serilog.Log.Warning(ex, "Catalog request failed {Url}", url);
-            if (file is not null && File.Exists(file)) { try { return JsonNode.Parse(await File.ReadAllTextAsync(file, token)); } catch (JsonException) { } }
+            if (file is not null && File.Exists(file)) { try { return JsonNode.Parse(await File.ReadAllTextAsync(file, CancellationToken.None)); } catch (Exception e2) when (e2 is JsonException or IOException or UnauthorizedAccessException) { } }
             return null;
         }
         finally { await Task.Delay(250, CancellationToken.None); gate.Release(); }
