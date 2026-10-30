@@ -10,7 +10,7 @@
   <Border Style="{StaticResource CardStyle}">
    <StackPanel Spacing="14">
     <StackPanel Orientation="Horizontal" Spacing="12">
-     <Border Width="40" Height="40" CornerRadius="12" Background="{ThemeResource AccentGradientBrush}"><FontIcon Glyph="&#xE7F8;" FontSize="17" Foreground="White"/></Border>
+     <Border Width="40" Height="40" CornerRadius="12" Background="{ThemeResource AccentGradientBrush}"><FontIcon Glyph="&#xE7F8;" FontSize="17" Foreground="{ThemeResource OnRoseBrush}"/></Border>
      <StackPanel VerticalAlignment="Center"><TextBlock Text="{Binding Text[BkLocalTitle]}" FontWeight="SemiBold" FontSize="16"/><TextBlock Text="{Binding Text[BkLocalHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
     </StackPanel>
     <StackPanel Orientation="Horizontal" Spacing="10">

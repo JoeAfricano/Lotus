@@ -14,21 +14,32 @@ public sealed class ThemePalette
     private readonly ResourceDictionary resources;
     private readonly UISettings windows = new();
     private string theme = "Midnight", accent = "rose";
+    private Lotus.Core.Themes.ThemeSpec? custom;
+    private readonly Dictionary<string, Color[]> originalStops = [];
+    public Lotus.Core.Themes.ThemeTokens? CustomTokens { get; private set; }
 
     public ThemePalette(ResourceDictionary resources)
     {
+        Instance = this;
         this.resources = resources;
+        foreach (var key in new[] { "GoldGradientBrush", "PetalBrush" })
+            if (resources.TryGetValue(key, out var v) && v is LinearGradientBrush g) originalStops[key] = [.. g.GradientStops.Select(s => s.Color)];
         // "System" follows Windows live (light/dark switch, high contrast on/off).
         windows.ColorValuesChanged += (_, _) => Dispatcher?.TryEnqueue(Refresh); // also fires when high contrast turns on/off
     }
 
+    public static ThemePalette? Instance { get; private set; } // for code-built art (banners) that should follow custom themes
     public Microsoft.UI.Dispatching.DispatcherQueue? Dispatcher { get; set; }
     public static ElementTheme Element { get; private set; } = ElementTheme.Dark; // for dialogs and other popups
     public bool IsLight => Element == ElementTheme.Light;
     public event EventHandler? Changed;
     private static bool HighContrast => new AccessibilitySettings().HighContrast;
 
-    public void Apply(string themeName) { theme = themeName; Refresh(); }
+    public void Apply(string themeName, Lotus.Core.Themes.ThemeSpec? customTheme = null) { theme = themeName; custom = customTheme; Refresh(); }
+    // Theme Studio: every change previews live on the whole app (not saved until the player saves).
+    public void Preview(Lotus.Core.Themes.ThemeSpec spec) { theme = "Custom"; custom = spec; Refresh(); }
+    public bool IsCustom => theme == "Custom" && custom is not null;
+    public Lotus.Core.Themes.ThemeSpec? Custom => IsCustom ? custom : null;
     public void ApplyAccent(string accentName) { accent = accentName; Refresh(); }
 
     private bool SystemIsLight()
@@ -40,10 +51,13 @@ public sealed class ThemePalette
     private void Refresh()
     {
         var hc = HighContrast;
-        var light = !hc && (theme == "Light" || (theme == "System" && SystemIsLight()));
+        CustomTokens = !hc && IsCustom ? Lotus.Core.Themes.ThemeEngine.Derive(custom!) : null;
+        var light = !hc && (CustomTokens?.Light ?? (theme == "Light" || (theme == "System" && SystemIsLight())));
         var graphite = !hc && !light && theme == "Graphite";
         Element = light ? ElementTheme.Light : ElementTheme.Dark;
-        if (hc) ApplyHighContrast(); else ApplyTokens(light, graphite);
+        if (hc) ApplyHighContrast();
+        else if (CustomTokens is { } ct) ApplyCustom(ct);
+        else { ApplyTokens(light, graphite); RestoreStops(); }
         Changed?.Invoke(this, EventArgs.Empty);
     }
 
@@ -52,20 +66,24 @@ public sealed class ThemePalette
     {
         var t = light ? Tokens.Light : graphite ? Tokens.Graphite : Tokens.Dark;
         var (fill, textDark, textLight) = Accent(accent);
-        var accentText = light ? textLight : textDark;
+        ApplySet(t, light, fill, light ? textLight : textDark, light ? Rgb(0x8E, 0x58, 0x1E) : Rgb(0xEE, 0xC1, 0xA8), Rgb(255, 255, 255), // rose-gold in the dark, a deep readable gold on porcelain
+            light ? Rgb(0x24, 0x6C, 0x4D) : Rgb(0x8A, 0xD6, 0xB3), light ? Rgb(0x77, 0x50, 0x1B) : Rgb(0xEA, 0xC1, 0x83), light ? Rgb(0xB3, 0x22, 0x42) : Rgb(0xFF, 0x9C, 0xA6), 255);
+    }
+
+    // Every shared brush from one set of colors (built-in modes and custom themes alike).
+    private void ApplySet(Tokens t, bool light, Color fill, Color accentText, Color gold, Color onAccent, Color success, Color warning, Color error, byte cardAlpha)
+    {
         Set("WindowBrush", t.Canvas); Set("ShellBrush", t.Canvas); Set("NavigationViewContentBackground", t.Canvas);
         Set("PaneBrush", t.Shell); Set("NavigationViewDefaultPaneBackground", t.Shell); Set("NavigationViewExpandedPaneBackground", t.Shell);
-        Set("CardBrush", t.Card); Set("CardHoverBrush", t.Raised); Set("ElevatedBrush", t.Raised);
+        Set("CardBrush", WithAlpha(t.Card, cardAlpha)); Set("CardHoverBrush", WithAlpha(t.Raised, cardAlpha)); Set("ElevatedBrush", t.Raised); // sheets and popups stay solid, only cards follow the transparency
         Set("CardBorderBrush", t.Border); Set("NavigationViewContentGridBorderBrush", t.Border); Set("DividerBrush", t.Divider);
         Set("CardHoverBorderBrush", WithAlpha(accentText, 0x80));
         Set("MainTextBrush", t.Text); Set("MutedBrush", t.TextSecondary);
         Set("RoseBrush", accentText);
-        Set("GoldBrush", light ? Rgb(0x8E, 0x58, 0x1E) : Rgb(0xEE, 0xC1, 0xA8)); // rose-gold in the dark, a deep readable gold on porcelain
-        Set("OnRoseBrush", Rgb(255, 255, 255));
+        Set("GoldBrush", gold);
+        Set("OnRoseBrush", onAccent); Set("TextOnAccentFillColorPrimaryBrush", onAccent);
         Set("SubtleBrush", light ? Argb(0x1F, 0xB0, 0x19, 0x5A) : Argb(0x14, 255, 255, 255));
-        Set("SuccessBrush", light ? Rgb(0x24, 0x6C, 0x4D) : Rgb(0x8A, 0xD6, 0xB3));
-        Set("WarningBrush", light ? Rgb(0x77, 0x50, 0x1B) : Rgb(0xEA, 0xC1, 0x83));
-        Set("ErrorBrush", light ? Rgb(0xB3, 0x22, 0x42) : Rgb(0xFF, 0x9C, 0xA6));
+        Set("SuccessBrush", success); Set("WarningBrush", warning); Set("ErrorBrush", error);
         var soft = WithAlpha(fill, light ? (byte)0x1F : (byte)0x33);
         Set("AccentSoftBrush", soft); Set("BadgeBrush", soft);
         // Navigation: text, hover and the selected item.
@@ -91,6 +109,23 @@ public sealed class ThemePalette
             hero.GradientStops[1].Color = WithAlpha(fill, light ? (byte)0x10 : (byte)0x1A);
             hero.GradientStops[2].Color = WithAlpha(t.Card, 0x10);
         }
+    }
+
+    // A custom theme: the derived (already readable) colors, the card transparency and the gold/petal gradients.
+    private void ApplyCustom(Lotus.Core.Themes.ThemeTokens k)
+    {
+        static Color C(Lotus.Core.Themes.ThemeColor c) => Rgb(c.R, c.G, c.B);
+        var t = new Tokens(C(k.Canvas), C(k.Shell), C(k.Card), C(k.Raised), C(k.Border), C(k.Divider), C(k.Text), C(k.TextSecondary));
+        ApplySet(t, k.Light, C(k.AccentFill), C(k.AccentText), C(k.Detail), C(k.OnAccent), C(k.Success), C(k.Warning), C(k.Error), (byte)Math.Round(k.CardOpacity * 255));
+        var detail = C(k.Detail); var fill = C(k.AccentFill);
+        SetStops("GoldGradientBrush", [Lighten(detail, 0.35), detail, Darken(detail, 0.78)]);
+        SetStops("PetalBrush", [Lighten(fill, 0.2), fill, Darken(fill, 0.45)]);
+    }
+    private void RestoreStops() { foreach (var (key, colors) in originalStops) SetStops(key, colors); }
+    private void SetStops(string key, Color[] colors)
+    {
+        if (resources.TryGetValue(key, out var v) && v is LinearGradientBrush g)
+            for (var i = 0; i < g.GradientStops.Count && i < colors.Length; i++) g.GradientStops[i].Color = colors[i];
     }
 
     private void ApplyHighContrast()

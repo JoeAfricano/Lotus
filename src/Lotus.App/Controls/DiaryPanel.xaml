@@ -9,7 +9,7 @@
     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <Grid Width="60" Height="60" VerticalAlignment="Center">
      <Ellipse Fill="{ThemeResource AccentGradientBrush}"/>
-     <TextBlock x:Name="Initial" FontSize="24" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+     <TextBlock x:Name="Initial" FontSize="24" FontWeight="SemiBold" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
      <Ellipse x:Name="Picture" Visibility="Collapsed"><Ellipse.Fill><ImageBrush x:Name="PictureBrush" Stretch="UniformToFill"/></Ellipse.Fill></Ellipse>
      <Ellipse Stroke="{ThemeResource GoldGradientBrush}" StrokeThickness="2"/>
      <Border CornerRadius="9" Padding="6,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-8" Background="{ThemeResource GoldGradientBrush}">
@@ -42,7 +42,7 @@
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <Grid Width="96" Height="96">
      <Ellipse Fill="{ThemeResource AccentGradientBrush}"/>
-     <TextBlock x:Name="FullInitial" FontSize="36" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+     <TextBlock x:Name="FullInitial" FontSize="36" FontWeight="SemiBold" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
      <Ellipse x:Name="FullPicture" Visibility="Collapsed"><Ellipse.Fill><ImageBrush x:Name="FullPictureBrush" Stretch="UniformToFill"/></Ellipse.Fill></Ellipse>
      <Ellipse Stroke="{ThemeResource GoldGradientBrush}" StrokeThickness="2.5"/>
      <Border CornerRadius="11" Padding="8,2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-10" Background="{ThemeResource GoldGradientBrush}">

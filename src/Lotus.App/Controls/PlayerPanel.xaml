@@ -9,7 +9,7 @@
    <Grid Padding="24,22,20,16" ColumnSpacing="14">
     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <Grid Width="56" Height="56">
-     <Border CornerRadius="16" Background="{ThemeResource AccentGradientBrush}"><TextBlock x:Name="Initial" FontSize="22" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+     <Border CornerRadius="16" Background="{ThemeResource AccentGradientBrush}"><TextBlock x:Name="Initial" FontSize="22" FontWeight="SemiBold" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
      <Border x:Name="Picture" CornerRadius="16" Visibility="Collapsed"><Border.Background><ImageBrush x:Name="PictureBrush" Stretch="UniformToFill"/></Border.Background></Border>
     </Grid>
     <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">

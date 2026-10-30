@@ -31,7 +31,7 @@ public sealed partial class AppearancePicker : UserControl
     }
     private void OnVm(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(PreferencesViewModel.ThemeIndex) or nameof(PreferencesViewModel.Accent) or nameof(PreferencesViewModel.ThemeOptions)) DispatcherQueue.TryEnqueue(Build);
+        if (e.PropertyName is nameof(PreferencesViewModel.ThemeIndex) or nameof(PreferencesViewModel.Accent) or nameof(PreferencesViewModel.ThemeOptions) or nameof(PreferencesViewModel.IsCustom) or nameof(PreferencesViewModel.MyThemes) or nameof(PreferencesViewModel.ActiveCustom)) DispatcherQueue.TryEnqueue(Build);
     }
 
     private void Build()
@@ -93,6 +93,10 @@ public sealed partial class AppearancePicker : UserControl
             AccentDots.Children.Add(b);
             if (selected) AccentName.Text = t[label];
         }
+        // Custom themes bring their own colors: the accent dots apply to the modes above.
+        AccentArea.Opacity = vm.IsCustom ? 0.55 : 1;
+        if (vm.IsCustom) AccentName.Text = t["ApAccentCustom"];
+        BuildGallery(vm);
     }
 
     private static Color Hex(string hex) => Color.FromArgb(255, Convert.ToByte(hex[1..3], 16), Convert.ToByte(hex[3..5], 16), Convert.ToByte(hex[5..7], 16));

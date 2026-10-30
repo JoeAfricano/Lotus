@@ -14,5 +14,23 @@
     <TextBlock x:Name="AccentName" Style="{StaticResource CaptionStyle}"/>
    </StackPanel>
   </Grid>
+  <!-- Theme gallery: complete themes (colors + animated background), the player's own themes and shared codes -->
+  <StackPanel Spacing="12" Margin="0,10,0,0" AutomationProperties.AutomationId="settings-theme-gallery">
+   <Grid ColumnSpacing="12">
+    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <StackPanel Spacing="2" VerticalAlignment="Center"><TextBlock x:Name="GalleryTitle" FontSize="16" FontWeight="SemiBold"/><TextBlock x:Name="GalleryHint" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+    <Button x:Name="PasteButton" Grid.Column="1" Click="OnPaste" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="theme-paste">
+     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE77F;" FontSize="13"/><TextBlock x:Name="PasteLabel"/></StackPanel>
+    </Button>
+    <Button x:Name="CreateButton" Grid.Column="2" Click="OnCreate" Style="{StaticResource PrimaryButtonStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="theme-create">
+     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE790;" FontSize="13"/><TextBlock x:Name="CreateLabel"/></StackPanel>
+    </Button>
+   </Grid>
+   <TextBlock x:Name="GalleryMessage" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" Visibility="Collapsed"/>
+   <VariableSizedWrapGrid x:Name="GalleryCards" Orientation="Horizontal" ItemWidth="214" ItemHeight="158" AutomationProperties.AutomationId="theme-gallery-cards"/>
+   <TextBlock x:Name="MineTitle" FontSize="16" FontWeight="SemiBold" Margin="0,6,0,0"/>
+   <TextBlock x:Name="MineEmpty" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+   <VariableSizedWrapGrid x:Name="MineCards" Orientation="Horizontal" ItemWidth="214" ItemHeight="158" AutomationProperties.AutomationId="theme-mine-cards"/>
+  </StackPanel>
  </StackPanel>
 </UserControl>

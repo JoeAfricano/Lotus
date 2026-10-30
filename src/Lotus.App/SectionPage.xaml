@@ -244,7 +244,7 @@
      <Border Style="{StaticResource CardStyle}" Margin="0,12,0,0" AutomationProperties.AutomationId="settings-credits">
       <StackPanel Spacing="10">
        <StackPanel Orientation="Horizontal" Spacing="12">
-        <Border Width="40" Height="40" CornerRadius="12" Background="{ThemeResource AccentGradientBrush}"><FontIcon Glyph="&#xE734;" FontSize="17" Foreground="White"/></Border>
+        <Border Width="40" Height="40" CornerRadius="12" Background="{ThemeResource AccentGradientBrush}"><FontIcon Glyph="&#xE734;" FontSize="17" Foreground="{ThemeResource OnRoseBrush}"/></Border>
         <StackPanel VerticalAlignment="Center"><TextBlock Text="{Binding Text[CrTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding AppVersion}" Style="{StaticResource CaptionStyle}"/></StackPanel>
        </StackPanel>
        <TextBlock app:Rich.Text="{Binding Text[CrMade]}" Style="{StaticResource BodyStyle}"/>

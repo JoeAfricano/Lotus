@@ -17,7 +17,7 @@
  </Style>
 
  <!-- Controls -->
- <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource AccentButtonStyle}"><Setter Property="app:Motion.Press" Value="True"/><Setter Property="Background" Value="{StaticResource AccentGradientBrush}"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderThickness" Value="0"/><Setter Property="MinHeight" Value="40"/><Setter Property="Padding" Value="20,8"/><Setter Property="CornerRadius" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+ <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource AccentButtonStyle}"><Setter Property="app:Motion.Press" Value="True"/><Setter Property="Background" Value="{StaticResource AccentGradientBrush}"/><Setter Property="Foreground" Value="{StaticResource OnRoseBrush}"/><Setter Property="BorderThickness" Value="0"/><Setter Property="MinHeight" Value="40"/><Setter Property="Padding" Value="20,8"/><Setter Property="CornerRadius" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
  <Style x:Key="SoftButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}"><Setter Property="app:Motion.Press" Value="True"/><Setter Property="MinHeight" Value="40"/><Setter Property="Padding" Value="16,8"/><Setter Property="CornerRadius" Value="10"/></Style>
  <Style x:Key="ProfileToggleStyle" TargetType="ToggleButton" BasedOn="{StaticResource DefaultToggleButtonStyle}"><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Left"/><Setter Property="MinHeight" Value="64"/><Setter Property="Padding" Value="14,10"/><Setter Property="CornerRadius" Value="14"/></Style>
 

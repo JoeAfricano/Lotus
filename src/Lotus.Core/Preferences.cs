@@ -28,6 +28,16 @@ public sealed record InterfacePreferences
     public bool GamePriority { get; init; } // while a game is open: game above normal, known launchers/browsers below normal (restored after)
     public string? AdaptiveSync { get; init; } // FreeSync/G-Sync on: "on" | "off" | null (not asked yet; asked before the first game analysis)
     public string Accent { get; init; } = "rose"; // rose | violet | blue | green (design) and the older crimson | gold | dark
+    public string? CustomTheme { get; init; }                 // the active custom theme (its share code), used when Theme is "Custom"
+    // Themes the player saved (share codes, newest first), kept as one text with a code per line so preferences keep
+    // comparing by value (a list would only equal itself).
+    public string SavedThemes { get; init; } = "";
+    [System.Text.Json.Serialization.JsonIgnore]
+    public IReadOnlyList<string> MyThemes => SplitThemes(SavedThemes);
+    public static string JoinThemes(IEnumerable<string> codes) => string.Join('\n', codes);
+    private static string[] SplitThemes(string? text) => (text ?? "").Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    public const int MyThemesLimit = 24;
+    public Lotus.Core.Themes.ThemeSpec? ActiveCustom() => Theme == "Custom" && Lotus.Core.Themes.ThemeEngine.TryFromCode(CustomTheme, out var s) ? s : null;
     public static readonly string[] Goals = ["fps", "competitive", "balanced"];
     public static readonly string[] Accents = ["rose", "violet", "blue", "green", "crimson", "gold", "dark"];
     // Midnight = dark (stored name kept for older files), Light, System (follows Windows), Graphite = dark on neutral surfaces.
@@ -36,7 +46,8 @@ public sealed record InterfacePreferences
     {
         SchemaVersion = 1,
         Language = Language == "en-US" ? "en-US" : "pt-BR",
-        Theme = Themes.Contains(Theme) ? Theme : "Midnight",
+        Theme = Themes.Contains(Theme) || (Theme == "Custom" && Lotus.Core.Themes.ThemeEngine.TryFromCode(CustomTheme, out _)) ? Theme : "Midnight",
+        SavedThemes = JoinThemes(SplitThemes(SavedThemes).Where(c => Lotus.Core.Themes.ThemeEngine.TryFromCode(c, out _)).Distinct().Take(MyThemesLimit)),
         ProfileSource = ProfileSource is "steam" or "custom" ? ProfileSource : "none",
         DisplayName = (DisplayName ?? "").Trim() is var n && n.Length > 32 ? n[..32] : (DisplayName ?? "").Trim(),
         Goal = Goals.Contains(Goal) ? Goal : "balanced",
@@ -104,6 +115,35 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool GamePriority { get => service.Current.GamePriority; set { if (value != service.Current.GamePriority) { service.Update(service.Current with { GamePriority = value }); OnPropertyChanged(); } } }
     public double UiSoundVolume { get => service.Current.UiSoundVolume; set { var v = (int)Math.Round(value); if (v != service.Current.UiSoundVolume) { service.Update(service.Current with { UiSoundVolume = v }); OnPropertyChanged(); } } }
     public string Message { get => message; private set => SetProperty(ref message, value); }
+
+    // ---- Custom themes (Theme Studio, gallery, shared codes) ----
+    public bool IsCustom => service.Current.Theme == "Custom";
+    public string? CustomCode => IsCustom ? service.Current.CustomTheme : null;
+    public Themes.ThemeSpec? ActiveCustom => CustomCode is { } c && Themes.ThemeEngine.TryFromCode(c, out var s) ? s : null;
+    public IReadOnlyList<string> MyThemes => service.Current.MyThemes;
+    // Uses a custom theme now (gallery, studio, pasted code). The built-in mode cards show nothing selected meanwhile.
+    public bool UseTheme(Themes.ThemeSpec spec)
+    {
+        var code = Themes.ThemeEngine.ToCode(spec);
+        if (!service.Update(service.Current with { Theme = "Custom", CustomTheme = code })) { Message = text["SaveFailed"]; return false; }
+        themeIndex = -1;
+        foreach (var n in new[] { nameof(ThemeIndex), nameof(IsCustom), nameof(CustomCode), nameof(ActiveCustom) }) OnPropertyChanged(n);
+        return true;
+    }
+    // Saves to "Meus temas" (a theme with the same name is replaced) and puts it first.
+    public bool SaveMyTheme(Themes.ThemeSpec spec)
+    {
+        var clean = Themes.ThemeEngine.Normalize(spec);
+        var code = Themes.ThemeEngine.ToCode(clean);
+        var others = service.Current.MyThemes.Where(c => !(Themes.ThemeEngine.TryFromCode(c, out var s) && string.Equals(s.Name, clean.Name, StringComparison.CurrentCultureIgnoreCase)));
+        if (!service.Update(service.Current with { SavedThemes = InterfacePreferences.JoinThemes([code, .. others.Take(InterfacePreferences.MyThemesLimit - 1)]) })) { Message = text["SaveFailed"]; return false; }
+        OnPropertyChanged(nameof(MyThemes));
+        return true;
+    }
+    public void DeleteMyTheme(string code)
+    {
+        if (service.Update(service.Current with { SavedThemes = InterfacePreferences.JoinThemes(service.Current.MyThemes.Where(c => c != code)) })) OnPropertyChanged(nameof(MyThemes));
+    }
     public ITextCatalog Text => text;
     public string PlayerName => service.Current.DisplayName;
     public PreferencesViewModel(PreferencesService service, ITextCatalog text)
@@ -111,7 +151,7 @@ public sealed class PreferencesViewModel : ObservableObject
         this.service = service;
         this.text = text;
         languageIndex = service.Current.Language == "en-US" ? 1 : 0;
-        themeIndex = Math.Max(0, Array.IndexOf(InterfacePreferences.Themes, service.Current.Theme));
+        themeIndex = Array.IndexOf(InterfacePreferences.Themes, service.Current.Theme); // -1 while a custom theme is in use
         reduceMotion = service.Current.ReduceMotion;
     }
     private void Save()
@@ -119,14 +159,14 @@ public sealed class PreferencesViewModel : ObservableObject
         var updated = service.Current with
         {
             Language = LanguageIndex == 1 ? "en-US" : "pt-BR",
-            Theme = InterfacePreferences.Themes[ThemeIndex],
+            Theme = ThemeIndex >= 0 ? InterfacePreferences.Themes[ThemeIndex] : service.Current.Theme,
             ReduceMotion = ReduceMotion
         };
         if (!service.Update(updated))
         {
             synchronizing = true;
             LanguageIndex = service.Current.Language == "en-US" ? 1 : 0;
-            ThemeIndex = Math.Max(0, Array.IndexOf(InterfacePreferences.Themes, service.Current.Theme));
+            themeIndex = Array.IndexOf(InterfacePreferences.Themes, service.Current.Theme); OnPropertyChanged(nameof(ThemeIndex));
             ReduceMotion = service.Current.ReduceMotion;
             synchronizing = false;
             Message = text["SaveFailed"];
@@ -134,6 +174,6 @@ public sealed class PreferencesViewModel : ObservableObject
         }
         Message = text["Saved"];
         OnPropertyChanged(nameof(ThemeOptions));
-        OnPropertyChanged(nameof(ThemeIndex));
+        OnPropertyChanged(nameof(ThemeIndex)); OnPropertyChanged(nameof(IsCustom)); OnPropertyChanged(nameof(ActiveCustom));
     }
 }

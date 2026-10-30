@@ -163,7 +163,7 @@ public partial class App : Application
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo(Text.Language);
         CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo(Text.Language);
         var preferences = services.GetRequiredService<PreferencesService>();
-        try { var palette = services.GetRequiredService<ThemePalette>(); palette.ApplyAccent(preferences.Current.Accent); palette.Apply(preferences.Current.Theme); }
+        try { var palette = services.GetRequiredService<ThemePalette>(); palette.ApplyAccent(preferences.Current.Accent); palette.Apply(preferences.Current.Theme, preferences.Current.ActiveCustom()); }
         catch (Exception ex) { Log.Error(ex, "Theme palette failed"); }
         Log.Information("Preferences initialized {Status} {Language} {Theme}", preferences.LoadStatus, Text.Language, preferences.Current.Theme);
         // A glitch in one screen (an animation, a binding, an event handler) must not close the whole app: log it

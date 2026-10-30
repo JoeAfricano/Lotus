@@ -182,7 +182,7 @@ public sealed partial class MainWindow : Window
             new Lotus.Core.Profile.RecommendedAppsViewModel(new Lotus.Infrastructure.Profile.WingetAppInstaller(), text, ex => Serilog.Log.Warning(ex, "Recommended apps")));
         onboarding.AccentPreview += (_, accent) => palette.ApplyAccent(accent);
         onboarding.ThemePreview += (_, theme) => palette.Apply(theme);
-        Onboarding.Closed += (_, _) => { palette.Apply(preferences.Current.Theme); palette.ApplyAccent(preferences.Current.Accent); ShowProfile(); ShowRoute(force: true); };
+        Onboarding.Closed += (_, _) => { palette.Apply(preferences.Current.Theme, preferences.Current.ActiveCustom()); palette.ApplyAccent(preferences.Current.Accent); ShowProfile(); ShowRoute(force: true); };
         palette.ApplyAccent(preferences.Current.Accent);
         UiSound.Volume = preferences.Current.UiSoundVolume / 100.0; UiSound.Enabled = preferences.Current.UiSounds;
         ShowProfile();
@@ -253,6 +253,7 @@ public sealed partial class MainWindow : Window
         UpdateBrandMotion();
         var light = ThemePalette.Element == ElementTheme.Light;
         AmbientBackground.Opacity = light ? 0 : 1; // design: the ambient art barely shows on porcelain, so names keep their contrast
+        ApplyBackdrop();
         var tb = AppWindow.TitleBar;
         tb.ButtonForegroundColor = light ? Windows.UI.Color.FromArgb(255, 40, 28, 48) : Windows.UI.Color.FromArgb(255, 245, 239, 243);
         tb.ButtonInactiveForegroundColor = light ? Windows.UI.Color.FromArgb(255, 120, 104, 130) : Windows.UI.Color.FromArgb(255, 150, 130, 142);
@@ -262,7 +263,7 @@ public sealed partial class MainWindow : Window
     private void OnPreferencesChanged(object? sender, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != nameof(PreferencesService.Current)) return;
-        palette.Apply(preferences.Current.Theme);
+        palette.Apply(preferences.Current.Theme, preferences.Current.ActiveCustom());
         palette.ApplyAccent(preferences.Current.Accent);
         Motion.Enabled = !preferences.Current.ReduceMotion;
         UiSound.Volume = preferences.Current.UiSoundVolume / 100.0; UiSound.Enabled = preferences.Current.UiSounds;
@@ -348,7 +349,8 @@ public sealed partial class MainWindow : Window
     {
         if (!initialized) return;
         var visible = AppWindow.IsVisible && AppWindow.Presenter is not OverlappedPresenter { State: OverlappedPresenterState.Minimized };
-        AmbientBackground.SetWindowState(windowActive, visible, preferences.Current.ReduceMotion);
+        AmbientBackground.SetWindowState(windowActive, visible && AmbientBackground.Visibility == Visibility.Visible, preferences.Current.ReduceMotion); // hidden by a custom background: it stops drawing
+        ThemeScene.SetState(visible && windowActive, preferences.Current.ReduceMotion || !new Windows.UI.ViewManagement.UISettings().AnimationsEnabled);
     }
     private void UpdateBrandMotion()
     {

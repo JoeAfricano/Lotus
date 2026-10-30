@@ -2198,4 +2198,84 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="DlNotifyOne" xml:space="preserve"><value>{0} está em promoção ({1}): {2} na Steam.</value></data>
   <data name="DlNotifyMany" xml:space="preserve"><value>{0} jogos da sua lista estão em promoção, como {1} ({2}).</value></data>
   <data name="OvFoundOne" xml:space="preserve"><value>1 item que pode causar travadas.</value></data>
+  <data name="ApAccentCustom" xml:space="preserve"><value>O tema em uso tem as próprias cores. As cores de destaque valem para os modos acima.</value></data>
+  <data name="ApGallery" xml:space="preserve"><value>Galeria de temas</value></data>
+  <data name="ApGalleryHint" xml:space="preserve"><value>Temas completos, com cores e fundo animado. Clique para usar; clique com o botão direito para editar ou copiar o código.</value></data>
+  <data name="ApPaste" xml:space="preserve"><value>Colar código</value></data>
+  <data name="ApCreate" xml:space="preserve"><value>Criar tema</value></data>
+  <data name="ApMine" xml:space="preserve"><value>Meus temas</value></data>
+  <data name="ApMineEmpty" xml:space="preserve"><value>Os temas que você criar no estúdio ou colar de um amigo aparecem aqui.</value></data>
+  <data name="ApUse" xml:space="preserve"><value>Usar este tema</value></data>
+  <data name="ApEdit" xml:space="preserve"><value>Editar no estúdio</value></data>
+  <data name="ApDelete" xml:space="preserve"><value>Excluir</value></data>
+  <data name="ApCopied" xml:space="preserve"><value>Código copiado. Cole numa conversa para compartilhar o tema.</value></data>
+  <data name="ApCardHint" xml:space="preserve"><value>Clique para usar · botão direito para mais opções</value></data>
+  <data name="ApPasted" xml:space="preserve"><value>Tema &quot;{0}&quot; aplicado e guardado em Meus temas.</value></data>
+  <data name="ApPasteNone" xml:space="preserve"><value>Não encontrei um código de tema do Lotus no que foi copiado. Ele começa com LOTUS-THEME:</value></data>
+  <data name="ThPresetlotus" xml:space="preserve"><value>Lotus Rosé</value></data>
+  <data name="ThPresetsakura" xml:space="preserve"><value>Sakura</value></data>
+  <data name="ThPresetsynthwave" xml:space="preserve"><value>Synthwave</value></data>
+  <data name="ThPresetcyberpunk" xml:space="preserve"><value>Cyberpunk</value></data>
+  <data name="ThPresetaurora" xml:space="preserve"><value>Aurora</value></data>
+  <data name="ThPresetocean" xml:space="preserve"><value>Oceano</value></data>
+  <data name="ThPresetforest" xml:space="preserve"><value>Floresta</value></data>
+  <data name="ThPresetgold" xml:space="preserve"><value>Ouro Real</value></data>
+  <data name="ThPresetmono" xml:space="preserve"><value>Monocromático</value></data>
+  <data name="ThPresetvampire" xml:space="preserve"><value>Vampiro</value></data>
+  <data name="ThPresetice" xml:space="preserve"><value>Gelo</value></data>
+  <data name="ThPresetporcelain" xml:space="preserve"><value>Porcelana</value></data>
+  <data name="TsEyebrow" xml:space="preserve"><value>Estúdio de temas</value></data>
+  <data name="TsNewName" xml:space="preserve"><value>Meu tema</value></data>
+  <data name="TsStart" xml:space="preserve"><value>Começar</value></data>
+  <data name="TsDark" xml:space="preserve"><value>Escuro</value></data>
+  <data name="TsLight" xml:space="preserve"><value>Claro</value></data>
+  <data name="TsSeedTitle" xml:space="preserve"><value>Começar de uma cor</value></data>
+  <data name="TsSeedHint" xml:space="preserve"><value>Escolha uma cor e o Lotus monta o tema inteiro, já legível.</value></data>
+  <data name="TsSeedGo" xml:space="preserve"><value>Gerar</value></data>
+  <data name="TsColors" xml:space="preserve"><value>Cores</value></data>
+  <data name="TsColorCanvas" xml:space="preserve"><value>Fundo</value></data>
+  <data name="TsColorCanvasHint" xml:space="preserve"><value>A cor da janela, atrás de tudo.</value></data>
+  <data name="TsColorSurface" xml:space="preserve"><value>Superfície</value></data>
+  <data name="TsColorSurfaceHint" xml:space="preserve"><value>Cartões, painéis e menus.</value></data>
+  <data name="TsColorText" xml:space="preserve"><value>Texto</value></data>
+  <data name="TsColorTextHint" xml:space="preserve"><value>Títulos e textos principais.</value></data>
+  <data name="TsColorAccent" xml:space="preserve"><value>Destaque</value></data>
+  <data name="TsColorAccentHint" xml:space="preserve"><value>Botões, seleção e realces.</value></data>
+  <data name="TsColorDetail" xml:space="preserve"><value>Detalhe</value></data>
+  <data name="TsColorDetailHint" xml:space="preserve"><value>Nomes, números e o &quot;dourado&quot; do Lotus.</value></data>
+  <data name="TsGlass" xml:space="preserve"><value>Transparência dos cartões</value></data>
+  <data name="TsGlassHint" xml:space="preserve"><value>Deixa o fundo aparecer através dos cartões. O Lotus confere a leitura com o fundo por trás.</value></data>
+  <data name="TsBackdrop" xml:space="preserve"><value>Fundo animado</value></data>
+  <data name="TsBackdropColors" xml:space="preserve"><value>Cores do fundo</value></data>
+  <data name="TsSpeed" xml:space="preserve"><value>Velocidade</value></data>
+  <data name="TsIntensity" xml:space="preserve"><value>Intensidade</value></data>
+  <data name="TsGrain" xml:space="preserve"><value>Granulado</value></data>
+  <data name="TsGrainHint" xml:space="preserve"><value>Uma textura fina, como em filme.</value></data>
+  <data name="TsKindnone" xml:space="preserve"><value>Nenhum</value></data>
+  <data name="TsKindgradient" xml:space="preserve"><value>Degradê</value></data>
+  <data name="TsKindpetals" xml:space="preserve"><value>Pétalas</value></data>
+  <data name="TsKindaurora" xml:space="preserve"><value>Aurora</value></data>
+  <data name="TsKindparticles" xml:space="preserve"><value>Partículas</value></data>
+  <data name="TsKindwaves" xml:space="preserve"><value>Ondas neon</value></data>
+  <data name="TsKindlotus" xml:space="preserve"><value>Flor de lótus</value></data>
+  <data name="TsKindNoneNote" xml:space="preserve"><value>Só a cor de fundo, sem animação.</value></data>
+  <data name="TsKindLotusNote" xml:space="preserve"><value>A arte original do Lotus, com a flor e as linhas em movimento.</value></data>
+  <data name="TsBackdropNote" xml:space="preserve"><value>O fundo pausa sozinho com a janela minimizada ou com um jogo aberto, e fica parado com &quot;Reduzir animações&quot;.</value></data>
+  <data name="TsAddColor" xml:space="preserve"><value>Adicionar cor</value></data>
+  <data name="TsRemoveColor" xml:space="preserve"><value>Remover a última cor</value></data>
+  <data name="TsReadGood" xml:space="preserve"><value>Leitura ótima</value></data>
+  <data name="TsReadGoodHint" xml:space="preserve"><value>Todos os textos passam no padrão de contraste para leitura confortável (WCAG).</value></data>
+  <data name="TsReadAdjusted" xml:space="preserve"><value>Ajustado para leitura</value></data>
+  <data name="TsReadAdjustedHint" xml:space="preserve"><value>Para manter tudo legível, o Lotus ajustou o tom de: {0}. As outras cores ficam como você escolheu.</value></data>
+  <data name="TsParttext" xml:space="preserve"><value>texto</value></data>
+  <data name="TsPartaccent" xml:space="preserve"><value>destaque</value></data>
+  <data name="TsPartdetail" xml:space="preserve"><value>detalhe</value></data>
+  <data name="TsCancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="TsCopy" xml:space="preserve"><value>Copiar código</value></data>
+  <data name="TsCopied" xml:space="preserve"><value>Copiado!</value></data>
+  <data name="TsSave" xml:space="preserve"><value>Salvar e usar</value></data>
+  <data name="TsDiscardTitle" xml:space="preserve"><value>Descartar as mudanças?</value></data>
+  <data name="TsDiscardBody" xml:space="preserve"><value>O tema volta a ser o que estava em uso. As mudanças feitas no estúdio serão perdidas.</value></data>
+  <data name="TsDiscard" xml:space="preserve"><value>Descartar</value></data>
+  <data name="TsKeepEditing" xml:space="preserve"><value>Continuar editando</value></data>
 </root>

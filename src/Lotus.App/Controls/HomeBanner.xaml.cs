@@ -150,9 +150,20 @@ public sealed partial class HomeBanner : UserControl
     ];
     private const string Petals = "M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z";
 
+    // With a custom theme the banner art uses the theme's background colors (each slide starts at another color).
+    private static (Color A, Color B, Color C, Color Glow)? ThemedPalette(int style)
+    {
+        if (ThemePalette.Instance is not { Custom: { } spec, CustomTokens: { } k }) return null;
+        var cs = spec.Backdrop.Colors.Select(h => Lotus.Core.Themes.ThemeColor.Parse(h)).ToList();
+        Color C(Lotus.Core.Themes.ThemeColor c) => Color.FromArgb(255, c.R, c.G, c.B);
+        var i = Math.Abs(style) % cs.Count;
+        var dark = k.Light ? k.Text : k.Canvas; // the banner text is white: keep the art deep even on light themes
+        return (C(cs[i].Mix(dark, 0.55)), C(cs[(i + 1) % cs.Count].Mix(dark, 0.25)), C(dark.Mix(cs[i], 0.08)), C(k.AccentFill.Lighten(0.35)));
+    }
+
     private FrameworkElement Art(int style)
     {
-        var p = Palettes[Math.Abs(style) % Palettes.Length];
+        var p = ThemedPalette(style) ?? Palettes[Math.Abs(style) % Palettes.Length];
         var g = new Grid { Background = Gradient(new(0, 0), new(1, 1), (0, p.C), (0.45, p.A), (1, p.B)) };
         // Soft glows
         g.Children.Add(Orb(p.Glow, 420, 0.30, HorizontalAlignment.Right, VerticalAlignment.Top, new Thickness(0, -160, -80, 0), 0));

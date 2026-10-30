@@ -1,0 +1,96 @@
+<UserControl x:Class="Lotus.App.Controls.ThemeStudio" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="using:Lotus.App" Visibility="Collapsed" AutomationProperties.AutomationId="theme-studio">
+ <!-- A side sheet: the rest of Lotus stays visible and is the live preview of the theme being made -->
+ <Grid>
+  <Border x:Name="Sheet" Width="440" HorizontalAlignment="Right" Margin="0,8,8,8" CornerRadius="20" Background="{ThemeResource ElevatedBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+   <Border.RenderTransform><TranslateTransform x:Name="SheetShift" X="460"/></Border.RenderTransform>
+   <Grid>
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <!-- Header -->
+    <Grid Padding="22,18,14,10" ColumnSpacing="10">
+     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <StackPanel Spacing="6">
+      <TextBlock x:Name="Eyebrow" Style="{StaticResource EyebrowStyle}"/>
+      <TextBox x:Name="NameBox" FontSize="20" FontWeight="SemiBold" MaxLength="32" Background="Transparent" BorderThickness="0,0,0,1" Padding="0,2" TextChanged="OnName" AutomationProperties.AutomationId="theme-studio-name"/>
+     </StackPanel>
+     <Button Grid.Column="1" Click="OnCancel" Padding="8" Background="Transparent" BorderThickness="0" VerticalAlignment="Top" AutomationProperties.AutomationId="theme-studio-close"><FontIcon Glyph="&#xE711;" FontSize="13"/></Button>
+    </Grid>
+
+    <ScrollViewer Grid.Row="1" Padding="22,0,22,0" VerticalScrollBarVisibility="Auto">
+     <StackPanel Spacing="22" Padding="0,4,0,20">
+      <!-- Start: dark or light, or a whole theme from one color -->
+      <StackPanel Spacing="10">
+       <TextBlock x:Name="StartTitle" FontWeight="SemiBold" FontSize="15"/>
+       <Grid ColumnSpacing="8">
+        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <Button x:Name="BaseDark" Tag="dark" Click="OnBase" HorizontalAlignment="Stretch" Padding="10,8" CornerRadius="10" AutomationProperties.AutomationId="theme-studio-dark"/>
+        <Button x:Name="BaseLight" Grid.Column="1" Tag="light" Click="OnBase" HorizontalAlignment="Stretch" Padding="10,8" CornerRadius="10" AutomationProperties.AutomationId="theme-studio-light"/>
+       </Grid>
+       <Grid ColumnSpacing="10" Padding="12,10" CornerRadius="12" Background="{ThemeResource SubtleBrush}">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <Button x:Name="SeedButton" Padding="0" Width="40" Height="40" CornerRadius="20" BorderThickness="2" BorderBrush="{ThemeResource CardBorderBrush}" AutomationProperties.AutomationId="theme-studio-seed"/>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1"><TextBlock x:Name="SeedTitle" FontWeight="SemiBold" FontSize="13"/><TextBlock x:Name="SeedHint" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+        <Button x:Name="SeedGo" Grid.Column="2" Click="OnGenerate" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="theme-studio-generate"/>
+       </Grid>
+      </StackPanel>
+
+      <!-- The five colors -->
+      <StackPanel Spacing="10">
+       <TextBlock x:Name="ColorsTitle" FontWeight="SemiBold" FontSize="15"/>
+       <StackPanel x:Name="ColorRows" Spacing="6"/>
+       <StackPanel Spacing="2" Margin="0,6,0,0">
+        <Grid><TextBlock x:Name="GlassTitle" FontSize="13"/><TextBlock x:Name="GlassValue" FontSize="13" HorizontalAlignment="Right" Foreground="{ThemeResource MutedBrush}"/></Grid>
+        <Slider x:Name="GlassSlider" Minimum="0" Maximum="22" StepFrequency="1" ValueChanged="OnGlass" AutomationProperties.AutomationId="theme-studio-glass"/>
+        <TextBlock x:Name="GlassHint" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+       </StackPanel>
+      </StackPanel>
+
+      <!-- Background -->
+      <StackPanel Spacing="10">
+       <TextBlock x:Name="BackdropTitle" FontWeight="SemiBold" FontSize="15"/>
+       <VariableSizedWrapGrid x:Name="KindChips" Orientation="Horizontal" ItemWidth="128" ItemHeight="76" MaximumRowsOrColumns="3"/>
+       <StackPanel x:Name="BackdropOptions" Spacing="12">
+        <StackPanel Spacing="6">
+         <TextBlock x:Name="BackdropColorsTitle" FontSize="13"/>
+         <StackPanel x:Name="BackdropColors" Orientation="Horizontal" Spacing="8"/>
+        </StackPanel>
+        <StackPanel Spacing="2">
+         <Grid><TextBlock x:Name="SpeedTitle" FontSize="13"/><TextBlock x:Name="SpeedValue" FontSize="13" HorizontalAlignment="Right" Foreground="{ThemeResource MutedBrush}"/></Grid>
+         <Slider x:Name="SpeedSlider" Minimum="25" Maximum="200" StepFrequency="5" ValueChanged="OnSpeed" AutomationProperties.AutomationId="theme-studio-speed"/>
+        </StackPanel>
+        <StackPanel Spacing="2">
+         <Grid><TextBlock x:Name="IntensityTitle" FontSize="13"/><TextBlock x:Name="IntensityValue" FontSize="13" HorizontalAlignment="Right" Foreground="{ThemeResource MutedBrush}"/></Grid>
+         <Slider x:Name="IntensitySlider" Minimum="10" Maximum="100" StepFrequency="5" ValueChanged="OnIntensity" AutomationProperties.AutomationId="theme-studio-intensity"/>
+        </StackPanel>
+        <Grid>
+         <StackPanel VerticalAlignment="Center"><TextBlock x:Name="GrainTitle" FontSize="13"/><TextBlock x:Name="GrainHint" Style="{StaticResource CaptionStyle}"/></StackPanel>
+         <ToggleSwitch x:Name="GrainSwitch" HorizontalAlignment="Right" OnContent="" OffContent="" MinWidth="0" Toggled="OnGrain" AutomationProperties.AutomationId="theme-studio-grain"/>
+        </Grid>
+       </StackPanel>
+       <TextBlock x:Name="BackdropNote" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
+      </StackPanel>
+
+      <!-- Readability: what the engine checked or adjusted -->
+      <Grid x:Name="Readability" ColumnSpacing="12" Padding="14,12" CornerRadius="12" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+       <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <FontIcon x:Name="ReadIcon" FontSize="16" VerticalAlignment="Top" Margin="0,2,0,0"/>
+       <StackPanel Grid.Column="1" Spacing="2"><TextBlock x:Name="ReadTitle" FontWeight="SemiBold" FontSize="13"/><TextBlock x:Name="ReadText" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+      </Grid>
+     </StackPanel>
+    </ScrollViewer>
+
+    <!-- Footer -->
+    <Grid Grid.Row="2" Padding="18,12,18,16" ColumnSpacing="8" BorderBrush="{ThemeResource DividerBrush}" BorderThickness="0,1,0,0">
+     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <Button x:Name="CancelButton" Click="OnCancel" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="theme-studio-cancel"/>
+     <Button x:Name="CopyButton" Grid.Column="1" Click="OnCopy" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Center" AutomationProperties.AutomationId="theme-studio-copy">
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8C8;" FontSize="13"/><TextBlock x:Name="CopyLabel"/></StackPanel>
+     </Button>
+     <Button x:Name="SaveButton" Grid.Column="2" Click="OnSave" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="theme-studio-save">
+      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE74E;" FontSize="13"/><TextBlock x:Name="SaveLabel"/></StackPanel>
+     </Button>
+    </Grid>
+   </Grid>
+  </Border>
+ </Grid>
+</UserControl>

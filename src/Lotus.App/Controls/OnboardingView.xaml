@@ -34,7 +34,7 @@
         <StackPanel Orientation="Horizontal" Spacing="14">
          <Grid Width="60" Height="60">
           <Ellipse Fill="{ThemeResource AccentGradientBrush}"/>
-          <TextBlock Text="{Binding PreviewInitial}" FontSize="24" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding PreviewInitial}" FontSize="24" FontWeight="SemiBold" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
           <Ellipse Visibility="{Binding PreviewPicture, Converter={StaticResource PresenceVisibility}}"><Ellipse.Fill><ImageBrush ImageSource="{Binding PreviewPicture, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Ellipse.Fill></Ellipse>
           <Ellipse Stroke="{StaticResource GoldGradientBrush}" StrokeThickness="2"/>
          </Grid>
@@ -79,7 +79,7 @@
         <StackPanel Grid.Column="1" Spacing="10" Padding="14">
          <Border Height="12" CornerRadius="4" Background="{ThemeResource MainTextBrush}" Width="110" HorizontalAlignment="Left" Opacity="0.85"/>
          <Border Height="64" CornerRadius="10" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
-          <Border Margin="10" CornerRadius="8" Background="{ThemeResource AccentGradientBrush}" Width="70" Height="26" HorizontalAlignment="Left" VerticalAlignment="Bottom"><TextBlock Text="{Binding Text[ObStageLookPlay]}" FontSize="11" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+          <Border Margin="10" CornerRadius="8" Background="{ThemeResource AccentGradientBrush}" Width="70" Height="26" HorizontalAlignment="Left" VerticalAlignment="Bottom"><TextBlock Text="{Binding Text[ObStageLookPlay]}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
          </Border>
          <ProgressBar Value="64" MinHeight="5"/>
          <Border Height="8" CornerRadius="4" Background="{ThemeResource SubtleBrush}" Width="140" HorizontalAlignment="Left"/>
@@ -106,7 +106,7 @@
         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE73E;" FontSize="12" Foreground="#8AD6B3"/><TextBlock Text="{Binding Text[ObStageTourLine1]}" FontSize="12.5" Foreground="White"/></StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE73E;" FontSize="12" Foreground="#8AD6B3"/><TextBlock Text="{Binding Text[ObStageTourLine2]}" FontSize="12.5" Foreground="White"/></StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE9D9;" FontSize="12" Foreground="#EEC1A8"/><TextBlock Text="{Binding Text[ObStageTourLine3]}" FontSize="12.5" Foreground="#EEC1A8" FontWeight="SemiBold"/></StackPanel>
-        <Border Margin="0,4,0,0" CornerRadius="10" Height="34" Background="{ThemeResource AccentGradientBrush}"><StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center"><FontIcon Glyph="&#xF5B0;" FontSize="12" Foreground="White"/><TextBlock Text="{Binding Text[ObStageLookPlay]}" FontWeight="SemiBold" Foreground="White"/></StackPanel></Border>
+        <Border Margin="0,4,0,0" CornerRadius="10" Height="34" Background="{ThemeResource AccentGradientBrush}"><StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center"><FontIcon Glyph="&#xF5B0;" FontSize="12" Foreground="{ThemeResource OnRoseBrush}"/><TextBlock Text="{Binding Text[ObStageLookPlay]}" FontWeight="SemiBold" Foreground="White"/></StackPanel></Border>
        </StackPanel>
       </Border>
       <TextBlock Text="{Binding Text[ObStageTourNote]}" FontSize="11.5" Foreground="#B8A5B0" TextWrapping="Wrap"/>
