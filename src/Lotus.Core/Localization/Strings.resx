@@ -2285,5 +2285,4 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="ObTourDiary" xml:space="preserve"><value>Meu diário</value></data>
   <data name="ObTourDiaryDetail" xml:space="preserve"><value>Suas notas e sua história com cada jogo. As **sessões entram sozinhas** enquanto você joga, e o diário sugere **o que jogar agora**.</value></data>
   <data name="ObTourDiaryEx" xml:space="preserve"><value>Ex.: retrospectiva do ano com horas, gênero favorito e maior nota</value></data>
-  <data name="ObReadyColors" xml:space="preserve"><value>Este tema já vem com as próprias cores. Para escolher uma cor, volte a um dos modos acima.</value></data>
 </root>

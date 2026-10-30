@@ -2285,5 +2285,4 @@ Your games and Windows are not changed.</value></data>
   <data name="ObTourDiary" xml:space="preserve"><value>My diary</value></data>
   <data name="ObTourDiaryDetail" xml:space="preserve"><value>Your scores and your story with each game. **Sessions are added by themselves** while you play, and the diary suggests **what to play now**.</value></data>
   <data name="ObTourDiaryEx" xml:space="preserve"><value>Ex.: a yearly recap with hours, favorite genre and top score</value></data>
-  <data name="ObReadyColors" xml:space="preserve"><value>This theme comes with its own colors. To pick a color, go back to one of the modes above.</value></data>
 </root>

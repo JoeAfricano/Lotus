@@ -102,10 +102,9 @@ public sealed class OnboardingTests : IDisposable
         Assert.Equal(6, vm.Featured.Count);
         vm.PickFeatured("aurora");
         Assert.Equal("Aurora", previewed?.Name); Assert.Equal("Custom", vm.Theme);
-        Assert.True(vm.IsReadyTheme); Assert.False(vm.ShowColors);
         Assert.True(vm.Featured.Single(f => f.Id == "aurora").Selected); Assert.DoesNotContain(vm.Themes, t => t.Selected); Assert.DoesNotContain(vm.Accents, a => a.Selected);
         vm.Accent = vm.Accent; // the same color again still goes back to the mode
-        Assert.Equal("Graphite", vm.Theme); Assert.Equal("Graphite", mode); Assert.True(vm.ShowColors); Assert.DoesNotContain(vm.Featured, f => f.Selected);
+        Assert.Equal("Graphite", vm.Theme); Assert.Equal("Graphite", mode); Assert.DoesNotContain(vm.Featured, f => f.Selected);
         vm.PickFeatured("synthwave");
         vm.Skip();
         Assert.Equal("Custom", prefs.Current.Theme); Assert.Equal("Synthwave", prefs.Current.ActiveCustom()?.Name);
