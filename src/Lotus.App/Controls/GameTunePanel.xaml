@@ -19,7 +19,7 @@
    </Grid>
    <ScrollViewer Grid.Row="1" Padding="26,18,26,18" VerticalScrollBarVisibility="Auto">
     <StackPanel x:Name="Body" Spacing="20">
-     <ProgressRing x:Name="Loading" IsActive="True" Width="28" Height="28" HorizontalAlignment="Left"/>
+     <ProgressRing x:Name="LoadingRing" IsActive="True" Width="28" Height="28" HorizontalAlignment="Left"/>
     </StackPanel>
    </ScrollViewer>
    <!-- Fixed footer: actions -->

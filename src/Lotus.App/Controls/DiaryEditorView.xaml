@@ -9,7 +9,11 @@
 
    <!-- Cinematic header: wide art drifting slowly, a larger cover and the score in a colored ring -->
    <Grid Height="220" CornerRadius="21,21,0,0" Background="#160C14" RequestedTheme="Dark">
-    <Image x:Name="HeaderArt" Stretch="UniformToFill" Opacity="0.85" RenderTransformOrigin="0.5,0.5"><Image.RenderTransform><ScaleTransform x:Name="HeaderZoom"/></Image.RenderTransform></Image>
+    <!-- Banner: the store's own wide art (Steam hero, Epic key art, GOG background) fades in over the quick fallback -->
+    <Grid RenderTransformOrigin="0.5,0.5"><Grid.RenderTransform><ScaleTransform x:Name="HeaderZoom"/></Grid.RenderTransform>
+     <Image x:Name="HeaderArt" Stretch="UniformToFill" Opacity="0.85"/>
+     <Image x:Name="BannerArt" Stretch="UniformToFill" Opacity="0" ImageOpened="OnStoreArtOpened" ImageFailed="OnStoreArtFailed"/>
+    </Grid>
     <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#22160C14" Offset="0"/><GradientStop Color="#99160C14" Offset="0.55"/><GradientStop Color="#FA160C14" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
     <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#CC160C14" Offset="0"/><GradientStop Color="#00160C14" Offset="0.6"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
     <Grid Padding="28,0,28,22" VerticalAlignment="Bottom" ColumnSpacing="20">

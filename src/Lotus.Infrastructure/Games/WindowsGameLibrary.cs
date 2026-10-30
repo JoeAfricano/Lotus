@@ -27,7 +27,7 @@ public sealed class WindowsGameLibrary(string? steamPath = null, string? epicMan
     }
 
     // --- Steam ---
-    private static string? DefaultSteamPath()
+    internal static string? DefaultSteamPath()
     {
         var p = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam")?.GetValue("SteamPath") as string
             ?? Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Valve\Steam")?.GetValue("InstallPath") as string;

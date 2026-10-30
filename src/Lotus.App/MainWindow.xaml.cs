@@ -570,6 +570,13 @@ public sealed partial class MainWindow : Window
         diaryEditor.Open(game, steamMinutes, status);
         DiaryEditor.Open(diaryEditor);
     }
+    // Yearly recap (from the diary's Statistics tab).
+    public void OpenDiaryRecap(int year)
+    {
+        var recap = new Lotus.Core.Diary.DiaryRecapViewModel(diary, text);
+        recap.Open(year, diaryPage.Name);
+        DiaryRecap.Open(recap);
+    }
     // "Quero jogar": adds quietly with a small chime; false when the game was already in the diary.
     public bool WantGame(Lotus.Core.Diary.DiaryEntry game)
     {

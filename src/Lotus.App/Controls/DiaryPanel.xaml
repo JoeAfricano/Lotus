@@ -102,9 +102,11 @@
   <!-- Sections: games, Lotus achievements (the diary medals live there too), Steam -->
   <SelectorBar x:Name="SectionBar" SelectionChanged="OnSection" AutomationProperties.AutomationId="diary-sections">
    <SelectorBarItem x:Name="SectionGames" Tag="games" Text="{Binding Text[DySectionGames]}" Icon="Library"/>
+   <SelectorBarItem x:Name="SectionStats" Tag="stats" Text="{Binding Text[DySectionStats]}"><SelectorBarItem.Icon><FontIcon Glyph="&#xE9D2;"/></SelectorBarItem.Icon></SelectorBarItem>
    <SelectorBarItem x:Name="SectionTrophies" Tag="trophies" Text="{Binding Text[DySectionTrophies]}"><SelectorBarItem.Icon><FontIcon Glyph="&#xE735;"/></SelectorBarItem.Icon></SelectorBarItem>
    <SelectorBarItem x:Name="SectionSteam" Tag="steam" Text="{Binding Text[DySectionSteam]}"><SelectorBarItem.Icon><FontIcon Glyph="&#xE7FC;"/></SelectorBarItem.Icon></SelectorBarItem>
   </SelectorBar>
+  <local:DiaryStatsView x:Name="StatsArea" DataContext="{Binding Stats}" Visibility="Collapsed" RecapRequested="OnRecap"/>
   <local:TrophiesView x:Name="TrophiesArea" DataContext="{Binding Achievements}" Visibility="Collapsed"/>
   <local:SteamTrophiesView x:Name="SteamArea" DataContext="{Binding Achievements}" Visibility="Collapsed"/>
 

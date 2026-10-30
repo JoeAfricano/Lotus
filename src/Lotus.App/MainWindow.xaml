@@ -60,6 +60,7 @@
   <controls:GameTunePanel x:Name="TunePanel" Grid.Row="1" Grid.RowSpan="2"/>
   <controls:PlayerPanel x:Name="Player" Grid.Row="1" Grid.RowSpan="2" EditProfileRequested="OnPlayerEditProfile" DiaryRequested="OnOpenDiary"/>
   <controls:DiaryEditorView x:Name="DiaryEditor" Grid.Row="1" Grid.RowSpan="2" Saved="OnDiarySaved"/>
+  <controls:DiaryRecapView x:Name="DiaryRecap" Grid.Row="1" Grid.RowSpan="2"/>
   <controls:CelebrationView x:Name="Celebration" Grid.Row="1" Grid.RowSpan="2" DiaryRequested="OnOpenDiary"/>
   <controls:TrophyToast x:Name="Toast" Grid.Row="1" Grid.RowSpan="2" ViewRequested="OnToastView"/>
   <controls:OnboardingView x:Name="Onboarding" Grid.RowSpan="3"/>

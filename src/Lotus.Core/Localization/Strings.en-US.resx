@@ -2078,4 +2078,69 @@ Your games and Windows are not changed.</value></data>
   <data name="DyMoodscary" xml:space="preserve"><value>Scary</value></data>
   <data name="DyMoodbeautiful" xml:space="preserve"><value>Beautiful</value></data>
   <data name="DyMoodfunny" xml:space="preserve"><value>Funny</value></data>
+  <data name="DySectionStats" xml:space="preserve"><value>Statistics</value></data>
+  <data name="DyStTitle" xml:space="preserve"><value>Your statistics</value></data>
+  <data name="DyStHint" xml:space="preserve"><value>Everything comes from your diary.</value></data>
+  <data name="DyStGames" xml:space="preserve"><value>Games in the diary</value></data>
+  <data name="DyStCompleted" xml:space="preserve"><value>Completed</value></data>
+  <data name="DyStHours" xml:space="preserve"><value>Hours logged</value></data>
+  <data name="DyStAverage" xml:space="preserve"><value>Average rating</value></data>
+  <data name="DyStDays" xml:space="preserve"><value>{0} days</value></data>
+  <data name="DyStDaysToFinish" xml:space="preserve"><value>Average time to finish</value></data>
+  <data name="DyStHoursToFinish" xml:space="preserve"><value>Average hours per finished game</value></data>
+  <data name="DyStMonthTitle" xml:space="preserve"><value>Hours per month in {0}</value></data>
+  <data name="DyStMonthSummary" xml:space="preserve"><value>{0} this year · most played month: {1}</value></data>
+  <data name="DyStMonthEmpty" xml:space="preserve"><value>No hours logged this year.</value></data>
+  <data name="DyStMonthNote" xml:space="preserve"><value>Estimate: each game&apos;s hours are spread across the months from start to finish.</value></data>
+  <data name="DyStRatingTitle" xml:space="preserve"><value>Rating distribution</value></data>
+  <data name="DyStRatingSummary" xml:space="preserve"><value>Average {0}</value></data>
+  <data name="DyStRatingEmpty" xml:space="preserve"><value>No rated games yet.</value></data>
+  <data name="DyStRatingHint" xml:space="preserve"><value>Rated {1}: {0} game(s)</value></data>
+  <data name="DyStGenres" xml:space="preserve"><value>Favorite genres</value></data>
+  <data name="DyStGenresEmpty" xml:space="preserve"><value>Genres show up when games have store details.</value></data>
+  <data name="DyStPlatforms" xml:space="preserve"><value>Platforms</value></data>
+  <data name="DyStGamesHint" xml:space="preserve"><value>{0}: {1} game(s)</value></data>
+  <data name="DyStCategories" xml:space="preserve"><value>Ratings by category</value></data>
+  <data name="DyStCategoriesEmpty" xml:space="preserve"><value>Rate categories in a game&apos;s editor to see the averages here.</value></data>
+  <data name="DyStMoods" xml:space="preserve"><value>Moods and difficulty</value></data>
+  <data name="DyStMoodsEmpty" xml:space="preserve"><value>Mark moods and difficulty on your games to see them here.</value></data>
+  <data name="DyStEmpty" xml:space="preserve"><value>Add games to your diary to see your statistics.</value></data>
+  <data name="DyStYear" xml:space="preserve"><value>Year</value></data>
+  <data name="DyStRecap" xml:space="preserve"><value>See your {0} recap</value></data>
+  <data name="DyRcEyebrow" xml:space="preserve"><value>{0} recap</value></data>
+  <data name="DyRcIntroTitle" xml:space="preserve"><value>Your year in games, {0}.</value></data>
+  <data name="DyRcIntroDetail" xml:space="preserve"><value>Let&apos;s look back at what you played.</value></data>
+  <data name="DyRcEmptyTitle" xml:space="preserve"><value>No games logged in {0}.</value></data>
+  <data name="DyRcEmptyDetail" xml:space="preserve"><value>Log dates and hours in your diary and your recap shows up here.</value></data>
+  <data name="DyRcHoursTitle" xml:space="preserve"><value>of play this year.</value></data>
+  <data name="DyRcHoursDetail" xml:space="preserve"><value>Your busiest month was {0}.</value></data>
+  <data name="DyRcGamesTitle" xml:space="preserve"><value>games went through your diary.</value></data>
+  <data name="DyRcGamesTitleOne" xml:space="preserve"><value>game went through your diary.</value></data>
+  <data name="DyRcGamesDetail" xml:space="preserve"><value>{0} finished this year.</value></data>
+  <data name="DyRcGenreTitle" xml:space="preserve"><value>was your genre of the year.</value></data>
+  <data name="DyRcGenreDetail" xml:space="preserve"><value>It showed up most among your games.</value></data>
+  <data name="DyRcMostTitle" xml:space="preserve"><value>was the game that kept you hooked.</value></data>
+  <data name="DyRcMostDetail" xml:space="preserve"><value>No other game got as many of your hours this year.</value></data>
+  <data name="DyRcBestTitle" xml:space="preserve"><value>Your top rating went to {0}.</value></data>
+  <data name="DyRcBestDetail" xml:space="preserve"><value>One to remember.</value></data>
+  <data name="DyRcBestPerfect" xml:space="preserve"><value>A perfect score. A masterpiece for you.</value></data>
+  <data name="DyRcMoodTitle" xml:space="preserve"><value>was the feeling that defined your year.</value></data>
+  <data name="DyRcMoodDetail" xml:space="preserve"><value>It&apos;s the mood you marked most often.</value></data>
+  <data name="DyRcSummaryTitle" xml:space="preserve"><value>{0} summary</value></data>
+  <data name="DyRcSummaryDetail" xml:space="preserve"><value>Save the image and share it.</value></data>
+  <data name="DyRcSummaryName" xml:space="preserve"><value>{0}&apos;s {1}</value></data>
+  <data name="DyRcLineHours" xml:space="preserve"><value>Hours played</value></data>
+  <data name="DyRcLinePlayed" xml:space="preserve"><value>Games played</value></data>
+  <data name="DyRcLineCompleted" xml:space="preserve"><value>Games finished</value></data>
+  <data name="DyRcLineGenre" xml:space="preserve"><value>Genre of the year</value></data>
+  <data name="DyRcLineBest" xml:space="preserve"><value>Top rating</value></data>
+  <data name="DyRcLinePeak" xml:space="preserve"><value>Most played month</value></data>
+  <data name="DyRcNext" xml:space="preserve"><value>Next</value></data>
+  <data name="DyRcSave" xml:space="preserve"><value>Save image</value></data>
+  <data name="DyRcSaved" xml:space="preserve"><value>Image saved to {0}</value></data>
+  <data name="DyRcSaveFailed" xml:space="preserve"><value>Couldn&apos;t save the image.</value></data>
+  <data name="DyRcFooter" xml:space="preserve"><value>Made with Lotus</value></data>
+  <data name="DyRcFileName" xml:space="preserve"><value>Recap</value></data>
+  <data name="DyStDaysLess" xml:space="preserve"><value>Under a day</value></data>
+  <data name="DyStDay" xml:space="preserve"><value>{0} day</value></data>
 </root>

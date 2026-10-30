@@ -27,7 +27,7 @@ public sealed partial class DiaryEditorView : UserControl
         DataContext = vm;
         Eyebrow.Text = vm.Text[vm.IsNew ? "DyEditorTitle" : "DyEditorEdit"].ToUpperInvariant();
         SaveLabel.Text = vm.Text[vm.IsNew ? "DyAdd" : "DySave"];
-        Load(CoverArt, vm.Cover ?? vm.Wide); Load(HeaderArt, vm.Wide ?? vm.Cover, 1100);
+        Load(CoverArt, vm.Cover ?? vm.Wide); Load(HeaderArt, vm.Wide ?? vm.Cover, 1100); _ = LoadBannerAsync(vm);
         syncing = true; StartPicker.Date = vm.Started; EndPicker.Date = vm.Finished; syncing = false; // null shows an empty picker
         vm.PropertyChanged -= OnVmDates; vm.PropertyChanged += OnVmDates;
         PaintScore(); PaintStatus();
@@ -188,6 +188,22 @@ public sealed partial class DiaryEditorView : UserControl
     private void OnAddRun(object sender, RoutedEventArgs e) { Vm?.AddRun(); UiSound.Play(UiSound.Cue.Toggle); }
     private void OnRemoveRun(object sender, RoutedEventArgs e) { if (sender is FrameworkElement { DataContext: RunRow run }) Vm?.RemoveRun(run); }
 
+    // Store banner: tries each candidate (best first); the first one that opens fades in over the fallback.
+    private Queue<string> banners = new();
+    private int bannerOpen;
+    private async Task LoadBannerAsync(DiaryEditorViewModel vm)
+    {
+        var ticket = ++bannerOpen;
+        BannerArt.Opacity = 0; BannerArt.Source = null;
+        IReadOnlyList<string> list;
+        try { list = await Lotus.Infrastructure.Games.StoreArt.BannerAsync(vm.EntryKey, vm.AppId); } catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return; }
+        if (ticket != bannerOpen || DataContext != vm) return;
+        banners = new(list.Where(u => u != (vm.Wide ?? vm.Cover)));
+        NextBanner();
+    }
+    private void NextBanner() { if (banners.Count > 0) Load(BannerArt, banners.Dequeue(), 1600); }
+    private void OnStoreArtOpened(object sender, RoutedEventArgs e) { banners.Clear(); Fade(BannerArt, 0, 0.9, 500); }
+    private void OnStoreArtFailed(object sender, ExceptionRoutedEventArgs e) => NextBanner();
     private static void Load(Image target, string? url, int width = 320)
     {
         target.Source = null;

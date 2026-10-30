@@ -32,7 +32,7 @@ public sealed partial class GameTunePanel : UserControl
         vm = model; card = game; actions = acts;
         returnFocus = XamlRoot is { } root ? Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(root) as Control : null;
         Eyebrow.Text = model.Text["TuneOpen"].ToUpperInvariant(); GameName.Text = game.Name;
-        Chips.Children.Clear(); Body.Children.Clear(); Body.Children.Add(Loading); Loading.IsActive = true;
+        Chips.Children.Clear(); Body.Children.Clear(); Body.Children.Add(LoadingRing); LoadingRing.IsActive = true;
         PrimaryAction.Visibility = SecondaryAction.Visibility = Footer.Visibility = Visibility.Collapsed;
         LoadArt(game);
         Visibility = Visibility.Visible;

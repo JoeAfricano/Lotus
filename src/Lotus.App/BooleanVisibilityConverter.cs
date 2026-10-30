@@ -116,3 +116,14 @@ public sealed class FallbackCoverConverter : IValueConverter
     }
     public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
 }
+// Bar length: a 0–1 fraction times the pixel size in the parameter (a sliver stays visible for non-zero values).
+public sealed class ScaleConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, string language)
+    {
+        var f = value is double d ? d : 0;
+        var max = double.TryParse(parameter as string, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var m) ? m : 100;
+        return f <= 0 ? 0.0 : Math.Max(3, f * max);
+    }
+    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
+}

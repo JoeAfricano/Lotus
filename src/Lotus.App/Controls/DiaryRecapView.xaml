@@ -1,0 +1,75 @@
+<UserControl x:Class="Lotus.App.Controls.DiaryRecapView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="using:Lotus.App" Visibility="Collapsed" AutomationProperties.AutomationId="diary-recap-view">
+ <Grid>
+  <Border x:Name="Backdrop" Background="#E60C060A" Opacity="0" Tapped="OnBackdrop"/>
+  <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="14">
+   <!-- The story card (portrait, like a phone screen); this whole card is what "Salvar imagem" saves -->
+   <Grid x:Name="Card" Width="420" Height="680" Opacity="0" Tapped="OnCardTapped">
+    <Grid.RenderTransform><CompositeTransform x:Name="CardMove" TranslateY="30" ScaleX="0.96" ScaleY="0.96" CenterX="210" CenterY="340"/></Grid.RenderTransform>
+   <Grid x:Name="Shot" CornerRadius="26" Background="#160C14" RequestedTheme="Dark">
+    <!-- Background: soft moving petals, the game's art when the screen is about a game -->
+    <Ellipse x:Name="BlobA" Width="520" Height="520" Margin="-220,-200,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="{StaticResource PetalBrush}" Opacity="0.55">
+     <Ellipse.RenderTransform><CompositeTransform x:Name="BlobAMove"/></Ellipse.RenderTransform>
+    </Ellipse>
+    <Ellipse x:Name="BlobB" Width="440" Height="440" Margin="0,0,-200,-160" HorizontalAlignment="Right" VerticalAlignment="Bottom" Fill="{StaticResource AccentGradientBrush}" Opacity="0.35">
+     <Ellipse.RenderTransform><CompositeTransform x:Name="BlobBMove"/></Ellipse.RenderTransform>
+    </Ellipse>
+    <Image x:Name="Art" Stretch="UniformToFill" Opacity="0" ImageFailed="OnArtFailed"/>
+    <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#66160C14" Offset="0"/><GradientStop Color="#33160C14" Offset="0.35"/><GradientStop Color="#F2160C14" Offset="0.78"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
+
+    <!-- Story progress: one segment per screen -->
+    <Grid x:Name="Segments" VerticalAlignment="Top" Margin="18,16,18,0" ColumnSpacing="5" Height="4"/>
+    <Grid VerticalAlignment="Top" Margin="22,34,14,0">
+     <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+      <TextBlock Text="Lotus" FontFamily="Georgia" FontSize="15" FontWeight="SemiBold" CharacterSpacing="60" Foreground="#F3DCCF"/><TextBlock Text="PLAY BETTER." FontSize="9" CharacterSpacing="170" Foreground="#F27BA8" VerticalAlignment="Center"/>
+     </StackPanel>
+     <Button x:Name="CloseButton" HorizontalAlignment="Right" Click="OnClose" Padding="8" Background="Transparent" BorderThickness="0" AutomationProperties.AutomationId="diary-recap-close">
+      <FontIcon Glyph="&#xE711;" FontSize="13" Foreground="#F3DCCF"/>
+     </Button>
+    </Grid>
+
+    <!-- One screen -->
+    <StackPanel x:Name="Slide" VerticalAlignment="Bottom" Margin="30,0,30,96" Spacing="10">
+     <StackPanel.RenderTransform><CompositeTransform x:Name="SlideMove"/></StackPanel.RenderTransform>
+     <Border Width="52" Height="52" CornerRadius="26" HorizontalAlignment="Left" Background="#33F27BA8" BorderBrush="{StaticResource GoldGradientBrush}" BorderThickness="1.5">
+      <FontIcon x:Name="SlideGlyph" FontSize="20" Foreground="#F8DDCB"/>
+     </Border>
+     <TextBlock x:Name="SlideEyebrow" FontSize="11.5" CharacterSpacing="140" FontWeight="SemiBold" Foreground="#F27BA8"/>
+     <TextBlock x:Name="SlideBig" FontFamily="Georgia" FontSize="64" FontWeight="SemiBold" TextWrapping="Wrap" MaxLines="3" TextTrimming="CharacterEllipsis" LineHeight="70">
+      <TextBlock.Foreground><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#FFF3E8" Offset="0"/><GradientStop Color="#EEC1A8" Offset="0.55"/><GradientStop Color="#D99A80" Offset="1"/></LinearGradientBrush></TextBlock.Foreground>
+     </TextBlock>
+     <TextBlock x:Name="SlideTitle" FontSize="21" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap"/>
+     <TextBlock x:Name="SlideDetail" FontSize="14" Foreground="#CDB8C3" TextWrapping="Wrap"/>
+    </StackPanel>
+
+    <!-- Summary screen: everything on one card -->
+    <StackPanel x:Name="SummaryPanel" VerticalAlignment="Bottom" Margin="28,0,28,92" Spacing="14" Visibility="Collapsed">
+     <TextBlock x:Name="SummaryEyebrow" FontSize="11.5" CharacterSpacing="140" FontWeight="SemiBold" Foreground="#F27BA8"/>
+     <TextBlock x:Name="SummaryName" FontFamily="Georgia" FontSize="34" FontWeight="SemiBold" Foreground="#F8DDCB" TextWrapping="Wrap"/>
+     <ItemsControl x:Name="SummaryLines">
+      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate><DataTemplate>
+       <Grid Padding="14,10" CornerRadius="12" Background="#26FFFFFF" BorderBrush="#1FFFE4EE" BorderThickness="1" ColumnSpacing="12">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <FontIcon Glyph="{Binding Glyph}" FontSize="14" Foreground="#EEC1A8"/>
+        <TextBlock Grid.Column="1" Text="{Binding Label}" FontSize="13" Foreground="#CDB8C3" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="2" Text="{Binding Value}" FontSize="14" FontWeight="SemiBold" Foreground="White" MaxWidth="210" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+       </Grid>
+      </DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+    </StackPanel>
+
+    <!-- Hints: tap left/right; the buttons do the same -->
+    <Grid VerticalAlignment="Bottom" Margin="22,0,22,24" ColumnSpacing="10">
+     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <Button x:Name="PrevButton" Click="OnPrev" Padding="12,9" CornerRadius="20" Background="#26FFFFFF" BorderThickness="0" AutomationProperties.AutomationId="diary-recap-prev"><FontIcon Glyph="&#xE76B;" FontSize="13" Foreground="White"/></Button>
+     <TextBlock x:Name="SavedText" Grid.Column="1" FontSize="11.5" Foreground="#CDB8C3" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center"/>
+     <Button x:Name="NextButton" Grid.Column="2" Click="OnNext" Padding="16,9" CornerRadius="20" Background="#F27BA8" BorderThickness="0" AutomationProperties.AutomationId="diary-recap-next">
+      <StackPanel Orientation="Horizontal" Spacing="8"><TextBlock x:Name="NextLabel" FontWeight="SemiBold" Foreground="#2A0A1A"/><FontIcon x:Name="NextGlyph" Glyph="&#xE76C;" FontSize="12" Foreground="#2A0A1A"/></StackPanel>
+     </Button>
+    </Grid>
+   </Grid>
+   </Grid>
+  </StackPanel>
+ </Grid>
+</UserControl>

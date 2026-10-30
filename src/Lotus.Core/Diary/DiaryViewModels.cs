@@ -57,7 +57,7 @@ public sealed class DiaryViewModel : ObservableObject
     private string tab = "all", query = "", sort = "recent";
     public DiaryViewModel(GameDiary diary, ITextCatalog text, PreferencesService preferences)
     {
-        this.diary = diary; Text = text; Preferences = preferences;
+        this.diary = diary; Text = text; Preferences = preferences; Stats = new DiaryStatsViewModel(diary, text);
         diary.Changed += (_, _) => Refresh();
         diary.ProgressChanged += (_, _) => RefreshProgress();
         Refresh();
@@ -68,7 +68,9 @@ public sealed class DiaryViewModel : ObservableObject
     // Achievements (Lotus and Steam), shown in the diary's other sections.
     public Achievements.AchievementsViewModel? Achievements { get; set; }
     private string section = "games";
-    public string Section { get => section; set { if (value is "games" or "trophies" or "steam") SetProperty(ref section, value); } }
+    public string Section { get => section; set { if (value is "games" or "stats" or "trophies" or "steam") SetProperty(ref section, value); } }
+    // Statistics tab (charts) and the yearly recap.
+    public DiaryStatsViewModel Stats { get; }
     public Progress Progress { get; private set; } = Progression.Of([]);
     public ObservableCollection<DiaryCard> Items { get; } = [];
     public ObservableCollection<DiaryTab> Tabs { get; } = [];
@@ -193,9 +195,9 @@ public sealed class DiaryViewModel : ObservableObject
         Badges = [.. Progress.Badges.OrderByDescending(b => b.Unlocked).ThenByDescending(b => b.Fraction).Select(b =>
             new BadgeView(b.Id, b.Glyph, Text["DyBadge" + b.Id], Text["DyBadge" + b.Id + "Hint"], b.Unlocked,
                 b.Unlocked ? Text["DyBadgeDone"] : $"{b.Current}/{b.Goal}", b.Fraction))];
-        BuildOptions(); BuildShowcase();
+        BuildOptions(); BuildShowcase(); Stats.Refresh();
         Fill();
-        foreach (var p in typeof(DiaryViewModel).GetProperties().Where(p => p.Name is not (nameof(Items) or nameof(Tabs) or nameof(Text) or nameof(Preferences) or nameof(Diary) or nameof(Tab) or nameof(Query) or nameof(Sort) or nameof(Section) or nameof(Achievements))))
+        foreach (var p in typeof(DiaryViewModel).GetProperties().Where(p => p.Name is not (nameof(Items) or nameof(Tabs) or nameof(Text) or nameof(Preferences) or nameof(Diary) or nameof(Tab) or nameof(Query) or nameof(Sort) or nameof(Section) or nameof(Achievements) or nameof(Stats))))
             OnPropertyChanged(p.Name);
     }
 
@@ -290,6 +292,8 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
     public string Name => entry.Name;
     public string? Cover => entry.Cover;
     public string? Wide => entry.Wide;
+    public string EntryKey => entry.Key;
+    public string? AppId => entry.AppId;
     public bool IsNew { get; private set; }
     public bool CanRemove => !IsNew;
     public int? SteamMinutes { get; private set; }

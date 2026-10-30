@@ -33,10 +33,10 @@ public sealed partial class DiaryPanel : UserControl
     {
         if (Vm is not { } vm) return;
         showing = true;
-        SectionBar.SelectedItem = vm.Section switch { "trophies" => SectionTrophies, "steam" => SectionSteam, _ => SectionGames };
+        SectionBar.SelectedItem = vm.Section switch { "stats" => SectionStats, "trophies" => SectionTrophies, "steam" => SectionSteam, _ => SectionGames };
         showing = false;
-        var target = vm.Section switch { "trophies" => (FrameworkElement)TrophiesArea, "steam" => SteamArea, _ => GamesArea };
-        foreach (var area in new FrameworkElement[] { GamesArea, TrophiesArea, SteamArea })
+        var target = vm.Section switch { "stats" => (FrameworkElement)StatsArea, "trophies" => TrophiesArea, "steam" => SteamArea, _ => GamesArea };
+        foreach (var area in new FrameworkElement[] { GamesArea, StatsArea, TrophiesArea, SteamArea })
             area.Visibility = area == target ? Visibility.Visible : Visibility.Collapsed;
         if (animate) Motion.EnterPage(target);
         if (target == TrophiesArea) TrophiesArea.Celebrate();
@@ -44,6 +44,7 @@ public sealed partial class DiaryPanel : UserControl
         if (target == SteamArea && vm.Achievements?.HasSelected == true)
             DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => SteamArea.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = Motion.Enabled, VerticalAlignmentRatio = 0 }));
     }
+    private void OnRecap(object? sender, int year) => MainWindow.Shell?.OpenDiaryRecap(year);
     private void OnSection(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
         if (showing || Vm is not { } vm || sender.SelectedItem?.Tag is not string id || id == vm.Section) return;

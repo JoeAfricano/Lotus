@@ -161,4 +161,44 @@ public sealed class DiaryScreenTests
         Assert.Equal(720, saved.Runs.Single().Minutes);
         editor.Open(saved); Assert.False(editor.IsDirty); Assert.Single(editor.Runs); Assert.Equal(9.5, editor.Categories.Single(c => c.Id == "gameplay").Value);
     }
+
+    private static DiaryEntry E(string id, string name, params string[] genres) => new() { Key = DiaryEntry.SteamKey(id), AppId = id, Name = name, Genres = [.. genres] };
+    [Fact] public void StatsSpreadHoursOverMonthsAndBuildTheYearRecap()
+    {
+        var diary = new GameDiary(new Memory(), ex => throw ex);
+        var a = E("1", "Hades", "Ação", "Roguelike"); a.Status = DiaryStatus.Completed; a.Rating = 9.5; a.Minutes = 1200;
+        a.Started = new DateTime(2026, 1, 10); a.Finished = new DateTime(2026, 3, 5); a.Moods = ["addictive"]; a.Categories = new() { ["gameplay"] = 10 }; a.Difficulty = "hard";
+        var b = E("2", "Celeste", "Plataforma"); b.Status = DiaryStatus.Completed; b.Rating = 7; b.Minutes = 600; b.Started = new DateTime(2026, 3, 1); b.Finished = new DateTime(2026, 3, 20); b.Platform = "Switch";
+        var c = E("3", "Antigo", "Ação"); c.Status = DiaryStatus.Completed; c.Rating = 4; c.Minutes = 300; c.Started = new DateTime(2024, 5, 1); c.Finished = new DateTime(2024, 5, 9);
+        foreach (var e in new[] { a, b, c }) diary.Save(e);
+
+        var s = DiaryStats.Compute(diary.Entries, 2026, new DateTime(2026, 10, 30));
+        Assert.Equal(3, s.Games); Assert.Equal(3, s.Completed); Assert.Equal(2100, s.TotalMinutes);
+        Assert.Equal([400, 400, 1000], s.MonthMinutes.Take(3)); Assert.Equal(0, s.MonthMinutes[4]); // Hades over Jan–Mar, Celeste in March
+        Assert.Equal(1800, s.YearMinutes); Assert.Equal(3, s.PeakMonth);
+        Assert.Equal(1, s.RatingBuckets[9]); Assert.Equal(1, s.RatingBuckets[6]); Assert.Equal(1, s.RatingBuckets[3]);
+        Assert.Equal(("Ação", 2), s.Genres[0]);
+        Assert.Equal(2, s.YearPlayed); Assert.Equal(2, s.YearCompleted); Assert.Equal("Hades", s.BestGame?.Name); Assert.Equal("Hades", s.MostPlayed?.Name);
+        Assert.Equal("addictive", s.TopMood); Assert.Equal([2026, 2024], s.Years);
+        Assert.Equal(10, s.Categories.Single().Average); Assert.Equal(("hard", 1), s.Difficulties.Single());
+
+        var text = new Lotus.Core.TextCatalog();
+        var stats = new DiaryStatsViewModel(diary, text); stats.Year = 2026; stats.Refresh();
+        Assert.Equal(12, stats.MonthBars.Count); Assert.True(stats.MonthBars[2].Highlight); Assert.True(stats.MonthBars[2].ShowValue); Assert.False(stats.MonthBars[0].ShowValue);
+        Assert.Equal(6, stats.Tiles.Count); Assert.True(stats.HasCategories); Assert.True(stats.HasMoods);
+
+        var recap = new DiaryRecapViewModel(diary, text); recap.Open(2026, "Ana", new DateTime(2026, 10, 30));
+        Assert.Equal(["intro", "hours", "games", "genre", "most", "best", "mood", "summary"], recap.Slides.Select(x => x.Id));
+        Assert.Equal(30, recap.Slides.Single(x => x.Id == "hours").CountTo);
+        recap.Open(2025, "Ana", new DateTime(2026, 10, 30));
+        Assert.Equal(["intro", "empty", "summary"], recap.Slides.Select(x => x.Id));
+    }
+
+    [Fact] public void EpicCatalogGivesTheWideKeyArt()
+    {
+        var json = """[{"title":"Game","releaseInfo":[{"appId":"Fortune"}],"keyImages":[{"type":"DieselGameBoxTall","url":"https://x/tall.jpg"},{"type":"DieselGameBox","url":"https://x/wide.jpg"}]},{"title":"NoArt","releaseInfo":[{"appId":"Plain"}],"keyImages":[]}]""";
+        var map = new Dictionary<string, string>();
+        Lotus.Infrastructure.Games.StoreArt.ParseEpicCatalog(Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json)), map);
+        Assert.Equal("https://x/wide.jpg", map["Fortune"]); Assert.False(map.ContainsKey("Plain"));
+    }
 }
