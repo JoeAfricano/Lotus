@@ -1,6 +1,8 @@
 using Lotus.Core.Diary;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -28,8 +30,10 @@ public sealed partial class DiaryEditorView : UserControl
         Load(CoverArt, vm.Cover ?? vm.Wide); Load(HeaderArt, vm.Wide ?? vm.Cover, 1100);
         syncing = true; StartPicker.Date = vm.Started; EndPicker.Date = vm.Finished; syncing = false; // null shows an empty picker
         vm.PropertyChanged -= OnVmDates; vm.PropertyChanged += OnVmDates;
-        PaintScore();
+        PaintScore(); PaintStatus();
         Visibility = Visibility.Visible;
+        StartDrift();
+        StatusList.UpdateLayout(); PaintStatus(); // containers exist only after layout
         Fade(Backdrop, 0, 1, 200); Fade(Card, 0, 1, 260);
         Animate(CardMove, "TranslateY", 24, 0, 360, new CubicEase { EasingMode = EasingMode.EaseOut });
         UiSound.Play(UiSound.Cue.Open);
@@ -41,7 +45,7 @@ public sealed partial class DiaryEditorView : UserControl
         if (!IsOpen) return;
         var sb = new Storyboard();
         Add(sb, Backdrop, "Opacity", 1, 0, 160); Add(sb, Card, "Opacity", 1, 0, 160); Add(sb, CardMove, "TranslateY", 0, 16, 200);
-        sb.Completed += (_, _) => Visibility = Visibility.Collapsed;
+        sb.Completed += (_, _) => { Visibility = Visibility.Collapsed; drift?.Stop(); };
         sb.Begin();
         UiSound.Play(UiSound.Cue.Close);
     }
@@ -49,7 +53,7 @@ public sealed partial class DiaryEditorView : UserControl
     private void OnStatus(object sender, RoutedEventArgs e)
     {
         if (Vm is not { } vm || sender is not FrameworkElement { DataContext: StatusOption s } f) return;
-        vm.SelectStatus(s.Status); Motion.Pop(f); UiSound.Play(UiSound.Cue.Toggle);
+        vm.SelectStatus(s.Status); Motion.Pop(f); UiSound.Play(UiSound.Cue.Toggle); PaintStatus();
     }
     private void OnFeat(object sender, RoutedEventArgs e) { if (sender is FrameworkElement f) { Motion.Pop(f); UiSound.Play(UiSound.Cue.Toggle); } }
     // Dates are set in code: a bound null shows 1926 in CalendarDatePicker.
@@ -111,18 +115,78 @@ public sealed partial class DiaryEditorView : UserControl
     }
 
     // Big score colour: green / yellow / red like review sites, muted when unrated.
+    // Score: the number, the slider and the ring take the review-site color; the ring glides to the new value.
+    private double ringFrom;
     private void PaintScore()
     {
         if (Vm is not { } vm) return;
-        ScoreBig.Foreground = vm.RatingKind switch
+        Brush brush = vm.RatingKind switch
         {
             "good" => new SolidColorBrush(Windows.UI.Color.FromArgb(255, 102, 214, 140)),
             "mixed" => new SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 204, 80)),
             "bad" => new SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 110, 110)),
             _ => (Brush)Application.Current.Resources["MutedBrush"],
         };
-        ScoreBig.FontSize = vm.RatingKind == "none" ? 22 : 44;
+        ScoreBig.FontSize = vm.RatingKind == "none" ? 16 : 32;
+        ScoreArc.Stroke = brush; ScoreSlider.Foreground = brush;
+        var target = vm.Rating / 10; var from = ringFrom; ringFrom = target;
+        if (!Motion.Enabled) { DrawArc(target); return; }
+        var start = DateTime.UtcNow; var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMilliseconds(16);
+        timer.Tick += (t, _) => { var p = Math.Min(1, (DateTime.UtcNow - start).TotalMilliseconds / 320); DrawArc(from + (target - from) * (1 - Math.Pow(1 - p, 3))); if (p >= 1) t.Stop(); };
+        timer.Start();
     }
+    // The score ring: an arc from the top, clockwise, for 0..1 of the circle (104 px, 7 px stroke).
+    private void DrawArc(double fraction)
+    {
+        fraction = Math.Clamp(fraction, 0, 0.9999);
+        if (fraction <= 0) { ScoreArc.Data = null; return; }
+        const double size = 104, r = (size - 7) / 2, c = size / 2;
+        var angle = fraction * 2 * Math.PI;
+        var end = new Windows.Foundation.Point(c + r * Math.Sin(angle), c - r * Math.Cos(angle));
+        var figure = new PathFigure { StartPoint = new Windows.Foundation.Point(c, c - r), IsClosed = false };
+        figure.Segments.Add(new ArcSegment { Point = end, Size = new Windows.Foundation.Size(r, r), SweepDirection = SweepDirection.Clockwise, IsLargeArc = fraction > 0.5 });
+        var geometry = new PathGeometry(); geometry.Figures.Add(figure); ScoreArc.Data = geometry;
+    }
+    // Status cards: the chosen one takes its own color (green completed, blue playing...), the others stay plain.
+    private void PaintStatus()
+    {
+        if (Vm is not { } vm) return;
+        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+        {
+            var colors = (IValueConverter)Application.Current.Resources["DiaryBrush"];
+            for (var i = 0; i < StatusList.Items.Count; i++)
+            {
+                if (StatusList.ContainerFromIndex(i) is not ContentPresenter { Content: StatusOption s } cp || VisualTreeHelper.GetChildrenCount(cp) == 0 || VisualTreeHelper.GetChild(cp, 0) is not Button b) continue;
+                var color = (Brush)colors.Convert(s.Status.ToString(), typeof(Brush), null!, "");
+                b.BorderBrush = s.Selected ? color : (Brush)Application.Current.Resources["CardBorderBrush"];
+                b.Background = s.Selected && color is SolidColorBrush sc ? new SolidColorBrush(sc.Color) { Opacity = 0.16 } : (Brush)Application.Current.Resources["CardBrush"];
+                if (b.Content is StackPanel { Children: [Grid icon, ..] } && icon.Children is [Ellipse dot, FontIcon glyph]) { dot.Fill = s.Selected ? color : (Brush)Application.Current.Resources["SubtleBrush"]; glyph.Foreground = s.Selected ? new SolidColorBrush(Microsoft.UI.Colors.Black) : (Brush)Application.Current.Resources["MainTextBrush"]; }
+            }
+        });
+    }
+    // Cinematic header: the wide art drifts slowly (off with Reduce motion).
+    private Storyboard? drift;
+    private void StartDrift()
+    {
+        drift?.Stop(); HeaderZoom.ScaleX = HeaderZoom.ScaleY = 1;
+        if (!Motion.Enabled) return;
+        drift = new Storyboard { RepeatBehavior = RepeatBehavior.Forever, AutoReverse = true };
+        var ease = new SineEase { EasingMode = EasingMode.EaseInOut };
+        Add(drift, HeaderZoom, "ScaleX", 1, 1.08, 16000, ease); Add(drift, HeaderZoom, "ScaleY", 1, 1.08, 16000, ease);
+        drift.Begin();
+    }
+    // Two columns on wide windows, one under the other on narrow ones.
+    private void OnColumnsSize(object sender, SizeChangedEventArgs e)
+    {
+        var stacked = e.NewSize.Width < 820;
+        Columns.ColumnDefinitions[0].Width = stacked ? new GridLength(1, GridUnitType.Star) : new GridLength(340);
+        Columns.ColumnDefinitions[1].Width = stacked ? new GridLength(0) : new GridLength(1, GridUnitType.Star);
+        Grid.SetColumn(RightColumn, stacked ? 0 : 1); Grid.SetRow(RightColumn, stacked ? 1 : 0);
+    }
+    private void OnCategory(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e) => Vm?.NotifyCategories();
+    private void OnUseAverage(object sender, RoutedEventArgs e) { Vm?.UseCategoryAverage(); UiSound.Play(UiSound.Cue.Toggle); }
+    private void OnAddRun(object sender, RoutedEventArgs e) { Vm?.AddRun(); UiSound.Play(UiSound.Cue.Toggle); }
+    private void OnRemoveRun(object sender, RoutedEventArgs e) { if (sender is FrameworkElement { DataContext: RunRow run }) Vm?.RemoveRun(run); }
 
     private static void Load(Image target, string? url, int width = 320)
     {

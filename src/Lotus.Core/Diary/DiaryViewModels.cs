@@ -243,6 +243,25 @@ public sealed partial class FeatToggle(string id, string glyph, string label) : 
     public string Id { get; } = id; public string Glyph { get; } = glyph; public string Label { get; } = label;
     [ObservableProperty] private bool selected;
 }
+// One category score (0 = not scored), shown as a small slider.
+public sealed partial class CategoryScore(string id, string label) : ObservableObject
+{
+    public string Id { get; } = id; public string Label { get; } = label;
+    [ObservableProperty, NotifyPropertyChangedFor(nameof(ValueText))] private double value;
+    public string ValueText => Value <= 0 ? "—" : Value.ToString(Value % 1 == 0 ? "0" : "0.0", CultureInfo.CurrentCulture);
+}
+// One extra playthrough row in the editor.
+public sealed partial class RunRow : ObservableObject
+{
+    [ObservableProperty] private DateTimeOffset? started;
+    [ObservableProperty] private DateTimeOffset? finished;
+    [ObservableProperty] private double hours;
+    [ObservableProperty] private string platform = "PC";
+    public Playthrough ToPlaythrough() => new(Started?.Date, Finished?.Date, (int)Math.Round(Math.Max(0, double.IsNaN(Hours) ? 0 : Hours) * 60), Platform);
+    // Dates are never null here (an empty CalendarDatePicker bound to null shows a bogus year).
+    public static RunRow From(Playthrough p) => new() { Started = p.Started ?? p.Finished ?? DateTime.Today, Finished = p.Finished ?? p.Started ?? DateTime.Today, Hours = Math.Round(p.Minutes / 60.0, 1), Platform = p.Platform };
+    public string Key => $"{Started?.Date}|{Finished?.Date}|{Hours}|{Platform}";
+}
 
 // The "log this game" sheet: status, score, hours, dates, feats and review.
 public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog text) : ObservableObject
@@ -253,6 +272,20 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
         .Select(s => new StatusOption(s.Item1, text["DyStatus" + s.Item1], s.Item2))];
     public IReadOnlyList<FeatToggle> FeatToggles { get; } = [.. Feats.All.Select(f => new FeatToggle(f.Id, f.Glyph, text["DyFeat" + f.Id]))];
     public IReadOnlyList<string> Platforms { get; } = ["PC", "Steam Deck", "Console", "Mobile"];
+    public IReadOnlyList<CategoryScore> Categories { get; } = [.. DiaryOptions.Categories.Select(c => new CategoryScore(c, text["DyCat" + c]))];
+    public IReadOnlyList<FeatToggle> Moods { get; } = [.. DiaryOptions.Moods.Select(m => new FeatToggle(m.Id, m.Glyph, text["DyMood" + m.Id]))];
+    public IReadOnlyList<DiaryTab> Difficulties { get; } = [new("", text["DyDiffNone"], 0), .. DiaryOptions.Difficulties.Select(d => new DiaryTab(d, text["DyDiff" + d], 0))];
+    [ObservableProperty] private string difficulty = "";
+    public System.Collections.ObjectModel.ObservableCollection<RunRow> Runs { get; } = [];
+    public void AddRun() => Runs.Add(new RunRow { Platform = Platform, Started = DateTimeOffset.Now.Date, Finished = DateTimeOffset.Now.Date });
+    public void RemoveRun(RunRow run) => Runs.Remove(run);
+    // Average of the categories the player scored (null when none): offered as the overall score.
+    public double? CategoryAverage => Categories.Where(c => c.Value > 0).Select(c => c.Value).DefaultIfEmpty(-1).Average() is var a && a > 0 ? Math.Round(a * 2, MidpointRounding.AwayFromZero) / 2 : null;
+    public string CategoryAverageText => CategoryAverage is { } a ? Text.Format("DyCatUseAverage", a.ToString(a % 1 == 0 ? "0" : "0.0", CultureInfo.GetCultureInfo(Text.Language))) : "";
+    public void UseCategoryAverage() { if (CategoryAverage is { } a) Rating = a; }
+    public void NotifyCategories() { OnPropertyChanged(nameof(CategoryAverage)); OnPropertyChanged(nameof(CategoryAverageText)); }
+    // Score label shown under the big number (Ruim … Obra-prima).
+    public string RatingLabel => Rating switch { <= 0 => Text["DyScoreHint"], < 3 => Text["DyLabelBad"], < 5 => Text["DyLabelWeak"], < 7 => Text["DyLabelOk"], < 8.5 => Text["DyLabelGood"], < 10 => Text["DyLabelGreat"], _ => Text["DyLabelMasterpiece"] };
 
     public string Name => entry.Name;
     public string? Cover => entry.Cover;
@@ -263,7 +296,7 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
     public bool HasSteamHours => SteamMinutes is > 0;
     public string SteamHoursLabel => SteamMinutes is { } m ? Text.Format("DyUseSteamHours", DiaryText.Hours(m)) : "";
 
-    [ObservableProperty, NotifyPropertyChangedFor(nameof(RatingText), nameof(RatingKind))] private double rating;
+    [ObservableProperty, NotifyPropertyChangedFor(nameof(RatingText), nameof(RatingKind), nameof(RatingLabel))] private double rating;
     [ObservableProperty] private double hours;
     [ObservableProperty] private DateTimeOffset? started;
     [ObservableProperty] private DateTimeOffset? finished;
@@ -289,6 +322,11 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
         Started = entry.Started; Finished = entry.Finished;
         Review = entry.Review; Platform = entry.Platform;
         foreach (var f in FeatToggles) f.Selected = entry.Feats.Contains(f.Id);
+        foreach (var c in Categories) c.Value = entry.Categories.GetValueOrDefault(c.Id);
+        foreach (var m in Moods) m.Selected = entry.Moods.Contains(m.Id);
+        Difficulty = entry.Difficulty ?? "";
+        Runs.Clear(); foreach (var r in entry.Runs) Runs.Add(RunRow.From(r));
+        NotifyCategories();
         foreach (var n in new[] { nameof(Name), nameof(Cover), nameof(Wide), nameof(IsNew), nameof(CanRemove), nameof(SteamMinutes), nameof(HasSteamHours), nameof(SteamHoursLabel), nameof(Status) }) OnPropertyChanged(n);
         opened = Snapshot();
     }
@@ -308,13 +346,17 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
         e.Started = Started?.Date; e.Finished = Status is DiaryStatus.Completed or DiaryStatus.Dropped ? Finished?.Date : null;
         e.Review = Review; e.Platform = Platform;
         e.Feats = [.. FeatToggles.Where(f => f.Selected).Select(f => f.Id)];
+        e.Categories = Categories.Where(c => c.Value > 0).ToDictionary(c => c.Id, c => c.Value);
+        e.Moods = [.. Moods.Where(m => m.Selected).Select(m => m.Id)];
+        e.Difficulty = Difficulty.Length > 0 ? Difficulty : null;
+        e.Runs = [.. Runs.Select(r => r.ToPlaythrough())];
         return diary.Save(e);
     }
     public void Remove() => diary.Remove(entry.Key);
 
     // Closing with changes asks first; incoherent dates are explained next to the fields (guide 14).
     private string opened = "";
-    private string Snapshot() => $"{Status}|{Rating}|{Hours}|{Started?.Date}|{Finished?.Date}|{Review}|{Platform}|{string.Join(",", FeatToggles.Where(f => f.Selected).Select(f => f.Id))}";
+    private string Snapshot() => $"{Status}|{Rating}|{Hours}|{Started?.Date}|{Finished?.Date}|{Review}|{Platform}|{string.Join(",", FeatToggles.Where(f => f.Selected).Select(f => f.Id))}|{string.Join(",", Categories.Select(c => c.Value))}|{string.Join(",", Moods.Where(m => m.Selected).Select(m => m.Id))}|{Difficulty}|{string.Join(";", Runs.Select(r => r.Key))}";
     public bool IsDirty => Snapshot() != opened;
     public string DateError => Started is { } s && Finished is { } f && f.Date < s.Date ? Text["DyDateOrder"] : "";
     public bool CanSave => DateError.Length == 0;

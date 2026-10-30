@@ -21,16 +21,33 @@ public sealed class DiaryEntry
     public List<string> Feats { get; set; } = [];
     public string Review { get; set; } = "";
     public string Platform { get; set; } = "PC";
+    // Optional details: scores per category (story, gameplay, visuals, sound), how it felt, the difficulty played and
+    // extra playthroughs (the main dates and hours stay on the entry itself).
+    public Dictionary<string, double> Categories { get; set; } = [];
+    public List<string> Moods { get; set; } = [];
+    public string? Difficulty { get; set; }
+    public List<Playthrough> Runs { get; set; } = [];
     public DateTimeOffset Added { get; set; } = DateTimeOffset.Now;
     public DateTimeOffset Updated { get; set; } = DateTimeOffset.Now;
 
     public DiaryEntry Clone()
     {
         var c = (DiaryEntry)MemberwiseClone();
-        c.Genres = [.. Genres]; c.Feats = [.. Feats]; // lists are not shared with the copy
+        c.Genres = [.. Genres]; c.Feats = [.. Feats]; c.Moods = [.. Moods]; c.Categories = new(Categories); // lists are not shared with the copy
+        c.Runs = [.. Runs.Select(r => r with { })];
         return c;
     }
     public static string SteamKey(string appId) => "steam:" + appId;
+}
+
+// One more time through a game (Backloggd-style): its own dates, hours and platform.
+public sealed record Playthrough(DateTime? Started, DateTime? Finished, int Minutes, string Platform, string Note = "");
+
+public static class DiaryOptions
+{
+    public static readonly string[] Categories = ["story", "gameplay", "visuals", "sound"];
+    public static readonly (string Id, string Glyph)[] Moods = [("exciting", "E945"), ("relaxing", "E706"), ("challenging", "E7BA"), ("addictive", "E7FC"), ("emotional", "EB51"), ("scary", "E7C3"), ("beautiful", "E790"), ("funny", "E76E")];
+    public static readonly string[] Difficulties = ["easy", "normal", "hard", "hardest"];
 }
 
 public sealed class DiaryData

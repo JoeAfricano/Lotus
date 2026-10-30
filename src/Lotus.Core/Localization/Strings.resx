@@ -2048,4 +2048,34 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="DyPlatinumRibbon" xml:space="preserve"><value>PLATINA</value></data>
   <data name="DyHeaderExpand" xml:space="preserve"><value>Mostrar o topo completo</value></data>
   <data name="DyHeaderCompact" xml:space="preserve"><value>Deixar o topo compacto</value></data>
+  <data name="DyCategories" xml:space="preserve"><value>Notas por categoria</value></data>
+  <data name="DyCatstory" xml:space="preserve"><value>História</value></data>
+  <data name="DyCatgameplay" xml:space="preserve"><value>Jogabilidade</value></data>
+  <data name="DyCatvisuals" xml:space="preserve"><value>Gráficos</value></data>
+  <data name="DyCatsound" xml:space="preserve"><value>Som e trilha</value></data>
+  <data name="DyCatUseAverage" xml:space="preserve"><value>Usar a média ({0})</value></data>
+  <data name="DyLabelBad" xml:space="preserve"><value>Ruim</value></data>
+  <data name="DyLabelWeak" xml:space="preserve"><value>Fraco</value></data>
+  <data name="DyLabelOk" xml:space="preserve"><value>Regular</value></data>
+  <data name="DyLabelGood" xml:space="preserve"><value>Bom</value></data>
+  <data name="DyLabelGreat" xml:space="preserve"><value>Ótimo</value></data>
+  <data name="DyLabelMasterpiece" xml:space="preserve"><value>Obra-prima</value></data>
+  <data name="DyDifficulty" xml:space="preserve"><value>Dificuldade</value></data>
+  <data name="DyDiffNone" xml:space="preserve"><value>Não informada</value></data>
+  <data name="DyDiffeasy" xml:space="preserve"><value>Fácil</value></data>
+  <data name="DyDiffnormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DyDiffhard" xml:space="preserve"><value>Difícil</value></data>
+  <data name="DyDiffhardest" xml:space="preserve"><value>Máxima</value></data>
+  <data name="DyRuns" xml:space="preserve"><value>Outras zeradas</value></data>
+  <data name="DyRunAdd" xml:space="preserve"><value>Adicionar zerada</value></data>
+  <data name="DyRunsHint" xml:space="preserve"><value>Jogou de novo? Registre cada vez com as datas e as horas, como num diário de verdade.</value></data>
+  <data name="DyMoods" xml:space="preserve"><value>Como foi</value></data>
+  <data name="DyMoodexciting" xml:space="preserve"><value>Emocionante</value></data>
+  <data name="DyMoodrelaxing" xml:space="preserve"><value>Relaxante</value></data>
+  <data name="DyMoodchallenging" xml:space="preserve"><value>Desafiador</value></data>
+  <data name="DyMoodaddictive" xml:space="preserve"><value>Viciante</value></data>
+  <data name="DyMoodemotional" xml:space="preserve"><value>Tocante</value></data>
+  <data name="DyMoodscary" xml:space="preserve"><value>Assustador</value></data>
+  <data name="DyMoodbeautiful" xml:space="preserve"><value>Lindo</value></data>
+  <data name="DyMoodfunny" xml:space="preserve"><value>Divertido</value></data>
 </root>

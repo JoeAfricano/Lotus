@@ -2048,4 +2048,34 @@ Your games and Windows are not changed.</value></data>
   <data name="DyPlatinumRibbon" xml:space="preserve"><value>PLATINUM</value></data>
   <data name="DyHeaderExpand" xml:space="preserve"><value>Show the full header</value></data>
   <data name="DyHeaderCompact" xml:space="preserve"><value>Make the header compact</value></data>
+  <data name="DyCategories" xml:space="preserve"><value>Scores by category</value></data>
+  <data name="DyCatstory" xml:space="preserve"><value>Story</value></data>
+  <data name="DyCatgameplay" xml:space="preserve"><value>Gameplay</value></data>
+  <data name="DyCatvisuals" xml:space="preserve"><value>Visuals</value></data>
+  <data name="DyCatsound" xml:space="preserve"><value>Sound and music</value></data>
+  <data name="DyCatUseAverage" xml:space="preserve"><value>Use the average ({0})</value></data>
+  <data name="DyLabelBad" xml:space="preserve"><value>Bad</value></data>
+  <data name="DyLabelWeak" xml:space="preserve"><value>Weak</value></data>
+  <data name="DyLabelOk" xml:space="preserve"><value>Okay</value></data>
+  <data name="DyLabelGood" xml:space="preserve"><value>Good</value></data>
+  <data name="DyLabelGreat" xml:space="preserve"><value>Great</value></data>
+  <data name="DyLabelMasterpiece" xml:space="preserve"><value>Masterpiece</value></data>
+  <data name="DyDifficulty" xml:space="preserve"><value>Difficulty</value></data>
+  <data name="DyDiffNone" xml:space="preserve"><value>Not set</value></data>
+  <data name="DyDiffeasy" xml:space="preserve"><value>Easy</value></data>
+  <data name="DyDiffnormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DyDiffhard" xml:space="preserve"><value>Hard</value></data>
+  <data name="DyDiffhardest" xml:space="preserve"><value>Hardest</value></data>
+  <data name="DyRuns" xml:space="preserve"><value>Other playthroughs</value></data>
+  <data name="DyRunAdd" xml:space="preserve"><value>Add playthrough</value></data>
+  <data name="DyRunsHint" xml:space="preserve"><value>Played it again? Log each time with its dates and hours, like a real diary.</value></data>
+  <data name="DyMoods" xml:space="preserve"><value>How it felt</value></data>
+  <data name="DyMoodexciting" xml:space="preserve"><value>Exciting</value></data>
+  <data name="DyMoodrelaxing" xml:space="preserve"><value>Relaxing</value></data>
+  <data name="DyMoodchallenging" xml:space="preserve"><value>Challenging</value></data>
+  <data name="DyMoodaddictive" xml:space="preserve"><value>Addictive</value></data>
+  <data name="DyMoodemotional" xml:space="preserve"><value>Moving</value></data>
+  <data name="DyMoodscary" xml:space="preserve"><value>Scary</value></data>
+  <data name="DyMoodbeautiful" xml:space="preserve"><value>Beautiful</value></data>
+  <data name="DyMoodfunny" xml:space="preserve"><value>Funny</value></data>
 </root>

@@ -142,4 +142,23 @@ public sealed class DiaryScreenTests
         Assert.Equal(0.42, page.Items.Single(i => i.Name == "Hades").CoverOpacity);
         Assert.True(page.HeaderCompact); page.HeaderCompact = false; Assert.False(page.HeaderCompact);
     }
+
+    [Fact] public void EditorKeepsCategoriesMoodsDifficultyAndPlaythroughs()
+    {
+        var diary = new GameDiary(new Memory(), ex => throw ex); var text = new Lotus.Core.TextCatalog();
+        var editor = new DiaryEditorViewModel(diary, text);
+        editor.Open(new DiaryEntry { Key = "steam:7", Name = "Hollow Knight" });
+        Assert.Null(editor.CategoryAverage);
+        editor.Categories.Single(c => c.Id == "story").Value = 8; editor.Categories.Single(c => c.Id == "gameplay").Value = 9.5; editor.NotifyCategories();
+        Assert.Equal(9, editor.CategoryAverage);                                   // 8.75 rounded to the half step
+        editor.UseCategoryAverage(); Assert.Equal(9, editor.Rating); Assert.Equal(text["DyLabelGreat"], editor.RatingLabel);
+        editor.Moods.Single(m => m.Id == "challenging").Selected = true; editor.Difficulty = "hard";
+        editor.AddRun(); editor.Runs[0].Hours = 12;
+        Assert.True(editor.IsDirty);
+        editor.Save();
+        var saved = diary.Get("steam:7")!;
+        Assert.Equal(2, saved.Categories.Count); Assert.Equal(["challenging"], saved.Moods); Assert.Equal("hard", saved.Difficulty);
+        Assert.Equal(720, saved.Runs.Single().Minutes);
+        editor.Open(saved); Assert.False(editor.IsDirty); Assert.Single(editor.Runs); Assert.Equal(9.5, editor.Categories.Single(c => c.Id == "gameplay").Value);
+    }
 }
