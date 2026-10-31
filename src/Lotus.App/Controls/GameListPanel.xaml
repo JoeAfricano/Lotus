@@ -41,19 +41,22 @@
    <!-- Charts, then a persistent toolbar (guide 10) -->
    <SelectorBar x:Name="ChartBar" SelectionChanged="OnChart" Margin="0,8,0,0" Visibility="{Binding Searching, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}" AutomationProperties.AutomationId="gamelist-charts"/>
    <Grid ColumnSpacing="12">
-    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <AutoSuggestBox x:Name="Search" PlaceholderText="{Binding Text[GlSearchPlaceholder]}" QueryIcon="Find" TextChanged="OnSearch" QuerySubmitted="OnSearchSubmit" VerticalAlignment="Center" AutomationProperties.AutomationId="gamelist-search"/>
-    <DropDownButton Grid.Column="1" MinHeight="44" MinWidth="150" AutomationProperties.AutomationId="gamelist-filters" AutomationProperties.Name="{Binding Text[GlFilters]}">
+    <Button Grid.Column="1" Click="OnPickTypes" MinHeight="44" MinWidth="170" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center" AutomationProperties.Name="{Binding Text[GtButton]}" AutomationProperties.AutomationId="gamelist-type">
+     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8FD;" FontSize="13" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding TypeSummary}" MaxWidth="180" TextTrimming="CharacterEllipsis"/><Ellipse Width="7" Height="7" Fill="{ThemeResource RoseBrush}" VerticalAlignment="Center" Visibility="{Binding HasTypes, Converter={StaticResource BooleanVisibility}}"/></StackPanel>
+    </Button>
+    <DropDownButton Grid.Column="2" MinHeight="44" MinWidth="150" AutomationProperties.AutomationId="gamelist-filters" AutomationProperties.Name="{Binding Text[GlFilters]}">
      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE71C;" FontSize="13"/><TextBlock Text="{Binding Text[GlFilters]}"/><Ellipse Width="7" Height="7" Fill="{ThemeResource RoseBrush}" VerticalAlignment="Center" Visibility="{Binding HasActiveFilters, Converter={StaticResource BooleanVisibility}}"/></StackPanel>
      <DropDownButton.Flyout><Flyout Placement="BottomEdgeAlignedRight"><StackPanel Spacing="14" Width="300">
       <ComboBox x:Name="SortBox" Header="{Binding Text[GlSortBy]}" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedValue="{Binding Sort, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
       <ComboBox Header="{Binding Text[GlMinRating]}" ItemsSource="{Binding RatingOptions}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedValue="{Binding MinRating, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
       <CheckBox Content="{Binding Text[GlHideOwned]}" IsChecked="{Binding HideOwned, Mode=TwoWay}"/>
-      <CheckBox Content="{Binding Text[GlFreeOnly]}" IsChecked="{Binding FreeOnly, Mode=TwoWay}"/>
+      <ComboBox Header="{Binding Text[GlPrice]}" ItemsSource="{Binding PriceOptions}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedValue="{Binding Price, Mode=TwoWay}" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="gamelist-price"/>
       <Button Content="{Binding Text[GlFilterClear]}" Click="OnClearFilters" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" IsEnabled="{Binding HasActiveFilters}"/>
      </StackPanel></Flyout></DropDownButton.Flyout>
     </DropDownButton>
-    <Button Grid.Column="2" Click="OnRefresh" Style="{StaticResource SoftButtonStyle}" MinHeight="44" ToolTipService.ToolTip="{Binding Text[GlRefresh]}" AutomationProperties.Name="{Binding Text[GlRefresh]}">
+    <Button Grid.Column="3" Click="OnRefresh" Style="{StaticResource SoftButtonStyle}" MinHeight="44" ToolTipService.ToolTip="{Binding Text[GlRefresh]}" AutomationProperties.Name="{Binding Text[GlRefresh]}">
      <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon x:Name="RefreshIcon" Glyph="&#xE72C;" FontSize="13"/><TextBlock Text="{Binding Text[GlRefresh]}"/></StackPanel>
     </Button>
    </Grid>

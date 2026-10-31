@@ -50,7 +50,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 <tr><td><img src="docs/images/meus-jogos.png" alt="Meus Jogos"/><br/><sub><b>Meus Jogos</b></sub></td><td><img src="docs/images/backup-de-saves.png" alt="Backup de saves"/><br/><sub><b>Backup de saves</b></sub></td></tr>
 <tr><td><img src="docs/images/diario.png" alt="Meu diário"/><br/><sub><b>Meu diário</b></sub></td><td><img src="docs/images/lotus-score.png" alt="Lotus Score"/><br/><sub><b>Lotus Score</b></sub></td></tr>
 <tr><td><img src="docs/images/game-list.png" alt="Game list"/><br/><sub><b>Game list</b></sub></td><td><img src="docs/images/temas.png" alt="Temas"/><br/><sub><b>Galeria de temas</b></sub></td></tr>
-<tr><td colspan="2" align="center"><img src="docs/images/atualizacoes.png" width="640" alt="Atualizações"/><br/><sub><b>Atualizações com download animado</b></sub></td></tr>
+<tr><td><img src="docs/images/tipos-de-jogo.png" alt="Tipo de jogo"/><br/><sub><b>Tipo de jogo (Game list)</b></sub></td><td><img src="docs/images/atualizacoes.png" alt="Atualizações"/><br/><sub><b>Atualizações com download animado</b></sub></td></tr>
 </table>
 
 ## Instalar
@@ -108,7 +108,9 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 
 ### Game list
 - Listas da Steam (em alta, mais bem avaliados, mais vendidos, lançamentos, em breve), com até 100 jogos e rolagem contínua.
-- Busca, filtros indicados por texto e sorteio de jogo por gênero e dificuldade.
+- **Tipo de jogo:** uma janela com os tipos mais escolhidos e, em "Avançado", mais de 100 gêneros e temas em grupos (ação, RPG, estratégia, simulação, temas, visual, jogar com amigos…). Escolha vários e veja jogos com qualquer um ou com todos eles.
+- **Preço:** todos, só gratuitos ou sem gratuitos. Também ordenar, nota mínima e esconder os que você já tem.
+- Busca na loja inteira e sorteio de jogo por gênero e dificuldade.
 
 ### Meu diário
 - **Três jeitos de ver:** grade de capas, lista detalhada ou tabela com colunas ordenáveis (o Lotus lembra a escolha).

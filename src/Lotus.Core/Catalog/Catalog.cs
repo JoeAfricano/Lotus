@@ -28,6 +28,8 @@ public interface IGameCatalog
     Task<IReadOnlyList<CatalogItem>> DiscoverAsync(string? genre, string? difficulty, bool freeOnly, CancellationToken token);
     // Store art that always exists (newer games keep it under a hashed path only the store API knows).
     Task<string?> ArtAsync(string appId, CancellationToken token);
+    // Steam app ids of a kind of game: "genre:Action" (Steam genre) or "tag:Horror" (community tag). Empty when unknown.
+    Task<IReadOnlySet<string>> TypeIdsAsync(string type, CancellationToken token) => Task.FromResult<IReadOnlySet<string>>(new HashSet<string>());
     // Current Steam price of several games (discount, price now, price before). Missing = free, not sold or unknown.
     Task<IReadOnlyDictionary<string, GamePrice>> PricesAsync(IReadOnlyList<string> appIds, CancellationToken token) => Task.FromResult<IReadOnlyDictionary<string, GamePrice>>(new Dictionary<string, GamePrice>());
 }

@@ -16,6 +16,13 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 
 O repositório também ganhou README novo com capturas de tela, Política de Privacidade, guia de contribuição, política de segurança e modelos de issue.
 
+### Novo: filtros da Game list
+- **Tipo de jogo:** uma janela nova com os tipos mais escolhidos pelos jogadores e, em "Avançado", mais de 100 gêneros e temas organizados em grupos: ação, aventura, RPG, estratégia, simulação, esportes e corrida, temas, visual e câmera, história, jogar sozinho ou com amigos, clima e estilo.
+  - Tem busca e permite escolher vários tipos.
+  - Mostra os jogos que têm qualquer um dos escolhidos ou todos eles ao mesmo tempo.
+  - Os dados vêm da Steam, com cache de 3 dias.
+- **Preço:** todos, só gratuitos ou **sem gratuitos**.
+
 ### Corrigido nesta versão
 - Um envio ao Google Drive que precisasse de nova tentativa (instabilidade do Google) não conseguia reenviar o arquivo. Agora reenvia completo.
 - A tela de Atualizações volta a procurar sozinha ao ser aberta depois de uma falha (por exemplo, sem internet).

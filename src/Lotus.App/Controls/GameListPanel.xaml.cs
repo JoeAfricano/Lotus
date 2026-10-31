@@ -40,6 +40,23 @@ public sealed partial class GameListPanel : UserControl
 
     // Clearing restores every list filter / the draw filters; nothing else (search, chart) changes.
     private void OnClearFilters(object sender, RoutedEventArgs e) => Vm?.ClearFilters();
+
+    // The kinds of game window (several at once, "any" or "all").
+    private async void OnPickTypes(object sender, RoutedEventArgs e)
+    {
+        if (Vm is not { } vm) return;
+        var picker = new GameTypePicker(vm.Text, vm.SelectedTypes, vm.MatchAll);
+        var dialog = new ContentDialog
+        {
+            XamlRoot = XamlRoot, RequestedTheme = ThemePalette.Element, Title = vm.Text["GtTitle"], Content = picker,
+            PrimaryButtonText = vm.Text["GtApply"], SecondaryButtonText = vm.Text["GtClear"], CloseButtonText = vm.Text["DlgCancel"], DefaultButton = ContentDialogButton.Primary,
+        };
+        dialog.Resources["ContentDialogMaxWidth"] = 980.0;
+        dialog.SecondaryButtonClick += (_, args) => { args.Cancel = true; picker.Clear(); }; // "Clear" keeps the window open
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
+        UiSound.Play(UiSound.Cue.Done);
+        await vm.SetTypesAsync(picker.Selected, picker.MatchAll);
+    }
     private void OnClearPick(object sender, RoutedEventArgs e) { GenreBox.SelectedIndex = 0; DiffBox.SelectedIndex = 0; OnlyNewBox.IsChecked = false; OnlyFreeBox.IsChecked = false; }
     private void OnChart(SelectorBar sender, SelectorBarSelectionChangedEventArgs args) { if (Vm is { } vm && sender.SelectedItem?.Tag is string id) vm.Chart = id; }
     private void OnSearch(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args) { if (Vm is { } vm && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput) vm.Query = sender.Text; }

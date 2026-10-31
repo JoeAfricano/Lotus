@@ -127,24 +127,64 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     public bool Searching => query.Trim().Length >= 2;
     public IReadOnlyList<ChartTab> SortOptions => [.. new[] { "rank", "rating", "metacritic", "name" }.Select(s => new ChartTab(s, text["GlSort" + s]))];
     public IReadOnlyList<ChartTab> RatingOptions => [.. new[] { "0", "70", "80", "90" }.Select(s => new ChartTab(s, text["GlMin" + s]))];
-    private string sort = "rank", minRating = "0";
-    private bool hideOwned, freeOnly;
+    private string sort = "rank", minRating = "0", price = "any";
+    private bool hideOwned, matchAll;
+    private List<string> types = [];
+    private readonly Dictionary<string, IReadOnlySet<string>> typeSets = [];
+
+    // Kinds of game (several at once): "any of the chosen" or "all of them at once". Lists come from Steam (cached).
+    public IReadOnlyList<string> SelectedTypes => types;
+    public bool MatchAll => matchAll;
+    public string TypeLabel(string id) => text[new GameTypeOption(id).LabelKey];
+    public string TypeSummary => types.Count switch { 0 => text["GtButton"], 1 => TypeLabel(types[0]), _ => text.Format("GtButtonMany", types.Count) };
+    public bool HasTypes => types.Count > 0;
+    public async Task SetTypesAsync(IEnumerable<string> ids, bool all)
+    {
+        var wanted = ids.Where(GameTypes.IsKnown).Distinct().ToList();
+        types = wanted; matchAll = all;
+        OnPropertyChanged(nameof(SelectedTypes)); OnPropertyChanged(nameof(TypeSummary)); OnPropertyChanged(nameof(HasTypes)); OnPropertyChanged(nameof(MatchAll));
+        var missing = wanted.Where(t => !typeSets.ContainsKey(t)).ToList();
+        if (missing.Count > 0)
+        {
+            var before = Status;
+            Loading = true; Status = text["GlTypeLoading"];
+            try
+            {
+                foreach (var t in missing) typeSets[t] = await catalog.TypeIdsAsync(t, CancellationToken.None);
+                Status = before;
+            }
+            catch (Exception ex) { log(ex); Status = text["GlOffline"]; }
+            finally { Loading = false; }
+            if (!ReferenceEquals(types, wanted)) return; // the player changed the choice meanwhile
+        }
+        ApplyFilters();
+    }
+    private bool MatchesTypes(string appId)
+    {
+        if (types.Count == 0) return true;
+        var sets = types.Select(t => typeSets.GetValueOrDefault(t)).OfType<IReadOnlySet<string>>().ToList();
+        if (sets.Count == 0) return true; // lists unavailable (offline): do not hide everything
+        return matchAll ? sets.All(s => s.Contains(appId)) : sets.Any(s => s.Contains(appId));
+    }
+    // Price: every game, only free ones, or without free ones.
+    public IReadOnlyList<ChartTab> PriceOptions => [.. new[] { "any", "free", "paid" }.Select(p => new ChartTab(p, text["GlPrice" + p])) ];
+    public string Price { get => price; set { if (value is not null && SetProperty(ref price, value)) { OnPropertyChanged(nameof(FreeOnly)); ApplyFilters(); } } }
     public string Sort { get => sort; set { if (value is not null && SetProperty(ref sort, value)) ApplyFilters(); } }
     public string MinRating { get => minRating; set { if (value is not null && SetProperty(ref minRating, value)) ApplyFilters(); } }
     public bool HideOwned { get => hideOwned; set { if (SetProperty(ref hideOwned, value)) ApplyFilters(); } }
-    public bool FreeOnly { get => freeOnly; set { if (SetProperty(ref freeOnly, value)) ApplyFilters(); } }
+    public bool FreeOnly { get => price == "free"; set => Price = value ? "free" : price == "free" ? "any" : price; }
     public bool IsEmpty => !Loading && Items.Count == 0;
     // Filters always have a textual indicator (guide 10), and one action clears them all.
-    public bool HasActiveFilters => hideOwned || freeOnly || minRating != "0" || sort != "rank";
+    public bool HasActiveFilters => hideOwned || price != "any" || types.Count > 0 || minRating != "0" || sort != "rank";
     public string ActiveFilters => !HasActiveFilters ? text["GlFiltersNone"] : text.Format("GlFiltersActive", string.Join(" · ", new[]
     {
         sort != "rank" ? text["GlSort" + sort] : null, minRating != "0" ? text["GlMin" + minRating] : null,
-        hideOwned ? text["GlHideOwned"] : null, freeOnly ? text["GlFreeOnly"] : null,
+        types.Count > 0 ? TypeSummary : null, price != "any" ? text["GlPrice" + price] : null, hideOwned ? text["GlHideOwned"] : null,
     }.OfType<string>()));
     public void ClearFilters()
     {
-        sort = "rank"; minRating = "0"; hideOwned = freeOnly = false;
-        foreach (var n in new[] { nameof(Sort), nameof(MinRating), nameof(HideOwned), nameof(FreeOnly) }) OnPropertyChanged(n);
+        sort = "rank"; minRating = "0"; hideOwned = false; price = "any"; types = []; matchAll = false;
+        foreach (var n in new[] { nameof(Sort), nameof(MinRating), nameof(HideOwned), nameof(FreeOnly), nameof(Price), nameof(SelectedTypes), nameof(TypeSummary), nameof(HasTypes) }) OnPropertyChanged(n);
         ApplyFilters();
     }
 
@@ -186,7 +226,8 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
         var owned = OwnedIds(); var min = int.TryParse(minRating, out var m) ? m : 0;
         var rows = source.Select((item, index) => (item, index))
             .Where(r => !hideOwned || !owned.Contains(r.item.AppId))
-            .Where(r => !freeOnly || r.item.Free == true)
+            .Where(r => price switch { "free" => r.item.Free == true, "paid" => r.item.Free != true, _ => true })
+            .Where(r => MatchesTypes(r.item.AppId))
             .Where(r => min == 0 || (r.item.PositivePercent ?? r.item.Metacritic ?? 0) >= min);
         rows = sort switch
         {

@@ -2515,4 +2515,148 @@ Your games and Windows are not changed.</value></data>
   <data name="BkScheduleWeekly" xml:space="preserve"><value>Every week</value></data>
   <data name="BkScheduleMonthly" xml:space="preserve"><value>Every month</value></data>
   <data name="BkScheduledSent" xml:space="preserve"><value>Automatic backup sent to Google Drive.</value></data>
+  <data name="GlType" xml:space="preserve"><value>Kind of game</value></data>
+  <data name="GlTypeAny" xml:space="preserve"><value>All kinds</value></data>
+  <data name="GlTypeLoading" xml:space="preserve"><value>Finding games of this kind…</value></data>
+  <data name="GlTagShooter" xml:space="preserve"><value>Shooter</value></data>
+  <data name="GlTagHorror" xml:space="preserve"><value>Horror</value></data>
+  <data name="GlTagOpenWorld" xml:space="preserve"><value>Open world</value></data>
+  <data name="GlTagSurvival" xml:space="preserve"><value>Survival</value></data>
+  <data name="GlTagCoop" xml:space="preserve"><value>Co-op</value></data>
+  <data name="GlTagMultiplayer" xml:space="preserve"><value>Multiplayer</value></data>
+  <data name="GlPrice" xml:space="preserve"><value>Price</value></data>
+  <data name="GlPriceany" xml:space="preserve"><value>Any price</value></data>
+  <data name="GlPricefree" xml:space="preserve"><value>Free only</value></data>
+  <data name="GlPricepaid" xml:space="preserve"><value>No free games</value></data>
+  <data name="Gt2D" xml:space="preserve"><value>2D</value></data>
+  <data name="Gt3D" xml:space="preserve"><value>3D</value></data>
+  <data name="Gt4X" xml:space="preserve"><value>4X</value></data>
+  <data name="GtAction" xml:space="preserve"><value>Action</value></data>
+  <data name="GtActionAdventure" xml:space="preserve"><value>Action-adventure</value></data>
+  <data name="GtActionRPG" xml:space="preserve"><value>Action RPG</value></data>
+  <data name="GtAdventure" xml:space="preserve"><value>Adventure</value></data>
+  <data name="GtAnime" xml:space="preserve"><value>Anime</value></data>
+  <data name="GtArcade" xml:space="preserve"><value>Arcade</value></data>
+  <data name="GtAtmospheric" xml:space="preserve"><value>Atmospheric</value></data>
+  <data name="GtAutomation" xml:space="preserve"><value>Automation</value></data>
+  <data name="GtAutomobileSim" xml:space="preserve"><value>Car sim</value></data>
+  <data name="GtBattleRoyale" xml:space="preserve"><value>Battle royale</value></data>
+  <data name="GtBeautiful" xml:space="preserve"><value>Beautiful</value></data>
+  <data name="GtBoardGame" xml:space="preserve"><value>Board game</value></data>
+  <data name="GtBuilding" xml:space="preserve"><value>Building</value></data>
+  <data name="GtCardGame" xml:space="preserve"><value>Card game</value></data>
+  <data name="GtCasual" xml:space="preserve"><value>Casual</value></data>
+  <data name="GtChoicesMatter" xml:space="preserve"><value>Choices matter</value></data>
+  <data name="GtCityBuilder" xml:space="preserve"><value>City builder</value></data>
+  <data name="GtColonySim" xml:space="preserve"><value>Colony sim</value></data>
+  <data name="GtColorful" xml:space="preserve"><value>Colorful</value></data>
+  <data name="GtController" xml:space="preserve"><value>Controller</value></data>
+  <data name="GtCoop" xml:space="preserve"><value>Co-op</value></data>
+  <data name="GtCozy" xml:space="preserve"><value>Cozy</value></data>
+  <data name="GtCrafting" xml:space="preserve"><value>Crafting</value></data>
+  <data name="GtCute" xml:space="preserve"><value>Cute</value></data>
+  <data name="GtCyberpunk" xml:space="preserve"><value>Cyberpunk</value></data>
+  <data name="GtDark" xml:space="preserve"><value>Dark</value></data>
+  <data name="GtDatingSim" xml:space="preserve"><value>Dating sim</value></data>
+  <data name="GtDetective" xml:space="preserve"><value>Detective</value></data>
+  <data name="GtDifficult" xml:space="preserve"><value>Difficult</value></data>
+  <data name="GtDriving" xml:space="preserve"><value>Driving</value></data>
+  <data name="GtEarlyAccess" xml:space="preserve"><value>Early access</value></data>
+  <data name="GtEndlessRunner" xml:space="preserve"><value>Endless runner</value></data>
+  <data name="GtExploration" xml:space="preserve"><value>Exploration</value></data>
+  <data name="GtFamilyFriendly" xml:space="preserve"><value>Family friendly</value></data>
+  <data name="GtFantasy" xml:space="preserve"><value>Fantasy</value></data>
+  <data name="GtFarmingSim" xml:space="preserve"><value>Farming sim</value></data>
+  <data name="GtFemaleProtagonist" xml:space="preserve"><value>Female protagonist</value></data>
+  <data name="GtFighting" xml:space="preserve"><value>Fighting</value></data>
+  <data name="GtFirstPerson" xml:space="preserve"><value>First-person</value></data>
+  <data name="GtFlight" xml:space="preserve"><value>Flight</value></data>
+  <data name="GtFPS" xml:space="preserve"><value>First-person shooter</value></data>
+  <data name="GtFunny" xml:space="preserve"><value>Funny</value></data>
+  <data name="GtGrandStrategy" xml:space="preserve"><value>Grand strategy</value></data>
+  <data name="GtGreatSoundtrack" xml:space="preserve"><value>Great soundtrack</value></data>
+  <data name="GtHackandSlash" xml:space="preserve"><value>Hack and slash</value></data>
+  <data name="GtHiddenObject" xml:space="preserve"><value>Hidden object</value></data>
+  <data name="GtHorror" xml:space="preserve"><value>Horror</value></data>
+  <data name="GtImmersiveSim" xml:space="preserve"><value>Immersive sim</value></data>
+  <data name="GtIndie" xml:space="preserve"><value>Indie</value></data>
+  <data name="GtJRPG" xml:space="preserve"><value>JRPG</value></data>
+  <data name="GtLifeSim" xml:space="preserve"><value>Life sim</value></data>
+  <data name="GtLocalCoOp" xml:space="preserve"><value>Local co-op</value></data>
+  <data name="GtMartialArts" xml:space="preserve"><value>Martial arts</value></data>
+  <data name="GtMassivelyMultiplayer" xml:space="preserve"><value>Massively multiplayer</value></data>
+  <data name="GtMetroidvania" xml:space="preserve"><value>Metroidvania</value></data>
+  <data name="GtMilitary" xml:space="preserve"><value>Military</value></data>
+  <data name="GtMOBA" xml:space="preserve"><value>MOBA</value></data>
+  <data name="GtMultiplayer" xml:space="preserve"><value>Multiplayer</value></data>
+  <data name="GtMultipleEndings" xml:space="preserve"><value>Multiple endings</value></data>
+  <data name="GtMystery" xml:space="preserve"><value>Mystery</value></data>
+  <data name="GtOnlineCoOp" xml:space="preserve"><value>Online co-op</value></data>
+  <data name="GtOpenWorld" xml:space="preserve"><value>Open world</value></data>
+  <data name="GtPartyBasedRPG" xml:space="preserve"><value>Party-based RPG</value></data>
+  <data name="GtPhysics" xml:space="preserve"><value>Physics</value></data>
+  <data name="GtPixelGraphics" xml:space="preserve"><value>Pixel graphics</value></data>
+  <data name="GtPlatformer" xml:space="preserve"><value>Platformer</value></data>
+  <data name="GtPostapocalyptic" xml:space="preserve"><value>Post-apocalyptic</value></data>
+  <data name="GtPuzzle" xml:space="preserve"><value>Puzzle</value></data>
+  <data name="GtPvE" xml:space="preserve"><value>PvE</value></data>
+  <data name="GtPvP" xml:space="preserve"><value>PvP</value></data>
+  <data name="GtRacing" xml:space="preserve"><value>Racing</value></data>
+  <data name="GtRealistic" xml:space="preserve"><value>Realistic</value></data>
+  <data name="GtRelaxing" xml:space="preserve"><value>Relaxing</value></data>
+  <data name="GtRetro" xml:space="preserve"><value>Retro</value></data>
+  <data name="GtRhythm" xml:space="preserve"><value>Rhythm</value></data>
+  <data name="GtRoguelike" xml:space="preserve"><value>Roguelike</value></data>
+  <data name="GtRoguelite" xml:space="preserve"><value>Roguelite</value></data>
+  <data name="GtRPG" xml:space="preserve"><value>RPG</value></data>
+  <data name="GtRTS" xml:space="preserve"><value>Real-time strategy</value></data>
+  <data name="GtSandbox" xml:space="preserve"><value>Sandbox</value></data>
+  <data name="GtScifi" xml:space="preserve"><value>Sci-fi</value></data>
+  <data name="GtShootEmUp" xml:space="preserve"><value>Shoot &apos;em up</value></data>
+  <data name="GtSimulation" xml:space="preserve"><value>Simulation</value></data>
+  <data name="GtSingleplayer" xml:space="preserve"><value>Singleplayer</value></data>
+  <data name="GtSoulslike" xml:space="preserve"><value>Souls-like</value></data>
+  <data name="GtSpace" xml:space="preserve"><value>Space</value></data>
+  <data name="GtSpaceSim" xml:space="preserve"><value>Space sim</value></data>
+  <data name="GtSports" xml:space="preserve"><value>Sports</value></data>
+  <data name="GtStealth" xml:space="preserve"><value>Stealth</value></data>
+  <data name="GtStoryRich" xml:space="preserve"><value>Story rich</value></data>
+  <data name="GtStrategy" xml:space="preserve"><value>Strategy</value></data>
+  <data name="GtStrategyRPG" xml:space="preserve"><value>Strategy RPG</value></data>
+  <data name="GtStylized" xml:space="preserve"><value>Stylized</value></data>
+  <data name="GtSurvival" xml:space="preserve"><value>Survival</value></data>
+  <data name="GtTeamBased" xml:space="preserve"><value>Team-based</value></data>
+  <data name="GtThirdPerson" xml:space="preserve"><value>Third person</value></data>
+  <data name="GtThirdPersonShooter" xml:space="preserve"><value>Third-person shooter</value></data>
+  <data name="GtTopDown" xml:space="preserve"><value>Top-down</value></data>
+  <data name="GtTowerDefense" xml:space="preserve"><value>Tower defense</value></data>
+  <data name="GtTurnBasedCombat" xml:space="preserve"><value>Turn-based combat</value></data>
+  <data name="GtTurnBasedStrategy" xml:space="preserve"><value>Turn-based strategy</value></data>
+  <data name="GtVisualNovel" xml:space="preserve"><value>Visual novel</value></data>
+  <data name="GtGroupAction" xml:space="preserve"><value>Action</value></data>
+  <data name="GtGroupAdventure" xml:space="preserve"><value>Adventure and mystery</value></data>
+  <data name="GtGroupRpg" xml:space="preserve"><value>RPG</value></data>
+  <data name="GtGroupStrategy" xml:space="preserve"><value>Strategy</value></data>
+  <data name="GtGroupSimulation" xml:space="preserve"><value>Simulation</value></data>
+  <data name="GtGroupSports" xml:space="preserve"><value>Sports and racing</value></data>
+  <data name="GtGroupThemes" xml:space="preserve"><value>Themes</value></data>
+  <data name="GtGroupLook" xml:space="preserve"><value>Look and camera</value></data>
+  <data name="GtGroupStory" xml:space="preserve"><value>Story</value></data>
+  <data name="GtGroupFriends" xml:space="preserve"><value>Solo or with friends</value></data>
+  <data name="GtGroupMood" xml:space="preserve"><value>Mood and style</value></data>
+  <data name="GtTitle" xml:space="preserve"><value>What kind of game are you looking for?</value></data>
+  <data name="GtIntro" xml:space="preserve"><value>Pick one or several. The Game list shows only games of those kinds.</value></data>
+  <data name="GtSearch" xml:space="preserve"><value>Find a kind (e.g. horror, racing, co-op)</value></data>
+  <data name="GtPopular" xml:space="preserve"><value>Most picked</value></data>
+  <data name="GtAdvanced" xml:space="preserve"><value>Advanced: every genre and theme</value></data>
+  <data name="GtMatch" xml:space="preserve"><value>Show games that have</value></data>
+  <data name="GtMatchAny" xml:space="preserve"><value>Any of the chosen</value></data>
+  <data name="GtMatchAll" xml:space="preserve"><value>All the chosen at once</value></data>
+  <data name="GtSelected" xml:space="preserve"><value>{0} chosen</value></data>
+  <data name="GtNone" xml:space="preserve"><value>None chosen: every kind</value></data>
+  <data name="GtApply" xml:space="preserve"><value>Show games</value></data>
+  <data name="GtClear" xml:space="preserve"><value>Clear</value></data>
+  <data name="GtNoMatch" xml:space="preserve"><value>No kind with that name.</value></data>
+  <data name="GtButton" xml:space="preserve"><value>Kind of game</value></data>
+  <data name="GtButtonMany" xml:space="preserve"><value>{0} kinds</value></data>
 </root>

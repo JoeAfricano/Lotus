@@ -118,6 +118,17 @@ public sealed class SteamCatalog : IGameCatalog
             .OrderByDescending(g => g.Pos + g.Neg).Take(300)
             .Select(g => new CatalogItem(g.Id, g.Name, CatalogText.Portrait(g.Id), CatalogText.Header(g.Id), (int)Math.Round(g.Pos * 100.0 / (g.Pos + g.Neg)), g.Pos + g.Neg, Free: g.Free))];
     }
+    // Every Steam game of a genre or community tag (SteamSpy full lists, cached 3 days, shared with the draw).
+    public async Task<IReadOnlySet<string>> TypeIdsAsync(string type, CancellationToken token)
+    {
+        var parts = type.Split(':', 2);
+        if (parts.Length != 2 || parts[1].Length == 0) return new HashSet<string>();
+        var name = parts[1];
+        var (url, cache) = parts[0] == "tag"
+            ? ($"https://steamspy.com/api.php?request=tag&tag={Uri.EscapeDataString(name)}", $"spy-tag-{name.ToLowerInvariant().Replace(' ', '-')}.json")
+            : ($"https://steamspy.com/api.php?request=genre&genre={Uri.EscapeDataString(name)}", $"spy-{name.ToLowerInvariant()}.json");
+        return Spy(await JsonAsync(url, cache, TimeSpan.FromDays(3), token)).Select(g => g.Id).ToHashSet();
+    }
     private static List<(string Id, string Name, long Pos, long Neg, bool Free)> Spy(JsonNode? node) => node is JsonObject o
         ? [.. o.Select(kv => kv.Value).OfType<JsonObject>().Select(a => (Long(a["appid"]).ToString(), a["name"]?.GetValue<string>() ?? "", Long(a["positive"]), Long(a["negative"]), a["price"]?.ToString() == "0")).Where(a => a.Item2.Length > 0)]
         : [];
