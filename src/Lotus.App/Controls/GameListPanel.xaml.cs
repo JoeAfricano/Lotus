@@ -57,11 +57,10 @@ public sealed partial class GameListPanel : UserControl
         UiSound.Play(UiSound.Cue.Done);
         await vm.SetTypesAsync(picker.Selected, picker.MatchAll);
     }
-    private void OnClearPick(object sender, RoutedEventArgs e) { GenreBox.SelectedIndex = 0; DiffBox.SelectedIndex = 0; OnlyNewBox.IsChecked = false; OnlyFreeBox.IsChecked = false; }
+    private void OnClearPick(object sender, RoutedEventArgs e) { DiffBox.SelectedIndex = 0; }
     private void OnChart(SelectorBar sender, SelectorBarSelectionChangedEventArgs args) { if (Vm is { } vm && sender.SelectedItem?.Tag is string id) vm.Chart = id; }
     private void OnSearch(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args) { if (Vm is { } vm && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput) vm.Query = sender.Text; }
     private void OnSearchSubmit(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) { if (Vm is { } vm) vm.Query = sender.Text; }
-    private void OnGenre(object sender, SelectionChangedEventArgs e) { if (Vm is { } vm && GenreBox.SelectedValue is string g) vm.Genre = g; }
     private void OnDifficulty(object sender, SelectionChangedEventArgs e) { if (Vm is { } vm && DiffBox.SelectedItem is ComboBoxItem { Tag: string d }) vm.DifficultyWanted = d; }
 
     private async void OnRefresh(object sender, RoutedEventArgs e)

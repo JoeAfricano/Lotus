@@ -78,4 +78,17 @@ public sealed class GameListTypeTests
         foreach (var g in GameTypes.Groups) Assert.False(string.IsNullOrWhiteSpace(pt["GtGroup" + g.Key]));
         Assert.True(GameTypes.Popular.Count >= 16);
     }
+
+    [Fact] public async Task BestSellersCanBeFilteredByKindAndKeepTheirSalesOrder()
+    {
+        var vm = new GameListViewModel(new Fake(), new TextCatalog(), ex => throw ex);
+        vm.Chart = "topsellers"; await vm.ShowAsync();
+        await vm.SetTypesAsync(["tag:Co-op"], all: false);
+        Assert.Equal(["Phasmophobia", "Warframe", "Stardew"], Names(vm));
+        Assert.Equal(["2", "3", "4"], vm.Items.Select(i => i.Rank));             // the sales position is kept
+        Assert.Contains(new TextCatalog()["GlCharttopsellers"], vm.ChartHint);    // the hint says it is filtered
+        vm.Price = "paid";
+        Assert.Equal(["Phasmophobia", "Stardew"], Names(vm));
+        Assert.Contains(new TextCatalog()["GlPricepaid"], vm.PickScope);
+    }
 }

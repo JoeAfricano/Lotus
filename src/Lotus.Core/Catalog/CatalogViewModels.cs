@@ -106,7 +106,6 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     public string Chart { get => chart; set { if (value is not null && SetProperty(ref chart, value)) _ = ShowAsync(); } }
     public bool Loading { get => loading; private set => SetProperty(ref loading, value); }
     public string Status { get => status; private set => SetProperty(ref status, value); }
-    public string ChartHint => text["GlHint" + chart];
 
     // Picker filters
     public IReadOnlyList<GenreChip> GenreChips => [.. new[] { "any", "Action", "Adventure", "RPG", "Strategy", "Indie", "Racing", "Sports", "Simulation", "Casual" }.Select(g => new GenreChip(g, text["GlGenre" + g]))];
@@ -138,11 +137,14 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     public string TypeLabel(string id) => text[new GameTypeOption(id).LabelKey];
     public string TypeSummary => types.Count switch { 0 => text["GtButton"], 1 => TypeLabel(types[0]), _ => text.Format("GtButtonMany", types.Count) };
     public bool HasTypes => types.Count > 0;
+    // What the draw uses (the list's kind and price filters), in words.
+    public string PickScope => (types.Count == 0 ? text["GtAnyKind"] : TypeSummary) + (price != "any" ? " · " + text["GlPrice" + price] : "");
+    public string ChartHint => Searching || !HasActiveFilters ? text["GlHint" + chart] : text.Format("GlHintFiltered", filtered.Count, text["GlChart" + chart]);
     public async Task SetTypesAsync(IEnumerable<string> ids, bool all)
     {
         var wanted = ids.Where(GameTypes.IsKnown).Distinct().ToList();
         types = wanted; matchAll = all;
-        OnPropertyChanged(nameof(SelectedTypes)); OnPropertyChanged(nameof(TypeSummary)); OnPropertyChanged(nameof(HasTypes)); OnPropertyChanged(nameof(MatchAll));
+        OnPropertyChanged(nameof(SelectedTypes)); OnPropertyChanged(nameof(TypeSummary)); OnPropertyChanged(nameof(HasTypes)); OnPropertyChanged(nameof(MatchAll)); OnPropertyChanged(nameof(PickScope));
         var missing = wanted.Where(t => !typeSets.ContainsKey(t)).ToList();
         if (missing.Count > 0)
         {
@@ -168,7 +170,7 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     }
     // Price: every game, only free ones, or without free ones.
     public IReadOnlyList<ChartTab> PriceOptions => [.. new[] { "any", "free", "paid" }.Select(p => new ChartTab(p, text["GlPrice" + p])) ];
-    public string Price { get => price; set { if (value is not null && SetProperty(ref price, value)) { OnPropertyChanged(nameof(FreeOnly)); ApplyFilters(); } } }
+    public string Price { get => price; set { if (value is not null && SetProperty(ref price, value)) { OnPropertyChanged(nameof(FreeOnly)); OnPropertyChanged(nameof(PickScope)); ApplyFilters(); } } }
     public string Sort { get => sort; set { if (value is not null && SetProperty(ref sort, value)) ApplyFilters(); } }
     public string MinRating { get => minRating; set { if (value is not null && SetProperty(ref minRating, value)) ApplyFilters(); } }
     public bool HideOwned { get => hideOwned; set { if (SetProperty(ref hideOwned, value)) ApplyFilters(); } }
@@ -184,7 +186,7 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     public void ClearFilters()
     {
         sort = "rank"; minRating = "0"; hideOwned = false; price = "any"; types = []; matchAll = false;
-        foreach (var n in new[] { nameof(Sort), nameof(MinRating), nameof(HideOwned), nameof(FreeOnly), nameof(Price), nameof(SelectedTypes), nameof(TypeSummary), nameof(HasTypes) }) OnPropertyChanged(n);
+        foreach (var n in new[] { nameof(Sort), nameof(MinRating), nameof(HideOwned), nameof(FreeOnly), nameof(Price), nameof(SelectedTypes), nameof(TypeSummary), nameof(HasTypes), nameof(PickScope) }) OnPropertyChanged(n);
         ApplyFilters();
     }
 
@@ -240,7 +242,7 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
         filtered = [.. rows.Select(r => new CatalogCard(r.item, Meta(r.item), owned.Contains(r.item.AppId)) { Rank = Searching ? "" : (r.index + 1).ToString() })];
         Items.Clear();
         foreach (var card in filtered.Take(PageSize)) Items.Add(card);
-        OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(ActiveFilters)); OnPropertyChanged(nameof(HasActiveFilters)); OnPropertyChanged(nameof(CanShowMore)); OnPropertyChanged(nameof(MoreText));
+        OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(ActiveFilters)); OnPropertyChanged(nameof(HasActiveFilters)); OnPropertyChanged(nameof(ChartHint)); OnPropertyChanged(nameof(CanShowMore)); OnPropertyChanged(nameof(MoreText));
     }
     public const int PageSize = 48;
     private List<CatalogCard> filtered = [];
@@ -289,13 +291,16 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
         Picking = true; Picked = null; PickStatus = text["GlPicking"]; NotifyPick();
         try
         {
-            var pool = (await catalog.DiscoverAsync(Genre == "any" ? null : Genre, DifficultyWanted == "any" ? null : DifficultyWanted, OnlyFree, CancellationToken.None)).ToList();
+            // The draw follows the list's filters: one Steam genre narrows the pool directly; tags and several kinds filter it.
+            var genre = types.Count == 1 && types[0].StartsWith("genre:") ? types[0][6..] : Genre == "any" ? null : Genre;
+            var pool = (await catalog.DiscoverAsync(genre, DifficultyWanted == "any" ? null : DifficultyWanted, OnlyFree || price == "free", CancellationToken.None)).ToList();
             var fromStore = pool.Count > 0;
             if (!fromStore)
                 foreach (var id in CatalogText.Charts.Where(c => c != "upcoming"))
                     if (await Get(id, false) is { } c) pool.AddRange(c.Items);
             var owned = OwnedIds();
-            var candidates = pool.DistinctBy(i => i.AppId).Where(i => !OnlyNotOwned || !owned.Contains(i.AppId)).OrderBy(_ => random.Next()).ToList();
+            var candidates = pool.DistinctBy(i => i.AppId).Where(i => !OnlyNotOwned || !owned.Contains(i.AppId))
+                .Where(i => MatchesTypes(i.AppId) && (price != "paid" || i.Free != true)).OrderBy(_ => random.Next()).ToList();
             (CatalogItem Item, GameInfo Info)? gentle = null; // "easy" fallback: a game nobody calls difficult
             foreach (var item in candidates.Take(12))
             {

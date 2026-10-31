@@ -22,6 +22,8 @@ O repositório também ganhou README novo com capturas de tela, Política de Pri
   - Mostra os jogos que têm qualquer um dos escolhidos ou todos eles ao mesmo tempo.
   - Os dados vêm da Steam, com cache de 3 dias.
 - **Preço:** todos, só gratuitos ou **sem gratuitos**.
+- Os filtros valem para todas as listas, inclusive **Mais vendidos**: dá para ver os mais vendidos de cada tipo, na ordem de vendas. A frase acima da lista mostra quantos jogos aparecem com os filtros.
+- O sorteio "Não sei o que jogar" ficou mais simples: escolha só a dificuldade, e ele usa o tipo de jogo e o preço escolhidos na lista.
 
 ### Corrigido nesta versão
 - Um envio ao Google Drive que precisasse de nova tentativa (instabilidade do Google) não conseguia reenviar o arquivo. Agora reenvia completo.

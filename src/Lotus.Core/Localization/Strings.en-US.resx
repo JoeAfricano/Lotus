@@ -2659,4 +2659,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GtNoMatch" xml:space="preserve"><value>No kind with that name.</value></data>
   <data name="GtButton" xml:space="preserve"><value>Kind of game</value></data>
   <data name="GtButtonMany" xml:space="preserve"><value>{0} kinds</value></data>
+  <data name="GlPickUses" xml:space="preserve"><value>The draw uses the list filters below:</value></data>
+  <data name="GtAnyKind" xml:space="preserve"><value>any kind of game</value></data>
+  <data name="GlHintFiltered" xml:space="preserve"><value>{0} games from &quot;{1}&quot; with your filters.</value></data>
 </root>

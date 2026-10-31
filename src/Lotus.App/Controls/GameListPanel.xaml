@@ -1,4 +1,4 @@
-<UserControl x:Class="Lotus.App.Controls.GameListPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+﻿<UserControl x:Class="Lotus.App.Controls.GameListPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:app="using:Lotus.App" xmlns:controls="using:Lotus.App.Controls" AutomationProperties.AutomationId="gamelist">
  <Grid>
   <!-- Lists -->
@@ -13,15 +13,15 @@
       <StackPanel Spacing="14" VerticalAlignment="Center">
        <StackPanel Spacing="4"><TextBlock Text="{Binding Text[GlPickTitle]}" FontSize="30" FontWeight="SemiBold" Foreground="White"/><TextBlock Text="{Binding Text[GlPickBody]}" FontSize="15" Foreground="#E6D6DE" TextWrapping="Wrap"/></StackPanel>
        <StackPanel Orientation="Horizontal" Spacing="12">
-        <ComboBox x:Name="GenreBox" Header="{Binding Text[GlGenre]}" ItemsSource="{Binding GenreChips}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedIndex="0" MinWidth="190" MinHeight="44" SelectionChanged="OnGenre" AutomationProperties.AutomationId="pick-genre"/>
+
         <ComboBox x:Name="DiffBox" Header="{Binding Text[GlDifficulty]}" MinWidth="190" MinHeight="44" SelectedIndex="0" SelectionChanged="OnDifficulty" AutomationProperties.AutomationId="pick-difficulty"/>
         <Button Click="OnPick" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" MinWidth="190" VerticalAlignment="Bottom" AutomationProperties.AutomationId="pick-go">
          <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon x:Name="DiceIcon" Glyph="&#xE8B1;" FontSize="14"/><TextBlock x:Name="PickLabel" Text="{Binding Text[GlPick]}"/></StackPanel>
         </Button>
        </StackPanel>
-       <StackPanel Orientation="Horizontal" Spacing="18">
-        <CheckBox x:Name="OnlyNewBox" Content="{Binding Text[GlOnlyNew]}" IsChecked="{Binding OnlyNotOwned, Mode=TwoWay}" Foreground="#E6D6DE"/>
-        <CheckBox x:Name="OnlyFreeBox" Content="{Binding Text[GlOnlyFree]}" IsChecked="{Binding OnlyFree, Mode=TwoWay}" Foreground="#E6D6DE"/>
+       <StackPanel Orientation="Horizontal" Spacing="10">
+        <FontIcon Glyph="&#xE8FD;" FontSize="13" Foreground="#F07A9C"/>
+        <TextBlock Foreground="#E6D6DE" FontSize="13" TextWrapping="Wrap" MaxWidth="560"><Run Text="{Binding Text[GlPickUses]}"/><Run Text=" "/><Run Text="{Binding PickScope}" FontWeight="SemiBold" Foreground="White"/></TextBlock>
        </StackPanel>
        <StackPanel Orientation="Horizontal" Spacing="12" Visibility="{Binding PickStatus, Converter={StaticResource PresenceVisibility}}">
         <ProgressRing IsActive="{Binding Picking}" Width="18" Height="18" Visibility="{Binding Picking, Converter={StaticResource BooleanVisibility}}"/>

@@ -110,7 +110,8 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 - Listas da Steam (em alta, mais bem avaliados, mais vendidos, lançamentos, em breve), com até 100 jogos e rolagem contínua.
 - **Tipo de jogo:** uma janela com os tipos mais escolhidos e, em "Avançado", mais de 100 gêneros e temas em grupos (ação, RPG, estratégia, simulação, temas, visual, jogar com amigos…). Escolha vários e veja jogos com qualquer um ou com todos eles.
 - **Preço:** todos, só gratuitos ou sem gratuitos. Também ordenar, nota mínima e esconder os que você já tem.
-- Busca na loja inteira e sorteio de jogo por gênero e dificuldade.
+- Os filtros valem para todas as listas (inclusive **Mais vendidos**: os mais vendidos de cada tipo).
+- Busca na loja inteira e sorteio "Não sei o que jogar", que usa os mesmos filtros e a dificuldade escolhida.
 
 ### Meu diário
 - **Três jeitos de ver:** grade de capas, lista detalhada ou tabela com colunas ordenáveis (o Lotus lembra a escolha).
