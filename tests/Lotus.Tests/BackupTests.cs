@@ -131,7 +131,8 @@ public sealed class BackupTests : IDisposable
     {
         var fake = new FakeGoogle();
         var vault = new MemoryVault { Value = "joe@example.com\nREFRESH" };
-        var drive = new GoogleDriveBackup(new("id", "secret"), vault, _ => Task.CompletedTask, new HttpClient(fake));
+        var drive = new GoogleDriveBackup(new("id", "secret"), vault, _ => Task.CompletedTask, new HttpClient(fake),
+            new JsonDriveFolderCache(Path.Combine(Path.GetTempPath(), "lotus-drive-cache-" + Guid.NewGuid().ToString("N") + ".json")), (_, _) => Task.CompletedTask);
         Assert.True(drive.Configured); Assert.Equal("joe@example.com", drive.Account);
         var up = await drive.UploadAsync(new MemoryStream([9, 9]), "b.lotusbackup", default);
         Assert.Equal("f1", up.Id); Assert.Equal(1, fake.Uploaded);
@@ -142,7 +143,7 @@ public sealed class BackupTests : IDisposable
         Assert.Single(fake.Calls, c => c.StartsWith("POST https://oauth2.googleapis.com/token"));    // access token reused
         await drive.DisconnectAsync();
         Assert.Null(vault.Value); Assert.Null(drive.Account);
-        await Assert.ThrowsAsync<UnauthorizedAccessException>(() => drive.ListAsync(default));
+        Assert.Equal(CloudErrorKind.Auth, (await Assert.ThrowsAsync<CloudException>(() => drive.ListAsync(default))).Kind);
         Assert.False(new GoogleDriveBackup(null, vault, _ => Task.CompletedTask).Configured);
     }
 

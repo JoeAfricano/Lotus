@@ -18,7 +18,12 @@ public sealed partial class BackupPanel : UserControl
             if (Vm is not { } vm) return;
             vm.PropertyChanged -= OnVm; vm.PropertyChanged += OnVm;
             vm.Notify();
-            // Google Drive is hidden for now: no list is read.
+            syncing = true;
+            ScheduleBox.Items.Clear();
+            foreach (var key in new[] { "BkScheduleManual", "BkScheduleWeekly", "BkScheduleMonthly" }) ScheduleBox.Items.Add(vm.Text[key]);
+            ScheduleBox.SelectedIndex = vm.ScheduleIndex;
+            syncing = false;
+            _ = vm.RefreshCloudAsync();
         };
     }
     private void OnVm(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -40,6 +45,9 @@ public sealed partial class BackupPanel : UserControl
         await using (var stream = File.Create(file.Path)) vm.Save(stream);
         UiSound.Play(vm.IsError ? UiSound.Cue.Fail : UiSound.Cue.Done);
     }
+
+    private bool syncing;
+    private void OnSchedule(object sender, SelectionChangedEventArgs e) { if (!syncing && Vm is { } vm && ScheduleBox.SelectedIndex >= 0) vm.ScheduleIndex = ScheduleBox.SelectedIndex; }
 
     private async void OnLoadCloud(object sender, RoutedEventArgs e) { if (Vm is { } vm) await vm.LoadFromCloudAsync(); }
 

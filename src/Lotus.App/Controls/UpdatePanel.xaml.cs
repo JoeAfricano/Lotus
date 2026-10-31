@@ -19,7 +19,7 @@ public sealed partial class UpdatePanel : UserControl
         InitializeComponent();
         DataContextChanged += (_, _) => Attach(DataContext as UpdateViewModel);
         Unloaded += (_, _) => { Attach(null); Motion.StopFrames(this); };
-        Loaded += async (_, _) => { if (vm is { State: UpdateState.Idle }) await vm.CheckAsync(quiet: true); };
+        Loaded += async (_, _) => { if (vm is { State: UpdateState.Idle or UpdateState.Failed }) await vm.CheckAsync(quiet: true); }; // opening the screen tries again after a failure
     }
 
     private void Attach(UpdateViewModel? next)

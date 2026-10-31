@@ -69,3 +69,7 @@ O pedido de exportação não autoriza aplicar otimizações ao Windows nem desc
 
 - Funcionalidades para jogadores casuais (Onde eu parei?, Preparar e Jogar, Proteção de progresso de saves) implementadas e NÃO commitadas; relatório em `docs/LOTUS_CASUAL_FEATURES.md`. 431 testes aprovados (Debug/Release).
 - Ativar/restaurar saves reais e aplicar perfil ao jogar exigem aprovação do usuário.
+
+## Estado em 31/10/2026 (Claude Code)
+
+- **1.0.0-alpha** (título "Lotus 1.0 Alpha"): Google Drive funcionando (projeto Google Cloud `lotus-513308` na conta contato.bentojr@gmail.com, só `drive.file`, publicado em produção; credencial em `secrets\google-oauth.json`), envio ao Drive manual/semanal/mensal, atualizações pelo GitHub, Backup de saves. Detalhes em `docs/LOTUS_GOOGLE_DRIVE.md`.

@@ -1,10 +1,70 @@
+<div align="center">
+
+<img src="docs/images/logo.png" width="112" alt="Lotus"/>
+
 # Lotus
 
-Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hardware, diagnostica gargalos, cria perfis de jogos e aplica ajustes reversíveis, com benchmarks de antes e depois. Sem placebo, sem FPS inventado.
+**O companheiro do jogador de PC no Windows.**
+Biblioteca de jogos, otimização reversível, diário, proteção de saves e backup — num app leve, bonito e honesto.
 
-**Versão atual: 0.7.1-alpha**. Baixe o instalador em [Releases](../../releases). O que mudou em cada versão está no [CHANGELOG](CHANGELOG.md).
+[![Release](https://img.shields.io/github/v/release/JoeAfricano/Lotus?include_prereleases&label=vers%C3%A3o&color=c2185b)](../../releases)
+[![Downloads](https://img.shields.io/github/downloads/JoeAfricano/Lotus/total?color=8e2f5a)](../../releases)
+![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011%20x64-2f6fb5)
+![.NET](https://img.shields.io/badge/.NET-10%20%C2%B7%20WinUI%203-512bd4)
+[![License](https://img.shields.io/badge/licen%C3%A7a-MIT-3b8c5a)](LICENSE)
 
-## O que o Lotus faz
+[**Baixar o Lotus**](../../releases/latest) · [Novidades](CHANGELOG.md) · [Privacidade](PRIVACY.md) · [Reportar um problema](../../issues/new/choose)
+
+<img src="docs/images/inicio.png" width="860" alt="Início do Lotus"/>
+
+</div>
+
+## Sumário
+- [Destaques](#destaques)
+- [Capturas de tela](#capturas-de-tela)
+- [Instalar](#instalar)
+- [Funções em detalhe](#funções-em-detalhe)
+- [Privacidade e segurança](#privacidade-e-segurança)
+- [Compilar](#compilar)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Contribuir](#contribuir)
+- [Licença](#licença)
+
+## Destaques
+
+| | |
+|---|---|
+| 🎮 **Meus Jogos** | Steam, Epic, GOG e outras lojas num só lugar, com Jogar direto da capa, "Preparar e Jogar" e "Onde eu parei?". |
+| ⚡ **Otimizar sem medo** | Perfis Jogo, Diário e Personalizado que mostram cada mudança antes e podem ser desfeitos. Nada muda sem confirmação. |
+| 📊 **Lotus Score** | Teste de CPU e GPU, FPS estimado por jogo com fontes e gargalo por resolução. Sem números inventados. |
+| 📔 **Meu diário** | Sessões automáticas, notas, estatísticas, "O que jogar agora?", conquistas e retrospectiva do ano. |
+| 💾 **Backup de saves** | Cópias conferidas (SHA-256) depois de cada sessão, restauração segura com volta automática se algo falhar. |
+| ☁️ **Backup e Google Drive** | Tudo num arquivo `.lotusbackup` e, se quiser, no seu Drive: agora, toda semana ou todo mês. |
+| 🔄 **Atualizações** | Avisa quando há versão nova, baixa com animação, confere o instalador e atualiza sozinho. |
+| 🎨 **Temas** | 12 temas prontos, estúdio de temas, fundos animados e leitura garantida (contraste WCAG). |
+| 🪶 **Leve** | Modo eficiência do Windows com jogo aberto ou minimizado (cerca de 20 MB), animações só enquanto há algo a mostrar. |
+
+## Capturas de tela
+
+<table>
+<tr><td><img src="docs/images/meus-jogos.png" alt="Meus Jogos"/><br/><sub><b>Meus Jogos</b></sub></td><td><img src="docs/images/backup-de-saves.png" alt="Backup de saves"/><br/><sub><b>Backup de saves</b></sub></td></tr>
+<tr><td><img src="docs/images/diario.png" alt="Meu diário"/><br/><sub><b>Meu diário</b></sub></td><td><img src="docs/images/lotus-score.png" alt="Lotus Score"/><br/><sub><b>Lotus Score</b></sub></td></tr>
+<tr><td><img src="docs/images/game-list.png" alt="Game list"/><br/><sub><b>Game list</b></sub></td><td><img src="docs/images/temas.png" alt="Temas"/><br/><sub><b>Galeria de temas</b></sub></td></tr>
+<tr><td colspan="2" align="center"><img src="docs/images/atualizacoes.png" width="640" alt="Atualizações"/><br/><sub><b>Atualizações com download animado</b></sub></td></tr>
+</table>
+
+## Instalar
+
+1. Baixe `Lotus-Setup-<versão>.exe` em [Releases](../../releases/latest).
+2. Execute. A instalação é por usuário, **sem administrador**, em `%LOCALAPPDATA%\Programs\Lotus`.
+3. Pronto: daqui pra frente o próprio Lotus avisa e instala as versões novas (Configurações › Atualizações).
+
+- Para atualizar manualmente, rode o instalador novo por cima, sem desinstalar.
+- Seus dados ficam em `%LOCALAPPDATA%\Lotus` e nunca são apagados pelo instalador.
+- Requer Windows 10 2004 (19041) ou mais novo, x64.
+
+> O Lotus está em **alpha**: as funções estão prontas para uso diário, mas ainda podem mudar. Sugestões e problemas são muito bem-vindos em [Issues](../../issues).
+## Funções em detalhe
 
 ### Otimizar o PC
 - **Perfis Jogo, Diário e Personalizado.** Antes de aplicar, mostra cada mudança (plano de energia, Modo de Jogo, gravação em segundo plano, taxa do monitor). Depois, verifica o resultado e confirma com uma animação.
@@ -79,7 +139,7 @@ Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hard
 
 ### Configurações e conta
 - Português e inglês.
-- **Backup** em arquivo `.lotusbackup`, com o último save de cada jogo protegido. (A cópia no Google Drive volta numa próxima versão.)
+- **Backup** em arquivo `.lotusbackup`, com o último save de cada jogo protegido, e cópia no **Google Drive** (pasta `Lotus/Backups`): conecte sua conta e envie quando quiser, toda semana ou todo mês; carregue ou exclua backups do Drive. O Lotus só acessa os arquivos que ele mesmo cria. Veja a [Política de Privacidade](PRIVACY.md).
 - **Atualizações:** procura a versão mais nova nas releases do GitHub, mostra as novidades, baixa com animação, confere o SHA-256 e reinstala sozinho. Opcional: atualizar automaticamente (nunca com um jogo aberto).
 - **Restaurar o Lotus:** volta ao início sem apagar nada. Faz uma cópia antes e guarda os dados antigos.
 - Tutorial inicial com exemplos em cada passo, temas prontos e um tour pelas áreas principais.
@@ -90,11 +150,13 @@ Game HUB e otimizador inteligente para Windows Gaming em C#/.NET. Detecta o hard
 - Nunca reduz nada durante uma medição.
 - **Prioridade ao jogo** (opcional, em Configurações): o jogo fica acima do normal e navegadores, launchers e apps de sincronização abaixo. Tudo volta como estava quando o jogo fecha; o Discord não é alterado.
 
-## Instalar
+## Privacidade e segurança
 
-Baixe `Lotus-Setup-<versão>.exe` em [Releases](../../releases) e execute. Depois de instalado, o próprio Lotus avisa e instala as versões novas (Configurações › Atualizações). A instalação é por usuário, sem administrador, em `%LOCALAPPDATA%\Programs\Lotus`. Para atualizar, rode o instalador novo por cima, sem desinstalar. Os dados do jogador ficam em `%LOCALAPPDATA%\Lotus` e nunca são apagados pelo instalador.
-
-Requer Windows 10 2004 (19041) ou mais novo, x64.
+- **Nada muda no Windows sem a sua confirmação.** Cada mudança fica registrada e pode ser desfeita.
+- **Sem administrador** (`asInvoker`) e **sem telemetria**: o Lotus não tem servidores e não envia seus dados ao desenvolvedor.
+- **Google Drive opcional**, só com a permissão `drive.file`: o Lotus acessa apenas os arquivos que ele mesmo cria, na pasta `Lotus/Backups`. O login é feito no seu navegador (PKCE) e "Desconectar" revoga o acesso.
+- **Atualizações conferidas:** cada instalador baixado é comparado com o SHA-256 publicado na release antes de ser usado.
+- Detalhes na [Política de Privacidade](PRIVACY.md). Para relatar uma falha de segurança, veja [SECURITY.md](SECURITY.md).
 
 ## Compilar
 
@@ -106,7 +168,7 @@ dotnet build Lotus.slnx -c Debug -p:Platform=x64 --no-restore
 & .\src\Lotus.App\bin\x64\Debug\net10.0-windows10.0.26100.0\win-x64\Lotus.App.exe
 ```
 
-Testes:
+Testes (xUnit):
 
 ```powershell
 dotnet test tests/Lotus.Tests -c Debug -p:Platform=x64
@@ -115,25 +177,32 @@ dotnet test tests/Lotus.Tests -c Debug -p:Platform=x64
 Instalador (Inno Setup 6.7+):
 
 ```powershell
-.\tools\Build-Installer.ps1 -Name "Lotus New"
+.\tools\Build-Installer.ps1
 ```
 
-O resultado fica em `artifacts\dist\`. O backup no Google Drive só fica ativo quando existe `secrets\google-oauth.json` (um cliente OAuth "Desktop app"). Essa pasta fica fora do git.
+O resultado fica em `artifacts\dist\`. O Google Drive só fica ativo quando existe `secrets\google-oauth.json` (cliente OAuth "App para computador" do projeto Lotus no Google Cloud); essa pasta fica fora do git.
 
-## Estrutura
+## Estrutura do projeto
 
-- `src/Lotus.App`: interface WinUI 3 (shell, telas, temas, animações).
-- `src/Lotus.Core`: ViewModels, regras e cálculos testáveis (perfis, Score, diário, conquistas, catálogo).
-- `src/Lotus.Infrastructure`: Windows e serviços (planos de energia, journal SQLite, telemetria, Steam, PresentMon, backup).
-- `tests/Lotus.Tests`: testes xUnit.
-- `tools/`: instalador e utilitários.
-- `docs/`: decisões técnicas e relatórios ([arquitetura](docs/LOTUS_ARCHITECTURE.md), [otimizador](docs/LOTUS_OPTIMIZER.md), [jogos](docs/LOTUS_GAMES.md), [backup](docs/LOTUS_BACKUP.md)).
+| Pasta | Conteúdo |
+|---|---|
+| `src/Lotus.App` | Interface WinUI 3: shell, telas, temas e animações. |
+| `src/Lotus.Core` | ViewModels, regras e cálculos testáveis (perfis, Score, diário, saves, backup, atualizações). |
+| `src/Lotus.Infrastructure` | Windows e serviços: planos de energia, journal SQLite, telemetria, Steam, PresentMon, Google Drive, GitHub. |
+| `tests/Lotus.Tests` | Testes automatizados (mais de 450). |
+| `tools/` | Instalador e utilitários. |
+| `docs/` | Decisões técnicas e relatórios: [arquitetura](docs/LOTUS_ARCHITECTURE.md), [otimizador](docs/LOTUS_OPTIMIZER.md), [jogos](docs/LOTUS_GAMES.md), [backup](docs/LOTUS_BACKUP.md), [saves e jogadores casuais](docs/LOTUS_CASUAL_FEATURES.md), [Google Drive](docs/LOTUS_GOOGLE_DRIVE.md). |
 
 ## Princípios
 
-- Nenhuma alteração no Windows sem confirmação explícita. Cada mudança é registrada e pode ser desfeita.
-- Sem permissões de administrador (`asInvoker`).
-- Sem números inventados. Estimativas aparecem como estimativas, com as fontes.
+- Nenhuma alteração no Windows sem confirmação explícita; tudo pode ser desfeito.
+- Sem permissões de administrador.
+- Sem números inventados: estimativas aparecem como estimativas, com as fontes.
+- Leve enquanto você joga.
+
+## Contribuir
+
+Ideias, problemas e melhorias são bem-vindos. Veja [CONTRIBUTING.md](CONTRIBUTING.md) e use os modelos em [Issues](../../issues/new/choose).
 
 ## Licença
 

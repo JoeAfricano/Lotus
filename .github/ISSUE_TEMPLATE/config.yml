@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Segurança
+    url: https://github.com/JoeAfricano/Lotus/blob/main/SECURITY.md
+    about: Falhas de segurança não devem ser abertas como issue pública.

@@ -2,11 +2,33 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
-## 0.7.1-alpha "Lotus" (30/10/2026)
+## 1.0.0-alpha "Lotus" (31/10/2026)
 
-- **Google Drive fica de fora por enquanto:** a opção saiu de Configurações › Backup enquanto a conexão com o Google é ajustada. O backup em arquivo (`.lotusbackup`, com o último save de cada jogo protegido) continua igual.
-- Quem está na 0.7.0 recebe esta versão pelo próprio Lotus, em Configurações › Atualizações.
+**A primeira versão 1.0 do Lotus (alpha).** Ela reúne tudo o que foi construído até aqui:
+- Meus Jogos com "Preparar e Jogar" e "Onde eu parei?";
+- otimização reversível;
+- Lotus Score;
+- Meu diário completo;
+- Backup de saves;
+- backup com Google Drive;
+- atualizações automáticas pelo GitHub;
+- temas.
 
+O repositório também ganhou README novo com capturas de tela, Política de Privacidade, guia de contribuição, política de segurança e modelos de issue.
+
+### Corrigido nesta versão
+- Um envio ao Google Drive que precisasse de nova tentativa (instabilidade do Google) não conseguia reenviar o arquivo. Agora reenvia completo.
+- A tela de Atualizações volta a procurar sozinha ao ser aberta depois de uma falha (por exemplo, sem internet).
+
+### Google Drive funcionando
+- **Conecte sua conta Google e pronto:** o Lotus abre o navegador, você escolhe a conta e autoriza. Nada de criar projetos ou credenciais: o Lotus já vem com o próprio registro no Google (projeto "Lotus", publicado).
+- **Só a permissão mínima:** o Lotus pede apenas acesso aos arquivos que ele mesmo cria no Drive (`drive.file`). Ele não vê nenhum outro arquivo seu.
+- **Pasta organizada:** os backups ficam em `Lotus/Backups` no seu Drive. O Lotus encontra a pasta que já criou antes (também em outro PC) e nunca duplica.
+- **Enviar automaticamente:** escolha entre **só quando eu clicar**, **toda semana** ou **todo mês**. O Drive guarda as 5 cópias mais recentes.
+- **Carregar backup do Drive:** lista os backups para restaurar neste PC, com opção de excluir.
+- **Mensagens claras** quando o acesso expira ou é removido na conta Google (o Lotus pede para conectar de novo), sem internet, sem permissão, Drive cheio ou excesso de solicitações (o Lotus tenta de novo sozinho antes de avisar).
+- **Segurança:** login no navegador com PKCE e verificação de estado, a credencial fica guardada protegida pelo Windows e "Desconectar" revoga o acesso no Google.
+- Nova [Política de Privacidade](PRIVACY.md).
 ## 0.7.0-alpha "Lotus" (30/10/2026)
 
 A partir desta versão o produto se chama só **Lotus** (o instalador é `Lotus-Setup-<versão>.exe`). Para atualizar a partir da 0.6, rode o instalador por cima: tudo continua como está.

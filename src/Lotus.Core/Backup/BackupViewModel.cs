@@ -97,6 +97,37 @@ public sealed partial class BackupViewModel(IBackupArchive archive, ICloudBackup
         finally { try { File.Delete(tmp); } catch (IOException) { } }
     }
 
+    // When a copy goes to Drive: only on click (default), every week or every month (checked when Lotus is open).
+    public static readonly string[] Schedules = ["manual", "weekly", "monthly"];
+    public Func<string> ScheduleGet { get; set; } = () => "manual";
+    public Action<string> ScheduleSet { get; set; } = _ => { };
+    public int ScheduleIndex
+    {
+        get => Math.Max(0, Array.IndexOf(Schedules, ScheduleGet()));
+        set { if (value >= 0 && value < Schedules.Length && value != ScheduleIndex) { ScheduleSet(Schedules[value]); OnPropertyChanged(); } }
+    }
+    public static TimeSpan? Period(string schedule) => schedule switch { "weekly" => TimeSpan.FromDays(7), "monthly" => TimeSpan.FromDays(30), _ => null };
+
+    // Scheduled copy: only when connected and the newest copy in Drive is older than the chosen period. True when sent.
+    public async Task<bool> ScheduledUploadAsync(CancellationToken token = default)
+    {
+        if (Period(ScheduleGet()) is not { } period || !CloudConnected || Busy) return false;
+        var sent = false;
+        Busy = true;
+        try
+        {
+            var items = await cloud.ListAsync(token);
+            if (items.Count > 0 && DateTimeOffset.Now - items.Max(i => i.Created) < period - TimeSpan.FromHours(12)) return false;
+            await UploadNowAsync();
+            sent = true;
+            Say(Text["BkScheduledSent"]);
+            await LoadCloudAsync();
+            return true;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); return sent; }
+        finally { Busy = false; Notify(); }
+    }
+
     // The player decides when a copy goes to Drive; old ones can be deleted from the list.
     public async Task DeleteCloudAsync(string id)
     {
@@ -152,6 +183,16 @@ public sealed partial class BackupViewModel(IBackupArchive archive, ICloudBackup
         Busy = true;
         try { await work(); }
         catch (OperationCanceledException) { Say(Text["BkCancelled"], error: true); }
+        catch (CloudException ex)
+        {
+            log(ex);
+            if (ex.Kind == CloudErrorKind.Auth) CloudItems.Clear(); // access expired or revoked: the card asks to connect again
+            Say(Text[ex.Kind switch
+            {
+                CloudErrorKind.Auth => "BkErrAuth", CloudErrorKind.Network => "BkErrNetwork", CloudErrorKind.Permission => "BkErrPermission",
+                CloudErrorKind.Quota => "BkErrQuota", CloudErrorKind.StorageFull => "BkErrFull", CloudErrorKind.NotFound => "BkErrNotFound", _ => failKey,
+            }], error: true);
+        }
         catch (Exception ex) { log(ex); Say(Text[failKey], error: true); }
         finally { Busy = false; Notify(); }
     }
@@ -159,6 +200,6 @@ public sealed partial class BackupViewModel(IBackupArchive archive, ICloudBackup
     private void Say(string text, bool error = false) { Message = text; IsError = error; }
     public void Notify()
     {
-        foreach (var n in new[] { nameof(CloudConfigured), nameof(CloudConnected), nameof(CloudCanConnect), nameof(CloudAccountText), nameof(HasCloudItems) }) OnPropertyChanged(n);
+        foreach (var n in new[] { nameof(CloudConfigured), nameof(CloudConnected), nameof(CloudCanConnect), nameof(CloudAccountText), nameof(HasCloudItems), nameof(ScheduleIndex) }) OnPropertyChanged(n);
     }
 }

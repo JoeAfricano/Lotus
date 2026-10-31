@@ -1722,7 +1722,7 @@ Could not measure right now. Try again in a few seconds.</value></data>
   <data name="BkOpenFolder" xml:space="preserve"><value>Automatic copies</value></data>
   <data name="BkAutoHint" xml:space="preserve"><value>Lotus also keeps one copy a week by itself (the 4 most recent) and a safety copy before every restore.</value></data>
   <data name="BkCloudTitle" xml:space="preserve"><value>Google Drive</value></data>
-  <data name="BkCloudHint" xml:space="preserve"><value>A copy in the cloud, in the &quot;Lotus Backups&quot; folder of your Drive. Lotus only sees the files it created itself.</value></data>
+  <data name="BkCloudHint" xml:space="preserve"><value>A copy in the cloud, in the &quot;Lotus/Backups&quot; folder of your Drive. Lotus only sees the files it created itself.</value></data>
   <data name="BkCloudNotSetUp" xml:space="preserve"><value>Google Drive needs a Google Cloud credential. If you have the file (&quot;Desktop app&quot; client JSON), turn it on here.</value></data>
   <data name="BkConnect" xml:space="preserve"><value>Connect Google account</value></data>
   <data name="BkConnectHint" xml:space="preserve"><value>Opens your browser so you can sign in to Google. Lotus never sees your password and can be disconnected at any time.</value></data>
@@ -2360,7 +2360,7 @@ Your games and Windows are not changed.</value></data>
   <data name="SpStateAvailable" xml:space="preserve"><value>Saves found. Turn on to keep copies of your progress.</value></data>
   <data name="SpStateUnsupported" xml:space="preserve"><value>Xbox / Game Pass games keep saves in a protected place synced by Microsoft. Lotus doesn&apos;t touch them.</value></data>
   <data name="SpStateNotFound" xml:space="preserve"><value>We couldn&apos;t find the save folder safely. You can pick the folder.</value></data>
-  <data name="SpWhere" xml:space="preserve"><value>All copies stay on this PC, in %LOCALAPPDATA%\Lotus\SaveBackups. The newest one of each game also goes into the Lotus backup (Settings › Backup).</value></data>
+  <data name="SpWhere" xml:space="preserve"><value>All copies stay on this PC, in %LOCALAPPDATA%\Lotus\SaveBackups. The newest one of each game also goes into the Lotus backup (Settings › Backup) and to Google Drive when you send it.</value></data>
   <data name="SpFolderLabel" xml:space="preserve"><value>Save folder</value></data>
   <data name="SpFolderInfo" xml:space="preserve"><value>{0} files · {1} · changed {2}</value></data>
   <data name="SpCloudNote" xml:space="preserve"><value>This folder is synced by the store&apos;s cloud. After a restore, the cloud may ask which version to keep or replace the files again.</value></data>
@@ -2494,7 +2494,7 @@ Your games and Windows are not changed.</value></data>
   <data name="UpAutoTitle" xml:space="preserve"><value>Lotus {0} downloaded</value></data>
   <data name="UpAutoBody" xml:space="preserve"><value>Lotus will close, update and open again in a few seconds.</value></data>
   <data name="BkSendTitle" xml:space="preserve"><value>Send to Drive</value></data>
-  <data name="BkSendHint" xml:space="preserve"><value>Only when you click. Drive keeps the 5 newest copies so it doesn&apos;t take up too much space.</value></data>
+  <data name="BkSendHint" xml:space="preserve"><value>Now, every week or every month — you choose. Drive keeps the 5 newest copies so it doesn&apos;t take up too much space.</value></data>
   <data name="BkLoadTitle" xml:space="preserve"><value>Load a backup from Drive</value></data>
   <data name="BkLoadHint" xml:space="preserve"><value>Shows the backups kept in your Drive so you can pick one to restore on this PC.</value></data>
   <data name="BkLoad" xml:space="preserve"><value>Load backups</value></data>
@@ -2504,4 +2504,15 @@ Your games and Windows are not changed.</value></data>
   <data name="BkCloudDeleteFailed" xml:space="preserve"><value>Couldn&apos;t delete that backup from Drive right now.</value></data>
   <data name="BkCloudDeleteTitle" xml:space="preserve"><value>Delete this backup from Drive?</value></data>
   <data name="BkCloudDeleteBody" xml:space="preserve"><value>The backup from {0} will be removed from your Google Drive. The data on this PC doesn&apos;t change.</value></data>
+  <data name="BkErrAuth" xml:space="preserve"><value>Google access expired or was removed in your account. Connect again to continue.</value></data>
+  <data name="BkErrNetwork" xml:space="preserve"><value>Couldn&apos;t reach Google right now. Check your internet and try again.</value></data>
+  <data name="BkErrPermission" xml:space="preserve"><value>Google didn&apos;t allow that. Connect again and keep the Google Drive permission ticked.</value></data>
+  <data name="BkErrQuota" xml:space="preserve"><value>Too many requests to Google right now. Wait a few minutes and try again.</value></data>
+  <data name="BkErrFull" xml:space="preserve"><value>Your Google Drive is out of space. Free some space or delete old backups and try again.</value></data>
+  <data name="BkErrNotFound" xml:space="preserve"><value>That backup is no longer in your Drive. The list was refreshed.</value></data>
+  <data name="BkSchedule" xml:space="preserve"><value>Send automatically</value></data>
+  <data name="BkScheduleManual" xml:space="preserve"><value>Only when I click</value></data>
+  <data name="BkScheduleWeekly" xml:space="preserve"><value>Every week</value></data>
+  <data name="BkScheduleMonthly" xml:space="preserve"><value>Every month</value></data>
+  <data name="BkScheduledSent" xml:space="preserve"><value>Automatic backup sent to Google Drive.</value></data>
 </root>

@@ -28,8 +28,8 @@
    </StackPanel>
   </Border>
 
-  <!-- Google Drive: hidden for now (to be adjusted later); the code stays ready -->
-  <Border Style="{StaticResource CardStyle}" Visibility="Collapsed">
+  <!-- Google Drive -->
+  <Border Style="{StaticResource CardStyle}">
    <StackPanel Spacing="14">
     <StackPanel Orientation="Horizontal" Spacing="12">
      <Border Width="40" Height="40" CornerRadius="12" Background="{ThemeResource GoldGradientBrush}"><FontIcon Glyph="&#xE753;" FontSize="17" Foreground="#3A0F24"/></Border>
@@ -66,6 +66,7 @@
         <Button Click="OnUpload" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="backup-upload">
          <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE898;" FontSize="13"/><TextBlock Text="{Binding Text[BkUpload]}"/></StackPanel>
         </Button>
+        <ComboBox x:Name="ScheduleBox" Header="{Binding Text[BkSchedule]}" SelectionChanged="OnSchedule" MinWidth="220" AutomationProperties.AutomationId="backup-schedule"/>
        </StackPanel>
       </Border>
       <!-- Load -->

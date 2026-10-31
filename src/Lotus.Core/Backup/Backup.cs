@@ -41,3 +41,7 @@ public interface ICloudBackup
 }
 
 public sealed class BackupFormatException(string message) : Exception(message);
+
+// Why a Google Drive operation failed, so the app can say it in plain words.
+public enum CloudErrorKind { NotConfigured, Auth, Network, Permission, Quota, StorageFull, NotFound }
+public sealed class CloudException(CloudErrorKind kind, string message, Exception? inner = null) : Exception(message, inner) { public CloudErrorKind Kind { get; } = kind; }

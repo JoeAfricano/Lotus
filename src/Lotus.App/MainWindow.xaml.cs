@@ -108,7 +108,20 @@ public sealed partial class MainWindow : Window
         backup = new Lotus.Core.Backup.BackupViewModel(new Lotus.Infrastructure.Backup.LotusBackupArchive(appVersion: AppVersionText()),
             new Lotus.Infrastructure.Backup.GoogleDriveBackup(Lotus.Infrastructure.Backup.GoogleOAuthConfig.Load(), new WindowsTokenVault(),
                 async uri => await Windows.System.Launcher.LaunchUriAsync(uri)),
-            text, ex => Serilog.Log.Warning(ex, "Backup"));
+            text, ex => Serilog.Log.Warning(ex, "Backup"))
+        {
+            ScheduleGet = () => preferences.Current.DriveSchedule,
+            ScheduleSet = value => preferences.Update(preferences.Current with { DriveSchedule = value }),
+        };
+        // Weekly or monthly Drive copy (when the player chose it): checked 2 minutes after start and every 6 hours.
+        var driveTimer = DispatcherQueue.CreateTimer(); driveTimer.Interval = TimeSpan.FromMinutes(2);
+        driveTimer.Tick += async (_, _) =>
+        {
+            driveTimer.Interval = TimeSpan.FromHours(6);
+            try { if (await backup.ScheduledUploadAsync()) Serilog.Log.Information("Scheduled Lotus backup sent to Google Drive ({Schedule})", preferences.Current.DriveSchedule); }
+            catch (Exception ex) { Serilog.Log.Warning(ex, "Scheduled Drive backup"); }
+        };
+        driveTimer.Start();
         gameList = new Lotus.Core.Catalog.GameListViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game list"), games.InstalledGames);
         gameDetails = new Lotus.Core.Catalog.GameDetailsViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game details"));
         // Preparar e jogar: same Game profile and journal as Otimizar; the game is followed until it closes.

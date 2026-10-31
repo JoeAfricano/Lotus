@@ -1,0 +1,21 @@
+name: Problema
+description: Algo não funciona como deveria
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes: { label: Versão do Lotus, description: "Configurações › Atualizações (ex.: 1.0.0-alpha)" }
+    validations: { required: true }
+  - type: input
+    id: windows
+    attributes: { label: Windows, description: "Ex.: Windows 11 23H2" }
+  - type: textarea
+    id: what
+    attributes: { label: O que aconteceu?, description: O que você esperava e o que aconteceu de fato. }
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes: { label: Como repetir, placeholder: "1. Abra...\n2. Clique em...\n3. ..." }
+  - type: textarea
+    id: extra
+    attributes: { label: Imagens ou log, description: "Capturas de tela ou o log de %LOCALAPPDATA%\\Lotus\\Logs." }

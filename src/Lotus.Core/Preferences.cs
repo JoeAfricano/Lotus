@@ -27,6 +27,7 @@ public sealed record InterfacePreferences
     public bool AutoSessions { get; init; } = true; // record play sessions (time, dates) in the diary while a library game is open
     public bool GamePriority { get; init; } // while a game is open: game above normal, known launchers/browsers below normal (restored after)
     public bool ResumePrompts { get; init; } = true; // after a game closes normally, offer to write "Onde eu parei?" (discreet in-app notice)
+    public string DriveSchedule { get; init; } = "manual"; // Google Drive copy: manual (only on click), weekly or monthly
     public bool AutoUpdate { get; init; } // download and install new Lotus versions from GitHub without asking
     public bool PreparePlay { get; init; } = true; // quick read-only checks behind every Jogar button (a question only for real problems)
     public string? AdaptiveSync { get; init; } // FreeSync/G-Sync on: "on" | "off" | null (not asked yet; asked before the first game analysis)

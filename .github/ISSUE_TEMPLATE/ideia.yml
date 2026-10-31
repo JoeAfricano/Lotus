@@ -1,0 +1,14 @@
+name: Ideia
+description: Sugira uma função ou melhoria
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes: { label: Qual problema isso resolve?, description: Conte a situação do dia a dia. }
+    validations: { required: true }
+  - type: textarea
+    id: idea
+    attributes: { label: Como você imagina?, description: Como seria no Lotus. }
+  - type: textarea
+    id: extra
+    attributes: { label: Algo mais?, description: Referências, imagens ou apps parecidos. }
