@@ -1305,7 +1305,7 @@ Could not measure right now. Try again in a few seconds.</value></data>
   <data name="GlCharttopsellers" xml:space="preserve"><value>Top sellers</value></data>
   <data name="GlChartnew" xml:space="preserve"><value>New releases</value></data>
   <data name="GlChartupcoming" xml:space="preserve"><value>Coming soon</value></data>
-  <data name="GlHinttrending" xml:space="preserve"><value>Most played on Steam in the last two weeks.</value></data>
+  <data name="GlHinttrending" xml:space="preserve"><value>The most played on Steam right now.</value></data>
   <data name="GlHinttoprated" xml:space="preserve"><value>Highest share of positive reviews, among games with many reviews.</value></data>
   <data name="GlHinttopsellers" xml:space="preserve"><value>What sells most on Steam right now.</value></data>
   <data name="GlHintnew" xml:space="preserve"><value>Just came out.</value></data>
@@ -2662,4 +2662,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GlPickUses" xml:space="preserve"><value>The draw uses the list filters below:</value></data>
   <data name="GtAnyKind" xml:space="preserve"><value>any kind of game</value></data>
   <data name="GlHintFiltered" xml:space="preserve"><value>{0} games from &quot;{1}&quot; with your filters.</value></data>
+  <data name="SetMinimizeForGames" xml:space="preserve"><value>Minimize when a game opens</value></data>
+  <data name="SetMinimizeForGamesHint" xml:space="preserve"><value>Lotus gets out of the way when a game opens and comes back by itself when it closes.</value></data>
+  <data name="GlHintFilteredMore" xml:space="preserve"><value>{0} games from &quot;{1}&quot; with your filters, plus {2} popular games of that kind.</value></data>
 </root>

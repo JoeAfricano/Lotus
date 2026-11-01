@@ -107,10 +107,10 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 - **Comparar:** mede o FPS real com PresentMon e compara sessões.
 
 ### Game list
-- Listas da Steam (em alta, mais bem avaliados, mais vendidos, lançamentos, em breve), com até 100 jogos e rolagem contínua.
+- Listas da Steam (em alta, mais bem avaliados, mais vendidos, lançamentos, em breve), com até 250 jogos e rolagem contínua.
 - **Tipo de jogo:** uma janela com os tipos mais escolhidos e, em "Avançado", mais de 100 gêneros e temas em grupos (ação, RPG, estratégia, simulação, temas, visual, jogar com amigos…). Escolha vários e veja jogos com qualquer um ou com todos eles.
 - **Preço:** todos, só gratuitos ou sem gratuitos. Também ordenar, nota mínima e esconder os que você já tem.
-- Os filtros valem para todas as listas (inclusive **Mais vendidos**: os mais vendidos de cada tipo).
+- Os filtros valem para todas as listas (inclusive **Mais vendidos**: os mais vendidos de cada tipo) e completam a lista com até 300 jogos populares do tipo escolhido.
 - Busca na loja inteira e sorteio "Não sei o que jogar", que usa os mesmos filtros e a dificuldade escolhida.
 
 ### Meu diário
@@ -151,6 +151,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 - Com um jogo aberto, ou com o Lotus minimizado, ele entra no **modo eficiência** do Windows, baixa a própria prioridade e devolve a memória que não está usando (cerca de 20 MB minimizado).
 - Ao voltar para a janela, recarrega tudo.
 - Nunca reduz nada durante uma medição.
+- **Sai da frente:** quando um jogo abre, o Lotus minimiza sozinho e volta quando ele fecha (pode desligar em Configurações).
 - **Prioridade ao jogo** (opcional, em Configurações): o jogo fica acima do normal e navegadores, launchers e apps de sincronização abaixo. Tudo volta como estava quando o jogo fecha; o Discord não é alterado.
 
 ## Privacidade e segurança

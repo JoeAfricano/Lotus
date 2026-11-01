@@ -25,6 +25,7 @@ public sealed record InterfacePreferences
     public string DiaryView { get; init; } = "grid"; // diary layout: grid | list | table
     public bool DiaryHeaderCompact { get; init; } = true; // diary profile header: compact band or the full layout
     public bool AutoSessions { get; init; } = true; // record play sessions (time, dates) in the diary while a library game is open
+    public bool MinimizeForGames { get; init; } = true; // a game opened: Lotus minimizes; it closed: Lotus comes back
     public bool GamePriority { get; init; } // while a game is open: game above normal, known launchers/browsers below normal (restored after)
     public bool ResumePrompts { get; init; } = true; // after a game closes normally, offer to write "Onde eu parei?" (discreet in-app notice)
     public string DriveSchedule { get; init; } = "manual"; // Google Drive copy: manual (only on click), weekly or monthly
@@ -116,6 +117,7 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool CloseToTray { get => service.Current.CloseToTray; set { if (value != service.Current.CloseToTray) { service.Update(service.Current with { CloseToTray = value }); OnPropertyChanged(); } } }
     public bool UiSounds { get => service.Current.UiSounds; set { if (value != service.Current.UiSounds) { service.Update(service.Current with { UiSounds = value }); OnPropertyChanged(); } } }
     public bool AutoSessions { get => service.Current.AutoSessions; set { if (value != service.Current.AutoSessions) { service.Update(service.Current with { AutoSessions = value }); OnPropertyChanged(); } } }
+    public bool MinimizeForGames { get => service.Current.MinimizeForGames; set { if (value != service.Current.MinimizeForGames) { service.Update(service.Current with { MinimizeForGames = value }); OnPropertyChanged(); } } }
     public bool GamePriority { get => service.Current.GamePriority; set { if (value != service.Current.GamePriority) { service.Update(service.Current with { GamePriority = value }); OnPropertyChanged(); } } }
     public bool ResumePrompts { get => service.Current.ResumePrompts; set { if (value != service.Current.ResumePrompts) { service.Update(service.Current with { ResumePrompts = value }); OnPropertyChanged(); } } }
     public bool PreparePlay { get => service.Current.PreparePlay; set { if (value != service.Current.PreparePlay) { service.Update(service.Current with { PreparePlay = value }); OnPropertyChanged(); } } }

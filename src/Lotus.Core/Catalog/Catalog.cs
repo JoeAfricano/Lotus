@@ -30,6 +30,8 @@ public interface IGameCatalog
     Task<string?> ArtAsync(string appId, CancellationToken token);
     // Steam app ids of a kind of game: "genre:Action" (Steam genre) or "tag:Horror" (community tag). Empty when unknown.
     Task<IReadOnlySet<string>> TypeIdsAsync(string type, CancellationToken token) => Task.FromResult<IReadOnlySet<string>>(new HashSet<string>());
+    // The same kind as games (players now in Players, reviews), to fill a filtered list beyond the chart. Empty when unknown.
+    Task<IReadOnlyList<CatalogItem>> TypeGamesAsync(string type, CancellationToken token) => Task.FromResult<IReadOnlyList<CatalogItem>>([]);
     // Current Steam price of several games (discount, price now, price before). Missing = free, not sold or unknown.
     Task<IReadOnlyDictionary<string, GamePrice>> PricesAsync(IReadOnlyList<string> appIds, CancellationToken token) => Task.FromResult<IReadOnlyDictionary<string, GamePrice>>(new Dictionary<string, GamePrice>());
 }

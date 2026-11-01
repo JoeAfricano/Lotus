@@ -130,6 +130,9 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     private bool hideOwned, matchAll;
     private List<string> types = [];
     private readonly Dictionary<string, IReadOnlySet<string>> typeSets = [];
+    private readonly Dictionary<string, IReadOnlyList<CatalogItem>> typeGames = [];
+    public const int MaxExtra = 300; // popular games of the chosen kinds shown after the chart's own matches
+    private int extraCount;
 
     // Kinds of game (several at once): "any of the chosen" or "all of them at once". Lists come from Steam (cached).
     public IReadOnlyList<string> SelectedTypes => types;
@@ -139,7 +142,9 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     public bool HasTypes => types.Count > 0;
     // What the draw uses (the list's kind and price filters), in words.
     public string PickScope => (types.Count == 0 ? text["GtAnyKind"] : TypeSummary) + (price != "any" ? " · " + text["GlPrice" + price] : "");
-    public string ChartHint => Searching || !HasActiveFilters ? text["GlHint" + chart] : text.Format("GlHintFiltered", filtered.Count, text["GlChart" + chart]);
+    public string ChartHint => Searching || !HasActiveFilters ? text["GlHint" + chart]
+        : extraCount > 0 ? text.Format("GlHintFilteredMore", filtered.Count - extraCount, text["GlChart" + chart], extraCount)
+        : text.Format("GlHintFiltered", filtered.Count, text["GlChart" + chart]);
     public async Task SetTypesAsync(IEnumerable<string> ids, bool all)
     {
         var wanted = ids.Where(GameTypes.IsKnown).Distinct().ToList();
@@ -152,7 +157,12 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
             Loading = true; Status = text["GlTypeLoading"];
             try
             {
-                foreach (var t in missing) typeSets[t] = await catalog.TypeIdsAsync(t, CancellationToken.None);
+                foreach (var t in missing)
+                {
+                    var games = await catalog.TypeGamesAsync(t, CancellationToken.None);
+                    typeGames[t] = games;
+                    typeSets[t] = games.Count > 0 ? games.Select(g => g.AppId).ToHashSet() : await catalog.TypeIdsAsync(t, CancellationToken.None);
+                }
                 Status = before;
             }
             catch (Exception ex) { log(ex); Status = text["GlOffline"]; }
@@ -226,12 +236,16 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     public void ApplyFilters()
     {
         var owned = OwnedIds(); var min = int.TryParse(minRating, out var m) ? m : 0;
-        var rows = source.Select((item, index) => (item, index))
-            .Where(r => !hideOwned || !owned.Contains(r.item.AppId))
-            .Where(r => price switch { "free" => r.item.Free == true, "paid" => r.item.Free != true, _ => true })
-            .Where(r => MatchesTypes(r.item.AppId))
-            .Where(r => min == 0 || (r.item.PositivePercent ?? r.item.Metacritic ?? 0) >= min);
-        rows = sort switch
+        bool Keep(CatalogItem i) => (!hideOwned || !owned.Contains(i.AppId))
+            && price switch { "free" => i.Free == true, "paid" => i.Free != true, _ => true }
+            && (min == 0 || (i.PositivePercent ?? i.Metacritic ?? 0) >= min);
+        var rows = source.Select((item, index) => (item, index, chart: true)).Where(r => MatchesTypes(r.item.AppId) && Keep(r.item)).ToList();
+        // With kinds chosen, the chart alone holds few games: popular games of those kinds follow, ordered by what the
+        // chart means (players now, best rated, most reviewed). New and upcoming lists are not filled (no dates there).
+        var extra = Extras(source.Select(i => i.AppId).ToHashSet()).Where(Keep).Take(MaxExtra).ToList();
+        extraCount = extra.Count;
+        rows.AddRange(extra.Select((item, i) => (item, source.Count + i, chart: false)));
+        IEnumerable<(CatalogItem item, int index, bool chart)> ordered = sort switch
         {
             "rating" => rows.OrderByDescending(r => r.item.PositivePercent ?? -1),
             "metacritic" => rows.OrderByDescending(r => r.item.Metacritic ?? -1),
@@ -239,12 +253,29 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
             _ => rows.OrderBy(r => r.index),
         };
         // Shown in pages: a long chart never realizes every cover at once (the page asks for more while scrolling).
-        filtered = [.. rows.Select(r => new CatalogCard(r.item, Meta(r.item), owned.Contains(r.item.AppId)) { Rank = Searching ? "" : (r.index + 1).ToString() })];
+        filtered = [.. ordered.Select(r => new CatalogCard(r.item, Meta(r.item), owned.Contains(r.item.AppId)) { Rank = Searching || !r.chart ? "" : (r.index + 1).ToString() })];
         Items.Clear();
         foreach (var card in filtered.Take(PageSize)) Items.Add(card);
         OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(ActiveFilters)); OnPropertyChanged(nameof(HasActiveFilters)); OnPropertyChanged(nameof(ChartHint)); OnPropertyChanged(nameof(CanShowMore)); OnPropertyChanged(nameof(MoreText));
     }
-    public const int PageSize = 48;
+
+    private IEnumerable<CatalogItem> Extras(HashSet<string> inChart)
+    {
+        if (types.Count == 0 || Searching || chart is "new" or "upcoming") return [];
+        var lists = types.Select(t => typeGames.GetValueOrDefault(t)).OfType<IReadOnlyList<CatalogItem>>().Where(l => l.Count > 0).ToList();
+        if (lists.Count == 0) return [];
+        var pool = matchAll
+            ? lists[0].Where(g => types.All(t => typeSets.GetValueOrDefault(t)?.Contains(g.AppId) ?? true))
+            : lists.SelectMany(l => l).DistinctBy(g => g.AppId);
+        // Known, liked games only (when the numbers are known); the source order (best sellers of that kind) is kept otherwise.
+        var list = pool.Where(g => !inChart.Contains(g.AppId) && (g.Reviews is null || g.Reviews >= 300) && (g.PositivePercent is null || g.PositivePercent >= 60)).ToList();
+        return chart switch
+        {
+            "trending" when list.Any(g => g.Players > 0) => list.OrderByDescending(g => g.Players ?? 0).ThenByDescending(g => g.Reviews ?? 0),
+            "toprated" when list.Any(g => g.PositivePercent is not null) => list.Where(g => (g.Reviews ?? 0) >= 2000).OrderByDescending(g => g.PositivePercent ?? 0).ThenByDescending(g => g.Reviews ?? 0),
+            _ => list,
+        };
+    }    public const int PageSize = 48;
     private List<CatalogCard> filtered = [];
     public bool CanShowMore => Items.Count < filtered.Count;
     public string MoreText => text.Format("GlShowMore", Items.Count, filtered.Count);

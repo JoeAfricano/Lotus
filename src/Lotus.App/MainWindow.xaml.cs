@@ -131,6 +131,7 @@ public sealed partial class MainWindow : Window
         SetUpPreparation();
         SetUpSaves();
         SetUpUpdates();
+        SetUpGameWindow();
         games.TechScanner = new Lotus.Infrastructure.Games.GameTechScanner();
         var overlayScanner = new Lotus.Infrastructure.Games.WindowsOverlayScanner();
         games.Overlays = overlayScanner;

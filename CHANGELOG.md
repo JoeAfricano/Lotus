@@ -2,6 +2,23 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.0.1-alpha "Lotus" (31/10/2026)
+
+### Novo
+- **O Lotus sai da frente quando o jogo abre:** minimiza sozinho e volta, do jeito que estava, quando o jogo fecha.
+  - Funciona com jogos abertos pelo Lotus ou pela loja.
+  - Se você mesmo minimizou ou escondeu o Lotus, ele não volta sozinho.
+  - Chave "Minimizar ao abrir um jogo" em Configurações.
+- **Game list com 250 jogos por lista** (antes eram 100).
+- **Filtros com muito mais jogos:**
+  - com um tipo escolhido, a lista mostra os jogos da aba atual, na posição deles, e completa com até 300 jogos populares daquele tipo;
+  - preço e nota mínima também valem para esses jogos.
+
+### Melhorado
+- **Filtro por tipo mais certo:** usa a busca por marcadores da própria loja Steam, que considera só os marcadores principais de cada jogo e já vem ordenada por vendas. Jogos como Stardew Valley não aparecem mais em "Terror".
+- **"Em alta"** agora mostra os mais jogados neste momento.
+- A Game list passou a mostrar a nota das análises e quais jogos são gratuitos também nas listas da loja.
+
 ## 1.0.0-alpha "Lotus" (31/10/2026)
 
 **A primeira versão 1.0 do Lotus (alpha).** Ela reúne tudo o que foi construído até aqui:

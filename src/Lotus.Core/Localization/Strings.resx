@@ -1305,7 +1305,7 @@ Não foi possível medir agora. Tente de novo em alguns segundos.</value></data>
   <data name="GlCharttopsellers" xml:space="preserve"><value>Mais vendidos</value></data>
   <data name="GlChartnew" xml:space="preserve"><value>Lançamentos</value></data>
   <data name="GlChartupcoming" xml:space="preserve"><value>Em breve</value></data>
-  <data name="GlHinttrending" xml:space="preserve"><value>Os mais jogados na Steam nas últimas duas semanas.</value></data>
+  <data name="GlHinttrending" xml:space="preserve"><value>Os mais jogados na Steam agora.</value></data>
   <data name="GlHinttoprated" xml:space="preserve"><value>Maior porcentagem de análises positivas, entre jogos com muitas análises.</value></data>
   <data name="GlHinttopsellers" xml:space="preserve"><value>O que mais vende na Steam agora.</value></data>
   <data name="GlHintnew" xml:space="preserve"><value>Saíram há pouco tempo.</value></data>
@@ -2662,4 +2662,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GlPickUses" xml:space="preserve"><value>O sorteio usa os filtros da lista abaixo:</value></data>
   <data name="GtAnyKind" xml:space="preserve"><value>qualquer tipo de jogo</value></data>
   <data name="GlHintFiltered" xml:space="preserve"><value>{0} jogos de &quot;{1}&quot; com os seus filtros.</value></data>
+  <data name="SetMinimizeForGames" xml:space="preserve"><value>Minimizar ao abrir um jogo</value></data>
+  <data name="SetMinimizeForGamesHint" xml:space="preserve"><value>O Lotus sai da frente quando o jogo abre e volta sozinho quando ele fecha.</value></data>
+  <data name="GlHintFilteredMore" xml:space="preserve"><value>{0} jogos de &quot;{1}&quot; com os seus filtros, e mais {2} jogos populares desse tipo.</value></data>
 </root>

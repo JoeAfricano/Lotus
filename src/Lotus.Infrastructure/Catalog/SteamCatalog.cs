@@ -100,7 +100,22 @@ public sealed class SteamCatalog : IGameCatalog
     }
 
     // Store search page as JSON (up to 50 games, no DLC/bundles: category1=998).
-    private string StoreSearch(string query) => $"https://store.steampowered.com/search/results/?infinite=1&start=0&count=100&category1=998&cc={country}&l={language}&{query}";
+    private string StoreSearch(string query, int start = 0) => $"https://store.steampowered.com/search/results/?infinite=1&start={start}&count=100&category1=998&cc={country}&l={language}&{query}";
+    public const int ChartSize = 250;
+
+    // Several pages of the store search (100 games each), joined without repeats.
+    private async Task<List<CatalogItem>> StorePagesAsync(string query, TimeSpan maxAge, CancellationToken token, Func<string, string>? url = null, int pages = 3, string? cachePrefix = null)
+    {
+        var all = new List<CatalogItem>();
+        var seen = new HashSet<string>();
+        for (var p = 0; p < pages; p++)
+        {
+            var page = Results(await JsonAsync((url ?? (u => u))(StoreSearch(query, p * 100)), cachePrefix is null ? null : $"{cachePrefix}-{p}.json", maxAge, token));
+            if (page.Count == 0) break;
+            all.AddRange(page.Where(i => seen.Add(i.AppId)));
+        }
+        return all;
+    }
 
     // Draw pool from SteamSpy's full lists: every game of a Steam genre (or the 1,000 most owned), well reviewed,
     // most reviewed first. "Hard" keeps games the community tags Difficult; "easy" drops them. The final difficulty
@@ -119,15 +134,39 @@ public sealed class SteamCatalog : IGameCatalog
             .Select(g => new CatalogItem(g.Id, g.Name, CatalogText.Portrait(g.Id), CatalogText.Header(g.Id), (int)Math.Round(g.Pos * 100.0 / (g.Pos + g.Neg)), g.Pos + g.Neg, Free: g.Free))];
     }
     // Every Steam game of a genre or community tag (SteamSpy full lists, cached 3 days, shared with the draw).
-    public async Task<IReadOnlySet<string>> TypeIdsAsync(string type, CancellationToken token)
+    public async Task<IReadOnlySet<string>> TypeIdsAsync(string type, CancellationToken token) => (await TypeGamesAsync(type, token)).Select(g => g.AppId).ToHashSet();
+
+    public async Task<IReadOnlyList<CatalogItem>> TypeGamesAsync(string type, CancellationToken token)
     {
         var parts = type.Split(':', 2);
-        if (parts.Length != 2 || parts[1].Length == 0) return new HashSet<string>();
+        if (parts.Length != 2 || parts[1].Length == 0) return [];
         var name = parts[1];
+        // The store's own tag search: only games whose main tags include it (players' top tags), best sellers first.
+        if (await TagIdAsync(name, token) is { } tagId)
+        {
+            var store = await StorePagesAsync($"tags={tagId}&filter=topsellers", TimeSpan.FromDays(1), token, pages: 5, cachePrefix: $"tag-{tagId}-{country}");
+            if (store.Count > 0) return store;
+        }
+        // Fallback: SteamSpy's list (broader: any game that ever received the tag).
         var (url, cache) = parts[0] == "tag"
             ? ($"https://steamspy.com/api.php?request=tag&tag={Uri.EscapeDataString(name)}", $"spy-tag-{name.ToLowerInvariant().Replace(' ', '-')}.json")
             : ($"https://steamspy.com/api.php?request=genre&genre={Uri.EscapeDataString(name)}", $"spy-{name.ToLowerInvariant()}.json");
-        return Spy(await JsonAsync(url, cache, TimeSpan.FromDays(3), token)).Select(g => g.Id).ToHashSet();
+        if (await JsonAsync(url, cache, TimeSpan.FromDays(3), token) is not JsonObject list) return [];
+        return [.. list.Select(kv => kv.Value).OfType<JsonObject>().Select(a => (Id: Long(a["appid"]).ToString(), Name: a["name"]?.GetValue<string>() ?? "", Pos: Long(a["positive"]), Neg: Long(a["negative"]), Ccu: Long(a["ccu"]), Free: a["price"]?.ToString() == "0"))
+            .Where(g => g.Name.Length > 0 && !NotGames.Contains(g.Id))
+            .Select(g => new CatalogItem(g.Id, g.Name, CatalogText.Portrait(g.Id), CatalogText.Header(g.Id), g.Pos + g.Neg > 0 ? (int)Math.Round(g.Pos * 100.0 / (g.Pos + g.Neg)) : null, g.Pos + g.Neg, g.Ccu, Free: g.Free))];
+    }
+    // Steam's tag names → ids (English names, the same ones Lotus's kinds use). Cached for a week.
+    private Dictionary<string, long>? tagIds;
+    private async Task<long?> TagIdAsync(string name, CancellationToken token)
+    {
+        if (tagIds is null && await JsonAsync("https://store.steampowered.com/tagdata/populartags/english", "steam-tags.json", TimeSpan.FromDays(7), token) is JsonArray tags)
+        {
+            var map = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
+            foreach (var t in tags.OfType<JsonObject>()) if (t["name"]?.GetValue<string>() is { Length: > 0 } n) map.TryAdd(n, Long(t["tagid"]));
+            if (map.Count > 0) tagIds = map;
+        }
+        return tagIds is not null && tagIds.TryGetValue(name, out var id) && id > 0 ? id : null;
     }
     private static List<(string Id, string Name, long Pos, long Neg, bool Free)> Spy(JsonNode? node) => node is JsonObject o
         ? [.. o.Select(kv => kv.Value).OfType<JsonObject>().Select(a => (Long(a["appid"]).ToString(), a["name"]?.GetValue<string>() ?? "", Long(a["positive"]), Long(a["negative"]), a["price"]?.ToString() == "0")).Where(a => a.Item2.Length > 0)]
@@ -187,7 +226,20 @@ public sealed class SteamCatalog : IGameCatalog
             if (name.Length == 0 || NotGames.Contains(id) || !seen.Add(id)) continue;
             var date = System.Text.RegularExpressions.Regex.Match(body, @"search_released[^>]*>\s*([^<]+?)\s*<");
             DateTime? released = date.Success && DateTime.TryParseExact(date.Groups[1].Value.Trim(), ["d MMM, yyyy", "MMM d, yyyy"], System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var d) ? d : null;
-            list.Add(new(id, name, CatalogText.Portrait(id), CatalogText.Header(id), Released: released));
+            // Review summary tooltip: "93% of the 12,345 user reviews…" (any language: first percent, then the first number after it).
+            int? percent = null; long? reviews = null;
+            var tip = System.Text.RegularExpressions.Regex.Match(body, @"search_review_summary[^""]*""\s+data-tooltip-html=""([^""]+)""");
+            if (tip.Success)
+            {
+                var r = System.Text.RegularExpressions.Regex.Match(System.Net.WebUtility.HtmlDecode(tip.Groups[1].Value), @"(\d{1,3})%\D+?(\d[\d.,]*)");
+                if (r.Success)
+                {
+                    percent = int.Parse(r.Groups[1].Value);
+                    if (long.TryParse(new string([.. r.Groups[2].Value.Where(char.IsDigit)]), out var n)) reviews = n;
+                }
+            }
+            var free = System.Text.RegularExpressions.Regex.IsMatch(body, @"data-price-final=""0""");
+            list.Add(new(id, name, CatalogText.Portrait(id), CatalogText.Header(id), percent, reviews, Released: released, Free: free ? true : null));
         }
         return list;
     }
@@ -215,20 +267,23 @@ public sealed class SteamCatalog : IGameCatalog
     // ---- Charts ----
     public async Task<CatalogChart?> ChartAsync(string id, TimeSpan maxAge, CancellationToken token)
     {
-        var file = Path.Combine(cache, $"chart3-{id}-{language}.json"); // "3": up to 100 items per chart (older caches are ignored)
+        var file = Path.Combine(cache, $"chart4-{id}-{language}.json"); // "4": up to 250 items per chart (older caches are ignored)
         if (Fresh(file, maxAge) && ReadChart(file) is { } cached) return cached;
         try
         {
             var items = id switch
             {
-                "trending" => SpyList(await JsonAsync("https://steamspy.com/api.php?request=top100in2weeks", null, maxAge, token), byRating: false),
-                "toprated" => SpyList(await JsonAsync("https://steamspy.com/api.php?request=top100forever", null, maxAge, token), byRating: true),
-                // The store's own search, games only: what Steam shows as top sellers / popular new / popular upcoming.
-                "topsellers" => Results(await JsonAsync(StoreSearch("filter=topsellers"), null, maxAge, token)),
-                "upcoming" => Results(await JsonAsync(StoreSearch("filter=popularcomingsoon"), null, maxAge, token)),
+                // SteamSpy's top 100 lists joined with its 1,000 most owned games (players now / share of positive reviews).
+                "trending" => SpyList([await JsonAsync("https://steamspy.com/api.php?request=top100in2weeks", null, maxAge, token),
+                    await JsonAsync("https://steamspy.com/api.php?request=all&page=0", "spy-all.json", TimeSpan.FromDays(1), token)], byRating: false),
+                "toprated" => SpyList([await JsonAsync("https://steamspy.com/api.php?request=top100forever", null, maxAge, token),
+                    await JsonAsync("https://steamspy.com/api.php?request=all&page=0", "spy-all.json", TimeSpan.FromDays(1), token)], byRating: true),
+                // The store's own search, games only: what Steam shows as top sellers / popular new / popular upcoming (3 pages).
+                "topsellers" => [.. (await StorePagesAsync("filter=topsellers", maxAge, token)).Take(ChartSize)],
+                "upcoming" => [.. (await StorePagesAsync("filter=popularcomingsoon", maxAge, token)).Take(ChartSize)],
                 // "New": best sellers released in the last 120 days (English page so the dates parse).
-                "new" => [.. Results(await JsonAsync(StoreSearch("filter=topsellers").Replace("l=" + language, "l=english"), null, maxAge, token))
-                    .Where(i => i.Released is { } d && d <= DateTime.Today && DateTime.Today - d <= TimeSpan.FromDays(120)).Take(100)],
+                "new" => [.. (await StorePagesAsync("filter=topsellers", maxAge, token, u => u.Replace("l=" + language, "l=english"), pages: 5))
+                    .Where(i => i.Released is { } d && d <= DateTime.Today && DateTime.Today - d <= TimeSpan.FromDays(120)).Take(ChartSize)],
                 _ => null,
             };
             if (items is { Count: > 0 })
@@ -245,14 +300,14 @@ public sealed class SteamCatalog : IGameCatalog
     // Software that shows up in Steam charts but is not a game.
     private static readonly HashSet<string> NotGames = ["431960", "1070560", "1391110", "1628350", "228980", "250820", "1007", "993090", "365670", "323910", "1905180", "2507950"];
 
-    public static List<CatalogItem> SpyList(JsonNode? node, bool byRating)
+    public static List<CatalogItem> SpyList(JsonNode? node, bool byRating) => SpyList([node], byRating);
+    public static List<CatalogItem> SpyList(IEnumerable<JsonNode?> nodes, bool byRating)
     {
-        if (node is not JsonObject obj) return [];
-        var rows = obj.Select(kv => kv.Value).OfType<JsonObject>()
+        var rows = nodes.OfType<JsonObject>().SelectMany(o => o.Select(kv => kv.Value).OfType<JsonObject>())
             .Select(a => (Id: Long(a["appid"]).ToString(), Name: a["name"]?.GetValue<string>() ?? "", Pos: Long(a["positive"]), Neg: Long(a["negative"]), Ccu: Long(a["ccu"])))
-            .Where(a => a.Name.Length > 0 && !NotGames.Contains(a.Id));
+            .Where(a => a.Name.Length > 0 && !NotGames.Contains(a.Id)).DistinctBy(a => a.Id);
         var ordered = byRating ? rows.Where(a => a.Pos + a.Neg >= 20000).OrderByDescending(a => a.Pos * 1.0 / (a.Pos + a.Neg)) : rows.OrderByDescending(a => a.Ccu);
-        return [.. ordered.Take(100).Select(a => new CatalogItem(a.Id, a.Name, CatalogText.Portrait(a.Id), CatalogText.Header(a.Id),
+        return [.. ordered.Take(ChartSize).Select(a => new CatalogItem(a.Id, a.Name, CatalogText.Portrait(a.Id), CatalogText.Header(a.Id),
             a.Pos + a.Neg > 0 ? (int)Math.Round(a.Pos * 100.0 / (a.Pos + a.Neg)) : null, a.Pos + a.Neg, a.Ccu > 0 ? a.Ccu : null))];
     }
 
