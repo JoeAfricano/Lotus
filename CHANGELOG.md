@@ -2,6 +2,14 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.0.2-alpha "Lotus" (31/10/2026)
+
+### Corrigido
+- **Capas borradas ou sumindo na Game list:** em vários lançamentos, a Steam guarda a capa vertical num endereço que muda, e o Lotus acabava esticando a imagem horizontal pequena.
+  - Agora o Lotus pergunta à Steam o endereço exato da capa (600x900), várias capas numa consulta só, e guarda a resposta para as próximas vezes.
+  - Se um jogo não tiver capa vertical, a imagem horizontal aparece inteira, sem cortar nem borrar.
+  - Ao adicionar um desses jogos ao diário, ele também recebe a capa certa.
+
 ## 1.0.1-alpha "Lotus" (31/10/2026)
 
 ### Novo

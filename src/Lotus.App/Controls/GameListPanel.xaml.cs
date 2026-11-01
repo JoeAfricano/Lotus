@@ -1,6 +1,7 @@
 using Lotus.Core.Catalog;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Lotus.App.Controls;
@@ -102,27 +103,42 @@ public sealed partial class GameListPanel : UserControl
     }
     private void ShowCover(string url) { if (Uri.TryCreate(url, UriKind.Absolute, out var u)) { ShuffleArt.Source = new BitmapImage(u) { DecodePixelWidth = 280 }; ShuffleIdle.Visibility = Visibility.Collapsed; } }
 
-    // Covers load in steps: portrait art → wide header → the exact art path from the store API (newer games keep
-    // their art under hashed paths). The grid recycles cards, so each step checks the card still shows that game.
+    // Covers load in steps: the guessed portrait art → the exact portrait path from the store API (newer games keep
+    // their art under hashed paths) → only then the wide header, shown whole at the top of the card (never stretched
+    // into a blurry crop). The grid recycles cards, so each step checks the card still shows that game.
     private static readonly Dictionary<string, string> artCache = [];
+    private static readonly HashSet<string> wideOnly = [];
     private void OnCoverContext(FrameworkElement sender, DataContextChangedEventArgs args)
     {
         if (sender is not Image img) return;
         img.Opacity = 0; img.Source = null;
-        if (args.NewValue is CatalogCard card) Load(img, artCache.GetValueOrDefault(card.Item.AppId) ?? card.Cover);
+        if (args.NewValue is not CatalogCard card) return;
+        var id = card.Item.AppId;
+        if (wideOnly.Contains(id)) LoadWide(img, artCache.GetValueOrDefault(id) ?? card.Wide);
+        else { Portrait(img); Load(img, artCache.GetValueOrDefault(id) ?? card.Cover); }
     }
     private void OnCoverOpened(object sender, RoutedEventArgs e) { if (sender is Image img) { img.Opacity = 1; } }
     private async void OnCoverFailed(object sender, ExceptionRoutedEventArgs e)
     {
-        if (sender is not Image { DataContext: CatalogCard card } img) return;
+        if (sender is not Image { DataContext: CatalogCard card } img || Vm is not { } vm) return;
+        var id = card.Item.AppId;
         var tried = (img.Source as BitmapImage)?.UriSource?.ToString() ?? "";
-        if (tried == card.Cover) { Load(img, card.Wide); return; }
-        if (Vm is { } vm && await vm.ArtAsync(card.Item.AppId) is { } art && art != tried && img.DataContext == card)
+        if (!wideOnly.Contains(id))
         {
-            artCache[card.Item.AppId] = art; Load(img, art);
+            if (tried == card.Cover && await vm.PortraitAsync(id) is { } portrait && portrait != tried)
+            {
+                if (img.DataContext != card) return;
+                artCache[id] = portrait; Load(img, portrait); return;
+            }
+            if (img.DataContext != card) return;
+            wideOnly.Add(id); artCache.Remove(id);
+            LoadWide(img, card.Wide); return;
         }
+        if (await vm.ArtAsync(id) is { } art && art != tried && img.DataContext == card) { artCache[id] = art; LoadWide(img, art); }
         // Otherwise the name stays on the plum card underneath.
     }
+    private static void Portrait(Image img) { img.Stretch = Stretch.UniformToFill; img.VerticalAlignment = VerticalAlignment.Stretch; }
+    private static void LoadWide(Image img, string url) { img.Stretch = Stretch.Uniform; img.VerticalAlignment = VerticalAlignment.Top; Load(img, url); }
     // Covers decode at card size (not the full 600x900 art): far less memory with long lists.
     private static void Load(Image img, string url) { if (Uri.TryCreate(url, UriKind.Absolute, out var u)) img.Source = new BitmapImage(u) { DecodePixelWidth = 220, DecodePixelType = DecodePixelType.Logical }; }
     private void OnShowMore(object sender, RoutedEventArgs e) => Vm?.ShowMore();
@@ -143,7 +159,7 @@ public sealed partial class GameListPanel : UserControl
     private void OnWant(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { DataContext: CatalogCard card } b || MainWindow.Shell is not { } shell) return;
-        var game = new Lotus.Core.Diary.DiaryEntry { Key = Lotus.Core.Diary.DiaryEntry.SteamKey(card.Item.AppId), AppId = card.Item.AppId, Name = card.Name, Cover = card.Cover, Wide = card.Wide };
+        var game = new Lotus.Core.Diary.DiaryEntry { Key = Lotus.Core.Diary.DiaryEntry.SteamKey(card.Item.AppId), AppId = card.Item.AppId, Name = card.Name, Cover = wideOnly.Contains(card.Item.AppId) ? card.Cover : artCache.GetValueOrDefault(card.Item.AppId) ?? card.Cover, Wide = card.Wide }; // the exact portrait when the guessed one failed
         if (!shell.WantGame(game)) { shell.OpenDiaryEditor(game); return; }
         if (b.Content is FontIcon icon) icon.Glyph = "";
         Motion.Pop(b);

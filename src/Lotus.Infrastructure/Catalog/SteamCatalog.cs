@@ -194,6 +194,66 @@ public sealed class SteamCatalog : IGameCatalog
     private static readonly TimeSpan PriceAge = TimeSpan.FromHours(6);
     public async Task<string?> ArtAsync(string appId, CancellationToken token) => (await SteamDetailsAsync(appId, token))?.HeaderImage;
 
+    // Exact portrait art (600x900) from the store API: newer games keep it under a hashed path the guessed URL misses.
+    // Covers that fail together are asked in one request (up to 50); answers are kept on disk ("" = no portrait art).
+    private readonly Dictionary<string, string> portraits = [];
+    private readonly Dictionary<string, TaskCompletionSource<string?>> portraitWaiting = [];
+    private bool portraitsLoaded, portraitBatchQueued;
+    private readonly object portraitLock = new();
+    private string PortraitFile => Path.Combine(cache, "portraits.json");
+
+    public Task<string?> PortraitAsync(string appId, CancellationToken token)
+    {
+        lock (portraitLock)
+        {
+            if (!portraitsLoaded)
+            {
+                portraitsLoaded = true;
+                try { if (File.Exists(PortraitFile) && JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(PortraitFile)) is { } saved) foreach (var kv in saved) portraits[kv.Key] = kv.Value; }
+                catch (Exception ex) when (ex is IOException or JsonException or UnauthorizedAccessException) { }
+            }
+            if (portraits.TryGetValue(appId, out var known)) return Task.FromResult<string?>(known.Length > 0 ? known : null);
+            if (!portraitWaiting.TryGetValue(appId, out var waiting)) portraitWaiting[appId] = waiting = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            if (!portraitBatchQueued) { portraitBatchQueued = true; _ = PortraitBatchAsync(); }
+            return waiting.Task;
+        }
+    }
+
+    private async Task PortraitBatchAsync()
+    {
+        await Task.Delay(150); // let the covers failing at the same moment join this request
+        List<KeyValuePair<string, TaskCompletionSource<string?>>> batch;
+        lock (portraitLock) { batch = [.. portraitWaiting.Take(50)]; foreach (var kv in batch) portraitWaiting.Remove(kv.Key); portraitBatchQueued = false; if (portraitWaiting.Count > 0) { portraitBatchQueued = true; _ = PortraitBatchAsync(); } }
+        var found = new Dictionary<string, string>();
+        try
+        {
+            var ids = string.Join(",", batch.Select(kv => $"{{\"appid\":{kv.Key}}}"));
+            var input = $"{{\"ids\":[{ids}],\"context\":{{\"language\":\"english\",\"country_code\":\"US\"}},\"data_request\":{{\"include_assets\":true}}}}";
+            var text = await http.GetStringAsync("https://api.steampowered.com/IStoreBrowseService/GetItems/v1/?input_json=" + Uri.EscapeDataString(input));
+            if (JsonNode.Parse(text)?["response"]?["store_items"] is JsonArray items)
+                foreach (var item in items.OfType<JsonObject>())
+                {
+                    var id = Long(item["appid"] ?? item["id"]).ToString();
+                    var assets = item["assets"];
+                    var file = assets?["library_capsule_2x"]?.GetValue<string>() ?? assets?["library_capsule"]?.GetValue<string>();
+                    var format = assets?["asset_url_format"]?.GetValue<string>();
+                    found[id] = file is { Length: > 0 } && format is { Length: > 0 } ? "https://shared.akamai.steamstatic.com/store_item_assets/" + format.Replace("${FILENAME}", file) : "";
+                }
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException or InvalidOperationException) { Serilog.Log.Warning(ex, "Portrait art lookup"); }
+        lock (portraitLock)
+        {
+            foreach (var (id, waiting) in batch)
+            {
+                var url = found.GetValueOrDefault(id);
+                if (url is not null) portraits[id] = url; // unanswered (offline) ids are asked again next time
+                waiting.TrySetResult(url is { Length: > 0 } ? url : null);
+            }
+            try { Directory.CreateDirectory(cache); File.WriteAllText(PortraitFile, JsonSerializer.Serialize(portraits)); }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+        }
+    }
+
     // Store search page (infinite mode): results_html carries data-ds-appid and the title of each game.
     public static List<CatalogItem> Results(JsonNode? node)
     {

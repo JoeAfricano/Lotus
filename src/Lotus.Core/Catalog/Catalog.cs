@@ -28,6 +28,8 @@ public interface IGameCatalog
     Task<IReadOnlyList<CatalogItem>> DiscoverAsync(string? genre, string? difficulty, bool freeOnly, CancellationToken token);
     // Store art that always exists (newer games keep it under a hashed path only the store API knows).
     Task<string?> ArtAsync(string appId, CancellationToken token);
+    // The exact portrait (600x900) art when the guessed path fails (newer games keep it under a hashed path).
+    Task<string?> PortraitAsync(string appId, CancellationToken token) => Task.FromResult<string?>(null);
     // Steam app ids of a kind of game: "genre:Action" (Steam genre) or "tag:Horror" (community tag). Empty when unknown.
     Task<IReadOnlySet<string>> TypeIdsAsync(string type, CancellationToken token) => Task.FromResult<IReadOnlySet<string>>(new HashSet<string>());
     // The same kind as games (players now in Players, reviews), to fill a filtered list beyond the chart. Empty when unknown.

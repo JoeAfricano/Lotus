@@ -311,6 +311,7 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     // A big picture for banners when the key art is missing: the first store screenshot (1920 wide).
     public async Task<string?> ScreenshotAsync(string appId) { try { var i = await catalog.SteamDetailsAsync(appId, CancellationToken.None); return i?.Screenshots.FirstOrDefault() ?? i?.Background; } catch (Exception ex) { log(ex); return null; } }
     public async Task<string?> ArtAsync(string appId) { try { return await catalog.ArtAsync(appId, CancellationToken.None); } catch (Exception ex) { log(ex); return null; } }
+    public async Task<string?> PortraitAsync(string appId) { try { return await catalog.PortraitAsync(appId, CancellationToken.None); } catch (Exception ex) { log(ex); return null; } }
     public Task OpenAsync(CatalogItem item) => Details.LoadSteamAsync(item.AppId, item.Name, InstalledFor(item.AppId), item.Wide);
 
     // Draw: asks the store for games with the chosen genre/difficulty tags (top sellers first), skips the ones the
