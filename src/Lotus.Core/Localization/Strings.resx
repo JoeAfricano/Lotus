@@ -2665,4 +2665,30 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="SetMinimizeForGames" xml:space="preserve"><value>Minimizar ao abrir um jogo</value></data>
   <data name="SetMinimizeForGamesHint" xml:space="preserve"><value>O Lotus sai da frente quando o jogo abre e volta sozinho quando ele fecha.</value></data>
   <data name="GlHintFilteredMore" xml:space="preserve"><value>{0} jogos de &quot;{1}&quot; com os seus filtros, e mais {2} jogos populares desse tipo.</value></data>
+  <data name="GmMore" xml:space="preserve"><value>Mais opções</value></data>
+  <data name="GmEdit" xml:space="preserve"><value>Editar nome e capa…</value></data>
+  <data name="GmRemove" xml:space="preserve"><value>Remover da lista</value></data>
+  <data name="GamesEdited" xml:space="preserve"><value>{0} atualizado.</value></data>
+  <data name="SlAddGame" xml:space="preserve"><value>Adicionar jogo</value></data>
+  <data name="AgTitle" xml:space="preserve"><value>Adicionar jogo</value></data>
+  <data name="AgIntro" xml:space="preserve"><value>Procure o jogo na loja para trazer o nome e a capa, ou preencha do seu jeito. Serve também para jogos de outros launchers (como Minecraft pelo Modrinth).</value></data>
+  <data name="AgSearch" xml:space="preserve"><value>Procurar o jogo na loja (Steam)</value></data>
+  <data name="AgSearching" xml:space="preserve"><value>Procurando…</value></data>
+  <data name="AgNothing" xml:space="preserve"><value>Nenhum jogo encontrado com esse nome. Você pode preencher abaixo do seu jeito.</value></data>
+  <data name="AgOffline" xml:space="preserve"><value>Não deu para procurar agora. Você pode preencher abaixo do seu jeito.</value></data>
+  <data name="AgName" xml:space="preserve"><value>Nome do jogo</value></data>
+  <data name="AgPickCover" xml:space="preserve"><value>Escolher imagem de capa…</value></data>
+  <data name="AgOriginalCover" xml:space="preserve"><value>Usar a capa original</value></data>
+  <data name="AgExeTitle" xml:space="preserve"><value>Executável do jogo (opcional)</value></data>
+  <data name="AgPickExe" xml:space="preserve"><value>Escolher o .exe…</value></data>
+  <data name="AgNoExe" xml:space="preserve"><value>Nenhum executável escolhido.</value></data>
+  <data name="AgExeHint" xml:space="preserve"><value>Com o .exe, o botão Jogar abre o jogo. Sem ele, jogos da Steam abrem pela Steam; os outros ficam disponíveis para o diário e o backup de saves.</value></data>
+  <data name="AgAdd" xml:space="preserve"><value>Adicionar</value></data>
+  <data name="AgEditTitle" xml:space="preserve"><value>Editar nome e capa</value></data>
+  <data name="AgEditIntro" xml:space="preserve"><value>Nome original: {0}. Procure outra capa na loja, escolha uma imagem sua ou volte à original.</value></data>
+  <data name="AgSave" xml:space="preserve"><value>Salvar</value></data>
+  <data name="AgRemoveTitle" xml:space="preserve"><value>Remover {0} da lista?</value></data>
+  <data name="AgRemoveBody" xml:space="preserve"><value>O jogo continua instalado no PC; só sai de Meus Jogos. Seus backups de saves e o diário não são apagados. Para trazer de volta, use Reescanear ou adicione de novo.</value></data>
+  <data name="AgRemove" xml:space="preserve"><value>Remover</value></data>
+  <data name="GamesAlreadyThere" xml:space="preserve"><value>{0} já está em Meus Jogos.</value></data>
 </root>

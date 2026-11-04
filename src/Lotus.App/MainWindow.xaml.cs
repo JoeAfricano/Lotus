@@ -37,6 +37,9 @@ public sealed partial class MainWindow : Window
     private readonly Lotus.Core.Tools.ToolsViewModel tools;
     private GuidedSetupViewModel? guided;
     private Lotus.Core.Catalog.GameListViewModel? gameList;
+    private Lotus.Infrastructure.Catalog.SteamCatalog catalog = null!;
+    public Lotus.Core.Catalog.IGameCatalog Catalog => catalog;
+    public Lotus.Core.Games.GamesViewModel Games => games; // Steam store data shared by every page (one cache, one request gate)
     private Lotus.Core.Games.PlayerPanelViewModel? player;
     private Lotus.Core.Diary.GameDiary diary = null!;
     private Lotus.Core.Diary.DiaryViewModel diaryPage = null!;
@@ -89,7 +92,7 @@ public sealed partial class MainWindow : Window
         games.IsFavorite = journal.IsFavorite;
         journal.Changed += (_, _) => games.RefreshFeatured();
         player = new Lotus.Core.Games.PlayerPanelViewModel(games, journal, text, () => Lotus.Infrastructure.Games.SteamPlaytime.Read());
-        var catalog = new Lotus.Infrastructure.Catalog.SteamCatalog(language: preferences.Current.Language);
+        catalog = new Lotus.Infrastructure.Catalog.SteamCatalog(language: preferences.Current.Language);
         diary = new Lotus.Core.Diary.GameDiary(new Lotus.Infrastructure.Games.JsonGameDiaryStore(), ex => Serilog.Log.Warning(ex, "Game diary"));
         diaryPage = new Lotus.Core.Diary.DiaryViewModel(diary, text, preferences);
         diaryPage.Deals = new Lotus.Core.Diary.DiaryDealsViewModel(diary, catalog, text, ex => Serilog.Log.Warning(ex, "Diary deals"));

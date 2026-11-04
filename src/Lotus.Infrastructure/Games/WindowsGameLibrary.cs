@@ -20,7 +20,7 @@ public sealed class WindowsGameLibrary(string? steamPath = null, string? epicMan
         }
         Run(GameStores.Steam, Steam); Run(GameStores.Epic, Epic); Run(GameStores.Xbox, Xbox);
         Run(GameStores.Gog, Gog); Run(GameStores.Ea, Ea); Run(GameStores.Ubisoft, Ubisoft);
-        games.AddRange(manual.Where(m => m.ExePath is not null && File.Exists(m.ExePath)));
+        games.AddRange(manual.Where(m => m.ExePath is null || File.Exists(m.ExePath))); // added by name only, or an .exe that still exists
         var unique = games.GroupBy(g => g.Key, StringComparer.OrdinalIgnoreCase).Select(g => g.First())
             .OrderBy(g => g.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
         return new(unique, errors);

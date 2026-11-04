@@ -23,14 +23,15 @@ public sealed partial class GamesPanel : UserControl
         UiSound.Play(UiSound.Cue.Open); vm.Play(card.Game);
     }
 
+    // "Adicionar jogo": find it in the store (name and cover come along) or fill it in; the .exe is optional.
     private async void OnAddGame(object sender, RoutedEventArgs e)
     {
-        if (DataContext is not GamesViewModel vm) return;
-        var picker = new FileOpenPicker { SuggestedStartLocation = PickerLocationId.ComputerFolder, ViewMode = PickerViewMode.List };
-        picker.FileTypeFilter.Add(".exe");
-        WinRT.Interop.InitializeWithWindow.Initialize(picker, App.WindowHandle);
-        var file = await picker.PickSingleFileAsync();
-        if (file is not null) await vm.AddManualAsync(file.Path);
+        if (DataContext is GamesViewModel vm) await GameDialogs.AddAsync(XamlRoot, vm);
+    }
+
+    private async void OnEditGame(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is GamesViewModel vm && sender is FrameworkElement { DataContext: GameCard card }) await GameDialogs.EditAsync(XamlRoot, vm, card.Game);
     }
 
     // Scans every platform again; installed games that were removed from the list can be put back.
@@ -215,6 +216,6 @@ public sealed partial class GamesPanel : UserControl
             Content = new TextBlock { Text = vm.Text["GamesRemoveConfirmBody"], TextWrapping = TextWrapping.Wrap, MaxWidth = 420 },
             PrimaryButtonText = vm.Text["GamesRemoveConfirm"], CloseButtonText = vm.Text["DlgCancel"], DefaultButton = ContentDialogButton.Close
         };
-        if (await dialog.ShowAsync() == ContentDialogResult.Primary) card.Remove.Execute(card);
+        if (await dialog.ShowAsync() == ContentDialogResult.Primary) await vm.RemoveAsync(card.Game); // a game added by name only is deleted; others are hidden
     }
 }

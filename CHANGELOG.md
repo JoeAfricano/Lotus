@@ -2,6 +2,26 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.0.3-alpha "Lotus" (04/11/2026)
+
+### Novo
+- **Adicionar jogo, do jeito certo:** procure o jogo na loja e o Lotus traz o nome e a capa, ou preencha do seu jeito com uma imagem sua.
+  - O `.exe` é opcional, o que serve para jogos de outros launchers, como Minecraft pelo Modrinth.
+  - A mesma janela também aparece na aba **Backup de saves**, para adicionar um jogo e já escolher a pasta dos saves.
+- **Editar nome e capa** de qualquer jogo: pelo menu **"…"** de cada cartão em Meus Jogos. Dá para voltar à capa original quando quiser.
+- **Remover da lista** ficou à mão no mesmo menu.
+  - Jogos da loja só saem da lista (Reescanear traz de volta).
+  - Jogos adicionados só pelo nome são apagados de vez.
+  - Backups e diário nunca são apagados.
+
+### Corrigido
+- **"Escolher pasta…" desligado** quando o Lotus não encontrava a pasta de saves sozinho, exatamente quando ela mais faz falta.
+- **Capa sumindo** no Backup de saves depois de desinstalar um jogo.
+- **O Lotus demorava (ou não chegava) a minimizar** ao abrir um jogo.
+  - Agora minimiza assim que você clica em Jogar.
+  - Se o jogo não chegar a abrir, o Lotus volta depois de alguns minutos.
+- **Faixa "Seus jogos" no Início** cortava o último jogo; agora rola para o lado.
+
 ## 1.0.2-alpha "Lotus" (31/10/2026)
 
 ### Corrigido

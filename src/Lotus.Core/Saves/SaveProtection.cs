@@ -117,6 +117,7 @@ public sealed record GameSaveSettings
     public bool CloudSynced { get; set; }
     public int Keep { get; set; } = 5;
     public string GameName { get; set; } = "";
+    public string? Cover { get; set; } // the game's art, so it still shows after the game is uninstalled
     public DateTimeOffset? LastAttempt { get; set; }
     public string? LastFailure { get; set; } // null = last attempt worked
 }
@@ -188,7 +189,7 @@ public sealed class SaveProtection
             var ok = result.Status != SnapshotStatus.Failed && result.Manifest is { IsValid: true } m && Vault.Verify(game.Key, m.Id);
             Put(game.Key, new GameSaveSettings
             {
-                Enabled = ok, Auto = auto, Root = place.Root, Source = place.Source, CloudSynced = place.CloudSynced, Keep = keep, GameName = game.Name,
+                Enabled = ok, Auto = auto, Root = place.Root, Source = place.Source, CloudSynced = place.CloudSynced, Keep = keep, GameName = game.Name, Cover = game.CoverPath ?? Get(game.Key).Cover,
                 LastAttempt = DateTimeOffset.Now, LastFailure = ok ? null : result.Failure.ToString(),
             });
             return ok ? result : result with { Status = SnapshotStatus.Failed, Failure = result.Failure == SaveFailure.None ? SaveFailure.VerifyFailed : result.Failure };

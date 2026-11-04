@@ -21,7 +21,7 @@ public sealed partial class MainWindow
         var root = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "SaveBackups");
         saves = new SaveProtection(new Lotus.Infrastructure.Games.JsonSaveSettingsStore(), new SaveVault(root),
             new SaveDiscovery(new Lotus.Infrastructure.Games.WindowsKnownFolders()), ex => Serilog.Log.Warning(ex, "Save protection"));
-        saveLibrary = new SaveLibraryViewModel(saves, games.InstalledGames, text, IsGameRunning);
+        saveLibrary = new SaveLibraryViewModel(saves, games.InstalledGames, text, IsGameRunning) { CoverLookup = id => catalog.PortraitAsync(id, CancellationToken.None) };
         if (games.Preparation is { } preparation) preparation.SaveWarning = game => saves.Warning(game, text);
         sessionHub.Stopped += (_, e) => _ = AutoBackupAsync(e.Game);
         var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromSeconds(20); timer.IsRepeating = false;

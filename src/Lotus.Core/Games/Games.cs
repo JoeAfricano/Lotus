@@ -25,5 +25,11 @@ public interface IManualGameStore
     // Keys of launcher games the user chose to hide (for example apps that Steam lists as games).
     IReadOnlyList<string> LoadHidden() => [];
     void SaveHidden(IReadOnlyList<string> keys) { }
+    // The player's own name and cover for a game (any store). The cover file is copied into Lotus's folder.
+    IReadOnlyDictionary<string, GameCustom> LoadCustom() => new Dictionary<string, GameCustom>();
+    void SaveCustom(IReadOnlyDictionary<string, GameCustom> custom) { }
+    string? ImportCover(string gameKey, string sourceFile) => null;
+    void DeleteCover(string? coverPath) { }
 }
+public sealed record GameCustom(string? Name, string? Cover);
 public interface IGameLauncher { void Launch(GameEntry game); }

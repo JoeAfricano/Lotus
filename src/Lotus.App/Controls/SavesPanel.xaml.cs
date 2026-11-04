@@ -92,6 +92,16 @@ public sealed partial class SavesPanel : UserControl
         await vm.OpenAsync(tile);
     }
 
+    // A game that Lotus does not find by itself (another launcher, Minecraft…): added here, then its folder is picked.
+    private async void OnAddGame(object sender, RoutedEventArgs e)
+    {
+        if (vm is null || MainWindow.Shell is not { } shell) return;
+        if (await GameDialogs.AddAsync(XamlRoot, shell.Games) is not { } added) return;
+        vm.PendingOpen = added.Key;
+        await vm.LoadAsync();
+        Refresh();
+    }
+
     private async void OnBack(object sender, RoutedEventArgs e)
     {
         if (vm is null) return;

@@ -40,7 +40,8 @@ public sealed class SaveLibraryViewModel(SaveProtection protection, Func<IReadOn
     public bool Loading { get => loading; private set { if (SetProperty(ref loading, value)) OnPropertyChanged(nameof(IsEmpty)); } }
     public bool Loaded { get => loaded; private set => SetProperty(ref loaded, value); }
     public bool IsEmpty => !Loading && Loaded && Items.Count == 0;
-    public string? PendingOpen { get; set; } // game key to open once the list is ready (from a game's page)
+    public string? PendingOpen { get; set; }
+    public Func<string, Task<string?>>? CoverLookup { get; set; } // Steam app id → exact portrait art (store API) // game key to open once the list is ready (from a game's page)
 
     public GameSavesViewModel? Selected { get => selected; private set { if (SetProperty(ref selected, value)) OnPropertyChanged(nameof(HasSelection)); } }
     public SaveGameTile? SelectedTile { get => selectedTile; private set => SetProperty(ref selectedTile, value); }
@@ -61,6 +62,11 @@ public sealed class SaveLibraryViewModel(SaveProtection protection, Func<IReadOn
         try
         {
             all = await Task.Run(Build);
+            // Steam games without art on this PC (uninstalled): the store's exact portrait, or its usual path.
+            var missing = all.Select((t, i) => (t, i)).Where(x => x.t is { CoverPath: null, Game.Store: GameStores.Steam }).ToList();
+            var found = CoverLookup is { } lookup ? await Task.WhenAll(missing.Select(x => lookup(x.t.Game.Id))) : new string?[missing.Count]; // asked together: one store request
+            for (var k = 0; k < missing.Count; k++)
+                all[missing[k].i] = missing[k].t with { CoverPath = found[k] ?? global::Lotus.Core.Catalog.CatalogText.Portrait(missing[k].t.Game.Id) };
             Loaded = true;
             Apply();
             foreach (var n in new[] { nameof(ProtectedCount), nameof(BackupCount), nameof(SpaceUsed), nameof(FoundCount) }) OnPropertyChanged(n);
@@ -76,7 +82,9 @@ public sealed class SaveLibraryViewModel(SaveProtection protection, Func<IReadOn
         foreach (var key in protection.Keys.Where(k => games.All(g => !string.Equals(g.Key, k, StringComparison.OrdinalIgnoreCase))))
         {
             var parts = key.Split(':', 2);
-            if (parts.Length == 2 && protection.Vault.List(key).Count > 0) games.Add(new GameEntry(parts[0], parts[1], protection.Get(key).GameName is { Length: > 0 } n ? n : key));
+            var kept = protection.Get(key);
+            var cover = kept.Cover is { Length: > 0 } c && (c.StartsWith("http", StringComparison.OrdinalIgnoreCase) || File.Exists(c)) ? c : null;
+            if (parts.Length == 2 && protection.Vault.List(key).Count > 0) games.Add(new GameEntry(parts[0], parts[1], kept.GameName is { Length: > 0 } n ? n : key, CoverPath: cover));
         }
         var installedKeys = installed().Select(g => g.Key).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var list = new List<SaveGameTile>();

@@ -32,6 +32,8 @@ public sealed partial class GamesViewModel : ObservableObject
     private readonly Dictionary<string, int> pendingSteps = new(StringComparer.OrdinalIgnoreCase);
     private List<GameEntry> all = [];
     private List<GameEntry> manual = [];
+    private List<GameEntry> raw = [];                       // as found on this PC, before the player's own names and covers
+    private Dictionary<string, GameCustom> custom = new(StringComparer.OrdinalIgnoreCase);
     private HashSet<string> hidden = new(StringComparer.OrdinalIgnoreCase);
     private string search = "", store = "", status = "";
     private bool busy, loaded;
@@ -80,7 +82,9 @@ public sealed partial class GamesViewModel : ObservableObject
             // Optional SCSKiller status; a failure here never blocks the library.
             try { shaderStatuses = shaders is { IsAvailable: true } ? await shaders.StatusAsync(CancellationToken.None) : []; }
             catch (Exception ex) { log(ex); shaderStatuses = []; }
-            all = result.Games.ToList();
+            try { custom = new(await Task.Run(manualStore.LoadCustom), StringComparer.OrdinalIgnoreCase); } catch (Exception ex) { log(ex); }
+            raw = result.Games.ToList();
+            all = [.. raw.Select(ApplyCustom)];
             foreach (var e in result.Errors) log(new InvalidOperationException("Game scan: " + e));
             status = "";
         }
@@ -103,6 +107,86 @@ public sealed partial class GamesViewModel : ObservableObject
         try { manualStore.SaveHidden(hidden.ToList()); status = Text.Format("GamesRestored", count); }
         catch (Exception ex) { log(ex); status = Text["GamesSaveFailed"]; }
         BuildStores(); ApplyFilter(); Notify();
+    }
+
+    // ---- The player's own name and cover ----
+    private GameEntry ApplyCustom(GameEntry g) => custom.TryGetValue(g.Key, out var c)
+        ? g with { Name = c.Name is { Length: > 0 } n ? n : g.Name, CoverPath = c.Cover is { Length: > 0 } cover && (cover.StartsWith("http", StringComparison.OrdinalIgnoreCase) || File.Exists(cover)) ? cover : g.CoverPath }
+        : g;
+    public string OriginalName(GameEntry g) => raw.FirstOrDefault(r => r.Key == g.Key)?.Name ?? g.Name;
+    public string? OriginalCover(GameEntry g) => raw.FirstOrDefault(r => r.Key == g.Key)?.CoverPath;
+
+    // name: null/blank = the original; coverFile: an image to use; resetCover: back to the store's art.
+    public async Task<bool> CustomizeAsync(GameEntry game, string? name, string? coverFile, bool resetCover)
+    {
+        var current = custom.GetValueOrDefault(game.Key);
+        var newName = string.IsNullOrWhiteSpace(name) || name.Trim() == OriginalName(game) ? null : name.Trim();
+        string? cover = resetCover ? null : current?.Cover;
+        try
+        {
+            if (coverFile is { Length: > 0 }) cover = coverFile.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? coverFile : await Task.Run(() => manualStore.ImportCover(game.Key, coverFile)) ?? cover;
+            var next = new Dictionary<string, GameCustom>(custom, StringComparer.OrdinalIgnoreCase);
+            if (newName is null && cover is null) next.Remove(game.Key); else next[game.Key] = new GameCustom(newName, cover);
+            await Task.Run(() => manualStore.SaveCustom(next));
+            custom = next;
+        }
+        catch (Exception ex) { log(ex); status = Text["GamesSaveFailed"]; Notify(); return false; }
+        all = [.. raw.Select(ApplyCustom)];
+        status = Text.Format("GamesEdited", ApplyCustom(game).Name);
+        BuildStores(); ApplyFilter(); Notify();
+        return true;
+    }
+
+    // A game added by hand: by name (from the store search or typed), with its cover and, when there is one, the .exe
+    // that starts it. Without an .exe, a Steam game starts through Steam; otherwise it is there for saves and the diary.
+    public async Task<GameEntry?> AddCustomAsync(string name, string? exePath, string? cover, string? steamAppId)
+    {
+        if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(exePath)) { status = Text["GamesInvalidExe"]; Notify(); return null; }
+        if (exePath is { Length: > 0 } && (!exePath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) || !File.Exists(exePath))) { status = Text["GamesInvalidExe"]; Notify(); return null; }
+        if (exePath is not { Length: > 0 } && steamAppId is { Length: > 0 } && raw.FirstOrDefault(g => g.Store == GameStores.Steam && g.Id == steamAppId) is { } owned)
+        { hidden.Remove(owned.Key); try { manualStore.SaveHidden(hidden.ToList()); } catch (Exception ex) { log(ex); } status = Text.Format("GamesAlreadyThere", owned.Name); BuildStores(); ApplyFilter(); Notify(); return ApplyCustom(owned); }
+        var full = exePath is { Length: > 0 } ? Path.GetFullPath(exePath) : null;
+        var title = string.IsNullOrWhiteSpace(name) ? Path.GetFileNameWithoutExtension(full!) : name.Trim();
+        var launch = full is null && steamAppId is { Length: > 0 } ? $"steam://run/{steamAppId}" : null;
+        var entry = full is not null
+            ? new GameEntry(GameStores.Manual, full.ToLowerInvariant(), title, Path.GetDirectoryName(full), full, launch)
+            : new GameEntry(GameStores.Manual, steamAppId is { Length: > 0 } ? "steam-" + steamAppId : "custom-" + Guid.NewGuid().ToString("N")[..12], title, LaunchUri: launch);
+        try
+        {
+            string? coverPath = cover;
+            if (cover is { Length: > 0 } && !cover.StartsWith("http", StringComparison.OrdinalIgnoreCase)) coverPath = await Task.Run(() => manualStore.ImportCover(entry.Key, cover));
+            entry = entry with { CoverPath = coverPath };
+            manual.RemoveAll(g => g.Id == entry.Id); manual.Add(entry); hidden.Remove(entry.Key);
+            await Task.Run(() => { manualStore.Save(manual); manualStore.SaveHidden(hidden.ToList()); });
+        }
+        catch (Exception ex) { log(ex); status = Text["GamesSaveFailed"]; Notify(); return null; }
+        await RefreshAsync();
+        status = Text.Format("GamesAdded", entry.Name); Notify();
+        return entry;
+    }
+
+    // Removed for good when it was added by hand without an .exe (nothing else would bring it back); hidden otherwise.
+    public async Task RemoveAsync(GameEntry game)
+    {
+        if (game.Store == GameStores.Manual && game.ExePath is null)
+        {
+            manual.RemoveAll(g => g.Key == game.Key);
+            var cover = custom.GetValueOrDefault(game.Key)?.Cover ?? raw.FirstOrDefault(g => g.Key == game.Key)?.CoverPath;
+            custom.Remove(game.Key);
+            try
+            {
+                await Task.Run(() =>
+                {
+                    manualStore.Save(manual); manualStore.SaveCustom(custom);
+                    manualStore.DeleteCover(cover); // only a copy inside Lotus's own Covers folder
+                });
+            }
+            catch (Exception ex) { log(ex); }
+            raw.RemoveAll(g => g.Key == game.Key); all.RemoveAll(g => g.Key == game.Key);
+            status = Text.Format("GamesHidden", game.Name); BuildStores(); ApplyFilter(); Notify();
+            return;
+        }
+        if (Games.FirstOrDefault(c => c.Game.Key == game.Key) is { } card) Remove(card);
     }
 
     public async Task<bool> AddManualAsync(string exePath)
@@ -138,7 +222,7 @@ public sealed partial class GamesViewModel : ObservableObject
 
     private void LaunchNow(GameCard card)
     {
-        try { launcher.Launch(card.Game); status = Text.Format("GamesLaunching", card.Name); global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Launch); }
+        try { launcher.Launch(card.Game); status = Text.Format("GamesLaunching", card.Name); global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Launch); Launched?.Invoke(this, card.Game); }
         catch (Exception ex)
         {
             log(ex); status = Text.Format("GamesLaunchFailed", card.Name);
@@ -177,6 +261,7 @@ public sealed partial class GamesViewModel : ObservableObject
     public IReadOnlyList<GameEntry> InstalledGames() => [.. all.Where(g => !hidden.Contains(g.Key))];
     public void Play(GameEntry game) => Launch(Card(game));
     public event EventHandler<string>? LaunchFailed;
+    public event EventHandler<GameEntry>? Launched; // the launcher accepted the game (it may still take a while to appear)
     // "Continue playing": the most recently played game (Steam keeps the date), else the first one in the library.
     public GameEntry? LastPlayed() => InstalledGames().OrderByDescending(g => g.LastPlayed ?? DateTimeOffset.MinValue).FirstOrDefault();
     public bool HasFeatured => Featured.Count > 0;

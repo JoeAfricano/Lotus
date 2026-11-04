@@ -34,6 +34,8 @@ public sealed class GameSavesViewModel(SaveProtection protection, GameEntry game
     public int Keep => settings.Keep;
     public bool Supported => State != ProtectionState.Unsupported;
     public bool CanEnable => !Busy && !IsOn && FolderPath.Length > 0 && State is not (ProtectionState.Unsupported or ProtectionState.Attention);
+    // Picking the folder by hand works whenever Lotus did not find it (or the player wants another one).
+    public bool CanPick => !Busy && !Interrupted && State is not ProtectionState.Unsupported;
     public bool CanBackup => !Busy && IsOn && State is ProtectionState.Active or ProtectionState.Attention && !Interrupted;
     public bool Interrupted { get; private set; }
     public bool CloudSynced => (IsOn || settings.Root.Length > 0 ? settings.CloudSynced : found?.CloudSynced) == true;
@@ -55,7 +57,7 @@ public sealed class GameSavesViewModel(SaveProtection protection, GameEntry game
 
     private void Notify()
     {
-        foreach (var n in new[] { nameof(Status), nameof(Summary), nameof(CanEnable), nameof(CanBackup), nameof(IsOn), nameof(Auto), nameof(Keep), nameof(Supported), nameof(CloudSynced), nameof(FolderPath), nameof(Interrupted) })
+        foreach (var n in new[] { nameof(Status), nameof(Summary), nameof(CanEnable), nameof(CanPick), nameof(CanBackup), nameof(IsOn), nameof(Auto), nameof(Keep), nameof(Supported), nameof(CloudSynced), nameof(FolderPath), nameof(Interrupted) })
             OnPropertyChanged(n);
     }
 
