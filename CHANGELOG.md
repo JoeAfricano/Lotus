@@ -2,6 +2,15 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.0.4-alpha "Lotus" (04/11/2026)
+
+### Corrigido
+- **Saves do Palworld (e de muitos outros jogos da Steam) não eram encontrados.**
+  - Esses jogos guardam os saves fora da Steam (o Palworld usa `%LOCALAPPDATA%\Pal\Saved\SaveGames`) e só usam a Steam para sincronizar (o "Auto-Cloud").
+  - Agora o Lotus lê o índice da própria Steam (`remotecache.vdf`), que lista cada arquivo de save e de qual pasta do Windows ele vem, e encontra a pasta certa sozinho, para qualquer jogo que use esse recurso.
+  - Segurança: o Lotus nunca usa uma pasta genérica inteira (Documentos, AppData…), não aceita caminhos que saiam da pasta base e só considera pastas que existem e têm arquivos.
+  - A lista de jogos conhecidos e a escolha manual da pasta continuam funcionando como antes.
+
 ## 1.0.3-alpha "Lotus" (04/11/2026)
 
 ### Novo

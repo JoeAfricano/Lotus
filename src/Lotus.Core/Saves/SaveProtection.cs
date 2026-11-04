@@ -56,6 +56,9 @@ public sealed class SaveDiscovery(IKnownFolders folders)
         foreach (var rule in SaveCatalog.Rules.Where(r => r.Store == game.Store && r.Id == game.Id))
             if (Resolve(rule.Template, game) is { } path && Describe(path, "catalog", steamCloud) is { } c) list.Add(c);
         if (game.Store == GameStores.Steam)
+            foreach (var auto in SteamAutoCloudFolders(game))
+                if (Describe(auto, "steamauto", true) is { } c && list.All(x => !SamePath(x.Root, c.Root))) list.Add(c);
+        if (game.Store == GameStores.Steam)
             foreach (var remote in SteamCloudFolders(game.Id))
                 if (Describe(remote, "steamcloud", true) is { } c && list.All(x => !SamePath(x.Root, c.Root))) list.Add(c);
         return list.Count > 0 ? new(SaveFindStatus.Found, list) : new(SaveFindStatus.NotFound, []);
@@ -76,6 +79,78 @@ public sealed class SaveDiscovery(IKnownFolders folders)
             path = path.Replace(marker, value.TrimEnd('\\'));
         }
         return path;
+    }
+
+    // Steam Auto-Cloud: games that keep saves outside Steam (like Palworld in %LOCALAPPDATA%\Pal\Saved\SaveGames) are listed
+    // in <Steam>\userdata\<account>\<appid>\remotecache.vdf, file by file, with the Windows folder each path starts from.
+    // The save folder is the deepest folder all those files share. Only the player's folders are used, never a bare
+    // known folder (Documents itself, AppData itself…), and the folder must exist and hold files.
+    private static readonly Dictionary<string, string> SteamRoots = new()
+    {
+        ["1"] = "INSTALL", ["2"] = "DOCUMENTS", ["3"] = "LOCALAPPDATA", ["4"] = "APPDATA", ["9"] = "SAVEDGAMES", ["12"] = "LOCALLOW",
+    };
+    private IEnumerable<string> SteamAutoCloudFolders(GameEntry game)
+    {
+        if (!game.Id.All(char.IsAsciiDigit) || folders.SteamPath() is not { } steam) return [];
+        var userdata = Path.Combine(steam, "userdata");
+        var found = new List<string>();
+        try
+        {
+            if (!Directory.Exists(userdata)) return [];
+            foreach (var account in Directory.EnumerateDirectories(userdata).Where(d => Path.GetFileName(d).All(char.IsAsciiDigit)))
+            {
+                var cache = Path.Combine(account, game.Id, "remotecache.vdf");
+                if (!File.Exists(cache)) continue;
+                foreach (var (root, files) in ParseRemoteCache(File.ReadAllLines(cache)))
+                {
+                    if (!SteamRoots.TryGetValue(root, out var token)) continue;
+                    var baseDir = token == "INSTALL" ? game.InstallDir : folders.Get(token);
+                    if (string.IsNullOrEmpty(baseDir) || CommonFolder(files) is not { Length: > 0 } common) continue;
+                    var full = Path.GetFullPath(Path.Combine(baseDir, common.Replace('/', '\\')));
+                    var basePath = Path.GetFullPath(baseDir).TrimEnd('\\');
+                    if (!full.StartsWith(basePath + "\\", StringComparison.OrdinalIgnoreCase)) continue; // never outside, never the base itself
+                    if (found.All(f => !SamePath(f, full))) found.Add(full);
+                }
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException) { }
+        return found;
+    }
+
+    // remotecache.vdf: "path" { "root" "3" ... } blocks → file paths grouped by root.
+    public static IReadOnlyDictionary<string, List<string>> ParseRemoteCache(IEnumerable<string> lines)
+    {
+        var result = new Dictionary<string, List<string>>();
+        string? file = null; var depth = 0;
+        foreach (var raw in lines)
+        {
+            var line = raw.Trim();
+            if (line == "{") { depth++; continue; }
+            if (line == "}") { depth--; if (depth <= 1) file = null; continue; }
+            var parts = line.Split('"', StringSplitOptions.RemoveEmptyEntries).Where(p => p.Trim().Length > 0).ToArray();
+            if (depth == 1 && parts.Length == 1) file = parts[0];
+            else if (depth == 2 && file is not null && parts.Length == 2 && parts[0] == "root")
+            {
+                if (!result.TryGetValue(parts[1], out var list)) result[parts[1]] = list = [];
+                list.Add(file);
+            }
+        }
+        return result;
+    }
+
+    // Deepest folder shared by every file ("Pal/Saved/SaveGames/7656…/A/Level.sav" + ".../B/Level.sav" → "Pal/Saved/SaveGames/7656…").
+    public static string? CommonFolder(IReadOnlyList<string> files)
+    {
+        if (files.Count == 0) return null;
+        var split = files.Select(f => f.Replace('\\', '/').Split('/', StringSplitOptions.RemoveEmptyEntries)).ToList();
+        if (split.Any(s => s.Contains("..") || s.Length < 2)) return null; // a file right in the base folder: too broad to back up
+        var common = new List<string>();
+        for (var i = 0; i < split.Min(s => s.Length - 1); i++)
+        {
+            var part = split[0][i];
+            if (split.All(s => string.Equals(s[i], part, StringComparison.OrdinalIgnoreCase))) common.Add(part); else break;
+        }
+        return common.Count > 0 ? string.Join('/', common) : null;
     }
 
     // <Steam>\userdata\<account>\<appid>\remote, newest first (one per Steam account on this PC).
