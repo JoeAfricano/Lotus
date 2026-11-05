@@ -2662,8 +2662,8 @@ Your games and Windows are not changed.</value></data>
   <data name="GlPickUses" xml:space="preserve"><value>The draw uses the list filters below:</value></data>
   <data name="GtAnyKind" xml:space="preserve"><value>any kind of game</value></data>
   <data name="GlHintFiltered" xml:space="preserve"><value>{0} games from &quot;{1}&quot; with your filters.</value></data>
-  <data name="SetMinimizeForGames" xml:space="preserve"><value>Minimize when a game opens</value></data>
-  <data name="SetMinimizeForGamesHint" xml:space="preserve"><value>Lotus gets out of the way when a game opens and comes back by itself when it closes.</value></data>
+  <data name="SetMinimizeForGames" xml:space="preserve"><value>Go to the tray when a game opens</value></data>
+  <data name="SetMinimizeForGamesHint" xml:space="preserve"><value>Lotus gets out of the way and stays only in the tray (next to the clock) while you play, and comes back on its own when the game closes.</value></data>
   <data name="GlHintFilteredMore" xml:space="preserve"><value>{0} games from &quot;{1}&quot; with your filters, plus {2} popular games of that kind.</value></data>
   <data name="GmMore" xml:space="preserve"><value>More options</value></data>
   <data name="GmEdit" xml:space="preserve"><value>Edit name and cover…</value></data>

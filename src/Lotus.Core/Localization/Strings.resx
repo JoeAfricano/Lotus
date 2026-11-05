@@ -2662,8 +2662,8 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GlPickUses" xml:space="preserve"><value>O sorteio usa os filtros da lista abaixo:</value></data>
   <data name="GtAnyKind" xml:space="preserve"><value>qualquer tipo de jogo</value></data>
   <data name="GlHintFiltered" xml:space="preserve"><value>{0} jogos de &quot;{1}&quot; com os seus filtros.</value></data>
-  <data name="SetMinimizeForGames" xml:space="preserve"><value>Minimizar ao abrir um jogo</value></data>
-  <data name="SetMinimizeForGamesHint" xml:space="preserve"><value>O Lotus sai da frente quando o jogo abre e volta sozinho quando ele fecha.</value></data>
+  <data name="SetMinimizeForGames" xml:space="preserve"><value>Ir para a bandeja ao abrir um jogo</value></data>
+  <data name="SetMinimizeForGamesHint" xml:space="preserve"><value>O Lotus sai da frente e fica só na bandeja (ao lado do relógio) enquanto você joga, e volta sozinho quando o jogo fecha.</value></data>
   <data name="GlHintFilteredMore" xml:space="preserve"><value>{0} jogos de &quot;{1}&quot; com os seus filtros, e mais {2} jogos populares desse tipo.</value></data>
   <data name="GmMore" xml:space="preserve"><value>Mais opções</value></data>
   <data name="GmEdit" xml:space="preserve"><value>Editar nome e capa…</value></data>

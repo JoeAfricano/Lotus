@@ -159,7 +159,7 @@ Tudo na aba Ferramentas, em cartões. Abrir ou analisar nunca muda nada; cada a�
 - Com um jogo aberto, ou com o Lotus minimizado, ele entra no **modo eficiência** do Windows, baixa a própria prioridade e devolve a memória que não está usando (cerca de 20 MB minimizado).
 - Ao voltar para a janela, recarrega tudo.
 - Nunca reduz nada durante uma medição.
-- **Sai da frente:** quando um jogo abre, o Lotus minimiza sozinho e volta quando ele fecha (pode desligar em Configurações).
+- **Sai da frente:** quando um jogo abre, o Lotus vai para a bandeja (some da barra de tarefas) e volta sozinho quando o jogo fecha (pode desligar em Configurações).
 - **Prioridade ao jogo** (opcional, em Configurações): o jogo fica acima do normal e navegadores, launchers e apps de sincronização abaixo. Tudo volta como estava quando o jogo fecha; o Discord não é alterado.
 
 ## Privacidade e segurança

@@ -2,6 +2,14 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.1.1-alpha "Lotus" (04/11/2026)
+
+### Melhorado
+- **Ao abrir um jogo, o Lotus vai para a bandeja** (ícone ao lado do relógio) em vez de ficar minimizado na barra de tarefas, e **volta sozinho quando o jogo fecha**, do jeito que estava (maximizado continua maximizado).
+  - Só volta se foi o próprio Lotus que se escondeu: se você abrir o Lotus pela bandeja durante o jogo, ele não some de novo nem muda nada quando o jogo fecha.
+  - Se o jogo não chegar a abrir (launcher fechado, página da loja), o Lotus volta depois de alguns minutos.
+  - Se o ícone da bandeja não estiver disponível, ele apenas minimiza, para nunca ficar inacessível.
+  - A opção em Configurações passou a se chamar "Ir para a bandeja ao abrir um jogo" e continua podendo ser desligada.
 ## 1.1.0-alpha "Lotus" (04/11/2026)
 
 A aba **Ferramentas** foi reconstruída em volta de um motor de manutenção. Todas as ferramentas seguem o mesmo fluxo:
