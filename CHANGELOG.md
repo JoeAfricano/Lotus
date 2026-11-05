@@ -2,6 +2,64 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.1.0-alpha "Lotus" (04/11/2026)
+
+A aba **Ferramentas** foi reconstruída em volta de um motor de manutenção. Todas as ferramentas seguem o mesmo fluxo:
+1. detectar e analisar;
+2. classificar o risco (baixo, revisão ou avançado);
+3. recomendar;
+4. pedir confirmação;
+5. executar;
+6. conferir de novo;
+7. registrar e, quando possível, desfazer.
+
+Abrir ou analisar nunca muda nada.
+
+### Novo
+- **Check-up do PC:** cartão em destaque no topo da aba. Um clique roda todas as análises (só leitura) e mostra o resultado em ordem: o que pede atenção, as dicas e o que está em ordem. Cada linha leva à ferramenta certa. Não há nota inventada.
+- **Limpeza Inteligente** (substitui "Arquivos temporários"):
+  - **O que analisa:** temporários do usuário e do Windows, despejos de falha, relatórios de erro, miniaturas, Lixeira, caches do Chrome/Edge/Brave/Opera/Opera GX/Firefox/Discord, caches das páginas da Steam e da Epic, registros antigos de apps e launchers, e falhas de jogos.
+  - **O que mostra:** antes, o tamanho real e o risco de cada item; depois, o que saiu de fato, o que estava em uso e o que foi pulado.
+  - **O que nunca toca:** saves, mods, configurações, cookies, sessões, senhas e caches de shader.
+  - **Proteções:** caches de programas abertos são pulados; links não são seguidos; pastas do usuário e do sistema nunca são usadas inteiras. A Lixeira nunca vem marcada.
+- **Memória e Processos** (substitui "Liberar memória"):
+  - RAM e CPU reais de cada programa, com o local.
+  - Fechar é normal; "Encerrar à força" é avançado e tem aviso próprio.
+  - Lista "fechar antes de jogar", marcada com estrela.
+  - Windows, antitrapaças, jogos e o Lotus (com RTSS, Afterburner e PresentMon) nunca podem ser fechados.
+- **Arquivos e Armazenamento:**
+  - espaço por disco, arquivos grandes, pastas que mais ocupam, duplicados comparados pelo conteúdo inteiro (SHA-256) e downloads com mais de 90 dias;
+  - "Abrir local" no Explorer;
+  - remover só manda para a Lixeira e sempre deixa uma cópia de cada duplicado;
+  - arquivos do Windows e de programas ficam só para consulta.
+- **Inicialização do Windows:** nome, editor, assinatura digital, caminho e mecanismo de cada item. Desligar e religar usam o mesmo desfazer do Otimizar. Não há "impacto" inventado.
+- **Monitor na taxa certa:** mostra a taxa atual e a máxima do monitor. "Usar X Hz" e "Desfazer" usam o mesmo ajuste do Otimizar.
+- **Recursos do Windows para jogos:** Modo de Jogo, gravação em segundo plano, otimizações em janela e agendamento de GPU, com o estado, um conselho e o ajuste reversível de cada um.
+- **Por que meu jogo fechou?:**
+  - lê as falhas e travamentos de jogos registrados pelo Windows;
+  - cruza com o que aconteceu no mesmo minuto: driver de vídeo reiniciando, falta de memória, erro de hardware ou de disco;
+  - explica a causa provável e o que fazer, com o código técnico para pedir suporte.
+- **Windows em dia:** mostra se há reinício pendente do Windows Update e há quanto tempo o PC está ligado (com aviso sobre a Inicialização Rápida). Cria ponto de restauração do Windows; ele só aparece como criado se a lista do Windows realmente aumentar.
+- **Saúde do Disco:**
+  - modelo, tipo e conexão, capacidade, espaço e a saúde informada pelo Windows;
+  - temperatura, desgaste, horas e erros quando o Windows libera, ou "Indisponível";
+  - verificação do Windows `chkdsk /scan`, somente leitura;
+  - nunca desfragmenta SSD.
+- **Sistema** (no cartão Drivers):
+  - processador, vídeo, RAM, placa-mãe, BIOS e Windows;
+  - dispositivos com erro no Gerenciador de Dispositivos;
+  - erros relevantes do Windows na última semana;
+  - SFC e DISM com confirmação.
+- **Desinstalar programas:** ordenar por nome, tamanho, data ou editor.
+- **Internet e DNS:** histórico dos últimos testes, só com números medidos.
+- **Overlays e travadas:** RAM e CPU reais de cada item. Launchers aparecem como informativos e RTSS, Afterburner e PresentMon como compatíveis.
+
+### Melhorado
+- **Início:** o aviso "Antes de começar" virou uma nota discreta no fim da tela, e a faixa "Seus jogos" usa a largura toda.
+
+### Corrigido
+- **Entrada "Iniciar com o Windows" do Lotus:** podia apontar para outra cópia do programa. Agora o Lotus instalado corrige o caminho sozinho, e builds de desenvolvimento nunca gravam essa entrada.
+
 ## 1.0.4-alpha "Lotus" (04/11/2026)
 
 ### Corrigido

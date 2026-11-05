@@ -273,6 +273,15 @@ public sealed class PowerProfilesViewModel : ObservableObject
         BuildFeatureRows();
     }
 
+    // For the Tools screen: the same reversible actions and their state (no second implementation).
+    public bool HasFeatureAction(string id) => featureEngines.ContainsKey(id);
+    public bool IsFeatureApplied(string id) => featureApplied.GetValueOrDefault(id) is not null;
+    public async Task RefreshFeaturesAsync()
+    {
+        foreach (var (id, featureEngine) in featureEngines) featureApplied[id] = LastApplied(await featureEngine.RecoverAsync());
+    }
+    public string FeatureMessage => FeatureStatus;
+
     // Real, reversible feature actions. The UI asks for explicit confirmation before calling these.
     public Task ApplyFeatureAsync(string id, bool confirmed) => FeatureRun(id, async engine =>
     {

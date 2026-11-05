@@ -60,6 +60,18 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
     public ObservableCollection<AppRow> Apps { get; } = [];
     // "Overlays e travadas" (read-only check; set by the window).
     public Games.OverlayCheckViewModel? Overlays { get; set; }
+    // Maintenance engine pieces (set by the window): Lotus Clean and the shared history of operations.
+    public Maintenance.CleanViewModel? Clean { get; set; }
+    public Maintenance.ProcessesViewModel? Processes { get; set; }
+    public Maintenance.StorageViewModel? Storage { get; set; }
+    public Maintenance.StartupToolViewModel? Startup { get; set; }
+    public Maintenance.DiskToolViewModel? DiskTool { get; set; }
+    public Maintenance.SystemToolViewModel? SystemTool { get; set; }
+    public Maintenance.GamingSetupViewModel? Gaming { get; set; }
+    public Maintenance.WindowsUpkeepViewModel? Upkeep { get; set; }
+    public Maintenance.GameCrashViewModel? Crashes { get; set; }
+    public Maintenance.CheckupViewModel? Checkup { get; set; }
+    public Maintenance.IMaintenanceJournal Journal { get; set; } = new Maintenance.MemoryMaintenanceJournal();
     public ObservableCollection<InfoRow> NetRows { get; } = [];
     public ObservableCollection<InfoRow> DiskRows { get; } = [];
     public string MemoryStatus { get; private set; } = "";
@@ -90,8 +102,8 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
             var list = await Task.Run(apps.List);
             Apps.Clear(); foreach (var a in list.Where(x => x.HasWindow).Take(8)) Apps.Add(new(a, Size(a.Bytes)));
             MemoryStatus = Apps.Count == 0 ? Text["ToolMemNone"] : Text["ToolMemPick"];
-            tempScan = await Task.Run(temp.Scan); HasTemp = tempScan.Items > 0;
-            TempStatus = HasTemp ? Text.Format("ToolTempFound", tempScan.Items, Size(tempScan.Bytes)) : Text["ToolTempNone"];
+            tempScan = await Task.Run(temp.Scan); HasTemp = tempScan.Items > 0; // still used by the guided setup and Home readiness
+            TempStatus = HasTemp && tempScan is { } ts ? Text.Format("ToolTempFound", ts.Items, Size(ts.Bytes)) : Text["ToolTempNone"];
             var (d, v) = await Task.Run(disks.Read);
             DiskRows.Clear(); DiskTip = "";
             foreach (var x in d) DiskRows.Add(new(x.Name, Text.Format("ToolDiskLine", Text["ToolMedia" + x.Media], Text["ToolHealth" + x.Health], Size(x.SizeBytes)), x.Health != "Healthy"));
@@ -157,7 +169,24 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
                     s.AverageMs is null ? Text["ToolNetNoReply"] : Text.Format("ToolNetLine", s.AverageMs, s.JitterMs ?? 0, s.LossPercent), s.LossPercent > 0 || s.AverageMs is null or > 80));
             NetStatus = Verdict(stats);
             NetTask.Finish(Text["ToolTestDone"]);
+            // Simple history: the measured numbers only (internet targets averaged), never an estimate.
+            var internet = stats.Where(s => s.Target != "gateway").ToList();
+            var replied = internet.Where(s => s.AverageMs is not null).ToList();
+            var line = replied.Count == 0 ? Text["ToolNetOffline"]
+                : Text.Format("ToolNetLine", replied.Average(s => s.AverageMs!.Value), replied.Average(s => s.JitterMs ?? 0), internet.Max(s => s.LossPercent));
+            Journal.Add(new(DateTimeOffset.Now, "network", "test", line, replied.Count > 0 && internet.All(s => s.LossPercent == 0)));
+            LoadNetHistory();
         });
+    }
+
+    public ObservableCollection<InfoRow> NetHistory { get; } = [];
+    public bool HasNetHistory => NetHistory.Count > 0;
+    public void LoadNetHistory()
+    {
+        NetHistory.Clear();
+        foreach (var e in Journal.Recent(200).Where(e => e.Tool == "network").Take(8))
+            NetHistory.Add(new(e.At.LocalDateTime.ToString("g", Culture), e.Summary, !e.Success));
+        OnPropertyChanged(nameof(HasNetHistory));
     }
 
     // ---- Outdated drivers: NVIDIA's service for the graphics card, Windows Update for the rest ----
@@ -263,13 +292,13 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
     public async Task ApplyDnsAsync()
     {
         if (dns is null || RecommendedDns is not { } id) return;
-        await Run(async () => { DnsStatus = Text[await dns.ApplyAsync(id) ? "ToolDnsApplied" : "ToolDnsFailed"]; RecommendedDns = null; });
+        await Run(async () => { var ok = await dns.ApplyAsync(id); DnsStatus = Text[ok ? "ToolDnsApplied" : "ToolDnsFailed"]; RecommendedDns = null; Journal.Add(new(DateTimeOffset.Now, "dns", "apply", id, ok)); });
         RefreshDnsKeepStatus();
     }
     public async Task RestoreDnsAsync()
     {
         if (dns is null) return;
-        await Run(async () => DnsStatus = Text[await dns.RestoreAsync() ? "ToolDnsRestored" : "ToolDnsFailed"]);
+        await Run(async () => { var ok = await dns.RestoreAsync(); DnsStatus = Text[ok ? "ToolDnsRestored" : "ToolDnsFailed"]; Journal.Add(new(DateTimeOffset.Now, "dns", "restore", "", ok)); });
         RefreshDnsKeepStatus();
     }
     private void RefreshDnsKeepStatus() { var keep = DnsStatus; RefreshDns(); DnsStatus = keep; NotifyDns(); }

@@ -44,6 +44,21 @@ public sealed class UninstallerTests : IDisposable
         public string? IconFor(InstalledApp app) => null;
     }
 
+    [Fact] public async Task ProgramsSortByNameSizeDateAndPublisherWithUnknownsLast()
+    {
+        var fake = new Fake();
+        fake.Installed = [new("a", "Zeta", "Beta Co", "1", 5L << 20, new DateTime(2025, 1, 1), null, "u", true), new("b", "Alpha", null, null, null, null, null, "u", true),
+            new("c", "Mid", "Acme", "1", 900L << 20, new DateTime(2026, 6, 1), null, "u", true)];
+        var vm = new UninstallerViewModel(fake, new TextCatalog(), ex => throw ex);
+        await vm.LoadAsync();
+        Assert.Equal(["Alpha", "Mid", "Zeta"], vm.Apps.Select(a => a.App.Name));
+        vm.SortIndex = 1; Assert.Equal(["Mid", "Zeta", "Alpha"], vm.Apps.Select(a => a.App.Name));   // size unknown: last
+        vm.SortIndex = 2; Assert.Equal(["Mid", "Zeta", "Alpha"], vm.Apps.Select(a => a.App.Name));
+        vm.SortIndex = 3; Assert.Equal(["Mid", "Zeta", "Alpha"], vm.Apps.Select(a => a.App.Name));   // Acme, Beta Co, no publisher
+        vm.Query = "a"; Assert.All(vm.Apps, a => Assert.True(a.App.Name.Contains('a', StringComparison.OrdinalIgnoreCase) || (a.App.Publisher ?? "").Contains('a', StringComparison.OrdinalIgnoreCase)));
+        Assert.Equal(4, vm.Sorts.Count);
+    }
+
     [Fact] public async Task UninstallThenReviewLeftoversAndRecycleOnlyChecked()
     {
         var fake = new Fake(); var vm = new UninstallerViewModel(fake, new TextCatalog(), ex => throw ex);

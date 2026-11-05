@@ -73,3 +73,11 @@ O pedido de exportação não autoriza aplicar otimizações ao Windows nem desc
 ## Estado em 31/10/2026 (Claude Code)
 
 - **1.0.0-alpha** (título "Lotus 1.0 Alpha"): Google Drive funcionando (projeto Google Cloud `lotus-513308` na conta contato.bentojr@gmail.com, só `drive.file`, publicado em produção; credencial em `secrets\google-oauth.json`), envio ao Drive manual/semanal/mensal, atualizações pelo GitHub, Backup de saves. Detalhes em `docs/LOTUS_GOOGLE_DRIVE.md`.
+
+## Estado em 04/11/2026 (Claude Code)
+
+- **1.0.4-alpha** publicada (saves de jogos Steam Auto-Cloud como Palworld, via `remotecache.vdf`).
+- Evolução da aba **Ferramentas** implementada e NÃO commitada: motor `src/Lotus.Core/Maintenance` (Limpeza Inteligente, Memória e Processos, Arquivos e Armazenamento, Inicialização, Saúde do Disco, Sistema), ordenação no Desinstalar, histórico de rede, overlays com RAM/CPU. Relatório em `docs/LOTUS_TOOLS.md`. 514 testes (Debug/Release).
+- A instância `--dev-instance` não grava mais "Iniciar com o Windows". A entrada Run "Lotus" do PC ainda aponta para o build Debug (corrigir só com aprovação).
+- Limpeza real, fechar processos, mover para a Lixeira, mudar inicialização, chkdsk/SFC/DISM exigem aprovação do usuário.
+- Ferramentas também têm Check-up do PC, Monitor na taxa certa, Recursos para jogos, Por que meu jogo fechou?, Windows em dia (reinício/ponto de restauração). 524 testes. Nota 'Antes de começar' movida para o fim do Início. Nada commitado.

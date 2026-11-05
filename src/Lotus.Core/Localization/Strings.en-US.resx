@@ -960,7 +960,7 @@ Current conditions: {1}</value></data>
   <data name="toolsTitle" xml:space="preserve"><value>Tools</value></data>
   <data name="toolsDescription" xml:space="preserve"><value>Quick, safe helpers for your gaming PC.</value></data>
   <data name="toolsNext" xml:space="preserve"><value>Memory, temp files, connection, disk and driver.</value></data>
-  <data name="ToolIntro" xml:space="preserve"><value>Nothing changes without your confirmation. Apps close normally (like clicking X) and files go to the Recycle Bin.</value></data>
+  <data name="ToolIntro" xml:space="preserve"><value>Nothing changes without your confirmation. **Opening or analysing changes nothing**; each item shows its risk (low, review or advanced). Apps close **normally**, like clicking X; personal files only go to the **Recycle Bin**, and caches and temporary files that programs rebuild are removed to really free space.</value></data>
   <data name="ToolMemTitle" xml:space="preserve"><value>Free memory for gaming</value></data>
   <data name="ToolMemWhat" xml:space="preserve"><value>Open programs using the most RAM. Check the ones you can close before playing.</value></data>
   <data name="ToolMemPick" xml:space="preserve"><value>Check what to close. Only programs with a window are listed; they close normally.</value></data>
@@ -2691,4 +2691,353 @@ Your games and Windows are not changed.</value></data>
   <data name="AgRemoveBody" xml:space="preserve"><value>The game stays installed on the PC; it only leaves My Games. Your save backups and diary are not deleted. To bring it back, use Rescan or add it again.</value></data>
   <data name="AgRemove" xml:space="preserve"><value>Remove</value></data>
   <data name="GamesAlreadyThere" xml:space="preserve"><value>{0} is already in My Games.</value></data>
+  <data name="ClTitle" xml:space="preserve"><value>Smart Cleanup</value></data>
+  <data name="ClWhat" xml:space="preserve"><value>Finds temporary files, caches that programs rebuild on their own, old logs and crash reports. **Analysing changes nothing**: you see the real size of each item and choose what to clean.</value></data>
+  <data name="ClTileHint" xml:space="preserve"><value>Analyse the PC to see how much space can be freed safely.</value></data>
+  <data name="ClAnalyze" xml:space="preserve"><value>Analyse PC</value></data>
+  <data name="ClAnalyzing" xml:space="preserve"><value>Analysing… nothing is changed at this step.</value></data>
+  <data name="ClAnalyzed" xml:space="preserve"><value>Analysis complete</value></data>
+  <data name="ClCancelled" xml:space="preserve"><value>Cancelled.</value></data>
+  <data name="ClCleaning" xml:space="preserve"><value>Cleaning the selected items…</value></data>
+  <data name="ClBlocked" xml:space="preserve"><value>{0} files, {1}. Close {2} to clean this item.</value></data>
+  <data name="ClDetail" xml:space="preserve"><value>{0} files, {1} · {2}</value></data>
+  <data name="ClCatWindows" xml:space="preserve"><value>Windows</value></data>
+  <data name="ClCatBrowsers" xml:space="preserve"><value>Browsers</value></data>
+  <data name="ClCatApps" xml:space="preserve"><value>Apps</value></data>
+  <data name="ClCatGames" xml:space="preserve"><value>Games and launchers</value></data>
+  <data name="RiskLow" xml:space="preserve"><value>Low risk</value></data>
+  <data name="RiskReview" xml:space="preserve"><value>Needs review</value></data>
+  <data name="RiskAdvanced" xml:space="preserve"><value>Advanced</value></data>
+  <data name="ClFound" xml:space="preserve"><value>{0} can be freed ({1} files).</value></data>
+  <data name="ClNothing" xml:space="preserve"><value>Nothing to clean right now. Your PC is already tidy.</value></data>
+  <data name="ClFreed" xml:space="preserve"><value>Freed {0} ({1} files removed).</value></data>
+  <data name="ClInUse" xml:space="preserve"><value>{0} were in use and were left alone.</value></data>
+  <data name="ClFailedFiles" xml:space="preserve"><value>{0} need administrator rights and were skipped.</value></data>
+  <data name="ClSkipped" xml:space="preserve"><value>{0} items were not cleaned because the program was open.</value></data>
+  <data name="ClDoneShort" xml:space="preserve"><value>{0} freed</value></data>
+  <data name="ClSelected" xml:space="preserve"><value>{0} items selected · {1}</value></data>
+  <data name="ClClean" xml:space="preserve"><value>Clean selected</value></data>
+  <data name="ClPickSafe" xml:space="preserve"><value>Select recommended</value></data>
+  <data name="ClPickNone" xml:space="preserve"><value>Clear selection</value></data>
+  <data name="ClNever" xml:space="preserve"><value>**Never deleted:** saves, mods, game settings, sync data, browser cookies, sessions and passwords, and shader caches. Files in use or from open programs are left alone.</value></data>
+  <data name="ClConfirmTitle" xml:space="preserve"><value>Clean the selected items?</value></data>
+  <data name="ClConfirmBody" xml:space="preserve"><value>Up to {0} will be freed from: {1}. Programs rebuild these files on their own when they need them.</value></data>
+  <data name="ClConfirmBin" xml:space="preserve"><value>**Warning:** emptying the Recycle Bin cannot be undone.</value></data>
+  <data name="ClWinTemp" xml:space="preserve"><value>User temporary files</value></data>
+  <data name="ClWinSysTemp" xml:space="preserve"><value>Windows temporary files</value></data>
+  <data name="ClWinCrashDumps" xml:space="preserve"><value>Program crash dumps</value></data>
+  <data name="ClWinReports" xml:space="preserve"><value>Windows error reports</value></data>
+  <data name="ClWinThumbs" xml:space="preserve"><value>Explorer thumbnail cache</value></data>
+  <data name="ClChrome" xml:space="preserve"><value>Google Chrome cache</value></data>
+  <data name="ClEdge" xml:space="preserve"><value>Microsoft Edge cache</value></data>
+  <data name="ClBrave" xml:space="preserve"><value>Brave cache</value></data>
+  <data name="ClOpera" xml:space="preserve"><value>Opera cache</value></data>
+  <data name="ClOperaGx" xml:space="preserve"><value>Opera GX cache</value></data>
+  <data name="ClFirefox" xml:space="preserve"><value>Firefox cache</value></data>
+  <data name="ClDiscord" xml:space="preserve"><value>Discord cache</value></data>
+  <data name="ClAppLogs" xml:space="preserve"><value>Old app logs</value></data>
+  <data name="ClSteamWeb" xml:space="preserve"><value>Steam web page cache</value></data>
+  <data name="ClEpicWeb" xml:space="preserve"><value>Epic Games web page cache</value></data>
+  <data name="ClLauncherLogs" xml:space="preserve"><value>Old launcher logs</value></data>
+  <data name="ClGameCrashes" xml:space="preserve"><value>Game crash reports</value></data>
+  <data name="ClRecycleBin" xml:space="preserve"><value>Recycle Bin</value></data>
+  <data name="PrTitle" xml:space="preserve"><value>Memory and Processes</value></data>
+  <data name="PrWhat" xml:space="preserve"><value>Shows how much **memory (RAM)** and **processor (CPU)** each open program is using right now, and where it is installed. Closing only happens when you confirm. Lotus does not force-&quot;clean&quot; memory: that would make the PC slower.</value></data>
+  <data name="PrTileHint" xml:space="preserve"><value>See which programs are heavy right now.</value></data>
+  <data name="PrRefresh" xml:space="preserve"><value>Show programs</value></data>
+  <data name="PrReading" xml:space="preserve"><value>Measuring for about a second…</value></data>
+  <data name="PrRead" xml:space="preserve"><value>Reading complete</value></data>
+  <data name="PrPick" xml:space="preserve"><value>Tick the programs you want to close. The star adds a program to your &quot;close before playing&quot; list.</value></data>
+  <data name="PrSummary" xml:space="preserve"><value>{0} in use in total. The heaviest one you can close: {1} ({2}).</value></data>
+  <data name="PrSummaryNone" xml:space="preserve"><value>{0} in use in total. No heavy program that can be closed.</value></data>
+  <data name="PrShowAll" xml:space="preserve"><value>Also show light programs</value></data>
+  <data name="PrColName" xml:space="preserve"><value>Program and location</value></data>
+  <data name="PrKindNormal" xml:space="preserve"><value>Can close</value></data>
+  <data name="PrKindSystem" xml:space="preserve"><value>Windows</value></data>
+  <data name="PrKindAntiCheat" xml:space="preserve"><value>Anti-cheat</value></data>
+  <data name="PrKindGame" xml:space="preserve"><value>Game</value></data>
+  <data name="PrKindLotus" xml:space="preserve"><value>Lotus and tools</value></data>
+  <data name="PrListTip" xml:space="preserve"><value>Close before playing (your list)</value></data>
+  <data name="PrClose" xml:space="preserve"><value>Close selected</value></data>
+  <data name="PrPickList" xml:space="preserve"><value>Select my list</value></data>
+  <data name="PrForce" xml:space="preserve"><value>Force end…</value></data>
+  <data name="PrListEmpty" xml:space="preserve"><value>None of the programs on your list is open now. Use the star next to a program to add it to the list.</value></data>
+  <data name="PrNoneChosen" xml:space="preserve"><value>Tick at least one program that can be closed.</value></data>
+  <data name="PrConfirmTitle" xml:space="preserve"><value>Close these programs?</value></data>
+  <data name="PrConfirmBody" xml:space="preserve"><value>I will ask them to close normally, like clicking X: {0}. If any has unsaved work, it will ask you itself.</value></data>
+  <data name="PrForceTitle" xml:space="preserve"><value>Force end? (advanced)</value></data>
+  <data name="PrForceBody" xml:space="preserve"><value>**Unsaved work will be lost.** Only use it for frozen programs or ones that stay in the background: {0}. Windows, anti-cheats, games and Lotus are never ended.</value></data>
+  <data name="PrForceGo" xml:space="preserve"><value>End</value></data>
+  <data name="PrClosing" xml:space="preserve"><value>Closing…</value></data>
+  <data name="PrNothing" xml:space="preserve"><value>No program could be closed (they may have no window; use Force end if you are sure).</value></data>
+  <data name="PrClosed" xml:space="preserve"><value>Done. Memory in use went down by {0}.</value></data>
+  <data name="PrClosedSome" xml:space="preserve"><value>Memory in use went down by {0}. Still open: {1} (they may be asking whether to save).</value></data>
+  <data name="PrDone" xml:space="preserve"><value>{0} freed</value></data>
+  <data name="PrNever" xml:space="preserve"><value>**Protected:** Windows processes, anti-cheats (closing them would break online games), open games and Lotus with RTSS, Afterburner and PresentMon. Memory shown is measured again after closing, never estimated.</value></data>
+  <data name="StTitle" xml:space="preserve"><value>Files and Storage</value></data>
+  <data name="StWhat" xml:space="preserve"><value>Finds **large files**, the **folders that take the most space**, **duplicate files** (compared by their whole content, never by name alone) and **old downloads**. Analysing changes nothing; whatever you choose goes to the **Recycle Bin**.</value></data>
+  <data name="StTileHint" xml:space="preserve"><value>See each drive&apos;s space and what takes the most.</value></data>
+  <data name="StDrive" xml:space="preserve"><value>{0} {1}: {2} free of {3} ({4:0}% used)</value></data>
+  <data name="StScope" xml:space="preserve"><value>Where to analyse</value></data>
+  <data name="StScopeUser" xml:space="preserve"><value>My user folder ({0})</value></data>
+  <data name="StScopeDownloads" xml:space="preserve"><value>Downloads ({0})</value></data>
+  <data name="StScopeDrive" xml:space="preserve"><value>Whole drive {0}</value></data>
+  <data name="StSpaceOk" xml:space="preserve"><value>{0} drives with enough space.</value></data>
+  <data name="StSpaceLow" xml:space="preserve"><value>Low space on drive {0}: only {1} free.</value></data>
+  <data name="StScan" xml:space="preserve"><value>Analyse</value></data>
+  <data name="StScanning" xml:space="preserve"><value>Analysing… large files can take a while to compare. Nothing is changed.</value></data>
+  <data name="StFound" xml:space="preserve"><value>{0} in {1} files. {2} large files; duplicates take {3} extra.</value></data>
+  <data name="StSkipped" xml:space="preserve"><value>{0} items could not be read (no permission) and were skipped.</value></data>
+  <data name="StDone" xml:space="preserve"><value>Analysis complete</value></data>
+  <data name="StViewLarge" xml:space="preserve"><value>Large files (100 MB or more)</value></data>
+  <data name="StViewFolders" xml:space="preserve"><value>Folders that take the most space</value></data>
+  <data name="StViewDups" xml:space="preserve"><value>Duplicate files</value></data>
+  <data name="StViewDownloads" xml:space="preserve"><value>Downloads older than 90 days</value></data>
+  <data name="StViewEmpty" xml:space="preserve"><value>Nothing found in this list.</value></data>
+  <data name="StFolderLine" xml:space="preserve"><value>{0} · {1} files</value></data>
+  <data name="StDupGroup" xml:space="preserve"><value>Group {0}: {1} copies of {2} ({3} extra)</value></data>
+  <data name="StReveal" xml:space="preserve"><value>Open location</value></data>
+  <data name="StRecycle" xml:space="preserve"><value>Move selected to the Recycle Bin</value></data>
+  <data name="StNoneChosen" xml:space="preserve"><value>Tick at least one file. Folders and Windows, program and app-data files can only be opened from here, not removed.</value></data>
+  <data name="StKeepOne" xml:space="preserve"><value>Leave at least one copy of each duplicate group unticked. Lotus never removes every copy.</value></data>
+  <data name="StConfirmTitle" xml:space="preserve"><value>Move to the Recycle Bin?</value></data>
+  <data name="StConfirmBody" xml:space="preserve"><value>{0} files ({1}) will go to the Recycle Bin: {2}. You can restore them from there until you empty it.</value></data>
+  <data name="StAndMore" xml:space="preserve"><value> and {0} more</value></data>
+  <data name="StRecycling" xml:space="preserve"><value>Moving to the Recycle Bin…</value></data>
+  <data name="StRecycled" xml:space="preserve"><value>{0} files ({1}) went to the Recycle Bin.</value></data>
+  <data name="StRecycleFailed" xml:space="preserve"><value>{0} were not moved (in use, changed or protected).</value></data>
+  <data name="StRecycledShort" xml:space="preserve"><value>{0} in the Recycle Bin</value></data>
+  <data name="StNever" xml:space="preserve"><value>**Nothing is deleted on its own.** Windows, program and app-data files only show up so you know what takes space. Shortcuts and links are not followed.</value></data>
+  <data name="StLocalDisk" xml:space="preserve"><value>Local disk</value></data>
+  <data name="SuTitle" xml:space="preserve"><value>Windows Startup</value></data>
+  <data name="SuWhat" xml:space="preserve"><value>What opens with Windows: **name, publisher, digital signature, path and where it is registered**. Turning one off deletes nothing; you can turn it back on whenever you like. Items for all users need administrator rights and are read-only here.</value></data>
+  <data name="SuTileHint" xml:space="preserve"><value>See what opens with Windows.</value></data>
+  <data name="SuRead" xml:space="preserve"><value>List updated</value></data>
+  <data name="SuSummary" xml:space="preserve"><value>{0} startup items: {1} on, {2} off.</value></data>
+  <data name="SuErrors" xml:space="preserve"><value>{0} places could not be read.</value></data>
+  <data name="SuDetail" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="SuNoPublisher" xml:space="preserve"><value>Unknown publisher</value></data>
+  <data name="SuMechFolder" xml:space="preserve"><value>Startup folder</value></data>
+  <data name="SuMechRunUser" xml:space="preserve"><value>Registry (this user)</value></data>
+  <data name="SuMechRunAll" xml:space="preserve"><value>Registry (all users)</value></data>
+  <data name="SuSigValid" xml:space="preserve"><value>Valid digital signature</value></data>
+  <data name="SuSigUnsigned" xml:space="preserve"><value>No embedded digital signature</value></data>
+  <data name="SuSigInvalid" xml:space="preserve"><value>Invalid or untrusted digital signature</value></data>
+  <data name="SuSigUnknown" xml:space="preserve"><value>Signature not checked (file not found or shortcut)</value></data>
+  <data name="SuConfirmOffTitle" xml:space="preserve"><value>Turn off {0} at startup?</value></data>
+  <data name="SuConfirmOffBody" xml:space="preserve"><value>The program stays installed and working; it just stops opening by itself with Windows. Lotus keeps the previous state and you can turn it back on here or in Task Manager.</value></data>
+  <data name="SuConfirmOnTitle" xml:space="preserve"><value>Turn on {0} at startup?</value></data>
+  <data name="SuConfirmOnBody" xml:space="preserve"><value>The program opens with Windows again, as it did before.</value></data>
+  <data name="SuEnabledShort" xml:space="preserve"><value>Turned back on</value></data>
+  <data name="SuDisabledShort" xml:space="preserve"><value>Turned off at startup</value></data>
+  <data name="SuNever" xml:space="preserve"><value>**No made-up numbers:** Lotus does not show an estimated &quot;impact&quot;. Items you do not recognise are worth a search before turning off; nothing here is deleted.</value></data>
+  <data name="UninSort" xml:space="preserve"><value>Sort</value></data>
+  <data name="UninSortName" xml:space="preserve"><value>Sort by name</value></data>
+  <data name="UninSortSize" xml:space="preserve"><value>Biggest first</value></data>
+  <data name="UninSortDate" xml:space="preserve"><value>Recently installed</value></data>
+  <data name="UninSortPublisher" xml:space="preserve"><value>By publisher</value></data>
+  <data name="ToolNetHistory" xml:space="preserve"><value>Recent tests</value></data>
+  <data name="DkTitle" xml:space="preserve"><value>Disk Health</value></data>
+  <data name="DkWhat" xml:space="preserve"><value>Model, type, capacity, free space and the health **Windows itself** reports (SMART). Temperature, wear and errors show when Windows provides them; anything unavailable is shown as such, **never estimated**. Lotus never defragments an SSD.</value></data>
+  <data name="DkTileHint" xml:space="preserve"><value>See each drive&apos;s health and space.</value></data>
+  <data name="DkUnavailable" xml:space="preserve"><value>Unavailable</value></data>
+  <data name="DkType" xml:space="preserve"><value>Type and connection</value></data>
+  <data name="DkCapacity" xml:space="preserve"><value>Capacity</value></data>
+  <data name="DkHealth" xml:space="preserve"><value>Health (Windows)</value></data>
+  <data name="DkTemp" xml:space="preserve"><value>Temperature</value></data>
+  <data name="DkWear" xml:space="preserve"><value>Wear</value></data>
+  <data name="DkWearValue" xml:space="preserve"><value>{0}% of its life used</value></data>
+  <data name="DkHours" xml:space="preserve"><value>Power-on time</value></data>
+  <data name="DkHoursValue" xml:space="preserve"><value>{0} hours</value></data>
+  <data name="DkErrors" xml:space="preserve"><value>Read/write errors</value></data>
+  <data name="DkErrorsValue" xml:space="preserve"><value>{0} read, {1} write</value></data>
+  <data name="DkVolume" xml:space="preserve"><value>Drive {0}</value></data>
+  <data name="DkLine" xml:space="preserve"><value>{0} · {1} · {2}</value></data>
+  <data name="DkNone" xml:space="preserve"><value>Windows reported no drives right now.</value></data>
+  <data name="DkAllOk" xml:space="preserve"><value>{0} drives with no Windows alerts.</value></data>
+  <data name="DkAttention" xml:space="preserve"><value>{0} drives need attention.</value></data>
+  <data name="DkNeedsAdmin" xml:space="preserve"><value>Temperature and wear only show when Windows provides them (on many PCs, only as administrator).</value></data>
+  <data name="DkRead" xml:space="preserve"><value>Reading complete</value></data>
+  <data name="DkScanTitle" xml:space="preserve"><value>Check drive {0}?</value></data>
+  <data name="DkScanBody" xml:space="preserve"><value>Lotus opens Windows&apos; own check (**chkdsk /scan**) in a visible window. It only reads and reports problems; **it fixes nothing and does not restart the PC**. Windows will ask for administrator permission.</value></data>
+  <data name="DkScanGo" xml:space="preserve"><value>Open check</value></data>
+  <data name="DkScanStarted" xml:space="preserve"><value>Check of drive {0} opened in a Windows window.</value></data>
+  <data name="DkScanDeclined" xml:space="preserve"><value>The check of drive {0} was not opened (administrator permission declined).</value></data>
+  <data name="DkNever" xml:space="preserve"><value>**No risk:** nothing here writes to the drive. The check is Windows&apos; own, read-only. Defragmenting an SSD does not help and wears it, so Lotus does not do it.</value></data>
+  <data name="SyTitle" xml:space="preserve"><value>System</value></data>
+  <data name="SyWhat" xml:space="preserve"><value>PC parts, **devices with problems** in Device Manager and **recent Windows errors** that often explain freezes and crashes (graphics driver resets, unexpected shutdowns, disk or hardware errors).</value></data>
+  <data name="SyLoad" xml:space="preserve"><value>Show system</value></data>
+  <data name="SyRead" xml:space="preserve"><value>Reading complete</value></data>
+  <data name="SyHwCpu" xml:space="preserve"><value>Processor</value></data>
+  <data name="SyHwGpu" xml:space="preserve"><value>Graphics card</value></data>
+  <data name="SyHwRam" xml:space="preserve"><value>Memory (RAM)</value></data>
+  <data name="SyHwBoard" xml:space="preserve"><value>Motherboard</value></data>
+  <data name="SyHwBios" xml:space="preserve"><value>BIOS</value></data>
+  <data name="SyHwOs" xml:space="preserve"><value>Windows</value></data>
+  <data name="SyDevicesTitle" xml:space="preserve"><value>Devices with problems</value></data>
+  <data name="SyEventsTitle" xml:space="preserve"><value>Windows errors in the last 7 days</value></data>
+  <data name="SyEventLine" xml:space="preserve"><value>{0}x · last on {1} · {2}</value></data>
+  <data name="SyAllDevicesOk" xml:space="preserve"><value>No devices with problems.</value></data>
+  <data name="SyDevicesBad" xml:space="preserve"><value>{0} devices with problems.</value></data>
+  <data name="SyNoEvents" xml:space="preserve"><value>No relevant Windows errors in the last week.</value></data>
+  <data name="SyEvents" xml:space="preserve"><value>{0} kinds of relevant errors in the last week.</value></data>
+  <data name="SyCode1" xml:space="preserve"><value>Code {0}: device has no driver set up.</value></data>
+  <data name="SyCode10" xml:space="preserve"><value>Code {0}: the device cannot start.</value></data>
+  <data name="SyCode18" xml:space="preserve"><value>Code {0}: the driver needs to be reinstalled.</value></data>
+  <data name="SyCode22" xml:space="preserve"><value>Code {0}: device is disabled.</value></data>
+  <data name="SyCode28" xml:space="preserve"><value>Code {0}: driver not installed.</value></data>
+  <data name="SyCode31" xml:space="preserve"><value>Code {0}: Windows cannot load the driver.</value></data>
+  <data name="SyCode39" xml:space="preserve"><value>Code {0}: driver corrupt or missing.</value></data>
+  <data name="SyCode43" xml:space="preserve"><value>Code {0}: Windows stopped the device after an error.</value></data>
+  <data name="SyCode45" xml:space="preserve"><value>Code {0}: device not connected.</value></data>
+  <data name="SyCodeOther" xml:space="preserve"><value>Code {0} in Device Manager.</value></data>
+  <data name="SySfc" xml:space="preserve"><value>Check Windows files (SFC)</value></data>
+  <data name="SyDism" xml:space="preserve"><value>Repair the Windows image (DISM)</value></data>
+  <data name="SySfcBody" xml:space="preserve"><value>Opens Windows&apos; own **sfc /scannow** in a visible window. It checks system files and replaces corrupted ones with Windows&apos; original copies. Takes a few minutes and asks for administrator permission.</value></data>
+  <data name="SyDismBody" xml:space="preserve"><value>Opens Windows&apos; own **DISM /RestoreHealth** in a visible window. It repairs the Windows image using Windows Update; use it if SFC could not fix things. Can take 10 to 30 minutes and asks for administrator permission.</value></data>
+  <data name="SyRepairGo" xml:space="preserve"><value>Open</value></data>
+  <data name="SyRepairStarted" xml:space="preserve"><value>Opened in a Windows window. Follow the result there.</value></data>
+  <data name="SyRepairDeclined" xml:space="preserve"><value>Not opened (administrator permission declined).</value></data>
+  <data name="SyNever" xml:space="preserve"><value>**Drivers only from official sources:** Lotus never downloads drivers from third-party sites or replaces a driver without you asking. Repairs are Windows&apos; own tools.</value></data>
+  <data name="OvUsage" xml:space="preserve"><value>Using now: {0} MB of RAM · {1}% CPU</value></data>
+  <data name="OvAdviceLauncher" xml:space="preserve"><value>Launcher open. It can stay open while you play; if you are not using it, closing it frees some memory. It is not a problem by itself.</value></data>
+  <data name="OvAdviceCompat" xml:space="preserve"><value>**Compatible with Lotus.** Lotus uses or works alongside this tool (FPS overlay, frame limit, measurement). No need to close it.</value></data>
+  <data name="DkAllOkOne" xml:space="preserve"><value>Drive with no Windows alerts.</value></data>
+  <data name="MnTitle" xml:space="preserve"><value>Monitor at the right rate</value></data>
+  <data name="MnWhat" xml:space="preserve"><value>Many people have a 144 Hz (or faster) monitor running at **60 Hz** without knowing. Lotus compares the current rate with the highest your monitor offers at this resolution.</value></data>
+  <data name="MnTileHint" xml:space="preserve"><value>Check whether the monitor runs at its top rate.</value></data>
+  <data name="MnUnavailable" xml:space="preserve"><value>Windows did not report the main monitor&apos;s modes.</value></data>
+  <data name="MnLow" xml:space="preserve"><value>Your monitor runs at {0} Hz but supports {1} Hz ({2} × {3}).</value></data>
+  <data name="MnOk" xml:space="preserve"><value>Your monitor already uses its top rate: {1} Hz ({2} × {3}).</value></data>
+  <data name="MnLowAdvice" xml:space="preserve"><value>Raising the rate makes the picture visibly smoother in games and in Windows. You can go back whenever you like.</value></data>
+  <data name="MnOkAdvice" xml:space="preserve"><value>Nothing to do here.</value></data>
+  <data name="MnNow" xml:space="preserve"><value>Now</value></data>
+  <data name="MnMax" xml:space="preserve"><value>Monitor maximum</value></data>
+  <data name="MnRaise" xml:space="preserve"><value>Use {0} Hz</value></data>
+  <data name="MnUndo" xml:space="preserve"><value>Undo</value></data>
+  <data name="MnOpenSettings" xml:space="preserve"><value>Display settings</value></data>
+  <data name="MnNever" xml:space="preserve"><value>The switch uses a mode **the driver itself** offers; if it refuses, nothing changes. If the screen goes black, Windows reverts on its own in a few seconds.</value></data>
+  <data name="MnConfirmTitle" xml:space="preserve"><value>Use {0} Hz on the main monitor?</value></data>
+  <data name="MnConfirmBody" xml:space="preserve"><value>The screen may flicker for a moment. Lotus keeps the current rate and you can undo here or in Optimize.</value></data>
+  <data name="GfTitle" xml:space="preserve"><value>Windows gaming features</value></data>
+  <data name="GfWhat" xml:space="preserve"><value>Game Mode, background recording, windowed game optimizations and GPU scheduling **in one place**, with the current state and one piece of advice for each. The changes are the same as in Optimize and can be undone.</value></data>
+  <data name="GfTileHint" xml:space="preserve"><value>Game Mode, recording and more, in one place.</value></data>
+  <data name="GfApply" xml:space="preserve"><value>Adjust</value></data>
+  <data name="GfOpen" xml:space="preserve"><value>Open in Windows</value></data>
+  <data name="WuTitle" xml:space="preserve"><value>Windows up to date</value></data>
+  <data name="WuWhat" xml:space="preserve"><value>Shows whether Windows is **waiting for a restart** (which often weighs on games) and how long since the PC last restarted. It also creates a **restore point** before bigger changes.</value></data>
+  <data name="WuTileHint" xml:space="preserve"><value>Pending restart and restore point.</value></data>
+  <data name="WuRestartShort" xml:space="preserve"><value>Windows is waiting for a restart.</value></data>
+  <data name="WuOkShort" xml:space="preserve"><value>No restart pending.</value></data>
+  <data name="WuRestartUpdate" xml:space="preserve"><value>Windows Update installed updates and is waiting for you to restart.</value></data>
+  <data name="WuRestartServicing" xml:space="preserve"><value>Windows components were updated and need a restart.</value></data>
+  <data name="WuNoRestart" xml:space="preserve"><value>No restart pending from Windows Update.</value></data>
+  <data name="WuRestartAdvice" xml:space="preserve"><value>Restart when you can, ideally before playing: until then Windows may finish the update in the background.</value></data>
+  <data name="WuRenames" xml:space="preserve"><value>Some programs left files to swap on the next restart (normal after installing or updating something).</value></data>
+  <data name="WuUptimeDays" xml:space="preserve"><value>The PC has been on for {0} days without restarting.</value></data>
+  <data name="WuUptimeHours" xml:space="preserve"><value>The PC has been on for {1} hours.</value></data>
+  <data name="WuUptimeFast" xml:space="preserve"><value>With Fast Startup on, &quot;Shut down&quot; does not reset Windows: use **Restart** now and then.</value></data>
+  <data name="WuUptimeLong" xml:space="preserve"><value>Restarting now and then frees memory and finishes pending updates.</value></data>
+  <data name="WuOpenUpdate" xml:space="preserve"><value>Open Windows Update</value></data>
+  <data name="WuRestoreTitle" xml:space="preserve"><value>Restore point</value></data>
+  <data name="WuRestoreWhat" xml:space="preserve"><value>A &quot;snapshot&quot; of Windows settings to go back to if something goes wrong after installing a driver or program. **It does not touch your files.** Asks for administrator permission.</value></data>
+  <data name="WuRestoreCreate" xml:space="preserve"><value>Create restore point</value></data>
+  <data name="WuRestoreOpen" xml:space="preserve"><value>Open System Restore</value></data>
+  <data name="WuRestoreConfirmTitle" xml:space="preserve"><value>Create a restore point now?</value></data>
+  <data name="WuRestoreConfirmBody" xml:space="preserve"><value>Windows will ask for administrator permission and it may take up to a minute. System Protection must be on for the Windows drive.</value></data>
+  <data name="WuRestoreWorking" xml:space="preserve"><value>Creating the restore point…</value></data>
+  <data name="WuRestoreDeclined" xml:space="preserve"><value>Not created (administrator permission declined).</value></data>
+  <data name="WuRestoreCreated" xml:space="preserve"><value>Restore point created. Windows now has {0} points.</value></data>
+  <data name="WuRestoreError" xml:space="preserve"><value>Windows did not create the point: {0}</value></data>
+  <data name="WuRestoreSkipped" xml:space="preserve"><value>Windows did not create a new point: it only allows one every 24 hours, or System Protection is off.</value></data>
+  <data name="WuRestoreDone" xml:space="preserve"><value>Point created</value></data>
+  <data name="CrWhat" xml:space="preserve"><value>When a game closes on its own or freezes, Windows takes note. Lotus matches that note with what happened **in the same minute** (graphics driver resetting, low memory, disk or hardware error) and explains the most likely cause.</value></data>
+  <data name="CrTileHint" xml:space="preserve"><value>Find out what made a game close on its own.</value></data>
+  <data name="CrTechnical" xml:space="preserve"><value>For support: {0} · module {1} · code {2}</value></data>
+  <data name="CrNone" xml:space="preserve"><value>No game closed on its own in the last {0} days.</value></data>
+  <data name="CrFoundOne" xml:space="preserve"><value>1 game closed or froze in the last {1} days.</value></data>
+  <data name="CrFound" xml:space="preserve"><value>{0} game crashes or freezes in the last {1} days.</value></data>
+  <data name="CrPowerLoss" xml:space="preserve"><value>The PC also shut down unexpectedly {0} times in that period.</value></data>
+  <data name="CrCauseGpuDriver" xml:space="preserve"><value>Likely cause: the graphics driver</value></data>
+  <data name="CrAdviceGpuDriver" xml:space="preserve"><value>The graphics card driver stopped or restarted at that moment. Update the driver (Tools › Drivers), remove GPU overclocks and check the temperature while playing.</value></data>
+  <data name="CrCauseOverlay" xml:space="preserve"><value>Likely cause: an overlay</value></data>
+  <data name="CrAdviceOverlay" xml:space="preserve"><value>The crash happened inside an overlay (Steam, Discord, Overwolf or another). Turn that overlay off for this game and try again; see Tools › Overlays.</value></data>
+  <data name="CrCauseOutOfMemory" xml:space="preserve"><value>Likely cause: ran out of memory</value></data>
+  <data name="CrAdviceOutOfMemory" xml:space="preserve"><value>Windows warned that memory ran out. Close heavy programs before playing (Memory and Processes) and check that the page file is on.</value></data>
+  <data name="CrCausePowerLoss" xml:space="preserve"><value>Likely cause: the PC shut down</value></data>
+  <data name="CrAdvicePowerLoss" xml:space="preserve"><value>The PC shut down without warning. Usually the power supply, high temperature or overclock instability.</value></data>
+  <data name="CrCauseHardware" xml:space="preserve"><value>Likely cause: a hardware error</value></data>
+  <data name="CrAdviceHardware" xml:space="preserve"><value>Windows logged a hardware error at that moment. Remove overclocks (CPU, memory, GPU) and check temperatures; if it continues, a technical check is worth it.</value></data>
+  <data name="CrCauseDisk" xml:space="preserve"><value>Likely cause: a disk error</value></data>
+  <data name="CrAdviceDisk" xml:space="preserve"><value>The drive had errors at that moment. See Tools › Disk Health and, on Steam, use &quot;Verify integrity of game files&quot;.</value></data>
+  <data name="CrCauseHang" xml:space="preserve"><value>The game stopped responding</value></data>
+  <data name="CrAdviceHang" xml:space="preserve"><value>The game froze and Windows closed it. Usually low memory, a slow drive or the game itself. Verify the game files in the launcher and close heavy programs.</value></data>
+  <data name="CrCauseGraphicsLibrary" xml:space="preserve"><value>Likely cause: Windows graphics components</value></data>
+  <data name="CrAdviceGraphicsLibrary" xml:space="preserve"><value>The crash was in DirectX or Vulkan. Update the graphics driver and Windows; if the game has the option, try another graphics mode (DirectX 11/12 or Vulkan).</value></data>
+  <data name="CrCauseRuntime" xml:space="preserve"><value>Likely cause: the game engine</value></data>
+  <data name="CrAdviceRuntime" xml:space="preserve"><value>The crash was in the game engine or its components. Verify the files in the launcher and reinstall the packages the game needs (Visual C++, .NET).</value></data>
+  <data name="CrCauseGame" xml:space="preserve"><value>Likely cause: the game itself</value></data>
+  <data name="CrAdviceGame" xml:space="preserve"><value>Windows logged nothing unusual on the PC at that moment, so the problem seems to be the game. Verify the files in the launcher, look for game updates and turn mods off to test.</value></data>
+  <data name="CrNever" xml:space="preserve"><value>**It is a hint, not a certainty:** Lotus only reads Windows&apos; own records and sends nothing out. The technical code helps if you need to ask for support.</value></data>
+  <data name="CkTitle" xml:space="preserve"><value>PC check-up</value></data>
+  <data name="CkTileHint" xml:space="preserve"><value>One click analyses the whole PC, read-only, and shows what is worth a look first.</value></data>
+  <data name="CkRun" xml:space="preserve"><value>Run check-up</value></data>
+  <data name="CkRunAgain" xml:space="preserve"><value>Run again</value></data>
+  <data name="CkSeeResult" xml:space="preserve"><value>See result</value></data>
+  <data name="CkDone" xml:space="preserve"><value>Check-up complete</value></data>
+  <data name="CkNever" xml:space="preserve"><value>**Read-only:** the check-up changes nothing on the PC. Each item opens the tool where you decide what to do.</value></data>
+  <data name="CkStepMonitor" xml:space="preserve"><value>Checking the monitor and gaming features…</value></data>
+  <data name="CkStepCrashes" xml:space="preserve"><value>Looking for games that closed on their own…</value></data>
+  <data name="CkStepSystem" xml:space="preserve"><value>Reading devices and Windows errors…</value></data>
+  <data name="CkStepDisks" xml:space="preserve"><value>Checking drive health…</value></data>
+  <data name="CkStepWindows" xml:space="preserve"><value>Checking pending restarts…</value></data>
+  <data name="CkStepProcesses" xml:space="preserve"><value>Measuring open programs…</value></data>
+  <data name="CkStepOverlays" xml:space="preserve"><value>Looking for overlays…</value></data>
+  <data name="CkStepStartup" xml:space="preserve"><value>Reading Windows startup…</value></data>
+  <data name="CkStepClean" xml:space="preserve"><value>Measuring the space that can be freed…</value></data>
+  <data name="CkMonitorLow" xml:space="preserve"><value>Monitor at {0} Hz, but it supports {1} Hz</value></data>
+  <data name="CkMonitorOk" xml:space="preserve"><value>Monitor at its top rate ({1} Hz)</value></data>
+  <data name="CkMonitorLowDetail" xml:space="preserve"><value>Using the top rate makes games visibly smoother.</value></data>
+  <data name="CkMonitorOkDetail" xml:space="preserve"><value>Nothing to do.</value></data>
+  <data name="CkFeatures" xml:space="preserve"><value>{0} Windows gaming features can be adjusted</value></data>
+  <data name="CkFeaturesOk" xml:space="preserve"><value>Windows gaming features in order</value></data>
+  <data name="CkFeaturesDetail" xml:space="preserve"><value>Game Mode, background recording and windowed optimizations.</value></data>
+  <data name="CkCrashes" xml:space="preserve"><value>{0} game crashes or freezes in the last 14 days</value></data>
+  <data name="CkCrashesOk" xml:space="preserve"><value>No game closed on its own</value></data>
+  <data name="CkCrashesOkDetail" xml:space="preserve"><value>In the last 14 days.</value></data>
+  <data name="CkDevices" xml:space="preserve"><value>{0} devices with problems</value></data>
+  <data name="CkEvents" xml:space="preserve"><value>{0} kinds of Windows errors in the last week</value></data>
+  <data name="CkEventsOk" xml:space="preserve"><value>No relevant Windows errors</value></data>
+  <data name="CkEventsOkDetail" xml:space="preserve"><value>In the last week.</value></data>
+  <data name="CkDisks" xml:space="preserve"><value>{0} drives need attention</value></data>
+  <data name="CkDisksOk" xml:space="preserve"><value>Drives with no Windows alerts</value></data>
+  <data name="CkDisksOkDetail" xml:space="preserve"><value>Health reported by Windows itself.</value></data>
+  <data name="CkLowSpace" xml:space="preserve"><value>Low space on drive {0}: {1} free</value></data>
+  <data name="CkLowSpaceDetail" xml:space="preserve"><value>Games and updates need free space. See the largest files and folders.</value></data>
+  <data name="CkRestart" xml:space="preserve"><value>Windows is waiting for a restart</value></data>
+  <data name="CkUptime" xml:space="preserve"><value>The PC has been on for {0} days without restarting</value></data>
+  <data name="CkWindowsOk" xml:space="preserve"><value>No restart pending</value></data>
+  <data name="CkHeavy" xml:space="preserve"><value>{0} heavy programs open ({1})</value></data>
+  <data name="CkHeavyOk" xml:space="preserve"><value>No very heavy program open</value></data>
+  <data name="CkHeavyOkDetail" xml:space="preserve"><value>No program that can be closed uses more than 1 GB.</value></data>
+  <data name="CkOverlays" xml:space="preserve"><value>{0} items that may cause stutter</value></data>
+  <data name="CkOverlaysOk" xml:space="preserve"><value>No overlay that usually causes stutter</value></data>
+  <data name="CkOverlaysOkDetail" xml:space="preserve"><value>Launchers and compatible tools do not count.</value></data>
+  <data name="CkStartupMany" xml:space="preserve"><value>{0} programs open with Windows</value></data>
+  <data name="CkStartupOk" xml:space="preserve"><value>{0} programs open with Windows</value></data>
+  <data name="CkStartupDetail" xml:space="preserve"><value>Turn off the ones you do not use right after turning on the PC.</value></data>
+  <data name="CkClean" xml:space="preserve"><value>{0} can be freed safely</value></data>
+  <data name="CkCleanOk" xml:space="preserve"><value>Little to clean</value></data>
+  <data name="CkCleanDetail" xml:space="preserve"><value>Temporary files, caches and old logs.</value></data>
+  <data name="CkHeadAttentionOne" xml:space="preserve"><value>1 thing needs attention on your PC.</value></data>
+  <data name="CkHeadAttention" xml:space="preserve"><value>{0} things need attention on your PC.</value></data>
+  <data name="CkHeadTipsOne" xml:space="preserve"><value>All good, with 1 tip to improve.</value></data>
+  <data name="CkHeadTips" xml:space="preserve"><value>All good, with {0} tips to improve.</value></data>
+  <data name="CkHeadGood" xml:space="preserve"><value>Everything is in order on your PC.</value></data>
+  <data name="CkCounts" xml:space="preserve"><value>{0} need attention · {1} tips · {2} in order</value></data>
+  <data name="CkChipAttention" xml:space="preserve"><value>{0} need attention</value></data>
+  <data name="CkChipTips" xml:space="preserve"><value>{0} tips</value></data>
+  <data name="CkChipGood" xml:space="preserve"><value>{0} in order</value></data>
+  <data name="CrashTitle" xml:space="preserve"><value>Why did my game close?</value></data>
+  <data name="GfAllGood" xml:space="preserve"><value>All set for gaming.</value></data>
 </root>

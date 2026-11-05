@@ -23,14 +23,25 @@ public sealed partial class ToolsPanel : UserControl
     private void BuildTiles(ToolsViewModel vm)
     {
         if (Tiles.Items.Count > 0) return;
-        cards["mem"] = MemCard; cards["temp"] = TempCard; cards["unin"] = UninCard; cards["net"] = NetCard; cards["disk"] = DiskCard; cards["drivers"] = DriverCard; cards["overlays"] = OverlayCard;
+        cards["mem"] = MemCard; cards["temp"] = TempCard; cards["clean"] = CleanCard; cards["proc"] = ProcCard; cards["store"] = StoreCard; cards["startup"] = StartCard; cards["health"] = HealthCard; cards["monitor"] = MonitorCard; cards["features"] = FeaturesCard; cards["crash"] = CrashCard; cards["windows"] = UpkeepCard; cards["checkup"] = CheckupCard; cards["unin"] = UninCard; cards["net"] = NetCard; cards["disk"] = DiskCard; cards["drivers"] = DriverCard; cards["overlays"] = OverlayCard;
         foreach (var (id, glyph, title, status) in new[]
         {
-            ("mem", "", "ToolMemTitle", "MemoryStatus"), ("temp", "", "ToolTempTitle", "TempStatus"), ("unin", "", "UninTitle", "Uninstall.Summary"),
-            ("net", "", "ToolNetTile", "NetTileStatus"), ("disk", "", "ToolDiskTitle", "DiskTileStatus"), ("drivers", "", "ToolDriverTitle", "DriverStatus"), ("overlays", "\uE7F4", "OvTitle", "Overlays.Summary")
+            ("clean", "\uE74D", "ClTitle", "Clean.TileStatus"), ("proc", "\uE964", "PrTitle", "Processes.TileStatus"), ("store", "\uE8B7", "StTitle", "Storage.TileStatus"), ("startup", "\uE7E8", "SuTitle", "Startup.TileStatus"), ("monitor", "\uE7F4", "MnTitle", "Gaming.MonitorTile"), ("features", "\uE7FC", "GfTitle", "Gaming.FeaturesTile"), ("crash", "\uE9D9", "CrashTitle", "Crashes.TileStatus"), ("windows", "\uE895", "WuTitle", "Upkeep.TileStatus"), ("mem", "", "ToolMemTitle", "MemoryStatus"), ("temp", "", "ToolTempTitle", "TempStatus"), ("unin", "", "UninTitle", "Uninstall.Summary"),
+            ("net", "", "ToolNetTile", "NetTileStatus"), ("health", "\uEDA2", "DkTitle", "DiskTool.TileStatus"), ("disk", "", "ToolDiskTitle", "DiskTileStatus"), ("drivers", "", "ToolDriverTitle", "DriverStatus"), ("overlays", "\uE7F4", "OvTitle", "Overlays.Summary")
         })
         {
             if (id == "unin" && vm.Uninstall is null) continue;
+            if (id == "clean" && vm.Clean is null) continue;
+            if (id == "proc" && vm.Processes is null) continue;
+            if (id == "store" && vm.Storage is null) continue;
+            if (id == "startup" && vm.Startup is null) continue;
+            if (id == "health" && vm.DiskTool is null) continue;
+            if (id is "monitor" or "features" && vm.Gaming is null) continue;
+            if (id == "crash" && vm.Crashes is null) continue;
+            if (id == "windows" && vm.Upkeep is null) continue;
+            if (id == "disk" && vm.DiskTool is not null) continue; // Saúde do Disco replaces the short list
+            if (id == "mem" && vm.Processes is not null) continue; // Memória e Processos replaces the simple list
+            if (id == "temp" && vm.Clean is not null) continue; // Lotus Clean covers the temporary files (and much more)
             if (id == "overlays" && vm.Overlays is null) continue;
             var badge = new FontIcon { Glyph = glyph, FontSize = 26, Foreground = (Brush)Application.Current.Resources["RoseBrush"], HorizontalAlignment = HorizontalAlignment.Left }; // design: outline accent icon
             var name = new TextBlock { Text = vm.Text[title], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 21, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis };
@@ -56,14 +67,20 @@ public sealed partial class ToolsPanel : UserControl
     }
     private void Open(string id)
     {
-        Tiles.Visibility = Visibility.Collapsed; BackButton.Visibility = Visibility.Visible;
+        Tiles.Visibility = Visibility.Collapsed; CheckupHero.Visibility = Visibility.Collapsed; BackButton.Visibility = Visibility.Visible;
         foreach (var (key, card) in cards) card.Visibility = key == id ? Visibility.Visible : Visibility.Collapsed;
+        if (id == "store" && DataContext is ToolsViewModel { Storage: { } st }) st.Load(); // drive space only; reading, no scan
+        if (id == "startup" && DataContext is ToolsViewModel { Startup: { Rows.Count: 0 } su }) _ = su.LoadAsync(); // reading only
+        if (id == "health" && DataContext is ToolsViewModel { DiskTool: { Rows.Count: 0 } dk }) _ = dk.LoadAsync(); // reading only
+        if (id is "monitor" or "features" && DataContext is ToolsViewModel { Gaming: { Monitor: null, Rows.Count: 0 } gm }) _ = gm.LoadAsync(); // reading only
+        if (id == "crash" && DataContext is ToolsViewModel { Crashes: { Loaded: false } cr }) _ = cr.LoadAsync(); // reading only
+        if (id == "windows" && DataContext is ToolsViewModel { Upkeep: { Loaded: false } up }) _ = up.LoadAsync(); // reading only
         Motion.EnterPage(cards[id]);
     }
     private void OnBack(object sender, RoutedEventArgs e)
     {
         foreach (var card in cards.Values) card.Visibility = Visibility.Collapsed;
-        BackButton.Visibility = Visibility.Collapsed; Tiles.Visibility = Visibility.Visible;
+        BackButton.Visibility = Visibility.Collapsed; Tiles.Visibility = Visibility.Visible; CheckupHero.Visibility = DataContext is ToolsViewModel { Checkup: not null } ? Visibility.Visible : Visibility.Collapsed; Motion.EnterPage(CheckupHero);
         Motion.EnterPage(Tiles);
     }
 
@@ -83,6 +100,131 @@ public sealed partial class ToolsPanel : UserControl
     {
         if (DataContext is ToolsViewModel vm && await Confirm(vm.Text["ToolTempTitle"], vm.Text["ToolTempConfirm"], vm.Text["ToolTempClean"], vm))
             await vm.RecycleTempAsync();
+    }
+    // ---- Check-up: runs every read-only analysis, then shows the summary; each line opens its tool ----
+    private async void OnCheckupRun(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ToolsViewModel { Checkup: { } c }) return;
+        await c.RunAsync();
+        if (c.Done && CheckupCard.Visibility != Visibility.Visible) Open("checkup");
+    }
+    private void OnCheckupOpen(object sender, RoutedEventArgs e) => Open("checkup");
+    private void OnCheckupGo(object sender, RoutedEventArgs e) { if ((sender as FrameworkElement)?.Tag is string id && cards.ContainsKey(id)) Open(id); }
+
+    // ---- Monitor and Windows gaming features (the same reversible actions as Otimizar) ----
+    private async void OnMonitorRaise(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel { Gaming: { Monitor: { } m } g } vm
+            && await Confirm(vm.Text.Format("MnConfirmTitle", m.MaxHz), vm.Text["MnConfirmBody"], g.RaiseLabel, vm))
+            await g.ApplyAsync(Lotus.Core.Optimization.DisplayRefreshAction.FeatureId);
+    }
+    private async void OnMonitorUndo(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel { Gaming: { } g } vm && await Confirm(vm.Text["FeatConfirmUndoTitle"], vm.Text["FeatConfirmUndoBody"], vm.Text["MnUndo"], vm))
+            await g.UndoAsync(Lotus.Core.Optimization.DisplayRefreshAction.FeatureId);
+    }
+    private async void OnMonitorSettings(object sender, RoutedEventArgs e) => await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:display-advanced"));
+    private async void OnFeatureApply(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel { Gaming: { } g } vm && (sender as FrameworkElement)?.Tag is string id
+            && await Confirm(vm.Text.Format("FeatConfirmTitle", vm.Text["FeatName" + id]), vm.Text["FeatConfirmBody"], vm.Text["GfApply"], vm))
+            await g.ApplyAsync(id);
+    }
+    private async void OnFeatureUndo(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel { Gaming: { } g } vm && (sender as FrameworkElement)?.Tag is string id
+            && await Confirm(vm.Text["FeatConfirmUndoTitle"], vm.Text["FeatConfirmUndoBody"], vm.Text["MnUndo"], vm))
+            await g.UndoAsync(id);
+    }
+    // Only Windows Settings pages (ms-settings:) are opened from here.
+    private async void OnFeatureSettings(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.Tag is string uri && uri.StartsWith("ms-settings:", StringComparison.Ordinal)) await Windows.System.Launcher.LaunchUriAsync(new Uri(uri));
+    }
+
+    // ---- Game crashes and Windows upkeep ----
+    private async void OnCrashRefresh(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Crashes: { } c }) await c.LoadAsync(); }
+    private void OnOpenWindowsUpdateSettings(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Upkeep: { } u }) u.OpenWindowsUpdate(); }
+    private void OnRestoreOpen(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Upkeep: { } u }) u.OpenSystemRestore(); }
+    private async void OnRestoreCreate(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel { Upkeep: { } u } vm && await Confirm(vm.Text["WuRestoreConfirmTitle"], vm.Text["WuRestoreConfirmBody"], vm.Text["WuRestoreCreate"], vm))
+            await u.CreateRestorePointAsync();
+    }
+
+    // ---- Disk health and system ----
+    private async void OnDiskRefresh(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { DiskTool: { } d }) await d.LoadAsync(); }
+    private async void OnDiskScan(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel { DiskTool: { } d } vm && (sender as FrameworkElement)?.Tag is string letter
+            && await Confirm(vm.Text.Format("DkScanTitle", letter), vm.Text["DkScanBody"], vm.Text["DkScanGo"], vm)) d.StartScan(letter);
+    }
+    private async void OnSystemLoad(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { SystemTool: { } s }) await s.LoadAsync(); }
+    private async void OnSystemSfc(object sender, RoutedEventArgs e) => await Repair("sfc");
+    private async void OnSystemDism(object sender, RoutedEventArgs e) => await Repair("dism");
+    private async Task Repair(string tool)
+    {
+        if (DataContext is ToolsViewModel { SystemTool: { } s } vm && await Confirm(vm.Text[tool == "sfc" ? "SySfc" : "SyDism"], vm.Text[tool == "sfc" ? "SySfcBody" : "SyDismBody"], vm.Text["SyRepairGo"], vm)) s.StartRepair(tool);
+    }
+
+    // ---- Windows startup ----
+    private async void OnStartupRefresh(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Startup: { } s }) await s.LoadAsync(); }
+    private async void OnStartupToggle(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ToolsViewModel { Startup: { } s } vm || (sender as FrameworkElement)?.DataContext is not Lotus.Core.Maintenance.StartupToolRow row) return;
+        var on = row.IsDisabled;
+        if (await Confirm(vm.Text.Format(on ? "SuConfirmOnTitle" : "SuConfirmOffTitle", row.Title), vm.Text[on ? "SuConfirmOnBody" : "SuConfirmOffBody"], row.ToggleLabel, vm)) await s.ToggleAsync(row);
+    }
+
+    // ---- Files and storage ----
+    private async void OnStoreScan(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Storage: { } s }) await s.ScanAsync(); }
+    private void OnStoreCancel(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Storage: { } s }) s.Cancel(); }
+    private void OnStoreReveal(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Storage: { } s } && (sender as FrameworkElement)?.DataContext is Lotus.Core.Maintenance.StorageRow row) s.Reveal(row); }
+    // Lists what goes to the Recycle Bin; for duplicates one copy of each content must stay.
+    private async void OnStoreRecycle(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ToolsViewModel { Storage: { } s } vm) return;
+        var chosen = s.Chosen;
+        if (chosen.Count == 0) { await Confirm(vm.Text["StTitle"], vm.Text["StNoneChosen"], null, vm); return; }
+        if (!s.KeepsOneCopyOfEach()) { await Confirm(vm.Text["StTitle"], vm.Text["StKeepOne"], null, vm); return; }
+        var names = string.Join(", ", chosen.Take(8).Select(r => r.Title)) + (chosen.Count > 8 ? vm.Text.Format("StAndMore", chosen.Count - 8) : "");
+        if (await Confirm(vm.Text["StConfirmTitle"], vm.Text.Format("StConfirmBody", chosen.Count, s.Size(s.ChosenBytes), names), vm.Text["StRecycle"], vm)) await s.RecycleSelectedAsync();
+    }
+
+    // ---- Memory and processes ----
+    private async void OnProcRefresh(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Processes: { } p }) await p.RefreshAsync(); }
+    private void OnProcToggleList(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Processes: { } p } && (sender as FrameworkElement)?.DataContext is Lotus.Core.Maintenance.ProcessRow row) p.ToggleInList(row); }
+    private async void OnProcPickList(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel { Processes: { } p } vm && p.SelectCloseList() == 0) await Confirm(vm.Text["PrTitle"], vm.Text["PrListEmpty"], null, vm);
+    }
+    private async void OnProcClose(object sender, RoutedEventArgs e) => await CloseProcesses(false);
+    private async void OnProcForce(object sender, RoutedEventArgs e) => await CloseProcesses(true);
+    // Always asks, naming each program; forcing gets its own, stronger warning (unsaved work is lost).
+    private async Task CloseProcesses(bool force)
+    {
+        if (DataContext is not ToolsViewModel { Processes: { } p } vm) return;
+        var chosen = p.Chosen;
+        if (chosen.Count == 0) { await Confirm(vm.Text["PrTitle"], vm.Text["PrNoneChosen"], null, vm); return; }
+        var names = string.Join(", ", chosen.Select(r => r.Name));
+        if (await Confirm(vm.Text[force ? "PrForceTitle" : "PrConfirmTitle"], vm.Text.Format(force ? "PrForceBody" : "PrConfirmBody", names), vm.Text[force ? "PrForceGo" : "PrClose"], vm))
+            await p.CloseSelectedAsync(force);
+    }
+
+    // ---- Lotus Clean ----
+    private async void OnCleanAnalyze(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Clean: { } c }) await c.AnalyzeAsync(); }
+    private void OnCleanCancel(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Clean: { } c }) c.Cancel(); }
+    private void OnCleanPickSafe(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Clean: { } c }) c.SelectRecommended(); }
+    private void OnCleanPickNone(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Clean: { } c }) c.SelectNone(); }
+    // Always asks, listing what will go; the Recycle Bin gets its own warning (emptying it cannot be undone).
+    private async void OnCleanRun(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ToolsViewModel { Clean: { } c } vm) return;
+        var chosen = c.Rows.Where(r => r.Selected && r.CanSelect).ToList();
+        if (chosen.Count == 0) return;
+        var body = vm.Text.Format("ClConfirmBody", c.Size(c.SelectedBytes), string.Join(", ", chosen.Select(r => r.Title)));
+        if (chosen.Any(r => r.Id == "RecycleBin")) body += "\n\n" + vm.Text["ClConfirmBin"];
+        if (await Confirm(vm.Text["ClConfirmTitle"], body, vm.Text["ClClean"], vm)) await c.CleanAsync();
     }
     private async void OnTestNet(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel vm) await vm.TestConnectionAsync(); }
     private async void OnCheckDrivers(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel vm) await vm.CheckDriversAsync(); }

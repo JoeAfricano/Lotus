@@ -960,7 +960,7 @@ Condições atuais: {1}</value></data>
   <data name="toolsTitle" xml:space="preserve"><value>Ferramentas</value></data>
   <data name="toolsDescription" xml:space="preserve"><value>Ajudas rápidas e seguras para o PC de jogo.</value></data>
   <data name="toolsNext" xml:space="preserve"><value>Memória, arquivos temporários, conexão, disco e driver.</value></data>
-  <data name="ToolIntro" xml:space="preserve"><value>Aqui nada muda sem você confirmar. Programas fecham **do jeito normal**, como clicar no X, e arquivos vão para a **Lixeira**.</value></data>
+  <data name="ToolIntro" xml:space="preserve"><value>Aqui nada muda sem você confirmar. **Abrir ou analisar não altera nada**; cada item mostra o risco (baixo, revisão ou avançado). Programas fecham **do jeito normal**, como clicar no X; arquivos pessoais só vão para a **Lixeira**, e caches e temporários que os programas recriam são removidos para liberar espaço de verdade.</value></data>
   <data name="ToolMemTitle" xml:space="preserve"><value>Liberar memória para jogar</value></data>
   <data name="ToolMemWhat" xml:space="preserve"><value>Os programas abertos que **mais usam memória**. Marque os que pode fechar antes de jogar.</value></data>
   <data name="ToolMemPick" xml:space="preserve"><value>Marque o que fechar. Só aparecem programas com janela, que fecham normalmente.</value></data>
@@ -2691,4 +2691,353 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="AgRemoveBody" xml:space="preserve"><value>O jogo continua instalado no PC; só sai de Meus Jogos. Seus backups de saves e o diário não são apagados. Para trazer de volta, use Reescanear ou adicione de novo.</value></data>
   <data name="AgRemove" xml:space="preserve"><value>Remover</value></data>
   <data name="GamesAlreadyThere" xml:space="preserve"><value>{0} já está em Meus Jogos.</value></data>
+  <data name="ClTitle" xml:space="preserve"><value>Limpeza Inteligente</value></data>
+  <data name="ClWhat" xml:space="preserve"><value>Encontra arquivos temporários, caches que os programas recriam sozinhos, registros antigos e relatórios de erro. **Analisar não muda nada**: você vê o tamanho real de cada item e escolhe o que limpar.</value></data>
+  <data name="ClTileHint" xml:space="preserve"><value>Analise o PC para ver quanto espaço pode ser liberado com segurança.</value></data>
+  <data name="ClAnalyze" xml:space="preserve"><value>Analisar PC</value></data>
+  <data name="ClAnalyzing" xml:space="preserve"><value>Analisando… nada é alterado nesta etapa.</value></data>
+  <data name="ClAnalyzed" xml:space="preserve"><value>Análise concluída</value></data>
+  <data name="ClCancelled" xml:space="preserve"><value>Cancelado.</value></data>
+  <data name="ClCleaning" xml:space="preserve"><value>Limpando os itens selecionados…</value></data>
+  <data name="ClBlocked" xml:space="preserve"><value>{0} arquivos, {1}. Feche {2} para limpar este item.</value></data>
+  <data name="ClDetail" xml:space="preserve"><value>{0} arquivos, {1} · {2}</value></data>
+  <data name="ClCatWindows" xml:space="preserve"><value>Windows</value></data>
+  <data name="ClCatBrowsers" xml:space="preserve"><value>Navegadores</value></data>
+  <data name="ClCatApps" xml:space="preserve"><value>Aplicativos</value></data>
+  <data name="ClCatGames" xml:space="preserve"><value>Jogos e launchers</value></data>
+  <data name="RiskLow" xml:space="preserve"><value>Baixo risco</value></data>
+  <data name="RiskReview" xml:space="preserve"><value>Revisão necessária</value></data>
+  <data name="RiskAdvanced" xml:space="preserve"><value>Avançado</value></data>
+  <data name="ClFound" xml:space="preserve"><value>{0} podem ser liberados ({1} arquivos).</value></data>
+  <data name="ClNothing" xml:space="preserve"><value>Nada para limpar agora. Seu PC já está em ordem.</value></data>
+  <data name="ClFreed" xml:space="preserve"><value>Liberados {0} ({1} arquivos removidos).</value></data>
+  <data name="ClInUse" xml:space="preserve"><value>{0} estavam em uso e ficaram onde estavam.</value></data>
+  <data name="ClFailedFiles" xml:space="preserve"><value>{0} precisam de permissão de administrador e foram ignorados.</value></data>
+  <data name="ClSkipped" xml:space="preserve"><value>{0} itens não foram limpos porque o programa estava aberto.</value></data>
+  <data name="ClDoneShort" xml:space="preserve"><value>{0} liberados</value></data>
+  <data name="ClSelected" xml:space="preserve"><value>{0} itens selecionados · {1}</value></data>
+  <data name="ClClean" xml:space="preserve"><value>Limpar selecionados</value></data>
+  <data name="ClPickSafe" xml:space="preserve"><value>Marcar recomendados</value></data>
+  <data name="ClPickNone" xml:space="preserve"><value>Desmarcar tudo</value></data>
+  <data name="ClNever" xml:space="preserve"><value>**Nunca são apagados:** saves, mods, configurações de jogos, dados de sincronização, cookies, sessões e senhas dos navegadores, e caches de shaders. Arquivos em uso ou de programas abertos ficam onde estão.</value></data>
+  <data name="ClConfirmTitle" xml:space="preserve"><value>Limpar os itens selecionados?</value></data>
+  <data name="ClConfirmBody" xml:space="preserve"><value>Até {0} serão liberados de: {1}. Esses arquivos são recriados pelos próprios programas quando precisarem.</value></data>
+  <data name="ClConfirmBin" xml:space="preserve"><value>**Atenção:** esvaziar a Lixeira não pode ser desfeito.</value></data>
+  <data name="ClWinTemp" xml:space="preserve"><value>Arquivos temporários do usuário</value></data>
+  <data name="ClWinSysTemp" xml:space="preserve"><value>Arquivos temporários do Windows</value></data>
+  <data name="ClWinCrashDumps" xml:space="preserve"><value>Despejos de falhas de programas</value></data>
+  <data name="ClWinReports" xml:space="preserve"><value>Relatórios de erros do Windows</value></data>
+  <data name="ClWinThumbs" xml:space="preserve"><value>Cache de miniaturas do Explorer</value></data>
+  <data name="ClChrome" xml:space="preserve"><value>Cache do Google Chrome</value></data>
+  <data name="ClEdge" xml:space="preserve"><value>Cache do Microsoft Edge</value></data>
+  <data name="ClBrave" xml:space="preserve"><value>Cache do Brave</value></data>
+  <data name="ClOpera" xml:space="preserve"><value>Cache do Opera</value></data>
+  <data name="ClOperaGx" xml:space="preserve"><value>Cache do Opera GX</value></data>
+  <data name="ClFirefox" xml:space="preserve"><value>Cache do Firefox</value></data>
+  <data name="ClDiscord" xml:space="preserve"><value>Cache do Discord</value></data>
+  <data name="ClAppLogs" xml:space="preserve"><value>Registros antigos de aplicativos</value></data>
+  <data name="ClSteamWeb" xml:space="preserve"><value>Cache das páginas da Steam</value></data>
+  <data name="ClEpicWeb" xml:space="preserve"><value>Cache das páginas da Epic Games</value></data>
+  <data name="ClLauncherLogs" xml:space="preserve"><value>Registros antigos dos launchers</value></data>
+  <data name="ClGameCrashes" xml:space="preserve"><value>Relatórios de falhas de jogos</value></data>
+  <data name="ClRecycleBin" xml:space="preserve"><value>Lixeira</value></data>
+  <data name="PrTitle" xml:space="preserve"><value>Memória e Processos</value></data>
+  <data name="PrWhat" xml:space="preserve"><value>Mostra quanta **memória (RAM)** e quanto **processador (CPU)** cada programa aberto usa agora, e onde ele está instalado. Fechar só acontece quando você confirma. O Lotus não &quot;limpa&quot; a memória à força: isso deixaria o PC mais lento.</value></data>
+  <data name="PrTileHint" xml:space="preserve"><value>Veja quais programas estão pesando agora.</value></data>
+  <data name="PrRefresh" xml:space="preserve"><value>Ver programas</value></data>
+  <data name="PrReading" xml:space="preserve"><value>Medindo por cerca de um segundo…</value></data>
+  <data name="PrRead" xml:space="preserve"><value>Leitura concluída</value></data>
+  <data name="PrPick" xml:space="preserve"><value>Marque os programas que você quer fechar. A estrela coloca um programa na sua lista de &quot;fechar antes de jogar&quot;.</value></data>
+  <data name="PrSummary" xml:space="preserve"><value>{0} em uso no total. O mais pesado que você pode fechar: {1} ({2}).</value></data>
+  <data name="PrSummaryNone" xml:space="preserve"><value>{0} em uso no total. Nenhum programa pesado que possa ser fechado.</value></data>
+  <data name="PrShowAll" xml:space="preserve"><value>Mostrar também os programas leves</value></data>
+  <data name="PrColName" xml:space="preserve"><value>Programa e local</value></data>
+  <data name="PrKindNormal" xml:space="preserve"><value>Pode fechar</value></data>
+  <data name="PrKindSystem" xml:space="preserve"><value>Windows</value></data>
+  <data name="PrKindAntiCheat" xml:space="preserve"><value>Antitrapaça</value></data>
+  <data name="PrKindGame" xml:space="preserve"><value>Jogo</value></data>
+  <data name="PrKindLotus" xml:space="preserve"><value>Lotus e ferramentas</value></data>
+  <data name="PrListTip" xml:space="preserve"><value>Fechar antes de jogar (sua lista)</value></data>
+  <data name="PrClose" xml:space="preserve"><value>Fechar selecionados</value></data>
+  <data name="PrPickList" xml:space="preserve"><value>Marcar minha lista</value></data>
+  <data name="PrForce" xml:space="preserve"><value>Encerrar à força…</value></data>
+  <data name="PrListEmpty" xml:space="preserve"><value>Nenhum programa da sua lista está aberto agora. Use a estrela ao lado de um programa para colocá-lo na lista.</value></data>
+  <data name="PrNoneChosen" xml:space="preserve"><value>Marque pelo menos um programa que pode ser fechado.</value></data>
+  <data name="PrConfirmTitle" xml:space="preserve"><value>Fechar estes programas?</value></data>
+  <data name="PrConfirmBody" xml:space="preserve"><value>Vou pedir para fecharem do jeito normal, como clicar no X: {0}. Se algum tiver trabalho sem salvar, ele mesmo vai perguntar.</value></data>
+  <data name="PrForceTitle" xml:space="preserve"><value>Encerrar à força? (avançado)</value></data>
+  <data name="PrForceBody" xml:space="preserve"><value>**Trabalho não salvo será perdido.** Use só para programas travados ou que ficam em segundo plano: {0}. Windows, antitrapaças, jogos e o Lotus nunca são encerrados.</value></data>
+  <data name="PrForceGo" xml:space="preserve"><value>Encerrar</value></data>
+  <data name="PrClosing" xml:space="preserve"><value>Fechando…</value></data>
+  <data name="PrNothing" xml:space="preserve"><value>Nenhum programa pôde ser fechado (talvez estejam sem janela; use Encerrar à força se tiver certeza).</value></data>
+  <data name="PrClosed" xml:space="preserve"><value>Pronto. A memória usada caiu {0}.</value></data>
+  <data name="PrClosedSome" xml:space="preserve"><value>A memória usada caiu {0}. Ainda abertos: {1} (podem estar perguntando se você quer salvar).</value></data>
+  <data name="PrDone" xml:space="preserve"><value>{0} liberados</value></data>
+  <data name="PrNever" xml:space="preserve"><value>**Protegidos:** processos do Windows, antitrapaças (fechar quebraria jogos online), jogos abertos e o Lotus com o RTSS, o Afterburner e o PresentMon. A memória mostrada é medida de novo depois de fechar, nunca estimada.</value></data>
+  <data name="StTitle" xml:space="preserve"><value>Arquivos e Armazenamento</value></data>
+  <data name="StWhat" xml:space="preserve"><value>Encontra **arquivos grandes**, as **pastas que mais ocupam**, **arquivos duplicados** (comparados pelo conteúdo inteiro, nunca só pelo nome) e **downloads antigos**. Analisar não muda nada; o que você escolher vai para a **Lixeira**.</value></data>
+  <data name="StTileHint" xml:space="preserve"><value>Veja o espaço de cada disco e o que mais ocupa.</value></data>
+  <data name="StDrive" xml:space="preserve"><value>{0} {1}: {2} livres de {3} ({4:0}% usado)</value></data>
+  <data name="StScope" xml:space="preserve"><value>Onde analisar</value></data>
+  <data name="StScopeUser" xml:space="preserve"><value>Minha pasta de usuário ({0})</value></data>
+  <data name="StScopeDownloads" xml:space="preserve"><value>Downloads ({0})</value></data>
+  <data name="StScopeDrive" xml:space="preserve"><value>Disco inteiro {0}</value></data>
+  <data name="StSpaceOk" xml:space="preserve"><value>{0} discos com espaço suficiente.</value></data>
+  <data name="StSpaceLow" xml:space="preserve"><value>Pouco espaço no disco {0}: só {1} livres.</value></data>
+  <data name="StScan" xml:space="preserve"><value>Analisar</value></data>
+  <data name="StScanning" xml:space="preserve"><value>Analisando… arquivos grandes podem levar um tempo para comparar. Nada é alterado.</value></data>
+  <data name="StFound" xml:space="preserve"><value>{0} em {1} arquivos. {2} arquivos grandes; duplicados ocupam {3} a mais.</value></data>
+  <data name="StSkipped" xml:space="preserve"><value>{0} itens não puderam ser lidos (sem permissão) e foram ignorados.</value></data>
+  <data name="StDone" xml:space="preserve"><value>Análise concluída</value></data>
+  <data name="StViewLarge" xml:space="preserve"><value>Arquivos grandes (100 MB ou mais)</value></data>
+  <data name="StViewFolders" xml:space="preserve"><value>Pastas que mais ocupam</value></data>
+  <data name="StViewDups" xml:space="preserve"><value>Arquivos duplicados</value></data>
+  <data name="StViewDownloads" xml:space="preserve"><value>Downloads com mais de 90 dias</value></data>
+  <data name="StViewEmpty" xml:space="preserve"><value>Nada encontrado nesta lista.</value></data>
+  <data name="StFolderLine" xml:space="preserve"><value>{0} · {1} arquivos</value></data>
+  <data name="StDupGroup" xml:space="preserve"><value>Grupo {0}: {1} cópias de {2} ({3} a mais)</value></data>
+  <data name="StReveal" xml:space="preserve"><value>Abrir local</value></data>
+  <data name="StRecycle" xml:space="preserve"><value>Mover selecionados para a Lixeira</value></data>
+  <data name="StNoneChosen" xml:space="preserve"><value>Marque pelo menos um arquivo. Pastas, arquivos do Windows, de programas e de dados de aplicativos só podem ser abertos daqui, não removidos.</value></data>
+  <data name="StKeepOne" xml:space="preserve"><value>Deixe pelo menos uma cópia de cada grupo de duplicados desmarcada. O Lotus nunca remove todas as cópias.</value></data>
+  <data name="StConfirmTitle" xml:space="preserve"><value>Mover para a Lixeira?</value></data>
+  <data name="StConfirmBody" xml:space="preserve"><value>{0} arquivos ({1}) vão para a Lixeira: {2}. Você pode restaurá-los de lá enquanto não esvaziar a Lixeira.</value></data>
+  <data name="StAndMore" xml:space="preserve"><value> e mais {0}</value></data>
+  <data name="StRecycling" xml:space="preserve"><value>Movendo para a Lixeira…</value></data>
+  <data name="StRecycled" xml:space="preserve"><value>{0} arquivos ({1}) foram para a Lixeira.</value></data>
+  <data name="StRecycleFailed" xml:space="preserve"><value>{0} não foram movidos (em uso, alterados ou protegidos).</value></data>
+  <data name="StRecycledShort" xml:space="preserve"><value>{0} na Lixeira</value></data>
+  <data name="StNever" xml:space="preserve"><value>**Nada é apagado sozinho.** Arquivos do Windows, de programas e de dados de aplicativos aparecem só para você saber o que ocupa espaço. Atalhos e links não são seguidos.</value></data>
+  <data name="StLocalDisk" xml:space="preserve"><value>Disco local</value></data>
+  <data name="SuTitle" xml:space="preserve"><value>Inicialização do Windows</value></data>
+  <data name="SuWhat" xml:space="preserve"><value>O que abre junto com o Windows: **nome, editor, assinatura digital, caminho e onde está registrado**. Desligar não apaga nada; dá para ligar de novo quando quiser. Itens de todos os usuários precisam de administrador e ficam só para consulta.</value></data>
+  <data name="SuTileHint" xml:space="preserve"><value>Veja o que abre junto com o Windows.</value></data>
+  <data name="SuRead" xml:space="preserve"><value>Lista atualizada</value></data>
+  <data name="SuSummary" xml:space="preserve"><value>{0} itens de inicialização: {1} ligados, {2} desligados.</value></data>
+  <data name="SuErrors" xml:space="preserve"><value>{0} locais não puderam ser lidos.</value></data>
+  <data name="SuDetail" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="SuNoPublisher" xml:space="preserve"><value>Editor desconhecido</value></data>
+  <data name="SuMechFolder" xml:space="preserve"><value>Pasta Inicializar</value></data>
+  <data name="SuMechRunUser" xml:space="preserve"><value>Registro (este usuário)</value></data>
+  <data name="SuMechRunAll" xml:space="preserve"><value>Registro (todos os usuários)</value></data>
+  <data name="SuSigValid" xml:space="preserve"><value>Assinatura digital válida</value></data>
+  <data name="SuSigUnsigned" xml:space="preserve"><value>Sem assinatura digital embutida</value></data>
+  <data name="SuSigInvalid" xml:space="preserve"><value>Assinatura digital inválida ou não confiável</value></data>
+  <data name="SuSigUnknown" xml:space="preserve"><value>Assinatura não verificada (arquivo não encontrado ou atalho)</value></data>
+  <data name="SuConfirmOffTitle" xml:space="preserve"><value>Desligar {0} na inicialização?</value></data>
+  <data name="SuConfirmOffBody" xml:space="preserve"><value>O programa continua instalado e funcionando; só deixa de abrir sozinho com o Windows. O Lotus guarda o estado anterior e você pode ligar de novo aqui ou no Gerenciador de Tarefas.</value></data>
+  <data name="SuConfirmOnTitle" xml:space="preserve"><value>Ligar {0} na inicialização?</value></data>
+  <data name="SuConfirmOnBody" xml:space="preserve"><value>O programa volta a abrir junto com o Windows, como estava antes.</value></data>
+  <data name="SuEnabledShort" xml:space="preserve"><value>Ligado de novo</value></data>
+  <data name="SuDisabledShort" xml:space="preserve"><value>Desligado na inicialização</value></data>
+  <data name="SuNever" xml:space="preserve"><value>**Sem números inventados:** o Lotus não mostra um &quot;impacto&quot; estimado. Itens que você não reconhece valem uma pesquisa antes de desligar; nada aqui é apagado.</value></data>
+  <data name="UninSort" xml:space="preserve"><value>Ordenar</value></data>
+  <data name="UninSortName" xml:space="preserve"><value>Ordenar por nome</value></data>
+  <data name="UninSortSize" xml:space="preserve"><value>Maiores primeiro</value></data>
+  <data name="UninSortDate" xml:space="preserve"><value>Instalados recentemente</value></data>
+  <data name="UninSortPublisher" xml:space="preserve"><value>Por editor</value></data>
+  <data name="ToolNetHistory" xml:space="preserve"><value>Últimos testes</value></data>
+  <data name="DkTitle" xml:space="preserve"><value>Saúde do Disco</value></data>
+  <data name="DkWhat" xml:space="preserve"><value>Modelo, tipo, capacidade, espaço livre e a saúde que o **próprio Windows** informa (SMART). Temperatura, desgaste e erros aparecem quando o Windows libera; o que não estiver disponível aparece assim, **sem estimativas**. O Lotus nunca desfragmenta SSD.</value></data>
+  <data name="DkTileHint" xml:space="preserve"><value>Veja a saúde e o espaço de cada disco.</value></data>
+  <data name="DkUnavailable" xml:space="preserve"><value>Indisponível</value></data>
+  <data name="DkType" xml:space="preserve"><value>Tipo e conexão</value></data>
+  <data name="DkCapacity" xml:space="preserve"><value>Capacidade</value></data>
+  <data name="DkHealth" xml:space="preserve"><value>Saúde (Windows)</value></data>
+  <data name="DkTemp" xml:space="preserve"><value>Temperatura</value></data>
+  <data name="DkWear" xml:space="preserve"><value>Desgaste</value></data>
+  <data name="DkWearValue" xml:space="preserve"><value>{0}% usado da vida útil</value></data>
+  <data name="DkHours" xml:space="preserve"><value>Tempo ligado</value></data>
+  <data name="DkHoursValue" xml:space="preserve"><value>{0} horas</value></data>
+  <data name="DkErrors" xml:space="preserve"><value>Erros de leitura/gravação</value></data>
+  <data name="DkErrorsValue" xml:space="preserve"><value>{0} de leitura, {1} de gravação</value></data>
+  <data name="DkVolume" xml:space="preserve"><value>Unidade {0}</value></data>
+  <data name="DkLine" xml:space="preserve"><value>{0} · {1} · {2}</value></data>
+  <data name="DkNone" xml:space="preserve"><value>O Windows não informou nenhum disco agora.</value></data>
+  <data name="DkAllOk" xml:space="preserve"><value>{0} discos sem alertas do Windows.</value></data>
+  <data name="DkAttention" xml:space="preserve"><value>{0} discos pedem atenção.</value></data>
+  <data name="DkNeedsAdmin" xml:space="preserve"><value>Temperatura e desgaste só aparecem quando o Windows libera esses dados (em muitos PCs, apenas como administrador).</value></data>
+  <data name="DkRead" xml:space="preserve"><value>Leitura concluída</value></data>
+  <data name="DkScanTitle" xml:space="preserve"><value>Verificar a unidade {0}?</value></data>
+  <data name="DkScanBody" xml:space="preserve"><value>O Lotus abre a verificação do próprio Windows (**chkdsk /scan**) numa janela visível. Ela só lê e relata problemas; **não corrige nada nem reinicia o PC**. O Windows vai pedir permissão de administrador.</value></data>
+  <data name="DkScanGo" xml:space="preserve"><value>Abrir verificação</value></data>
+  <data name="DkScanStarted" xml:space="preserve"><value>Verificação da unidade {0} aberta numa janela do Windows.</value></data>
+  <data name="DkScanDeclined" xml:space="preserve"><value>A verificação da unidade {0} não foi aberta (permissão de administrador recusada).</value></data>
+  <data name="DkNever" xml:space="preserve"><value>**Sem riscos:** nada aqui grava no disco. A verificação é a do Windows, só leitura. Desfragmentar SSD não ajuda e gasta o disco, por isso o Lotus não faz.</value></data>
+  <data name="SyTitle" xml:space="preserve"><value>Sistema</value></data>
+  <data name="SyWhat" xml:space="preserve"><value>Peças do PC, **dispositivos com problema** no Gerenciador de Dispositivos e **erros recentes do Windows** que costumam explicar travadas e quedas (driver de vídeo reiniciando, desligamentos inesperados, erros de disco ou de hardware).</value></data>
+  <data name="SyLoad" xml:space="preserve"><value>Ver sistema</value></data>
+  <data name="SyRead" xml:space="preserve"><value>Leitura concluída</value></data>
+  <data name="SyHwCpu" xml:space="preserve"><value>Processador</value></data>
+  <data name="SyHwGpu" xml:space="preserve"><value>Placa de vídeo</value></data>
+  <data name="SyHwRam" xml:space="preserve"><value>Memória (RAM)</value></data>
+  <data name="SyHwBoard" xml:space="preserve"><value>Placa-mãe</value></data>
+  <data name="SyHwBios" xml:space="preserve"><value>BIOS</value></data>
+  <data name="SyHwOs" xml:space="preserve"><value>Windows</value></data>
+  <data name="SyDevicesTitle" xml:space="preserve"><value>Dispositivos com problema</value></data>
+  <data name="SyEventsTitle" xml:space="preserve"><value>Erros do Windows nos últimos 7 dias</value></data>
+  <data name="SyEventLine" xml:space="preserve"><value>{0}x · último em {1} · {2}</value></data>
+  <data name="SyAllDevicesOk" xml:space="preserve"><value>Nenhum dispositivo com problema.</value></data>
+  <data name="SyDevicesBad" xml:space="preserve"><value>{0} dispositivos com problema.</value></data>
+  <data name="SyNoEvents" xml:space="preserve"><value>Nenhum erro relevante do Windows na última semana.</value></data>
+  <data name="SyEvents" xml:space="preserve"><value>{0} tipos de erro relevantes na última semana.</value></data>
+  <data name="SyCode1" xml:space="preserve"><value>Código {0}: dispositivo sem driver configurado.</value></data>
+  <data name="SyCode10" xml:space="preserve"><value>Código {0}: o dispositivo não consegue iniciar.</value></data>
+  <data name="SyCode18" xml:space="preserve"><value>Código {0}: o driver precisa ser reinstalado.</value></data>
+  <data name="SyCode22" xml:space="preserve"><value>Código {0}: dispositivo desativado.</value></data>
+  <data name="SyCode28" xml:space="preserve"><value>Código {0}: driver não instalado.</value></data>
+  <data name="SyCode31" xml:space="preserve"><value>Código {0}: o Windows não consegue carregar o driver.</value></data>
+  <data name="SyCode39" xml:space="preserve"><value>Código {0}: driver corrompido ou ausente.</value></data>
+  <data name="SyCode43" xml:space="preserve"><value>Código {0}: o Windows parou o dispositivo após um erro.</value></data>
+  <data name="SyCode45" xml:space="preserve"><value>Código {0}: dispositivo desconectado.</value></data>
+  <data name="SyCodeOther" xml:space="preserve"><value>Código {0} no Gerenciador de Dispositivos.</value></data>
+  <data name="SySfc" xml:space="preserve"><value>Verificar arquivos do Windows (SFC)</value></data>
+  <data name="SyDism" xml:space="preserve"><value>Reparar a imagem do Windows (DISM)</value></data>
+  <data name="SySfcBody" xml:space="preserve"><value>Abre o **sfc /scannow** do próprio Windows numa janela visível. Ele confere os arquivos do sistema e troca os corrompidos pelas cópias originais do Windows. Leva alguns minutos e pede permissão de administrador.</value></data>
+  <data name="SyDismBody" xml:space="preserve"><value>Abre o **DISM /RestoreHealth** do próprio Windows numa janela visível. Ele repara a imagem do Windows usando o Windows Update; use se o SFC não conseguir corrigir. Pode levar de 10 a 30 minutos e pede permissão de administrador.</value></data>
+  <data name="SyRepairGo" xml:space="preserve"><value>Abrir</value></data>
+  <data name="SyRepairStarted" xml:space="preserve"><value>Aberto numa janela do Windows. Acompanhe o resultado por lá.</value></data>
+  <data name="SyRepairDeclined" xml:space="preserve"><value>Não foi aberto (permissão de administrador recusada).</value></data>
+  <data name="SyNever" xml:space="preserve"><value>**Drivers só de fontes oficiais:** o Lotus nunca baixa drivers de sites de terceiros nem troca um driver sem você pedir. Reparos são as ferramentas do próprio Windows.</value></data>
+  <data name="OvUsage" xml:space="preserve"><value>Usando agora: {0} MB de RAM · {1}% de CPU</value></data>
+  <data name="OvAdviceLauncher" xml:space="preserve"><value>Launcher aberto. Pode ficar aberto enquanto você joga; se não for usar, fechar libera um pouco de memória. Ele não é um problema por si só.</value></data>
+  <data name="OvAdviceCompat" xml:space="preserve"><value>**Compatível com o Lotus.** O Lotus usa ou convive com esta ferramenta (overlay de FPS, limite de quadros, medição). Não precisa fechar.</value></data>
+  <data name="DkAllOkOne" xml:space="preserve"><value>Disco sem alertas do Windows.</value></data>
+  <data name="MnTitle" xml:space="preserve"><value>Monitor na taxa certa</value></data>
+  <data name="MnWhat" xml:space="preserve"><value>Muita gente tem um monitor de 144 Hz ou mais rodando a **60 Hz** sem saber. O Lotus compara a taxa atual com a maior que o seu monitor oferece nessa resolução.</value></data>
+  <data name="MnTileHint" xml:space="preserve"><value>Confira se o monitor usa a taxa máxima.</value></data>
+  <data name="MnUnavailable" xml:space="preserve"><value>O Windows não informou os modos do monitor principal.</value></data>
+  <data name="MnLow" xml:space="preserve"><value>Seu monitor está em {0} Hz, mas aguenta {1} Hz ({2} × {3}).</value></data>
+  <data name="MnOk" xml:space="preserve"><value>Seu monitor já usa a taxa máxima: {1} Hz ({2} × {3}).</value></data>
+  <data name="MnLowAdvice" xml:space="preserve"><value>Subir a taxa deixa a imagem visivelmente mais fluida em jogos e no Windows. Dá para voltar quando quiser.</value></data>
+  <data name="MnOkAdvice" xml:space="preserve"><value>Nada a fazer aqui.</value></data>
+  <data name="MnNow" xml:space="preserve"><value>Agora</value></data>
+  <data name="MnMax" xml:space="preserve"><value>Máximo do monitor</value></data>
+  <data name="MnRaise" xml:space="preserve"><value>Usar {0} Hz</value></data>
+  <data name="MnUndo" xml:space="preserve"><value>Desfazer</value></data>
+  <data name="MnOpenSettings" xml:space="preserve"><value>Configurações de vídeo</value></data>
+  <data name="MnNever" xml:space="preserve"><value>A troca usa um modo que o **próprio driver** oferece; se ele recusar, nada muda. Se a tela ficar preta, o Windows volta sozinho em alguns segundos.</value></data>
+  <data name="MnConfirmTitle" xml:space="preserve"><value>Usar {0} Hz no monitor principal?</value></data>
+  <data name="MnConfirmBody" xml:space="preserve"><value>A tela pode piscar por um instante. O Lotus guarda a taxa atual e você pode desfazer aqui ou no Otimizar.</value></data>
+  <data name="GfTitle" xml:space="preserve"><value>Recursos do Windows para jogos</value></data>
+  <data name="GfWhat" xml:space="preserve"><value>Modo de Jogo, gravação em segundo plano, otimizações para jogos em janela e agendamento de GPU **num só lugar**, com o estado atual e um conselho para cada um. Os ajustes são os mesmos do Otimizar e podem ser desfeitos.</value></data>
+  <data name="GfTileHint" xml:space="preserve"><value>Modo de Jogo, gravação e mais, num só lugar.</value></data>
+  <data name="GfApply" xml:space="preserve"><value>Ajustar</value></data>
+  <data name="GfOpen" xml:space="preserve"><value>Abrir no Windows</value></data>
+  <data name="WuTitle" xml:space="preserve"><value>Windows em dia</value></data>
+  <data name="WuWhat" xml:space="preserve"><value>Mostra se o Windows está **esperando um reinício** (que costuma pesar nas partidas) e há quanto tempo o PC não reinicia. Também cria um **ponto de restauração** antes de mudanças maiores.</value></data>
+  <data name="WuTileHint" xml:space="preserve"><value>Reinício pendente e ponto de restauração.</value></data>
+  <data name="WuRestartShort" xml:space="preserve"><value>O Windows está esperando um reinício.</value></data>
+  <data name="WuOkShort" xml:space="preserve"><value>Nenhum reinício pendente.</value></data>
+  <data name="WuRestartUpdate" xml:space="preserve"><value>O Windows Update instalou atualizações e está esperando você reiniciar.</value></data>
+  <data name="WuRestartServicing" xml:space="preserve"><value>Componentes do Windows foram atualizados e precisam de um reinício.</value></data>
+  <data name="WuNoRestart" xml:space="preserve"><value>Nenhum reinício pendente do Windows Update.</value></data>
+  <data name="WuRestartAdvice" xml:space="preserve"><value>Reinicie quando puder, de preferência antes de jogar: até lá o Windows pode terminar a atualização em segundo plano.</value></data>
+  <data name="WuRenames" xml:space="preserve"><value>Alguns programas deixaram arquivos para trocar no próximo reinício (normal depois de instalar ou atualizar algo).</value></data>
+  <data name="WuUptimeDays" xml:space="preserve"><value>O PC está ligado há {0} dias sem reiniciar.</value></data>
+  <data name="WuUptimeHours" xml:space="preserve"><value>O PC está ligado há {1} horas.</value></data>
+  <data name="WuUptimeFast" xml:space="preserve"><value>Com a Inicialização Rápida ligada, &quot;Desligar&quot; não zera o Windows: use **Reiniciar** de vez em quando.</value></data>
+  <data name="WuUptimeLong" xml:space="preserve"><value>Reiniciar de vez em quando libera memória e termina atualizações pendentes.</value></data>
+  <data name="WuOpenUpdate" xml:space="preserve"><value>Abrir Windows Update</value></data>
+  <data name="WuRestoreTitle" xml:space="preserve"><value>Ponto de restauração</value></data>
+  <data name="WuRestoreWhat" xml:space="preserve"><value>Uma &quot;foto&quot; das configurações do Windows para voltar caso algo dê errado depois de instalar um driver ou programa. **Não mexe nos seus arquivos.** Pede permissão de administrador.</value></data>
+  <data name="WuRestoreCreate" xml:space="preserve"><value>Criar ponto de restauração</value></data>
+  <data name="WuRestoreOpen" xml:space="preserve"><value>Abrir Restauração do Sistema</value></data>
+  <data name="WuRestoreConfirmTitle" xml:space="preserve"><value>Criar um ponto de restauração agora?</value></data>
+  <data name="WuRestoreConfirmBody" xml:space="preserve"><value>O Windows vai pedir permissão de administrador e pode levar até um minuto. A Proteção do Sistema precisa estar ligada no disco do Windows.</value></data>
+  <data name="WuRestoreWorking" xml:space="preserve"><value>Criando o ponto de restauração…</value></data>
+  <data name="WuRestoreDeclined" xml:space="preserve"><value>Não foi criado (permissão de administrador recusada).</value></data>
+  <data name="WuRestoreCreated" xml:space="preserve"><value>Ponto de restauração criado. O Windows tem agora {0} pontos.</value></data>
+  <data name="WuRestoreError" xml:space="preserve"><value>O Windows não criou o ponto: {0}</value></data>
+  <data name="WuRestoreSkipped" xml:space="preserve"><value>O Windows não criou um novo ponto: ele só permite um a cada 24 horas, ou a Proteção do Sistema está desligada.</value></data>
+  <data name="WuRestoreDone" xml:space="preserve"><value>Ponto criado</value></data>
+  <data name="CrWhat" xml:space="preserve"><value>Quando um jogo fecha sozinho ou trava, o Windows anota. O Lotus junta essa anotação com o que aconteceu **no mesmo minuto** (driver de vídeo reiniciando, falta de memória, erro de disco ou de hardware) e explica a causa mais provável.</value></data>
+  <data name="CrTileHint" xml:space="preserve"><value>Descubra o que fez um jogo fechar sozinho.</value></data>
+  <data name="CrTechnical" xml:space="preserve"><value>Para suporte: {0} · módulo {1} · código {2}</value></data>
+  <data name="CrNone" xml:space="preserve"><value>Nenhum jogo fechou sozinho nos últimos {0} dias.</value></data>
+  <data name="CrFoundOne" xml:space="preserve"><value>1 jogo fechou ou travou nos últimos {1} dias.</value></data>
+  <data name="CrFound" xml:space="preserve"><value>{0} fechamentos ou travamentos de jogos nos últimos {1} dias.</value></data>
+  <data name="CrPowerLoss" xml:space="preserve"><value>O PC também desligou sem aviso {0} vezes nesse período.</value></data>
+  <data name="CrCauseGpuDriver" xml:space="preserve"><value>Provável causa: o driver de vídeo</value></data>
+  <data name="CrAdviceGpuDriver" xml:space="preserve"><value>O driver da placa de vídeo parou ou reiniciou nesse momento. Atualize o driver (Ferramentas › Drivers), tire overclocks da GPU e confira a temperatura durante o jogo.</value></data>
+  <data name="CrCauseOverlay" xml:space="preserve"><value>Provável causa: um overlay</value></data>
+  <data name="CrAdviceOverlay" xml:space="preserve"><value>A falha aconteceu dentro de um overlay (Steam, Discord, Overwolf ou outro). Desligue o overlay desse jogo e teste de novo; veja Ferramentas › Overlays.</value></data>
+  <data name="CrCauseOutOfMemory" xml:space="preserve"><value>Provável causa: faltou memória</value></data>
+  <data name="CrAdviceOutOfMemory" xml:space="preserve"><value>O Windows avisou que a memória acabou. Feche programas pesados antes de jogar (Memória e Processos) e confira se o arquivo de paginação está ativado.</value></data>
+  <data name="CrCausePowerLoss" xml:space="preserve"><value>Provável causa: o PC desligou</value></data>
+  <data name="CrAdvicePowerLoss" xml:space="preserve"><value>O PC desligou sem aviso. Costuma ser fonte, temperatura alta ou instabilidade de overclock.</value></data>
+  <data name="CrCauseHardware" xml:space="preserve"><value>Provável causa: erro de hardware</value></data>
+  <data name="CrAdviceHardware" xml:space="preserve"><value>O Windows registrou um erro de hardware nesse momento. Tire overclocks (CPU, memória, GPU) e confira as temperaturas; se continuar, vale uma revisão técnica.</value></data>
+  <data name="CrCauseDisk" xml:space="preserve"><value>Provável causa: erro de disco</value></data>
+  <data name="CrAdviceDisk" xml:space="preserve"><value>O disco teve erros nesse momento. Veja Ferramentas › Saúde do Disco e, na Steam, use &quot;Verificar integridade dos arquivos&quot;.</value></data>
+  <data name="CrCauseHang" xml:space="preserve"><value>O jogo parou de responder</value></data>
+  <data name="CrAdviceHang" xml:space="preserve"><value>O jogo travou e o Windows o fechou. Costuma ser falta de memória, disco lento ou o próprio jogo. Verifique os arquivos do jogo no launcher e feche programas pesados.</value></data>
+  <data name="CrCauseGraphicsLibrary" xml:space="preserve"><value>Provável causa: a parte gráfica do Windows</value></data>
+  <data name="CrAdviceGraphicsLibrary" xml:space="preserve"><value>A falha foi no DirectX ou no Vulkan. Atualize o driver de vídeo e o Windows; se o jogo tiver opção, teste outro modo gráfico (DirectX 11/12 ou Vulkan).</value></data>
+  <data name="CrCauseRuntime" xml:space="preserve"><value>Provável causa: o motor do jogo</value></data>
+  <data name="CrAdviceRuntime" xml:space="preserve"><value>A falha foi no motor ou nos componentes do jogo. Verifique a integridade dos arquivos no launcher e reinstale os pacotes que o jogo pede (Visual C++, .NET).</value></data>
+  <data name="CrCauseGame" xml:space="preserve"><value>Provável causa: o próprio jogo</value></data>
+  <data name="CrAdviceGame" xml:space="preserve"><value>O Windows não registrou nada de anormal no PC nesse momento, então o problema parece ser do jogo. Verifique os arquivos no launcher, procure atualizações do jogo e desligue mods para testar.</value></data>
+  <data name="CrNever" xml:space="preserve"><value>**É uma pista, não uma certeza:** o Lotus só lê os registros do próprio Windows e não envia nada para fora. O código técnico ajuda se você precisar pedir suporte.</value></data>
+  <data name="CkTitle" xml:space="preserve"><value>Check-up do PC</value></data>
+  <data name="CkTileHint" xml:space="preserve"><value>Um clique analisa o PC inteiro, só lendo, e mostra o que vale a pena olhar primeiro.</value></data>
+  <data name="CkRun" xml:space="preserve"><value>Fazer check-up</value></data>
+  <data name="CkRunAgain" xml:space="preserve"><value>Fazer de novo</value></data>
+  <data name="CkSeeResult" xml:space="preserve"><value>Ver resultado</value></data>
+  <data name="CkDone" xml:space="preserve"><value>Check-up concluído</value></data>
+  <data name="CkNever" xml:space="preserve"><value>**Só leitura:** o check-up não muda nada no PC. Cada item abre a ferramenta onde você decide o que fazer.</value></data>
+  <data name="CkStepMonitor" xml:space="preserve"><value>Conferindo o monitor e os recursos de jogo…</value></data>
+  <data name="CkStepCrashes" xml:space="preserve"><value>Procurando jogos que fecharam sozinhos…</value></data>
+  <data name="CkStepSystem" xml:space="preserve"><value>Lendo dispositivos e erros do Windows…</value></data>
+  <data name="CkStepDisks" xml:space="preserve"><value>Conferindo a saúde dos discos…</value></data>
+  <data name="CkStepWindows" xml:space="preserve"><value>Conferindo reinícios pendentes…</value></data>
+  <data name="CkStepProcesses" xml:space="preserve"><value>Medindo os programas abertos…</value></data>
+  <data name="CkStepOverlays" xml:space="preserve"><value>Procurando overlays…</value></data>
+  <data name="CkStepStartup" xml:space="preserve"><value>Lendo a inicialização do Windows…</value></data>
+  <data name="CkStepClean" xml:space="preserve"><value>Medindo o espaço que pode ser liberado…</value></data>
+  <data name="CkMonitorLow" xml:space="preserve"><value>Monitor em {0} Hz, mas ele aguenta {1} Hz</value></data>
+  <data name="CkMonitorOk" xml:space="preserve"><value>Monitor na taxa máxima ({1} Hz)</value></data>
+  <data name="CkMonitorLowDetail" xml:space="preserve"><value>Usar a taxa máxima deixa os jogos visivelmente mais fluidos.</value></data>
+  <data name="CkMonitorOkDetail" xml:space="preserve"><value>Nada a fazer.</value></data>
+  <data name="CkFeatures" xml:space="preserve"><value>{0} recursos do Windows para jogos podem ser ajustados</value></data>
+  <data name="CkFeaturesOk" xml:space="preserve"><value>Recursos do Windows para jogos em ordem</value></data>
+  <data name="CkFeaturesDetail" xml:space="preserve"><value>Modo de Jogo, gravação em segundo plano e otimizações em janela.</value></data>
+  <data name="CkCrashes" xml:space="preserve"><value>{0} jogos fecharam ou travaram nos últimos 14 dias</value></data>
+  <data name="CkCrashesOk" xml:space="preserve"><value>Nenhum jogo fechou sozinho</value></data>
+  <data name="CkCrashesOkDetail" xml:space="preserve"><value>Nos últimos 14 dias.</value></data>
+  <data name="CkDevices" xml:space="preserve"><value>{0} dispositivos com problema</value></data>
+  <data name="CkEvents" xml:space="preserve"><value>{0} tipos de erro do Windows na última semana</value></data>
+  <data name="CkEventsOk" xml:space="preserve"><value>Nenhum erro relevante do Windows</value></data>
+  <data name="CkEventsOkDetail" xml:space="preserve"><value>Na última semana.</value></data>
+  <data name="CkDisks" xml:space="preserve"><value>{0} discos pedem atenção</value></data>
+  <data name="CkDisksOk" xml:space="preserve"><value>Discos sem alertas do Windows</value></data>
+  <data name="CkDisksOkDetail" xml:space="preserve"><value>Saúde informada pelo próprio Windows.</value></data>
+  <data name="CkLowSpace" xml:space="preserve"><value>Pouco espaço na unidade {0}: {1} livres</value></data>
+  <data name="CkLowSpaceDetail" xml:space="preserve"><value>Jogos e atualizações precisam de espaço livre. Veja os maiores arquivos e pastas.</value></data>
+  <data name="CkRestart" xml:space="preserve"><value>O Windows está esperando um reinício</value></data>
+  <data name="CkUptime" xml:space="preserve"><value>O PC está ligado há {0} dias sem reiniciar</value></data>
+  <data name="CkWindowsOk" xml:space="preserve"><value>Nenhum reinício pendente</value></data>
+  <data name="CkHeavy" xml:space="preserve"><value>{0} programas pesados abertos ({1})</value></data>
+  <data name="CkHeavyOk" xml:space="preserve"><value>Nenhum programa muito pesado aberto</value></data>
+  <data name="CkHeavyOkDetail" xml:space="preserve"><value>Nenhum programa que pode ser fechado passa de 1 GB.</value></data>
+  <data name="CkOverlays" xml:space="preserve"><value>{0} itens que podem causar travadas</value></data>
+  <data name="CkOverlaysOk" xml:space="preserve"><value>Nenhum overlay que costuma causar travadas</value></data>
+  <data name="CkOverlaysOkDetail" xml:space="preserve"><value>Launchers e ferramentas compatíveis não contam.</value></data>
+  <data name="CkStartupMany" xml:space="preserve"><value>{0} programas abrem junto com o Windows</value></data>
+  <data name="CkStartupOk" xml:space="preserve"><value>{0} programas abrem junto com o Windows</value></data>
+  <data name="CkStartupDetail" xml:space="preserve"><value>Desligue os que você não usa logo ao ligar o PC.</value></data>
+  <data name="CkClean" xml:space="preserve"><value>{0} podem ser liberados com segurança</value></data>
+  <data name="CkCleanOk" xml:space="preserve"><value>Pouco para limpar</value></data>
+  <data name="CkCleanDetail" xml:space="preserve"><value>Temporários, caches e registros antigos.</value></data>
+  <data name="CkHeadAttentionOne" xml:space="preserve"><value>1 coisa pede atenção no seu PC.</value></data>
+  <data name="CkHeadAttention" xml:space="preserve"><value>{0} coisas pedem atenção no seu PC.</value></data>
+  <data name="CkHeadTipsOne" xml:space="preserve"><value>Tudo certo, com 1 dica para melhorar.</value></data>
+  <data name="CkHeadTips" xml:space="preserve"><value>Tudo certo, com {0} dicas para melhorar.</value></data>
+  <data name="CkHeadGood" xml:space="preserve"><value>Tudo em ordem no seu PC.</value></data>
+  <data name="CkCounts" xml:space="preserve"><value>{0} pedem atenção · {1} dicas · {2} em ordem</value></data>
+  <data name="CkChipAttention" xml:space="preserve"><value>{0} pedem atenção</value></data>
+  <data name="CkChipTips" xml:space="preserve"><value>{0} dicas</value></data>
+  <data name="CkChipGood" xml:space="preserve"><value>{0} em ordem</value></data>
+  <data name="CrashTitle" xml:space="preserve"><value>Por que meu jogo fechou?</value></data>
+  <data name="GfAllGood" xml:space="preserve"><value>Tudo certo para jogar.</value></data>
 </root>

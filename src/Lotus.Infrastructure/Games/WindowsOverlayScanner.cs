@@ -8,7 +8,9 @@ namespace Lotus.Infrastructure.Games;
 
 // Read-only: running processes, the per-user Xbox capture setting and Discord's own settings file. Nothing is changed.
 [SupportedOSPlatform("windows")]
-public sealed class WindowsOverlayScanner(string? discordSettings = null) : IOverlayScanner
+// includeContext (the Tools screen only): also lists open launchers and the tools Lotus works with (RTSS, Afterburner,
+// PresentMon) as compatible. Preparing a game keeps the original list, so those are never counted as problems.
+public sealed class WindowsOverlayScanner(string? discordSettings = null, bool includeContext = false) : IOverlayScanner
 {
     // Process name → (id, display name, heavy). RTSS is left out: Lotus uses it for its own overlay and FPS limit.
     private static readonly (string Process, string Id, string Name, bool Heavy)[] Apps =
@@ -29,14 +31,35 @@ public sealed class WindowsOverlayScanner(string? discordSettings = null) : IOve
         ("ArmouryCrate", "rgb", "Armoury Crate", false),
     ];
 
+private static readonly (string Process, string Id, string Name)[] Context =
+    [
+        ("steam", "launcher-steam", "Steam"), ("steamwebhelper", "launcher-steam", "Steam"),
+        ("EpicGamesLauncher", "launcher-epic", "Epic Games Launcher"), ("EpicWebHelper", "launcher-epic", "Epic Games Launcher"),
+        ("EADesktop", "launcher-ea", "EA app"), ("EABackgroundService", "launcher-ea", "EA app"),
+        ("upc", "launcher-ubisoft", "Ubisoft Connect"), ("UbisoftConnect", "launcher-ubisoft", "Ubisoft Connect"),
+        ("Battle.net", "launcher-battlenet", "Battle.net"), ("RiotClientServices", "launcher-riot", "Riot Client"), ("GalaxyClient", "launcher-gog", "GOG Galaxy"),
+        ("RTSS", "compat-rtss", "RivaTuner Statistics Server"), ("MSIAfterburner", "compat-afterburner", "MSI Afterburner"),
+        ("PresentMon", "compat-presentmon", "PresentMon"), ("PresentMon-x64", "compat-presentmon", "PresentMon"),
+    ];
+
+    public static IReadOnlyList<OverlayFinding> FromProcesses(IEnumerable<string> running, bool discordHardwareAcceleration, bool xboxCapture, bool includeContext)
+    {
+        var names = running.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var list = FromProcesses(names, discordHardwareAcceleration, xboxCapture).ToList();
+        if (!includeContext) return list;
+        foreach (var group in Context.Where(c => names.Contains(c.Process)).GroupBy(c => c.Id))
+            list.Add(new(group.Key, group.First().Name, false, [.. Context.Where(c => c.Id == group.Key).Select(c => c.Process)]));
+        return list;
+    }
+
     public static IReadOnlyList<OverlayFinding> FromProcesses(IEnumerable<string> running, bool discordHardwareAcceleration, bool xboxCapture)
     {
         var names = running.ToHashSet(StringComparer.OrdinalIgnoreCase);
         var list = new List<OverlayFinding>();
-        if (names.Contains("Discord") && discordHardwareAcceleration) list.Add(new("discord", "Discord", true));
-        if (xboxCapture) list.Add(new("xbox", "Xbox Game Bar", false));
+        if (names.Contains("Discord") && discordHardwareAcceleration) list.Add(new("discord", "Discord", true, ["Discord"]));
+        if (xboxCapture) list.Add(new("xbox", "Xbox Game Bar", false, ["GameBar", "GameBarFTServer"]));
         foreach (var a in Apps.Where(a => names.Contains(a.Process)))
-            if (!list.Any(f => f.Id == a.Id)) list.Add(new(a.Id, a.Name, a.Heavy));
+            if (!list.Any(f => f.Id == a.Id)) list.Add(new(a.Id, a.Name, a.Heavy, [.. Apps.Where(x => x.Id == a.Id).Select(x => x.Process)]));
         return list;
     }
 
@@ -44,7 +67,7 @@ public sealed class WindowsOverlayScanner(string? discordSettings = null) : IOve
     {
         var running = new List<string>();
         foreach (var p in Process.GetProcesses()) using (p) { try { running.Add(p.ProcessName); } catch (InvalidOperationException) { } }
-        return FromProcesses(running, DiscordHardwareAcceleration(), XboxCapture());
+        return FromProcesses(running, DiscordHardwareAcceleration(), XboxCapture(), includeContext);
     }
 
     // Discord keeps "enableHardwareAcceleration" in its settings file; missing means on (the default).

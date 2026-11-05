@@ -138,7 +138,39 @@ public sealed partial class MainWindow : Window
         games.TechScanner = new Lotus.Infrastructure.Games.GameTechScanner();
         var overlayScanner = new Lotus.Infrastructure.Games.WindowsOverlayScanner();
         games.Overlays = overlayScanner;
-        tools.Overlays = new Lotus.Core.Games.OverlayCheckViewModel(overlayScanner, text);
+        tools.Overlays = new Lotus.Core.Games.OverlayCheckViewModel(new Lotus.Infrastructure.Games.WindowsOverlayScanner(includeContext: true), text,
+            token => new Lotus.Infrastructure.Maintenance.WindowsProcessSampler(intervalMs: 500).SampleAsync(token)); // real RAM/CPU of each item, read when the player checks
+        // Maintenance tools: one engine and one history (%LOCALAPPDATA%\Lotus\Maintenance\history.json); nothing runs until asked.
+        tools.Journal = new Lotus.Infrastructure.Maintenance.JsonMaintenanceJournal(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Maintenance", "history.json"));
+        tools.Clean = new Lotus.Core.Maintenance.CleanViewModel(
+            new Lotus.Core.Maintenance.CleanEngine(new Lotus.Infrastructure.Maintenance.WindowsCleanLocations(), new Lotus.Infrastructure.Maintenance.WindowsProcessProbe(), new Lotus.Infrastructure.Maintenance.ShellRecycleBin(), trace: m => Serilog.Log.Information("{Clean}", m)),
+            text, tools.Journal, ex => Serilog.Log.Warning(ex, "Lotus Clean"));
+        IReadOnlyCollection<string> GameExes() => [.. games.InstalledGames().Select(g => g.ExePath).OfType<string>()];
+        tools.Processes = new Lotus.Core.Maintenance.ProcessesViewModel(new Lotus.Infrastructure.Maintenance.WindowsProcessSampler(GameExes),
+            new Lotus.Infrastructure.Maintenance.JsonCloseList(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Maintenance", "close-before-play.json")),
+            text, tools.Journal, ex => Serilog.Log.Warning(ex, "Processes"));
+        // Startup: same inventory and the same journaled toggle as Otimizar (exact undo of what Lotus turned off).
+        tools.Startup = new Lotus.Core.Maintenance.StartupToolViewModel(new Lotus.Infrastructure.Optimization.WindowsStartupInventory(), new Lotus.Infrastructure.Maintenance.WindowsStartupDetails(),
+            async entry => { await powerProfiles.ToggleStartupAsync(new Lotus.Core.Optimization.StartupRow(entry.Name, entry.Location, "", entry.Enabled == false, entry, true)); return true; },
+            text, tools.Journal, ex => Serilog.Log.Warning(ex, "Startup tool"));
+        tools.DiskTool = new Lotus.Core.Maintenance.DiskToolViewModel(new Lotus.Infrastructure.Maintenance.WindowsDiskInspector(), text, tools.Journal, ex => Serilog.Log.Warning(ex, "Disk tool"));
+        tools.SystemTool = new Lotus.Core.Maintenance.SystemToolViewModel(new Lotus.Infrastructure.Maintenance.WindowsSystemInspector(), text, tools.Journal, ex => Serilog.Log.Warning(ex, "System tool"));
+        // Monitor and Windows gaming features: the same inventory and reversible actions as Otimizar.
+        tools.Gaming = new Lotus.Core.Maintenance.GamingSetupViewModel(new Lotus.Infrastructure.Optimization.WindowsGameFeatures(new Lotus.Infrastructure.Optimization.WindowsDisplayModes()),
+            new Lotus.Infrastructure.Optimization.WindowsDisplayModes(),
+            new Lotus.Core.Maintenance.FeatureActions(id => powerProfiles.ApplyFeatureAsync(id, confirmed: true), id => powerProfiles.UndoFeatureAsync(id, confirmed: true),
+                powerProfiles.HasFeatureAction, powerProfiles.IsFeatureApplied, powerProfiles.RefreshFeaturesAsync, () => powerProfiles.FeatureMessage),
+            text, tools.Journal, ex => Serilog.Log.Warning(ex, "Gaming setup"));
+        tools.Upkeep = new Lotus.Core.Maintenance.WindowsUpkeepViewModel(new Lotus.Infrastructure.Maintenance.WindowsUpkeepService(), text, tools.Journal, ex => Serilog.Log.Warning(ex, "Windows upkeep"));
+        tools.Crashes = new Lotus.Core.Maintenance.GameCrashViewModel(new Lotus.Infrastructure.Maintenance.WindowsCrashLog(), text, ex => Serilog.Log.Warning(ex, "Game crashes"))
+        {
+            GameExes = GameExes,
+            GameName = path => games.InstalledGames().FirstOrDefault(g => string.Equals(g.ExePath, path, StringComparison.OrdinalIgnoreCase))?.Name,
+        };
+        tools.Checkup = new Lotus.Core.Maintenance.CheckupViewModel(tools, text, ex => Serilog.Log.Warning(ex, "Check-up"));
+        var places = new Lotus.Infrastructure.Maintenance.WindowsCleanLocations();
+        tools.Storage = new Lotus.Core.Maintenance.StorageViewModel(new Lotus.Core.Maintenance.StorageScanner(places.Resolve), new Lotus.Infrastructure.Maintenance.ShellFileRecycler(),
+            new Lotus.Infrastructure.Maintenance.ExplorerRevealer(), Lotus.Infrastructure.Maintenance.LocalDrives.Read, places.Resolve, text, tools.Journal, ex => Serilog.Log.Warning(ex, "Storage"));
         games.Rtss = integrations.Rtss;
         games.AdaptiveSync = () => preferences.Current.AdaptiveSync;
         games.Display = new Lotus.Infrastructure.Games.WindowsDisplaySync();
@@ -514,8 +546,10 @@ public sealed partial class MainWindow : Window
     {
         try
         {
-            if (Environment.ProcessPath is { } exe && Lotus.Infrastructure.Setup.WindowsStartup.IsEnabled() != preferences.Current.StartWithWindows)
-                Lotus.Infrastructure.Setup.WindowsStartup.Set(preferences.Current.StartWithWindows, exe);
+            // A development build shares the preferences but must never put itself in the player's startup.
+            if (Environment.GetCommandLineArgs().Contains("--dev-instance") || Environment.ProcessPath is not { } exe) return;
+            if (Lotus.Infrastructure.Setup.WindowsStartup.NeededChange(preferences.Current.StartWithWindows, Lotus.Infrastructure.Setup.WindowsStartup.Registered(), exe) is { } enable)
+                Lotus.Infrastructure.Setup.WindowsStartup.Set(enable, exe);
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Start with Windows"); }
     }

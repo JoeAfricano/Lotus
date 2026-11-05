@@ -94,6 +94,17 @@ public sealed class UninstallerViewModel(IAppUninstaller uninstaller, ITextCatal
     public bool HasLeftovers => Leftovers.Count > 0;
     public bool Busy { get; private set; }
     public string Query { get => query; set { if (SetProperty(ref query, value ?? "")) Filter(); } }
+    // 0 name, 1 biggest first, 2 newest first, 3 publisher. Unknown sizes and dates go last (never guessed).
+    private int sortIndex;
+    public int SortIndex { get => sortIndex; set { if (value >= 0 && SetProperty(ref sortIndex, value)) Filter(); } }
+    public IReadOnlyList<string> Sorts => [Text["UninSortName"], Text["UninSortSize"], Text["UninSortDate"], Text["UninSortPublisher"]];
+    public IEnumerable<InstalledApp> Sorted(IEnumerable<InstalledApp> apps) => SortIndex switch
+    {
+        1 => apps.OrderByDescending(a => a.SizeBytes ?? -1),
+        2 => apps.OrderByDescending(a => a.Installed ?? DateTime.MinValue),
+        3 => apps.OrderBy(a => a.Publisher is { Length: > 0 } ? 0 : 1).ThenBy(a => a.Publisher, StringComparer.CurrentCultureIgnoreCase).ThenBy(a => a.Name, StringComparer.CurrentCultureIgnoreCase),
+        _ => apps.OrderBy(a => a.Name, StringComparer.CurrentCultureIgnoreCase),
+    };
     private System.Globalization.CultureInfo Culture => System.Globalization.CultureInfo.GetCultureInfo(Text.Language);
 
     public async Task LoadAsync()
@@ -108,7 +119,7 @@ public sealed class UninstallerViewModel(IAppUninstaller uninstaller, ITextCatal
     {
         Apps.Clear();
         var terms = query.Trim().ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        foreach (var a in all.Where(a => terms.All(t => a.Name.Contains(t, StringComparison.OrdinalIgnoreCase) || (a.Publisher?.Contains(t, StringComparison.OrdinalIgnoreCase) ?? false))).Take(40))
+        foreach (var a in Sorted(all.Where(a => terms.All(t => a.Name.Contains(t, StringComparison.OrdinalIgnoreCase) || (a.Publisher?.Contains(t, StringComparison.OrdinalIgnoreCase) ?? false)))).Take(60))
         {
             var parts = new List<string>();
             if (a.Publisher is { Length: > 0 } p) parts.Add(p);

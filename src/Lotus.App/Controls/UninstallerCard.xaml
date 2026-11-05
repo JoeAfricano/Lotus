@@ -9,7 +9,10 @@
      <TextBlock app:Rich.Text="{Binding Text[UninWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
     </StackPanel>
    </Grid>
-   <TextBox Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="{Binding Text[UninSearch]}" MinHeight="40" VerticalContentAlignment="Center" AutomationProperties.Name="{Binding Text[UninSearch]}" AutomationProperties.AutomationId="unin-search"/>
+   <Grid ColumnSpacing="10"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <TextBox Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="{Binding Text[UninSearch]}" MinHeight="40" VerticalContentAlignment="Center" AutomationProperties.Name="{Binding Text[UninSearch]}" AutomationProperties.AutomationId="unin-search"/>
+    <ComboBox Grid.Column="1" ItemsSource="{Binding Sorts}" SelectedIndex="{Binding SortIndex, Mode=TwoWay}" MinWidth="220" MinHeight="40" AutomationProperties.Name="{Binding Text[UninSort]}" AutomationProperties.AutomationId="unin-sort"/>
+   </Grid>
    <TextBlock Text="{Binding Summary}" Style="{StaticResource CaptionStyle}"/>
    <StackPanel Orientation="Horizontal" Spacing="8">
     <Button Content="{Binding UninstallSelectedLabel}" Click="OnUninstallSelected" IsEnabled="{Binding HasSelection}" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="unin-selected"/>

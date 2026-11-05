@@ -38,6 +38,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 | ⚡ **Otimizar sem medo** | Perfis Jogo, Diário e Personalizado que mostram cada mudança antes e podem ser desfeitos. Nada muda sem confirmação. |
 | 📊 **Lotus Score** | Teste de CPU e GPU, FPS estimado por jogo com fontes e gargalo por resolução. Sem números inventados. |
 | 📔 **Meu diário** | Sessões automáticas, notas, estatísticas, "O que jogar agora?", conquistas e retrospectiva do ano. |
+| 🧰 **Ferramentas** | Check-up do PC num clique, Limpeza Inteligente, memória e processos, arquivos, monitor, "Por que meu jogo fechou?" e mais. Tudo só lendo até você confirmar. |
 | 💾 **Backup de saves** | Cópias conferidas (SHA-256) depois de cada sessão, restauração segura com volta automática se algo falhar. |
 | ☁️ **Backup e Google Drive** | Tudo num arquivo `.lotusbackup` e, se quiser, no seu Drive: agora, toda semana ou todo mês. |
 | 🔄 **Atualizações** | Avisa quando há versão nova, baixa com animação, confere o instalador e atualiza sozinho. |
@@ -127,10 +128,17 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 - 14 medalhas com critério e progresso, mais 54 conquistas do Lotus. Conquistas da Steam lidas do próprio PC, sem login.
 
 ### Ferramentas
-- Liberar memória, limpar temporários, testar internet e DNS.
-- Saúde do disco, driver de vídeo, desinstalar programas.
-- **Overlays e travadas:** mostra o que costuma causar travadas (Discord com aceleração de hardware, overlays da NVIDIA e da AMD, captura do Xbox, Overwolf, Medal, OBS, papéis de parede animados, apps de RGB) e explica como desligar. Também entra no "Por que está travando?".
-
+Tudo na aba Ferramentas, em cartões. Abrir ou analisar nunca muda nada; cada ação pede confirmação e mostra o risco (baixo, revisão ou avançado).
+- **Check-up do PC:** um clique roda todas as análises (só leitura) e mostra o que pede atenção, as dicas e o que está em ordem, com atalho para a ferramenta certa.
+- **Limpeza Inteligente:** temporários, caches de navegadores (Chrome, Edge, Brave, Opera, Opera GX, Firefox), Discord, Steam, Epic, registros antigos e relatórios de erro. Mostra o tamanho real antes e o que saiu de fato depois. Nunca toca em saves, mods, cookies, senhas, sessões ou caches de shader; pula caches de programas abertos e arquivos em uso.
+- **Memória e Processos:** RAM e CPU reais por programa, fechar do jeito normal (ou forçar, com aviso), lista "fechar antes de jogar". Windows, antitrapaças, jogos e o Lotus ficam protegidos.
+- **Arquivos e Armazenamento:** arquivos grandes, pastas que mais ocupam, duplicados pelo conteúdo (SHA-256) e downloads antigos; tudo só para a Lixeira, sempre deixando uma cópia.
+- **Inicialização do Windows:** editor, assinatura digital, caminho e mecanismo de cada item; desligar e religar com desfazer.
+- **Monitor na taxa certa** e **Recursos do Windows para jogos:** taxa atual × máxima do monitor, Modo de Jogo, gravação em segundo plano, otimizações em janela e agendamento de GPU, com ajuste reversível.
+- **Por que meu jogo fechou?:** cruza as falhas de jogos registradas pelo Windows com o que aconteceu no mesmo minuto (driver de vídeo, memória, disco, hardware) e explica a causa provável.
+- **Windows em dia:** reinício pendente, tempo ligado e ponto de restauração do Windows.
+- **Saúde do Disco, Drivers e Sistema:** dados do próprio Windows (o que não estiver disponível aparece assim), dispositivos com problema, erros recentes, chkdsk /scan, SFC e DISM com confirmação.
+- **Desinstalar programas** (busca e ordenação), **Internet e DNS** (com histórico) e **Overlays e travadas** (com RAM/CPU de cada item; RTSS, Afterburner e PresentMon aparecem como compatíveis).
 ### Temas
 - **Modos** Escuro, Claro (porcelana rosé), Sistema e Grafite, com 7 cores de destaque.
 - **Galeria com 12 temas prontos** (Lotus Rosé, Sakura, Synthwave, Cyberpunk, Aurora, Oceano, Floresta, Ouro Real, Monocromático, Vampiro, Gelo e Porcelana), cada um com cores e fundo animado próprios.

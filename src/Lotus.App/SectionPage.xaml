@@ -38,8 +38,7 @@
       <HyperlinkButton Content="{Binding Text[HomeGamesAll]}" Click="OnOpenGames" AutomationProperties.AutomationId="home-games-all"/>
      </StackPanel>
     </Grid>
-    <Grid ColumnSpacing="20">
-     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="360"/></Grid.ColumnDefinitions>
+    <Grid>
     <ScrollViewer HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" Padding="0,0,0,10" Visibility="{Binding Games.HasFeatured, Converter={StaticResource BooleanVisibility}}">
     <ItemsControl ItemsSource="{Binding Games.Featured}" AutomationProperties.AutomationId="home-games">
      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="14"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
@@ -60,11 +59,7 @@
      </DataTemplate></ItemsControl.ItemTemplate>
     </ItemsControl>
     </ScrollViewer>
-     <!-- "Antes de começar" (design): the promise that nothing changes without the player -->
-     <Border Grid.Column="1" Style="{StaticResource CardStyle}" VerticalAlignment="Top" AutomationProperties.AutomationId="home-before">
-      <StackPanel Spacing="10"><FontIcon Glyph="&#xE945;" FontSize="26" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/><TextBlock Text="{Binding Text[HbBeforeTitle]}" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[HbBeforeBody]}" Style="{StaticResource BodyStyle}" TextWrapping="Wrap"/></StackPanel>
-     </Border>
-    </Grid>
+   </Grid>
     <!-- Diary shelf: what the player is playing and wants to play (filled in code) -->
     <StackPanel x:Name="HomeShelf" Spacing="12" Margin="0,8,0,0" Loaded="OnHomeShelfLoaded" Visibility="Collapsed">
      <StackPanel Spacing="2"><TextBlock Text="{Binding Text[DyShelf]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[DyShelfHint]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
@@ -72,6 +67,13 @@
       <StackPanel x:Name="HomeShelfRow" Orientation="Horizontal" Spacing="14" Padding="0,0,0,10"/>
      </ScrollViewer>
     </StackPanel>
+    <!-- "Antes de começar": the promise that nothing changes without the player, as a quiet note at the end of Home -->
+    <Border CornerRadius="14" Padding="18,12" Margin="0,8,0,0" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" HorizontalAlignment="Left" AutomationProperties.AutomationId="home-before">
+     <StackPanel Orientation="Horizontal" Spacing="12">
+      <FontIcon Glyph="&#xE945;" FontSize="16" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+      <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Style="{StaticResource CaptionStyle}"><Run Text="{Binding Text[HbBeforeTitle]}" FontWeight="SemiBold"/><Run Text=" · "/><Run Text="{Binding Text[HbBeforeBody]}"/></TextBlock>
+     </StackPanel>
+    </Border>
    </StackPanel>
 
    <StackPanel x:Name="OptimizeContent" x:Load="{x:Bind ShowOptimize}" Spacing="20">
