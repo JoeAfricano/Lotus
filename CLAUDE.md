@@ -81,3 +81,7 @@ O pedido de exportação não autoriza aplicar otimizações ao Windows nem desc
 - A instância `--dev-instance` não grava mais "Iniciar com o Windows". A entrada Run "Lotus" do PC ainda aponta para o build Debug (corrigir só com aprovação).
 - Limpeza real, fechar processos, mover para a Lixeira, mudar inicialização, chkdsk/SFC/DISM exigem aprovação do usuário.
 - Ferramentas também têm Check-up do PC, Monitor na taxa certa, Recursos para jogos, Por que meu jogo fechou?, Windows em dia (reinício/ponto de restauração). 524 testes. Nota 'Antes de começar' movida para o fim do Início. Nada commitado.
+
+## Estado em 06/11/2026 (Claude Code)
+
+- **1.1.0/1.1.1** publicadas (Ferramentas; bandeja ao jogar). **1.2.0-alpha** preparada: integração com o Lotus Ports (`src/Lotus.Infrastructure/PortsLink`, faixa em Meus Jogos, sessões do Ports no diário e na bandeja; `docs/LOTUS_PORTS_INTEGRATION.md`) e ícone novo (flor neon, `docs/images/lotus-icon.png`). 531 testes.

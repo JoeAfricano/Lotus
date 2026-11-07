@@ -3040,4 +3040,37 @@ Your games and Windows are not changed.</value></data>
   <data name="CkChipGood" xml:space="preserve"><value>{0} in order</value></data>
   <data name="CrashTitle" xml:space="preserve"><value>Why did my game close?</value></data>
   <data name="GfAllGood" xml:space="preserve"><value>All set for gaming.</value></data>
+  <data name="PortsGamesTitle" xml:space="preserve">
+    <value>Your Lotus Ports games</value>
+  </data>
+  <data name="PortsGamesHint" xml:space="preserve">
+    <value>Classics in native PC versions, installed by Lotus Ports.</value>
+  </data>
+  <data name="PortsPlay" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="PortsOpen" xml:space="preserve">
+    <value>Open in Lotus Ports</value>
+  </data>
+  <data name="PortsStateReady" xml:space="preserve">
+    <value>Ready to play</value>
+  </data>
+  <data name="PortsStateUpdate" xml:space="preserve">
+    <value>Update available</value>
+  </data>
+  <data name="PortsStateProblem" xml:space="preserve">
+    <value>Needs attention</value>
+  </data>
+  <data name="PortsStateNotInstalled" xml:space="preserve">
+    <value>Not installed</value>
+  </data>
+  <data name="PortsLaunching" xml:space="preserve">
+    <value>Opening through Lotus Ports…</value>
+  </data>
+  <data name="PortsLaunchNotStarted" xml:space="preserve">
+    <value>Lotus Ports opened the game page: {0}</value>
+  </data>
+  <data name="PortsUnavailable" xml:space="preserve">
+    <value>Lotus Ports did not answer. Open Lotus Ports and try again.</value>
+  </data>
 </root>

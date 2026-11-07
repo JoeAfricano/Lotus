@@ -14,6 +14,8 @@ public static class GameStores
 {
     public const string Steam = "Steam", Epic = "Epic Games", Xbox = "Xbox", Gog = "GOG", Ea = "EA app", Ubisoft = "Ubisoft Connect", Manual = "Manual";
     public static readonly string[] All = [Steam, Epic, Xbox, Gog, Ea, Ubisoft, Manual];
+    // Games played through the sibling app (diary only; they are not scanned as part of the Lotus library).
+    public const string LotusPorts = "Lotus Ports";
 }
 
 public sealed record LibraryScan(IReadOnlyList<GameEntry> Games, IReadOnlyList<string> Errors);

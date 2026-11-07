@@ -197,9 +197,38 @@ public partial class App : Application
         };
         Log.Information("Application started {Version}", "0.1.0-alpha");
         window.Activate();
+        StartPortsIntegration(window);
         var main = (MainWindow)window;
         new Thread(() => { while (showSignal.WaitOne()) main.DispatcherQueue.TryEnqueue(main.BringBack); }) { IsBackground = true, Name = "Lotus single instance" }.Start();
         // Started with Windows: go straight to the tray (the hotkey and background features keep working).
         if (Environment.GetCommandLineArgs().Contains(Lotus.Infrastructure.Setup.WindowsStartup.MinimizedArgument)) (window as MainWindow)?.HideToTray(firstTime: false);
+    }
+
+    // Lotus Ports (sibling app): Lotus answers its questions on a local pipe (system checks, runtimes, recent changes,
+    // game sessions). Only the installed Lotus writes the registry entry that lets Lotus Ports find it; a development
+    // build serves the pipe but stays out of the registry.
+    private static Lotus.Infrastructure.PortsLink.LotusIntegrationServer? portsServer;
+    private void StartPortsIntegration(Window shown)
+    {
+        try
+        {
+            var version = (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false).FirstOrDefault() as System.Reflection.AssemblyInformationalVersionAttribute)?.InformationalVersion.Split('+')[0] ?? "";
+            if (services is null) return;
+            var handler = new Lotus.Infrastructure.PortsLink.LotusIntegrationHandler(services.GetRequiredService<Lotus.Infrastructure.Optimization.SqliteOptimizationJournal>(),
+                services.GetRequiredService<IFrameCaptureProvider>(), Log.Logger);
+            (shown as MainWindow)?.AttachPortsSessions(handler); // tray while playing, diary afterwards
+            portsServer = new Lotus.Infrastructure.PortsLink.LotusIntegrationServer(Lotus.Integration.Contracts.Protocol.LotusPipeName, handler,
+                Lotus.Infrastructure.PortsLink.PipePeer.ClientIsPorts, Log.Logger, version);
+            portsServer.Start();
+#if !DEBUG
+            if (!Environment.GetCommandLineArgs().Contains("--dev-instance") && Environment.ProcessPath is { } exe)
+            {
+                Lotus.Infrastructure.PortsLink.IntegrationRegistry.RegisterLotus(version, exe);
+                shown.Closed += (_, _) => { try { Lotus.Infrastructure.PortsLink.IntegrationRegistry.UnregisterLotus(); } catch (Exception) { } };
+            }
+#endif
+            shown.Closed += async (_, _) => { if (portsServer is not null) await portsServer.DisposeAsync(); };
+        }
+        catch (Exception ex) { Log.Warning(ex, "Lotus Ports integration not started"); }
     }
 }

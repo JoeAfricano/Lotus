@@ -2,6 +2,21 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.2.0-alpha "Lotus" (06/11/2026)
+
+### Novo
+- **Integração com o Lotus Ports** (app irmão de ports nativos de jogos clássicos). Os dois conversam por um canal local só do seu usuário. Cada lado confere que o outro é mesmo o programa registrado, e nada é executado fora do que o protocolo prevê.
+  - **Meus Jogos:** nova faixa "Seus jogos do Lotus Ports" (instalados e favoritos), com **Jogar** e **Abrir no Lotus Ports**. O Lotus Ports abre o jogo com as próprias conferências, ou a página do jogo se algo precisar da sua confirmação. A faixa só aparece com o Lotus Ports instalado e aberto.
+  - **O Lotus ajuda o Lotus Ports:**
+    - conferências do sistema no "Resolver": driver de vídeo, Vulkan, memória livre e espaço no disco;
+    - dependências instaladas: Visual C++ 2015–2022, Vulkan, DirectX antigo e .NET Desktop;
+    - mudanças recentes que o Lotus fez no PC;
+    - perfil de hardware;
+    - relatório da sessão: FPS médio, 1% low e travadas só quando a medição foi válida; senão, nenhum número.
+  - **Ao jogar pelo Lotus Ports:** o Lotus vai para a bandeja e volta quando o jogo fecha, e a sessão entra no **diário** (com "Registrar minhas sessões" ligado).
+  - **Segurança:** nenhum pedido do Lotus Ports altera o PC. Instalar dependências e sugestões automáticas ficam de fora até existirem com confirmação na interface do Lotus.
+- **Novo ícone:** a flor neon rosé, da mesma família do ícone do Lotus Ports, no programa, na janela, na bandeja e no instalador.
+
 ## 1.1.1-alpha "Lotus" (04/11/2026)
 
 ### Melhorado
