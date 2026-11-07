@@ -2,6 +2,10 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.2.2-alpha "Lotus" (06/11/2026)
+
+- Revisão de bugs e otimização.
+
 ## 1.2.1-alpha "Lotus" (06/11/2026)
 
 ### Lotus Ports: em breve

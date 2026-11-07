@@ -6,8 +6,17 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $out = Join-Path $root 'artifacts\dist\Lotus'
 if (Test-Path $out) { Remove-Item $out -Recurse -Force }
-dotnet publish (Join-Path $root 'src\Lotus.App\Lotus.App.csproj') -c Release -r win-x64 --self-contained true -p:Platform=x64 -p:WindowsAppSDKSelfContained=true -p:EnableMsixTooling=true -o $out -nologo
+# No debug symbols, and only the languages Lotus speaks (pt-BR, en-US) for the framework's own resources.
+dotnet publish (Join-Path $root 'src\Lotus.App\Lotus.App.csproj') -c Release -r win-x64 --self-contained true -p:Platform=x64 -p:WindowsAppSDKSelfContained=true -p:EnableMsixTooling=true `
+    -p:DebugType=none -p:DebugSymbols=false "-p:SatelliteResourceLanguages=en-US%3Bpt-BR" -o $out -nologo
 if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed ($LASTEXITCODE)" }
+# Compact install folder: WinUI's built-in texts only in Lotus' languages (others fall back to English), and no
+# developer-only tools (crash dump writer, debug symbol reader). Nothing the player uses depends on these.
+$keepLanguages = @('en-US', 'pt-BR')
+Get-ChildItem $out -Directory | Where-Object { $_.Name -match '^[a-z]{2,3}(-[A-Za-z]{2,4})*(-[A-Za-z0-9]{2,8})?$' -and $keepLanguages -notcontains $_.Name -and
+    (Get-ChildItem $_.FullName -Recurse -File | Where-Object { $_.Extension -notin '.mui', '.dll' }).Count -eq 0 } | Remove-Item -Recurse -Force
+foreach ($dev in 'createdump.exe', 'Microsoft.DiaSymReader.Native.amd64.dll') { Remove-Item (Join-Path $out $dev) -Force -ErrorAction SilentlyContinue }
+Get-ChildItem $out -Recurse -Include *.pdb, *.xml -File | Where-Object { $_.Name -notlike '*.deps.*' } | Remove-Item -Force
 $version = (Get-Item (Join-Path $out 'Lotus.App.exe')).VersionInfo.ProductVersion -replace '\+.*$', ''
 $zip = Join-Path $root "artifacts\dist\Lotus-$version-win-x64.zip"
 if (Test-Path $zip) { Remove-Item $zip -Force }

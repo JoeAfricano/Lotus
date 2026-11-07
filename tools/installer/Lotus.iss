@@ -92,6 +92,9 @@ en.WelcomeLabel2=This will install [name/ver] on this PC.%n%nYour PC ready to pl
 [Tasks]
 Name: "desktopicon"; Description: "{cm:DesktopIcon}"; Flags: checkedonce
 
+[InstallDelete]
+#include "Obsolete.iss"
+
 [Files]
 Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
