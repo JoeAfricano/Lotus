@@ -16,6 +16,7 @@ namespace Lotus.App.Controls;
 public sealed partial class PortsGamesStrip : UserControl
 {
     private readonly PortsClient client = new(Serilog.Log.Logger);
+    private readonly PortsOffer offer = new();
     private readonly StackPanel row = new() { Orientation = Orientation.Horizontal, Spacing = 14 };
     private readonly TextBlock status = new() { TextWrapping = TextWrapping.Wrap, Visibility = Visibility.Collapsed };
 
@@ -29,7 +30,15 @@ public sealed partial class PortsGamesStrip : UserControl
         header.Children.Add(new TextBlock { Text = text["PortsGamesTitle"], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 16 });
         header.Children.Add(new TextBlock { Text = text["PortsGamesHint"], Style = (Style)Application.Current.Resources["CaptionStyle"] });
         var open = new HyperlinkButton { Content = text["PortsOpen"], HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
-        open.Click += async (_, _) => await client.OpenAsync(null);
+        open.Click += async (_, _) =>
+        {
+            if (PortsClient.IsInstalled) { await client.OpenAsync(null); return; }
+            // Installed but closed: open it, then list its games as soon as it answers (a few tries, no polling after).
+            if (!offer.Open()) return;
+            Show(App.Text["PortsOpening"]);
+            for (var i = 0; i < 10 && !PortsClient.IsInstalled; i++) await Task.Delay(1500);
+            await RefreshAsync();
+        };
         var top = new Grid();
         top.ColumnDefinitions.Add(new ColumnDefinition());
         top.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -51,7 +60,14 @@ public sealed partial class PortsGamesStrip : UserControl
 
     private async Task RefreshAsync()
     {
-        if (!PortsClient.IsInstalled) { Visibility = Visibility.Collapsed; return; }
+        if (!PortsClient.IsInstalled)
+        {
+            // Installed but closed: a short note with "Abrir o Lotus Ports"; not installed: nothing here (Home has the invitation).
+            row.Children.Clear();
+            if (offer.IsInstalled) { Show(App.Text["PortsClosed"]); Visibility = Visibility.Visible; } else Visibility = Visibility.Collapsed;
+            return;
+        }
+        Show("");
         var result = await client.ListGamesAsync();
         row.Children.Clear();
         if (result is null || result.Games.Count == 0) { Visibility = Visibility.Collapsed; return; }

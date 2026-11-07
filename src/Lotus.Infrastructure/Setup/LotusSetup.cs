@@ -15,25 +15,31 @@ public sealed class LotusSetup(string? installDir = null, string? startMenuDir =
     private string StartMenu => startMenuDir ?? Environment.GetFolderPath(Environment.SpecialFolder.Programs);
     private string Desktop => desktopDir ?? Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
     private static string Here => Path.GetFullPath(AppContext.BaseDirectory).TrimEnd('\\');
-    public bool IsInstalledCopy => string.Equals(Here, Path.GetFullPath(InstallDir).TrimEnd('\\'), StringComparison.OrdinalIgnoreCase);
-    public bool IsInstalled => File.Exists(Path.Combine(InstallDir, "Lotus.App.exe")) && Registry.CurrentUser.OpenSubKey(uninstallKey) is not null;
-    public string InstalledExe => Path.Combine(InstallDir, "Lotus.App.exe");
+    // The program lives in InstallDir\app (the install folder itself only shows a shortcut and the uninstaller), the same
+    // layout as the setup program. Copies installed before 1.3.0 had every file straight in InstallDir.
+    public string ProgramDir => Path.Combine(InstallDir, "app");
+    public bool IsInstalledCopy => string.Equals(Here, Path.GetFullPath(ProgramDir).TrimEnd('\\'), StringComparison.OrdinalIgnoreCase)
+        || string.Equals(Here, Path.GetFullPath(InstallDir).TrimEnd('\\'), StringComparison.OrdinalIgnoreCase);
+    public string InstalledExe => File.Exists(Path.Combine(ProgramDir, "Lotus.App.exe")) || !File.Exists(Path.Combine(InstallDir, "Lotus.App.exe"))
+        ? Path.Combine(ProgramDir, "Lotus.App.exe") : Path.Combine(InstallDir, "Lotus.App.exe");
+    public bool IsInstalled => File.Exists(InstalledExe) && Registry.CurrentUser.OpenSubKey(uninstallKey) is not null;
 
     // Copies this build (the folder Lotus runs from) into the install folder, then creates shortcuts and the Windows entry.
     public void Install(string? sourceDir = null, IProgress<double>? progress = null)
     {
         var source = Path.GetFullPath(sourceDir ?? Here).TrimEnd('\\');
-        if (string.Equals(source, Path.GetFullPath(InstallDir).TrimEnd('\\'), StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("Already running the installed copy.");
+        if (IsInstalledCopy && sourceDir is null) throw new InvalidOperationException("Already running the installed copy.");
         var files = Directory.EnumerateFiles(source, "*", SearchOption.AllDirectories).ToList();
-        Directory.CreateDirectory(InstallDir);
+        Directory.CreateDirectory(ProgramDir);
         for (var i = 0; i < files.Count; i++)
         {
-            var target = Path.Combine(InstallDir, Path.GetRelativePath(source, files[i]));
+            var target = Path.Combine(ProgramDir, Path.GetRelativePath(source, files[i]));
             Directory.CreateDirectory(Path.GetDirectoryName(target)!);
             File.Copy(files[i], target, overwrite: true);
             progress?.Report((i + 1) * 90.0 / Math.Max(1, files.Count));
         }
-        var exe = InstalledExe;
+        var exe = Path.Combine(ProgramDir, "Lotus.App.exe");
+        Shortcut(Path.Combine(InstallDir, "Lotus.lnk"), exe);
         Shortcut(Path.Combine(StartMenu, "Lotus.lnk"), exe);
         Shortcut(Path.Combine(Desktop, "Lotus.lnk"), exe);
         using (var k = Registry.CurrentUser.CreateSubKey(uninstallKey))

@@ -38,7 +38,7 @@ MinVersion=10.0.19041
 OutputDir={#OutputDir}
 OutputBaseFilename={#SetupName}-{#AppVersion}
 SetupIconFile=..\..\src\Lotus.App\Assets\Lotus.ico
-UninstallDisplayIcon={app}\Lotus.App.exe
+UninstallDisplayIcon={app}\app\Lotus.App.exe
 UninstallDisplayName=Lotus
 Compression=lzma2/ultra64
 SolidCompression=yes
@@ -93,28 +93,55 @@ en.WelcomeLabel2=This will install [name/ver] on this PC.%n%nYour PC ready to pl
 Name: "desktopicon"; Description: "{cm:DesktopIcon}"; Flags: checkedonce
 
 [InstallDelete]
-#include "Obsolete.iss"
+; Versions before 1.3.0 put every file straight in {app}: only those program files leave (player data lives elsewhere,
+; in %LOCALAPPDATA%\Lotus). Exact patterns of what Lotus itself installed there; nothing else in the folder is removed.
+Type: files; Name: "{app}\*.dll"
+Type: files; Name: "{app}\*.winmd"
+Type: files; Name: "{app}\*.pri"
+Type: files; Name: "{app}\*.json"
+Type: files; Name: "{app}\*.pdb"
+Type: files; Name: "{app}\Lotus.App.exe"
+Type: files; Name: "{app}\createdump.exe"
+Type: files; Name: "{app}\RestartAgent.exe"
+Type: filesandordirs; Name: "{app}\Assets"
+Type: filesandordirs; Name: "{app}\Microsoft.UI.Xaml"
+Type: filesandordirs; Name: "{app}\*-*"
+; The program folder of an earlier build of this layout is replaced whole.
+Type: filesandordirs; Name: "{app}\app"
 
 [Files]
-Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+; The program lives in {app}\app; the install folder itself only shows a "Lotus" shortcut and the uninstaller.
+Source: "{#SourceDir}\*"; DestDir: "{app}\app"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{userprograms}\Lotus"; Filename: "{app}\Lotus.App.exe"; WorkingDir: "{app}"
-Name: "{userdesktop}\Lotus"; Filename: "{app}\Lotus.App.exe"; WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{userprograms}\Lotus"; Filename: "{app}\app\Lotus.App.exe"; WorkingDir: "{app}\app"
+Name: "{app}\Lotus"; Filename: "{app}\app\Lotus.App.exe"; WorkingDir: "{app}\app"
+Name: "{userdesktop}\Lotus"; Filename: "{app}\app\Lotus.App.exe"; WorkingDir: "{app}\app"; Tasks: desktopicon
+
+[Registry]
+; "Start with Windows" already on: point it at the program's new place (Lotus also fixes it when it opens).
+Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "Lotus"; ValueData: """{app}\app\Lotus.App.exe"" --minimized"; Check: StartsWithWindows
 
 [Run]
 ; Windows keeps icons in its cache: ask it to redraw them so shortcuts always show the current Lotus icon (harmless, no admin).
 Filename: "{sys}\ie4uinit.exe"; Parameters: "-show"; Flags: runhidden skipifdoesntexist
-Filename: "{app}\Lotus.App.exe"; Description: "{cm:Launch}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\app\Lotus.App.exe"; Description: "{cm:Launch}"; Flags: nowait postinstall skipifsilent
 ; Update started from inside Lotus (/relaunch=1): open Lotus again once the files are in place.
-Filename: "{app}\Lotus.App.exe"; Flags: nowait; Check: RelaunchAfterUpdate
+Filename: "{app}\app\Lotus.App.exe"; Flags: nowait; Check: RelaunchAfterUpdate
 
 [UninstallRun]
 ; Removes the "start with Windows" entry if the player turned it on (HKCU Run value written by Lotus).
 Filename: "{sys}\reg.exe"; Parameters: "delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v Lotus /f"; Flags: runhidden; RunOnceId: "LotusRun"
+; The entry that lets Lotus Ports find Lotus (written by Lotus itself, HKCU only).
+Filename: "{sys}\reg.exe"; Parameters: "delete HKCU\Software\Lotus\Integration /f"; Flags: runhidden; RunOnceId: "LotusIntegration"
 
 [Code]
 // In-app update: Lotus runs this setup silently with /relaunch=1 and expects to be opened again afterwards.
+function StartsWithWindows(): Boolean;
+begin
+  Result := RegValueExists(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', 'Lotus');
+end;
+
 function RelaunchAfterUpdate(): Boolean;
 begin
   Result := WizardSilent() and (ExpandConstant('{param:relaunch|0}') = '1');

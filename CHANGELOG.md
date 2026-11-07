@@ -2,6 +2,15 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.3.0-alpha "Lotus" (07/11/2026)
+
+### Novo
+- **Lotus Ports chegou.** O app irmão de ports nativos de jogos clássicos está publicado, e a integração com o Lotus está completa.
+  - **Convite no Início:** um cartão pequeno ("NOVO") abre uma tela que explica o que é o Lotus Ports. **Instalar** baixa a versão mais recente do GitHub oficial, confere o arquivo pelo SHA-256 publicado e abre o instalador do próprio Lotus Ports, onde você confirma, sem precisar de administrador. Se o arquivo não bater com a conferência, nada é aberto. Com o Lotus Ports instalado, o mesmo cartão o abre.
+  - **Meus Jogos:** "Seus jogos do Lotus Ports" com **Jogar**. Com o Lotus Ports fechado, um aviso oferece abri-lo, e os jogos aparecem assim que ele responde.
+
+### Melhorado
+- **Pasta de instalação limpa:** o programa agora fica numa subpasta `app`, e a pasta do Lotus mostra só o atalho "Lotus" e o desinstalador (o mesmo modelo do Lotus Ports). Ao atualizar, os arquivos da organização antiga saem sozinhos. Atalhos, "Iniciar com o Windows" e a integração com o Lotus Ports são ajustados para o novo lugar.
 ## 1.2.2-alpha "Lotus" (06/11/2026)
 
 - Revisão de bugs e otimização.

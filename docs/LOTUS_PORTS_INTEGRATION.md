@@ -43,3 +43,21 @@ Só o build Release, e não com `--dev-instance`, grava `HKCU\Software\Lotus\Int
 
 - Medir FPS com administrador (o PresentMon sem administrador saiu com código 6 neste PC). Exigiria pedir permissão do Windows a cada jogo; a preferência que chegou a ser criada para isso foi retirada até existir o fluxo completo.
 - `Dependencies.RequestInstall` e `Recommendations.ForGame` continuam sem anúncio no handshake.
+## Medir FPS dos jogos do Lotus Ports sem o aviso do Windows
+
+A medição usa o PresentMon, que precisa de administrador **ou** de estar no grupo "Usuários de log de desempenho" do Windows. Com a sua conta no grupo, o Lotus mede sem pedir nada e a opção "Medir FPS dos jogos do Lotus Ports" deixa de abrir o aviso do Windows.
+
+É uma mudança de segurança do Windows, feita por você, uma vez:
+
+1. Abra o PowerShell **como administrador** (menu Iniciar → digite PowerShell → "Executar como administrador").
+2. Rode: `Add-LocalGroupMember -SID S-1-5-32-559 -Member $env:USERNAME` (o SID funciona em Windows de qualquer idioma).
+3. Saia da conta do Windows e entre de novo (o grupo só vale numa nova sessão).
+
+Para desfazer: `Remove-LocalGroupMember -SID S-1-5-32-559 -Member $env:USERNAME`, como administrador.
+
+## Convite e instalação (1.3.0)
+
+- Cartão "Lotus Ports" no Início (`SectionPage.Ports.cs`): sem o Lotus Ports instalado, abre a tela que explica o que é e oferece **Instalar**; instalado, abre o programa.
+- `PortsOffer`: detecta a instalação (entrada `ExePath` do Lotus Ports ou `%LOCALAPPDATA%\Programs\Lotus Ports\app`), lê a release mais recente de `JoeAfricano/LotusPorts` pelo mesmo leitor do atualizador (só endereços do GitHub), baixa o `LotusPorts-Setup-*.exe`, confere o SHA-256 publicado (sem hash ou diferente: nada roda) e abre o instalador com o assistente dele.
+- Meus Jogos: com o Lotus Ports instalado e fechado, a faixa mostra um aviso e "Abrir no Lotus Ports".
+- Teste da versão de desenvolvimento: `LOTUS_PRETEND_NO_PORTS=1` (só com `--dev-instance`) mostra o convite mesmo com o Lotus Ports instalado. Para a faixa, a entrada `HKCU\Software\Lotus\Integration` precisa de `PipeName` e `ExePath` da versão de teste (o Lotus Ports recusa sem isso).

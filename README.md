@@ -39,7 +39,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 | 📊 **Lotus Score** | Teste de CPU e GPU, FPS estimado por jogo com fontes e gargalo por resolução. Sem números inventados. |
 | 📔 **Meu diário** | Sessões automáticas, notas, estatísticas, "O que jogar agora?", conquistas e retrospectiva do ano. |
 | 🧰 **Ferramentas** | Check-up do PC num clique, Limpeza Inteligente, memória e processos, arquivos, monitor, "Por que meu jogo fechou?" e mais. Tudo só lendo até você confirmar. |
-| 🌸 **Lotus Ports** *(em breve)* | Integração pronta com o app irmão de ports nativos de clássicos, que chega em breve: seus jogos dele aparecem em Meus Jogos com Jogar, e o Lotus ajuda com diagnóstico, dependências e sessões. |
+| 🌸 **Lotus Ports** | O app irmão de ports nativos de jogos clássicos, [já disponível](https://github.com/JoeAfricano/LotusPorts): instale pelo próprio Lotus (convite no Início), e os jogos dele aparecem em Meus Jogos com Jogar. |
 | 💾 **Backup de saves** | Cópias conferidas (SHA-256) depois de cada sessão, restauração segura com volta automática se algo falhar. |
 | ☁️ **Backup e Google Drive** | Tudo num arquivo `.lotusbackup` e, se quiser, no seu Drive: agora, toda semana ou todo mês. |
 | 🔄 **Atualizações** | Avisa quando há versão nova, baixa com animação, confere o instalador e atualiza sozinho. |
@@ -58,7 +58,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 ## Instalar
 
 1. Baixe `Lotus-Setup-<versão>.exe` em [Releases](../../releases/latest).
-2. Execute. A instalação é por usuário, **sem administrador**, em `%LOCALAPPDATA%\Programs\Lotus`.
+2. Execute. A instalação é por usuário, **sem administrador**, em `%LOCALAPPDATA%\Programs\Lotus` (a pasta mostra só o atalho do Lotus e o desinstalador; o programa fica na subpasta `app`).
 3. Pronto: daqui pra frente o próprio Lotus avisa e instala as versões novas (Configurações › Atualizações).
 
 - Para atualizar manualmente, rode o instalador novo por cima, sem desinstalar.
@@ -140,9 +140,10 @@ Tudo na aba Ferramentas, em cartões. Abrir ou analisar nunca muda nada; cada a�
 - **Windows em dia:** reinício pendente, tempo ligado e ponto de restauração do Windows.
 - **Saúde do Disco, Drivers e Sistema:** dados do próprio Windows (o que não estiver disponível aparece assim), dispositivos com problema, erros recentes, chkdsk /scan, SFC e DISM com confirmação.
 - **Desinstalar programas** (busca e ordenação), **Internet e DNS** (com histórico) e **Overlays e travadas** (com RAM/CPU de cada item; RTSS, Afterburner e PresentMon aparecem como compatíveis).
-### Lotus Ports (em breve)
-O **Lotus Ports** (app irmão, ports nativos de jogos clássicos) **será lançado em breve**. A integração já está pronta no Lotus: quando ele chegar, os dois conversam por um canal local e seguro (só o seu usuário, só o programa registrado de cada lado).
-- **Em Meus Jogos:** "Seus jogos do Lotus Ports" (instalados e favoritos) com **Jogar** e **Abrir no Lotus Ports**. Aparece só quando o Lotus Ports está instalado e aberto.
+### Lotus Ports
+O **[Lotus Ports](https://github.com/JoeAfricano/LotusPorts)** é o app irmão do Lotus: um catálogo de ports nativos de jogos clássicos para PC. Os dois conversam por um canal local e seguro (só o seu usuário, só o programa registrado de cada lado).
+- **No Início:** um convite explica o que é e instala com a sua permissão (versão mais recente do GitHub oficial, arquivo conferido por SHA-256, instalador do próprio Lotus Ports). Com ele instalado, o mesmo cartão abre o Lotus Ports.
+- **Em Meus Jogos:** "Seus jogos do Lotus Ports" (instalados e favoritos) com **Jogar** e **Abrir no Lotus Ports**. Com o Lotus Ports fechado, um aviso oferece abri-lo.
 - **Para o Lotus Ports:** conferências do sistema no "Resolver" (driver de vídeo, Vulkan, memória e disco), dependências instaladas (Visual C++, Vulkan, DirectX antigo, .NET), mudanças recentes que o Lotus fez no PC, perfil de hardware e relatório da sessão (FPS só quando foi medido de verdade).
 - **Ao jogar pelo Lotus Ports:** o Lotus vai para a bandeja e volta quando o jogo fecha, e a sessão entra no seu diário.
 - Nenhum pedido do Lotus Ports altera o PC.

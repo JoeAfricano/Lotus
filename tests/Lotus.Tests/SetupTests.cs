@@ -24,7 +24,10 @@ public sealed class SetupTests : IDisposable
         Assert.False(setup.IsInstalled);
         setup.Install(source);
         Assert.True(setup.IsInstalled);
-        Assert.True(File.Exists(Path.Combine(setup.InstallDir, "Assets", "a.png")));
+        // The program goes to InstallDir\app; the install folder itself only holds the "Lotus" shortcut.
+        Assert.True(File.Exists(Path.Combine(setup.InstallDir, "app", "Assets", "a.png")));
+        Assert.Equal(Path.Combine(setup.InstallDir, "app", "Lotus.App.exe"), setup.InstalledExe);
+        Assert.Equal(["Lotus.lnk"], Directory.GetFiles(setup.InstallDir).Select(Path.GetFileName));
         Assert.True(File.Exists(Path.Combine(root, "Start", "Lotus.lnk"))); Assert.True(File.Exists(Path.Combine(root, "Desktop", "Lotus.lnk")));
         using (var k = Registry.CurrentUser.OpenSubKey(key)!)
         {

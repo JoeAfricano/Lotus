@@ -3073,4 +3073,25 @@ Your games and Windows are not changed.</value></data>
   <data name="PortsUnavailable" xml:space="preserve">
     <value>Lotus Ports did not answer. Open Lotus Ports and try again.</value>
   </data>
+  <data name="PoNew" xml:space="preserve"><value>NEW</value></data>
+  <data name="PoHint" xml:space="preserve"><value>Classic games as native PC ports, in one click.</value></data>
+  <data name="PoOpenHint" xml:space="preserve"><value>Open Lotus Ports and your classic games.</value></data>
+  <data name="PoTagline" xml:space="preserve"><value>Lotus&apos; sibling app · free and open source · alpha version</value></data>
+  <data name="PoWhat" xml:space="preserve"><value>**What it is:** a catalog of native ports of classic games (Zelda, Mario, Sonic and many more), rebuilt by communities to run straight on Windows, with higher resolution, frame rates and options.</value></data>
+  <data name="PoHow" xml:space="preserve"><value>**How it works:** pick a game and click Play. Lotus Ports downloads the port from the project&apos;s official page, checks the file and handles updates, always asking for your confirmation.</value></data>
+  <data name="PoFiles" xml:space="preserve"><value>**Your files:** Lotus Ports never provides games or game files. You use your own, and it recognizes the right version.</value></data>
+  <data name="PoLotus" xml:space="preserve"><value>**Together with Lotus:** its games show up in My Games, sessions go to your diary and Lotus helps find out why a game does not open.</value></data>
+  <data name="PoInstallNote" xml:space="preserve"><value>When you click **Install**, Lotus downloads the latest version from the official GitHub, checks the file (SHA-256) and opens the Lotus Ports installer, where you confirm. No administrator needed.</value></data>
+  <data name="PoInstall" xml:space="preserve"><value>Install</value></data>
+  <data name="PoGitHub" xml:space="preserve"><value>See on GitHub</value></data>
+  <data name="PoLater" xml:space="preserve"><value>Not now</value></data>
+  <data name="PoChecking" xml:space="preserve"><value>Looking for the latest version…</value></data>
+  <data name="PoDownloading" xml:space="preserve"><value>Downloading the installer from the official GitHub…</value></data>
+  <data name="PoRunning" xml:space="preserve"><value>File checked. Follow the Lotus Ports installer that opened.</value></data>
+  <data name="PoNoRelease" xml:space="preserve"><value>No Lotus Ports version with an installer was found right now. Try later or see GitHub.</value></data>
+  <data name="PoBadFile" xml:space="preserve"><value>The downloaded file did not match the published check, so it was not opened. Try again later.</value></data>
+  <data name="PoNotInstalled" xml:space="preserve"><value>The installation was not completed. You can try again whenever you like.</value></data>
+  <data name="PoOffline" xml:space="preserve"><value>Could not reach GitHub right now. Check the internet and try again.</value></data>
+  <data name="PortsClosed" xml:space="preserve"><value>Lotus Ports is closed. Open it to see its games here.</value></data>
+  <data name="PortsOpening" xml:space="preserve"><value>Opening Lotus Ports…</value></data>
 </root>
