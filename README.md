@@ -39,7 +39,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 | 📊 **Lotus Score** | Teste de CPU e GPU, FPS estimado por jogo com fontes e gargalo por resolução. Sem números inventados. |
 | 📔 **Meu diário** | Sessões automáticas, notas, estatísticas, "O que jogar agora?", conquistas e retrospectiva do ano. |
 | 🧰 **Ferramentas** | Check-up do PC num clique, Limpeza Inteligente, memória e processos, arquivos, monitor, "Por que meu jogo fechou?" e mais. Tudo só lendo até você confirmar. |
-| 🌸 **Lotus Ports** | Integração com o app irmão de ports nativos de clássicos: seus jogos dele aparecem em Meus Jogos com Jogar, e o Lotus ajuda com diagnóstico, dependências e sessões. |
+| 🌸 **Lotus Ports** *(em breve)* | Integração pronta com o app irmão de ports nativos de clássicos, que chega em breve: seus jogos dele aparecem em Meus Jogos com Jogar, e o Lotus ajuda com diagnóstico, dependências e sessões. |
 | 💾 **Backup de saves** | Cópias conferidas (SHA-256) depois de cada sessão, restauração segura com volta automática se algo falhar. |
 | ☁️ **Backup e Google Drive** | Tudo num arquivo `.lotusbackup` e, se quiser, no seu Drive: agora, toda semana ou todo mês. |
 | 🔄 **Atualizações** | Avisa quando há versão nova, baixa com animação, confere o instalador e atualiza sozinho. |
@@ -140,8 +140,8 @@ Tudo na aba Ferramentas, em cartões. Abrir ou analisar nunca muda nada; cada a�
 - **Windows em dia:** reinício pendente, tempo ligado e ponto de restauração do Windows.
 - **Saúde do Disco, Drivers e Sistema:** dados do próprio Windows (o que não estiver disponível aparece assim), dispositivos com problema, erros recentes, chkdsk /scan, SFC e DISM com confirmação.
 - **Desinstalar programas** (busca e ordenação), **Internet e DNS** (com histórico) e **Overlays e travadas** (com RAM/CPU de cada item; RTSS, Afterburner e PresentMon aparecem como compatíveis).
-### Lotus Ports
-O **Lotus Ports** (app irmão, ports nativos de jogos clássicos) conversa com o Lotus por um canal local e seguro (só o seu usuário, só o programa registrado de cada lado).
+### Lotus Ports (em breve)
+O **Lotus Ports** (app irmão, ports nativos de jogos clássicos) **será lançado em breve**. A integração já está pronta no Lotus: quando ele chegar, os dois conversam por um canal local e seguro (só o seu usuário, só o programa registrado de cada lado).
 - **Em Meus Jogos:** "Seus jogos do Lotus Ports" (instalados e favoritos) com **Jogar** e **Abrir no Lotus Ports**. Aparece só quando o Lotus Ports está instalado e aberto.
 - **Para o Lotus Ports:** conferências do sistema no "Resolver" (driver de vídeo, Vulkan, memória e disco), dependências instaladas (Visual C++, Vulkan, DirectX antigo, .NET), mudanças recentes que o Lotus fez no PC, perfil de hardware e relatório da sessão (FPS só quando foi medido de verdade).
 - **Ao jogar pelo Lotus Ports:** o Lotus vai para a bandeja e volta quando o jogo fecha, e a sessão entra no seu diário.

@@ -100,6 +100,8 @@ Name: "{userprograms}\Lotus"; Filename: "{app}\Lotus.App.exe"; WorkingDir: "{app
 Name: "{userdesktop}\Lotus"; Filename: "{app}\Lotus.App.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
+; Windows keeps icons in its cache: ask it to redraw them so shortcuts always show the current Lotus icon (harmless, no admin).
+Filename: "{sys}\ie4uinit.exe"; Parameters: "-show"; Flags: runhidden skipifdoesntexist
 Filename: "{app}\Lotus.App.exe"; Description: "{cm:Launch}"; Flags: nowait postinstall skipifsilent
 ; Update started from inside Lotus (/relaunch=1): open Lotus again once the files are in place.
 Filename: "{app}\Lotus.App.exe"; Flags: nowait; Check: RelaunchAfterUpdate

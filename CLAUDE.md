@@ -84,4 +84,4 @@ O pedido de exportação não autoriza aplicar otimizações ao Windows nem desc
 
 ## Estado em 06/11/2026 (Claude Code)
 
-- **1.1.0/1.1.1** publicadas (Ferramentas; bandeja ao jogar). **1.2.0-alpha** preparada: integração com o Lotus Ports (`src/Lotus.Infrastructure/PortsLink`, faixa em Meus Jogos, sessões do Ports no diário e na bandeja; `docs/LOTUS_PORTS_INTEGRATION.md`) e ícone novo (flor neon, `docs/images/lotus-icon.png`). 531 testes.
+- **1.1.0/1.1.1** publicadas (Ferramentas; bandeja ao jogar). **1.2.0-alpha** preparada: integração com o Lotus Ports (`src/Lotus.Infrastructure/PortsLink`, faixa em Meus Jogos, sessões do Ports no diário e na bandeja; `docs/LOTUS_PORTS_INTEGRATION.md`) (Lotus Ports "em breve" no README). 531 testes.
