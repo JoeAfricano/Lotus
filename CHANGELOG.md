@@ -10,6 +10,9 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 - **Geração de quadros.** Na NVIDIA, Resposta (Reflex) passa a ser a opção principal, porque o DLSS Frame Generation não combina com outros limitadores. Na AMD e na Intel, o Lotus indica usar o limite do próprio jogo ou do driver. O Reflex só é oferecido em jogos Direct3D 11/12.
 - **Limite global do RivaTuner** aparece no cartão do RivaTuner e no Otimizar. No "Por que está travando?", um FPS preso no limite passa a ser explicado como limite, e não como culpa da placa ou do processador.
 
+### Corrigido
+- **Topo da página do jogo vazio.** Às vezes a imagem grande do jogo travava no download sem dar erro, e o topo ficava só com a cor de fundo. Agora, se ela não carregar em 6 segundos, o Lotus usa o fundo da loja ou a capa menor.
+
 ### Por dentro
 - O overlay de FPS respeita a trava de escrita do RivaTuner (SDK v2.14+), e a pasta do RivaTuner é lida do registro.
 
