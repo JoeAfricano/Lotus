@@ -141,6 +141,16 @@ public sealed class GameDiary(IGameDiaryStore store, Action<Exception> log)
         return Save(e);
     }
 
+    // Art found later (DiaryArt): only the pictures change, so the entry keeps its place on the shelf (no "updated" bump).
+    public bool SetArt(string key, string cover, string? wide = null)
+    {
+        if (Get(key) is not { } e || cover.Length == 0) return false;
+        e.Cover = cover;
+        if (wide is { Length: > 0 } && e.Wide is not { Length: > 0 }) e.Wide = wide;
+        Persist();
+        return true;
+    }
+
     public void Remove(string key)
     {
         if (Get(key) is { } e) { data.Entries.Remove(e); Persist(); }

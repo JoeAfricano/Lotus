@@ -50,6 +50,26 @@ public sealed partial class MainWindow
         catch (Exception ex) { Serilog.Log.Warning(ex, "Play session"); }
     }
 
+    // Diary covers that never showed (other launchers, games added by hand, newer Steam art): repaired once, quietly,
+    // a little after start. Only the pictures change; Home, the diary and the player panel repaint through Changed.
+    private Lotus.Core.Diary.DiaryArt? diaryArt;
+    public Lotus.Core.Diary.DiaryArt? DiaryArt => diaryArt;
+    private void StartArtRepair()
+    {
+        diaryArt = new Lotus.Core.Diary.DiaryArt(diary, catalog, ex => Serilog.Log.Warning(ex, "Diary art"))
+        {
+            LibraryCover = key => games.InstalledGames().FirstOrDefault(g => string.Equals(Lotus.Core.Diary.DiaryGames.KeyFor(g), key, StringComparison.OrdinalIgnoreCase))?.CoverPath,
+        };
+        var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromSeconds(8); timer.IsRepeating = false;
+        timer.Tick += async (_, _) =>
+        {
+            if (!initialized || diaryArt is not { } art) return;
+            try { var count = await art.RepairAllAsync(); if (count > 0) Serilog.Log.Information("Diary art: {Count} covers repaired", count); }
+            catch (Exception ex) { Serilog.Log.Warning(ex, "Diary art"); }
+        };
+        timer.Start();
+    }
+
     // "Quero jogar" deals: checked a little after start (prices are cached for hours); new ones get a quiet tray note.
     private void StartDealsCheck()
     {

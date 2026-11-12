@@ -248,6 +248,7 @@ public sealed partial class MainWindow : Window
         ShowRoute();
         StartAchievements();
         StartDealsCheck();
+        StartArtRepair();
         preferences.PropertyChanged += OnPreferencesChanged;
         Closed += (_, _) =>
         {
