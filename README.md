@@ -80,7 +80,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 - **Proteção de progresso** (aba **Backup de saves**, com seus jogos em capas, filtros e totais): encontra a pasta de saves com segurança (catálogo de jogos, Steam Cloud ou pasta escolhida) e guarda cópias conferidas depois de cada sessão. Restaura mostrando o que muda, com cópia do estado atual antes e volta automática se algo falhar. As cópias ficam só no PC. Jogos do Xbox / Game Pass não são suportados.
 - **Bateria do controle:** o Preparar e Jogar avisa quando o controle sem fio está com 20% ou menos (controles que informam a bateria ao Windows).
 - **Onde eu parei?** Uma anotação por jogo, vista no Início ("Continuar jogando"), no diário e no painel do jogador. O Lotus pergunta ao fechar o jogo, se você quiser.
-- **Otimizar este jogo:** painel lateral de cada jogo.
+- **Otimizar este jogo:** janela grande no centro da tela, em duas colunas quando cabe (configurações e dicas de um lado; fluidez, última análise e ferramentas do outro).
   - **O que o jogo tem**, lido dos arquivos dele: DLSS, Geração de quadros, FSR, XeSS e o motor (Unreal, Unity…).
   - **Configurações para o seu PC:** qualidade, texturas, upscaling e limite de FPS.
   - **FPS esperado,** a partir do seu Lotus Score.

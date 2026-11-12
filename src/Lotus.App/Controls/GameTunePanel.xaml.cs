@@ -135,9 +135,10 @@ public sealed partial class GameTunePanel : UserControl
                 Child = new TextBlock { Text = n.ToString(), FontSize = 12.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = Res("MainTextBrush") } };
             var s = new StackPanel { Spacing = 3 }; Grid.SetColumn(s, 1);
             // Not a selection: every card looks the same; the first one only carries a small "biggest impact" label.
-            var titleRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
-            titleRow.Children.Add(new TextBlock { Text = title, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, MaxWidth = n == 1 ? 340 : 460 });
-            if (n == 1) titleRow.Children.Add(new Border { CornerRadius = new CornerRadius(8), Padding = new Thickness(8, 1, 8, 2), VerticalAlignment = VerticalAlignment.Top, Background = Res("AccentSoftBrush"), Child = new TextBlock { Text = vm!.Text["TuneTopTip"], FontSize = 11, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("RoseBrush") } });
+            var titleRow = new Grid { ColumnSpacing = 8 };
+            titleRow.ColumnDefinitions.Add(new ColumnDefinition()); titleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            titleRow.Children.Add(new TextBlock { Text = title, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
+            if (n == 1) { var topTip = new Border { HorizontalAlignment = HorizontalAlignment.Right, CornerRadius = new CornerRadius(8), Padding = new Thickness(8, 1, 8, 2), VerticalAlignment = VerticalAlignment.Top, Background = Res("AccentSoftBrush"), Child = new TextBlock { Text = vm!.Text["TuneTopTip"], FontSize = 11, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("RoseBrush") } }; Grid.SetColumn(topTip, 1); titleRow.Children.Add(topTip); }
             s.Children.Add(titleRow);
             s.Children.Add(new TextBlock { Text = body, FontSize = 13.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap });
             row.Children.Add(badge); row.Children.Add(s);
@@ -246,9 +247,12 @@ public sealed partial class GameTunePanel : UserControl
         var s = new StackPanel { Spacing = 6 }; box.Child = s;
         if (t.Last is not { } last)
         {
-            var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12 };
+            // A grid, not a horizontal stack: the text wraps at the column's width instead of running past it.
+            var row = new Grid { ColumnSpacing = 12 };
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); row.ColumnDefinitions.Add(new ColumnDefinition());
             row.Children.Add(new FontIcon { Glyph = "", FontSize = 20, Foreground = Res("RoseBrush"), VerticalAlignment = VerticalAlignment.Top });
-            row.Children.Add(new TextBlock { Text = text["TuneNoLast"], FontSize = 13.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap, MaxWidth = 440 });
+            var noLast = new TextBlock { Text = text["TuneNoLast"], FontSize = 13.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap };
+            Grid.SetColumn(noLast, 1); row.Children.Add(noLast);
             s.Children.Add(row);
             return box;
         }
