@@ -2319,6 +2319,10 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="PrepSpaceBody" xml:space="preserve"><value>Restam {0} GB. Jogos gravam saves e caches enquanto rodam; liberar espaço evita problemas.</value></data>
   <data name="PrepControllerTitle" xml:space="preserve"><value>Seu controle não foi encontrado</value></data>
   <data name="PrepControllerBody" xml:space="preserve"><value>Nenhum controle está conectado agora. Deseja continuar mesmo assim?</value></data>
+  <data name="PrepBatteryTitle" xml:space="preserve"><value>Controle com pouca bateria</value></data>
+  <data name="PrepBatteryBody" xml:space="preserve"><value>{0} está com {1}% de bateria. Vale carregar ou ligar o cabo antes de começar.</value></data>
+  <data name="PrepBatteryBodyLevel" xml:space="preserve"><value>{0} está com pouca bateria. Vale carregar ou ligar o cabo antes de começar.</value></data>
+  <data name="PrepBatteryPad" xml:space="preserve"><value>Controle</value></data>
   <data name="PrepSavesTitle" xml:space="preserve"><value>Proteção de progresso</value></data>
   <data name="PrepProfileTitle" xml:space="preserve"><value>Perfil Jogo</value></data>
   <data name="PrepProfileApplied" xml:space="preserve"><value>Aplicado para esta partida. Tudo volta como estava quando você fechar o jogo.</value></data>

@@ -2319,6 +2319,10 @@ Your games and Windows are not changed.</value></data>
   <data name="PrepSpaceBody" xml:space="preserve"><value>{0} GB left. Games write saves and caches while they run; freeing space avoids trouble.</value></data>
   <data name="PrepControllerTitle" xml:space="preserve"><value>Your controller wasn&apos;t found</value></data>
   <data name="PrepControllerBody" xml:space="preserve"><value>No controller is connected right now. Continue anyway?</value></data>
+  <data name="PrepBatteryTitle" xml:space="preserve"><value>Controller battery is low</value></data>
+  <data name="PrepBatteryBody" xml:space="preserve"><value>{0} has {1}% battery left. Charge it or plug in the cable before you start.</value></data>
+  <data name="PrepBatteryBodyLevel" xml:space="preserve"><value>{0} is low on battery. Charge it or plug in the cable before you start.</value></data>
+  <data name="PrepBatteryPad" xml:space="preserve"><value>Controller</value></data>
   <data name="PrepSavesTitle" xml:space="preserve"><value>Progress protection</value></data>
   <data name="PrepProfileTitle" xml:space="preserve"><value>Game profile</value></data>
   <data name="PrepProfileApplied" xml:space="preserve"><value>Applied for this session. Everything goes back when you close the game.</value></data>
