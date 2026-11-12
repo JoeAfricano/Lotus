@@ -951,6 +951,10 @@ Condições atuais: {1}</value></data>
   <data name="WhyGpuLimitBody" xml:space="preserve"><value>A placa de vídeo está **trabalhando no limite** e o FPS fica abaixo do ideal. Baixar um nível de qualidade resolve. Feche o jogo e use **Otimizar configurações**: o ajuste já está pronto.</value></data>
   <data name="WhyCpuLimitTitle" xml:space="preserve"><value>O processador está limitando o FPS</value></data>
   <data name="WhyCpuLimitBody" xml:space="preserve"><value>A placa de vídeo tem folga, mas o FPS está baixo. O **processador ou outros programas** estão segurando o jogo. Feche o que estiver pesado e use o perfil Jogo.</value></data>
+  <data name="WhyCpuHotTitle" xml:space="preserve"><value>O processador está segurando a velocidade</value></data>
+  <data name="WhyCpuHotBody" xml:space="preserve"><value>Durante a medição o processador **reduziu a própria velocidade** (ficou em média abaixo de 85% do que pode), o que costuma ser calor ou limite de energia. Confira se as saídas de ar estão livres, limpe a poeira e use o perfil Jogo. Em notebook, jogue na tomada.</value></data>
+  <data name="WhyCpuHotTempTitle" xml:space="preserve"><value>O processador está esquentando</value></data>
+  <data name="WhyCpuHotTempBody" xml:space="preserve"><value>A temperatura lida pela placa chegou a **{0} °C** e o processador pode reduzir a velocidade para se proteger. Confira se as saídas de ar estão livres, limpe a poeira e, se continuar, veja o cooler e a pasta térmica. Em notebook, jogue na tomada e numa superfície firme.</value></data>
   <data name="WhyUnknownStutterTitle" xml:space="preserve"><value>Há travadas sem uma causa clara</value></data>
   <data name="WhyUnknownStutterBody" xml:space="preserve"><value>Deu para ver travadas, mas **nenhuma causa comum**. Atualizar o driver de vídeo e verificar os arquivos do jogo no launcher costuma ajudar.</value></data>
   <data name="WhyAllGoodTitle" xml:space="preserve"><value>Tudo certo: o jogo rodou estável</value></data>
@@ -1913,6 +1917,11 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="WhyProfileTip" xml:space="preserve"><value>Dica: aplique o perfil Jogo no Lotus, dá para desfazer.</value></data>
   <data name="WhyGpuLimitTip" xml:space="preserve"><value>Dica: ative DLSS, FSR ou XeSS e baixe sombras um nível.</value></data>
   <data name="WhyCpuLimitTip" xml:space="preserve"><value>Dica: baixe distância de visão e densidade de NPCs.</value></data>
+  <data name="WhyCpuHotTip" xml:space="preserve"><value>Dica: limite o FPS ao seu monitor; o processador esquenta menos.</value></data>
+  <data name="WhyCpuHotTempTip" xml:space="preserve"><value>Dica: limite o FPS ao seu monitor; o processador esquenta menos.</value></data>
+  <data name="HeatAlertTitle" xml:space="preserve"><value>Processador no limite</value></data>
+  <data name="HeatAlertLimited" xml:space="preserve"><value>Há alguns minutos o processador está reduzindo a velocidade (calor ou limite de energia). Isso pode causar travadas.</value></data>
+  <data name="HeatAlertHot" xml:space="preserve"><value>A temperatura lida pela placa está em {0} °C. Confira a ventilação do PC.</value></data>
   <data name="WhyUnknownStutterTip" xml:space="preserve"><value>Dica: atualize o driver de vídeo e verifique os arquivos do jogo.</value></data>
   <data name="WhyAllGoodTip" xml:space="preserve"><value>Dica: se trava em outro lugar, meça lá com Ctrl + Shift + L.</value></data>
   <data name="IgChipFrameGen" xml:space="preserve"><value>Geração de quadros</value></data>

@@ -131,6 +131,8 @@ public sealed partial class MainWindow : Window
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
         games.Watch = sessionHub; // the light-mode check, shared (no second polling loop)
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
+        games.Heat = cpuHeat;
+        WatchCpuHeat();
         SetUpPreparation();
         SetUpSaves();
         SetUpUpdates();

@@ -951,6 +951,10 @@ Current conditions: {1}</value></data>
   <data name="WhyGpuLimitBody" xml:space="preserve"><value>The graphics card is near 100% and FPS is below the ideal. Lowering one quality level fixes it. Close the game and use "Optimize settings": the adjustment is ready.</value></data>
   <data name="WhyCpuLimitTitle" xml:space="preserve"><value>The processor is limiting FPS</value></data>
   <data name="WhyCpuLimitBody" xml:space="preserve"><value>The graphics card has headroom but FPS is low: the processor or other programs are holding the game back. Close heavy programs and use the Game profile.</value></data>
+  <data name="WhyCpuHotTitle" xml:space="preserve"><value>The processor is holding back its speed</value></data>
+  <data name="WhyCpuHotBody" xml:space="preserve"><value>During the measurement the processor **slowed itself down** (on average below 85% of what it can do), which is usually heat or a power limit. Make sure the vents are clear, clean the dust and use the Game profile. On a laptop, play plugged in.</value></data>
+  <data name="WhyCpuHotTempTitle" xml:space="preserve"><value>The processor is running hot</value></data>
+  <data name="WhyCpuHotTempBody" xml:space="preserve"><value>The board's temperature reading reached **{0} °C** and the processor may slow down to protect itself. Make sure the vents are clear, clean the dust and, if it keeps happening, check the cooler and thermal paste. On a laptop, play plugged in on a hard surface.</value></data>
   <data name="WhyUnknownStutterTitle" xml:space="preserve"><value>There are stutters without a clear cause</value></data>
   <data name="WhyUnknownStutterBody" xml:space="preserve"><value>Lotus saw hitches but none of the common causes. Updating the graphics driver and verifying the game files in the launcher usually helps.</value></data>
   <data name="WhyAllGoodTitle" xml:space="preserve"><value>All good: the game ran steady</value></data>
@@ -1913,6 +1917,11 @@ Your games and Windows are not changed.</value></data>
   <data name="WhyProfileTip" xml:space="preserve"><value>Tip: apply the Game profile in Lotus; it can be undone.</value></data>
   <data name="WhyGpuLimitTip" xml:space="preserve"><value>Tip: turn on DLSS, FSR or XeSS and lower shadows one step.</value></data>
   <data name="WhyCpuLimitTip" xml:space="preserve"><value>Tip: lower view distance and crowd density.</value></data>
+  <data name="WhyCpuHotTip" xml:space="preserve"><value>Tip: cap FPS to your monitor; the processor runs cooler.</value></data>
+  <data name="WhyCpuHotTempTip" xml:space="preserve"><value>Tip: cap FPS to your monitor; the processor runs cooler.</value></data>
+  <data name="HeatAlertTitle" xml:space="preserve"><value>Processor at its limit</value></data>
+  <data name="HeatAlertLimited" xml:space="preserve"><value>For a few minutes the processor has been slowing itself down (heat or a power limit). This can cause stutters.</value></data>
+  <data name="HeatAlertHot" xml:space="preserve"><value>The board's temperature reading is {0} °C. Check the PC's airflow.</value></data>
   <data name="WhyUnknownStutterTip" xml:space="preserve"><value>Tip: update the graphics driver and verify the game files.</value></data>
   <data name="WhyAllGoodTip" xml:space="preserve"><value>Tip: if it stutters somewhere else, measure there with Ctrl + Shift + L.</value></data>
   <data name="IgChipFrameGen" xml:space="preserve"><value>Frame generation</value></data>
