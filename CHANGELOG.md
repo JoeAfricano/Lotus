@@ -12,7 +12,8 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 - **Driver de vídeo novo.** Uma vez por semana o Lotus confere no site da NVIDIA se saiu driver mais novo que o seu e avisa uma vez por versão, com o link da NVIDIA. Para AMD e Intel, avisa quando o driver tem mais de seis meses. Pode desligar em Configurações. O Lotus nunca baixa nem instala drivers.
 
 ### Corrigido
-- **Capas em "Na sua lista" (Início) e no diário.** Jogos de outras lojas, adicionados à mão, do Lotus Ports e lançamentos recentes da Steam apareciam só com o nome. O Lotus agora encontra a capa sozinho, uma vez, sem mudar a ordem da lista.
+- **Capas em "Na sua lista" (Início) e no diário.** Jogos de outras lojas, adicionados à mão, do Lotus Ports e lançamentos recentes da Steam apareciam só com o nome. O Lotus agora encontra a capa sozinho, uma vez, sem mudar a ordem da lista. As capas do Lotus Ports chegam mesmo com o Lotus Ports fechado.
+- **Programas sempre abertos não contam mais como "jogo aberto".** O Wallpaper Engine e os launchers (Steam, Epic e outros) impediam as tarefas que esperam o jogo fechar, como o tempo para zerar e o aviso de driver.
 
 ## 1.3.1-alpha "Lotus" (12/11/2026)
 
