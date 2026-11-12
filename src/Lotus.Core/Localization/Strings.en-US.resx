@@ -3124,4 +3124,10 @@ Your games and Windows are not changed.</value></data>
   <data name="PoOffline" xml:space="preserve"><value>Could not reach GitHub right now. Check the internet and try again.</value></data>
   <data name="PortsClosed" xml:space="preserve"><value>Lotus Ports is closed. Open it to see its games here.</value></data>
   <data name="PortsOpening" xml:space="preserve"><value>Opening Lotus Ports…</value></data>
+  <data name="GiBeatTitle" xml:space="preserve"><value>Time to beat</value></data>
+  <data name="GiBeatStory" xml:space="preserve"><value>main story</value></data>
+  <data name="GiBeatPlus" xml:space="preserve"><value>main + extras</value></data>
+  <data name="GiBeatAll" xml:space="preserve"><value>completionist</value></data>
+  <data name="GiBeatOpen" xml:space="preserve"><value>Open on HowLongToBeat</value></data>
+  <data name="GiBeatHint" xml:space="preserve"><value>Average times from players, by HowLongToBeat.</value></data>
 </root>

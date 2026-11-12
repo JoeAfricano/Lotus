@@ -123,6 +123,7 @@ public sealed partial class GameDetailView : UserControl
     private void OnLog(object sender, RoutedEventArgs e) { if (vm is not null) MainWindow.Shell?.OpenDiaryEditor(vm.ToDiaryEntry()); }
     private void OnPlay(object sender, RoutedEventArgs e) { if (vm?.Installed is { } g) { UiSound.Play(UiSound.Cue.Open); PlayRequested?.Invoke(this, g); } }
     private async void OnStore(object sender, RoutedEventArgs e) => await Open(vm?.StoreUrl);
+    private async void OnLengthLink(object sender, RoutedEventArgs e) => await Open(vm?.LengthUrl);
     private async void OnMetacriticLink(object sender, RoutedEventArgs e) => await Open(vm?.MetacriticUrl);
     private async void OnMetacritic(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) => await Open(vm?.MetacriticUrl);
     private static async Task Open(string? url)

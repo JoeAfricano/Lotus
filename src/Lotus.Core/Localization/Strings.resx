@@ -3124,4 +3124,10 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="PoOffline" xml:space="preserve"><value>Não deu para falar com o GitHub agora. Confira a internet e tente de novo.</value></data>
   <data name="PortsClosed" xml:space="preserve"><value>O Lotus Ports está fechado. Abra para ver seus jogos dele aqui.</value></data>
   <data name="PortsOpening" xml:space="preserve"><value>Abrindo o Lotus Ports…</value></data>
+  <data name="GiBeatTitle" xml:space="preserve"><value>Tempo para zerar</value></data>
+  <data name="GiBeatStory" xml:space="preserve"><value>história</value></data>
+  <data name="GiBeatPlus" xml:space="preserve"><value>com extras</value></data>
+  <data name="GiBeatAll" xml:space="preserve"><value>100%</value></data>
+  <data name="GiBeatOpen" xml:space="preserve"><value>Ver no HowLongToBeat</value></data>
+  <data name="GiBeatHint" xml:space="preserve"><value>Tempos médios de quem jogou, segundo o HowLongToBeat.</value></data>
 </root>
