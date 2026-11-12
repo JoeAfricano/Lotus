@@ -196,9 +196,11 @@ public sealed partial class SectionPage : Page
         PageScroll.ChangeView(null, 0, null, true);
         await details.LoadInstalledAsync(card.Game);
     }
+    // Clicking the section in the menu while a game page is open goes back to the list.
+    public void BackToList() => OnGameDetailBack(this, EventArgs.Empty);
     private void OnGameDetailBack(object? sender, EventArgs e)
     {
-        if (GamesList is null || GameDetail is null) return;
+        if (GamesList is null || GameDetail is null || GameDetail.Visibility != Visibility.Visible) return;
         GameDetail.Visibility = Visibility.Collapsed; GamesList.Visibility = Visibility.Visible; Motion.EnterPage(GamesList);
     }
     // Play on a Home cover: launches directly.

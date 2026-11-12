@@ -187,6 +187,7 @@ public sealed partial class MainWindow : Window
             return score.EstimateFor(g.Name, g.Store == Lotus.Core.Games.GameStores.Steam ? g.Id : null, res, preset) is { Fps: > 0 } cell
                 ? text.Format("TuneScoreLine", cell.Fps, text["ScoreRes" + res], text["ScorePreset" + preset]) : null;
         };
+        games.ReportsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "game-reports.json");
         games.ScoreHint = () => text[score.HasFullTest ? "TuneScoreSearch" : "TuneScoreHint"];
         games.Goal = () => preferences.Current.Goal;
         _ = games.EnsureLoadedAsync(); // Home shows game shortcuts right away
@@ -482,6 +483,11 @@ public sealed partial class MainWindow : Window
         UiSound.Play(UiSound.Cue.Navigate);
         ViewModel.NavigateCommand.Execute(id);
         if (narrow == true && Navigation.PaneDisplayMode != NavigationViewPaneDisplayMode.Top) Navigation.IsPaneOpen = false;
+    }
+    // The already selected section raises no SelectionChanged: a click on it from a game page returns to the list.
+    private void OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+    {
+        if (args.InvokedItemContainer is NavigationViewItem { Tag: string id } && id == ViewModel.SelectedSection.Id && ContentFrame.Content is SectionPage page) page.BackToList();
     }
     private void OnRouteChanged(object? sender, PropertyChangedEventArgs args)
     {

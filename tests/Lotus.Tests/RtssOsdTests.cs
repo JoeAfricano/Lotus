@@ -35,4 +35,10 @@ public sealed class RtssOsdTests
         Assert.True(osd.Clear()); Assert.Equal("", Read(v, slot2 + 256, 256)); Assert.Equal("", Read(v, slot2 + 512, 4096));
         Assert.False(new RtssOsd("NoSuchMap-" + Guid.NewGuid()).Show("x")); // RTSS not running
     }
+
+    [Fact] public void OverlayTextIsPlainAscii()
+    {
+        Assert.Equal("ANALISE EM JOGO - 75 FPS em media, estavel. A medicao comeca...", RtssOsd.Plain("ANÁLISE EM JOGO · 75 FPS em média, estável. A medição começa…"));
+        Assert.Equal("<C=F27BA8>LOTUS<C> 27 s", RtssOsd.Plain("<C=F27BA8>LOTUS<C> 27 s"));
+    }
 }

@@ -17,7 +17,7 @@ public sealed partial class MainWindow
         sessionHub.Observe(running, DateTimeOffset.Now); // shared with "Preparar e jogar" (no second polling loop)
         if (sessions.Update(running, DateTimeOffset.Now) is { } done) OnSessionFinished(done);
         if (running is null) ShowPendingResumePrompt();
-        var wantPriority = preferences.Current.GamePriority && running is not null;
+        var wantPriority = preferences.Current.GamePriority && running is not null && !DevBesideInstalled();
         try
         {
             if (wantPriority && running is not null)
@@ -30,17 +30,29 @@ public sealed partial class MainWindow
         catch (Exception ex) { Serilog.Log.Warning(ex, "Game priority"); }
     }
 
+    // A development build (--dev-instance) next to a running installed Lotus leaves the game to the installed one:
+    // both changed the same processes' priority and wrote the same diary.
+    private static bool DevBesideInstalled()
+    {
+        if (!Environment.GetCommandLineArgs().Contains("--dev-instance")) return false;
+        try { if (!Mutex.TryOpenExisting(@"Local\Lotus.App.Main", out var m)) return false; m.Dispose(); return true; }
+        catch (Exception) { return false; }
+    }
+
     // One place reacts to the end of a session; each part handles its own failures so one never blocks another
     // (a failed note prompt never stops the diary, and so on).
     private void OnSessionFinished(FinishedSession s)
     {
         RecordSession(s);
+        if (Environment.GetCommandLineArgs().Contains("--dev-instance") && Environment.GetEnvironmentVariable("LOTUS_DEV_SESSIONS") != "1") return; // nothing recorded, nothing to ask
         try { OfferResumeNote(s); } catch (Exception ex) { Serilog.Log.Warning(ex, "Resume prompt"); }
     }
 
     private void RecordSession(FinishedSession s)
     {
         if (!preferences.Current.AutoSessions) return;
+        // A development build runs next to the installed Lotus, which already records the same session.
+        if (Environment.GetCommandLineArgs().Contains("--dev-instance") && Environment.GetEnvironmentVariable("LOTUS_DEV_SESSIONS") != "1") { Serilog.Log.Information("Play session not recorded (development instance)"); return; }
         try
         {
             diary.RecordSession(DiaryGames.FromGame(s.Game), s.Start.LocalDateTime, s.Minutes);

@@ -34,12 +34,14 @@ public sealed partial class MainWindow
         if (how == PutAway.Tray && !AppWindow.IsVisible)
         {
             ShowFromTray(); // back from the tray as it was (maximized stays maximized); shows a waiting report too
+            ComeForward();
             Serilog.Log.Information("Lotus back from the tray: {Game} closed or never started", name);
         }
         else if (how == PutAway.Minimized && AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized } presenter)
         {
             presenter.Restore();
             Activate();
+            ComeForward();
             Serilog.Log.Information("Lotus restored: {Game} closed or never started", name);
         }
         // Otherwise the player already brought Lotus back during the game: nothing to do.
@@ -62,4 +64,36 @@ public sealed partial class MainWindow
             Serilog.Log.Information("Lotus minimized: {Game} opened", name);
         }
     }
+
+    // After the game, Windows' focus rules keep the launcher (Steam) in front and Activate() only blinks the taskbar:
+    // the result and "where did you stop?" waited unseen. The player opened Lotus to play, so Lotus comes forward once,
+    // by joining the input of the foreground window for this one call; if Windows still refuses, the taskbar flashes.
+    private void ComeForward()
+    {
+        try
+        {
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            var front = GetForegroundWindow();
+            if (front == hwnd) return;
+            uint frontThread = GetWindowThreadProcessId(front, IntPtr.Zero), mine = GetCurrentThreadId();
+            var joined = frontThread != 0 && frontThread != mine && AttachThreadInput(mine, frontThread, true);
+            try { BringWindowToTop(hwnd); SetForegroundWindow(hwnd); }
+            finally { if (joined) AttachThreadInput(mine, frontThread, false); }
+            if (GetForegroundWindow() != hwnd)
+            {
+                var flash = new FLASHWINFO { cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf<FLASHWINFO>(), hwnd = hwnd, dwFlags = 3 | 12, uCount = 3 }; // all, until in front
+                FlashWindowEx(ref flash);
+            }
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Come forward after the game"); }
+    }
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    private struct FLASHWINFO { public uint cbSize; public IntPtr hwnd; public uint dwFlags; public uint uCount; public uint dwTimeout; }
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hwnd, IntPtr pid);
+    [System.Runtime.InteropServices.DllImport("kernel32.dll")] private static extern uint GetCurrentThreadId();
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool AttachThreadInput(uint from, uint to, bool attach);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool BringWindowToTop(IntPtr hwnd);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool SetForegroundWindow(IntPtr hwnd);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool FlashWindowEx(ref FLASHWINFO info);
 }

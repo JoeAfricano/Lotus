@@ -227,7 +227,7 @@ public sealed partial class GamesViewModel : ObservableObject
 
     private void LaunchNow(GameCard card)
     {
-        try { launcher.Launch(card.Game); status = Text.Format("GamesLaunching", card.Name); global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Launch); Launched?.Invoke(this, card.Game); }
+        try { launcher.Launch(card.Game); status = Text.Format("GamesLaunching", card.Name); ClearLater(status); global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Launch); Launched?.Invoke(this, card.Game); }
         catch (Exception ex)
         {
             log(ex); status = Text.Format("GamesLaunchFailed", card.Name);
@@ -377,7 +377,9 @@ public sealed partial class GamesViewModel : ObservableObject
             var gpu = gpuSampler?.AverageAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<double?>(null);
             var session = await capture!.CaptureAsync(new(new(run.Pid, run.Executable, run.StartedUtc), seconds, Elevated: true, "Lotus: " + game.Name, "{}"), token);
             var gpuBusy = session.Extras?.GpuBusyPercent ?? await gpu; // the game's own GPU share (RivaTuner/Reflex) beats the whole-GPU load
-            var latencyMs = session.Extras?.PcLatencyMs;
+            // With frame generation the Reflex markers cover only the real frames: the generator's delay is missing, so
+            // the number would look better than it feels. Not shown then.
+            var latencyMs = PrefsFor(game).UseFrameGen ? null : session.Extras?.PcLatencyMs;
             if (session.Data?.Statistics is not { } s) { status = Text["GsMeasureFailed"]; Notify(); return null; }
             var (recipe, support) = Recipe(game);
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
@@ -416,8 +418,39 @@ public sealed partial class GamesViewModel : ObservableObject
     // Expected FPS line from the Lotus Score (set by the window); null when there is no full test or the game is unknown.
     public Func<GameEntry, SettingsRecommendation, SystemProfile, string?>? ScoreLine { get; set; }
     public Func<string>? ScoreHint { get; set; } // shown when there is no estimate (no full test yet, or a game the Score does not know)
-    private readonly Dictionary<string, StutterReport> lastReports = new(StringComparer.OrdinalIgnoreCase);
-    public StutterReport? LastReport(GameEntry game) => lastReports.GetValueOrDefault(game.Key);
+    private Dictionary<string, StutterReport>? lastReports;
+    // Kept on disk (one small JSON, last analysis per game) so "Última análise" and the automatic limiter choice survive
+    // a restart of Lotus; before, they were lost and the page asked for a first analysis again.
+    public string? ReportsPath { get; set; }
+    private Dictionary<string, StutterReport> Reports
+    {
+        get
+        {
+            if (lastReports is not null) return lastReports;
+            lastReports = new(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                if (ReportsPath is { } path && File.Exists(path) && System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, StutterReport>>(File.ReadAllText(path)) is { } saved)
+                    foreach (var (key, report) in saved) lastReports[key] = report;
+            }
+            catch (Exception ex) { log(ex); }
+            return lastReports;
+        }
+    }
+    private void SaveReport(string key, StutterReport report)
+    {
+        Reports[key] = report;
+        if (ReportsPath is not { } path) return;
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            var temp = path + ".tmp";
+            File.WriteAllText(temp, System.Text.Json.JsonSerializer.Serialize(Reports));
+            File.Move(temp, path, overwrite: true);
+        }
+        catch (Exception ex) { log(ex); }
+    }
+    public StutterReport? LastReport(GameEntry game) => Reports.GetValueOrDefault(game.Key);
     public sealed record GameTune(GameSettingsAnalysis Settings, GameTech Tech, IReadOnlyList<string> TechChips, IReadOnlyList<(string Title, string Body)> Tips, StutterReport? Last, bool Running, string? ScoreLine = null, string? ScoreHint = null, LowLatencyInfo? LowLatency = null);
     // Low latency through RivaTuner: State = "ok" | "noRtss" | "notNvidia" | "noExe"; On = current state of that game's profile.
     // FrameGen: the game ships frame generation (DLSS FG does not get along with other limiters: Reflex is the one to use).
@@ -448,6 +481,10 @@ public sealed partial class GamesViewModel : ObservableObject
                 var useFrameGen = tech.FrameGen && PrefsFor(game).UseFrameGen;
                 var advice = InGameAdvisor.Advise(tech, settings.Recommendation, profileSource!.Read(), last?.Findings, Goal?.Invoke() ?? "balanced").ToList();
                 if (useFrameGen) advice.RemoveAll(t => t.Key == "IgFrameGenOff"); // the player chose it: no nagging
+                // The last measurement held the target with the GPU partly idle: there is room for a prettier image.
+                // (Wukong on an RTX 5060 at 75 Hz: High + DLSS Balanced held 75 with the GPU at 82%.)
+                if (last is { GpuBusy: <= QualityHeadroomGpu and > 0 } h && h.AverageFps >= settings.Recommendation.TargetFps * 0.97 && h.Low1Fps >= settings.Recommendation.TargetFps * 0.8)
+                    advice.Add(new("IgRaiseQuality", [Math.Round(h.GpuBusy!.Value).ToString(System.Globalization.CultureInfo.InvariantCulture), settings.Recommendation.TargetFps.ToString(System.Globalization.CultureInfo.InvariantCulture)], 70));
                 // Monitor supports FreeSync/G-Sync but the player runs without it: turning it on comes first.
                 if (!settings.Recommendation.AdaptiveSync && monitor.VrrPossible == true) advice.Insert(0, new("IgEnableVrr", [], 120));
                 var tips = advice
@@ -461,6 +498,8 @@ public sealed partial class GamesViewModel : ObservableObject
         string Localize(string a) => Enum.TryParse<UpscaleMode>(a, out var m) && !int.TryParse(a, out _) ? Text["GsMode" + m]
             : Enum.TryParse<QualityTier>(a, out var q) && !int.TryParse(a, out _) ? Text["GsTier" + q] : a;
     }
+
+    public const double QualityHeadroomGpu = 85;
 
     // Frame limiter per game: "fluid" works on any GPU; "responsive" (Reflex) only on NVIDIA.
     private LowLatencyInfo LowLatencyFor(GameTech tech, SystemProfile pc, SettingsRecommendation? r = null, StutterReport? last = null, bool useFrameGen = false)
@@ -478,6 +517,14 @@ public sealed partial class GamesViewModel : ObservableObject
     // recommendation follows it (Reflex on NVIDIA, the game's own limit elsewhere).
     public bool SetUseFrameGen(GameEntry game, bool on) => PlayPrefs is { } book && book.Set(game.Key, PrefsFor(game) with { UseFrameGen = on });
 
+    // A passing notice ("Abrindo…", "Fluidez ligada") leaves by itself; it stayed on screen after the game had closed.
+    // Continues on the caller's (UI) context; a newer status is never cleared.
+    private async void ClearLater(string shown, int seconds = 8)
+    {
+        try { await Task.Delay(TimeSpan.FromSeconds(seconds)); } catch (Exception ex) { log(ex); return; }
+        if (status == shown) { status = ""; Notify(); }
+    }
+
     public async Task<bool> SetLimiterAsync(string exe, string? mode, double fpsCap)
     {
         if (Rtss is null) return false;
@@ -485,6 +532,7 @@ public sealed partial class GamesViewModel : ObservableObject
         {
             var ok = mode is null ? await Rtss.DisableLowLatencyAsync(exe) : await Rtss.EnableLimiterAsync(exe, fpsCap, mode);
             status = Text[ok ? mode switch { "fluid" => "LlFluidOn", "responsive" => "LlOn", "scanline" => "LlScanlineOn", _ => "LlOff" } : "LlFailed"]; Notify();
+            if (ok) ClearLater(status);
             return ok;
         }
         catch (Exception ex) { log(ex); status = Text["LlFailed"]; Notify(); return false; }
@@ -514,7 +562,9 @@ public sealed partial class GamesViewModel : ObservableObject
             var heat = Heat?.MeasureAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<CpuHeat?>(null);
             var session = await capture!.CaptureAsync(new(new(run.Pid, run.Executable, run.StartedUtc), seconds, Elevated: true, "Lotus: " + game.Name, "{}"), token);
             var gpuBusy = session.Extras?.GpuBusyPercent ?? await gpu; // the game's own GPU share (RivaTuner/Reflex) beats the whole-GPU load
-            var latencyMs = session.Extras?.PcLatencyMs;
+            // With frame generation the Reflex markers cover only the real frames: the generator's delay is missing, so
+            // the number would look better than it feels. Not shown then.
+            var latencyMs = PrefsFor(game).UseFrameGen ? null : session.Extras?.PcLatencyMs;
             CpuHeat? cpuHeat = null; try { cpuHeat = await heat; } catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
             if (session.Data?.Statistics is not { } s) { status = Text["GsMeasureFailed"]; Notify(); return null; }
             var (recipe, support) = Recipe(game);
@@ -530,7 +580,7 @@ public sealed partial class GamesViewModel : ObservableObject
             var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds)
                 + (latencyMs is { } ms ? " · " + Text.Format("WhyLatency", ms) : "");
             var report = new StutterReport(summary, findings, s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now, gpuBusy, latencyMs);
-            lastReports[game.Key] = report;
+            SaveReport(game.Key, report);
             status = summary; Notify();
             return report;
         }

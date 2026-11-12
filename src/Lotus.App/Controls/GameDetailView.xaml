@@ -111,7 +111,7 @@
   </Border>
 
   <!-- Screenshots -->
-  <ScrollViewer HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" Visibility="{Binding HasInfo, Converter={StaticResource BooleanVisibility}}">
+  <ScrollViewer x:Name="Shots" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" Visibility="{Binding HasInfo, Converter={StaticResource BooleanVisibility}}">
    <ItemsControl ItemsSource="{Binding Screenshots}">
     <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="12" Padding="0,0,0,12"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
     <ItemsControl.ItemTemplate><DataTemplate><Border Width="320" Height="180" CornerRadius="12" app:Motion.Hover="1.04"><Border.Background><ImageBrush ImageSource="{Binding}" Stretch="UniformToFill"/></Border.Background></Border></DataTemplate></ItemsControl.ItemTemplate>

@@ -62,15 +62,18 @@ public sealed class RtssLatencyTests(ITestOutputHelper output)
     [Theory]
     [InlineData(true, true, true, 144, null, null, "responsive", "LlWhyFrameGen")]
     [InlineData(true, false, true, 144, null, null, null, "LlFrameGenOther")]
-    [InlineData(true, true, false, 75, null, null, "fluid", "LlWhyFluidMeasure")]   // fixed 75 Hz: frame generation should be off, normal pick
+    [InlineData(true, true, false, 75, null, null, "responsive", "LlWhyFixedReflex")] // fixed 75 Hz: frame generation should be off, normal pick
     [InlineData(true, true, true, 75, null, null, "responsive", "LlWhyVrrReflex")]   // VRR but slow monitor: same
     [InlineData(false, true, true, 144, null, null, "responsive", "LlWhyVrrReflex")]
     [InlineData(false, false, true, 144, null, null, "fluid", "LlWhyVrrFluid")]
     [InlineData(false, true, false, 75, 74.0, 60.0, "scanline", "LlWhyScanline")]
-    [InlineData(false, true, false, 75, 74.0, 95.0, "fluid", "LlWhyFluid")]
+    [InlineData(false, true, false, 75, 74.0, 95.0, "responsive", "LlWhyFixedReflex")]
+    [InlineData(false, false, false, 75, 74.0, 95.0, "fluid", "LlWhyFluid")]
     [InlineData(false, true, false, 75, 95.0, null, "scanline", "LlWhyScanline")]
-    [InlineData(false, true, false, 75, 80.0, null, "fluid", "LlWhyFluid")]
-    [InlineData(false, true, false, 75, null, null, "fluid", "LlWhyFluidMeasure")]
+    [InlineData(false, true, false, 75, 80.0, null, "responsive", "LlWhyFixedReflex")]
+    [InlineData(false, true, false, 75, null, null, "responsive", "LlWhyFixedReflex")]
+    [InlineData(false, false, false, 75, null, null, "fluid", "LlWhyFluidMeasure")]
+    [InlineData(false, false, false, 75, 74.0, 60.0, "scanline", "LlWhyScanline")]
     public void OneButtonPicksTheMode(bool frameGen, bool nvidia, bool vrr, int hz, double? fps, double? busy, string? mode, string why)
     {
         var info = new GamesViewModel.LowLatencyInfo("ok", "game.exe", null, nvidia, FrameGen: frameGen, Api: "Direct3D 12");

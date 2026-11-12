@@ -438,7 +438,7 @@ Get in the game.</value>
   <data name="UxDataSourcesDescription" xml:space="preserve"><value>CPU and RAM use Windows APIs. NVIDIA GPU data uses NVML when supported by the driver. No additional driver is installed.</value></data>
   <data name="UxCollectorActive" xml:space="preserve"><value>Monitoring active</value></data>
   <data name="UxCollectorPaused" xml:space="preserve"><value>Monitoring paused</value></data>
-  <data name="UxAdviceNoAnalysis" xml:space="preserve"><value>Start an analysis from Home. Your result and next steps will be brought together here.</value></data>
+  <data name="UxAdviceNoAnalysis" xml:space="preserve"><value>Tap "Analyze my PC" to analyze your RAM. Your result and next steps will be brought together here.</value></data>
   <data name="UxResultsTab" xml:space="preserve"><value>Result</value></data>
   <data name="UxResultsTitle" xml:space="preserve"><value>Result and next steps</value></data>
   <data name="UxNotAnalyzed" xml:space="preserve"><value>Waiting for your first analysis</value></data>
@@ -2007,7 +2007,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GsReasonFixedCap" xml:space="preserve"><value>Without FreeSync/G-Sync, the cap matches the monitor rate with V-Sync: every frame shows for the same time, without judder.</value></data>
   <data name="GsReasonHalfRate" xml:space="preserve"><value>Your PC cannot hold the monitor rate, so the cap sits at an exact fraction of it: fewer FPS, but locked and smooth, like a console.</value></data>
   <data name="IgVsyncTitle" xml:space="preserve"><value>Turn on V-Sync and lock at {0} FPS</value></data>
-  <data name="IgVsyncBody" xml:space="preserve"><value>Without FreeSync/G-Sync, the secret of console smoothness is FPS locked to the monitor rate (or half of it). Turn on V-Sync in the game and use Lotus Fluid mode below: the frame pacing line goes flat.</value></data>
+  <data name="IgVsyncBody" xml:space="preserve"><value>Without FreeSync/G-Sync, the secret of console smoothness is FPS locked to the monitor rate (or half of it). Turn on V-Sync in the game and use the RivaTuner Turn on button below: Lotus picks the right mode and the frame pacing line goes flat.</value></data>
   <data name="IgVrrVsyncTitle" xml:space="preserve"><value>With FreeSync/G-Sync: V-Sync in the driver, not in the game</value></data>
   <data name="IgVrrVsyncBody" xml:space="preserve"><value>Keep V-Sync on in the graphics driver panel and off in the game. With the cap 3 FPS below the monitor rate, the screen follows every frame without tearing or V-Sync delay.</value></data>
   <data name="IgEnableVrrTitle" xml:space="preserve"><value>Turn on your monitor&apos;s FreeSync/G-Sync</value></data>
@@ -2377,7 +2377,7 @@ Your games and Windows are not changed.</value></data>
   <data name="PrepProfileAllow" xml:space="preserve"><value>Allow</value></data>
   <data name="SetPreparePlay" xml:space="preserve"><value>Prepare before playing</value></data>
   <data name="SetMeasurePorts" xml:space="preserve"><value>Measure FPS of Lotus Ports games</value></data>
-  <data name="SetMeasurePortsHint" xml:space="preserve"><value>While a game opened by Lotus Ports is running, Lotus measures its frames for 60 seconds. Without setup, Windows asks for administrator confirmation each game session; to never be asked, add your account to the &quot;Performance Log Users&quot; group (steps in docs/LOTUS_PORTS_INTEGRATION.md) and sign in again.</value></data>
+  <data name="SetMeasurePortsHint" xml:space="preserve"><value>While a game opened by Lotus Ports is running, Lotus measures its frames for 60 seconds. Without setup, Windows asks for administrator confirmation each game session; to never be asked, add your account to the &quot;Performance Log Users&quot; group and sign in again.</value></data>
   <data name="SetPreparePlayHint" xml:space="preserve"><value>When you click Play, Lotus checks in seconds that the installation, memory and space are fine, and only asks something if there&apos;s a problem. Each game can have its own setting in My Games.</value></data>
   <data name="SpTitle" xml:space="preserve"><value>Progress protection</value></data>
   <data name="SpChecking" xml:space="preserve"><value>Looking for this game&apos;s saves…</value></data>
@@ -3169,4 +3169,7 @@ Your games and Windows are not changed.</value></data>
   <data name="LlUseFrameGen" xml:space="preserve"><value>I use frame generation in this game</value></data>
   <data name="LlUseFrameGenHint" xml:space="preserve"><value>Your call: more FPS on screen for a bit more delay. Lotus sets the limiter to match it.</value></data>
   <data name="LlWhyFrameGenChosen" xml:space="preserve"><value>You use frame generation, and only the Reflex limiter works alongside it. Limit of {0} FPS, the smoothest it gets with frame generation on this monitor.</value></data>
+  <data name="LlWhyFixedReflex" xml:space="preserve"><value>Monitor without FreeSync/G-Sync and an NVIDIA card: Reflex with V-Sync and a {0} FPS limit gives the quickest response with the same steadiness as Fluid.</value></data>
+  <data name="IgRaiseQualityTitle" xml:space="preserve"><value>There is room for a prettier image</value></data>
+  <data name="IgRaiseQualityBody" xml:space="preserve"><value>In the last analysis the card ran at {0}% while holding {1} FPS. Raise the quality one level or switch DLSS/FSR to a prettier mode and analyze again: if FPS stays steady, keep it.</value></data>
 </root>
