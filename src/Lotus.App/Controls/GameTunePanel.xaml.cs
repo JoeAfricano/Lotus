@@ -170,6 +170,9 @@ public sealed partial class GameTunePanel : UserControl
         s.Children.Add(head);
         s.Children.Add(new TextBlock { Text = text[r.AdaptiveSync ? "LlBodyVrr" : "LlBodyFixed"], FontSize = 13.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap });
         if (info?.State != "ok") { s.Children.Add(Caption(text[info?.State == "noRtss" ? "LlNoRtss" : "LlNoExe"])); return box; }
+        // What RivaTuner does right now, read only: closed (Lotus opens it on Play) and its limit for every game.
+        if (info.Running == false) s.Children.Add(Caption(text["LlRtssClosed"]));
+        if (!info.On && info.GlobalCap is { } global) s.Children.Add(Caption(text.Format("LlGlobalCap", global.ToString(Math.Abs(global - Math.Round(global)) < 0.001 ? "0" : "0.0", culture))));
 
         var buttons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, Margin = new Thickness(0, 4, 0, 0) };
         Button Make(string label, string? mode, bool primary, string id)
@@ -185,12 +188,18 @@ public sealed partial class GameTunePanel : UserControl
             };
             return b;
         }
-        if (info.Mode != "fluid") buttons.Children.Add(Make(text["LlEnableFluid"], "fluid", info.Mode is null, "tune-fluid"));
-        if (info.Mode != "responsive" && info.Nvidia) buttons.Children.Add(Make(text["LlEnable"], "responsive", false, "tune-lowlatency"));
+        // Frame generation (DLSS FG) does not get along with other limiters: on NVIDIA, Reflex becomes the main choice.
+        // Reflex only works in Direct3D 11/12: when RivaTuner reports another API, it is not offered.
+        var reflex = info.Nvidia && info.ReflexFits;
+        if (info.Mode != "responsive" && reflex && info.PreferResponsive) buttons.Children.Add(Make(text["LlEnable"], "responsive", info.Mode is null, "tune-lowlatency"));
+        if (info.Mode != "fluid") buttons.Children.Add(Make(text["LlEnableFluid"], "fluid", info.Mode is null && !info.PreferResponsive, "tune-fluid"));
+        if (info.Mode != "responsive" && reflex && !info.PreferResponsive) buttons.Children.Add(Make(text["LlEnable"], "responsive", false, "tune-lowlatency"));
         if (info.On) buttons.Children.Add(Make(text["LlDisable"], null, false, "tune-limiter-off"));
         s.Children.Add(buttons);
         s.Children.Add(Caption(text.Format(r.AdaptiveSync ? "LlNoteVrr" : "LlNoteFixed", info.Exe!)));
         if (!info.Nvidia) s.Children.Add(Caption(text["LlAmd"]));
+        if (info.FrameGen) s.Children.Add(Caption(text[info.PreferResponsive ? "LlFrameGenReflex" : "LlFrameGenOther"]));
+        if (info.Nvidia && !info.ReflexFits) s.Children.Add(Caption(text.Format("LlApiNoReflex", info.Api!)));
         return box;
     }
 

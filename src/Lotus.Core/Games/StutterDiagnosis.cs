@@ -5,7 +5,8 @@ namespace Lotus.Core.Games;
 public enum StutterFix { None, Precompile, PrepareProfile, LowerQuality, CloseApps }
 public sealed record StutterFinding(string Key, StutterFix Fix, int Weight, string? Detail = null);
 public sealed record StutterInputs(double AverageFps, double Low1Fps, int SpikeCount, double DurationSeconds, double? GpuBusy, int TargetFps,
-    ShaderState? Shaders, int PendingProfileSteps, double? MemoryLoadPercent, IReadOnlyList<string> TopMemoryApps, bool CanLowerQuality, IReadOnlyList<string>? Overlays = null, CpuHeat? Heat = null);
+    ShaderState? Shaders, int PendingProfileSteps, double? MemoryLoadPercent, IReadOnlyList<string> TopMemoryApps, bool CanLowerQuality, IReadOnlyList<string>? Overlays = null, CpuHeat? Heat = null,
+    double? FrameCap = null); // a frame limiter in force (RivaTuner), when known
 
 public static class StutterDiagnosis
 {
@@ -14,6 +15,12 @@ public static class StutterDiagnosis
         var list = new List<StutterFinding>();
         var stutters = i.Low1Fps < i.AverageFps * 0.6 || (i.DurationSeconds > 0 && i.SpikeCount / i.DurationSeconds > 0.5);
         var lowFps = i.AverageFps < i.TargetFps * 0.9;
+        // FPS held at a limiter's cap is the limiter, not the hardware: say so instead of blaming the CPU or the GPU.
+        if (lowFps && i.FrameCap is { } cap and > 0 && i.AverageFps >= cap * 0.97)
+        {
+            list.Add(new("WhyCapped", StutterFix.None, 65, Math.Round(cap, 1).ToString(System.Globalization.CultureInfo.InvariantCulture)));
+            lowFps = false;
+        }
         // Sudden drops: shader compilation is the classic cause in modern DirectX 12 games.
         if (stutters && i.Shaders is ShaderState.Ready or ShaderState.Stale) list.Add(new("WhyShaders", StutterFix.Precompile, 90));
         if (i.MemoryLoadPercent is >= 85) list.Add(new("WhyMemory", StutterFix.CloseApps, stutters ? 80 : 50, string.Join(", ", i.TopMemoryApps.Take(3))));

@@ -163,3 +163,12 @@ Atualização visual a partir do pacote "Conceito Premium" (Rosé Quartz):
 - **Navegação lateral** (completa, só ícones ou recolhível conforme a largura), com Game list e **Meu diário em dourado** com o nível; Configurações e perfil embaixo; títulos de página grandes; heróis com foto sempre escuros; o nome **Lotus** dourado com efeitos em todos os temas; "Lotus Score" em caixa normal.
 - Inclui a correção do botão Jogar das capas (0.2.1).
 - Instalador: `tools\Build-Installer.ps1 -Name "Lotus New"` → `artifacts\dist\Lotus-New-Setup-0.3.0-alpha.exe`; instala por cima (atualização), sem desinstalar e sem tocar nos dados.
+
+## RivaTuner ao jogar (prioridade 1 da revisão, 12/11/2026)
+
+- **Aberto ou fechado:** o Lotus sabe se o RivaTuner está aberto pela memória compartilhada dele (sem administrador). Ao clicar em Jogar, se o RivaTuner estiver instalado, fechado e em uso pelo Lotus (overlay ou limitador deste jogo), o Lotus abre o RivaTuner antes do jogo. O próprio RivaTuner pede permissão ao Windows. Se não abrir, o jogo abre mesmo assim e o Lotus avisa. O "Iniciar com o Windows" do RivaTuner não é alterado.
+- **Geração de quadros:** em placa NVIDIA, Resposta (Reflex) vira a opção principal, porque o RivaTuner documenta que o DLSS Frame Generation não combina com outros limitadores. Em AMD/Intel, o Lotus indica o limite do próprio jogo ou do driver.
+- **API do jogo:** com o jogo aberto, o RivaTuner informa a API (Direct3D 11/12, Vulkan, OpenGL). Fora de Direct3D 11/12 o Reflex não é oferecido.
+- **Limite global:** o limite do perfil Global aparece no cartão do RivaTuner (Meus Jogos › Overlay) e no Otimizar (só leitura). Na análise, FPS preso no limite vira a causa "O FPS está no limite que você definiu", em vez de culpar a placa ou o processador.
+- **Overlay:** o texto da análise usa a trava `dwBusy` do SDK (v2.14+), sem misturar com Afterburner/HWiNFO.
+- **Pasta:** lida do registro (`HKLM\SOFTWARE\(WOW6432Node\)Unwinder\RTSS`, `InstallDir`), aceita só com `RTSS.exe` dentro; senão, a pasta padrão.

@@ -216,7 +216,12 @@ public sealed partial class GamesViewModel : ObservableObject
     private void Launch(GameCard? card)
     {
         if (card is null) return;
-        if (Preparation is not null && AskBeforePlay is not null) { _ = PrepareAndLaunchAsync(card); return; } // same launcher, after quick checks
+        _ = LaunchAsync(card);
+    }
+    private async Task LaunchAsync(GameCard card)
+    {
+        await EnsureRtssAsync(card.Game); // RivaTuner first, so it hooks the game from its first frame
+        if (Preparation is not null && AskBeforePlay is not null) { await PrepareAndLaunchAsync(card); return; } // same launcher, after quick checks
         LaunchNow(card);
     }
 
@@ -414,7 +419,16 @@ public sealed partial class GamesViewModel : ObservableObject
     public StutterReport? LastReport(GameEntry game) => lastReports.GetValueOrDefault(game.Key);
     public sealed record GameTune(GameSettingsAnalysis Settings, GameTech Tech, IReadOnlyList<string> TechChips, IReadOnlyList<(string Title, string Body)> Tips, StutterReport? Last, bool Running, string? ScoreLine = null, string? ScoreHint = null, LowLatencyInfo? LowLatency = null);
     // Low latency through RivaTuner: State = "ok" | "noRtss" | "notNvidia" | "noExe"; On = current state of that game's profile.
-    public sealed record LowLatencyInfo(string State, string? Exe, string? Mode, bool Nvidia, double? Cap = null) { public bool On => Mode is not null; }
+    // FrameGen: the game ships frame generation (DLSS FG does not get along with other limiters: Reflex is the one to use).
+    // Api: the game's 3D API while it runs with RivaTuner (Reflex needs Direct3D 11/12). GlobalCap: RivaTuner's limit for
+    // every game without its own profile. Running: RivaTuner open now (null = unknown).
+    public sealed record LowLatencyInfo(string State, string? Exe, string? Mode, bool Nvidia, double? Cap = null, bool FrameGen = false,
+        string? Api = null, double? GlobalCap = null, bool? Running = null)
+    {
+        public bool On => Mode is not null;
+        public bool ReflexFits => Api is null or "Direct3D 11" or "Direct3D 12"; // unknown API: RivaTuner falls back by itself
+        public bool PreferResponsive => FrameGen && Nvidia && ReflexFits;
+    }
     public Lotus.Core.Integrations.IRtssIntegration? Rtss { get; set; }
 
     public async Task<GameTune?> TuneAsync(GameEntry game)
@@ -449,9 +463,9 @@ public sealed partial class GamesViewModel : ObservableObject
     private LowLatencyInfo LowLatencyFor(GameTech tech, SystemProfile pc)
     {
         var nvidia = System.Text.RegularExpressions.Regex.IsMatch(pc.GpuName, "NVIDIA|GeForce|RTX|GTX", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-        if (Rtss?.State().Installed != true) return new("noRtss", tech.MainExe, null, nvidia);
-        if (tech.MainExe is not { } exe) return new("noExe", null, null, nvidia);
-        return new("ok", exe, Rtss.LimiterMode(exe), nvidia, Rtss.LimiterCap(exe));
+        if (Rtss?.State().Installed != true) return new("noRtss", tech.MainExe, null, nvidia, FrameGen: tech.FrameGen);
+        if (tech.MainExe is not { } exe) return new("noExe", null, null, nvidia, FrameGen: tech.FrameGen, GlobalCap: Rtss.GlobalCap(), Running: Rtss.Running());
+        return new("ok", exe, Rtss.LimiterMode(exe), nvidia, Rtss.LimiterCap(exe), tech.FrameGen, Rtss.GameApi(exe), Rtss.GlobalCap(), Rtss.Running());
     }
 
     // mode: "fluid" | "responsive" turns the limiter on (cap = exact paced cap), null restores that game's profile.
@@ -499,7 +513,7 @@ public sealed partial class GamesViewModel : ObservableObject
             var (load, apps) = Memory is null ? (0d, (IReadOnlyList<string>)[]) : await Task.Run(() => Memory.Read(game), token);
             IReadOnlyList<string> overlays = Overlays is null ? [] : await Task.Run(() => (IReadOnlyList<string>)[.. Overlays.Scan().Where(o => o.Heavy).Select(o => o.Name)], token);
             var findings = StutterDiagnosis.Analyze(new(s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds, gpuBusy, target,
-                ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower, overlays, cpuHeat));
+                ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower, overlays, cpuHeat, await Task.Run(() => RtssCapFor(run.Executable), token)));
             if (findings.Any(f => f.Fix == StutterFix.LowerQuality)) pendingSteps[game.Key] = -1; // ready for "Otimizar configurações" after closing
             lastReports[game.Key] = new(Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds), findings, s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now);
             var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds);

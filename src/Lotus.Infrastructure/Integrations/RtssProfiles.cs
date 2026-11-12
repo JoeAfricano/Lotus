@@ -21,7 +21,7 @@ public static partial class RtssProfiles
     [GeneratedRegex(@"^(Global|[A-Za-z0-9 _.\-]{1,120}\.exe)$")] private static partial Regex ProfileName();
     [GeneratedRegex(@"^-?[0-9A-Fa-f]{1,10}$")] private static partial Regex SafeValue();
 
-    public static string DefaultProfilesDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "RivaTuner Statistics Server", "Profiles");
+    public static string DefaultProfilesDir => Path.Combine(RtssInstall.Dir, "Profiles");
     public static string DefaultBackupDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "RtssBackups");
 
     public static void Validate(RtssRequest request)
@@ -78,6 +78,30 @@ public static partial class RtssProfiles
     }
 }
 
+// Where RivaTuner is installed. Its installer records the folder under HKLM\SOFTWARE\(WOW6432Node\)Unwinder\RTSS
+// (InstallDir); only administrators can write there, so the elevated helper may trust it. Any value without RTSS.exe
+// inside is ignored and the default folder is used.
+public static class RtssInstall
+{
+    public static string DefaultDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "RivaTuner Statistics Server");
+    public static string Dir => FromRegistry() ?? DefaultDir;
+    private static string? FromRegistry()
+    {
+        if (!OperatingSystem.IsWindows()) return null;
+        foreach (var key in new[] { @"SOFTWARE\WOW6432Node\Unwinder\RTSS", @"SOFTWARE\Unwinder\RTSS" })
+        {
+            try
+            {
+                using var k = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(key);
+                if (k?.GetValue("InstallDir") is string dir && dir.Length > 0 && Valid(dir)) return Path.TrimEndingDirectorySeparator(Path.GetFullPath(dir));
+            }
+            catch (Exception ex) when (ex is System.Security.SecurityException or IOException or UnauthorizedAccessException or ArgumentException) { }
+        }
+        return null;
+    }
+    public static bool Valid(string dir) => Path.IsPathFullyQualified(dir) && File.Exists(Path.Combine(dir, "RTSS.exe"));
+}
+
 // Asks the running RTSS to reload profiles through its documented hooks DLL (same call MSI Afterburner uses).
 [SupportedOSPlatform("windows")]
 public static class RtssReload
@@ -85,7 +109,7 @@ public static class RtssReload
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void UpdateProfilesProc();
     public static bool TryUpdate()
     {
-        var dll = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "RivaTuner Statistics Server", "RTSSHooks64.dll");
+        var dll = Path.Combine(RtssInstall.Dir, "RTSSHooks64.dll");
         if (!File.Exists(dll) || !NativeLibrary.TryLoad(dll, out var handle)) return false;
         try
         {
@@ -145,8 +169,33 @@ public static class RtssElevatedHelper
 // Lotus overlay preset for RivaTuner's Global profile: FPS + frametime graph, rose-gold text on a translucent dark box, top-left.
 [SupportedOSPlatform("windows")]
 public sealed class WindowsRtssIntegration(string? profilesDir = null, string? backupDir = null, Func<string[], Task<int>>? elevatedRunner = null,
-    string? overlayConfig = null, string? overlaysDir = null) : Lotus.Core.Integrations.IRtssIntegration
+    string? overlayConfig = null, string? overlaysDir = null, string? sharedMemory = null) : Lotus.Core.Integrations.IRtssIntegration
 {
+    private string Map => sharedMemory ?? RtssSharedMemory.DefaultMap;
+    private string InstallDir => Path.GetDirectoryName(Profiles)!;
+    // Open = its shared memory exists. Nothing is started or changed by asking.
+    public bool? Running() => RtssSharedMemory.IsAvailable(Map);
+    // Opens RivaTuner (its own manifest asks Windows for administrator) and waits up to 10 s until it answers, so the
+    // game started next is hooked. False when it is not installed, the player declined the prompt, or it did not come up.
+    public async Task<bool> StartAsync()
+    {
+        if (Running() == true) return true;
+        var exe = Path.Combine(InstallDir, "RTSS.exe");
+        if (!File.Exists(exe)) return false;
+        try { using var p = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exe) { UseShellExecute = true, WorkingDirectory = InstallDir }); }
+        catch (System.ComponentModel.Win32Exception) { return false; } // UAC declined
+        for (var i = 0; i < 40; i++) { await Task.Delay(250); if (Running() == true) return true; }
+        return false;
+    }
+    // The limit RivaTuner applies to every game without its own profile ([Framerate] of Global); null when none.
+    public double? GlobalCap() => RtssProfiles.Read("Global", Profiles) is { } raw ? CapOf(new IniText(raw)) : null;
+    private static double? CapOf(IniText ini)
+    {
+        if (!int.TryParse(ini.Get("Framerate", "Limit"), out var limit) || limit <= 0) return null;
+        return int.TryParse(ini.Get("Framerate", "LimitDenominator"), out var d) && d > 1 ? limit / (double)d : limit;
+    }
+    // The 3D API of this game while it runs with RivaTuner ("Direct3D 12", "Vulkan"...); null when unknown.
+    public string? GameApi(string exe) => RtssSharedMemory.ApiOf(exe, Map);
     private string OverlayConfig => overlayConfig ?? LotusOverlayLayout.DefaultConfig;
     private string Overlays => overlaysDir ?? LotusOverlayLayout.OverlaysDir;
     public string ExportLayout(string variant = LotusOverlayLayout.Main) => LotusOverlayLayout.Export(Overlays, variant);
@@ -210,10 +259,7 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
     public double? LimiterCap(string exe)
     {
         try { RtssProfiles.Validate(new(exe, [])); } catch (InvalidOperationException) { return null; }
-        if (RtssProfiles.Read(exe, Profiles) is not { } raw) return null;
-        var ini = new IniText(raw);
-        if (!int.TryParse(ini.Get("Framerate", "Limit"), out var limit) || limit <= 0) return null;
-        return int.TryParse(ini.Get("Framerate", "LimitDenominator"), out var d) && d > 1 ? limit / (double)d : limit;
+        return RtssProfiles.Read(exe, Profiles) is { } raw ? CapOf(new IniText(raw)) : null;
     }
     // The cap may be fractional (37.5 on 75 Hz): RTSS stores Limit / LimitDenominator.
     public async Task<bool> EnableLimiterAsync(string exe, double fpsCap, string mode)
@@ -257,7 +303,7 @@ public sealed class WindowsToolDetector : Lotus.Core.Integrations.IToolDetector
 public static class LotusOverlayLayout
 {
     public static string OverlaysDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Overlays");
-    public static string DefaultConfig => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "RivaTuner Statistics Server", "Plugins", "Client", "OverlayEditor.cfg");
+    public static string DefaultConfig => Path.Combine(RtssInstall.Dir, "Plugins", "Client", "OverlayEditor.cfg");
     // The layout is the user's own "Lotus Neon" design (ANSI, with its alpha artwork next to it); both are shipped byte for byte.
     public const string ArtFile = "Lotus-Arte-Alpha.png";
     private static byte[] Resource(string name)

@@ -3124,4 +3124,17 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="PoOffline" xml:space="preserve"><value>Não deu para falar com o GitHub agora. Confira a internet e tente de novo.</value></data>
   <data name="PortsClosed" xml:space="preserve"><value>O Lotus Ports está fechado. Abra para ver seus jogos dele aqui.</value></data>
   <data name="PortsOpening" xml:space="preserve"><value>Abrindo o Lotus Ports…</value></data>
+  <data name="RtssOpening" xml:space="preserve"><value>Abrindo o RivaTuner antes do jogo…</value></data>
+  <data name="RtssNotOpened" xml:space="preserve"><value>O RivaTuner não abriu, então o overlay e o limite de FPS do Lotus não vão aparecer neste jogo. O jogo abre normalmente.</value></data>
+  <data name="LlRtssClosed" xml:space="preserve"><value>O RivaTuner está fechado agora. Ao clicar em Jogar, o Lotus abre ele antes do jogo (o Windows pede permissão).</value></data>
+  <data name="LlGlobalCap" xml:space="preserve"><value>O RivaTuner já limita todos os jogos sem perfil próprio a {0} FPS (perfil Global). Este jogo segue esse limite.</value></data>
+  <data name="LlFrameGenReflex" xml:space="preserve"><value>Este jogo tem Geração de quadros. Com ela, use Resposta (Reflex): é o limitador que funciona junto. A Fluidez pode causar tremidas.</value></data>
+  <data name="LlFrameGenOther" xml:space="preserve"><value>Este jogo tem Geração de quadros. Com ela ligada, prefira o limite de FPS do próprio jogo ou do driver de vídeo, não o do RivaTuner.</value></data>
+  <data name="LlApiNoReflex" xml:space="preserve"><value>O RivaTuner informa que este jogo usa {0}. O Reflex do RivaTuner só funciona em Direct3D 11 e 12, então use a Fluidez.</value></data>
+  <data name="IntRtssOpen" xml:space="preserve"><value>aberto agora</value></data>
+  <data name="IntRtssClosed" xml:space="preserve"><value>fechado (o Lotus abre ao jogar)</value></data>
+  <data name="IntRtssGlobalCap" xml:space="preserve"><value>limite de {0} FPS em todos os jogos (perfil Global)</value></data>
+  <data name="WhyCappedTitle" xml:space="preserve"><value>O FPS está no limite que você definiu</value></data>
+  <data name="WhyCappedBody" xml:space="preserve"><value>O jogo ficou travado em cerca de **{0} FPS** porque o limitador do RivaTuner está nesse valor. Não é falta de força do PC. Se quiser mais FPS, aumente ou desligue o limite em Otimizar este jogo.</value></data>
+  <data name="WhyCappedTip" xml:space="preserve"><value>Dica: o limite deixa o ritmo estável; só aumente se o monitor acompanhar.</value></data>
 </root>

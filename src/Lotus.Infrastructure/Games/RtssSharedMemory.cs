@@ -11,7 +11,15 @@ namespace Lotus.Infrastructure.Games;
 public static class RtssSharedMemory
 {
     private const uint Signature = 0x52545353; // 'RTSS'
-    public sealed record AppSample(int ProcessId, string Name, uint Time0, uint Time1, uint Frames, uint FrameTimeMicroseconds);
+    public sealed record AppSample(int ProcessId, string Name, uint Time0, uint Time1, uint Frames, uint FrameTimeMicroseconds, uint Flags = 0)
+    {
+        // Low word of dwFlags = the 3D API RTSS hooked (APPFLAG_OGL 1 ... APPFLAG_VULKAN 10 in the SDK).
+        public string? Api => (Flags & 0xFFFF) switch
+        {
+            1 => "OpenGL", 2 => "DirectDraw", 3 => "Direct3D 8", 4 => "Direct3D 9", 5 => "Direct3D 9", 6 => "Direct3D 10",
+            7 => "Direct3D 11", 8 or 9 => "Direct3D 12", 10 => "Vulkan", _ => null,
+        };
+    }
 
     public const string DefaultMap = "RTSSSharedMemoryV2";
     public static IReadOnlyList<AppSample> Read(string mapName = DefaultMap)
@@ -33,12 +41,28 @@ public static class RtssSharedMemory
                 if (pid == 0) continue;
                 view.ReadArray(at + 4, name, 0, 260);
                 var text = Encoding.ASCII.GetString(name, 0, Math.Max(0, Array.IndexOf(name, (byte)0) is var z and >= 0 ? z : 260));
-                list.Add(new(pid, text, view.ReadUInt32(at + 268), view.ReadUInt32(at + 272), view.ReadUInt32(at + 276), view.ReadUInt32(at + 280)));
+                list.Add(new(pid, text, view.ReadUInt32(at + 268), view.ReadUInt32(at + 272), view.ReadUInt32(at + 276), view.ReadUInt32(at + 280), view.ReadUInt32(at + 264)));
             }
             return list;
         }
         catch (Exception ex) when (ex is FileNotFoundException or UnauthorizedAccessException or IOException) { return []; } // RTSS not running
     }
+
+    // The mapping exists (with RTSS's signature) only while RivaTuner is running: no process list, no admin.
+    public static bool IsAvailable(string mapName = DefaultMap)
+    {
+        try
+        {
+            using var map = MemoryMappedFile.OpenExisting(mapName, MemoryMappedFileRights.Read);
+            using var view = map.CreateViewAccessor(0, 4, MemoryMappedFileAccess.Read);
+            return view.ReadUInt32(0) == Signature;
+        }
+        catch (Exception ex) when (ex is FileNotFoundException or UnauthorizedAccessException or IOException) { return false; }
+    }
+
+    // The 3D API of a running game RTSS is tracking ("Direct3D 12", "Vulkan"...), matched by executable name; null when unknown.
+    public static string? ApiOf(string exe, string mapName = DefaultMap) =>
+        Read(mapName).Where(a => string.Equals(Path.GetFileName(a.Name), exe, StringComparison.OrdinalIgnoreCase)).Select(a => a.Api).FirstOrDefault(a => a is not null);
 
     public static bool IsTracking(int pid, string mapName = DefaultMap) => Read(mapName).Any(a => a.ProcessId == pid && a.Time0 != 0);
 }
