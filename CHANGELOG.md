@@ -2,6 +2,15 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.3.1-alpha "Lotus" (12/11/2026)
+
+### Novo
+- **Medir FPS dos jogos do Lotus Ports** (Configurações, desligado por padrão). Com a opção ligada, quando um jogo aberto pelo Lotus Ports está rodando, o Lotus mede os quadros por 60 segundos (começando 20 segundos depois de o jogo abrir) e o resultado entra no relatório da sessão. O PresentMon precisa de administrador, então o Windows pede confirmação a cada partida. Para nunca mais ser perguntado, coloque sua conta no grupo "Usuários de log de desempenho" (passo a passo em [docs/LOTUS_PORTS_INTEGRATION.md](docs/LOTUS_PORTS_INTEGRATION.md)). Com a opção desligada, nada muda: o Lotus nunca pede administrador sozinho.
+
+### Por dentro
+- Conferência automática de que o motor de temas do Lotus Ports continua igual ao do Lotus (cada app mantém sua própria escolha de tema; no Lotus Ports o padrão segue "Igual ao Lotus").
+- Testes sem avisos de compilação.
+
 ## 1.3.0-alpha "Lotus" (07/11/2026)
 
 ### Novo

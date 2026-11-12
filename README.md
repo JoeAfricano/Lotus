@@ -146,6 +146,7 @@ O **[Lotus Ports](https://github.com/JoeAfricano/LotusPorts)** é o app irmão d
 - **Em Meus Jogos:** "Seus jogos do Lotus Ports" (instalados e favoritos) com **Jogar** e **Abrir no Lotus Ports**. Com o Lotus Ports fechado, um aviso oferece abri-lo.
 - **Para o Lotus Ports:** conferências do sistema no "Resolver" (driver de vídeo, Vulkan, memória e disco), dependências instaladas (Visual C++, Vulkan, DirectX antigo, .NET), mudanças recentes que o Lotus fez no PC, perfil de hardware e relatório da sessão (FPS só quando foi medido de verdade).
 - **Ao jogar pelo Lotus Ports:** o Lotus vai para a bandeja e volta quando o jogo fecha, e a sessão entra no seu diário.
+- **Medir FPS dos jogos do Lotus Ports** (Configurações, desligado por padrão): o Lotus mede os quadros por 60 segundos durante a partida. O Windows pede administrador a cada partida, a não ser que sua conta esteja no grupo "Usuários de log de desempenho" (passo a passo em [docs/LOTUS_PORTS_INTEGRATION.md](docs/LOTUS_PORTS_INTEGRATION.md)); com o grupo, nunca pede.
 - Nenhum pedido do Lotus Ports altera o PC.
 ### Temas
 - **Modos** Escuro, Claro (porcelana rosé), Sistema e Grafite, com 7 cores de destaque.
