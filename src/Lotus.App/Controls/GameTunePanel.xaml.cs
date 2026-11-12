@@ -177,6 +177,16 @@ public sealed partial class GameTunePanel : UserControl
         if (info.Running == false) s.Children.Add(Caption(text["LlRtssClosed"]));
         if (!info.On && info.GlobalCap is { } global) s.Children.Add(Caption(text.Format("LlGlobalCap", global.ToString(Math.Abs(global - Math.Round(global)) < 0.001 ? "0" : "0.0", culture))));
 
+        // Frame generation stays the player's choice: more FPS on screen for a bit more delay. Lotus adapts the limiter.
+        if (info.FrameGen && card is { } c)
+        {
+            var fg = new CheckBox { Content = text["LlUseFrameGen"], IsChecked = info.UsesFrameGen };
+            AutomationProperties.SetAutomationId(fg, "tune-use-framegen");
+            fg.Click += async (_, _) => { fg.IsEnabled = false; vm.SetUseFrameGen(c.Game, fg.IsChecked == true); await Reload(); };
+            s.Children.Add(fg);
+            s.Children.Add(Caption(text["LlUseFrameGenHint"]));
+        }
+
         // One choice for the player: Lotus picks the mode (LimiterChoice) and says why; "Ligar" applies it, "Desligar"
         // puts this game's RivaTuner profile back exactly as it was.
         if (info.Recommended is { } pick)

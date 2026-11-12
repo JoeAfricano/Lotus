@@ -78,6 +78,16 @@ public sealed class RtssLatencyTests(ITestOutputHelper output)
         if (frameGen && vrr && hz >= 120) Assert.Equal((null, "LlFrameGenOther"), LimiterChoice.Pick(info with { Api = "Vulkan" }, vrr, hz, fps, busy)); // Reflex injection is D3D only
     }
 
+    [Fact]
+    public void FrameGenIsThePlayersChoice()
+    {
+        var info = new GamesViewModel.LowLatencyInfo("ok", "game.exe", null, true, FrameGen: true, Api: "Direct3D 12", UsesFrameGen: true);
+        Assert.Equal(("responsive", "LlWhyFrameGenChosen"), LimiterChoice.Pick(info, false, 75, 74, 60));  // fixed 75 Hz, chosen anyway
+        Assert.Equal(("responsive", "LlWhyFrameGen"), LimiterChoice.Pick(info, true, 144, null, null));   // where it fits
+        Assert.Equal((null, "LlFrameGenOther"), LimiterChoice.Pick(info with { Nvidia = false }, false, 75, null, null));
+        Assert.Equal(("scanline", "LlWhyScanline"), LimiterChoice.Pick(info with { UsesFrameGen = false }, false, 75, 74, 60)); // not chosen: normal pick
+    }
+
     [Fact] public async Task PipeKeepsOnlyTheMeasuredGamesFrames()
     {
         using var map = FakeV221(4242, 1, 2, 1, 2);
