@@ -82,9 +82,9 @@
         <Button Grid.Column="1" Click="OnDetails" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DetailsLabel}" AutomationProperties.Name="{Binding DetailsLabel}"><FontIcon Glyph="&#xE946;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/></Button>
         <Button Grid.Column="2" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.Name="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.AutomationId="game-more">
          <FontIcon Glyph="&#xE712;" FontSize="13"/>
-         <Button.Flyout><MenuFlyout Placement="BottomEdgeAlignedRight">
-          <MenuFlyoutItem Text="{Binding DataContext.Text[GmEdit], ElementName=Root}" Click="OnEditGame" AutomationProperties.AutomationId="game-edit"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE70F;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
-          <MenuFlyoutItem Text="{Binding DataContext.Text[GmRemove], ElementName=Root}" Click="OnRemoveGame" AutomationProperties.AutomationId="game-remove"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE74D;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
+         <Button.Flyout><MenuFlyout Placement="BottomEdgeAlignedRight" Opening="OnMoreOpening">
+          <MenuFlyoutItem Tag="GmEdit" Click="OnEditGame" AutomationProperties.AutomationId="game-edit"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE70F;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
+          <MenuFlyoutItem Tag="GmRemove" Click="OnRemoveGame" AutomationProperties.AutomationId="game-remove"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE74D;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
          </MenuFlyout></Button.Flyout>
         </Button>
        </Grid>

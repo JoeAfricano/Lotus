@@ -23,6 +23,14 @@ public sealed partial class GamesPanel : UserControl
         UiSound.Play(UiSound.Cue.Open); vm.Play(card.Game);
     }
 
+    // A flyout lives outside the page's tree, so ElementName bindings never reach it: the labels are set when it opens.
+    private void OnMoreOpening(object sender, object e)
+    {
+        if (sender is not MenuFlyout menu || DataContext is not GamesViewModel vm) return;
+        foreach (var item in menu.Items.OfType<MenuFlyoutItem>())
+            if (item.Tag is string key) { item.Text = vm.Text[key]; Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(item, item.Text); }
+    }
+
     // "Adicionar jogo": find it in the store (name and cover come along) or fill it in; the .exe is optional.
     private async void OnAddGame(object sender, RoutedEventArgs e)
     {
@@ -62,7 +70,7 @@ public sealed partial class GamesPanel : UserControl
             vm.Restore(list.SelectedItems.Cast<GameEntry>().ToList());
     }
 
-    // "Otimizar este jogo": the side panel with everything for this game; tools that need this page's dialogs are passed in.
+    // "Otimizar este jogo": the centered window with everything for this game; tools that need this page's dialogs are passed in.
     private void OnOpenTune(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: GameCard card } || DataContext is not GamesViewModel vm || MainWindow.Shell is not { } shell) return;
