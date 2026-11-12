@@ -16,7 +16,7 @@ public sealed partial class MainWindow
     {
         playPrefs = new GamePrefsBook(new Lotus.Infrastructure.Games.JsonGamePrefsStore(), ex => Serilog.Log.Warning(ex, "Game preferences"));
         GameControllers.Start();
-        var preparation = new PlayPreparation(new Lotus.Infrastructure.Games.WindowsPrepareProbes(games.Memory, GameControllers.Count), text, ex => Serilog.Log.Warning(ex, "Play preparation"))
+        var preparation = new PlayPreparation(new Lotus.Infrastructure.Games.WindowsPrepareProbes(games.Memory, GameControllers.Count, GameControllers.Batteries), text, ex => Serilog.Log.Warning(ex, "Play preparation"))
         {
             Profile = games.GameProfile,
         };
@@ -109,6 +109,28 @@ internal static class GameControllers
             _ = Windows.Gaming.Input.RawGameController.RawGameControllers.Count;
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Game controllers"); started = false; }
+    }
+    // Wireless controllers' battery: the capacity from Windows.Gaming.Input when the controller reports it (Xbox and
+    // others), else the XInput level. Plugged in or charging is never "low". Null when unknown.
+    public static IReadOnlyList<Lotus.Core.Games.ControllerBattery>? Batteries()
+    {
+        if (!started) return null;
+        try
+        {
+            var list = new List<Lotus.Core.Games.ControllerBattery>();
+            foreach (var pad in Windows.Gaming.Input.RawGameController.RawGameControllers)
+            {
+                if (pad.IsWireless != true || pad.TryGetBatteryReport() is not { } report) continue;
+                if (report.Status == Windows.System.Power.BatteryStatus.NotPresent) continue;
+                int? percent = report.RemainingCapacityInMilliwattHours is { } now && report.FullChargeCapacityInMilliwattHours is { } full && full > 0
+                    ? (int)Math.Round(Math.Clamp(now * 100.0 / full, 0, 100)) : null;
+                var name = string.IsNullOrWhiteSpace(pad.DisplayName) ? App.Text["PrepBatteryPad"] : pad.DisplayName;
+                list.Add(new(name, percent, Lotus.Core.Games.BatteryLevel.Unknown, report.Status == Windows.System.Power.BatteryStatus.Charging));
+            }
+            if (list.All(b => b.Percent is null)) list.AddRange(Lotus.Infrastructure.Games.XInputBattery.Read(App.Text["PrepBatteryPad"] + " {0}"));
+            return list;
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Controller battery"); return null; }
     }
     public static int? Count()
     {

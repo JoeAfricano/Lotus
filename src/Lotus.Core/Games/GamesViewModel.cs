@@ -474,6 +474,7 @@ public sealed partial class GamesViewModel : ObservableObject
 
     // ---- Por que está travando? ----
     public IMemoryPressure? Memory { get; set; }
+    public ICpuHeatSampler? Heat { get; set; } // processor held back by heat or power during the measurement
     public sealed record StutterReport(string Summary, IReadOnlyList<StutterFinding> Findings, double AverageFps = 0, double Low1Fps = 0, int Spikes = 0, DateTimeOffset? When = null);
 
     // Measures the running game, then ranks likely causes. Changes nothing; fixes are offered separately.
@@ -485,8 +486,10 @@ public sealed partial class GamesViewModel : ObservableObject
             for (var left = startDelaySeconds; left > 0; left--) { status = Text.Format("GsMeasureStartsIn", left); Notify(); await Task.Delay(1000, token); }
             status = Text.Format("WhyMeasuring", seconds); Notify();
             var gpu = gpuSampler?.AverageAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<double?>(null);
+            var heat = Heat?.MeasureAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<CpuHeat?>(null);
             var session = await capture!.CaptureAsync(new(new(run.Pid, run.Executable, run.StartedUtc), seconds, Elevated: true, "Lotus: " + game.Name, "{}"), token);
             var gpuBusy = await gpu;
+            CpuHeat? cpuHeat = null; try { cpuHeat = await heat; } catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
             if (session.Data?.Statistics is not { } s) { status = Text["GsMeasureFailed"]; Notify(); return null; }
             var (recipe, support) = Recipe(game);
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
@@ -496,7 +499,7 @@ public sealed partial class GamesViewModel : ObservableObject
             var (load, apps) = Memory is null ? (0d, (IReadOnlyList<string>)[]) : await Task.Run(() => Memory.Read(game), token);
             IReadOnlyList<string> overlays = Overlays is null ? [] : await Task.Run(() => (IReadOnlyList<string>)[.. Overlays.Scan().Where(o => o.Heavy).Select(o => o.Name)], token);
             var findings = StutterDiagnosis.Analyze(new(s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds, gpuBusy, target,
-                ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower, overlays));
+                ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower, overlays, cpuHeat));
             if (findings.Any(f => f.Fix == StutterFix.LowerQuality)) pendingSteps[game.Key] = -1; // ready for "Otimizar configurações" after closing
             lastReports[game.Key] = new(Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds), findings, s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now);
             var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds);

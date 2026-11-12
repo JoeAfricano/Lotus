@@ -217,6 +217,11 @@
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.ResumePrompts, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetResumePrompts]}" AutomationProperties.AutomationId="settings-resume-prompts"/>
      </Grid></Border>
      <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <FontIcon Glyph="&#xE7F4;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetDriverNotices]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetDriverNoticesHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+      <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.DriverNotices, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetDriverNotices]}" AutomationProperties.AutomationId="settings-driver-notices"/>
+     </Grid></Border>
+     <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <FontIcon Glyph="&#xE768;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetPreparePlay]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetPreparePlayHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.PreparePlay, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetPreparePlay]}" AutomationProperties.AutomationId="settings-prepare-play"/>

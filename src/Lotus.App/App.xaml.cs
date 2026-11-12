@@ -195,7 +195,7 @@ public partial class App : Application
             await services.GetRequiredService<HardwareMonitoringService>().DisposeAsync();
             Log.Information("Application closed"); await services.DisposeAsync(); Log.CloseAndFlush();
         };
-        Log.Information("Application started {Version}", "0.1.0-alpha");
+        Log.Information("Application started {Version}", (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false).FirstOrDefault() as System.Reflection.AssemblyInformationalVersionAttribute)?.InformationalVersion.Split('+')[0] ?? "?");
         window.Activate();
         StartPortsIntegration(window);
         var main = (MainWindow)window;

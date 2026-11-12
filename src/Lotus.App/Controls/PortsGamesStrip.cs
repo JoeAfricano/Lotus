@@ -74,6 +74,12 @@ public sealed partial class PortsGamesStrip : UserControl
         foreach (var game in result.Games.OrderByDescending(g => g.LastPlayed ?? DateTimeOffset.MinValue).Take(20))
             row.Children.Add(Card(game));
         Visibility = Visibility.Visible;
+        // Sessions from Lotus Ports reach the diary with a title only: its cover comes from here, for entries still without one.
+        if (MainWindow.Shell?.Diary is { } diary)
+            foreach (var game in result.Games)
+                if (MainWindow.CoverAddress(game.CoverUrl) is { } cover
+                    && diary.Get(new Lotus.Core.Games.GameEntry(Lotus.Core.Games.GameStores.LotusPorts, game.LotusGameKey, game.Title).Key) is { Cover: null or "" } entry)
+                    diary.SetArt(entry.Key, cover);
     }
 
     private UIElement Card(PortsGame game)

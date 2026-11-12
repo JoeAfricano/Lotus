@@ -6,7 +6,7 @@ namespace Lotus.Core.Saves;
 // Windows folders the rules use, resolved by the app (Saved Games and LocalLow have no .NET shortcut).
 public interface IKnownFolders
 {
-    string? Get(string token);   // APPDATA, LOCALAPPDATA, LOCALLOW, USERPROFILE, DOCUMENTS, SAVEDGAMES
+    string? Get(string token);   // APPDATA, LOCALAPPDATA, LOCALLOW, USERPROFILE, DOCUMENTS, SAVEDGAMES, PUBLIC, PROGRAMDATA
     string? SteamPath();
 }
 
@@ -55,6 +55,12 @@ public sealed class SaveDiscovery(IKnownFolders folders)
         var steamCloud = game.Store == GameStores.Steam && SteamCloudFolders(game.Id).Any();
         foreach (var rule in SaveCatalog.Rules.Where(r => r.Store == game.Store && r.Id == game.Id))
             if (Resolve(rule.Template, game) is { } path && Describe(path, "catalog", steamCloud) is { } c) list.Add(c);
+        // Then the Ludusavi manifest (thousands of games): same checks, plus the folder must be the game's own (never a
+        // shared known folder) and of a save's size.
+        if (list.Count == 0 && Manifest?.Find(game) is { } match)
+            foreach (var template in match.Templates)
+                if (ResolveManifest(template, game) is { } path && Describe(path, match.ByName ? SaveManifest.NameSource : SaveManifest.Source, steamCloud) is { } c
+                    && c.Bytes <= ManifestMaxBytes && c.Files <= ManifestMaxFiles && list.All(x => !SamePath(x.Root, c.Root))) list.Add(c);
         if (game.Store == GameStores.Steam)
             foreach (var auto in SteamAutoCloudFolders(game))
                 if (Describe(auto, "steamauto", true) is { } c && list.All(x => !SamePath(x.Root, c.Root))) list.Add(c);
@@ -67,10 +73,35 @@ public sealed class SaveDiscovery(IKnownFolders folders)
     // A folder the player picked: same checks (it must exist and hold files; links are not followed).
     public SaveCandidate? Manual(string folder) => Describe(folder, "manual", false);
 
+    // Optional: the Ludusavi manifest, loaded by the app (null = only the short catalog above, Steam Cloud and the player's pick).
+    public SaveManifest? Manifest { get; set; }
+    public const long ManifestMaxBytes = 4L << 30; // a "save folder" bigger than this is the game or a shared folder, not saves
+    public const int ManifestMaxFiles = 20000;
+
+    // A manifest template: a file in it means its folder; the result must stay inside the base folder, below it.
+    private string? ResolveManifest(string template, GameEntry game)
+    {
+        if (Resolve(template, game) is not { } path) return null;
+        var token = template[..(template.IndexOf('}') + 1)].Trim('{', '}');
+        var baseDir = token == "INSTALL" ? game.InstallDir : folders.Get(token);
+        if (string.IsNullOrEmpty(baseDir)) return null;
+        try
+        {
+            if (!Directory.Exists(path) && File.Exists(path)) path = Path.GetDirectoryName(path) ?? path;
+            var full = Path.GetFullPath(path).TrimEnd('\\', '/');
+            var root = Path.GetFullPath(baseDir).TrimEnd('\\', '/');
+            if (!full.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) && !full.StartsWith(root + "\\", StringComparison.OrdinalIgnoreCase)) return null;
+            foreach (var known in new[] { "APPDATA", "LOCALAPPDATA", "LOCALLOW", "USERPROFILE", "DOCUMENTS", "SAVEDGAMES" })
+                if (folders.Get(known) is { Length: > 0 } k && SamePath(k, full)) return null; // never a whole known folder
+            return full;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException) { return null; }
+    }
+
     private string? Resolve(string template, GameEntry game)
     {
         var path = template;
-        foreach (var token in new[] { "APPDATA", "LOCALAPPDATA", "LOCALLOW", "USERPROFILE", "DOCUMENTS", "SAVEDGAMES", "INSTALL" })
+        foreach (var token in new[] { "APPDATA", "LOCALAPPDATA", "LOCALLOW", "USERPROFILE", "DOCUMENTS", "SAVEDGAMES", "PUBLIC", "PROGRAMDATA", "INSTALL" })
         {
             var marker = "{" + token + "}";
             if (!path.Contains(marker)) continue;

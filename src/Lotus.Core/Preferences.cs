@@ -30,6 +30,9 @@ public sealed record InterfacePreferences
     public bool ResumePrompts { get; init; } = true; // after a game closes normally, offer to write "Onde eu parei?" (discreet in-app notice)
     public string DriveSchedule { get; init; } = "manual"; // Google Drive copy: manual (only on click), weekly or monthly
     public bool AutoUpdate { get; init; } // download and install new Lotus versions from GitHub without asking
+    public bool DriverNotices { get; init; } = true; // a quiet weekly check for a newer graphics driver (Lotus never installs it)
+    public DateTimeOffset? DriverCheckedAt { get; init; }
+    public string? DriverNoticeKey { get; init; } // the last driver notice shown ("nvidia:581.57"), so each one is told once
     public bool PreparePlay { get; init; } = true; // quick read-only checks behind every Jogar button (a question only for real problems)
     public bool MeasurePortsSessions { get; init; } // measure FPS of games opened by Lotus Ports (PresentMon as administrator: Windows asks each time)
     public string? AdaptiveSync { get; init; } // FreeSync/G-Sync on: "on" | "off" | null (not asked yet; asked before the first game analysis)
@@ -120,6 +123,7 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool AutoSessions { get => service.Current.AutoSessions; set { if (value != service.Current.AutoSessions) { service.Update(service.Current with { AutoSessions = value }); OnPropertyChanged(); } } }
     public bool MinimizeForGames { get => service.Current.MinimizeForGames; set { if (value != service.Current.MinimizeForGames) { service.Update(service.Current with { MinimizeForGames = value }); OnPropertyChanged(); } } }
     public bool GamePriority { get => service.Current.GamePriority; set { if (value != service.Current.GamePriority) { service.Update(service.Current with { GamePriority = value }); OnPropertyChanged(); } } }
+    public bool DriverNotices { get => service.Current.DriverNotices; set { if (value != service.Current.DriverNotices) { service.Update(service.Current with { DriverNotices = value }); OnPropertyChanged(); } } }
     public bool ResumePrompts { get => service.Current.ResumePrompts; set { if (value != service.Current.ResumePrompts) { service.Update(service.Current with { ResumePrompts = value }); OnPropertyChanged(); } } }
     public bool PreparePlay { get => service.Current.PreparePlay; set { if (value != service.Current.PreparePlay) { service.Update(service.Current with { PreparePlay = value }); OnPropertyChanged(); } } }
     public bool MeasurePortsSessions { get => service.Current.MeasurePortsSessions; set { if (value != service.Current.MeasurePortsSessions) { service.Update(service.Current with { MeasurePortsSessions = value }); OnPropertyChanged(); } } }

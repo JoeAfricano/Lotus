@@ -33,8 +33,9 @@ public sealed class JsonGamePrefsStore(string? path = null) : IGamePrefsStore
 internal sealed partial class PrefsJson : JsonSerializerContext { }
 
 // Read-only checks used before playing. The controller count comes from the app (Windows.Gaming.Input lives there).
-public sealed class WindowsPrepareProbes(IMemoryPressure? memory, Func<int?>? controllers = null) : IPrepareProbes
+public sealed class WindowsPrepareProbes(IMemoryPressure? memory, Func<int?>? controllers = null, Func<IReadOnlyList<ControllerBattery>?>? batteries = null) : IPrepareProbes
 {
+    public IReadOnlyList<ControllerBattery>? Batteries() => batteries?.Invoke();
     public bool InstallPresent(GameEntry game)
     {
         if (game.ExePath is { Length: > 0 } exe && !File.Exists(exe)) return false;

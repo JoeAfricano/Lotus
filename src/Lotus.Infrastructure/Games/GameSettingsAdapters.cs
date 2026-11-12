@@ -169,7 +169,8 @@ public sealed class WindowsGameProcessCheck : IGameProcessCheck
     // for the background watcher that puts Lotus in light mode while a game runs.
     public GameEntry? FirstRunning(IReadOnlyList<GameEntry> games)
     {
-        var dirs = games.Where(g => g.InstallDir is { Length: > 3 }).Select(g => (Game: g, Dir: Path.GetFullPath(g.InstallDir!).TrimEnd('\\') + "\\")).ToList();
+        var dirs = games.Where(g => g.InstallDir is { Length: > 3 }).Select(g => (Game: g, Dir: Path.GetFullPath(g.InstallDir!).TrimEnd('\\') + "\\"))
+            .Where(d => !GameProcessRules.TooBroad(d.Dir)).ToList();
         if (dirs.Count == 0) return null;
         var buffer = new StringBuilder(1024);
         foreach (var p in Process.GetProcesses())
@@ -184,6 +185,7 @@ public sealed class WindowsGameProcessCheck : IGameProcessCheck
                     buffer.Clear(); var size = buffer.Capacity;
                     if (!QueryFullProcessImageName(handle, 0, buffer, ref size)) continue;
                     var path = buffer.ToString();
+                    if (GameProcessRules.AlwaysOn(path)) continue;
                     foreach (var (game, dir) in dirs) if (path.StartsWith(dir, StringComparison.OrdinalIgnoreCase)) return game;
                 }
                 finally { CloseHandle(handle); }

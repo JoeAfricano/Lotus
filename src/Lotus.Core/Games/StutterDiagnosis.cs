@@ -5,7 +5,7 @@ namespace Lotus.Core.Games;
 public enum StutterFix { None, Precompile, PrepareProfile, LowerQuality, CloseApps }
 public sealed record StutterFinding(string Key, StutterFix Fix, int Weight, string? Detail = null);
 public sealed record StutterInputs(double AverageFps, double Low1Fps, int SpikeCount, double DurationSeconds, double? GpuBusy, int TargetFps,
-    ShaderState? Shaders, int PendingProfileSteps, double? MemoryLoadPercent, IReadOnlyList<string> TopMemoryApps, bool CanLowerQuality, IReadOnlyList<string>? Overlays = null);
+    ShaderState? Shaders, int PendingProfileSteps, double? MemoryLoadPercent, IReadOnlyList<string> TopMemoryApps, bool CanLowerQuality, IReadOnlyList<string>? Overlays = null, CpuHeat? Heat = null);
 
 public static class StutterDiagnosis
 {
@@ -18,8 +18,13 @@ public static class StutterDiagnosis
         if (stutters && i.Shaders is ShaderState.Ready or ShaderState.Stale) list.Add(new("WhyShaders", StutterFix.Precompile, 90));
         if (i.MemoryLoadPercent is >= 85) list.Add(new("WhyMemory", StutterFix.CloseApps, stutters ? 80 : 50, string.Join(", ", i.TopMemoryApps.Take(3))));
         if (i.PendingProfileSteps > 0) list.Add(new("WhyProfile", StutterFix.PrepareProfile, stutters || lowFps ? 60 : 30));
+        // The processor slowing itself down (heat or power limit): a cause even when the graphics card looks free.
+        if ((stutters || lowFps) && i.Heat is { } heat && (heat.Limited || heat.Hot))
+            list.Add(heat.MaxZoneCelsius is { } c and >= CpuHeat.HotZone - 15
+                ? new("WhyCpuHotTemp", StutterFix.None, 75, Math.Round(c).ToString(System.Globalization.CultureInfo.InvariantCulture))
+                : new("WhyCpuHot", StutterFix.None, 75));
         if (lowFps && i.GpuBusy is >= 90) list.Add(new("WhyGpuLimit", i.CanLowerQuality ? StutterFix.LowerQuality : StutterFix.None, 70));
-        else if (lowFps && i.GpuBusy is < 70) list.Add(new("WhyCpuLimit", i.TopMemoryApps.Count > 0 ? StutterFix.CloseApps : StutterFix.None, 55));
+        else if (lowFps && i.GpuBusy is < 70 && !list.Any(f => f.Key.StartsWith("WhyCpuHot", StringComparison.Ordinal))) list.Add(new("WhyCpuLimit", i.TopMemoryApps.Count > 0 ? StutterFix.CloseApps : StutterFix.None, 55));
         // Heavy overlays and capture apps running (Discord with hardware acceleration, Overwolf, animated wallpapers...).
         if (stutters && i.Overlays is { Count: > 0 } o) list.Add(new("WhyOverlays", StutterFix.None, 45, string.Join(", ", o.Take(4))));
         if (stutters && list.Count == 0) list.Add(new("WhyUnknownStutter", StutterFix.None, 20));

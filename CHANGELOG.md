@@ -2,6 +2,19 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.4.0-alpha "Lotus" (12/11/2026)
+
+### Novo
+- **Saves de milhares de jogos.** A Proteção de progresso passa a conhecer a pasta de saves de cerca de 17 mil jogos, pelo catálogo aberto **Ludusavi** (dados da PCGamingWiki). Jogos da Steam e da GOG são reconhecidos pelo código da loja; os de outras lojas, pelo nome exato, e nesse caso o Lotus pede para você conferir a pasta antes de proteger. O catálogo é atualizado no máximo uma vez por semana e só quando mudou.
+- **Tempo para zerar.** O editor do diário mostra quanto tempo o jogo leva (história, com extras e 100%, do HowLongToBeat), e o "O que jogar agora?" passa a dizer quando falta pouco para zerar um jogo ou quando um jogo da lista dá para terminar em poucas noites.
+- **Bateria do controle.** O Preparar e Jogar avisa quando o controle sem fio está com 20% ou menos. Carregando ou com cabo, nada é dito.
+- **Processador no limite.** O "Por que está travando?" reconhece quando o processador reduz a própria velocidade (calor ou limite de energia) e, durante o jogo, um aviso discreto aparece uma vez se isso durar alguns minutos. Funciona sem administrador e sem drivers extras.
+- **Driver de vídeo novo.** Uma vez por semana o Lotus confere no site da NVIDIA se saiu driver mais novo que o seu e avisa uma vez por versão, com o link da NVIDIA. Para AMD e Intel, avisa quando o driver tem mais de seis meses. Pode desligar em Configurações. O Lotus nunca baixa nem instala drivers.
+
+### Corrigido
+- **Capas em "Na sua lista" (Início) e no diário.** Jogos de outras lojas, adicionados à mão, do Lotus Ports e lançamentos recentes da Steam apareciam só com o nome. O Lotus agora encontra a capa sozinho, uma vez, sem mudar a ordem da lista. As capas do Lotus Ports chegam mesmo com o Lotus Ports fechado.
+- **Programas sempre abertos não contam mais como "jogo aberto".** O Wallpaper Engine e os launchers (Steam, Epic e outros) impediam as tarefas que esperam o jogo fechar, como o tempo para zerar e o aviso de driver.
+
 ## 1.3.1-alpha "Lotus" (12/11/2026)
 
 ### Novo

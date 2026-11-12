@@ -20,6 +20,8 @@ public sealed class PlayPreparationTests : IDisposable
         public long? FreeBytesFor(GameEntry game) => Free;
         public (double LoadPercent, IReadOnlyList<string> TopApps)? Memory(GameEntry game) => Mem;
         public int? Controllers() => Pads;
+        public IReadOnlyList<ControllerBattery>? Pads2;
+        public IReadOnlyList<ControllerBattery>? Batteries() => Pads2;
     }
     private sealed class Profile(int pending, bool applies = true) : IGameProfile
     {
@@ -65,6 +67,22 @@ public sealed class PlayPreparationTests : IDisposable
         Assert.DoesNotContain((await prep.CheckAsync(Hades, new GamePlayPrefs())).Findings, f => f.Id == "controller"); // only when asked for
         probes.Pads = null; // unknown: no warning
         Assert.DoesNotContain((await prep.CheckAsync(Hades, new GamePlayPrefs { CheckController = true })).Findings, f => f.Id == "controller");
+    }
+
+    [Fact] public async Task ALowWirelessControllerIsANoteToChargeIt()
+    {
+        var probes = new Probes { Pads2 = [new("Controle Xbox", 64, BatteryLevel.Medium, false)] };
+        var prep = new PlayPreparation(probes, new TextCatalog(), ex => throw ex);
+        Assert.Empty((await prep.CheckAsync(Hades, new GamePlayPrefs())).Findings);
+        probes.Pads2 = [new("Controle Xbox", 12, BatteryLevel.Low, Charging: true)];        // charging: fine
+        Assert.Empty((await prep.CheckAsync(Hades, new GamePlayPrefs())).Findings);
+        probes.Pads2 = [new("Controle Xbox", 12, BatteryLevel.Low, false)];
+        var low = (await prep.CheckAsync(Hades, new GamePlayPrefs())).Findings.Single();
+        Assert.Equal(("battery", PrepLevel.Warning), (low.Id, low.Level)); Assert.Contains("12%", low.Detail);
+        probes.Pads2 = [new("Controle 2", null, BatteryLevel.Empty, false)];                  // XInput: level only
+        Assert.DoesNotContain("%", (await prep.CheckAsync(Hades, new GamePlayPrefs())).Findings.Single().Detail);
+        Assert.False(new ControllerBattery("x", 21, BatteryLevel.Unknown, false).IsLow);
+        Assert.True(new ControllerBattery("x", 20, BatteryLevel.Unknown, false).IsLow);
     }
 
     [Fact] public async Task SlowChecksAreSkippedNotWaitedFor()

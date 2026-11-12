@@ -50,10 +50,95 @@ public sealed partial class MainWindow
         catch (Exception ex) { Serilog.Log.Warning(ex, "Play session"); }
     }
 
+    // One-shot jobs a little after start. The timers are kept here: a timer nothing refers to can be collected before
+    // it fires (the cover repair at 8 s never ran on a real PC).
+    private readonly List<Microsoft.UI.Dispatching.DispatcherQueueTimer> startupTimers = [];
+    private Microsoft.UI.Dispatching.DispatcherQueueTimer StartupTimer(TimeSpan delay)
+    {
+        var timer = DispatcherQueue.CreateTimer(); timer.Interval = delay; timer.IsRepeating = false;
+        startupTimers.Add(timer);
+        return timer;
+    }
+
+    // Diary covers that never showed (other launchers, games added by hand, newer Steam art): repaired once, quietly,
+    // a little after start. Only the pictures change; Home, the diary and the player panel repaint through Changed.
+    private Lotus.Core.Diary.DiaryArt? diaryArt;
+    public Lotus.Core.Diary.DiaryArt? DiaryArt => diaryArt;
+    private void StartArtRepair()
+    {
+        diaryArt = new Lotus.Core.Diary.DiaryArt(diary, catalog, ex => Serilog.Log.Warning(ex, "Diary art"))
+        {
+            LibraryCover = key => portsCovers.GetValueOrDefault(key)
+                ?? games.InstalledGames().FirstOrDefault(g => string.Equals(Lotus.Core.Diary.DiaryGames.KeyFor(g), key, StringComparison.OrdinalIgnoreCase))?.CoverPath,
+        };
+        var timer = StartupTimer(TimeSpan.FromSeconds(8));
+        timer.Tick += async (_, _) =>
+        {
+            if (!initialized || diaryArt is not { } art) return;
+            await LoadPortsCoversAsync(); // games played through Lotus Ports reach the diary with a title only
+            try { var count = await art.RepairAllAsync(); if (count > 0) Serilog.Log.Information("Diary art: {Count} covers repaired", count); }
+            catch (Exception ex) { Serilog.Log.Warning(ex, "Diary art"); }
+        };
+        timer.Start();
+    }
+
+    // "Tempo para zerar" (HowLongToBeat) for the games being played or wanted: a few each start, after things settle.
+    private readonly Lotus.Infrastructure.Catalog.HowLongToBeatClient gameLengths = new();
+    private Lotus.Core.Diary.DiaryLengths? diaryLengths;
+    private void StartGameLengths()
+    {
+        diaryLengths = new Lotus.Core.Diary.DiaryLengths(diary, gameLengths, ex => Serilog.Log.Warning(ex, "Game length"));
+        var timer = StartupTimer(TimeSpan.FromSeconds(45));
+        timer.Tick += async (_, _) =>
+        {
+            if (!initialized || diaryLengths is not { } lengths) return;
+            if (await Task.Run(games.RunningGame) is not null) { timer.Interval = TimeSpan.FromMinutes(10); timer.Start(); return; } // never while a game runs: later
+            try { var found = await lengths.RefreshAsync(); if (found > 0) Serilog.Log.Information("Game length: {Count} games", found); }
+            catch (Exception ex) { Serilog.Log.Warning(ex, "Game length"); }
+        };
+        timer.Start();
+    }
+
+    // Covers of the Lotus Ports games by diary key ("Lotus Ports:<key>"): read from the catalog Lotus Ports ships (works
+    // with it closed), then asked from Lotus Ports itself when it is open (its answer wins).
+    private readonly Dictionary<string, string> portsCovers = new(StringComparer.OrdinalIgnoreCase);
+    private async Task LoadPortsCoversAsync()
+    {
+        try
+        {
+            foreach (var (key, url) in await Task.Run(() => Lotus.Infrastructure.PortsLink.PortsCatalogCovers.Read()))
+                if (CoverAddress(url) is { } cover) portsCovers[new GameEntry(GameStores.LotusPorts, key, key).Key] = cover;
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Diary art (Lotus Ports catalog)"); }
+        if (!Lotus.Infrastructure.PortsLink.PortsClient.IsInstalled) { if (portsCovers.Count > 0) Serilog.Log.Information("Diary art: {Count} Lotus Ports covers (catalog)", portsCovers.Count); return; }
+        try
+        {
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var result = await new Lotus.Infrastructure.PortsLink.PortsClient(Serilog.Log.Logger).ListGamesAsync(timeout.Token);
+            foreach (var game in result?.Games ?? [])
+                if (CoverAddress(game.CoverUrl) is { } cover)
+                    portsCovers[new GameEntry(GameStores.LotusPorts, game.LotusGameKey, game.Title).Key] = cover;
+            Serilog.Log.Information("Diary art: {Count} Lotus Ports covers", portsCovers.Count);
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Diary art (Lotus Ports)"); }
+    }
+    // https or a local picture (file URI or plain path) that exists; anything else is not shown.
+    public static string? CoverAddress(string? cover)
+    {
+        if (cover is not { Length: > 0 }) return null;
+        if (Uri.TryCreate(cover, UriKind.Absolute, out var uri))
+        {
+            if (uri.Scheme == "https") return cover;
+            if (uri.IsFile) return File.Exists(uri.LocalPath) ? uri.LocalPath : null;
+            return null;
+        }
+        return Path.IsPathFullyQualified(cover) && File.Exists(cover) ? cover : null;
+    }
+
     // "Quero jogar" deals: checked a little after start (prices are cached for hours); new ones get a quiet tray note.
     private void StartDealsCheck()
     {
-        var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromSeconds(25); timer.IsRepeating = false;
+        var timer = StartupTimer(TimeSpan.FromSeconds(25));
         timer.Tick += async (_, _) =>
         {
             if (!initialized || diaryPage.Deals is not { } deals) return;

@@ -28,6 +28,7 @@ public sealed class GameSavesViewModel(SaveProtection protection, GameEntry game
     public string Message { get => message; private set { if (SetProperty(ref message, value)) OnPropertyChanged(nameof(HasMessage)); } }
     public bool HasMessage => Message.Length > 0;
     public SaveCandidate? Found => found;
+    public bool FoundByName => found?.Source == SaveManifest.NameSource;
 
     public bool IsOn => settings.Enabled;
     public bool Auto => settings.Auto;

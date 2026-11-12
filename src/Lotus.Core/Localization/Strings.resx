@@ -951,6 +951,10 @@ Condições atuais: {1}</value></data>
   <data name="WhyGpuLimitBody" xml:space="preserve"><value>A placa de vídeo está **trabalhando no limite** e o FPS fica abaixo do ideal. Baixar um nível de qualidade resolve. Feche o jogo e use **Otimizar configurações**: o ajuste já está pronto.</value></data>
   <data name="WhyCpuLimitTitle" xml:space="preserve"><value>O processador está limitando o FPS</value></data>
   <data name="WhyCpuLimitBody" xml:space="preserve"><value>A placa de vídeo tem folga, mas o FPS está baixo. O **processador ou outros programas** estão segurando o jogo. Feche o que estiver pesado e use o perfil Jogo.</value></data>
+  <data name="WhyCpuHotTitle" xml:space="preserve"><value>O processador está segurando a velocidade</value></data>
+  <data name="WhyCpuHotBody" xml:space="preserve"><value>Durante a medição o processador **reduziu a própria velocidade** (ficou em média abaixo de 85% do que pode), o que costuma ser calor ou limite de energia. Confira se as saídas de ar estão livres, limpe a poeira e use o perfil Jogo. Em notebook, jogue na tomada.</value></data>
+  <data name="WhyCpuHotTempTitle" xml:space="preserve"><value>O processador está esquentando</value></data>
+  <data name="WhyCpuHotTempBody" xml:space="preserve"><value>A temperatura lida pela placa chegou a **{0} °C** e o processador pode reduzir a velocidade para se proteger. Confira se as saídas de ar estão livres, limpe a poeira e, se continuar, veja o cooler e a pasta térmica. Em notebook, jogue na tomada e numa superfície firme.</value></data>
   <data name="WhyUnknownStutterTitle" xml:space="preserve"><value>Há travadas sem uma causa clara</value></data>
   <data name="WhyUnknownStutterBody" xml:space="preserve"><value>Deu para ver travadas, mas **nenhuma causa comum**. Atualizar o driver de vídeo e verificar os arquivos do jogo no launcher costuma ajudar.</value></data>
   <data name="WhyAllGoodTitle" xml:space="preserve"><value>Tudo certo: o jogo rodou estável</value></data>
@@ -1913,6 +1917,19 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="WhyProfileTip" xml:space="preserve"><value>Dica: aplique o perfil Jogo no Lotus, dá para desfazer.</value></data>
   <data name="WhyGpuLimitTip" xml:space="preserve"><value>Dica: ative DLSS, FSR ou XeSS e baixe sombras um nível.</value></data>
   <data name="WhyCpuLimitTip" xml:space="preserve"><value>Dica: baixe distância de visão e densidade de NPCs.</value></data>
+  <data name="WhyCpuHotTip" xml:space="preserve"><value>Dica: limite o FPS ao seu monitor; o processador esquenta menos.</value></data>
+  <data name="WhyCpuHotTempTip" xml:space="preserve"><value>Dica: limite o FPS ao seu monitor; o processador esquenta menos.</value></data>
+  <data name="HeatAlertTitle" xml:space="preserve"><value>Processador no limite</value></data>
+  <data name="HeatAlertLimited" xml:space="preserve"><value>Há alguns minutos o processador está reduzindo a velocidade (calor ou limite de energia). Isso pode causar travadas.</value></data>
+  <data name="HeatAlertHot" xml:space="preserve"><value>A temperatura lida pela placa está em {0} °C. Confira a ventilação do PC.</value></data>
+  <data name="DriverNewTitle" xml:space="preserve"><value>Driver de vídeo novo</value></data>
+  <data name="DriverNewBody" xml:space="preserve"><value>A NVIDIA lançou o driver {0} (você tem o {1}). Drivers novos costumam trazer correções e ganhos para jogos recentes.</value></data>
+  <data name="DriverOldTitle" xml:space="preserve"><value>Driver de vídeo antigo</value></data>
+  <data name="DriverOldBody" xml:space="preserve"><value>Seu driver {0} da {1} tem mais de seis meses. Vale conferir se há um mais novo no site do fabricante.</value></data>
+  <data name="DriverOpenPage" xml:space="preserve"><value>Abrir a página do driver</value></data>
+  <data name="DriverLater" xml:space="preserve"><value>Agora não</value></data>
+  <data name="SetDriverNotices" xml:space="preserve"><value>Avisar quando sair driver de vídeo novo</value></data>
+  <data name="SetDriverNoticesHint" xml:space="preserve"><value>Uma consulta por semana no site da NVIDIA (AMD e Intel: aviso de driver com mais de seis meses). O Lotus nunca baixa nem instala drivers.</value></data>
   <data name="WhyUnknownStutterTip" xml:space="preserve"><value>Dica: atualize o driver de vídeo e verifique os arquivos do jogo.</value></data>
   <data name="WhyAllGoodTip" xml:space="preserve"><value>Dica: se trava em outro lugar, meça lá com Ctrl + Shift + L.</value></data>
   <data name="IgChipFrameGen" xml:space="preserve"><value>Geração de quadros</value></data>
@@ -2174,6 +2191,12 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="PnPaused" xml:space="preserve"><value>pausado desde {0}</value></data>
   <data name="PnWaiting" xml:space="preserve"><value>na sua lista há {0} dias</value></data>
   <data name="PnTaste" xml:space="preserve"><value>você dá notas altas para {0}</value></data>
+  <data name="PnAlmostDone" xml:space="preserve"><value>faltam cerca de {0} para zerar</value></data>
+  <data name="PnShortGame" xml:space="preserve"><value>dá para zerar em cerca de {0}</value></data>
+  <data name="DyBeatTitle" xml:space="preserve"><value>Tempo para zerar (HowLongToBeat)</value></data>
+  <data name="DyBeatMain" xml:space="preserve"><value>História {0}</value></data>
+  <data name="DyBeatPlus" xml:space="preserve"><value>Com extras {0}</value></data>
+  <data name="DyBeatAll" xml:space="preserve"><value>100% {0}</value></data>
   <data name="OvTitle" xml:space="preserve"><value>Overlays e travadas</value></data>
   <data name="OvWhat" xml:space="preserve"><value>Overlays, gravação e papéis de parede animados são **causas comuns de travadas**. O Lotus só verifica o que está ativo e explica como desligar; nada é alterado.</value></data>
   <data name="OvScan" xml:space="preserve"><value>Verificar agora</value></data>
@@ -2319,6 +2342,10 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="PrepSpaceBody" xml:space="preserve"><value>Restam {0} GB. Jogos gravam saves e caches enquanto rodam; liberar espaço evita problemas.</value></data>
   <data name="PrepControllerTitle" xml:space="preserve"><value>Seu controle não foi encontrado</value></data>
   <data name="PrepControllerBody" xml:space="preserve"><value>Nenhum controle está conectado agora. Deseja continuar mesmo assim?</value></data>
+  <data name="PrepBatteryTitle" xml:space="preserve"><value>Controle com pouca bateria</value></data>
+  <data name="PrepBatteryBody" xml:space="preserve"><value>{0} está com {1}% de bateria. Vale carregar ou ligar o cabo antes de começar.</value></data>
+  <data name="PrepBatteryBodyLevel" xml:space="preserve"><value>{0} está com pouca bateria. Vale carregar ou ligar o cabo antes de começar.</value></data>
+  <data name="PrepBatteryPad" xml:space="preserve"><value>Controle</value></data>
   <data name="PrepSavesTitle" xml:space="preserve"><value>Proteção de progresso</value></data>
   <data name="PrepProfileTitle" xml:space="preserve"><value>Perfil Jogo</value></data>
   <data name="PrepProfileApplied" xml:space="preserve"><value>Aplicado para esta partida. Tudo volta como estava quando você fechar o jogo.</value></data>
@@ -2366,6 +2393,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="SpFolderLabel" xml:space="preserve"><value>Pasta dos saves</value></data>
   <data name="SpFolderInfo" xml:space="preserve"><value>{0} arquivos · {1} · alterado em {2}</value></data>
   <data name="SpCloudNote" xml:space="preserve"><value>Esta pasta é sincronizada pela nuvem da loja. Ao restaurar, a nuvem pode perguntar qual versão manter ou trocar os arquivos de novo.</value></data>
+  <data name="SpByNameNote" xml:space="preserve"><value>Esta pasta foi encontrada pelo nome do jogo no catálogo de saves (Ludusavi, PCGamingWiki), porque esta loja não informa um código. Confira se ela é mesmo deste jogo antes de proteger.</value></data>
   <data name="SpEnable" xml:space="preserve"><value>Ativar proteção</value></data>
   <data name="SpPickFolder" xml:space="preserve"><value>Escolher pasta…</value></data>
   <data name="SpBackupNow" xml:space="preserve"><value>Fazer backup agora</value></data>

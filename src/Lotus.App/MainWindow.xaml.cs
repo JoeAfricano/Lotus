@@ -131,6 +131,8 @@ public sealed partial class MainWindow : Window
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
         games.Watch = sessionHub; // the light-mode check, shared (no second polling loop)
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
+        games.Heat = cpuHeat;
+        WatchCpuHeat();
         SetUpPreparation();
         SetUpSaves();
         SetUpUpdates();
@@ -248,6 +250,9 @@ public sealed partial class MainWindow : Window
         ShowRoute();
         StartAchievements();
         StartDealsCheck();
+        StartArtRepair();
+        StartGameLengths();
+        StartDriverNotice();
         preferences.PropertyChanged += OnPreferencesChanged;
         Closed += (_, _) =>
         {
@@ -636,6 +641,19 @@ public sealed partial class MainWindow : Window
         if (game.AppId is { } id) { try { steamMinutes = Lotus.Infrastructure.Games.SteamPlaytime.Read().GetValueOrDefault(id) is var m && m > 0 ? m : null; } catch (IOException) { } }
         diaryEditor.Open(game, steamMinutes, status);
         DiaryEditor.Open(diaryEditor);
+        _ = ShowGameLengthAsync(game);
+    }
+    // "Tempo para zerar" in the editor: the saved times, or a lookup now (a game not in the diary yet is not saved).
+    private async Task ShowGameLengthAsync(Lotus.Core.Diary.DiaryEntry game)
+    {
+        if (diaryLengths is not { } lengths || diaryEditor.Length is not null) return;
+        try
+        {
+            var found = diary.Contains(game.Key) ? await lengths.LookUpAsync(game.Key)
+                : await gameLengths.FindAsync(game.Name, game.AppId, CancellationToken.None);
+            if (found is not null && diaryEditor.EntryKey == game.Key) diaryEditor.Length = found;
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Game length"); }
     }
     // Yearly recap (from the diary's Statistics tab).
     public void OpenDiaryRecap(int year)

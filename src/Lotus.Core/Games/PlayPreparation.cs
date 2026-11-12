@@ -72,6 +72,17 @@ public interface IPrepareProbes
     long? FreeBytesFor(GameEntry game);                  // drive of the game (null = unknown)
     (double LoadPercent, IReadOnlyList<string> TopApps)? Memory(GameEntry game);
     int? Controllers();                                  // connected game controllers (null = unknown)
+    // Battery of the wireless controllers (empty when none reports one; null = unknown).
+    IReadOnlyList<ControllerBattery>? Batteries() => null;
+}
+
+// One wireless controller's battery. Percent when Windows gives the capacity; otherwise only the level (XInput).
+public enum BatteryLevel { Unknown, Empty, Low, Medium, Full }
+public sealed record ControllerBattery(string Name, int? Percent, BatteryLevel Level, bool Charging)
+{
+    public const int LowPercent = 20;
+    // Low enough to stop mid-session: 20% or less, or "low/empty" when only the level is known. Charging is never low.
+    public bool IsLow => !Charging && (Percent is { } p ? p <= LowPercent : Level is BatteryLevel.Low or BatteryLevel.Empty);
 }
 
 public sealed class PlayPreparation(IPrepareProbes probes, ITextCatalog text, Action<Exception> log)
@@ -118,6 +129,11 @@ public sealed class PlayPreparation(IPrepareProbes probes, ITextCatalog text, Ac
         if (prefs.CheckController && await Quick(probes.Controllers, token) is 0 && !IsSnoozed(key, "controller", at))
             findings.Add(new("controller", PrepLevel.Warning, text["PrepControllerTitle"], text["PrepControllerBody"]));
 
+        // C2 — a wireless controller about to run out (a note to charge it now, never a reason to stop).
+        if (await QuickRef(probes.Batteries, token) is { Count: > 0 } batteries && batteries.FirstOrDefault(b => b.IsLow) is { } low && !IsSnoozed(key, "battery", at))
+            findings.Add(new("battery", PrepLevel.Warning, text["PrepBatteryTitle"],
+                low.Percent is { } pct ? text.Format("PrepBatteryBody", low.Name, pct) : text.Format("PrepBatteryBodyLevel", low.Name)));
+
         // E — save protection that needs attention: a note, never a reason to stop the game.
         if (SaveWarning?.Invoke(game) is { Length: > 0 } saveNote)
             findings.Add(new("saves", PrepLevel.Info, text["PrepSavesTitle"], saveNote));
@@ -162,4 +178,14 @@ public sealed class PlayPreparation(IPrepareProbes probes, ITextCatalog text, Ac
             return await Task.WhenAny(task, Task.Delay(CheckLimit, token)) == task ? await task : null;
         }
         catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); return null; }
-    }}
+    }
+    private async Task<T?> QuickRef<T>(Func<T?> probe, CancellationToken token) where T : class
+    {
+        try
+        {
+            var task = Task.Run(probe, token);
+            return await Task.WhenAny(task, Task.Delay(CheckLimit, token)) == task ? await task : null;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); return null; }
+    }
+}

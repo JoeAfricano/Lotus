@@ -12,6 +12,28 @@ public sealed partial class MainWindow
     private SaveLibraryViewModel? saveLibrary;
     public SaveLibraryViewModel? SaveLibrary => saveLibrary;
 
+    // Save folders of thousands of games (Ludusavi manifest): the local index right away, a weekly check for a new one
+    // a minute after start. Never blocks anything: without it, saves are found as before.
+    private void LoadSaveManifest(SaveDiscovery discovery)
+    {
+        var store = new Lotus.Infrastructure.Games.SaveManifestStore();
+        _ = Task.Run(async () =>
+        {
+            try { if (store.Load() is { } cached) discovery.Manifest = cached; }
+            catch (Exception ex) { Serilog.Log.Warning(ex, "Save manifest"); }
+            await Task.Delay(TimeSpan.FromMinutes(1));
+            try
+            {
+                if (await store.RefreshAsync() is { } fresh)
+                {
+                    discovery.Manifest = fresh;
+                    Serilog.Log.Information("Save manifest updated: {Games} games", fresh.Games.Count);
+                }
+            }
+            catch (Exception ex) { Serilog.Log.Warning(ex, "Save manifest refresh"); }
+        });
+    }
+
     // Unsure counts as running: a restore is never done over an open game.
     public bool IsGameRunning(GameEntry game) =>
         games.GameProcess(game) is not null || string.Equals(games.RunningGame()?.Key, game.Key, StringComparison.OrdinalIgnoreCase);
@@ -19,8 +41,10 @@ public sealed partial class MainWindow
     private void SetUpSaves()
     {
         var root = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "SaveBackups");
+        var discovery = new SaveDiscovery(new Lotus.Infrastructure.Games.WindowsKnownFolders());
         saves = new SaveProtection(new Lotus.Infrastructure.Games.JsonSaveSettingsStore(), new SaveVault(root),
-            new SaveDiscovery(new Lotus.Infrastructure.Games.WindowsKnownFolders()), ex => Serilog.Log.Warning(ex, "Save protection"));
+            discovery, ex => Serilog.Log.Warning(ex, "Save protection"));
+        LoadSaveManifest(discovery);
         saveLibrary = new SaveLibraryViewModel(saves, games.InstalledGames, text, IsGameRunning) { CoverLookup = id => catalog.PortraitAsync(id, CancellationToken.None) };
         if (games.Preparation is { } preparation) preparation.SaveWarning = game => saves.Warning(game, text);
         sessionHub.Stopped += (_, e) => _ = AutoBackupAsync(e.Game);

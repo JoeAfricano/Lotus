@@ -40,3 +40,35 @@ public sealed class StutterDiagnosisTests
         }
     }
 }
+
+public sealed class CpuHeatTests
+{
+    private static StutterInputs Run(CpuHeat? heat, double gpu = 60) => new(48, 20, 30, 30, gpu, 60, null, 0, 40, [], false, null, heat);
+
+    [Fact] public void AHeldBackProcessorIsACauseWhenTheGameStutters()
+    {
+        var limited = Lotus.Core.Games.StutterDiagnosis.Analyze(Run(new(70, null)));
+        Assert.Equal("WhyCpuHot", limited[0].Key);
+        Assert.DoesNotContain(limited, f => f.Key == "WhyCpuLimit");                        // the same symptom, not twice
+        var hot = Lotus.Core.Games.StutterDiagnosis.Analyze(Run(new(98, 93.4)));
+        Assert.Equal(("WhyCpuHotTemp", "93"), (hot[0].Key, hot[0].Detail));
+        Assert.DoesNotContain(Lotus.Core.Games.StutterDiagnosis.Analyze(Run(new(99, 60))), f => f.Key.StartsWith("WhyCpuHot"));
+        Assert.DoesNotContain(Lotus.Core.Games.StutterDiagnosis.Analyze(new(120, 110, 0, 30, 60, 60, null, 0, 40, [], false, null, new(70, null))), f => f.Key.StartsWith("WhyCpuHot")); // smooth game: no worry
+        Assert.Null(CpuHeat.From([new(null, null)]));
+        Assert.Equal(new CpuHeat(80, 70), CpuHeat.From([new(90, 60), new(70, 70), new(null, null)]));
+    }
+
+    [Fact] public void TheSessionWarningNeedsMinutesNotASpike()
+    {
+        var watch = new CpuHeatWatch();
+        for (var i = 0; i < CpuHeatWatch.LimitedSamples - 1; i++) Assert.False(watch.Feed(new(60, null)));
+        Assert.False(watch.Feed(new(100, null)));                                             // back to normal: starts over
+        for (var i = 0; i < CpuHeatWatch.LimitedSamples - 1; i++) Assert.False(watch.Feed(new(60, null)));
+        Assert.True(watch.Feed(new(60, null)));
+        Assert.False(watch.Feed(new(60, null)));                                              // once per session
+        watch.Reset();
+        for (var i = 0; i < CpuHeatWatch.HotSamples - 1; i++) Assert.False(watch.Feed(new(100, 96)));
+        Assert.True(watch.Feed(new(100, 97))); Assert.Equal(97, watch.Last!.MaxZoneCelsius);
+        Assert.False(new CpuHeatWatch().Feed(null));
+    }
+}

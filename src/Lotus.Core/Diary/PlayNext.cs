@@ -48,6 +48,11 @@ public static class PlayNext
                 _ => 0,
             };
             if (time == PlayTime.Long && e.Status == DiaryStatus.Want) reasons.Add(new("PnStartNew"));
+            // How long it takes (HowLongToBeat): close to the end of what is going, or a game that fits a few evenings.
+            if (e.Status is DiaryStatus.Playing or DiaryStatus.Paused && e.BeatMain is > 0 and var main && main - e.Minutes is > 0 and <= 180 and var left)
+            { score += 1.5; reasons.Add(new("PnAlmostDone", DiaryText.Hours(left))); }
+            else if (e.Status == DiaryStatus.Want && e.BeatMain is > 0 and <= 360 and var shortMain && time != PlayTime.Long)
+            { score += 1; reasons.Add(new("PnShortGame", DiaryText.Hours(shortMain))); }
             if (e.Status == DiaryStatus.Paused) reasons.Add(new("PnPaused", (lastPlayed ?? e.Updated.LocalDateTime).ToString("d", CultureInfo.CurrentCulture)));
             if (e.Status == DiaryStatus.Want && (today - e.Added.LocalDateTime.Date).TotalDays is >= 30 and var days) { score += Math.Min(1, days / 365.0); reasons.Add(new("PnWaiting", ((int)days).ToString(CultureInfo.InvariantCulture))); }
             // Taste: the best-rated genre of this game among the player's own scores.

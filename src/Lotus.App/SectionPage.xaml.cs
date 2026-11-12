@@ -162,7 +162,18 @@ public sealed partial class SectionPage : Page
         {
             var grid = new Grid { Width = 124, Height = 166, CornerRadius = new CornerRadius(14), Background = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["HeroBrush"] };
             grid.Children.Add(new TextBlock { Text = card.Name, TextWrapping = TextWrapping.Wrap, TextAlignment = TextAlignment.Center, Margin = new Thickness(10), VerticalAlignment = VerticalAlignment.Center, Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["GoldBrush"] });
-            if (new CoverImageConverter().Convert(card.Cover!, typeof(object), null!, "") is Microsoft.UI.Xaml.Media.ImageSource img) grid.Children.Add(new Image { Source = img, Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill });
+            if (new CoverImageConverter().Convert(card.Cover!, typeof(object), null!, "") is Microsoft.UI.Xaml.Media.ImageSource img)
+            {
+                var picture = new Image { Source = img, Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill };
+                // A cover that fails (art moved on the store, file gone): the name stays visible and Lotus looks for the
+                // right art once; when found, the diary changes and the shelf repaints with it.
+                if (img is Microsoft.UI.Xaml.Media.Imaging.BitmapImage bitmap)
+                {
+                    var key = card.Entry.Key; var broken = card.Cover;
+                    bitmap.ImageFailed += (_, _) => { picture.Visibility = Visibility.Collapsed; if (MainWindow.Shell?.DiaryArt is { } art) _ = art.RepairAsync(key, broken); };
+                }
+                grid.Children.Add(picture);
+            }
             grid.Children.Add(new Border
             {
                 CornerRadius = new CornerRadius(8), Padding = new Thickness(8, 2, 8, 2), Margin = new Thickness(8), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom,
