@@ -6,7 +6,7 @@ namespace Lotus.Infrastructure.Games;
 
 // CpuHeat from Windows performance counters, readable without administrator rights (no kernel driver, unlike tools
 // that read the CPU's own sensors): "\Processor Information(_Total)\% Performance Limit" and the ACPI thermal zones
-// ("\Thermal Zone Information(*)\Temperature", in kelvin). Readings outside 15–115 °C are ignored (fixed or bogus zones).
+// ("\Thermal Zone Information(*)\Temperature", in kelvin). Readings outside 25–115 °C are ignored: many desktops expose a fixed zone (often 290 K ≈ 17 °C) that is not a CPU reading.
 [SupportedOSPlatform("windows")]
 public sealed class PdhCpuHeatSampler : ICpuHeatSampler, IDisposable
 {
@@ -48,7 +48,7 @@ public sealed class PdhCpuHeatSampler : ICpuHeatSampler, IDisposable
         {
             if (!Open() || PdhCollectQueryData(query) != 0) return null;
             var perf = limit != IntPtr.Zero ? Values(limit).Select(v => (double?)Math.Clamp(v, 0, 100)).FirstOrDefault() : null;
-            var celsius = zones != IntPtr.Zero ? Values(zones).Select(k => k - 273.15).Where(c => c is >= 15 and <= 115).Select(c => (double?)c).DefaultIfEmpty(null).Max() : null;
+            var celsius = zones != IntPtr.Zero ? Values(zones).Select(k => k - 273.15).Where(c => c is >= 25 and <= 115).Select(c => (double?)c).DefaultIfEmpty(null).Max() : null;
             return perf is null && celsius is null ? null : new(perf, celsius);
         }
     }

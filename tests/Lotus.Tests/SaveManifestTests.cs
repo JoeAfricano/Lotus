@@ -146,11 +146,11 @@ public sealed class SaveManifestTests : IDisposable
         var discovery = new SaveDiscovery(new Folders(dir))
         {
             Manifest = new SaveManifest([
-                new("Hollow Knight", ["367520"], [], [new(@"{LOCALLOW}\Team Cherry\Hollow Knight")]),
+                new("Hollow Knight", ["367521"], [], [new(@"{LOCALLOW}\Team Cherry\Hollow Knight")]), // an id the built-in catalog does not know
                 new("Sneaky", ["5"], [], [new(@"{DOCUMENTS}\..\Docs"), new(@"{DOCUMENTS}\cv.docx")]),
             ]),
         };
-        var hk = discovery.Find(new GameEntry(GameStores.Steam, "367520", "Hollow Knight"));
+        var hk = discovery.Find(new GameEntry(GameStores.Steam, "367521", "Hollow Knight"));
         Assert.Equal(SaveManifest.Source, Assert.Single(hk.Candidates).Source);
         Assert.Equal(save, hk.Candidates[0].Root);
         Assert.Equal(SaveManifest.NameSource, Assert.Single(discovery.Find(new GameEntry(GameStores.Epic, "x", "Hollow Knight")).Candidates).Source);
