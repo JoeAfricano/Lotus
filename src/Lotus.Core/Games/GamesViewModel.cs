@@ -377,7 +377,9 @@ public sealed partial class GamesViewModel : ObservableObject
             var gpu = gpuSampler?.AverageAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<double?>(null);
             var session = await capture!.CaptureAsync(new(new(run.Pid, run.Executable, run.StartedUtc), seconds, Elevated: true, "Lotus: " + game.Name, "{}"), token);
             var gpuBusy = session.Extras?.GpuBusyPercent ?? await gpu; // the game's own GPU share (RivaTuner/Reflex) beats the whole-GPU load
-            var latencyMs = session.Extras?.PcLatencyMs;
+            // With frame generation the Reflex markers cover only the real frames: the generator's delay is missing, so
+            // the number would look better than it feels. Not shown then.
+            var latencyMs = PrefsFor(game).UseFrameGen ? null : session.Extras?.PcLatencyMs;
             if (session.Data?.Statistics is not { } s) { status = Text["GsMeasureFailed"]; Notify(); return null; }
             var (recipe, support) = Recipe(game);
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
@@ -448,6 +450,10 @@ public sealed partial class GamesViewModel : ObservableObject
                 var useFrameGen = tech.FrameGen && PrefsFor(game).UseFrameGen;
                 var advice = InGameAdvisor.Advise(tech, settings.Recommendation, profileSource!.Read(), last?.Findings, Goal?.Invoke() ?? "balanced").ToList();
                 if (useFrameGen) advice.RemoveAll(t => t.Key == "IgFrameGenOff"); // the player chose it: no nagging
+                // The last measurement held the target with the GPU partly idle: there is room for a prettier image.
+                // (Wukong on an RTX 5060 at 75 Hz: High + DLSS Balanced held 75 with the GPU at 82%.)
+                if (last is { GpuBusy: <= QualityHeadroomGpu and > 0 } h && h.AverageFps >= settings.Recommendation.TargetFps * 0.97 && h.Low1Fps >= settings.Recommendation.TargetFps * 0.8)
+                    advice.Add(new("IgRaiseQuality", [Math.Round(h.GpuBusy!.Value).ToString(System.Globalization.CultureInfo.InvariantCulture), settings.Recommendation.TargetFps.ToString(System.Globalization.CultureInfo.InvariantCulture)], 70));
                 // Monitor supports FreeSync/G-Sync but the player runs without it: turning it on comes first.
                 if (!settings.Recommendation.AdaptiveSync && monitor.VrrPossible == true) advice.Insert(0, new("IgEnableVrr", [], 120));
                 var tips = advice
@@ -461,6 +467,8 @@ public sealed partial class GamesViewModel : ObservableObject
         string Localize(string a) => Enum.TryParse<UpscaleMode>(a, out var m) && !int.TryParse(a, out _) ? Text["GsMode" + m]
             : Enum.TryParse<QualityTier>(a, out var q) && !int.TryParse(a, out _) ? Text["GsTier" + q] : a;
     }
+
+    public const double QualityHeadroomGpu = 85;
 
     // Frame limiter per game: "fluid" works on any GPU; "responsive" (Reflex) only on NVIDIA.
     private LowLatencyInfo LowLatencyFor(GameTech tech, SystemProfile pc, SettingsRecommendation? r = null, StutterReport? last = null, bool useFrameGen = false)
@@ -514,7 +522,9 @@ public sealed partial class GamesViewModel : ObservableObject
             var heat = Heat?.MeasureAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<CpuHeat?>(null);
             var session = await capture!.CaptureAsync(new(new(run.Pid, run.Executable, run.StartedUtc), seconds, Elevated: true, "Lotus: " + game.Name, "{}"), token);
             var gpuBusy = session.Extras?.GpuBusyPercent ?? await gpu; // the game's own GPU share (RivaTuner/Reflex) beats the whole-GPU load
-            var latencyMs = session.Extras?.PcLatencyMs;
+            // With frame generation the Reflex markers cover only the real frames: the generator's delay is missing, so
+            // the number would look better than it feels. Not shown then.
+            var latencyMs = PrefsFor(game).UseFrameGen ? null : session.Extras?.PcLatencyMs;
             CpuHeat? cpuHeat = null; try { cpuHeat = await heat; } catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
             if (session.Data?.Statistics is not { } s) { status = Text["GsMeasureFailed"]; Notify(); return null; }
             var (recipe, support) = Recipe(game);

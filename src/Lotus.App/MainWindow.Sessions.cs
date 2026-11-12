@@ -41,6 +41,8 @@ public sealed partial class MainWindow
     private void RecordSession(FinishedSession s)
     {
         if (!preferences.Current.AutoSessions) return;
+        // A development build runs next to the installed Lotus, which already records the same session.
+        if (Environment.GetCommandLineArgs().Contains("--dev-instance") && Environment.GetEnvironmentVariable("LOTUS_DEV_SESSIONS") != "1") { Serilog.Log.Information("Play session not recorded (development instance)"); return; }
         try
         {
             diary.RecordSession(DiaryGames.FromGame(s.Game), s.Start.LocalDateTime, s.Minutes);

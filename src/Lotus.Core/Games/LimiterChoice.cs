@@ -5,7 +5,8 @@ namespace Lotus.Core.Games;
 //  - Frame generation (when the player keeps it on, or on VRR monitors of 120 Hz+, see FrameGenFits): only Reflex gets along with it (NVIDIA, Direct3D 11/12); elsewhere the game's own limit.
 //  - FreeSync/G-Sync: Reflex below the refresh rate on NVIDIA (VRR keeps it smooth); otherwise front edge sync.
 //  - Fixed refresh: scanline sync (no V-Sync queue) only when a measurement showed headroom: the game held the refresh
-//    rate with the GPU at most 75% busy, or ran 20% above it; otherwise front edge sync with V-Sync (console-like).
+//    rate with the GPU at most 75% busy, or ran 20% above it; otherwise Reflex with V-Sync on NVIDIA, front edge sync
+//    with V-Sync (console-like) elsewhere.
 public static class LimiterChoice
 {
     public const double MaxGpuBusyForScanline = 75, HeadroomWithoutGpuData = 1.2;
@@ -24,6 +25,10 @@ public static class LimiterChoice
         var headroom = refreshHz > 0 && lastAverageFps is { } fps && (lastGpuBusy is { } busy
             ? busy <= MaxGpuBusyForScanline && fps >= refreshHz * 0.95
             : fps >= refreshHz * HeadroomWithoutGpuData);
-        return headroom ? ("scanline", "LlWhyScanline") : ("fluid", lastAverageFps is null ? "LlWhyFluidMeasure" : "LlWhyFluid");
+        if (headroom) return ("scanline", "LlWhyScanline");
+        // Fixed refresh without headroom: on NVIDIA (Direct3D 11/12) Reflex with V-Sync answers faster than front edge
+        // sync at about the same steadiness (Wukong, 75 Hz: 27 ms vs 30 ms, 1% low 59 vs 61 FPS). Elsewhere, Fluidez.
+        if (reflex) return ("responsive", "LlWhyFixedReflex");
+        return ("fluid", lastAverageFps is null ? "LlWhyFluidMeasure" : "LlWhyFluid");
     }
 }
