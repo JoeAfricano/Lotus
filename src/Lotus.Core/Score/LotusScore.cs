@@ -348,7 +348,9 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
 
     // For other screens (the game panel): expected FPS of a game on this PC from the last full test, when the game is
     // in the benchmark table or was searched here. Null without a full test or for an unknown game.
-    public bool HasFullTest => last is { Cpu1: not null, CpuAll: not null, Gpu: not null };
+    // Read from history on demand: other screens (a game's Otimizar) ask before the Score page was ever opened.
+    public bool HasFullTest => (last ??= LoadLast()) is { Cpu1: not null, CpuAll: not null, Gpu: not null };
+    private ScoreRun? LoadLast() { try { return history.Load().FirstOrDefault(); } catch (Exception ex) { log(ex); return null; } }
     public FpsCell? EstimateFor(string name, string? steamAppId, Resolution resolution, Preset preset)
     {
         if (last is not { Cpu1: { } s, CpuAll: { } m, Gpu: { } g }) return null;

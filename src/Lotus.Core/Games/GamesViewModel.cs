@@ -227,7 +227,7 @@ public sealed partial class GamesViewModel : ObservableObject
 
     private void LaunchNow(GameCard card)
     {
-        try { launcher.Launch(card.Game); status = Text.Format("GamesLaunching", card.Name); global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Launch); Launched?.Invoke(this, card.Game); }
+        try { launcher.Launch(card.Game); status = Text.Format("GamesLaunching", card.Name); ClearLater(status); global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Launch); Launched?.Invoke(this, card.Game); }
         catch (Exception ex)
         {
             log(ex); status = Text.Format("GamesLaunchFailed", card.Name);
@@ -418,8 +418,39 @@ public sealed partial class GamesViewModel : ObservableObject
     // Expected FPS line from the Lotus Score (set by the window); null when there is no full test or the game is unknown.
     public Func<GameEntry, SettingsRecommendation, SystemProfile, string?>? ScoreLine { get; set; }
     public Func<string>? ScoreHint { get; set; } // shown when there is no estimate (no full test yet, or a game the Score does not know)
-    private readonly Dictionary<string, StutterReport> lastReports = new(StringComparer.OrdinalIgnoreCase);
-    public StutterReport? LastReport(GameEntry game) => lastReports.GetValueOrDefault(game.Key);
+    private Dictionary<string, StutterReport>? lastReports;
+    // Kept on disk (one small JSON, last analysis per game) so "Última análise" and the automatic limiter choice survive
+    // a restart of Lotus; before, they were lost and the page asked for a first analysis again.
+    public string? ReportsPath { get; set; }
+    private Dictionary<string, StutterReport> Reports
+    {
+        get
+        {
+            if (lastReports is not null) return lastReports;
+            lastReports = new(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                if (ReportsPath is { } path && File.Exists(path) && System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, StutterReport>>(File.ReadAllText(path)) is { } saved)
+                    foreach (var (key, report) in saved) lastReports[key] = report;
+            }
+            catch (Exception ex) { log(ex); }
+            return lastReports;
+        }
+    }
+    private void SaveReport(string key, StutterReport report)
+    {
+        Reports[key] = report;
+        if (ReportsPath is not { } path) return;
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            var temp = path + ".tmp";
+            File.WriteAllText(temp, System.Text.Json.JsonSerializer.Serialize(Reports));
+            File.Move(temp, path, overwrite: true);
+        }
+        catch (Exception ex) { log(ex); }
+    }
+    public StutterReport? LastReport(GameEntry game) => Reports.GetValueOrDefault(game.Key);
     public sealed record GameTune(GameSettingsAnalysis Settings, GameTech Tech, IReadOnlyList<string> TechChips, IReadOnlyList<(string Title, string Body)> Tips, StutterReport? Last, bool Running, string? ScoreLine = null, string? ScoreHint = null, LowLatencyInfo? LowLatency = null);
     // Low latency through RivaTuner: State = "ok" | "noRtss" | "notNvidia" | "noExe"; On = current state of that game's profile.
     // FrameGen: the game ships frame generation (DLSS FG does not get along with other limiters: Reflex is the one to use).
@@ -486,6 +517,14 @@ public sealed partial class GamesViewModel : ObservableObject
     // recommendation follows it (Reflex on NVIDIA, the game's own limit elsewhere).
     public bool SetUseFrameGen(GameEntry game, bool on) => PlayPrefs is { } book && book.Set(game.Key, PrefsFor(game) with { UseFrameGen = on });
 
+    // A passing notice ("Abrindo…", "Fluidez ligada") leaves by itself; it stayed on screen after the game had closed.
+    // Continues on the caller's (UI) context; a newer status is never cleared.
+    private async void ClearLater(string shown, int seconds = 8)
+    {
+        try { await Task.Delay(TimeSpan.FromSeconds(seconds)); } catch (Exception ex) { log(ex); return; }
+        if (status == shown) { status = ""; Notify(); }
+    }
+
     public async Task<bool> SetLimiterAsync(string exe, string? mode, double fpsCap)
     {
         if (Rtss is null) return false;
@@ -493,6 +532,7 @@ public sealed partial class GamesViewModel : ObservableObject
         {
             var ok = mode is null ? await Rtss.DisableLowLatencyAsync(exe) : await Rtss.EnableLimiterAsync(exe, fpsCap, mode);
             status = Text[ok ? mode switch { "fluid" => "LlFluidOn", "responsive" => "LlOn", "scanline" => "LlScanlineOn", _ => "LlOff" } : "LlFailed"]; Notify();
+            if (ok) ClearLater(status);
             return ok;
         }
         catch (Exception ex) { log(ex); status = Text["LlFailed"]; Notify(); return false; }
@@ -540,7 +580,7 @@ public sealed partial class GamesViewModel : ObservableObject
             var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds)
                 + (latencyMs is { } ms ? " · " + Text.Format("WhyLatency", ms) : "");
             var report = new StutterReport(summary, findings, s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now, gpuBusy, latencyMs);
-            lastReports[game.Key] = report;
+            SaveReport(game.Key, report);
             status = summary; Notify();
             return report;
         }

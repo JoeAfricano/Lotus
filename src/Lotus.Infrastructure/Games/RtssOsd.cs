@@ -12,7 +12,20 @@ public sealed class RtssOsd(string mapName = RtssSharedMemory.DefaultMap)
     private const uint Signature = 0x52545353;
     private const string Owner = "Lotus";
 
-    public bool Show(string text) => Write(text, release: false);
+    public bool Show(string text) => Write(Plain(text), release: false);
+
+    // RivaTuner's OSD fonts draw only plain ASCII reliably: on the user's PC "ANÁLISE" showed as "AN :LISE" and "estável"
+    // as "estvel". Accents are folded ("análise" -> "analise"), which stays readable in Portuguese.
+    public static string Plain(string text)
+    {
+        var folded = new StringBuilder(text.Length);
+        foreach (var c in text.Normalize(NormalizationForm.FormD))
+        {
+            if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) == System.Globalization.UnicodeCategory.NonSpacingMark) continue;
+            folded.Append(c switch { '·' => '-', '–' or '—' => '-', '…' => '.', '“' or '”' => '"', '‘' or '’' => '\'', < (char)128 => c, _ => '?' });
+        }
+        return folded.ToString().Normalize(NormalizationForm.FormC);
+    }
     public bool Clear() => Write("", release: true);
 
     private bool Write(string text, bool release)

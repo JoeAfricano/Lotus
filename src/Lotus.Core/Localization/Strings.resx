@@ -438,7 +438,7 @@ Entre no jogo.</value>
   <data name="UxDataSourcesDescription" xml:space="preserve"><value>CPU e RAM usam APIs do Windows. A GPU NVIDIA usa NVML, quando o driver oferece suporte. Nenhum driver adicional é instalado.</value></data>
   <data name="UxCollectorActive" xml:space="preserve"><value>Monitoramento ativo</value></data>
   <data name="UxCollectorPaused" xml:space="preserve"><value>Monitoramento em pausa</value></data>
-  <data name="UxAdviceNoAnalysis" xml:space="preserve"><value>Comece em Início para analisar a RAM. O resultado e os próximos passos ficam reunidos aqui.</value></data>
+  <data name="UxAdviceNoAnalysis" xml:space="preserve"><value>Toque em "Analisar meu PC" para analisar a RAM. O resultado e os próximos passos ficam reunidos aqui.</value></data>
   <data name="UxResultsTab" xml:space="preserve"><value>Resultado</value></data>
   <data name="UxResultsTitle" xml:space="preserve"><value>Resultado e próximos passos</value></data>
   <data name="UxNotAnalyzed" xml:space="preserve"><value>Aguardando sua primeira análise</value></data>
@@ -2377,7 +2377,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="PrepProfileAllow" xml:space="preserve"><value>Autorizar</value></data>
   <data name="SetPreparePlay" xml:space="preserve"><value>Preparar antes de jogar</value></data>
   <data name="SetMeasurePorts" xml:space="preserve"><value>Medir FPS dos jogos do Lotus Ports</value></data>
-  <data name="SetMeasurePortsHint" xml:space="preserve"><value>Quando um jogo aberto pelo Lotus Ports estiver rodando, o Lotus mede os quadros por 60 segundos. Sem preparo, o Windows pede confirmação de administrador a cada partida; para nunca mais pedir, coloque sua conta no grupo "Usuários de log de desempenho" (passo a passo em docs/LOTUS_PORTS_INTEGRATION.md) e reinicie a sessão.</value></data>
+  <data name="SetMeasurePortsHint" xml:space="preserve"><value>Quando um jogo aberto pelo Lotus Ports estiver rodando, o Lotus mede os quadros por 60 segundos. Sem preparo, o Windows pede confirmação de administrador a cada partida; para nunca mais pedir, coloque sua conta no grupo "Usuários de log de desempenho" e reinicie a sessão.</value></data>
   <data name="SetPreparePlayHint" xml:space="preserve"><value>Ao clicar em Jogar, o Lotus confere em segundos se a instalação, a memória e o espaço estão bem, e só pergunta algo se houver um problema. Cada jogo pode ter seu próprio ajuste em Meus Jogos.</value></data>
   <data name="SpTitle" xml:space="preserve"><value>Proteção de progresso</value></data>
   <data name="SpChecking" xml:space="preserve"><value>Procurando os saves deste jogo…</value></data>

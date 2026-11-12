@@ -187,6 +187,7 @@ public sealed partial class MainWindow : Window
             return score.EstimateFor(g.Name, g.Store == Lotus.Core.Games.GameStores.Steam ? g.Id : null, res, preset) is { Fps: > 0 } cell
                 ? text.Format("TuneScoreLine", cell.Fps, text["ScoreRes" + res], text["ScorePreset" + preset]) : null;
         };
+        games.ReportsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "game-reports.json");
         games.ScoreHint = () => text[score.HasFullTest ? "TuneScoreSearch" : "TuneScoreHint"];
         games.Goal = () => preferences.Current.Goal;
         _ = games.EnsureLoadedAsync(); // Home shows game shortcuts right away

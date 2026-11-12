@@ -438,7 +438,7 @@ Get in the game.</value>
   <data name="UxDataSourcesDescription" xml:space="preserve"><value>CPU and RAM use Windows APIs. NVIDIA GPU data uses NVML when supported by the driver. No additional driver is installed.</value></data>
   <data name="UxCollectorActive" xml:space="preserve"><value>Monitoring active</value></data>
   <data name="UxCollectorPaused" xml:space="preserve"><value>Monitoring paused</value></data>
-  <data name="UxAdviceNoAnalysis" xml:space="preserve"><value>Start an analysis from Home. Your result and next steps will be brought together here.</value></data>
+  <data name="UxAdviceNoAnalysis" xml:space="preserve"><value>Tap "Analyze my PC" to analyze your RAM. Your result and next steps will be brought together here.</value></data>
   <data name="UxResultsTab" xml:space="preserve"><value>Result</value></data>
   <data name="UxResultsTitle" xml:space="preserve"><value>Result and next steps</value></data>
   <data name="UxNotAnalyzed" xml:space="preserve"><value>Waiting for your first analysis</value></data>
@@ -2377,7 +2377,7 @@ Your games and Windows are not changed.</value></data>
   <data name="PrepProfileAllow" xml:space="preserve"><value>Allow</value></data>
   <data name="SetPreparePlay" xml:space="preserve"><value>Prepare before playing</value></data>
   <data name="SetMeasurePorts" xml:space="preserve"><value>Measure FPS of Lotus Ports games</value></data>
-  <data name="SetMeasurePortsHint" xml:space="preserve"><value>While a game opened by Lotus Ports is running, Lotus measures its frames for 60 seconds. Without setup, Windows asks for administrator confirmation each game session; to never be asked, add your account to the &quot;Performance Log Users&quot; group (steps in docs/LOTUS_PORTS_INTEGRATION.md) and sign in again.</value></data>
+  <data name="SetMeasurePortsHint" xml:space="preserve"><value>While a game opened by Lotus Ports is running, Lotus measures its frames for 60 seconds. Without setup, Windows asks for administrator confirmation each game session; to never be asked, add your account to the &quot;Performance Log Users&quot; group and sign in again.</value></data>
   <data name="SetPreparePlayHint" xml:space="preserve"><value>When you click Play, Lotus checks in seconds that the installation, memory and space are fine, and only asks something if there&apos;s a problem. Each game can have its own setting in My Games.</value></data>
   <data name="SpTitle" xml:space="preserve"><value>Progress protection</value></data>
   <data name="SpChecking" xml:space="preserve"><value>Looking for this game&apos;s saves…</value></data>

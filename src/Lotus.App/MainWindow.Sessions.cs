@@ -17,7 +17,7 @@ public sealed partial class MainWindow
         sessionHub.Observe(running, DateTimeOffset.Now); // shared with "Preparar e jogar" (no second polling loop)
         if (sessions.Update(running, DateTimeOffset.Now) is { } done) OnSessionFinished(done);
         if (running is null) ShowPendingResumePrompt();
-        var wantPriority = preferences.Current.GamePriority && running is not null;
+        var wantPriority = preferences.Current.GamePriority && running is not null && !DevBesideInstalled();
         try
         {
             if (wantPriority && running is not null)
@@ -28,6 +28,15 @@ public sealed partial class MainWindow
             else if (priorityActive) { priorityActive = false; var back = await Task.Run(priority.Restore); Serilog.Log.Information("Game priority: {Count} processes restored", back); }
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Game priority"); }
+    }
+
+    // A development build (--dev-instance) next to a running installed Lotus leaves the game to the installed one:
+    // both changed the same processes' priority and wrote the same diary.
+    private static bool DevBesideInstalled()
+    {
+        if (!Environment.GetCommandLineArgs().Contains("--dev-instance")) return false;
+        try { if (!Mutex.TryOpenExisting(@"Local\Lotus.App.Main", out var m)) return false; m.Dispose(); return true; }
+        catch (Exception) { return false; }
     }
 
     // One place reacts to the end of a session; each part handles its own failures so one never blocks another

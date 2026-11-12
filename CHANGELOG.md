@@ -2,6 +2,19 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.5.1-alpha "Lotus" (em preparo)
+
+### Melhorado
+- **Resposta (Reflex) em monitor sem FreeSync/G-Sync.** Em placa NVIDIA, o Ligar passa a usar o Reflex com V-Sync quando o jogo não tem folga: no teste com o Black Myth: Wukong Benchmark (RTX 5060, 75 Hz), o atraso caiu de 30 para 27 ms com a mesma firmeza da Fluidez.
+- **"Dá para deixar mais bonito".** Quando a última análise mostra a placa com folga segurando o FPS do monitor, o Otimizar sugere subir um nível de qualidade ou um modo de DLSS/FSR mais bonito.
+- **A última análise de cada jogo fica salva** e continua aparecendo depois de fechar e abrir o Lotus.
+- Com o gerador de quadros marcado, o atraso do PC não aparece na análise, porque a medição não inclui o atraso do próprio gerador.
+
+### Corrigido
+- **Acentos no overlay.** O texto da análise no jogo saía como "AN :LISE" e "estvel". Agora sai sem acentos e legível.
+- **Avisos presos na tela**, como "Abrindo…" depois que o jogo fechou.
+- Textos em Configurações e Otimizar que apontavam para um arquivo de programador ou para um botão que não existe no Início; o pedido de "teste completo do Lotus Score" aparecia mesmo com o teste feito.
+
 ## 1.5.0-alpha "Lotus" (12/11/2026)
 
 ### Novo
