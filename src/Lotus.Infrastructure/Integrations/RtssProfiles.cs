@@ -16,7 +16,7 @@ public static partial class RtssProfiles
     {
         ["OSD"] = ["EnableOSD", "EnableBgnd", "EnableFill", "BaseColor", "BgndColor", "FillColor", "PositionX", "PositionY", "ZoomRatio",
                    "EnableFrametimeHistory", "FrametimeHistoryWidth", "FrametimeHistoryHeight", "FrametimeHistoryStyle", "RefreshPeriod", "IntegerFramerate"],
-        ["Framerate"] = ["Limit", "LimitDenominator", "ReflexSleep", "SyncLimiter"]
+        ["Framerate"] = ["Limit", "LimitDenominator", "ReflexSleep", "SyncLimiter", "SyncScanline0"]
     };
     [GeneratedRegex(@"^(Global|[A-Za-z0-9 _.\-]{1,120}\.exe)$")] private static partial Regex ProfileName();
     [GeneratedRegex(@"^-?[0-9A-Fa-f]{1,10}$")] private static partial Regex SafeValue();
@@ -247,12 +247,18 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
     // Reflex limiter also enables Reflex low-latency in games without native
     // Reflex; it works on NVIDIA GPUs with Direct3D 11/12 and falls back to async elsewhere.
     public const string ReflexLimiter = "3", FrontEdgeLimiter = "1";
-    // "fluid" (front edge sync: flat frame pacing) | "responsive" (NVIDIA Reflex) | null when this game has no Lotus limiter.
+    // Scanline sync ("scanline": responsive without V-Sync). RTSS presents each frame at a fixed scanline of the monitor,
+    // so frames stay even like V-Sync without its queue; a negative index counts from the bottom of the visible picture,
+    // which puts the tear line in the blanking interval. Needs GPU headroom: Lotus offers it only after a measurement
+    // shows the game holding the refresh rate with the GPU partly idle. The frame-rate limit is off in this mode.
+    public const string DefaultScanline = "-40";
+    // "fluid" (front edge sync) | "responsive" (NVIDIA Reflex) | "scanline" | null when this game has no Lotus limiter.
     public string? LimiterMode(string exe)
     {
         try { RtssProfiles.Validate(new(exe, [])); } catch (InvalidOperationException) { return null; }
         if (RtssProfiles.Read(exe, Profiles) is not { } raw) return null;
         var ini = new IniText(raw);
+        if (int.TryParse(ini.Get("Framerate", "SyncScanline0"), out var line) && line != 0) return "scanline";
         if (!int.TryParse(ini.Get("Framerate", "Limit"), out var limit) || limit <= 0) return null;
         return ini.Get("Framerate", "SyncLimiter") switch { ReflexLimiter => "responsive", FrontEdgeLimiter => "fluid", _ => null };
     }
@@ -264,11 +270,17 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
     // The cap may be fractional (37.5 on 75 Hz): RTSS stores Limit / LimitDenominator.
     public async Task<bool> EnableLimiterAsync(string exe, double fpsCap, string mode)
     {
-        if (fpsCap is < 20 or > 1000 || mode is not ("fluid" or "responsive")) return false;
-        var whole = Math.Abs(fpsCap - Math.Round(fpsCap)) < 0.001;
-        var limit = whole ? (int)Math.Round(fpsCap) : (int)Math.Round(fpsCap * 100);
-        RtssChange[] changes = [new("Framerate", "Limit", limit.ToString(System.Globalization.CultureInfo.InvariantCulture)), new("Framerate", "LimitDenominator", whole ? "1" : "100"),
-            new("Framerate", "SyncLimiter", mode == "fluid" ? FrontEdgeLimiter : ReflexLimiter)];
+        if (mode is not ("fluid" or "responsive" or "scanline") || (mode != "scanline" && fpsCap is < 20 or > 1000)) return false;
+        RtssChange[] changes;
+        if (mode == "scanline")
+            changes = [new("Framerate", "Limit", "0"), new("Framerate", "LimitDenominator", "1"), new("Framerate", "SyncLimiter", "0"), new("Framerate", "SyncScanline0", DefaultScanline)];
+        else
+        {
+            var whole = Math.Abs(fpsCap - Math.Round(fpsCap)) < 0.001;
+            var limit = whole ? (int)Math.Round(fpsCap) : (int)Math.Round(fpsCap * 100);
+            changes = [new("Framerate", "Limit", limit.ToString(System.Globalization.CultureInfo.InvariantCulture)), new("Framerate", "LimitDenominator", whole ? "1" : "100"),
+                new("Framerate", "SyncLimiter", mode == "fluid" ? FrontEdgeLimiter : ReflexLimiter), new("Framerate", "SyncScanline0", "0")];
+        }
         var dir = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(Backups))!, "Requests");
         Directory.CreateDirectory(dir);
         var request = Path.Combine(dir, "rtss-" + Guid.NewGuid().ToString("N") + ".json");

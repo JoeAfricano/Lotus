@@ -19,7 +19,8 @@ public sealed partial class GameTechScanner : IGameTechScanner
 
     private static GameTech Read(string root, string? knownExe)
     {
-        var options = new EnumerationOptions { RecurseSubdirectories = true, MaxRecursionDepth = 5, IgnoreInaccessible = true, AttributesToSkip = FileAttributes.ReparsePoint };
+        // Depth 8: Unreal keeps Streamline/DLSS-G at Engine\Plugins\Runtime\Nvidia\Streamline\Binaries\ThirdParty\Win64.
+        var options = new EnumerationOptions { RecurseSubdirectories = true, MaxRecursionDepth = 8, IgnoreInaccessible = true, AttributesToSkip = FileAttributes.ReparsePoint };
         var names = new List<string>(); string? exe = null; long exeSize = -1; var seen = 0;
         foreach (var file in new DirectoryInfo(root).EnumerateFiles("*", options))
         {

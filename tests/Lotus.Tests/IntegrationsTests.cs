@@ -75,6 +75,11 @@ public sealed class IntegrationsTests : IDisposable
         ini = new IniText(File.ReadAllText(Path.Combine(Profiles, "Cyberpunk2077.exe.cfg")));
         Assert.Equal(("3750", "100", WindowsRtssIntegration.ReflexLimiter), (ini.Get("Framerate", "Limit"), ini.Get("Framerate", "LimitDenominator"), ini.Get("Framerate", "SyncLimiter")));
         Assert.Equal("responsive", rtss.LimiterMode("Cyberpunk2077.exe"));
+        Assert.True(await rtss.EnableLimiterAsync("Cyberpunk2077.exe", 0, "scanline"));         // scanline sync: no cap, fixed scanline
+        ini = new IniText(File.ReadAllText(Path.Combine(Profiles, "Cyberpunk2077.exe.cfg")));
+        Assert.Equal(("0", "0", WindowsRtssIntegration.DefaultScanline), (ini.Get("Framerate", "Limit"), ini.Get("Framerate", "SyncLimiter"), ini.Get("Framerate", "SyncScanline0")));
+        Assert.True(await rtss.EnableLimiterAsync("Cyberpunk2077.exe", 75, "fluid"));            // back to a limiter clears the scanline
+        Assert.Equal(("fluid", "0"), (rtss.LimiterMode("Cyberpunk2077.exe"), new IniText(File.ReadAllText(Path.Combine(Profiles, "Cyberpunk2077.exe.cfg"))).Get("Framerate", "SyncScanline0")));
         Assert.True(await rtss.DisableLowLatencyAsync("Cyberpunk2077.exe"));
         Assert.False(File.Exists(Path.Combine(Profiles, "Cyberpunk2077.exe.cfg")));           // the profile did not exist before
         Assert.False(await rtss.EnableLimiterAsync("game.exe", 5, "fluid"));                     // nonsense cap refused

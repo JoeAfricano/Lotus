@@ -19,10 +19,15 @@ public sealed record BenchmarkSession(Guid Id, CaptureTarget Target, DateTimeOff
     public int? CollectorExitCode { get; init; }
     // Optional for backward-compatible JSON payloads. Missing evidence never means zero loss.
     public EtwIntegrityEvidence? EtwEvidence { get; init; }
+    // Read from RivaTuner during the capture when the game gives them (Reflex markers); null = not measured.
+    public FrameExtras? Extras { get; init; }
     public bool MathematicallyValid => Data is { Statistics: not null, InvalidRows: 0, Truncated: false };
     public CaptureIntegrity Integrity => BenchmarkQuality.Classify(this);
     public string Label => $"{Path.GetFileName(Target.Executable)} · {StartedUtc.ToLocalTime():g} · {Status}";
 }
+// GpuBusyPercent: median share of the GPU's frame time spent on the game; PcLatencyMs: median time from input sample to
+// GPU done (display not included); Api: the game's 3D API as RivaTuner reports it.
+public sealed record FrameExtras(double? GpuBusyPercent, double? PcLatencyMs, string? Api);
 public enum CaptureIntegrity { Unknown, Verified, LossDetected, Invalid }
 public sealed record EtwIntegrityEvidence(long? EventsLost, long? BuffersLost, long? OverflowedPresents,
     string Source, bool CompleteFinalCounters);

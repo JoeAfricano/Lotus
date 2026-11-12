@@ -376,7 +376,8 @@ public sealed partial class GamesViewModel : ObservableObject
             status = Text.Format("GsMeasuring", seconds); Notify();
             var gpu = gpuSampler?.AverageAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<double?>(null);
             var session = await capture!.CaptureAsync(new(new(run.Pid, run.Executable, run.StartedUtc), seconds, Elevated: true, "Lotus: " + game.Name, "{}"), token);
-            var gpuBusy = await gpu;
+            var gpuBusy = session.Extras?.GpuBusyPercent ?? await gpu; // the game's own GPU share (RivaTuner/Reflex) beats the whole-GPU load
+            var latencyMs = session.Extras?.PcLatencyMs;
             if (session.Data?.Statistics is not { } s) { status = Text["GsMeasureFailed"]; Notify(); return null; }
             var (recipe, support) = Recipe(game);
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
@@ -423,7 +424,7 @@ public sealed partial class GamesViewModel : ObservableObject
     // Api: the game's 3D API while it runs with RivaTuner (Reflex needs Direct3D 11/12). GlobalCap: RivaTuner's limit for
     // every game without its own profile. Running: RivaTuner open now (null = unknown).
     public sealed record LowLatencyInfo(string State, string? Exe, string? Mode, bool Nvidia, double? Cap = null, bool FrameGen = false,
-        string? Api = null, double? GlobalCap = null, bool? Running = null)
+        string? Api = null, double? GlobalCap = null, bool? Running = null, string? Recommended = null, string Why = "")
     {
         public bool On => Mode is not null;
         public bool ReflexFits => Api is null or "Direct3D 11" or "Direct3D 12"; // unknown API: RivaTuner falls back by itself
@@ -450,7 +451,7 @@ public sealed partial class GamesViewModel : ObservableObject
                 var tips = advice
                     .Select(t => { object[] a = [.. t.Args.Select(Localize)]; return (Text.Format(t.Key + "Title", a), Text.Format(t.Key + "Body", a)); }).ToList();
                 var pc = profileSource.Read();
-                return new GameTune(settings, tech, chips, tips, last, processCheck?.FirstRunning([game]) is not null, ScoreLine?.Invoke(game, settings.Recommendation, pc), ScoreHint?.Invoke(), LowLatencyFor(tech, pc));
+                return new GameTune(settings, tech, chips, tips, last, processCheck?.FirstRunning([game]) is not null, ScoreLine?.Invoke(game, settings.Recommendation, pc), ScoreHint?.Invoke(), LowLatencyFor(tech, pc, settings.Recommendation, last));
             });
         }
         catch (Exception ex) { log(ex); return null; }
@@ -460,12 +461,14 @@ public sealed partial class GamesViewModel : ObservableObject
     }
 
     // Frame limiter per game: "fluid" works on any GPU; "responsive" (Reflex) only on NVIDIA.
-    private LowLatencyInfo LowLatencyFor(GameTech tech, SystemProfile pc)
+    private LowLatencyInfo LowLatencyFor(GameTech tech, SystemProfile pc, SettingsRecommendation? r = null, StutterReport? last = null)
     {
         var nvidia = System.Text.RegularExpressions.Regex.IsMatch(pc.GpuName, "NVIDIA|GeForce|RTX|GTX", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
         if (Rtss?.State().Installed != true) return new("noRtss", tech.MainExe, null, nvidia, FrameGen: tech.FrameGen);
         if (tech.MainExe is not { } exe) return new("noExe", null, null, nvidia, FrameGen: tech.FrameGen, GlobalCap: Rtss.GlobalCap(), Running: Rtss.Running());
-        return new("ok", exe, Rtss.LimiterMode(exe), nvidia, Rtss.LimiterCap(exe), tech.FrameGen, Rtss.GameApi(exe), Rtss.GlobalCap(), Rtss.Running());
+        var info = new LowLatencyInfo("ok", exe, Rtss.LimiterMode(exe), nvidia, Rtss.LimiterCap(exe), tech.FrameGen, Rtss.GameApi(exe), Rtss.GlobalCap(), Rtss.Running());
+        var (mode, why) = LimiterChoice.Pick(info, r?.AdaptiveSync == true, pc.RefreshHz, last?.AverageFps, last?.GpuBusy);
+        return info with { Recommended = mode, Why = why };
     }
 
     // mode: "fluid" | "responsive" turns the limiter on (cap = exact paced cap), null restores that game's profile.
@@ -475,7 +478,7 @@ public sealed partial class GamesViewModel : ObservableObject
         try
         {
             var ok = mode is null ? await Rtss.DisableLowLatencyAsync(exe) : await Rtss.EnableLimiterAsync(exe, fpsCap, mode);
-            status = Text[ok ? mode switch { "fluid" => "LlFluidOn", "responsive" => "LlOn", _ => "LlOff" } : "LlFailed"]; Notify();
+            status = Text[ok ? mode switch { "fluid" => "LlFluidOn", "responsive" => "LlOn", "scanline" => "LlScanlineOn", _ => "LlOff" } : "LlFailed"]; Notify();
             return ok;
         }
         catch (Exception ex) { log(ex); status = Text["LlFailed"]; Notify(); return false; }
@@ -489,7 +492,9 @@ public sealed partial class GamesViewModel : ObservableObject
     // ---- Por que está travando? ----
     public IMemoryPressure? Memory { get; set; }
     public ICpuHeatSampler? Heat { get; set; } // processor held back by heat or power during the measurement
-    public sealed record StutterReport(string Summary, IReadOnlyList<StutterFinding> Findings, double AverageFps = 0, double Low1Fps = 0, int Spikes = 0, DateTimeOffset? When = null);
+    // GpuBusy (%) and LatencyMs come from RivaTuner's Reflex timings when the game gives them; null = not measured.
+    public sealed record StutterReport(string Summary, IReadOnlyList<StutterFinding> Findings, double AverageFps = 0, double Low1Fps = 0, int Spikes = 0, DateTimeOffset? When = null,
+        double? GpuBusy = null, double? LatencyMs = null);
 
     // Measures the running game, then ranks likely causes. Changes nothing; fixes are offered separately.
     public async Task<StutterReport?> DiagnoseAsync(GameEntry game, int seconds = 30, int startDelaySeconds = 5, CancellationToken token = default)
@@ -502,7 +507,8 @@ public sealed partial class GamesViewModel : ObservableObject
             var gpu = gpuSampler?.AverageAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<double?>(null);
             var heat = Heat?.MeasureAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<CpuHeat?>(null);
             var session = await capture!.CaptureAsync(new(new(run.Pid, run.Executable, run.StartedUtc), seconds, Elevated: true, "Lotus: " + game.Name, "{}"), token);
-            var gpuBusy = await gpu;
+            var gpuBusy = session.Extras?.GpuBusyPercent ?? await gpu; // the game's own GPU share (RivaTuner/Reflex) beats the whole-GPU load
+            var latencyMs = session.Extras?.PcLatencyMs;
             CpuHeat? cpuHeat = null; try { cpuHeat = await heat; } catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
             if (session.Data?.Statistics is not { } s) { status = Text["GsMeasureFailed"]; Notify(); return null; }
             var (recipe, support) = Recipe(game);
@@ -515,10 +521,12 @@ public sealed partial class GamesViewModel : ObservableObject
             var findings = StutterDiagnosis.Analyze(new(s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds, gpuBusy, target,
                 ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower, overlays, cpuHeat, await Task.Run(() => RtssCapFor(run.Executable), token)));
             if (findings.Any(f => f.Fix == StutterFix.LowerQuality)) pendingSteps[game.Key] = -1; // ready for "Otimizar configurações" after closing
-            lastReports[game.Key] = new(Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds), findings, s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now);
-            var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds);
+            var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds)
+                + (latencyMs is { } ms ? " · " + Text.Format("WhyLatency", ms) : "");
+            var report = new StutterReport(summary, findings, s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now, gpuBusy, latencyMs);
+            lastReports[game.Key] = report;
             status = summary; Notify();
-            return new(summary, findings, s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now);
+            return report;
         }
         catch (OperationCanceledException) { status = ""; Notify(); return null; }
         catch (Exception ex) { log(ex); status = Text["GsMeasureFailed"]; Notify(); return null; }

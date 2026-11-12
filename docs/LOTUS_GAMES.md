@@ -172,3 +172,23 @@ Atualização visual a partir do pacote "Conceito Premium" (Rosé Quartz):
 - **Limite global:** o limite do perfil Global aparece no cartão do RivaTuner (Meus Jogos › Overlay) e no Otimizar (só leitura). Na análise, FPS preso no limite vira a causa "O FPS está no limite que você definiu", em vez de culpar a placa ou o processador.
 - **Overlay:** o texto da análise usa a trava `dwBusy` do SDK (v2.14+), sem misturar com Afterburner/HWiNFO.
 - **Pasta:** lida do registro (`HKLM\SOFTWARE\(WOW6432Node\)Unwinder\RTSS`, `InstallDir`), aceita só com `RTSS.exe` dentro; senão, a pasta padrão.
+
+## Fluidez e atraso com o RivaTuner (prioridade 2, 12/11/2026)
+
+- **Um botão:** no Otimizar do jogo há só **Ligar** e **Desligar**. O Lotus escolhe o modo e mostra o motivo em uma frase:
+  - com geração de quadros: Resposta (Reflex) em NVIDIA com Direct3D 11/12; nos outros casos, o limite do próprio jogo;
+  - com FreeSync/G-Sync: Resposta em NVIDIA, Fluidez nas outras placas;
+  - monitor sem VRR: **Resposta sem V-Sync** (scanline sync do RivaTuner, `SyncScanline0=-40`) só quando uma análise mostrou folga (placa até 75% ocupada mantendo a taxa do monitor, ou FPS 20% acima dela sem dado da placa); senão, Fluidez.
+- **Medição quadro a quadro:** a análise usa o canal `\\.\pipe\RTSS_Frametime` do RivaTuner (sem administrador, aberto só para o usuário atual). O gancho do RivaTuner só se conecta quando o jogo abre, então o Lotus deixa o canal aberto desde que inicia (parado, não gasta nada; com jogo aberto, lê 8 bytes por quadro e só guarda durante uma medição). Jogo aberto antes do Lotus: volta à leitura da memória compartilhada. Conferido no SDK 7.3.5 (`FRAMETIME_PIPE_DATA { dwApp; dwFrametime }`, µs) e no PC: 853 quadros em 12 s a 75 FPS.
+- **Processador ou placa?** e **atraso do PC:** com marcadores Reflex (do jogo ou injetados pelo RivaTuner em D3D11/12, memória compartilhada v2.21), a análise usa a ocupação real da placa naquele jogo e mostra o atraso entre o comando e a placa terminar o quadro (mediana). O layout é conferido pelo cabeçalho (offset 9344) antes de ler.
+- **Gerador de quadros:** só é sugerido com FreeSync/G-Sync em monitor de 120 Hz ou mais (a metade real fica perto de 60 FPS). Nos outros casos, a dica é deixá-lo desligado e o limitador é escolhido como em qualquer jogo. Medido no PC do usuário (RTX 5060, Ryzen 5 5500, 75 Hz sem VRR, Black Myth: Wukong Benchmark Tool, Alta + DLSS, 12/11/2026):
+
+  | | Gerador ligado | Gerador desligado |
+  |---|---|---|
+  | FPS médio (Lotus) | 74,2 | 64,1 |
+  | 1% low | 36,6 | 50,7 |
+  | Atraso do PC (Reflex) | 81,4 ms | 50,4 ms |
+  | Placa ocupada | ~70% | ~98% |
+
+  O contador fica em 75 com o gerador, mas a placa desenha ~37 quadros reais e o atraso sobe ~60%.
+- Teste ao vivo (`RtssLatencyTests.LiveCapture`, RivaTuner aberto): `LOTUS_LIVE=1` e `LOTUS_LIVE_EXE=<Lotus.App.exe>` com `LOTUS_LIVE_ARGS=--overlay-preview`, ou `LOTUS_LIVE_PROCESS=<nome do processo>` para esperar um jogo aberto depois do início do teste; `LOTUS_LIVE_SECONDS` ajusta a medição.
