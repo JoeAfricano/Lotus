@@ -8,9 +8,13 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 - **Tempo para zerar na página de cada jogo.** Na Game list e em Meus Jogos, a página do jogo mostra quanto tempo ele leva para zerar, segundo o HowLongToBeat: só a história, com extras e 100%, com link para o site. Funciona também para jogos que não estão no diário. Quando o jogo está no diário, o tempo fica salvo nele.
 - **RivaTuner ao jogar.** Se o Lotus usa o RivaTuner no jogo (overlay ou limitador) e ele está fechado, o Lotus abre o RivaTuner antes do jogo. A permissão de administrador é pedida pelo próprio RivaTuner. Se ele não abrir, o jogo abre mesmo assim e o Lotus avisa.
 - **Geração de quadros.** Na NVIDIA, Resposta (Reflex) passa a ser a opção principal, porque o DLSS Frame Generation não combina com outros limitadores. Na AMD e na Intel, o Lotus indica usar o limite do próprio jogo ou do driver. O Reflex só é oferecido em jogos Direct3D 11/12.
+- **Fluidez com um botão.** No Otimizar de cada jogo, o cartão do RivaTuner tem só **Ligar** e **Desligar**. O Lotus escolhe o modo pelo seu monitor (taxa e FreeSync/G-Sync) e pela última análise, e diz o motivo: Fluidez (ritmo de console), Resposta (Reflex) ou a nova **Resposta sem V-Sync** (experimental), que deixa os quadros cravados como no V-Sync, mas sem o atraso dele, quando a placa tem folga.
+- **Atraso do PC e quadro a quadro.** O "Por que está travando?" mede cada quadro pelo RivaTuner (sem pedir administrador) e, em jogos com Reflex, mostra o atraso entre o comando e a placa terminar o quadro, além de quanto a placa realmente trabalhou naquele jogo. Funciona para jogos abertos depois do Lotus; nos abertos antes, a medição continua como era.
+- **Gerador de quadros só quando compensa.** O Lotus só sugere a geração de quadros com FreeSync/G-Sync em monitor de 120 Hz ou mais. Nos outros, a dica é deixá-la desligada: num teste em RTX 5060 com monitor de 75 Hz, ela subiu o atraso de 50 para 81 ms e piorou as quedas.
 - **Limite global do RivaTuner** aparece no cartão do RivaTuner e no Otimizar. No "Por que está travando?", um FPS preso no limite passa a ser explicado como limite, e não como culpa da placa ou do processador.
 
 ### Corrigido
+- **DLSS e geração de quadros em jogos Unreal** não eram reconhecidos (os arquivos ficam em pastas mais fundas). Agora aparecem nas etiquetas e nas dicas.
 - **Topo da página do jogo vazio.** Às vezes a imagem grande do jogo travava no download sem dar erro, e o topo ficava só com a cor de fundo. Agora, se ela não carregar em 6 segundos, o Lotus usa o fundo da loja ou a capa menor.
 
 ### Por dentro
