@@ -68,6 +68,19 @@
    </Border>
   </Grid>
 
+  <!-- Time to beat (HowLongToBeat): shown once the lookup finds the game -->
+  <Border Style="{StaticResource CompactCardStyle}" Visibility="{Binding HasLength, Converter={StaticResource BooleanVisibility}}" ToolTipService.ToolTip="{Binding Text[GiBeatHint]}" AutomationProperties.AutomationId="detail-length">
+   <Grid ColumnSpacing="18"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <Border Width="56" Height="56" CornerRadius="12" Background="{ThemeResource SubtleBrush}"><FontIcon Glyph="&#xE916;" FontSize="22" Foreground="{ThemeResource GoldBrush}"/></Border>
+    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+     <TextBlock Text="{Binding Text[GiBeatTitle]}" Style="{StaticResource EyebrowStyle}"/>
+     <TextBlock><Run Text="{Binding LengthMain}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><Run Text="  "/><Run Text="{Binding LengthMainLabel}"/></TextBlock>
+     <TextBlock Text="{Binding LengthMore}" Style="{StaticResource CaptionStyle}" Visibility="{Binding LengthMore, Converter={StaticResource PresenceVisibility}}"/>
+    </StackPanel>
+    <HyperlinkButton Grid.Column="2" Content="{Binding Text[GiBeatOpen]}" Click="OnLengthLink" VerticalAlignment="Center" FontSize="12.5" Visibility="{Binding LengthUrl, Converter={StaticResource PresenceVisibility}}"/>
+   </Grid>
+  </Border>
+
   <!-- The player's Steam achievements in this game (filled in code) -->
   <Border x:Name="TrophyStrip" Style="{StaticResource CardStyle}" Visibility="Collapsed" AutomationProperties.AutomationId="detail-trophies">
    <Grid ColumnSpacing="18" RowSpacing="12">

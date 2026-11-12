@@ -3137,4 +3137,10 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="WhyCappedTitle" xml:space="preserve"><value>O FPS está no limite que você definiu</value></data>
   <data name="WhyCappedBody" xml:space="preserve"><value>O jogo ficou travado em cerca de **{0} FPS** porque o limitador do RivaTuner está nesse valor. Não é falta de força do PC. Se quiser mais FPS, aumente ou desligue o limite em Otimizar este jogo.</value></data>
   <data name="WhyCappedTip" xml:space="preserve"><value>Dica: o limite deixa o ritmo estável; só aumente se o monitor acompanhar.</value></data>
+  <data name="GiBeatTitle" xml:space="preserve"><value>Tempo para zerar</value></data>
+  <data name="GiBeatStory" xml:space="preserve"><value>história</value></data>
+  <data name="GiBeatPlus" xml:space="preserve"><value>com extras</value></data>
+  <data name="GiBeatAll" xml:space="preserve"><value>100%</value></data>
+  <data name="GiBeatOpen" xml:space="preserve"><value>Ver no HowLongToBeat</value></data>
+  <data name="GiBeatHint" xml:space="preserve"><value>Tempos médios de quem jogou, segundo o HowLongToBeat.</value></data>
 </root>

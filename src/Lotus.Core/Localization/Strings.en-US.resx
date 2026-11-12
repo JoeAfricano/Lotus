@@ -3137,4 +3137,10 @@ Your games and Windows are not changed.</value></data>
   <data name="WhyCappedTitle" xml:space="preserve"><value>FPS is at the limit you set</value></data>
   <data name="WhyCappedBody" xml:space="preserve"><value>The game stayed at about **{0} FPS** because RivaTuner's limiter is set there. It is not the PC running out of power. For more FPS, raise or turn off the limit in Optimize this game.</value></data>
   <data name="WhyCappedTip" xml:space="preserve"><value>Tip: the limit keeps pacing steady; raise it only if your monitor keeps up.</value></data>
+  <data name="GiBeatTitle" xml:space="preserve"><value>Time to beat</value></data>
+  <data name="GiBeatStory" xml:space="preserve"><value>main story</value></data>
+  <data name="GiBeatPlus" xml:space="preserve"><value>main + extras</value></data>
+  <data name="GiBeatAll" xml:space="preserve"><value>completionist</value></data>
+  <data name="GiBeatOpen" xml:space="preserve"><value>Open on HowLongToBeat</value></data>
+  <data name="GiBeatHint" xml:space="preserve"><value>Average times from players, by HowLongToBeat.</value></data>
 </root>

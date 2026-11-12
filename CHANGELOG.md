@@ -2,6 +2,17 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.5.0-alpha "Lotus" (12/11/2026)
+
+### Novo
+- **Tempo para zerar na página de cada jogo.** Na Game list e em Meus Jogos, a página do jogo mostra quanto tempo ele leva para zerar, segundo o HowLongToBeat: só a história, com extras e 100%, com link para o site. Funciona também para jogos que não estão no diário. Quando o jogo está no diário, o tempo fica salvo nele.
+- **RivaTuner ao jogar.** Se o Lotus usa o RivaTuner no jogo (overlay ou limitador) e ele está fechado, o Lotus abre o RivaTuner antes do jogo. A permissão de administrador é pedida pelo próprio RivaTuner. Se ele não abrir, o jogo abre mesmo assim e o Lotus avisa.
+- **Geração de quadros.** Na NVIDIA, Resposta (Reflex) passa a ser a opção principal, porque o DLSS Frame Generation não combina com outros limitadores. Na AMD e na Intel, o Lotus indica usar o limite do próprio jogo ou do driver. O Reflex só é oferecido em jogos Direct3D 11/12.
+- **Limite global do RivaTuner** aparece no cartão do RivaTuner e no Otimizar. No "Por que está travando?", um FPS preso no limite passa a ser explicado como limite, e não como culpa da placa ou do processador.
+
+### Por dentro
+- O overlay de FPS respeita a trava de escrita do RivaTuner (SDK v2.14+), e a pasta do RivaTuner é lida do registro.
+
 ## 1.4.1-alpha "Lotus" (12/11/2026)
 
 ### Melhorado
