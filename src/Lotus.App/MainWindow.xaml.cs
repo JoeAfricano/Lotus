@@ -42,6 +42,7 @@ public sealed partial class MainWindow : Window
     public Lotus.Core.Games.GamesViewModel Games => games; // Steam store data shared by every page (one cache, one request gate)
     private Lotus.Core.Games.PlayerPanelViewModel? player;
     private Lotus.Core.Diary.GameDiary diary = null!;
+    private Lotus.Core.Diary.GameLengthLookup? pageLengths;
     private Lotus.Core.Diary.DiaryViewModel diaryPage = null!;
     private Lotus.Core.Diary.DiaryEditorViewModel diaryEditor = null!;
     private Lotus.Core.Achievements.TrophyCenter trophies = null!;
@@ -127,6 +128,9 @@ public sealed partial class MainWindow : Window
         driveTimer.Start();
         gameList = new Lotus.Core.Catalog.GameListViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game list"), games.InstalledGames);
         gameDetails = new Lotus.Core.Catalog.GameDetailsViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game details"));
+        // "Tempo para zerar" on every game page (Game list and Meus Jogos) and in the diary editor: one remembered lookup per game.
+        pageLengths = new Lotus.Core.Diary.GameLengthLookup(diary, gameLengths, ex => Serilog.Log.Warning(ex, "Game length"));
+        gameList.Details.Lengths = pageLengths; gameDetails.Lengths = pageLengths;
         // Preparar e jogar: same Game profile and journal as Otimizar; the game is followed until it closes.
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
         games.Watch = sessionHub; // the light-mode check, shared (no second polling loop)
@@ -651,7 +655,7 @@ public sealed partial class MainWindow : Window
         try
         {
             var found = diary.Contains(game.Key) ? await lengths.LookUpAsync(game.Key)
-                : await gameLengths.FindAsync(game.Name, game.AppId, CancellationToken.None);
+                : pageLengths is { } page ? await page.FindAsync(game.Key, game.Name, game.AppId) : null;
             if (found is not null && diaryEditor.EntryKey == game.Key) diaryEditor.Length = found;
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Game length"); }

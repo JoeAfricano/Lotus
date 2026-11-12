@@ -76,5 +76,52 @@ public sealed class GameLengthTests
         Assert.Equal(1, errors); Assert.Null(diary.Get("a")!.BeatChecked);                     // not marked as "not found"
     }
 
+    [Fact] public async Task GamePageLookupUsesTheDiaryThenAsksOncePerGame()
+    {
+        var diary = new GameDiary(new Memory(), ex => throw ex);
+        diary.Save(new DiaryEntry { Key = "steam:1", Name = "Saved", AppId = "1", Status = DiaryStatus.Want });
+        diary.SetLength("steam:1", new(600, null, null));
+        diary.Save(new DiaryEntry { Key = "steam:2", Name = "Listed", AppId = "2", Status = DiaryStatus.Completed });
+        var source = new Source { Known = { ["Listed"] = new(120, 180, 240), ["Outside"] = new(60, null, null) } };
+        var lookup = new GameLengthLookup(diary, source, ex => throw ex);
+
+        Assert.Equal(600, (await lookup.FindAsync("steam:1", "Saved", "1"))!.MainMinutes); // saved: no lookup
+        Assert.Empty(source.Asked);
+        Assert.Equal(120, (await lookup.FindAsync("steam:2", "Listed", "2"))!.MainMinutes);
+        Assert.Equal(180, diary.Get("steam:2")!.BeatPlus);                                       // a diary game keeps it
+        Assert.Equal(60, (await lookup.FindAsync("name:outside", "Outside", null))!.MainMinutes);
+        Assert.Null(await lookup.FindAsync("name:nope", "Nope", null));
+        Assert.Null(await lookup.FindAsync("name:nope", "Nope", null));                           // a miss is remembered
+        Assert.Equal(60, (await lookup.FindAsync("name:outside", "Outside", null))!.MainMinutes);
+        Assert.Equal(["Listed", "Outside", "Nope"], source.Asked);
+        Assert.Null(diary.Get("name:outside"));                                                   // not added to the diary
+    }
+
+    [Fact] public async Task GamePageShowsTheTimeToBeat()
+    {
+        var diary = new GameDiary(new Memory(), ex => throw ex);
+        var source = new Source { Known = { ["Hades"] = new(22 * 60, 45 * 60, 96 * 60, "https://howlongtobeat.com/game/2") } };
+        var page = new Lotus.Core.Catalog.GameDetailsViewModel(new NoCatalog(), new TextCatalog(), ex => throw ex) { Lengths = new GameLengthLookup(diary, source, ex => throw ex) };
+        var changed = new List<string?>(); page.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
+        await page.LoadSteamAsync("1145360", "Hades", null, null);
+        Assert.True(page.HasLength);
+        Assert.Equal("22h", page.LengthMain);
+        Assert.Contains("45h", page.LengthMore); Assert.Contains("96h", page.LengthMore);
+        Assert.Equal("https://howlongtobeat.com/game/2", page.LengthUrl);
+        Assert.Contains(nameof(page.HasLength), changed);
+        await page.LoadSteamAsync("9", "Unknown game", null, null);
+        Assert.False(page.HasLength); Assert.Equal("", page.LengthMore);
+    }
+
+    private sealed class NoCatalog : Lotus.Core.Catalog.IGameCatalog
+    {
+        public Task<Lotus.Core.Catalog.GameInfo?> DetailsAsync(string s, string i, string n, CancellationToken t) => Task.FromResult<Lotus.Core.Catalog.GameInfo?>(null);
+        public Task<Lotus.Core.Catalog.GameInfo?> SteamDetailsAsync(string a, CancellationToken t) => Task.FromResult<Lotus.Core.Catalog.GameInfo?>(null);
+        public Task<Lotus.Core.Catalog.CatalogChart?> ChartAsync(string id, TimeSpan m, CancellationToken t) => Task.FromResult<Lotus.Core.Catalog.CatalogChart?>(null);
+        public Task<IReadOnlyList<Lotus.Core.Catalog.CatalogItem>> SearchAsync(string q, CancellationToken t) => Task.FromResult<IReadOnlyList<Lotus.Core.Catalog.CatalogItem>>([]);
+        public Task<IReadOnlyList<Lotus.Core.Catalog.CatalogItem>> DiscoverAsync(string? g, string? d, bool free, CancellationToken t) => Task.FromResult<IReadOnlyList<Lotus.Core.Catalog.CatalogItem>>([]);
+        public Task<string?> ArtAsync(string id, CancellationToken t) => Task.FromResult<string?>(null);
+    }
+
     private static string Cap(string s) => char.ToUpperInvariant(s[0]) + s[1..];
 }

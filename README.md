@@ -94,7 +94,8 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
   - **Com FreeSync/G-Sync:** 3 FPS abaixo da taxa do monitor.
   - **Sem:** a própria taxa, ou uma fração exata dela (por exemplo 37,5 em 75 Hz), com V-Sync, para não trepidar.
 - **FreeSync/G-Sync.** O Lotus pergunta uma vez. Numa placa NVIDIA, o driver responde sozinho. Na AMD e na Intel, a identificação do monitor (EDID) indica se ele suporta e recomenda ativar.
-- **Overlay de FPS** pelo RivaTuner (layout Lotus).
+- **Overlay de FPS** pelo RivaTuner (layout Lotus). O Lotus abre o RivaTuner antes do jogo quando precisa dele.
+- **Geração de quadros:** na NVIDIA, Reflex como opção principal. Na AMD e na Intel, o Lotus indica o limite do jogo ou do driver.
 
 ### Análise em jogo (Ctrl + Shift + L)
 - Mede o jogo por 30 segundos, com uma barra de progresso no próprio jogo.
@@ -125,7 +126,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 - Topo do perfil **compacto ou completo**, como preferir.
 - **Editor premium:** banner com a arte oficial da loja do jogo (Steam, Epic ou GOG), nota em anel colorido com rótulo (de Ruim a Obra-prima), status ilustrados, notas por categoria, sensações, dificuldade e **outras zeradas** com datas e horas.
 - **Sessões automáticas:** com um jogo da biblioteca aberto, o Lotus anota o tempo e as datas no diário (pode desligar em Configurações).
-- **Tempo para zerar:** história, com extras e 100% (HowLongToBeat) no editor de cada jogo.
+- **Tempo para zerar:** história, com extras e 100% (HowLongToBeat) na página de cada jogo (Game list e Meus Jogos) e no editor do diário.
 - **O que jogar agora?** Sugestão da sua própria lista pelo tempo que você tem, pelo clima que quer e pelas notas que você dá, sempre dizendo o porquê.
 - **Promoções da sua lista:** jogos de "Quero jogar" em promoção na Steam aparecem no diário, com aviso discreto perto do relógio.
 - **Estatísticas:** horas por mês (com as sessões reais), distribuição das notas, gêneros, plataformas, médias por categoria, sensações e dificuldade.

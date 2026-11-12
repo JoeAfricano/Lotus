@@ -67,7 +67,7 @@ public sealed class GameDetailsViewModel(IGameCatalog catalog, ITextCatalog text
         (l.MainMinutes is > 0 || l.PlusMinutes is > 0) && l.AllMinutes is > 0 ? Text.Format("DyBeatAll", LengthHours(l.AllMinutes)) : null,
     }.Where(x => x is not null));
     public string? LengthUrl => Length?.Url;
-    private static string LengthHours(int? minutes) => minutes is > 0 and var m ? Diary.DiaryText.Hours(m.Value) : "";
+    private static string LengthHours(int? minutes) => minutes is > 0 and var m ? Diary.DiaryText.Hours(m) : "";
 
     private async Task LoadLengthAsync(CancellationToken token)
     {
