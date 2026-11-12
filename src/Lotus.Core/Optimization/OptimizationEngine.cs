@@ -96,6 +96,8 @@ public sealed class OptimizationEngine(IOptimizationJournal journal, IOptimizati
     // Same reading as recovery, right after a write threw: what is on the system now decides the stage.
     private void Settle(OptimizationPlan p)
     {
+        // Real Windows actions cannot prove the change was ours; like recovery, they settle as Conflict.
+        if (!action.CanAttributeRecovery) { Save(p with { Stage = OperationStage.Conflict }); return; }
         try
         {
             var current = action.Detect();
