@@ -215,7 +215,8 @@ public partial class App : Application
             var version = (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false).FirstOrDefault() as System.Reflection.AssemblyInformationalVersionAttribute)?.InformationalVersion.Split('+')[0] ?? "";
             if (services is null) return;
             var handler = new Lotus.Infrastructure.PortsLink.LotusIntegrationHandler(services.GetRequiredService<Lotus.Infrastructure.Optimization.SqliteOptimizationJournal>(),
-                services.GetRequiredService<IFrameCaptureProvider>(), Log.Logger);
+                services.GetRequiredService<IFrameCaptureProvider>(), Log.Logger,
+                () => services.GetRequiredService<PreferencesService>().Current.MeasurePortsSessions);
             (shown as MainWindow)?.AttachPortsSessions(handler); // tray while playing, diary afterwards
             portsServer = new Lotus.Infrastructure.PortsLink.LotusIntegrationServer(Lotus.Integration.Contracts.Protocol.LotusPipeName, handler,
                 Lotus.Infrastructure.PortsLink.PipePeer.ClientIsPorts, Log.Logger, version);

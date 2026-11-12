@@ -16,7 +16,8 @@ namespace Lotus.Infrastructure.PortsLink;
 /// a game session. When something could not be measured it says so (NotVerified, Measured = false).
 /// </summary>
 [SupportedOSPlatform("windows")]
-public sealed class LotusIntegrationHandler(SqliteOptimizationJournal journal, IFrameCaptureProvider capture, Serilog.ILogger log) : ILotusIntegrationHandler
+/// <param name="elevatedCapture">True when the player allowed measuring Lotus Ports games as administrator (Windows asks each time).</param>
+public sealed class LotusIntegrationHandler(SqliteOptimizationJournal journal, IFrameCaptureProvider capture, Serilog.ILogger log, Func<bool>? elevatedCapture = null) : ILotusIntegrationHandler
 {
     /// <summary>How long after the game opens the frame capture starts (loading screens are not the game), and how long it lasts.</summary>
     internal static readonly TimeSpan CaptureDelay = TimeSpan.FromSeconds(20);
@@ -175,6 +176,21 @@ public sealed class LotusIntegrationHandler(SqliteOptimizationJournal journal, I
         return new SessionStartResult(id);
     }
 
+    /// <summary>The player belongs to "Performance Log Users" (S-1-5-32-559), which lets PresentMon run without administrator.</summary>
+    public static bool InPerformanceLogUsers()
+    {
+        try
+        {
+            using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+            return new System.Security.Principal.WindowsPrincipal(identity)
+                .IsInRole(new System.Security.Principal.SecurityIdentifier("S-1-5-32-559"));
+        }
+        catch (System.Security.SecurityException) { return false; }
+    }
+
+    /// <summary>Ask Windows for administrator only when the player opted in and the group does not already allow PresentMon.</summary>
+    public static bool NeedsElevation(bool optedIn, bool inPerformanceLogUsers) => optedIn && !inPerformanceLogUsers;
+
     private async Task<BenchmarkSession?> CaptureLaterAsync(Session session)
     {
         try
@@ -183,7 +199,9 @@ public sealed class LotusIntegrationHandler(SqliteOptimizationJournal journal, I
             using var process = System.Diagnostics.Process.GetProcessById(session.Start.ProcessId);
             if (process.HasExited) return null;
             var target = new CaptureTarget(process.Id, session.Start.ExePath, process.StartTime.ToUniversalTime());
-            return await capture.CaptureAsync(new CaptureRequest(target, CaptureSeconds, Elevated: false, $"Lotus Ports: {session.Start.GameTitle}", "{}"), session.Stop.Token).ConfigureAwait(false);
+            // In the "Performance Log Users" group PresentMon measures without administrator, so Windows never asks.
+            var elevated = NeedsElevation(elevatedCapture?.Invoke() == true, InPerformanceLogUsers());
+            return await capture.CaptureAsync(new CaptureRequest(target, CaptureSeconds, Elevated: elevated, $"Lotus Ports: {session.Start.GameTitle}", "{}"), session.Stop.Token).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is OperationCanceledException or ArgumentException or InvalidOperationException or System.ComponentModel.Win32Exception or IOException)
         {

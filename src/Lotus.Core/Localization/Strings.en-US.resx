@@ -2349,6 +2349,8 @@ Your games and Windows are not changed.</value></data>
   <data name="PrepProfileAskBody" xml:space="preserve"><value>Before each session, Lotus applies only what isn&apos;t applied yet and undoes it when the game closes. Right now it would change:</value></data>
   <data name="PrepProfileAllow" xml:space="preserve"><value>Allow</value></data>
   <data name="SetPreparePlay" xml:space="preserve"><value>Prepare before playing</value></data>
+  <data name="SetMeasurePorts" xml:space="preserve"><value>Measure FPS of Lotus Ports games</value></data>
+  <data name="SetMeasurePortsHint" xml:space="preserve"><value>While a game opened by Lotus Ports is running, Lotus measures its frames for 60 seconds. Without setup, Windows asks for administrator confirmation each game session; to never be asked, add your account to the &quot;Performance Log Users&quot; group (steps in docs/LOTUS_PORTS_INTEGRATION.md) and sign in again.</value></data>
   <data name="SetPreparePlayHint" xml:space="preserve"><value>When you click Play, Lotus checks in seconds that the installation, memory and space are fine, and only asks something if there&apos;s a problem. Each game can have its own setting in My Games.</value></data>
   <data name="SpTitle" xml:space="preserve"><value>Progress protection</value></data>
   <data name="SpChecking" xml:space="preserve"><value>Looking for this game&apos;s saves…</value></data>

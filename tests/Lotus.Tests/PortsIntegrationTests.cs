@@ -52,6 +52,13 @@ public sealed class PortsIntegrationTests : IAsyncLifetime
     private static JsonRpcMessage Hello(int version = Protocol.Version) =>
         JsonRpcMessage.Request("1", Methods.Handshake, new HandshakeParams("Lotus Ports", "0.1.0", version, [Events.GameInstalled]));
 
+    [Theory]
+    [InlineData(false, false, false)] // off by default: never asks for administrator
+    [InlineData(true, false, true)]   // opted in: Windows asks each game
+    [InlineData(true, true, false)]   // "Performance Log Users" measures without asking
+    public void Elevation_only_when_opted_in_and_not_in_group(bool optedIn, bool inGroup, bool expected) =>
+        Assert.Equal(expected, LotusIntegrationHandler.NeedsElevation(optedIn, inGroup));
+
     [Fact]
     public async Task Handshake_announces_only_what_Lotus_answers()
     {

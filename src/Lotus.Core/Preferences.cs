@@ -31,6 +31,7 @@ public sealed record InterfacePreferences
     public string DriveSchedule { get; init; } = "manual"; // Google Drive copy: manual (only on click), weekly or monthly
     public bool AutoUpdate { get; init; } // download and install new Lotus versions from GitHub without asking
     public bool PreparePlay { get; init; } = true; // quick read-only checks behind every Jogar button (a question only for real problems)
+    public bool MeasurePortsSessions { get; init; } // measure FPS of games opened by Lotus Ports (PresentMon as administrator: Windows asks each time)
     public string? AdaptiveSync { get; init; } // FreeSync/G-Sync on: "on" | "off" | null (not asked yet; asked before the first game analysis)
     public string Accent { get; init; } = "rose"; // rose | violet | blue | green (design) and the older crimson | gold | dark
     public string? CustomTheme { get; init; }                 // the active custom theme (its share code), used when Theme is "Custom"
@@ -121,6 +122,7 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool GamePriority { get => service.Current.GamePriority; set { if (value != service.Current.GamePriority) { service.Update(service.Current with { GamePriority = value }); OnPropertyChanged(); } } }
     public bool ResumePrompts { get => service.Current.ResumePrompts; set { if (value != service.Current.ResumePrompts) { service.Update(service.Current with { ResumePrompts = value }); OnPropertyChanged(); } } }
     public bool PreparePlay { get => service.Current.PreparePlay; set { if (value != service.Current.PreparePlay) { service.Update(service.Current with { PreparePlay = value }); OnPropertyChanged(); } } }
+    public bool MeasurePortsSessions { get => service.Current.MeasurePortsSessions; set { if (value != service.Current.MeasurePortsSessions) { service.Update(service.Current with { MeasurePortsSessions = value }); OnPropertyChanged(); } } }
     public double UiSoundVolume { get => service.Current.UiSoundVolume; set { var v = (int)Math.Round(value); if (v != service.Current.UiSoundVolume) { service.Update(service.Current with { UiSoundVolume = v }); OnPropertyChanged(); } } }
     public string Message { get => message; private set => SetProperty(ref message, value); }
 
