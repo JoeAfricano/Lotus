@@ -132,9 +132,10 @@ public static class RtssSharedMemory
 // (then the 1% low is approximate, noted in Diagnostics). Reflex timings (GPU busy, PC latency) are read alongside.
 [SupportedOSPlatform("windows")]
 public sealed class RtssPreferredCaptureProvider(IFrameCaptureProvider fallback, TimeSpan? pollInterval = null, string mapName = RtssSharedMemory.DefaultMap,
-    string pipeName = RtssFrametimePipe.DefaultName, TimeSpan? firstFrameWait = null) : IFrameCaptureProvider
+    RtssFrametimeListener? listener = null, TimeSpan? firstFrameWait = null) : IFrameCaptureProvider
 {
     private readonly TimeSpan poll = pollInterval ?? TimeSpan.FromMilliseconds(10);
+    private readonly RtssFrametimeListener pipe = listener ?? RtssFrametimeListener.Shared;
 
     public async Task<BenchmarkSession> CaptureAsync(CaptureRequest request, CancellationToken stop)
     {
@@ -146,7 +147,8 @@ public sealed class RtssPreferredCaptureProvider(IFrameCaptureProvider fallback,
         FrameStatistics? stats; int count; string algorithm, diagnostics;
         try
         {
-            var piped = await RtssFrametimePipe.CollectAsync(pid, TimeSpan.FromSeconds(request.Seconds), firstFrameWait ?? TimeSpan.FromSeconds(3), stop, mapName, pipeName);
+            // The pipe only has frames of games opened after Lotus started listening; otherwise shared memory.
+            var piped = await pipe.CollectAsync(pid, TimeSpan.FromSeconds(request.Seconds), firstFrameWait ?? TimeSpan.FromSeconds(2), stop);
             if (piped is { Count: > 0 })
             {
                 (stats, count, algorithm, diagnostics) = (Statistics(piped), piped.Count, "rtss-pipe-v1", "RTSS frametime pipe: every frame.");

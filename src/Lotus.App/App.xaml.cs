@@ -173,6 +173,8 @@ public partial class App : Application
             if (e.Exception is OutOfMemoryException) { Log.Fatal(e.Exception, "Unhandled UI exception"); return; }
             Log.Error(e.Exception, "UI error handled; Lotus keeps running"); e.Handled = true;
         };
+        // RivaTuner's frametime pipe: open before any game starts, so games opened afterwards send every frame.
+        try { Lotus.Infrastructure.Games.RtssFrametimeListener.Shared.Start(); } catch (Exception ex) { Log.Warning(ex, "RTSS frametime pipe not opened"); }
         window = services.GetRequiredService<MainWindow>();
         WindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(window);
         var readyToClose = false;

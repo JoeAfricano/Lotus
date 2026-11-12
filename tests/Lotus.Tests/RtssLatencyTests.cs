@@ -76,35 +76,57 @@ public sealed class RtssLatencyTests(ITestOutputHelper output)
         Assert.Equal((null, "LlFrameGenOther"), LimiterChoice.Pick(info with { FrameGen = true, Api = "Vulkan" }, vrr, hz, fps, busy)); // Reflex injection is D3D only
     }
 
-    [Fact] public async Task PipeCollectsOnlyTheGamesFrames()
+    [Fact] public async Task PipeKeepsOnlyTheMeasuredGamesFrames()
     {
         using var map = FakeV221(4242, 1, 2, 1, 2);
-        var pipe = "LotusTestPipe_" + Guid.NewGuid().ToString("N");
-        var collect = RtssFrametimePipe.CollectAsync(4242, TimeSpan.FromMilliseconds(400), TimeSpan.FromSeconds(3), CancellationToken.None, name, pipe);
-        async Task Send(uint app, uint us, int count)
+        var name2 = "LotusTestPipe_" + Guid.NewGuid().ToString("N");
+        using var listener = new RtssFrametimeListener(name, name2);
+        Assert.Null(await listener.CollectAsync(4242, TimeSpan.FromMilliseconds(10), TimeSpan.FromMilliseconds(10), CancellationToken.None)); // not started
+        listener.Start();
+        // The games connect when they open (before any measurement), like RivaTuner's hook.
+        async Task<NamedPipeClientStream> Connect() { var c = new NamedPipeClientStream(".", name2, PipeDirection.InOut, PipeOptions.Asynchronous); await c.ConnectAsync(3000); c.ReadMode = PipeTransmissionMode.Message; return c; }
+        using var game = await Connect(); using var other = await Connect();
+        async Task Send(NamedPipeClientStream c, uint app, uint us, int count)
         {
-            using var c = new NamedPipeClientStream(".", pipe, PipeDirection.InOut, PipeOptions.Asynchronous);
-            await c.ConnectAsync(3000); c.ReadMode = PipeTransmissionMode.Message;
             var msg = new byte[8];
             for (var i = 0; i < count; i++) { BitConverter.TryWriteBytes(msg.AsSpan(0), app); BitConverter.TryWriteBytes(msg.AsSpan(4), us); await c.WriteAsync(msg); await c.FlushAsync(); }
-            await Task.Delay(100);
         }
-        await Task.WhenAll(Send(1, 16_667, 30), Send(0, 5_000, 30)); // entry 0 is another app
+        await Send(game, 1, 33_000, 10); // before the measurement: not kept
+        await Task.Delay(100);
+        var collect = listener.CollectAsync(4242, TimeSpan.FromMilliseconds(400), TimeSpan.FromSeconds(3), CancellationToken.None);
+        await Task.Delay(100);
+        await Task.WhenAll(Send(game, 1, 16_667, 30), Send(other, 0, 5_000, 30)); // entry 0 is another app
         var frames = await collect;
         Assert.NotNull(frames); Assert.Equal(30, frames!.Count); Assert.All(frames, f => Assert.Equal(16.667, f, 3));
-        Assert.Null(await RtssFrametimePipe.CollectAsync(4242, TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(150), CancellationToken.None, name, pipe));
+        Assert.Equal(2, listener.Connected);
+        Assert.Null(await listener.CollectAsync(4242, TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(150), CancellationToken.None)); // no frames now
     }
 
-    // Live check on the PC: LOTUS_LIVE=1 and LOTUS_LIVE_PID=<pid of a 3D app RTSS hooks>, with RivaTuner open.
+    // Live check on the PC, RivaTuner open. LOTUS_LIVE=1 and either LOTUS_LIVE_EXE=<3D program to start> (optional
+    // LOTUS_LIVE_ARGS) or LOTUS_LIVE_PROCESS=<process name to wait for, up to 3 min; open the game after the test starts>.
+    // The pipe is opened first, as Lotus does at startup. LOTUS_LIVE_SECONDS sets the measurement (default 10).
     [Fact] public async Task LiveCapture()
     {
-        if (Environment.GetEnvironmentVariable("LOTUS_LIVE") != "1" || !int.TryParse(Environment.GetEnvironmentVariable("LOTUS_LIVE_PID"), out var pid)) return;
-        output.WriteLine($"tracked: {RtssSharedMemory.IsTracking(pid)}; reflex now: {RtssSharedMemory.ReadReflex(pid)}");
-        var pipe = await RtssFrametimePipe.CollectAsync(pid, TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(5), CancellationToken.None);
-        output.WriteLine(pipe is null ? "pipe: no frames" : $"pipe: {pipe.Count} frames, stats {RtssPreferredCaptureProvider.Statistics(pipe)}");
-        var provider = new RtssPreferredCaptureProvider(new NoFallback());
-        var session = await provider.CaptureAsync(new(new(pid, "live", DateTimeOffset.UtcNow), 8, false, "", "{}"), CancellationToken.None);
-        output.WriteLine($"session: {session.Status} {session.AlgorithmVersion} {session.Data?.Statistics} extras {session.Extras}");
+        if (Environment.GetEnvironmentVariable("LOTUS_LIVE") != "1") return;
+        using var listener = new RtssFrametimeListener();
+        listener.Start();
+        System.Diagnostics.Process? started = null, target = null;
+        if (Environment.GetEnvironmentVariable("LOTUS_LIVE_EXE") is { Length: > 0 } exe)
+            target = started = System.Diagnostics.Process.Start(exe, Environment.GetEnvironmentVariable("LOTUS_LIVE_ARGS") ?? "");
+        else if (Environment.GetEnvironmentVariable("LOTUS_LIVE_PROCESS") is { Length: > 0 } wanted)
+            for (var i = 0; i < 360 && target is null; i++) { target = System.Diagnostics.Process.GetProcessesByName(wanted).FirstOrDefault(); if (target is null) await Task.Delay(500); }
+        if (target is null) { output.WriteLine("no target process"); return; }
+        try
+        {
+            await Task.Delay(TimeSpan.FromSeconds(8)); // RivaTuner hooks it and the hook connects
+            var pid = target.Id;
+            var seconds = int.TryParse(Environment.GetEnvironmentVariable("LOTUS_LIVE_SECONDS"), out var s) ? s : 10;
+            output.WriteLine($"pid {pid}; tracked: {RtssSharedMemory.IsTracking(pid)}; pipe clients: {listener.Connected}; reflex now: {RtssSharedMemory.ReadReflex(pid)}");
+            var provider = new RtssPreferredCaptureProvider(new NoFallback(), listener: listener);
+            var session = await provider.CaptureAsync(new(new(pid, "live", DateTimeOffset.UtcNow), seconds, false, "", "{}"), CancellationToken.None);
+            output.WriteLine($"session: {session.Status} {session.AlgorithmVersion} {session.Data?.Statistics} extras {session.Extras}");
+        }
+        finally { if (started is { HasExited: false }) started.Kill(); }
     }
     private sealed class NoFallback : Lotus.Core.Benchmark.IFrameCaptureProvider
     {

@@ -34,7 +34,7 @@ public sealed class RtssTests(ITestOutputHelper output)
         var app = Assert.Single(RtssSharedMemory.Read(name));
         Assert.Equal((4242, "game.exe", 75u, 13_333u), (app.ProcessId, app.Name, app.Frames, app.FrameTimeMicroseconds));
         Assert.True(RtssSharedMemory.IsTracking(4242, name)); Assert.False(RtssSharedMemory.IsTracking(1, name));
-        var fallback = new Fallback(); var provider = new RtssPreferredCaptureProvider(fallback, TimeSpan.FromMilliseconds(5), name, "LotusTestPipe_" + Guid.NewGuid().ToString("N"), TimeSpan.FromMilliseconds(200));
+        var fallback = new Fallback(); var provider = new RtssPreferredCaptureProvider(fallback, TimeSpan.FromMilliseconds(5), name, new RtssFrametimeListener(name, "LotusTestPipe_" + Guid.NewGuid().ToString("N")), TimeSpan.FromMilliseconds(200));
         var session = await provider.CaptureAsync(new(new(4242, "game.exe", DateTimeOffset.UtcNow), 1, false, "", "{}"), CancellationToken.None);
         Assert.Equal(0, fallback.Calls); Assert.Equal("Completed", session.Status);
         Assert.Equal(75, session.Data!.Statistics!.AverageFps, 1); Assert.Equal(75, session.Data.Statistics.Low1Fps, 0);
