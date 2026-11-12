@@ -2,6 +2,16 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.5.2-alpha "Lotus" (12/11/2026)
+
+### Corrigido
+- **"Desfazer perfil" desfazia mais do que devia.** Ele também revertia mudanças antigas do histórico; no Perfil Jogo chegava a trocar o plano de energia para Equilibrado. Agora desfaz só o que a última aplicação do perfil mudou.
+- **Uma mudança recusada pelo Windows travava o Otimizar** e bloqueava as mudanças seguintes. Agora o Lotus confere o que ficou no Windows e segue.
+- **Erro na análise do perfil aparecia como "nada para mudar".** Agora o Lotus avisa, e itens que não puderam ser analisados aparecem na confirmação.
+- Um erro em um item (por exemplo, na Inicialização) não trava mais a aba inteira.
+- O resumo "Recursos do Windows para jogos" relê o Windows ao trocar de perfil.
+- Textos no singular quando é uma só mudança ("1 alteração aplicada") e o nome certo do botão "Ajustar pelo Lotus" na explicação.
+
 ## 1.5.1-alpha "Lotus" (12/11/2026)
 
 ### Melhorado

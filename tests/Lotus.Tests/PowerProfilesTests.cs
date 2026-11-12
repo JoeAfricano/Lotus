@@ -92,7 +92,7 @@ public sealed class PowerProfilesTests(ITestOutputHelper output) : IDisposable
         var power = new FakePower { Denied = !interrupted, Interrupted = interrupted }; var e = Engine(power);
         var p = await e.AnalyzeAsync(ProfileSuggestions.HighPerformance.ToString());
         await Assert.ThrowsAnyAsync<Exception>(() => e.ApplyAsync(p.Id, true));
-        Assert.Equal(OperationStage.Applying, Journal.Find(p.Id)!.Stage);
+        Assert.Equal(OperationStage.Conflict, Journal.Find(p.Id)!.Stage);
         Assert.Equal(OperationStage.Conflict, Assert.Single(await Engine(power).RecoverAsync()).Stage);
         Assert.Equal(interrupted ? 1 : 0, power.Writes);
     }

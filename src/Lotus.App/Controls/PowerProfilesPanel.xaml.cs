@@ -72,6 +72,7 @@ public sealed partial class PowerProfilesPanel : UserControl
         if (DataContext is not Lotus.Core.Optimization.PowerProfilesViewModel vm) return;
         var changes = await vm.PreviewProfileAsync();
         var pending = changes.Where(c => !c.AlreadyApplied).ToList();
+        if (pending.Count == 0 && vm.PreviewFailed) { vm.ReportPreviewFailed(); return; }
         if (pending.Count == 0) { await vm.ApplyProfileAsync(changes); return; }
         var list = new StackPanel { Spacing = 8, MaxWidth = 460 };
         list.Children.Add(new TextBlock { Text = vm.Text["PfPreviewIntro"], TextWrapping = TextWrapping.Wrap, Opacity = 0.85, Margin = new Thickness(0, 0, 0, 6) });
@@ -85,6 +86,7 @@ public sealed partial class PowerProfilesPanel : UserControl
             text.Children.Add(new TextBlock { Text = c.AlreadyApplied ? $"{c.To} · {vm.Text["PfAlready"]}" : $"{c.From}  →  {c.To}", Opacity = 0.75, TextWrapping = TextWrapping.Wrap });
             row.Children.Add(text); list.Children.Add(row);
         }
+        if (vm.PreviewSkipped > 0 || vm.PreviewFailed) list.Children.Add(new TextBlock { Text = vm.Text["PfPreviewSkipped"], TextWrapping = TextWrapping.Wrap, FontSize = 12, Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["GoldBrush"], Margin = new Thickness(0, 6, 0, 0) });
         list.Children.Add(new TextBlock { Text = vm.Text["PowerRisk"], TextWrapping = TextWrapping.Wrap, FontSize = 12, Opacity = 0.65, Margin = new Thickness(0, 6, 0, 0) });
         if (await ShowAsync(vm.Text.Format("PfPreviewTitle", vm.Text[ProfileTitleKey(vm)]), list, vm.Text["PfApplyConfirm"], vm.Text))
             await vm.ApplyProfileAsync(changes);

@@ -9,6 +9,8 @@ public sealed record OptimizationPlan(Guid Id, string ActionId, ConfigurationSta
     OperationStage Stage, DateTimeOffset CreatedUtc, ConfigurationState? RestoreTarget = null)
 {
     public string? ProfileId { get; init; }
+    // Set on every plan of one profile application, so "Undo profile" restores exactly that application.
+    public Guid? Batch { get; init; }
 }
 public interface IOptimizationAction
 {
@@ -37,14 +39,14 @@ public sealed class OptimizationEngine(IOptimizationJournal journal, IOptimizati
 {
     public ActionDefinition Definition => action.Definition;
     private Task<T> Locked<T>(Func<T> work) => Task.Run(() => { using var lease = journal.Acquire(); return work(); });
-    public Task<OptimizationPlan> AnalyzeAsync(string? desiredState = null, string? profileId = null) => Locked(() =>
+    public Task<OptimizationPlan> AnalyzeAsync(string? desiredState = null, string? profileId = null, Guid? batch = null) => Locked(() =>
     {
         if (action.Eligibility != Eligibility.Eligible) throw new InvalidOperationException("Unsupported action.");
         if (journal.List().Any(p => p.Stage is OperationStage.Applying or OperationStage.Reverting))
             throw new InvalidOperationException("Recovery required.");
         var before = action.Detect(); var id = Guid.NewGuid(); var desired = action.Plan(before, id, desiredState);
         var plan = new OptimizationPlan(id, action.Definition.Id, before, desired,
-            desired == before ? OperationStage.NoChange : OperationStage.Planned, DateTimeOffset.UtcNow) { ProfileId = profileId };
+            desired == before ? OperationStage.NoChange : OperationStage.Planned, DateTimeOffset.UtcNow) { ProfileId = profileId, Batch = batch };
         journal.Save(plan); return plan;
     });
     public Task<OptimizationPlan> ApplyAsync(Guid id, bool confirmed) => Locked(() =>
@@ -57,7 +59,10 @@ public sealed class OptimizationEngine(IOptimizationJournal journal, IOptimizati
         if (p.Stage != OperationStage.Planned || action.Eligibility != Eligibility.Eligible) throw new InvalidOperationException("Invalid execution state.");
         if (action.Detect() != p.Before) return Save(p with { Stage = OperationStage.Conflict });
         p = Save(p with { Stage = OperationStage.Applying }); // durable intent BEFORE mutation
-        if (!action.Exchange(p.Before, p.Desired)) return Save(p with { Stage = OperationStage.Conflict });
+        bool exchanged;
+        try { exchanged = action.Exchange(p.Before, p.Desired); }
+        catch { Settle(p); throw; } // a failed write must not leave "Applying" behind and block every other change
+        if (!exchanged) return Save(p with { Stage = OperationStage.Conflict });
         return Save(p with { Stage = action.Detect() == p.Desired ? OperationStage.Applied : OperationStage.Conflict });
     });
     public Task<OptimizationPlan> RevertAsync(Guid id, bool confirmed) => Locked(() =>
@@ -70,7 +75,10 @@ public sealed class OptimizationEngine(IOptimizationJournal journal, IOptimizati
         if (action.Detect() != p.Desired) return Save(p with { Stage = OperationStage.Conflict });
         var target = action.Restore(p.Before, p.Desired, p.Id);
         p = Save(p with { Stage = OperationStage.Reverting, RestoreTarget = target });
-        if (!action.Exchange(p.Desired, target)) return Save(p with { Stage = OperationStage.Conflict });
+        bool exchanged;
+        try { exchanged = action.Exchange(p.Desired, target); }
+        catch { Settle(p); throw; }
+        if (!exchanged) return Save(p with { Stage = OperationStage.Conflict });
         return Save(p with { Stage = action.Detect() == target ? OperationStage.Reverted : OperationStage.Conflict });
     });
     public Task<IReadOnlyList<OptimizationPlan>> RecoverAsync() => Locked<IReadOnlyList<OptimizationPlan>>(() =>
@@ -87,6 +95,23 @@ public sealed class OptimizationEngine(IOptimizationJournal journal, IOptimizati
         }
         return journal.List().Where(p => p.ActionId == action.Definition.Id).ToList(); // Recovery observes state; it NEVER resumes mutations automatically.
     });
+    // Same reading as recovery, right after a write threw: what is on the system now decides the stage.
+    private void Settle(OptimizationPlan p)
+    {
+        // Real Windows actions cannot prove the change was ours; like recovery, they settle as Conflict.
+        if (!action.CanAttributeRecovery) { Save(p with { Stage = OperationStage.Conflict }); return; }
+        try
+        {
+            var current = action.Detect();
+            Save(p with
+            {
+                Stage = p.Stage == OperationStage.Applying
+                    ? current == p.Desired ? OperationStage.Applied : current == p.Before ? OperationStage.Planned : OperationStage.Conflict
+                    : current == p.RestoreTarget ? OperationStage.Reverted : current == p.Desired ? OperationStage.Applied : OperationStage.Conflict,
+            });
+        }
+        catch (Exception) { Save(p with { Stage = OperationStage.Conflict }); } // unreadable: never left "in progress"
+    }
     private OptimizationPlan Get(Guid id)
     {
         var plan = journal.Find(id) ?? throw new InvalidOperationException("Unknown plan.");

@@ -593,7 +593,7 @@ Current conditions: {1}</value></data>
   <data name="PfHowItWorks" xml:space="preserve"><value>How does it work?</value></data>
   <data name="UxMemoryLabel" xml:space="preserve"><value>Memory</value></data>
   <data name="PfRowFeatures" xml:space="preserve"><value>Windows gaming features</value></data>
-  <data name="FeatManual" xml:space="preserve"><value>Lotus shows the state and opens the right Settings page. When "Enable with Lotus" is available, the change is journaled, verified and can be undone.</value></data>
+  <data name="FeatManual" xml:space="preserve"><value>Lotus shows the state and opens the right Settings page. When "Adjust with Lotus" is available, the change is journaled, verified and can be undone.</value></data>
   <data name="FeatOpenSettings" xml:space="preserve"><value>Open in Settings</value></data>
   <data name="FeatNotRead" xml:space="preserve"><value>Not checked yet</value></data>
   <data name="FeatAllGood" xml:space="preserve"><value>Everything fits this profile</value></data>
@@ -696,12 +696,14 @@ Current conditions: {1}</value></data>
   <data name="PfPreviewNothing" xml:space="preserve"><value>Your PC already matched the profile, nothing needed to change.</value></data>
   <data name="PfAlready" xml:space="preserve"><value>already set</value></data>
   <data name="PfApplyConfirm" xml:space="preserve"><value>Apply</value></data>
-  <data name="PfApplied" xml:space="preserve"><value>{0} change(s) applied and verified. More FPS is not guaranteed; use the benchmark to compare.</value></data>
+  <data name="PfApplied" xml:space="preserve"><value>{0} changes applied and verified. More FPS is not guaranteed; use the benchmark to compare.</value></data>
+  <data name="PfApplied1" xml:space="preserve"><value>1 change applied and verified. More FPS is not guaranteed; use the benchmark to compare.</value></data>
   <data name="PfAppliedWithConflicts" xml:space="preserve"><value>{0} applied; {1} not applied because the setting changed outside Lotus.</value></data>
   <data name="PfUndo" xml:space="preserve"><value>Undo profile</value></data>
   <data name="PfUndoTitle" xml:space="preserve"><value>Undo the profile changes?</value></data>
   <data name="PfUndoBody" xml:space="preserve"><value>Lotus restores the previous state of each item it changed, only if nothing changed it afterwards.</value></data>
-  <data name="PfUndone" xml:space="preserve"><value>{0} item(s) restored and verified.</value></data>
+  <data name="PfUndone" xml:space="preserve"><value>{0} items restored and verified.</value></data>
+  <data name="PfUndone1" xml:space="preserve"><value>1 item restored and verified.</value></data>
   <data name="PfUndoConflict" xml:space="preserve"><value>{0} restored; {1} kept because it changed outside Lotus.</value></data>
   <data name="PfNothingToUndo" xml:space="preserve"><value>There is no Lotus change to undo.</value></data>
   <data name="FeatApplyButton" xml:space="preserve"><value>Adjust with Lotus</value></data>
@@ -3172,4 +3174,6 @@ Your games and Windows are not changed.</value></data>
   <data name="LlWhyFixedReflex" xml:space="preserve"><value>Monitor without FreeSync/G-Sync and an NVIDIA card: Reflex with V-Sync and a {0} FPS limit gives the quickest response with the same steadiness as Fluid.</value></data>
   <data name="IgRaiseQualityTitle" xml:space="preserve"><value>There is room for a prettier image</value></data>
   <data name="IgRaiseQualityBody" xml:space="preserve"><value>In the last analysis the card ran at {0}% while holding {1} FPS. Raise the quality one level or switch DLSS/FSR to a prettier mode and analyze again: if FPS stays steady, keep it.</value></data>
+  <data name="PfPreviewFailed" xml:space="preserve"><value>I couldn't read Windows' current state, so nothing was changed. Try again; if it keeps happening, restart Lotus.</value></data>
+  <data name="PfPreviewSkipped" xml:space="preserve"><value>Some items couldn't be read right now and were left out of this list. Nothing in them will be changed.</value></data>
 </root>
