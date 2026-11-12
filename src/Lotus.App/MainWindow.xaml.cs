@@ -252,6 +252,7 @@ public sealed partial class MainWindow : Window
         StartDealsCheck();
         StartArtRepair();
         StartGameLengths();
+        StartDriverNotice();
         preferences.PropertyChanged += OnPreferencesChanged;
         Closed += (_, _) =>
         {

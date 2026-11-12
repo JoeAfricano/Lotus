@@ -1922,6 +1922,14 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="HeatAlertTitle" xml:space="preserve"><value>Processador no limite</value></data>
   <data name="HeatAlertLimited" xml:space="preserve"><value>Há alguns minutos o processador está reduzindo a velocidade (calor ou limite de energia). Isso pode causar travadas.</value></data>
   <data name="HeatAlertHot" xml:space="preserve"><value>A temperatura lida pela placa está em {0} °C. Confira a ventilação do PC.</value></data>
+  <data name="DriverNewTitle" xml:space="preserve"><value>Driver de vídeo novo</value></data>
+  <data name="DriverNewBody" xml:space="preserve"><value>A NVIDIA lançou o driver {0} (você tem o {1}). Drivers novos costumam trazer correções e ganhos para jogos recentes.</value></data>
+  <data name="DriverOldTitle" xml:space="preserve"><value>Driver de vídeo antigo</value></data>
+  <data name="DriverOldBody" xml:space="preserve"><value>Seu driver {0} da {1} tem mais de seis meses. Vale conferir se há um mais novo no site do fabricante.</value></data>
+  <data name="DriverOpenPage" xml:space="preserve"><value>Abrir a página do driver</value></data>
+  <data name="DriverLater" xml:space="preserve"><value>Agora não</value></data>
+  <data name="SetDriverNotices" xml:space="preserve"><value>Avisar quando sair driver de vídeo novo</value></data>
+  <data name="SetDriverNoticesHint" xml:space="preserve"><value>Uma consulta por semana no site da NVIDIA (AMD e Intel: aviso de driver com mais de seis meses). O Lotus nunca baixa nem instala drivers.</value></data>
   <data name="WhyUnknownStutterTip" xml:space="preserve"><value>Dica: atualize o driver de vídeo e verifique os arquivos do jogo.</value></data>
   <data name="WhyAllGoodTip" xml:space="preserve"><value>Dica: se trava em outro lugar, meça lá com Ctrl + Shift + L.</value></data>
   <data name="IgChipFrameGen" xml:space="preserve"><value>Geração de quadros</value></data>

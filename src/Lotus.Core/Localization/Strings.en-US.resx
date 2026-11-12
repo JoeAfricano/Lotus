@@ -1922,6 +1922,14 @@ Your games and Windows are not changed.</value></data>
   <data name="HeatAlertTitle" xml:space="preserve"><value>Processor at its limit</value></data>
   <data name="HeatAlertLimited" xml:space="preserve"><value>For a few minutes the processor has been slowing itself down (heat or a power limit). This can cause stutters.</value></data>
   <data name="HeatAlertHot" xml:space="preserve"><value>The board's temperature reading is {0} °C. Check the PC's airflow.</value></data>
+  <data name="DriverNewTitle" xml:space="preserve"><value>New graphics driver</value></data>
+  <data name="DriverNewBody" xml:space="preserve"><value>NVIDIA released driver {0} (you have {1}). New drivers usually bring fixes and gains for recent games.</value></data>
+  <data name="DriverOldTitle" xml:space="preserve"><value>Old graphics driver</value></data>
+  <data name="DriverOldBody" xml:space="preserve"><value>Your {1} driver {0} is more than six months old. It is worth checking the maker's site for a newer one.</value></data>
+  <data name="DriverOpenPage" xml:space="preserve"><value>Open the driver page</value></data>
+  <data name="DriverLater" xml:space="preserve"><value>Not now</value></data>
+  <data name="SetDriverNotices" xml:space="preserve"><value>Tell me when a new graphics driver is out</value></data>
+  <data name="SetDriverNoticesHint" xml:space="preserve"><value>One check a week on NVIDIA's site (AMD and Intel: a note when the driver is over six months old). Lotus never downloads or installs drivers.</value></data>
   <data name="WhyUnknownStutterTip" xml:space="preserve"><value>Tip: update the graphics driver and verify the game files.</value></data>
   <data name="WhyAllGoodTip" xml:space="preserve"><value>Tip: if it stutters somewhere else, measure there with Ctrl + Shift + L.</value></data>
   <data name="IgChipFrameGen" xml:space="preserve"><value>Frame generation</value></data>
