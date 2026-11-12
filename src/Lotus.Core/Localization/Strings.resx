@@ -3172,4 +3172,6 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="LlWhyFixedReflex" xml:space="preserve"><value>Monitor sem FreeSync/G-Sync e placa NVIDIA: o Reflex com V-Sync e limite de {0} FPS dá a resposta mais rápida com a mesma firmeza da Fluidez.</value></data>
   <data name="IgRaiseQualityTitle" xml:space="preserve"><value>Dá para deixar mais bonito</value></data>
   <data name="IgRaiseQualityBody" xml:space="preserve"><value>Na última análise, a placa ficou em {0}% segurando {1} FPS. Suba um nível de qualidade ou troque o DLSS/FSR para um modo mais bonito e analise de novo: se o FPS continuar firme, mantenha.</value></data>
+  <data name="PfPreviewFailed" xml:space="preserve"><value>Não consegui ler o estado atual do Windows, então nada foi mudado. Tente de novo; se continuar, reinicie o Lotus.</value></data>
+  <data name="PfPreviewSkipped" xml:space="preserve"><value>Alguns itens não puderam ser lidos agora e ficaram fora desta lista. Nada neles será mudado.</value></data>
 </root>

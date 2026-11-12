@@ -198,9 +198,14 @@ public sealed class PowerProfilesViewModel : ObservableObject
     }
     public void RefreshLanguage() { BuildFeatureRows(); Notify(); }
     // One-click profile: analyzes every action of the profile; the UI shows the list in one confirmation dialog.
+    // A preview that failed (or skipped some actions) must not read as "nothing to change".
+    public bool PreviewFailed { get; private set; }
+    public int PreviewSkipped { get; private set; }
+    public void ReportPreviewFailed() => ShowResult("PfResultPartial", false, Text["PfPreviewFailed"]);
     public async Task<IReadOnlyList<PlannedChange>> PreviewProfileAsync()
     {
         var changes = new List<PlannedChange>();
+        PreviewFailed = false; PreviewSkipped = 0;
         await Run(async () =>
         {
             await engine.RecoverAsync();
@@ -219,9 +224,10 @@ public sealed class PowerProfilesViewModel : ObservableObject
                     var p = await featureEngine.AnalyzeAsync(null, profileId);
                     changes.Add(new(Text["FeatName" + id], FeatureLabel(id, p.Before.Value), FeatureLabel(id, p.Desired.Value), p.Stage == OperationStage.NoChange, featureEngine, p));
                 }
-                catch (InvalidOperationException ex) { log(ex); } // Unsupported here or pending recovery: skipped, never forced.
+                catch (InvalidOperationException ex) { log(ex); PreviewSkipped++; } // Unsupported here or pending recovery: skipped, never forced.
             }
         });
+        PreviewFailed = error.Length > 0;
         return changes;
     }
     private bool ProfileWants(string featureId) => GameFeatureRules.Desired(featureId, profileId) is not null;

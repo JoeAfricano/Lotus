@@ -3172,4 +3172,6 @@ Your games and Windows are not changed.</value></data>
   <data name="LlWhyFixedReflex" xml:space="preserve"><value>Monitor without FreeSync/G-Sync and an NVIDIA card: Reflex with V-Sync and a {0} FPS limit gives the quickest response with the same steadiness as Fluid.</value></data>
   <data name="IgRaiseQualityTitle" xml:space="preserve"><value>There is room for a prettier image</value></data>
   <data name="IgRaiseQualityBody" xml:space="preserve"><value>In the last analysis the card ran at {0}% while holding {1} FPS. Raise the quality one level or switch DLSS/FSR to a prettier mode and analyze again: if FPS stays steady, keep it.</value></data>
+  <data name="PfPreviewFailed" xml:space="preserve"><value>I couldn't read Windows' current state, so nothing was changed. Try again; if it keeps happening, restart Lotus.</value></data>
+  <data name="PfPreviewSkipped" xml:space="preserve"><value>Some items couldn't be read right now and were left out of this list. Nothing in them will be changed.</value></data>
 </root>

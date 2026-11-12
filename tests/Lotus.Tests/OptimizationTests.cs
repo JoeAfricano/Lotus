@@ -58,9 +58,19 @@ public sealed class OptimizationTests : IDisposable
     {
         var store = Store; var action = new FaultAction(store); var e = new OptimizationEngine(store, action);
         var p = await e.AnalyzeAsync(); await Assert.ThrowsAsync<IOException>(() => e.ApplyAsync(p.Id, true));
-        Assert.Equal(OperationStage.Applying, store.Find(p.Id)!.Stage);
+        // The write threw after changing the system: the plan is settled from what is there now, never left "Applying"
+        // (that blocked every other change of the profile until a restart).
+        Assert.Equal(OperationStage.Applied, store.Find(p.Id)!.Stage);
         Assert.Equal(p.Desired, store.Detect());
         Assert.Equal(OperationStage.Applied, Assert.Single(await Engine.RecoverAsync()).Stage);
+    }
+    [Fact] public async Task FailedWriteDoesNotBlockTheNextChange()
+    {
+        var store = Store; var e = new OptimizationEngine(store, new DenyAction(store));
+        var p = await e.AnalyzeAsync(); await Assert.ThrowsAsync<UnauthorizedAccessException>(() => e.ApplyAsync(p.Id, true));
+        Assert.Equal(OperationStage.Planned, store.Find(p.Id)!.Stage); // nothing written: back to planned
+        var next = await Engine.AnalyzeAsync();                           // another change is not refused with "Recovery required"
+        Assert.Equal(OperationStage.Applied, (await Engine.ApplyAsync(next.Id, true)).Stage);
     }
     [Fact] public async Task SeparateInstancesCannotExecuteUnderSameLease()
     {
@@ -113,6 +123,14 @@ public sealed class OptimizationTests : IDisposable
         public ConfigurationState Plan(ConfigurationState state, Guid operation) => store.Plan(state, operation);
         public bool Exchange(ConfigurationState expected, ConfigurationState desired)
         { store.Exchange(expected, desired with { Value = "unexpected" }); return true; }
+    }
+    private sealed class DenyAction(DisposableOptimizationStore store) : IOptimizationAction
+    {
+        public ActionDefinition Definition => store.Definition;
+        public Eligibility Eligibility => store.Eligibility;
+        public ConfigurationState Detect() => store.Detect();
+        public ConfigurationState Plan(ConfigurationState state, Guid operation) => store.Plan(state, operation);
+        public bool Exchange(ConfigurationState expected, ConfigurationState desired) => throw new UnauthorizedAccessException("Denied before writing.");
     }
     private sealed class FaultAction(DisposableOptimizationStore store) : IOptimizationAction
     {
