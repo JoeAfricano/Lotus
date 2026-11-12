@@ -76,15 +76,16 @@
        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxLines="2" TextWrapping="Wrap" Height="40" ToolTipService.ToolTip="{Binding Name}"/>
        <TextBlock Text="{Binding ShaderLabel}" FontSize="11" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis" Margin="0,-6,0,0" Visibility="{Binding ShaderLabel, Converter={StaticResource PresenceVisibility}}" ToolTipService.ToolTip="{Binding ShaderLabel}"/>
        <Grid ColumnSpacing="6"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-        <Button Click="OnOpenTune" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="34" Padding="10,4" AutomationProperties.Name="{Binding OptimizeMenuLabel}" AutomationProperties.AutomationId="game-optimize">
-         <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding OptimizeMenuLabel}"/></StackPanel>
+        <!-- Text only: with the icon, "Otimizar" did not fit next to the two small buttons and was cut ("Otimiz"). -->
+        <Button Click="OnOpenTune" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="34" Padding="6,4" AutomationProperties.Name="{Binding OptimizeMenuLabel}" AutomationProperties.AutomationId="game-optimize">
+         <TextBlock Text="{Binding OptimizeMenuLabel}" TextTrimming="CharacterEllipsis"/>
         </Button>
         <Button Grid.Column="1" Click="OnDetails" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DetailsLabel}" AutomationProperties.Name="{Binding DetailsLabel}"><FontIcon Glyph="&#xE946;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/></Button>
         <Button Grid.Column="2" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.Name="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.AutomationId="game-more">
          <FontIcon Glyph="&#xE712;" FontSize="13"/>
-         <Button.Flyout><MenuFlyout Placement="BottomEdgeAlignedRight">
-          <MenuFlyoutItem Text="{Binding DataContext.Text[GmEdit], ElementName=Root}" Click="OnEditGame" AutomationProperties.AutomationId="game-edit"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE70F;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
-          <MenuFlyoutItem Text="{Binding DataContext.Text[GmRemove], ElementName=Root}" Click="OnRemoveGame" AutomationProperties.AutomationId="game-remove"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE74D;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
+         <Button.Flyout><MenuFlyout Placement="BottomEdgeAlignedRight" Opening="OnMoreOpening">
+          <MenuFlyoutItem Tag="GmEdit" Click="OnEditGame" AutomationProperties.AutomationId="game-edit"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE70F;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
+          <MenuFlyoutItem Tag="GmRemove" Click="OnRemoveGame" AutomationProperties.AutomationId="game-remove"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE74D;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
          </MenuFlyout></Button.Flyout>
         </Button>
        </Grid>

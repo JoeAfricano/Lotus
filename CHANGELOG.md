@@ -2,6 +2,16 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.4.1-alpha "Lotus" (12/11/2026)
+
+### Melhorado
+- **Otimizar este jogo abre no centro da tela.** A barra lateral virou uma janela grande, com a arte do jogo maior, textos e valores recomendados mais legíveis e duas colunas quando há espaço: configurações e dicas à esquerda; fluidez, última análise e ferramentas à direita. Em janelas pequenas, tudo fica numa coluna só.
+
+### Corrigido
+- **Menu "…" dos jogos sem nomes.** Em Meus Jogos, o menu mostrava só os ícones. Agora aparecem "Editar nome e capa…" e "Remover da lista".
+- **Botão "Otimizar" cortado** ("Otimiz") nos cartões de Meus Jogos.
+- **Textos que passavam da borda** na janela Otimizar (última análise e título das dicas).
+
 ## 1.4.0-alpha "Lotus" (12/11/2026)
 
 ### Novo

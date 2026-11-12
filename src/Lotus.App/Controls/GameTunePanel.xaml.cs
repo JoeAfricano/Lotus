@@ -36,7 +36,10 @@ public sealed partial class GameTunePanel : UserControl
         PrimaryAction.Visibility = SecondaryAction.Visibility = Footer.Visibility = Visibility.Collapsed;
         LoadArt(game);
         Visibility = Visibility.Visible;
-        Animate(Backdrop, "Opacity", 0, 1, 220); Animate(SheetShift, "X", 560, 0, 380, Motion.Decelerate());
+        var sb = new Storyboard();
+        Add(sb, Backdrop, "Opacity", 0, 1, 220); Add(sb, Sheet, "Opacity", 0, 1, 260);
+        Add(sb, SheetScale, "ScaleX", 0.96, 1, 340); Add(sb, SheetScale, "ScaleY", 0.96, 1, 340);
+        sb.Begin();
         DispatcherQueue.TryEnqueue(() => CloseButton.Focus(FocusState.Programmatic));
         if (MainWindow.Shell?.AdaptiveSync is null && XamlRoot is { } xamlRoot) await AskAdaptiveSyncAsync(xamlRoot, model);
         await Reload();
@@ -46,7 +49,8 @@ public sealed partial class GameTunePanel : UserControl
     {
         if (!IsOpen) return;
         var sb = new Storyboard();
-        Add(sb, Backdrop, "Opacity", 1, 0, 180); Add(sb, SheetShift, "X", 0, 560, 260, Motion.Accelerate());
+        Add(sb, Backdrop, "Opacity", 1, 0, 180); Add(sb, Sheet, "Opacity", 1, 0, 180, Motion.Accelerate());
+        Add(sb, SheetScale, "ScaleX", 1, 0.97, 200, Motion.Accelerate()); Add(sb, SheetScale, "ScaleY", 1, 0.97, 200, Motion.Accelerate());
         sb.Completed += (_, _) => { Visibility = Visibility.Collapsed; HeaderArt.Source = null; returnFocus?.Focus(FocusState.Programmatic); };
         sb.Begin();
     }
@@ -58,11 +62,14 @@ public sealed partial class GameTunePanel : UserControl
         Body.Children.Clear();
         if (tune is null) { Body.Children.Add(Caption(vm.Text["GsFailed"])); return; }
         BuildChips(tune);
-        Body.Children.Add(Section(vm.Text["TuneRecommended"], RecommendedTiles(tune)));
-        Body.Children.Add(Section(vm.Text["TuneTips"], TipList(tune)));
-        Body.Children.Add(Section(vm.Text["LlTitle"], LowLatency(tune)));
-        Body.Children.Add(Section(vm.Text["TuneLast"], LastCheck(tune)));
-        Body.Children.Add(Links());
+        // Two columns when there is room (settings and tips | fluidity, last check and tools); one column on small windows.
+        var left = new StackPanel { Spacing = 24 }; var right = new StackPanel { Spacing = 24 };
+        left.Children.Add(Section(vm.Text["TuneRecommended"], RecommendedTiles(tune)));
+        left.Children.Add(Section(vm.Text["TuneTips"], TipList(tune)));
+        right.Children.Add(Section(vm.Text["LlTitle"], LowLatency(tune)));
+        right.Children.Add(Section(vm.Text["TuneLast"], LastCheck(tune)));
+        right.Children.Add(Links());
+        Body.Children.Add(Columns(left, right));
         BuildFooter(tune);
         Motion.Settle(Body);
     }
@@ -70,13 +77,13 @@ public sealed partial class GameTunePanel : UserControl
     private void BuildChips(GamesViewModel.GameTune t)
     {
         Chips.Children.Clear();
-        if (t.TechChips.Count == 0) { Chips.Children.Add(new TextBlock { Text = vm!.Text["TuneNothingDetected"], FontSize = 12, Foreground = new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 0xE6, 0xD6, 0xDE)), TextWrapping = TextWrapping.Wrap, MaxWidth = 460 }); return; }
+        if (t.TechChips.Count == 0) { Chips.Children.Add(new TextBlock { Text = vm!.Text["TuneNothingDetected"], FontSize = 12, Foreground = new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 0xE6, 0xD6, 0xDE)), TextWrapping = TextWrapping.Wrap, MaxWidth = 900 }); return; }
         foreach (var chip in t.TechChips)
             Chips.Children.Add(new Border
             {
                 CornerRadius = new CornerRadius(10), Padding = new Thickness(10, 3, 10, 3), BorderThickness = new Thickness(1),
                 Background = new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(0x66, 0x2A, 0x14, 0x24)), BorderBrush = new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(0x88, 0xEE, 0xC1, 0xA8)),
-                Child = new TextBlock { Text = chip, FontSize = 12, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 0xEE, 0xC1, 0xA8)) },
+                Child = new TextBlock { Text = chip, FontSize = 13, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(255, 0xEE, 0xC1, 0xA8)) },
             });
     }
 
@@ -90,17 +97,18 @@ public sealed partial class GameTunePanel : UserControl
         var tiles = new[] { (text["TuneQuality"], text["GsTier" + r.Tier]), (text["TuneTextures"], text["GsTier" + r.TextureTier]), (text["TuneUpscaler"], upscale), (text["TuneCap"], $"{r.FpsCap} FPS") };
         for (var i = 0; i < tiles.Length; i++)
         {
-            var tile = new Border { Padding = new Thickness(14, 12, 14, 12), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1), Background = Res("CardBrush"), BorderBrush = Res("CardBorderBrush") };
+            var tile = new Border { Padding = new Thickness(16, 14, 16, 14), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1), Background = Res("CardBrush"), BorderBrush = Res("CardBorderBrush") };
             var s = new StackPanel { Spacing = 4 };
-            s.Children.Add(new TextBlock { Text = tiles[i].Item1.ToUpperInvariant(), FontSize = 10.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, CharacterSpacing = 80, Foreground = Res("RoseBrush") });
-            s.Children.Add(new TextBlock { Text = tiles[i].Item2, FontSize = 17, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
+            s.Children.Add(new TextBlock { Text = tiles[i].Item1.ToUpperInvariant(), FontSize = 11.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, CharacterSpacing = 80, Foreground = Res("RoseBrush") });
+            s.Children.Add(new TextBlock { Text = tiles[i].Item2, FontSize = 21, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
             tile.Child = s; Grid.SetColumn(tile, i % 2); Grid.SetRow(tile, i / 2); grid.Children.Add(tile);
         }
         // Lotus Score: the expected FPS of this game on this PC (from the player's own test), or an invitation to run it.
         var score = new Border { Padding = new Thickness(14, 10, 14, 10), CornerRadius = new CornerRadius(12), BorderThickness = new Thickness(1), Background = Res("AccentSoftBrush"), BorderBrush = Res("RoseBrush") };
-        var line = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
+        var line = new Grid { ColumnSpacing = 10 }; line.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); line.ColumnDefinitions.Add(new ColumnDefinition());
         line.Children.Add(new FontIcon { Glyph = "", FontSize = 16, Foreground = Res("RoseBrush"), VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, 2, 0, 0) });
-        line.Children.Add(new TextBlock { Text = t.ScoreLine ?? t.ScoreHint ?? text["TuneScoreHint"], FontSize = 12.5, FontWeight = t.ScoreLine is null ? Microsoft.UI.Text.FontWeights.Normal : Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, MaxWidth = 430 });
+        var scoreText = new TextBlock { Text = t.ScoreLine ?? t.ScoreHint ?? text["TuneScoreHint"], FontSize = 13.5, FontWeight = t.ScoreLine is null ? Microsoft.UI.Text.FontWeights.Normal : Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap };
+        Grid.SetColumn(scoreText, 1); line.Children.Add(scoreText);
         score.Child = line;
         var hwPanel = new StackPanel { Spacing = 8 }; hwPanel.Children.Add(score); hwPanel.Children.Add(Caption(t.Settings.Hardware));
         // The FreeSync/G-Sync answer the settings are based on, with a way to change it.
@@ -127,11 +135,12 @@ public sealed partial class GameTunePanel : UserControl
                 Child = new TextBlock { Text = n.ToString(), FontSize = 12.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = Res("MainTextBrush") } };
             var s = new StackPanel { Spacing = 3 }; Grid.SetColumn(s, 1);
             // Not a selection: every card looks the same; the first one only carries a small "biggest impact" label.
-            var titleRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
-            titleRow.Children.Add(new TextBlock { Text = title, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, MaxWidth = n == 1 ? 300 : 400 });
-            if (n == 1) titleRow.Children.Add(new Border { CornerRadius = new CornerRadius(8), Padding = new Thickness(8, 1, 8, 2), VerticalAlignment = VerticalAlignment.Top, Background = Res("AccentSoftBrush"), Child = new TextBlock { Text = vm!.Text["TuneTopTip"], FontSize = 11, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("RoseBrush") } });
+            var titleRow = new Grid { ColumnSpacing = 8 };
+            titleRow.ColumnDefinitions.Add(new ColumnDefinition()); titleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            titleRow.Children.Add(new TextBlock { Text = title, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
+            if (n == 1) { var topTip = new Border { HorizontalAlignment = HorizontalAlignment.Right, CornerRadius = new CornerRadius(8), Padding = new Thickness(8, 1, 8, 2), VerticalAlignment = VerticalAlignment.Top, Background = Res("AccentSoftBrush"), Child = new TextBlock { Text = vm!.Text["TuneTopTip"], FontSize = 11, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("RoseBrush") } }; Grid.SetColumn(topTip, 1); titleRow.Children.Add(topTip); }
             s.Children.Add(titleRow);
-            s.Children.Add(new TextBlock { Text = body, FontSize = 12.5, Opacity = 0.82, TextWrapping = TextWrapping.Wrap });
+            s.Children.Add(new TextBlock { Text = body, FontSize = 13.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap });
             row.Children.Add(badge); row.Children.Add(s);
             var card = new Border { Padding = new Thickness(14, 12, 14, 12), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1), Background = Res("CardBrush"), BorderBrush = Res("CardBorderBrush"), Child = row };
             list.Children.Add(card); n++;
@@ -159,7 +168,7 @@ public sealed partial class GameTunePanel : UserControl
         if (info is { On: true, Cap: { } w } && Math.Abs(w - cap) > 0.01) state += " · " + text.Format("LlCapUpdate", capText);
         head.Children.Add(new TextBlock { Text = state, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap });
         s.Children.Add(head);
-        s.Children.Add(new TextBlock { Text = text[r.AdaptiveSync ? "LlBodyVrr" : "LlBodyFixed"], FontSize = 12.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap });
+        s.Children.Add(new TextBlock { Text = text[r.AdaptiveSync ? "LlBodyVrr" : "LlBodyFixed"], FontSize = 13.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap });
         if (info?.State != "ok") { s.Children.Add(Caption(text[info?.State == "noRtss" ? "LlNoRtss" : "LlNoExe"])); return box; }
 
         var buttons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, Margin = new Thickness(0, 4, 0, 0) };
@@ -238,9 +247,12 @@ public sealed partial class GameTunePanel : UserControl
         var s = new StackPanel { Spacing = 6 }; box.Child = s;
         if (t.Last is not { } last)
         {
-            var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12 };
+            // A grid, not a horizontal stack: the text wraps at the column's width instead of running past it.
+            var row = new Grid { ColumnSpacing = 12 };
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); row.ColumnDefinitions.Add(new ColumnDefinition());
             row.Children.Add(new FontIcon { Glyph = "", FontSize = 20, Foreground = Res("RoseBrush"), VerticalAlignment = VerticalAlignment.Top });
-            row.Children.Add(new TextBlock { Text = text["TuneNoLast"], FontSize = 12.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap, MaxWidth = 420 });
+            var noLast = new TextBlock { Text = text["TuneNoLast"], FontSize = 13.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap };
+            Grid.SetColumn(noLast, 1); row.Children.Add(noLast);
             s.Children.Add(row);
             return box;
         }
@@ -310,14 +322,31 @@ public sealed partial class GameTunePanel : UserControl
         if (vm.Status is { Length: > 0 } status) Body.Children.Insert(0, new TextBlock { Text = status, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("GoldBrush"), TextWrapping = TextWrapping.Wrap });
     }
 
+    private static Grid Columns(FrameworkElement left, FrameworkElement right)
+    {
+        var grid = new Grid { ColumnSpacing = 32, RowSpacing = 24 };
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.1, GridUnitType.Star) }); grid.ColumnDefinitions.Add(new ColumnDefinition());
+        grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        grid.Children.Add(left); grid.Children.Add(right);
+        void Layout(double width)
+        {
+            var wide = width >= 820;
+            Grid.SetColumn(right, wide ? 1 : 0); Grid.SetRow(right, wide ? 0 : 1);
+            Grid.SetColumnSpan(left, wide ? 1 : 2); Grid.SetColumnSpan(right, wide ? 1 : 2);
+        }
+        grid.SizeChanged += (_, e) => Layout(e.NewSize.Width);
+        Layout(1000);
+        return grid;
+    }
+
     private UIElement Section(string title, UIElement content)
     {
         var s = new StackPanel { Spacing = 10 };
-        s.Children.Add(new TextBlock { Text = title, FontSize = 17, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        s.Children.Add(new TextBlock { Text = title, FontSize = 19, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         s.Children.Add(content);
         return s;
     }
-    private static TextBlock Caption(string text) => new() { Text = text, FontSize = 12, Opacity = 0.7, TextWrapping = TextWrapping.Wrap };
+    private static TextBlock Caption(string text) => new() { Text = text, FontSize = 12.5, Opacity = 0.72, TextWrapping = TextWrapping.Wrap };
     private static Brush Res(string key) => (Brush)Application.Current.Resources[key];
 
     private void LoadArt(GameCard game)
@@ -326,7 +355,7 @@ public sealed partial class GameTunePanel : UserControl
         var url = game.Game.Store == GameStores.Steam ? Lotus.Core.Catalog.CatalogText.Hero(game.Game.Id) : game.CoverPath;
         if (url is not null && Uri.TryCreate(url, UriKind.Absolute, out var u))
         {
-            var bmp = new BitmapImage(u) { DecodePixelWidth = 1080 };
+            var bmp = new BitmapImage(u) { DecodePixelWidth = 1600 };
             bmp.ImageOpened += (_, _) => Animate(HeaderArt, "Opacity", 0, 1, 400);
             HeaderArt.Source = bmp;
         }
