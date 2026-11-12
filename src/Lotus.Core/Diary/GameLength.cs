@@ -51,3 +51,27 @@ public sealed class DiaryLengths(GameDiary diary, IGameLengthSource source, Acti
 
     public static GameLength? Saved(DiaryEntry e) => e.BeatMain is > 0 || e.BeatPlus is > 0 || e.BeatAll is > 0 ? new(e.BeatMain, e.BeatPlus, e.BeatAll, e.BeatUrl) : null;
 }
+
+// Time to beat for any game page (Game list, Meus Jogos): what the diary already saved first, then one quiet lookup
+// per game per run (also remembered when the site does not know it). A game that is in the diary keeps the answer.
+public sealed class GameLengthLookup(GameDiary diary, IGameLengthSource source, Action<Exception> log)
+{
+    private readonly Dictionary<string, GameLength?> seen = new(StringComparer.OrdinalIgnoreCase);
+
+    public async Task<GameLength?> FindAsync(string key, string name, string? steamAppId, CancellationToken cancel = default)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return null;
+        var entry = diary.Get(key);
+        if (entry is not null && DiaryLengths.Saved(entry) is { } saved) return saved;
+        var memo = steamAppId is { Length: > 0 } ? "steam:" + steamAppId : "name:" + DiaryArt.Normalize(name);
+        lock (seen) if (seen.TryGetValue(memo, out var known)) return known;
+        try
+        {
+            var length = await source.FindAsync(name, steamAppId, cancel);
+            lock (seen) seen[memo] = length;
+            if (entry is not null) diary.SetLength(key, length);
+            return length;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); return null; } // offline: asked again next time
+    }
+}

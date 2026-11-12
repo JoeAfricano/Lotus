@@ -54,6 +54,35 @@ public sealed class GameDetailsViewModel(IGameCatalog catalog, ITextCatalog text
         };
     }
     public bool HasTitle => Title.Length > 0;
+
+    // "Tempo para zerar" (HowLongToBeat), looked up after the page opens; the card stays hidden when nothing is known.
+    public Diary.GameLengthLookup? Lengths { get; set; }
+    public Diary.GameLength? Length { get; private set; }
+    public bool HasLength => Length is { HasAny: true };
+    public string LengthMain => Length is { } l ? LengthHours(l.MainMinutes ?? l.PlusMinutes ?? l.AllMinutes) : "";
+    public string LengthMainLabel => Length switch { { MainMinutes: > 0 } => Text["GiBeatStory"], { PlusMinutes: > 0 } => Text["GiBeatPlus"], _ => Text["GiBeatAll"] };
+    public string LengthMore => Length is not { } l ? "" : string.Join(" · ", new[]
+    {
+        l.MainMinutes is > 0 && l.PlusMinutes is > 0 ? Text.Format("DyBeatPlus", LengthHours(l.PlusMinutes)) : null,
+        (l.MainMinutes is > 0 || l.PlusMinutes is > 0) && l.AllMinutes is > 0 ? Text.Format("DyBeatAll", LengthHours(l.AllMinutes)) : null,
+    }.Where(x => x is not null));
+    public string? LengthUrl => Length?.Url;
+    private static string LengthHours(int? minutes) => minutes is > 0 and var m ? Diary.DiaryText.Hours(m.Value) : "";
+
+    private async Task LoadLengthAsync(CancellationToken token)
+    {
+        if (Lengths is not { } lengths || !HasTitle) return;
+        var entry = ToDiaryEntry();
+        try
+        {
+            var length = await lengths.FindAsync(entry.Key, entry.Name, entry.AppId, token);
+            if (token.IsCancellationRequested) return;
+            Length = length;
+            foreach (var n in new[] { nameof(Length), nameof(HasLength), nameof(LengthMain), nameof(LengthMainLabel), nameof(LengthMore), nameof(LengthUrl) }) OnPropertyChanged(n);
+        }
+        catch (OperationCanceledException) { }
+    }
+
     public string SourceText => Info is null ? "" : Text.Format("GiSource", Info.Source);
 
     // Set by Home's "Continue playing" card: Meus Jogos opens straight on this game.
@@ -64,13 +93,14 @@ public sealed class GameDetailsViewModel(IGameCatalog catalog, ITextCatalog text
     private async Task Load(string title, GameEntry? installed, string? art, Func<CancellationToken, Task<GameInfo?>> fetch)
     {
         cts?.Cancel(); cts = new CancellationTokenSource(); var token = cts.Token;
-        Title = title; Installed = installed; FallbackArt = art; Info = null; Loading = true; Notify();
+        Title = title; Installed = installed; FallbackArt = art; Info = null; Length = null; Loading = true; Notify();
         try { var info = await fetch(token); if (token.IsCancellationRequested) return; Info = info; }
         catch (OperationCanceledException) { return; }
         catch (Exception ex) { log(ex); }
         Loading = false;
         if (Info is { } i && Title.Length == 0) Title = i.Name;
         Notify();
+        await LoadLengthAsync(token);
     }
 
     public static string Compact(long n) => n >= 1_000_000 ? (n / 1_000_000.0).ToString("0.#") + " mi" : n >= 1000 ? (n / 1000.0).ToString("0.#") + " mil" : n.ToString();
