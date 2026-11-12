@@ -17,6 +17,16 @@ public sealed partial class GameDetailView : UserControl
     public GameDetailView()
     {
         InitializeComponent();
+        // The screenshot strip scrolls sideways only with Shift (or touch/drag); a plain wheel scrolls the page, which
+        // the strip used to swallow when the mouse happened to be over it.
+        Shots.AddHandler(PointerWheelChangedEvent, new Microsoft.UI.Xaml.Input.PointerEventHandler((_, e) =>
+        {
+            var point = e.GetCurrentPoint(Shots);
+            if ((e.KeyModifiers & Windows.System.VirtualKeyModifiers.Shift) != 0 || point.Properties.IsHorizontalMouseWheel) return;
+            DependencyObject? up = VisualTreeHelper.GetParent(Shots);
+            while (up is not null and not ScrollViewer) up = VisualTreeHelper.GetParent(up);
+            if (up is ScrollViewer page) { page.ChangeView(null, page.VerticalOffset - point.Properties.MouseWheelDelta, null, true); e.Handled = true; }
+        }), true);
         // Repaint the diary buttons when the diary changes (saved from the sheet, removed, added elsewhere).
         EventHandler onDiary = (_, _) => DispatcherQueue.TryEnqueue(PaintDiary);
         Loaded += (_, _) => { if (MainWindow.Shell is { } s) { s.Diary.Changed -= onDiary; s.Diary.Changed += onDiary; s.Trophies.Changed -= onDiary; s.Trophies.Changed += onDiary; } PaintDiary(); };

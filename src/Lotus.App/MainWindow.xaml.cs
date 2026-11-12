@@ -484,6 +484,11 @@ public sealed partial class MainWindow : Window
         ViewModel.NavigateCommand.Execute(id);
         if (narrow == true && Navigation.PaneDisplayMode != NavigationViewPaneDisplayMode.Top) Navigation.IsPaneOpen = false;
     }
+    // The already selected section raises no SelectionChanged: a click on it from a game page returns to the list.
+    private void OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+    {
+        if (args.InvokedItemContainer is NavigationViewItem { Tag: string id } && id == ViewModel.SelectedSection.Id && ContentFrame.Content is SectionPage page) page.BackToList();
+    }
     private void OnRouteChanged(object? sender, PropertyChangedEventArgs args)
     {
         if (args.PropertyName == nameof(ShellViewModel.CurrentRoute)) ShowRoute();

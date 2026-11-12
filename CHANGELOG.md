@@ -2,7 +2,7 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
-## 1.5.1-alpha "Lotus" (em preparo)
+## 1.5.1-alpha "Lotus" (12/11/2026)
 
 ### Melhorado
 - **Resposta (Reflex) em monitor sem FreeSync/G-Sync.** Em placa NVIDIA, o Ligar passa a usar o Reflex com V-Sync quando o jogo não tem folga: no teste com o Black Myth: Wukong Benchmark (RTX 5060, 75 Hz), o atraso caiu de 30 para 27 ms com a mesma firmeza da Fluidez.
@@ -13,6 +13,9 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 ### Corrigido
 - **Acentos no overlay.** O texto da análise no jogo saía como "AN :LISE" e "estvel". Agora sai sem acentos e legível.
 - **Avisos presos na tela**, como "Abrindo…" depois que o jogo fechou.
+- **O Lotus volta para a frente quando o jogo fecha.** Antes ele voltava para trás da Steam, e o resultado da análise e o "Onde eu parei?" ficavam escondidos.
+- **Galeria de imagens da página do jogo** não prende mais a rolagem da página (para rolar as imagens, use Shift + roda do mouse).
+- **Clicar em Meus Jogos** dentro da página de um jogo volta para a lista.
 - Textos em Configurações e Otimizar que apontavam para um arquivo de programador ou para um botão que não existe no Início; o pedido de "teste completo do Lotus Score" aparecia mesmo com o teste feito.
 
 ## 1.5.0-alpha "Lotus" (12/11/2026)

@@ -19,7 +19,7 @@
    <StackPanel Orientation="Horizontal" Spacing="7"><FontIcon x:Name="GameListIcon" Glyph="&#xE8B1;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[gamelistTitle]}" FontSize="12.5" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/></StackPanel>
   </Button>
   <InfoBar x:Name="PreferenceWarning" Grid.Row="1" Severity="Warning" IsOpen="False" IsClosable="True" Margin="12,0,12,8" CornerRadius="10"/>
-  <NavigationView Grid.Row="2" x:Name="Navigation" Background="Transparent" IsBackButtonVisible="Collapsed" IsSettingsVisible="False" PaneDisplayMode="Left" OpenPaneLength="232" CompactPaneLength="60" IsPaneToggleButtonVisible="True" SelectionChanged="OnSelectionChanged" IsPaneOpen="True" IsTitleBarAutoPaddingEnabled="False" AutomationProperties.Name="{Binding Text[Navigation]}">
+  <NavigationView Grid.Row="2" x:Name="Navigation" Background="Transparent" IsBackButtonVisible="Collapsed" IsSettingsVisible="False" PaneDisplayMode="Left" OpenPaneLength="232" CompactPaneLength="60" IsPaneToggleButtonVisible="True" SelectionChanged="OnSelectionChanged" ItemInvoked="OnItemInvoked" IsPaneOpen="True" IsTitleBarAutoPaddingEnabled="False" AutomationProperties.Name="{Binding Text[Navigation]}">
    <NavigationView.PaneHeader>
     <StackPanel x:Name="BrandHeader" Orientation="Horizontal" Spacing="12" Margin="14,4,12,20" Visibility="Collapsed">
      <Border Width="48" Height="48" CornerRadius="14" Background="{StaticResource BrandSoftBrush}">
