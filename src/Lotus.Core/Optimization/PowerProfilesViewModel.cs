@@ -183,6 +183,8 @@ public sealed class PowerProfilesViewModel : ObservableObject
         // The previous result belonged to the other profile: replace it with a "selected" hint (no animation).
         ResultTitle = ""; ProfileStatus = Text.Format("PfSwitched", ProfileTitle);
         foreach (var n in new[] { nameof(ResultTitle), nameof(ProfileStatus), nameof(HasResult) }) OnPropertyChanged(n);
+        // Windows may have changed since the last read (Settings, another app): the summary reflects it now.
+        if (featureSource is not null) try { features = featureSource.Read(); } catch (Exception ex) { log(ex); }
         BuildFeatureRows();
     }
     private Task SaveAsync()

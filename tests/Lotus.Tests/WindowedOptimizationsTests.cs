@@ -156,6 +156,15 @@ public sealed class WindowedOptimizationsTests : IDisposable
         Assert.False(vm.CanUndoProfile);
     }
 
+    [Fact] public async Task SwitchingProfileRereadsWindowsFeatures()
+    {
+        var power = new MutablePower(); var dx = new FakeDx("SwapEffectUpgradeEnable=1;"); var vm = ProfileVm(power, dx);
+        await vm.RefreshAsync(); Assert.False(vm.Features.Single().NeedsAttention);
+        dx.Value = "SwapEffectUpgradeEnable=0;"; // turned off outside Lotus
+        vm.SelectProfileCommand.Execute("game");
+        Assert.True(vm.Features.Single().NeedsAttention);
+    }
+
     [Fact] public async Task OneClickProfileNeverOverwritesExternalChanges()
     {
         var power = new MutablePower(); var dx = new FakeDx(); var vm = ProfileVm(power, dx);
