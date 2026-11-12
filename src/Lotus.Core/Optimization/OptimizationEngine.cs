@@ -9,6 +9,8 @@ public sealed record OptimizationPlan(Guid Id, string ActionId, ConfigurationSta
     OperationStage Stage, DateTimeOffset CreatedUtc, ConfigurationState? RestoreTarget = null)
 {
     public string? ProfileId { get; init; }
+    // Set on every plan of one profile application, so "Undo profile" restores exactly that application.
+    public Guid? Batch { get; init; }
 }
 public interface IOptimizationAction
 {
@@ -37,14 +39,14 @@ public sealed class OptimizationEngine(IOptimizationJournal journal, IOptimizati
 {
     public ActionDefinition Definition => action.Definition;
     private Task<T> Locked<T>(Func<T> work) => Task.Run(() => { using var lease = journal.Acquire(); return work(); });
-    public Task<OptimizationPlan> AnalyzeAsync(string? desiredState = null, string? profileId = null) => Locked(() =>
+    public Task<OptimizationPlan> AnalyzeAsync(string? desiredState = null, string? profileId = null, Guid? batch = null) => Locked(() =>
     {
         if (action.Eligibility != Eligibility.Eligible) throw new InvalidOperationException("Unsupported action.");
         if (journal.List().Any(p => p.Stage is OperationStage.Applying or OperationStage.Reverting))
             throw new InvalidOperationException("Recovery required.");
         var before = action.Detect(); var id = Guid.NewGuid(); var desired = action.Plan(before, id, desiredState);
         var plan = new OptimizationPlan(id, action.Definition.Id, before, desired,
-            desired == before ? OperationStage.NoChange : OperationStage.Planned, DateTimeOffset.UtcNow) { ProfileId = profileId };
+            desired == before ? OperationStage.NoChange : OperationStage.Planned, DateTimeOffset.UtcNow) { ProfileId = profileId, Batch = batch };
         journal.Save(plan); return plan;
     });
     public Task<OptimizationPlan> ApplyAsync(Guid id, bool confirmed) => Locked(() =>

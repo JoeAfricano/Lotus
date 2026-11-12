@@ -19,6 +19,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
     // Feature actions keyed by feature id (windowed-optimizations, background-recording, gamemode, display-refresh...).
     private readonly Dictionary<string, OptimizationEngine> featureEngines = new();
     private readonly Dictionary<string, OptimizationPlan?> featureApplied = new();
+    private readonly Dictionary<string, IReadOnlyList<OptimizationPlan>> featurePlans = new();
     private readonly IStartupApprovalStore? approval;
     private readonly Func<IOptimizationAction, OptimizationEngine>? engineFactory;
     private readonly Action<Exception> log;
@@ -49,8 +50,17 @@ public sealed class PowerProfilesViewModel : ObservableObject
         foreach (var n in new[] { nameof(ResultTitle), nameof(ResultOk), nameof(ProfileStatus), nameof(HasResult) }) OnPropertyChanged(n);
         ResultShown?.Invoke(this, EventArgs.Empty);
     }
-    public bool CanUndoProfile => !busy && (LastPowerApplied is not null || featureApplied.Values.Any(p => p is not null));
-    private OptimizationPlan? LastPowerApplied => LastApplied(Operations.Select(o => o.Plan).ToList());
+    public bool CanUndoProfile => !busy && LastBatch().Count > 0;
+    // The latest profile application still in effect: only its plans are undone, never older or individual changes.
+    private List<(OptimizationEngine Engine, OptimizationPlan Plan)> LastBatch()
+    {
+        var all = Operations.Select(o => (Engine: engine, o.Plan))
+            .Concat(featurePlans.SelectMany(f => f.Value.Select(p => (Engine: featureEngines[f.Key], Plan: p))))
+            .Where(x => x.Plan.Batch is not null && x.Plan.Stage == OperationStage.Applied).ToList();
+        if (all.Count == 0) return [];
+        var batch = all.MaxBy(x => x.Plan.CreatedUtc).Plan.Batch;
+        return all.Where(x => x.Plan.Batch == batch).ToList();
+    }
     public bool CanEdit => !busy;
     public bool IsGame => profileId == "game";
     public bool IsDaily => profileId == "daily";
@@ -157,7 +167,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
         active = data.Active; ac = data.Ac == true; profiles.Clear();
         foreach (var p in data.Profiles) profiles[p.Id] = p;
         if (featureSource is not null) features = await Task.Run(featureSource.Read);
-        foreach (var (id, featureEngine) in this.featureEngines) featureApplied[id] = LastApplied(await featureEngine.RecoverAsync());
+        foreach (var (id, featureEngine) in this.featureEngines) await ReadFeature(id, featureEngine);
         scheme = null; enabled = true;
         SelectProfile(profileId); await LoadOperations(null);
     });
@@ -205,13 +215,13 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public async Task<IReadOnlyList<PlannedChange>> PreviewProfileAsync()
     {
         var changes = new List<PlannedChange>();
-        PreviewFailed = false; PreviewSkipped = 0;
+        PreviewFailed = false; PreviewSkipped = 0; var batch = Guid.NewGuid();
         await Run(async () =>
         {
             await engine.RecoverAsync();
             if (PowerEnabled && SelectedScheme is not null)
             {
-                var p = await engine.AnalyzeAsync(SelectedScheme.Id.ToString("D"), profileId);
+                var p = await engine.AnalyzeAsync(SelectedScheme.Id.ToString("D"), profileId, batch);
                 changes.Add(new(Text["PfRowPower"], Name(p.Before.Value), Name(p.Desired.Value), p.Stage == OperationStage.NoChange, engine, p));
             }
             // Every feature action the profile recommends (windowed games, background recording, Game Mode, display refresh...).
@@ -221,7 +231,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
                 try
                 {
                     await featureEngine.RecoverAsync();
-                    var p = await featureEngine.AnalyzeAsync(null, profileId);
+                    var p = await featureEngine.AnalyzeAsync(null, profileId, batch);
                     changes.Add(new(Text["FeatName" + id], FeatureLabel(id, p.Before.Value), FeatureLabel(id, p.Desired.Value), p.Stage == OperationStage.NoChange, featureEngine, p));
                 }
                 catch (InvalidOperationException ex) { log(ex); PreviewSkipped++; } // Unsupported here or pending recovery: skipped, never forced.
@@ -251,10 +261,10 @@ public sealed class PowerProfilesViewModel : ObservableObject
         await AfterProfileChange();
         if (failed > 0) ShowResult("PfResultPartial", false, Text.Format("PfAppliedWithConflicts", applied, failed));
         else if (applied == 0) ShowResult("PfResultReady", true, Text["PfPreviewNothing"]);
-        else ShowResult("PfResultApplied", true, Text.Format("PfApplied", applied));
+        else ShowResult("PfResultApplied", true, applied == 1 ? Text["PfApplied1"] : Text.Format("PfApplied", applied));
     });
 
-    // Restores the latest Lotus change of each action, only where nothing changed it afterwards.
+    // Restores what the latest profile application changed, only where nothing changed it afterwards.
     public Task UndoProfileAsync() => Run(async () =>
     {
         int restored = 0, failed = 0;
@@ -263,13 +273,11 @@ public sealed class PowerProfilesViewModel : ObservableObject
             try { if ((await e.RevertAsync(id, confirmed: true)).Stage == OperationStage.Reverted) restored++; else failed++; }
             catch (Exception ex) when (ex is InvalidOperationException or Win32Exception or UnauthorizedAccessException or IOException) { log(ex); failed++; }
         }
-        if (LastPowerApplied is { } power) await Revert(engine, power.Id);
-        foreach (var (id, featureEngine) in featureEngines)
-            if (featureApplied.GetValueOrDefault(id) is { } plan) await Revert(featureEngine, plan.Id);
+        foreach (var (e, plan) in LastBatch()) await Revert(e, plan.Id);
         await AfterProfileChange();
         if (failed > 0) ShowResult("PfResultUndoPartial", false, Text.Format("PfUndoConflict", restored, failed));
         else if (restored == 0) ShowResult("PfResultNone", true, Text["PfNothingToUndo"]);
-        else ShowResult("PfResultUndone", true, Text.Format("PfUndone", restored));
+        else ShowResult("PfResultUndone", true, restored == 1 ? Text["PfUndone1"] : Text.Format("PfUndone", restored));
     });
 
     private async Task AfterProfileChange()
@@ -279,7 +287,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
     }
     private async Task RefreshFeatureState()
     {
-        foreach (var (id, featureEngine) in featureEngines) featureApplied[id] = LastApplied(await featureEngine.RecoverAsync());
+        foreach (var (id, featureEngine) in featureEngines) await ReadFeature(id, featureEngine);
         if (featureSource is not null) features = await Task.Run(featureSource.Read);
         BuildFeatureRows();
     }
@@ -289,7 +297,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public bool IsFeatureApplied(string id) => featureApplied.GetValueOrDefault(id) is not null;
     public async Task RefreshFeaturesAsync()
     {
-        foreach (var (id, featureEngine) in featureEngines) featureApplied[id] = LastApplied(await featureEngine.RecoverAsync());
+        foreach (var (id, featureEngine) in featureEngines) await ReadFeature(id, featureEngine);
     }
     public string FeatureMessage => FeatureStatus;
 
@@ -314,6 +322,11 @@ public sealed class PowerProfilesViewModel : ObservableObject
         finally { await RefreshFeatureState(); }
         FeatureStatus = Text.Format(key, Text["FeatName" + id]); OnPropertyChanged(nameof(FeatureStatus));
     });
+    private async Task ReadFeature(string id, OptimizationEngine featureEngine)
+    {
+        var plans = await featureEngine.RecoverAsync();
+        featurePlans[id] = plans; featureApplied[id] = LastApplied(plans);
+    }
     private static OptimizationPlan? LastApplied(IReadOnlyList<OptimizationPlan> plans) =>
         plans.Where(p => p.Stage == OperationStage.Applied).OrderByDescending(p => p.CreatedUtc).FirstOrDefault();
     // Rows reflect the selected profile: what it recommends and whether the current state differs.

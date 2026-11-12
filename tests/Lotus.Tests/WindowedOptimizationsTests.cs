@@ -139,6 +139,23 @@ public sealed class WindowedOptimizationsTests : IDisposable
         Assert.Equal(ProfileSuggestions.Balanced, power.Current); Assert.Equal("AutoHDREnable=1;", dx.Value); Assert.False(vm.CanUndoProfile);
     }
 
+    [Fact] public async Task UndoProfileRestoresOnlyTheLatestApplication()
+    {
+        // An older change still recorded as applied (power plan) must survive undoing a profile that did not make it.
+        var power = new MutablePower(); var dx = new FakeDx("AutoHDREnable=1;");
+        var old = new OptimizationEngine(Journal, new PowerSchemeAction(power));
+        await old.ApplyAsync((await old.AnalyzeAsync(ProfileSuggestions.HighPerformance.ToString("D"), "custom")).Id, true);
+        var vm = ProfileVm(power, dx); await vm.RefreshAsync();
+        Assert.False(vm.CanUndoProfile); // nothing applied by a profile yet
+        var changes = await vm.PreviewProfileAsync();
+        Assert.Equal(1, changes.Count(c => !c.AlreadyApplied));
+        await vm.ApplyProfileAsync(changes); Assert.Equal(vm.Text["PfApplied1"], vm.ProfileStatus);
+        await vm.UndoProfileAsync();
+        Assert.Equal(vm.Text["PfUndone1"], vm.ProfileStatus);
+        Assert.Equal("AutoHDREnable=1;", dx.Value); Assert.Equal(ProfileSuggestions.HighPerformance, power.Current);
+        Assert.False(vm.CanUndoProfile);
+    }
+
     [Fact] public async Task OneClickProfileNeverOverwritesExternalChanges()
     {
         var power = new MutablePower(); var dx = new FakeDx(); var vm = ProfileVm(power, dx);
