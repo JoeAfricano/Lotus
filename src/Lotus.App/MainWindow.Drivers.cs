@@ -9,7 +9,7 @@ public sealed partial class MainWindow
     private void StartDriverNotice()
     {
         if (!preferences.Current.DriverNotices) return;
-        var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromMinutes(3); timer.IsRepeating = false;
+        var timer = StartupTimer(TimeSpan.FromMinutes(3));
         timer.Tick += async (_, _) =>
         {
             try

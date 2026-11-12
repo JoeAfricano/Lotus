@@ -50,6 +50,16 @@ public sealed partial class MainWindow
         catch (Exception ex) { Serilog.Log.Warning(ex, "Play session"); }
     }
 
+    // One-shot jobs a little after start. The timers are kept here: a timer nothing refers to can be collected before
+    // it fires (the cover repair at 8 s never ran on a real PC).
+    private readonly List<Microsoft.UI.Dispatching.DispatcherQueueTimer> startupTimers = [];
+    private Microsoft.UI.Dispatching.DispatcherQueueTimer StartupTimer(TimeSpan delay)
+    {
+        var timer = DispatcherQueue.CreateTimer(); timer.Interval = delay; timer.IsRepeating = false;
+        startupTimers.Add(timer);
+        return timer;
+    }
+
     // Diary covers that never showed (other launchers, games added by hand, newer Steam art): repaired once, quietly,
     // a little after start. Only the pictures change; Home, the diary and the player panel repaint through Changed.
     private Lotus.Core.Diary.DiaryArt? diaryArt;
@@ -61,7 +71,7 @@ public sealed partial class MainWindow
             LibraryCover = key => portsCovers.GetValueOrDefault(key)
                 ?? games.InstalledGames().FirstOrDefault(g => string.Equals(Lotus.Core.Diary.DiaryGames.KeyFor(g), key, StringComparison.OrdinalIgnoreCase))?.CoverPath,
         };
-        var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromSeconds(8); timer.IsRepeating = false;
+        var timer = StartupTimer(TimeSpan.FromSeconds(8));
         timer.Tick += async (_, _) =>
         {
             if (!initialized || diaryArt is not { } art) return;
@@ -78,7 +88,7 @@ public sealed partial class MainWindow
     private void StartGameLengths()
     {
         diaryLengths = new Lotus.Core.Diary.DiaryLengths(diary, gameLengths, ex => Serilog.Log.Warning(ex, "Game length"));
-        var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromSeconds(45); timer.IsRepeating = false;
+        var timer = StartupTimer(TimeSpan.FromSeconds(45));
         timer.Tick += async (_, _) =>
         {
             if (!initialized || diaryLengths is not { } lengths) return;
@@ -128,7 +138,7 @@ public sealed partial class MainWindow
     // "Quero jogar" deals: checked a little after start (prices are cached for hours); new ones get a quiet tray note.
     private void StartDealsCheck()
     {
-        var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromSeconds(25); timer.IsRepeating = false;
+        var timer = StartupTimer(TimeSpan.FromSeconds(25));
         timer.Tick += async (_, _) =>
         {
             if (!initialized || diaryPage.Deals is not { } deals) return;
