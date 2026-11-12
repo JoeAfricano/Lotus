@@ -3165,5 +3165,5 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="WhyLatency" xml:space="preserve"><value>atraso do PC {0:0} ms</value></data>
   <data name="OsdLatency" xml:space="preserve"><value>  ·  atraso {0:0} ms</value></data>
   <data name="IgFrameGenOffTitle" xml:space="preserve"><value>Deixe a geração de quadros desligada</value></data>
-  <data name="IgFrameGenOffBody" xml:space="preserve"><value>Neste monitor sem FreeSync/G-Sync, a geração de quadros só chega à taxa do monitor partindo da metade dela, e o comando responde no ritmo dos quadros reais. A resposta piora, então deixe desligada.</value></data>
+  <data name="IgFrameGenOffBody" xml:space="preserve"><value>A geração de quadros chega à taxa do monitor partindo da metade dela, e o comando responde no ritmo dos quadros reais. Ela só compensa com FreeSync/G-Sync em monitor de 120 Hz ou mais. Neste monitor, o atraso aumenta e as quedas ficam piores, então deixe desligada e, se faltar FPS, baixe um pouco a qualidade.</value></data>
 </root>

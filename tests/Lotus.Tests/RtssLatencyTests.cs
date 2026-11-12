@@ -60,8 +60,10 @@ public sealed class RtssLatencyTests(ITestOutputHelper output)
     }
 
     [Theory]
-    [InlineData(true, true, false, 75, null, null, "responsive", "LlWhyFrameGen")]
-    [InlineData(true, false, false, 75, null, null, null, "LlFrameGenOther")]
+    [InlineData(true, true, true, 144, null, null, "responsive", "LlWhyFrameGen")]
+    [InlineData(true, false, true, 144, null, null, null, "LlFrameGenOther")]
+    [InlineData(true, true, false, 75, null, null, "fluid", "LlWhyFluidMeasure")]   // fixed 75 Hz: frame generation should be off, normal pick
+    [InlineData(true, true, true, 75, null, null, "responsive", "LlWhyVrrReflex")]   // VRR but slow monitor: same
     [InlineData(false, true, true, 144, null, null, "responsive", "LlWhyVrrReflex")]
     [InlineData(false, false, true, 144, null, null, "fluid", "LlWhyVrrFluid")]
     [InlineData(false, true, false, 75, 74.0, 60.0, "scanline", "LlWhyScanline")]
@@ -73,7 +75,7 @@ public sealed class RtssLatencyTests(ITestOutputHelper output)
     {
         var info = new GamesViewModel.LowLatencyInfo("ok", "game.exe", null, nvidia, FrameGen: frameGen, Api: "Direct3D 12");
         Assert.Equal((mode, why), LimiterChoice.Pick(info, vrr, hz, fps, busy));
-        Assert.Equal((null, "LlFrameGenOther"), LimiterChoice.Pick(info with { FrameGen = true, Api = "Vulkan" }, vrr, hz, fps, busy)); // Reflex injection is D3D only
+        if (frameGen && vrr && hz >= 120) Assert.Equal((null, "LlFrameGenOther"), LimiterChoice.Pick(info with { Api = "Vulkan" }, vrr, hz, fps, busy)); // Reflex injection is D3D only
     }
 
     [Fact] public async Task PipeKeepsOnlyTheMeasuredGamesFrames()
@@ -118,7 +120,8 @@ public sealed class RtssLatencyTests(ITestOutputHelper output)
         if (target is null) { output.WriteLine("no target process"); return; }
         try
         {
-            await Task.Delay(TimeSpan.FromSeconds(8)); // RivaTuner hooks it and the hook connects
+            // RivaTuner hooks it and the hook connects; LOTUS_LIVE_DELAY waits longer (a benchmark's menu before the run).
+            await Task.Delay(TimeSpan.FromSeconds(int.TryParse(Environment.GetEnvironmentVariable("LOTUS_LIVE_DELAY"), out var d) ? d : 8));
             var pid = target.Id;
             var seconds = int.TryParse(Environment.GetEnvironmentVariable("LOTUS_LIVE_SECONDS"), out var s) ? s : 10;
             output.WriteLine($"pid {pid}; tracked: {RtssSharedMemory.IsTracking(pid)}; pipe clients: {listener.Connected}; reflex now: {RtssSharedMemory.ReadReflex(pid)}");

@@ -60,11 +60,12 @@ public static class InGameAdvisor
             else if (tech.Xess) tips.Add(new("IgXess", [mode.ToString()], gpuBound ? 90 : 70));
             else if (tech.Dlss && !rtx) tips.Add(new("IgDlssNoRtx", [], 40));
         }
-        // Frame generation needs VRR: on a fixed-rate monitor with a locked cap it would start from half the cap (below the
-        // ~50 FPS it needs) and many games grey it out. Suggested only when it can really be used.
-        if (tech.FrameGen && frameGenGpu && r.AdaptiveSync && goal != "competitive") tips.Add(new("IgFrameGen", [], gpuBound ? 85 : 55));
-        // On a fixed-rate monitor, frame generation reaches the refresh rate from half of it and input answers at that half.
-        else if (tech.FrameGen && !r.AdaptiveSync) tips.Add(new("IgFrameGenOff", [], 80));
+        // Frame generation reaches the cap from half of it, and input answers at the pace of the real half. It pays off only
+        // with VRR on a fast monitor (real frames around 60 or more). Measured on an RTX 5060 at 75 Hz without VRR (Black
+        // Myth: Wukong benchmark, 12/11/2026): PC latency 50 ms off vs 81 ms on, 1% low 51 vs 37 FPS.
+        var frameGenFits = LimiterChoice.FrameGenFits(r.AdaptiveSync, pc.RefreshHz);
+        if (tech.FrameGen && frameGenGpu && frameGenFits && goal != "competitive") tips.Add(new("IgFrameGen", [], gpuBound ? 85 : 55));
+        else if (tech.FrameGen && !frameGenFits) tips.Add(new("IgFrameGenOff", [], 80));
         // Bottleneck-specific settings.
         if (gpuBound) tips.Add(new("IgGpuHeavy", [], 90));
         if (cpuBound) tips.Add(new("IgCpuHeavy", [], 90));

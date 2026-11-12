@@ -3165,5 +3165,5 @@ Your games and Windows are not changed.</value></data>
   <data name="WhyLatency" xml:space="preserve"><value>PC latency {0:0} ms</value></data>
   <data name="OsdLatency" xml:space="preserve"><value>  ·  latency {0:0} ms</value></data>
   <data name="IgFrameGenOffTitle" xml:space="preserve"><value>Leave frame generation off</value></data>
-  <data name="IgFrameGenOffBody" xml:space="preserve"><value>On this monitor without FreeSync/G-Sync, frame generation reaches the refresh rate starting from half of it, and input answers at the pace of the real frames. Response gets worse, so leave it off.</value></data>
+  <data name="IgFrameGenOffBody" xml:space="preserve"><value>Frame generation reaches the refresh rate starting from half of it, and input answers at the pace of the real frames. It only pays off with FreeSync/G-Sync on a 120 Hz or faster monitor. On this monitor latency goes up and drops get worse, so leave it off and, if FPS falls short, lower the quality a little.</value></data>
 </root>

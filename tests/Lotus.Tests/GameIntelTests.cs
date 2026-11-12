@@ -22,7 +22,10 @@ public sealed class GameIntelTests
         Assert.Equal("IgDlss", dlss[0].Key);                                     // RTX + DLSS in the game: DLSS first, not FSR
         Assert.DoesNotContain(dlss, t => t.Key == "IgFsr");
         Assert.DoesNotContain(dlss, t => t.Key == "IgFrameGen");                 // fixed-rate monitor: frame generation is not offered
-        Assert.Contains(InGameAdvisor.Advise(new(true, true, true, false, null), SettingsAdvisor.Recommend(Rtx5060, "balanced", adaptiveSync: true), Rtx5060), t => t.Key == "IgFrameGen"); // VRR + RTX 50: offered
+        var fast = Rtx5060 with { RefreshHz = 144 };
+        Assert.Contains(InGameAdvisor.Advise(new(true, true, true, false, null), SettingsAdvisor.Recommend(fast, "balanced", adaptiveSync: true), fast), t => t.Key == "IgFrameGen"); // VRR 144 Hz + RTX 50: offered
+        var slowVrr = InGameAdvisor.Advise(new(true, true, true, false, null), SettingsAdvisor.Recommend(Rtx5060, "balanced", adaptiveSync: true), Rtx5060);
+        Assert.DoesNotContain(slowVrr, t => t.Key == "IgFrameGen"); Assert.Contains(slowVrr, t => t.Key == "IgFrameGenOff"); // VRR at 75 Hz: real half too slow
         var fsrOnly = InGameAdvisor.Advise(new(false, false, true, false, null), r, new("AMD Radeon RX 6600", 8192, 12, 16_000, 1920, 1080, 75));
         Assert.Contains(fsrOnly, t => t.Key == "IgFsr");
         var cpu = InGameAdvisor.Advise(GameTech.Unknown, r, Rtx5060, [new("WhyCpuLimit", StutterFix.None, 55)]);
