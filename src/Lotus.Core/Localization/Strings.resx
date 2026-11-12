@@ -3143,4 +3143,27 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GiBeatAll" xml:space="preserve"><value>100%</value></data>
   <data name="GiBeatOpen" xml:space="preserve"><value>Ver no HowLongToBeat</value></data>
   <data name="GiBeatHint" xml:space="preserve"><value>Tempos médios de quem jogou, segundo o HowLongToBeat.</value></data>
+  <data name="LlMode_fluid" xml:space="preserve"><value>Fluidez (ritmo de console)</value></data>
+  <data name="LlMode_responsive" xml:space="preserve"><value>Resposta (NVIDIA Reflex)</value></data>
+  <data name="LlMode_scanline" xml:space="preserve"><value>Resposta sem V-Sync (experimental)</value></data>
+  <data name="LlPick" xml:space="preserve"><value>Recomendado para este jogo: {0}</value></data>
+  <data name="LlPickActive" xml:space="preserve"><value>Em uso: {0}, o recomendado</value></data>
+  <data name="LlTurnOn" xml:space="preserve"><value>Ligar</value></data>
+  <data name="LlTurnOff" xml:space="preserve"><value>Desligar</value></data>
+  <data name="LlSwitch" xml:space="preserve"><value>Usar o recomendado</value></data>
+  <data name="LlStateScanline" xml:space="preserve"><value>Resposta sem V-Sync ligada</value></data>
+  <data name="LlBodyAuto" xml:space="preserve"><value>O Lotus escolhe o melhor modo do RivaTuner para este jogo e para o seu monitor. Ligar vale só para este jogo; Desligar devolve tudo como era.</value></data>
+  <data name="LlWhyFrameGen" xml:space="preserve"><value>Este jogo tem Geração de quadros, e só o limitador Reflex funciona junto com ela. Limite de {0} FPS.</value></data>
+  <data name="LlWhyVrrReflex" xml:space="preserve"><value>Com G-Sync/FreeSync, o Reflex com limite de {0} FPS dá a resposta mais rápida sem perder a fluidez.</value></data>
+  <data name="LlWhyVrrFluid" xml:space="preserve"><value>Com FreeSync/G-Sync, o ritmo cravado em {0} FPS mantém a imagem estável.</value></data>
+  <data name="LlWhyScanline" xml:space="preserve"><value>A última análise mostrou que sobra força na placa. Sem o V-Sync, o RivaTuner sincroniza cada quadro com o monitor: fica fluido e com bem menos atraso.</value></data>
+  <data name="LlWhyFluid" xml:space="preserve"><value>O jogo não tem folga para o modo sem V-Sync. O ritmo cravado em {0} FPS com V-Sync deixa a imagem estável como em console.</value></data>
+  <data name="LlWhyFluidMeasure" xml:space="preserve"><value>Ritmo cravado em {0} FPS com V-Sync, estável como em console. Faça a análise em jogo (Ctrl + Shift + L): se sobrar força, o Lotus passa a recomendar a Resposta sem V-Sync, com menos atraso.</value></data>
+  <data name="LlNoteScanline" xml:space="preserve"><value>Perfil do RivaTuner: {0}. Desligue o V-Sync no jogo. Modo experimental: se aparecer uma linha cortando a imagem ou o jogo tremer, clique em Desligar. O Windows pede permissão porque o RivaTuner fica em Arquivos de Programas.</value></data>
+  <data name="LlNoteReflexFixed" xml:space="preserve"><value>Perfil do RivaTuner: {0}. Ligue o V-Sync no jogo para a imagem não cortar. O Windows pede permissão porque o RivaTuner fica em Arquivos de Programas.</value></data>
+  <data name="LlScanlineOn" xml:space="preserve"><value>Resposta sem V-Sync ligada neste jogo. Desligue o V-Sync no jogo.</value></data>
+  <data name="WhyLatency" xml:space="preserve"><value>atraso do PC {0:0} ms</value></data>
+  <data name="OsdLatency" xml:space="preserve"><value>  ·  atraso {0:0} ms</value></data>
+  <data name="IgFrameGenOffTitle" xml:space="preserve"><value>Deixe a geração de quadros desligada</value></data>
+  <data name="IgFrameGenOffBody" xml:space="preserve"><value>Neste monitor sem FreeSync/G-Sync, a geração de quadros só chega à taxa do monitor partindo da metade dela, e o comando responde no ritmo dos quadros reais. A resposta piora, então deixe desligada.</value></data>
 </root>

@@ -3143,4 +3143,27 @@ Your games and Windows are not changed.</value></data>
   <data name="GiBeatAll" xml:space="preserve"><value>completionist</value></data>
   <data name="GiBeatOpen" xml:space="preserve"><value>Open on HowLongToBeat</value></data>
   <data name="GiBeatHint" xml:space="preserve"><value>Average times from players, by HowLongToBeat.</value></data>
+  <data name="LlMode_fluid" xml:space="preserve"><value>Fluid (console-like pacing)</value></data>
+  <data name="LlMode_responsive" xml:space="preserve"><value>Responsive (NVIDIA Reflex)</value></data>
+  <data name="LlMode_scanline" xml:space="preserve"><value>Responsive without V-Sync (experimental)</value></data>
+  <data name="LlPick" xml:space="preserve"><value>Recommended for this game: {0}</value></data>
+  <data name="LlPickActive" xml:space="preserve"><value>In use: {0}, the recommended one</value></data>
+  <data name="LlTurnOn" xml:space="preserve"><value>Turn on</value></data>
+  <data name="LlTurnOff" xml:space="preserve"><value>Turn off</value></data>
+  <data name="LlSwitch" xml:space="preserve"><value>Use the recommended one</value></data>
+  <data name="LlStateScanline" xml:space="preserve"><value>Responsive without V-Sync is on</value></data>
+  <data name="LlBodyAuto" xml:space="preserve"><value>Lotus picks the best RivaTuner mode for this game and your monitor. Turn on applies to this game only; Turn off puts everything back as it was.</value></data>
+  <data name="LlWhyFrameGen" xml:space="preserve"><value>This game has frame generation, and only the Reflex limiter works alongside it. Limit of {0} FPS.</value></data>
+  <data name="LlWhyVrrReflex" xml:space="preserve"><value>With G-Sync/FreeSync, Reflex capped at {0} FPS gives the quickest response without losing smoothness.</value></data>
+  <data name="LlWhyVrrFluid" xml:space="preserve"><value>With FreeSync/G-Sync, pacing locked at {0} FPS keeps the picture steady.</value></data>
+  <data name="LlWhyScanline" xml:space="preserve"><value>The last check showed spare GPU power. Without V-Sync, RivaTuner syncs each frame to the monitor: smooth, with much less delay.</value></data>
+  <data name="LlWhyFluid" xml:space="preserve"><value>The game has no headroom for the no-V-Sync mode. Pacing locked at {0} FPS with V-Sync keeps the picture steady like a console.</value></data>
+  <data name="LlWhyFluidMeasure" xml:space="preserve"><value>Pacing locked at {0} FPS with V-Sync, steady like a console. Run the in-game check (Ctrl + Shift + L): if there is spare power, Lotus recommends Responsive without V-Sync, with less delay.</value></data>
+  <data name="LlNoteScanline" xml:space="preserve"><value>RivaTuner profile: {0}. Turn V-Sync off in the game. Experimental mode: if a line cuts across the picture or the game judders, click Turn off. Windows asks for permission because RivaTuner lives in Program Files.</value></data>
+  <data name="LlNoteReflexFixed" xml:space="preserve"><value>RivaTuner profile: {0}. Turn V-Sync on in the game so the picture does not tear. Windows asks for permission because RivaTuner lives in Program Files.</value></data>
+  <data name="LlScanlineOn" xml:space="preserve"><value>Responsive without V-Sync is on for this game. Turn V-Sync off in the game.</value></data>
+  <data name="WhyLatency" xml:space="preserve"><value>PC latency {0:0} ms</value></data>
+  <data name="OsdLatency" xml:space="preserve"><value>  ·  latency {0:0} ms</value></data>
+  <data name="IgFrameGenOffTitle" xml:space="preserve"><value>Leave frame generation off</value></data>
+  <data name="IgFrameGenOffBody" xml:space="preserve"><value>On this monitor without FreeSync/G-Sync, frame generation reaches the refresh rate starting from half of it, and input answers at the pace of the real frames. Response gets worse, so leave it off.</value></data>
 </root>

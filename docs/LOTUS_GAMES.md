@@ -172,3 +172,14 @@ Atualização visual a partir do pacote "Conceito Premium" (Rosé Quartz):
 - **Limite global:** o limite do perfil Global aparece no cartão do RivaTuner (Meus Jogos › Overlay) e no Otimizar (só leitura). Na análise, FPS preso no limite vira a causa "O FPS está no limite que você definiu", em vez de culpar a placa ou o processador.
 - **Overlay:** o texto da análise usa a trava `dwBusy` do SDK (v2.14+), sem misturar com Afterburner/HWiNFO.
 - **Pasta:** lida do registro (`HKLM\SOFTWARE\(WOW6432Node\)Unwinder\RTSS`, `InstallDir`), aceita só com `RTSS.exe` dentro; senão, a pasta padrão.
+
+## Fluidez e atraso com o RivaTuner (prioridade 2, 12/11/2026)
+
+- **Um botão:** no Otimizar do jogo há só **Ligar** e **Desligar**. O Lotus escolhe o modo e mostra o motivo em uma frase:
+  - com geração de quadros: Resposta (Reflex) em NVIDIA com Direct3D 11/12; nos outros casos, o limite do próprio jogo;
+  - com FreeSync/G-Sync: Resposta em NVIDIA, Fluidez nas outras placas;
+  - monitor sem VRR: **Resposta sem V-Sync** (scanline sync do RivaTuner, `SyncScanline0=-40`) só quando uma análise mostrou folga (placa até 75% ocupada mantendo a taxa do monitor, ou FPS 20% acima dela sem dado da placa); senão, Fluidez.
+- **Medição quadro a quadro:** a análise usa o canal `\\.\pipe\RTSS_Frametime` do RivaTuner (sem administrador, aberto só para o usuário atual e só durante a medição). Sem o canal, volta à leitura da memória compartilhada.
+- **Processador ou placa?** e **atraso do PC:** com marcadores Reflex (do jogo ou injetados pelo RivaTuner em D3D11/12, memória compartilhada v2.21), a análise usa a ocupação real da placa naquele jogo e mostra o atraso entre o comando e a placa terminar o quadro (mediana). O layout é conferido pelo cabeçalho (offset 9344) antes de ler.
+- **Gerador de quadros em monitor sem VRR:** nova dica de que costuma piorar a resposta.
+- Teste ao vivo: `LOTUS_LIVE=1` e `LOTUS_LIVE_PID=<pid>` rodam `RtssLatencyTests.LiveCapture` contra um processo 3D que o RivaTuner esteja acompanhando (por exemplo `Lotus.App.exe --overlay-preview`).

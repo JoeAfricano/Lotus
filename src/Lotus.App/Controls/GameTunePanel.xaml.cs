@@ -164,20 +164,32 @@ public sealed partial class GameTunePanel : UserControl
         head.Children.Add(new FontIcon { Glyph = "", FontSize = 18, Foreground = Res(info is { On: true } ? "SuccessBrush" : "RoseBrush") });
         // The state shows the cap actually written in RivaTuner (it may differ from today's recommendation).
         var current = info?.Cap is { } written ? written.ToString(Math.Abs(written - Math.Round(written)) < 0.001 ? "0" : "0.0", culture) : capText;
-        var state = info?.Mode switch { "fluid" => text.Format("LlStateFluid", current), "responsive" => text.Format("LlStateOn", current), _ => text["LlStateOff"] };
-        if (info is { On: true, Cap: { } w } && Math.Abs(w - cap) > 0.01) state += " · " + text.Format("LlCapUpdate", capText);
+        var state = info?.Mode switch
+        {
+            "fluid" => text.Format("LlStateFluid", current), "responsive" => text.Format("LlStateOn", current), "scanline" => text["LlStateScanline"], _ => text["LlStateOff"],
+        };
+        if (info is { On: true, Cap: { } w } && info.Mode != "scanline" && Math.Abs(w - cap) > 0.01) state += " · " + text.Format("LlCapUpdate", capText);
         head.Children.Add(new TextBlock { Text = state, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap });
         s.Children.Add(head);
-        s.Children.Add(new TextBlock { Text = text[r.AdaptiveSync ? "LlBodyVrr" : "LlBodyFixed"], FontSize = 13.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap });
+        s.Children.Add(new TextBlock { Text = text["LlBodyAuto"], FontSize = 13.5, Opacity = 0.85, TextWrapping = TextWrapping.Wrap });
         if (info?.State != "ok") { s.Children.Add(Caption(text[info?.State == "noRtss" ? "LlNoRtss" : "LlNoExe"])); return box; }
         // What RivaTuner does right now, read only: closed (Lotus opens it on Play) and its limit for every game.
         if (info.Running == false) s.Children.Add(Caption(text["LlRtssClosed"]));
         if (!info.On && info.GlobalCap is { } global) s.Children.Add(Caption(text.Format("LlGlobalCap", global.ToString(Math.Abs(global - Math.Round(global)) < 0.001 ? "0" : "0.0", culture))));
 
+        // One choice for the player: Lotus picks the mode (LimiterChoice) and says why; "Ligar" applies it, "Desligar"
+        // puts this game's RivaTuner profile back exactly as it was.
+        if (info.Recommended is { } pick)
+        {
+            var label = text.Format(info.Mode == pick ? "LlPickActive" : "LlPick", text["LlMode_" + pick]);
+            s.Children.Add(new TextBlock { Text = label, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("GoldBrush"), TextWrapping = TextWrapping.Wrap });
+        }
+        if (info.Why.Length > 0) s.Children.Add(new TextBlock { Text = text.Format(info.Why, capText), FontSize = 13, Opacity = 0.85, TextWrapping = TextWrapping.Wrap });
+
         var buttons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, Margin = new Thickness(0, 4, 0, 0) };
         Button Make(string label, string? mode, bool primary, string id)
         {
-            var b = new Button { Content = label, Style = (Style)Application.Current.Resources[primary ? "PrimaryButtonStyle" : "SoftButtonStyle"], MinHeight = 40 };
+            var b = new Button { Content = label, Style = (Style)Application.Current.Resources[primary ? "PrimaryButtonStyle" : "SoftButtonStyle"], MinHeight = 40, MinWidth = 120 };
             AutomationProperties.SetAutomationId(b, id);
             b.Click += async (_, _) =>
             {
@@ -188,17 +200,14 @@ public sealed partial class GameTunePanel : UserControl
             };
             return b;
         }
-        // Frame generation (DLSS FG) does not get along with other limiters: on NVIDIA, Reflex becomes the main choice.
-        // Reflex only works in Direct3D 11/12: when RivaTuner reports another API, it is not offered.
-        var reflex = info.Nvidia && info.ReflexFits;
-        if (info.Mode != "responsive" && reflex && info.PreferResponsive) buttons.Children.Add(Make(text["LlEnable"], "responsive", info.Mode is null, "tune-lowlatency"));
-        if (info.Mode != "fluid") buttons.Children.Add(Make(text["LlEnableFluid"], "fluid", info.Mode is null && !info.PreferResponsive, "tune-fluid"));
-        if (info.Mode != "responsive" && reflex && !info.PreferResponsive) buttons.Children.Add(Make(text["LlEnable"], "responsive", false, "tune-lowlatency"));
-        if (info.On) buttons.Children.Add(Make(text["LlDisable"], null, false, "tune-limiter-off"));
-        s.Children.Add(buttons);
-        s.Children.Add(Caption(text.Format(r.AdaptiveSync ? "LlNoteVrr" : "LlNoteFixed", info.Exe!)));
-        if (!info.Nvidia) s.Children.Add(Caption(text["LlAmd"]));
-        if (info.FrameGen) s.Children.Add(Caption(text[info.PreferResponsive ? "LlFrameGenReflex" : "LlFrameGenOther"]));
+        if (info.Recommended is { } mode && info.Mode != mode) buttons.Children.Add(Make(text[info.On ? "LlSwitch" : "LlTurnOn"], mode, true, "tune-limiter-on"));
+        if (info.On) buttons.Children.Add(Make(text["LlTurnOff"], null, info.Recommended is null || info.Mode == info.Recommended, "tune-limiter-off"));
+        if (buttons.Children.Count > 0) s.Children.Add(buttons);
+        // What to set in the game for the mode in use (or about to be used).
+        var shown = info.Mode ?? info.Recommended;
+        if (shown is not null)
+            s.Children.Add(Caption(text.Format(shown switch { "scanline" => "LlNoteScanline", "responsive" => r.AdaptiveSync ? "LlNoteVrr" : "LlNoteReflexFixed", _ => r.AdaptiveSync ? "LlNoteVrr" : "LlNoteFixed" }, info.Exe!)));
+        if (!info.Nvidia && !info.FrameGen) s.Children.Add(Caption(text["LlAmd"]));
         if (info.Nvidia && !info.ReflexFits) s.Children.Add(Caption(text.Format("LlApiNoReflex", info.Api!)));
         return box;
     }

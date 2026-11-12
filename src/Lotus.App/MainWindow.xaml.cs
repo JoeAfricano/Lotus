@@ -590,6 +590,7 @@ public sealed partial class MainWindow : Window
             {
                 var top = report.Findings[0];
                 var numbers = string.Format(System.Globalization.CultureInfo.GetCultureInfo(text.Language), text["OsdNumbers"], report.AverageFps, report.Low1Fps, report.Spikes);
+                if (report.LatencyMs is { } latency) numbers += string.Format(System.Globalization.CultureInfo.GetCultureInfo(text.Language), text["OsdLatency"], latency); // only when measured
                 osd.Show(string.Format(text["OsdResult"], text[top.Key + "Title"], numbers, text[top.Key + "Tip"])); UiSound.Play(UiSound.Cue.Done);
                 pendingGame = game; pendingReport = report;
                 tray?.Notify(text["TrayReportTitle"], text[top.Key + "Title"]);
