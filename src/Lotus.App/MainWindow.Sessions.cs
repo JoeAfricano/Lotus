@@ -58,12 +58,14 @@ public sealed partial class MainWindow
     {
         diaryArt = new Lotus.Core.Diary.DiaryArt(diary, catalog, ex => Serilog.Log.Warning(ex, "Diary art"))
         {
-            LibraryCover = key => games.InstalledGames().FirstOrDefault(g => string.Equals(Lotus.Core.Diary.DiaryGames.KeyFor(g), key, StringComparison.OrdinalIgnoreCase))?.CoverPath,
+            LibraryCover = key => portsCovers.GetValueOrDefault(key)
+                ?? games.InstalledGames().FirstOrDefault(g => string.Equals(Lotus.Core.Diary.DiaryGames.KeyFor(g), key, StringComparison.OrdinalIgnoreCase))?.CoverPath,
         };
         var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromSeconds(8); timer.IsRepeating = false;
         timer.Tick += async (_, _) =>
         {
             if (!initialized || diaryArt is not { } art) return;
+            await LoadPortsCoversAsync(); // games played through Lotus Ports reach the diary with a title only
             try { var count = await art.RepairAllAsync(); if (count > 0) Serilog.Log.Information("Diary art: {Count} covers repaired", count); }
             catch (Exception ex) { Serilog.Log.Warning(ex, "Diary art"); }
         };
@@ -84,6 +86,35 @@ public sealed partial class MainWindow
             catch (Exception ex) { Serilog.Log.Warning(ex, "Game length"); }
         };
         timer.Start();
+    }
+
+    // Covers of the Lotus Ports games by diary key ("Lotus Ports:<key>"), asked once when Lotus Ports is installed.
+    private readonly Dictionary<string, string> portsCovers = new(StringComparer.OrdinalIgnoreCase);
+    private async Task LoadPortsCoversAsync()
+    {
+        if (!Lotus.Infrastructure.PortsLink.PortsClient.IsInstalled) return;
+        try
+        {
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var result = await new Lotus.Infrastructure.PortsLink.PortsClient(Serilog.Log.Logger).ListGamesAsync(timeout.Token);
+            foreach (var game in result?.Games ?? [])
+                if (CoverAddress(game.CoverUrl) is { } cover)
+                    portsCovers[new GameEntry(GameStores.LotusPorts, game.LotusGameKey, game.Title).Key] = cover;
+            Serilog.Log.Information("Diary art: {Count} Lotus Ports covers", portsCovers.Count);
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Diary art (Lotus Ports)"); }
+    }
+    // https or a local picture (file URI or plain path) that exists; anything else is not shown.
+    public static string? CoverAddress(string? cover)
+    {
+        if (cover is not { Length: > 0 }) return null;
+        if (Uri.TryCreate(cover, UriKind.Absolute, out var uri))
+        {
+            if (uri.Scheme == "https") return cover;
+            if (uri.IsFile) return File.Exists(uri.LocalPath) ? uri.LocalPath : null;
+            return null;
+        }
+        return Path.IsPathFullyQualified(cover) && File.Exists(cover) ? cover : null;
     }
 
     // "Quero jogar" deals: checked a little after start (prices are cached for hours); new ones get a quiet tray note.
