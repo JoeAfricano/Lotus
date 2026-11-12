@@ -76,7 +76,9 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 ### Meus Jogos
 - **Biblioteca** de Steam, Epic, GOG e outras lojas, com Jogar direto da capa e perfil por jogo. **Adicione qualquer jogo** procurando na loja (nome e capa automáticos) ou do seu jeito, com `.exe` opcional; **edite nome e capa** ou remova pelo menu "…" de cada jogo.
 - **Preparar e Jogar:** antes de abrir o jogo, confere em silêncio se ele ainda está instalado, a memória, o espaço em disco e o controle. Só pergunta algo quando há um problema de verdade. Opcionalmente aplica o perfil Jogo, autorizado por jogo, e desfaz depois.
+- **Saves de milhares de jogos:** o Lotus conhece a pasta de saves de cerca de 19 mil jogos pelo catálogo aberto Ludusavi (PCGamingWiki), atualizado toda semana. Steam e GOG pelo código da loja; outras lojas pelo nome exato, pedindo para você conferir a pasta.
 - **Proteção de progresso** (aba **Backup de saves**, com seus jogos em capas, filtros e totais): encontra a pasta de saves com segurança (catálogo de jogos, Steam Cloud ou pasta escolhida) e guarda cópias conferidas depois de cada sessão. Restaura mostrando o que muda, com cópia do estado atual antes e volta automática se algo falhar. As cópias ficam só no PC. Jogos do Xbox / Game Pass não são suportados.
+- **Bateria do controle:** o Preparar e Jogar avisa quando o controle sem fio está com 20% ou menos (controles que informam a bateria ao Windows).
 - **Onde eu parei?** Uma anotação por jogo, vista no Início ("Continuar jogando"), no diário e no painel do jogador. O Lotus pergunta ao fechar o jogo, se você quiser.
 - **Otimizar este jogo:** painel lateral de cada jogo.
   - **O que o jogo tem**, lido dos arquivos dele: DLSS, Geração de quadros, FSR, XeSS e o motor (Unreal, Unity…).
@@ -98,6 +100,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 - Mede o jogo por 30 segundos, com uma barra de progresso no próprio jogo.
 - Mostra o resultado na tela: FPS médio, 1% low, travadas, a causa mais provável e uma dica.
 - Os detalhes ficam em Meus Jogos › Otimizar.
+- **Processador no limite:** reconhece quando o processador reduz a velocidade por calor ou limite de energia (sem administrador) e avisa uma vez durante o jogo se isso durar alguns minutos.
 
 ### Lotus Score
 - **Teste de CPU e GPU** com notas separadas, estabilidade entre passadas e sensores durante o teste.
@@ -122,6 +125,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 - Topo do perfil **compacto ou completo**, como preferir.
 - **Editor premium:** banner com a arte oficial da loja do jogo (Steam, Epic ou GOG), nota em anel colorido com rótulo (de Ruim a Obra-prima), status ilustrados, notas por categoria, sensações, dificuldade e **outras zeradas** com datas e horas.
 - **Sessões automáticas:** com um jogo da biblioteca aberto, o Lotus anota o tempo e as datas no diário (pode desligar em Configurações).
+- **Tempo para zerar:** história, com extras e 100% (HowLongToBeat) no editor de cada jogo.
 - **O que jogar agora?** Sugestão da sua própria lista pelo tempo que você tem, pelo clima que quer e pelas notas que você dá, sempre dizendo o porquê.
 - **Promoções da sua lista:** jogos de "Quero jogar" em promoção na Steam aparecem no diário, com aviso discreto perto do relógio.
 - **Estatísticas:** horas por mês (com as sessões reais), distribuição das notas, gêneros, plataformas, médias por categoria, sensações e dificuldade.
@@ -137,6 +141,7 @@ Tudo na aba Ferramentas, em cartões. Abrir ou analisar nunca muda nada; cada a�
 - **Inicialização do Windows:** editor, assinatura digital, caminho e mecanismo de cada item; desligar e religar com desfazer.
 - **Monitor na taxa certa** e **Recursos do Windows para jogos:** taxa atual × máxima do monitor, Modo de Jogo, gravação em segundo plano, otimizações em janela e agendamento de GPU, com ajuste reversível.
 - **Por que meu jogo fechou?:** cruza as falhas de jogos registradas pelo Windows com o que aconteceu no mesmo minuto (driver de vídeo, memória, disco, hardware) e explica a causa provável.
+- **Driver de vídeo novo:** uma vez por semana confere no site da NVIDIA (AMD e Intel: driver com mais de seis meses) e avisa uma vez por versão. Nunca baixa nem instala drivers.
 - **Windows em dia:** reinício pendente, tempo ligado e ponto de restauração do Windows.
 - **Saúde do Disco, Drivers e Sistema:** dados do próprio Windows (o que não estiver disponível aparece assim), dispositivos com problema, erros recentes, chkdsk /scan, SFC e DISM com confirmação.
 - **Desinstalar programas** (busca e ordenação), **Internet e DNS** (com histórico) e **Overlays e travadas** (com RAM/CPU de cada item; RTSS, Afterburner e PresentMon aparecem como compatíveis).

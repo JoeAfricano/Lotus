@@ -2,7 +2,7 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
-## Próxima versão (em preparação)
+## 1.4.0-alpha "Lotus" (12/11/2026)
 
 ### Novo
 - **Saves de milhares de jogos.** A Proteção de progresso passa a conhecer a pasta de saves de cerca de 17 mil jogos, pelo catálogo aberto **Ludusavi** (dados da PCGamingWiki). Jogos da Steam e da GOG são reconhecidos pelo código da loja; os de outras lojas, pelo nome exato, e nesse caso o Lotus pede para você conferir a pasta antes de proteger. O catálogo é atualizado no máximo uma vez por semana e só quando mudou.
