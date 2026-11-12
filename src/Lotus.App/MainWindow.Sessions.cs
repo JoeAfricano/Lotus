@@ -81,18 +81,26 @@ public sealed partial class MainWindow
         var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromSeconds(45); timer.IsRepeating = false;
         timer.Tick += async (_, _) =>
         {
-            if (!initialized || diaryLengths is not { } lengths || games.RunningGame() is not null) return; // never while a game runs
+            if (!initialized || diaryLengths is not { } lengths) return;
+            if (await Task.Run(games.RunningGame) is not null) { timer.Interval = TimeSpan.FromMinutes(10); timer.Start(); return; } // never while a game runs: later
             try { var found = await lengths.RefreshAsync(); if (found > 0) Serilog.Log.Information("Game length: {Count} games", found); }
             catch (Exception ex) { Serilog.Log.Warning(ex, "Game length"); }
         };
         timer.Start();
     }
 
-    // Covers of the Lotus Ports games by diary key ("Lotus Ports:<key>"), asked once when Lotus Ports is installed.
+    // Covers of the Lotus Ports games by diary key ("Lotus Ports:<key>"): read from the catalog Lotus Ports ships (works
+    // with it closed), then asked from Lotus Ports itself when it is open (its answer wins).
     private readonly Dictionary<string, string> portsCovers = new(StringComparer.OrdinalIgnoreCase);
     private async Task LoadPortsCoversAsync()
     {
-        if (!Lotus.Infrastructure.PortsLink.PortsClient.IsInstalled) return;
+        try
+        {
+            foreach (var (key, url) in await Task.Run(() => Lotus.Infrastructure.PortsLink.PortsCatalogCovers.Read()))
+                if (CoverAddress(url) is { } cover) portsCovers[new GameEntry(GameStores.LotusPorts, key, key).Key] = cover;
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Diary art (Lotus Ports catalog)"); }
+        if (!Lotus.Infrastructure.PortsLink.PortsClient.IsInstalled) { if (portsCovers.Count > 0) Serilog.Log.Information("Diary art: {Count} Lotus Ports covers (catalog)", portsCovers.Count); return; }
         try
         {
             using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));

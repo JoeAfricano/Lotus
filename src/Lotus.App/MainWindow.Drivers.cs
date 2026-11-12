@@ -15,7 +15,8 @@ public sealed partial class MainWindow
             try
             {
                 var p = preferences.Current;
-                if (!initialized || !p.DriverNotices || games.RunningGame() is not null) return;
+                if (!initialized || !p.DriverNotices) return;
+                if (await Task.Run(games.RunningGame) is not null) { timer.Interval = TimeSpan.FromMinutes(15); timer.Start(); return; } // never while a game runs: later
                 if (p.DriverCheckedAt is { } at && DateTimeOffset.Now - at < DriverNotice.CheckEvery) return;
                 var gpu = await Task.Run(() => new Lotus.Infrastructure.Tools.WindowsDriverInfo().Read());
                 LatestDriver? latest = null;
