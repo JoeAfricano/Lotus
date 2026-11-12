@@ -190,6 +190,7 @@ public sealed partial class MainWindow : Window
         try { experience.QuickFacts = Lotus.Infrastructure.Tools.QuickHardwareFacts.Read(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Quick hardware facts"); }
         games.SessionEnded += OnGameSessionEnded;
         games.LaunchFailed += (_, message) => DispatcherQueue.TryEnqueue(() => { UiSound.Play(UiSound.Cue.Fail); ShowWarning(message); });
+        games.RtssWarning += (_, message) => DispatcherQueue.TryEnqueue(() => ShowWarning(message));
         // Lotus Score: sensors during the tests (3DMark-style) and the player's games for the FPS estimates.
         score.Sensors = () => { var s = monitoring.Snapshot; var g = s?.Gpu.Devices.FirstOrDefault(); return (s?.Cpu.TotalUtilizationPercent.Value, g?.Get(Lotus.Core.Telemetry.GpuSensor.Temperature)?.Value, g?.Get(Lotus.Core.Telemetry.GpuSensor.Power)?.Value); };
         score.FindGame = (q, t) => catalog.RequirementsAsync(q, t);

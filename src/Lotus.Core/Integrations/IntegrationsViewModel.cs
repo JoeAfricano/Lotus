@@ -25,6 +25,11 @@ public interface IRtssIntegration
     double? LimiterCap(string exe) => null; // the cap written in that game's profile
     Task<bool> EnableLimiterAsync(string exe, double fpsCap, string mode) => Task.FromResult(false);
     Task<bool> DisableLowLatencyAsync(string exe) => Task.FromResult(false);
+    // Running state and opening (RivaTuner asks Windows for administrator itself); null = unknown.
+    bool? Running() => null;
+    Task<bool> StartAsync() => Task.FromResult(false);
+    double? GlobalCap() => null;           // the limit of RivaTuner's Global profile (every game without its own), or null
+    string? GameApi(string exe) => null;   // "Direct3D 12", "Vulkan"... only while the game runs with RivaTuner
 }
 public interface IToolDetector { ToolState Afterburner(); ToolState ScsKiller(); }
 
@@ -51,6 +56,12 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             var r = rtss.State(); RtssInstalled = r.Installed;
             RtssStatus = !r.Installed ? Text["IntNotInstalled"]
                 : rtss.OverlayConfigured() switch { true => Text.Format("IntRtssLotus", r.Version ?? "?"), false => Text.Format("IntRtssDefault", r.Version ?? "?"), _ => Text.Format("IntRtssUnreadable", r.Version ?? "?") };
+            if (r.Installed)
+            {
+                // Read only: open or closed now, and the limit RivaTuner gives every game without its own profile.
+                if (rtss.Running() is { } open) RtssStatus += " · " + Text[open ? "IntRtssOpen" : "IntRtssClosed"];
+                if (rtss.GlobalCap() is { } cap) RtssStatus += " · " + Text.Format("IntRtssGlobalCap", cap.ToString(Math.Abs(cap - Math.Round(cap)) < 0.001 ? "0" : "0.0", System.Globalization.CultureInfo.GetCultureInfo(Text.Language)));
+            }
             CanRestoreRtss = r.Installed && rtss.HasBackup();
             CanRestoreLayout = r.Installed && rtss.HasLayoutBackup();
             var active = r.Installed && rtss.LayoutActive();
