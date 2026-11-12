@@ -2174,6 +2174,12 @@ Your games and Windows are not changed.</value></data>
   <data name="PnPaused" xml:space="preserve"><value>paused since {0}</value></data>
   <data name="PnWaiting" xml:space="preserve"><value>on your list for {0} days</value></data>
   <data name="PnTaste" xml:space="preserve"><value>you rate {0} games highly</value></data>
+  <data name="PnAlmostDone" xml:space="preserve"><value>about {0} left to finish</value></data>
+  <data name="PnShortGame" xml:space="preserve"><value>can be finished in about {0}</value></data>
+  <data name="DyBeatTitle" xml:space="preserve"><value>Time to beat (HowLongToBeat)</value></data>
+  <data name="DyBeatMain" xml:space="preserve"><value>Main story {0}</value></data>
+  <data name="DyBeatPlus" xml:space="preserve"><value>Main + extras {0}</value></data>
+  <data name="DyBeatAll" xml:space="preserve"><value>Completionist {0}</value></data>
   <data name="OvTitle" xml:space="preserve"><value>Overlays and stutter</value></data>
   <data name="OvWhat" xml:space="preserve"><value>Overlays, capture and animated wallpapers are **common causes of stutter**. Lotus only checks what is active and explains how to turn it off; nothing is changed.</value></data>
   <data name="OvScan" xml:space="preserve"><value>Check now</value></data>

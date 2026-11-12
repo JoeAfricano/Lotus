@@ -2174,6 +2174,12 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="PnPaused" xml:space="preserve"><value>pausado desde {0}</value></data>
   <data name="PnWaiting" xml:space="preserve"><value>na sua lista há {0} dias</value></data>
   <data name="PnTaste" xml:space="preserve"><value>você dá notas altas para {0}</value></data>
+  <data name="PnAlmostDone" xml:space="preserve"><value>faltam cerca de {0} para zerar</value></data>
+  <data name="PnShortGame" xml:space="preserve"><value>dá para zerar em cerca de {0}</value></data>
+  <data name="DyBeatTitle" xml:space="preserve"><value>Tempo para zerar (HowLongToBeat)</value></data>
+  <data name="DyBeatMain" xml:space="preserve"><value>História {0}</value></data>
+  <data name="DyBeatPlus" xml:space="preserve"><value>Com extras {0}</value></data>
+  <data name="DyBeatAll" xml:space="preserve"><value>100% {0}</value></data>
   <data name="OvTitle" xml:space="preserve"><value>Overlays e travadas</value></data>
   <data name="OvWhat" xml:space="preserve"><value>Overlays, gravação e papéis de parede animados são **causas comuns de travadas**. O Lotus só verifica o que está ativo e explica como desligar; nada é alterado.</value></data>
   <data name="OvScan" xml:space="preserve"><value>Verificar agora</value></data>

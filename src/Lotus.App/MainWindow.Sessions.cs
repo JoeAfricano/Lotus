@@ -70,6 +70,22 @@ public sealed partial class MainWindow
         timer.Start();
     }
 
+    // "Tempo para zerar" (HowLongToBeat) for the games being played or wanted: a few each start, after things settle.
+    private readonly Lotus.Infrastructure.Catalog.HowLongToBeatClient gameLengths = new();
+    private Lotus.Core.Diary.DiaryLengths? diaryLengths;
+    private void StartGameLengths()
+    {
+        diaryLengths = new Lotus.Core.Diary.DiaryLengths(diary, gameLengths, ex => Serilog.Log.Warning(ex, "Game length"));
+        var timer = DispatcherQueue.CreateTimer(); timer.Interval = TimeSpan.FromSeconds(45); timer.IsRepeating = false;
+        timer.Tick += async (_, _) =>
+        {
+            if (!initialized || diaryLengths is not { } lengths || games.RunningGame() is not null) return; // never while a game runs
+            try { var found = await lengths.RefreshAsync(); if (found > 0) Serilog.Log.Information("Game length: {Count} games", found); }
+            catch (Exception ex) { Serilog.Log.Warning(ex, "Game length"); }
+        };
+        timer.Start();
+    }
+
     // "Quero jogar" deals: checked a little after start (prices are cached for hours); new ones get a quiet tray note.
     private void StartDealsCheck()
     {

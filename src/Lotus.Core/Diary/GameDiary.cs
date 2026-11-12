@@ -29,6 +29,12 @@ public sealed class DiaryEntry
     public List<Playthrough> Runs { get; set; } = [];
     // Sessions recorded by Lotus while the game was open (when, how long); the minutes are already in Minutes.
     public List<PlaySession> Sessions { get; set; } = [];
+    // HowLongToBeat (GameLength): minutes for the main story, story + extras and 100%; when it was last asked.
+    public int? BeatMain { get; set; }
+    public int? BeatPlus { get; set; }
+    public int? BeatAll { get; set; }
+    public string? BeatUrl { get; set; }
+    public DateTimeOffset? BeatChecked { get; set; }
     public DateTimeOffset Added { get; set; } = DateTimeOffset.Now;
     public DateTimeOffset Updated { get; set; } = DateTimeOffset.Now;
 
@@ -147,6 +153,16 @@ public sealed class GameDiary(IGameDiaryStore store, Action<Exception> log)
         if (Get(key) is not { } e || cover.Length == 0) return false;
         e.Cover = cover;
         if (wide is { Length: > 0 } && e.Wide is not { Length: > 0 }) e.Wide = wide;
+        Persist();
+        return true;
+    }
+
+    // How long the game takes (null = the site does not know it): saved without moving the entry on the shelf.
+    public bool SetLength(string key, GameLength? length)
+    {
+        if (Get(key) is not { } e) return false;
+        e.BeatMain = length?.MainMinutes; e.BeatPlus = length?.PlusMinutes; e.BeatAll = length?.AllMinutes; e.BeatUrl = length?.Url;
+        e.BeatChecked = DateTimeOffset.Now;
         Persist();
         return true;
     }

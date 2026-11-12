@@ -302,6 +302,16 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
     public bool CanRemove => !IsNew;
     public int? SteamMinutes { get; private set; }
     public bool HasSteamHours => SteamMinutes is > 0;
+    // "Tempo para zerar" (HowLongToBeat), filled by the app when it has it (null = not known yet / not found).
+    private GameLength? length;
+    public GameLength? Length { get => length; set { length = value; OnPropertyChanged(nameof(Length)); OnPropertyChanged(nameof(HasLength)); OnPropertyChanged(nameof(LengthText)); } }
+    public bool HasLength => Length is { HasAny: true };
+    public string LengthText => Length is not { HasAny: true } l ? "" : string.Join(" · ", new[]
+    {
+        l.MainMinutes is > 0 and var m ? Text.Format("DyBeatMain", DiaryText.Hours(m)) : null,
+        l.PlusMinutes is > 0 and var p ? Text.Format("DyBeatPlus", DiaryText.Hours(p)) : null,
+        l.AllMinutes is > 0 and var a ? Text.Format("DyBeatAll", DiaryText.Hours(a)) : null,
+    }.OfType<string>());
     public string SteamHoursLabel => SteamMinutes is { } m ? Text.Format("DyUseSteamHours", DiaryText.Hours(m)) : "";
 
     [ObservableProperty, NotifyPropertyChangedFor(nameof(RatingText), nameof(RatingKind), nameof(RatingLabel))] private double rating;
@@ -323,6 +333,7 @@ public sealed partial class DiaryEditorViewModel(GameDiary diary, ITextCatalog t
         entry = (saved ?? game).Clone();
         if (saved is not null) { entry.Cover ??= game.Cover; entry.Wide ??= game.Wide; if (entry.Genres.Count == 0) entry.Genres = [.. game.Genres]; }
         SteamMinutes = steamMinutes;
+        Length = DiaryLengths.Saved(entry);
         SelectStatus(status ?? (IsNew ? DiaryStatus.Playing : entry.Status));
         Rating = entry.Rating ?? 0;
         Hours = Math.Round(entry.Minutes / 60.0, 1);
