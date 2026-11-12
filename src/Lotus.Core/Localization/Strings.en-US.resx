@@ -3165,5 +3165,8 @@ Your games and Windows are not changed.</value></data>
   <data name="WhyLatency" xml:space="preserve"><value>PC latency {0:0} ms</value></data>
   <data name="OsdLatency" xml:space="preserve"><value>  ·  latency {0:0} ms</value></data>
   <data name="IgFrameGenOffTitle" xml:space="preserve"><value>Leave frame generation off</value></data>
-  <data name="IgFrameGenOffBody" xml:space="preserve"><value>Frame generation reaches the refresh rate starting from half of it, and input answers at the pace of the real frames. It only pays off with FreeSync/G-Sync on a 120 Hz or faster monitor. On this monitor latency goes up and drops get worse, so leave it off and, if FPS falls short, lower the quality a little.</value></data>
+  <data name="IgFrameGenOffBody" xml:space="preserve"><value>Frame generation reaches the refresh rate starting from half of it, and input answers at the pace of the real frames. It only pays off with FreeSync/G-Sync on a 120 Hz or faster monitor. On this monitor latency goes up and drops get worse: for the best response, leave it off and, if FPS falls short, lower the quality a little. If you prefer more FPS on screen and don't mind a bit more delay, go ahead: tick "I use frame generation" on the RivaTuner card.</value></data>
+  <data name="LlUseFrameGen" xml:space="preserve"><value>I use frame generation in this game</value></data>
+  <data name="LlUseFrameGenHint" xml:space="preserve"><value>Your call: more FPS on screen for a bit more delay. Lotus sets the limiter to match it.</value></data>
+  <data name="LlWhyFrameGenChosen" xml:space="preserve"><value>You use frame generation, and only the Reflex limiter works alongside it. Limit of {0} FPS, the smoothest it gets with frame generation on this monitor.</value></data>
 </root>

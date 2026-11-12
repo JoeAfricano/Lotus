@@ -14,6 +14,7 @@ public sealed record GamePlayPrefs
     public bool CheckController { get; set; }  // the player prefers a controller for this game
     public bool CheckSystem { get; set; } = true; // memory and free space
     public bool OnlyRelevant { get; set; } = true; // no "all good" notice
+    public bool UseFrameGen { get; set; }      // the player keeps frame generation on (more FPS on screen, some more delay)
 }
 
 public sealed class GamePrefsData

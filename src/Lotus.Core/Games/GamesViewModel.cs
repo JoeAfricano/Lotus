@@ -424,7 +424,7 @@ public sealed partial class GamesViewModel : ObservableObject
     // Api: the game's 3D API while it runs with RivaTuner (Reflex needs Direct3D 11/12). GlobalCap: RivaTuner's limit for
     // every game without its own profile. Running: RivaTuner open now (null = unknown).
     public sealed record LowLatencyInfo(string State, string? Exe, string? Mode, bool Nvidia, double? Cap = null, bool FrameGen = false,
-        string? Api = null, double? GlobalCap = null, bool? Running = null, string? Recommended = null, string Why = "")
+        string? Api = null, double? GlobalCap = null, bool? Running = null, string? Recommended = null, string Why = "", bool UsesFrameGen = false)
     {
         public bool On => Mode is not null;
         public bool ReflexFits => Api is null or "Direct3D 11" or "Direct3D 12"; // unknown API: RivaTuner falls back by itself
@@ -445,13 +445,15 @@ public sealed partial class GamesViewModel : ObservableObject
                 if (tech.Dlss) chips.Add("DLSS"); if (tech.FrameGen) chips.Add(Text["IgChipFrameGen"]); if (tech.Fsr) chips.Add("FSR"); if (tech.Xess) chips.Add("XeSS");
                 var last = LastReport(game);
                 var monitor = MonitorSync();
+                var useFrameGen = tech.FrameGen && PrefsFor(game).UseFrameGen;
                 var advice = InGameAdvisor.Advise(tech, settings.Recommendation, profileSource!.Read(), last?.Findings, Goal?.Invoke() ?? "balanced").ToList();
+                if (useFrameGen) advice.RemoveAll(t => t.Key == "IgFrameGenOff"); // the player chose it: no nagging
                 // Monitor supports FreeSync/G-Sync but the player runs without it: turning it on comes first.
                 if (!settings.Recommendation.AdaptiveSync && monitor.VrrPossible == true) advice.Insert(0, new("IgEnableVrr", [], 120));
                 var tips = advice
                     .Select(t => { object[] a = [.. t.Args.Select(Localize)]; return (Text.Format(t.Key + "Title", a), Text.Format(t.Key + "Body", a)); }).ToList();
                 var pc = profileSource.Read();
-                return new GameTune(settings, tech, chips, tips, last, processCheck?.FirstRunning([game]) is not null, ScoreLine?.Invoke(game, settings.Recommendation, pc), ScoreHint?.Invoke(), LowLatencyFor(tech, pc, settings.Recommendation, last));
+                return new GameTune(settings, tech, chips, tips, last, processCheck?.FirstRunning([game]) is not null, ScoreLine?.Invoke(game, settings.Recommendation, pc), ScoreHint?.Invoke(), LowLatencyFor(tech, pc, settings.Recommendation, last, useFrameGen));
             });
         }
         catch (Exception ex) { log(ex); return null; }
@@ -461,17 +463,21 @@ public sealed partial class GamesViewModel : ObservableObject
     }
 
     // Frame limiter per game: "fluid" works on any GPU; "responsive" (Reflex) only on NVIDIA.
-    private LowLatencyInfo LowLatencyFor(GameTech tech, SystemProfile pc, SettingsRecommendation? r = null, StutterReport? last = null)
+    private LowLatencyInfo LowLatencyFor(GameTech tech, SystemProfile pc, SettingsRecommendation? r = null, StutterReport? last = null, bool useFrameGen = false)
     {
         var nvidia = System.Text.RegularExpressions.Regex.IsMatch(pc.GpuName, "NVIDIA|GeForce|RTX|GTX", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
         if (Rtss?.State().Installed != true) return new("noRtss", tech.MainExe, null, nvidia, FrameGen: tech.FrameGen);
         if (tech.MainExe is not { } exe) return new("noExe", null, null, nvidia, FrameGen: tech.FrameGen, GlobalCap: Rtss.GlobalCap(), Running: Rtss.Running());
-        var info = new LowLatencyInfo("ok", exe, Rtss.LimiterMode(exe), nvidia, Rtss.LimiterCap(exe), tech.FrameGen, Rtss.GameApi(exe), Rtss.GlobalCap(), Rtss.Running());
+        var info = new LowLatencyInfo("ok", exe, Rtss.LimiterMode(exe), nvidia, Rtss.LimiterCap(exe), tech.FrameGen, Rtss.GameApi(exe), Rtss.GlobalCap(), Rtss.Running(), UsesFrameGen: useFrameGen);
         var (mode, why) = LimiterChoice.Pick(info, r?.AdaptiveSync == true, pc.RefreshHz, last?.AverageFps, last?.GpuBusy);
         return info with { Recommended = mode, Why = why };
     }
 
     // mode: "fluid" | "responsive" turns the limiter on (cap = exact paced cap), null restores that game's profile.
+    // Frame generation is the player's call ("Uso o gerador de quadros"): Lotus only advises. When on, the limiter
+    // recommendation follows it (Reflex on NVIDIA, the game's own limit elsewhere).
+    public bool SetUseFrameGen(GameEntry game, bool on) => PlayPrefs is { } book && book.Set(game.Key, PrefsFor(game) with { UseFrameGen = on });
+
     public async Task<bool> SetLimiterAsync(string exe, string? mode, double fpsCap)
     {
         if (Rtss is null) return false;
