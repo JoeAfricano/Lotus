@@ -45,4 +45,24 @@ public sealed class GameProcessRulesTests
         }
         finally { Directory.Delete(root, true); }
     }
+
+    [Fact]
+    public void Ports_catalog_bundle_lists_every_game()
+    {
+        var all = PortsCatalogCovers.ParseAll("""{"version":3,"games":[{"id":"sonic-unleashed","title":"Sonic Unleashed","cover":{"url":"https://cdn2.steamgriddb.com/grid/b.png","source":"steamgriddb"}},{"id":"other","lotusGameKey":"port:other-key","cover":{"url":"https://a/o.png"}},{"id":"nocover"}]}""");
+        Assert.Equal([("port:sonic-unleashed", "https://cdn2.steamgriddb.com/grid/b.png"), ("port:other-key", "https://a/o.png")], all);
+    }
+
+    [Fact]
+    public void Embedded_resource_is_read_without_loading_the_assembly()
+    {
+        var assembly = typeof(GameProcessRules).Assembly;
+        var name = assembly.GetManifestResourceNames().First();
+        using var expected = assembly.GetManifestResourceStream(name)!;
+        using var copy = new MemoryStream(); expected.CopyTo(copy);
+        var text = PortsCatalogCovers.ResourceText(assembly.Location, name);
+        Assert.NotNull(text);
+        Assert.Equal(System.Text.Encoding.UTF8.GetString(copy.ToArray()).TrimStart('\uFEFF'), text);
+        Assert.Null(PortsCatalogCovers.ResourceText(assembly.Location, "missing.json"));
+    }
 }
