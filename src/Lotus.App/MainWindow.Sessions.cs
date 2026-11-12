@@ -44,6 +44,7 @@ public sealed partial class MainWindow
     private void OnSessionFinished(FinishedSession s)
     {
         RecordSession(s);
+        if (Environment.GetCommandLineArgs().Contains("--dev-instance") && Environment.GetEnvironmentVariable("LOTUS_DEV_SESSIONS") != "1") return; // nothing recorded, nothing to ask
         try { OfferResumeNote(s); } catch (Exception ex) { Serilog.Log.Warning(ex, "Resume prompt"); }
     }
 

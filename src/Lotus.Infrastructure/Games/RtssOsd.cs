@@ -22,7 +22,8 @@ public sealed class RtssOsd(string mapName = RtssSharedMemory.DefaultMap)
         foreach (var c in text.Normalize(NormalizationForm.FormD))
         {
             if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) == System.Globalization.UnicodeCategory.NonSpacingMark) continue;
-            folded.Append(c switch { '·' => '-', '–' or '—' => '-', '…' => '.', '“' or '”' => '"', '‘' or '’' => '\'', < (char)128 => c, _ => '?' });
+            if (c == '…') { folded.Append("..."); continue; }
+            folded.Append(c switch { '·' => '-', '–' or '—' => '-', '“' or '”' => '"', '‘' or '’' => '\'', < (char)128 => c, _ => '?' });
         }
         return folded.ToString().Normalize(NormalizationForm.FormC);
     }

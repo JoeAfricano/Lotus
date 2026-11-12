@@ -2007,7 +2007,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GsReasonFixedCap" xml:space="preserve"><value>Sem FreeSync/G-Sync, o limite fica igual à taxa do monitor com V-Sync: cada quadro aparece pelo mesmo tempo, sem trepidação.</value></data>
   <data name="GsReasonHalfRate" xml:space="preserve"><value>O seu PC não sustenta a taxa do monitor, então o limite fica numa fração exata dela: menos FPS, mas cravado e liso, como em console.</value></data>
   <data name="IgVsyncTitle" xml:space="preserve"><value>Ligue o V-Sync e trave em {0} FPS</value></data>
-  <data name="IgVsyncBody" xml:space="preserve"><value>Sem FreeSync/G-Sync, o segredo da fluidez de console é o FPS cravado na taxa do monitor (ou na metade). Ligue o V-Sync no jogo e use o modo Fluidez do Lotus abaixo: a linha do framepacer fica reta.</value></data>
+  <data name="IgVsyncBody" xml:space="preserve"><value>Sem FreeSync/G-Sync, o segredo da fluidez de console é o FPS cravado na taxa do monitor (ou na metade). Ligue o V-Sync no jogo e use o botão Ligar do RivaTuner abaixo: o Lotus escolhe o modo certo e a linha do framepacer fica reta.</value></data>
   <data name="IgVrrVsyncTitle" xml:space="preserve"><value>Com FreeSync/G-Sync: V-Sync no driver, não no jogo</value></data>
   <data name="IgVrrVsyncBody" xml:space="preserve"><value>Deixe o V-Sync ligado no painel da placa de vídeo e desligado no jogo. Com o limite 3 FPS abaixo da taxa do monitor, a tela acompanha cada quadro sem tearing e sem o atraso do V-Sync.</value></data>
   <data name="IgEnableVrrTitle" xml:space="preserve"><value>Ative o FreeSync/G-Sync do seu monitor</value></data>
