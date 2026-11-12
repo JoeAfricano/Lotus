@@ -238,8 +238,9 @@ public sealed class PowerProfilesViewModel : ObservableObject
         int applied = 0, failed = 0;
         foreach (var c in changes.Where(c => !c.AlreadyApplied))
         {
-            var result = await c.Engine.ApplyAsync(c.Plan.Id, confirmed: true);
-            if (result.Stage == OperationStage.Applied) applied++; else failed++;
+            // One change that fails (blocked, denied, changed meanwhile) never stops the others nor hides what was done.
+            try { if ((await c.Engine.ApplyAsync(c.Plan.Id, confirmed: true)).Stage == OperationStage.Applied) applied++; else failed++; }
+            catch (Exception ex) when (ex is InvalidOperationException or Win32Exception or UnauthorizedAccessException or IOException) { log(ex); failed++; }
         }
         await AfterProfileChange();
         if (failed > 0) ShowResult("PfResultPartial", false, Text.Format("PfAppliedWithConflicts", applied, failed));
@@ -251,10 +252,14 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public Task UndoProfileAsync() => Run(async () =>
     {
         int restored = 0, failed = 0;
-        if (LastPowerApplied is { } power) { if ((await engine.RevertAsync(power.Id, confirmed: true)).Stage == OperationStage.Reverted) restored++; else failed++; }
+        async Task Revert(OptimizationEngine e, Guid id)
+        {
+            try { if ((await e.RevertAsync(id, confirmed: true)).Stage == OperationStage.Reverted) restored++; else failed++; }
+            catch (Exception ex) when (ex is InvalidOperationException or Win32Exception or UnauthorizedAccessException or IOException) { log(ex); failed++; }
+        }
+        if (LastPowerApplied is { } power) await Revert(engine, power.Id);
         foreach (var (id, featureEngine) in featureEngines)
-            if (featureApplied.GetValueOrDefault(id) is { } plan)
-            { if ((await featureEngine.RevertAsync(plan.Id, confirmed: true)).Stage == OperationStage.Reverted) restored++; else failed++; }
+            if (featureApplied.GetValueOrDefault(id) is { } plan) await Revert(featureEngine, plan.Id);
         await AfterProfileChange();
         if (failed > 0) ShowResult("PfResultUndoPartial", false, Text.Format("PfUndoConflict", restored, failed));
         else if (restored == 0) ShowResult("PfResultNone", true, Text["PfNothingToUndo"]);
