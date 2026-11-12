@@ -46,7 +46,7 @@ public sealed partial class GameDetailView : UserControl
         if (want != shownArt)
         {
             shownArt = want; HeroArt.Opacity = 0;
-            ShowArt(want, vm.Art);
+            ShowArt(want, [vm.Art, vm.Cover]);
         }
         // Metacritic colors (green / yellow / red, like the site)
         McBadge.Background = new SolidColorBrush(vm.MetacriticKind switch
@@ -67,14 +67,23 @@ public sealed partial class GameDetailView : UserControl
         }
     }
 
-    // Key art, then the fallback when that game has none.
-    private void ShowArt(string url, string fallback)
+    // Key art, then the fallbacks (store background, then the small header) when one fails or never finishes loading:
+    // a big picture can stall without an error, which left the top of the page empty.
+    private Microsoft.UI.Dispatching.DispatcherQueueTimer? artTimer;
+    private void ShowArt(string url, IReadOnlyList<string> fallbacks)
     {
-        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) { HeroArt.Source = null; return; }
+        artTimer?.Stop();
+        var next = fallbacks.Where(f => f.Length > 0 && f != url).Distinct().ToList();
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) { if (next.Count > 0) ShowArt(next[0], next[1..]); else HeroArt.Source = null; return; }
+        var want = shownArt; var done = false;
+        void Next() { if (done || shownArt != want) return; done = true; artTimer?.Stop(); if (next.Count > 0) ShowArt(next[0], next[1..]); }
         var bmp = new BitmapImage { UriSource = uri };
-        bmp.ImageOpened += (_, _) => { Fade(HeroArt, 1, 600); Zoom(HeroArt); };
-        bmp.ImageFailed += (_, _) => { if (url != fallback && fallback.Length > 0 && shownArt == url) ShowArt(fallback, fallback); };
+        bmp.ImageOpened += (_, _) => { if (done || shownArt != want) return; done = true; artTimer?.Stop(); Fade(HeroArt, 1, 600); Zoom(HeroArt); };
+        bmp.ImageFailed += (_, _) => Next();
         HeroArt.Source = bmp;
+        artTimer = DispatcherQueue.CreateTimer(); artTimer.Interval = TimeSpan.FromSeconds(6); artTimer.IsRepeating = false;
+        artTimer.Tick += (_, _) => Next();
+        artTimer.Start();
     }
 
     private void OnBack(object sender, RoutedEventArgs e) => BackRequested?.Invoke(this, EventArgs.Empty);
