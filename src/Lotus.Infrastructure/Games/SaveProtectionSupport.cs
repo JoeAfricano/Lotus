@@ -21,6 +21,8 @@ public sealed class WindowsKnownFolders : IKnownFolders
         "DOCUMENTS" => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
         "SAVEDGAMES" => Known(SavedGames),
         "LOCALLOW" => Known(LocalLow),
+        "PUBLIC" => Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments) is { Length: > 0 } d ? Path.GetDirectoryName(d) : null,
+        "PROGRAMDATA" => Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
         _ => null,
     };
     public string? SteamPath() => WindowsGameLibrary.DefaultSteamPath();

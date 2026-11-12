@@ -2366,6 +2366,7 @@ Your games and Windows are not changed.</value></data>
   <data name="SpFolderLabel" xml:space="preserve"><value>Save folder</value></data>
   <data name="SpFolderInfo" xml:space="preserve"><value>{0} files · {1} · changed {2}</value></data>
   <data name="SpCloudNote" xml:space="preserve"><value>This folder is synced by the store&apos;s cloud. After a restore, the cloud may ask which version to keep or replace the files again.</value></data>
+  <data name="SpByNameNote" xml:space="preserve"><value>This folder was found by the game&apos;s title in the save catalog (Ludusavi, PCGamingWiki), because this store gives no id. Check that it really belongs to this game before protecting it.</value></data>
   <data name="SpEnable" xml:space="preserve"><value>Turn on protection</value></data>
   <data name="SpPickFolder" xml:space="preserve"><value>Pick folder…</value></data>
   <data name="SpBackupNow" xml:space="preserve"><value>Back up now</value></data>

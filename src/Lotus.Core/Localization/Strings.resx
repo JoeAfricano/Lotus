@@ -2366,6 +2366,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="SpFolderLabel" xml:space="preserve"><value>Pasta dos saves</value></data>
   <data name="SpFolderInfo" xml:space="preserve"><value>{0} arquivos · {1} · alterado em {2}</value></data>
   <data name="SpCloudNote" xml:space="preserve"><value>Esta pasta é sincronizada pela nuvem da loja. Ao restaurar, a nuvem pode perguntar qual versão manter ou trocar os arquivos de novo.</value></data>
+  <data name="SpByNameNote" xml:space="preserve"><value>Esta pasta foi encontrada pelo nome do jogo no catálogo de saves (Ludusavi, PCGamingWiki), porque esta loja não informa um código. Confira se ela é mesmo deste jogo antes de proteger.</value></data>
   <data name="SpEnable" xml:space="preserve"><value>Ativar proteção</value></data>
   <data name="SpPickFolder" xml:space="preserve"><value>Escolher pasta…</value></data>
   <data name="SpBackupNow" xml:space="preserve"><value>Fazer backup agora</value></data>

@@ -67,6 +67,9 @@ public sealed partial class SaveManagerView : UserControl
         var body = new StackPanel { Spacing = 8, MaxWidth = 460 };
         body.Children.Add(Line(vm!.Text["SpEnableBody"]));
         body.Children.Add(Line(folder, 0.8, 12.5));
+        // Found by the game's title in the manifest (no store id to match): the player checks the folder before protecting.
+        if (vm.FoundByName && folder == vm.Found?.Root)
+            body.Children.Add(new TextBlock { Text = vm.Text["SpByNameNote"], TextWrapping = TextWrapping.Wrap, Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["WarningBrush"] });
         return body;
     }
 

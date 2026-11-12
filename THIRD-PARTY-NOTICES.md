@@ -21,6 +21,9 @@ O Lotus usa ou se inspira nos projetos abaixo. Cada um mantém a própria licen�
 
 ## Ferramentas e dados usados em tempo de execução
 
+- **Ludusavi Manifest**, por Matthew T. Kennerly (mtkennerly), licença MIT: https://github.com/mtkennerly/ludusavi-manifest
+  Baixado sob demanda (no máximo uma vez por semana) para saber onde ficam os saves de milhares de jogos. Os dados vêm da **PCGamingWiki** (CC BY-NC-SA 3.0), https://www.pcgamingwiki.com. O Lotus guarda só um índice das pastas de save do Windows.
+
 - **PresentMon** (Intel/GameTechDev, MIT): baixado sob demanda para medir FPS.
 - **RivaTuner Statistics Server** (Unwinder/Guru3D): integração opcional para o overlay; não é distribuído com o Lotus.
 - Dados públicos da **Steam**, **SteamSpy**, **GOG** e **mygamelist.club** para listas, requisitos e notas.
