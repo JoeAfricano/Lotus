@@ -2896,6 +2896,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="DkScanTitle" xml:space="preserve"><value>Verificar a unidade {0}?</value></data>
   <data name="DkScanBody" xml:space="preserve"><value>O Lotus abre a verificação do próprio Windows (**chkdsk /scan**) numa janela visível. Ela só lê e relata problemas; **não corrige nada nem reinicia o PC**. O Windows vai pedir permissão de administrador.</value></data>
   <data name="DkScanGo" xml:space="preserve"><value>Abrir verificação</value></data>
+  <data name="DkScanButton" xml:space="preserve"><value>Verificar {0}</value></data>
   <data name="DkScanStarted" xml:space="preserve"><value>Verificação da unidade {0} aberta numa janela do Windows.</value></data>
   <data name="DkScanDeclined" xml:space="preserve"><value>A verificação da unidade {0} não foi aberta (permissão de administrador recusada).</value></data>
   <data name="DkNever" xml:space="preserve"><value>**Sem riscos:** nada aqui grava no disco. A verificação é a do Windows, só leitura. Desfragmentar SSD não ajuda e gasta o disco, por isso o Lotus não faz.</value></data>

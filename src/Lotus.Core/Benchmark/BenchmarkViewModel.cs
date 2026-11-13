@@ -37,7 +37,8 @@ public sealed class BenchmarkViewModel : ObservableObject
     public IReadOnlyList<DurationOption> Durations => [.. new[] { 30, 60, 90, 120 }.Select(s => new DurationOption(s, Text.Format("BenchDurationOption", s)))];
     public DurationOption? SelectedDuration { get => Durations.FirstOrDefault(d => d.Seconds == seconds); set { if (value is not null) { Seconds = value.Seconds; OnPropertyChanged(); } } }
     public bool HasTargets => Targets.Count > 0;
-    public string TargetHint => Busy ? "" : !HasTargets ? Text["BenchNoTargets"] : SelectedTarget is null ? Text["BenchPickTarget"] : "";
+    // Only the "no game open" case needs a hint; "pick a game" is already the picker's own placeholder.
+    public string TargetHint => Busy || HasTargets ? "" : Text["BenchNoTargets"];
     public string Conditions { get => conditions; set => SetProperty(ref conditions, value); }
     public CaptureTarget? SelectedTarget { get => selectedTarget; set { SetProperty(ref selectedTarget, value); StartCommand.NotifyCanExecuteChanged(); OnPropertyChanged(nameof(TargetHint)); } }
     public BenchmarkSession? SelectedSession { get => selectedSession; set { SetProperty(ref selectedSession, value); Notify(); } }

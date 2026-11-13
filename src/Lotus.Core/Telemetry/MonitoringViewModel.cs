@@ -87,5 +87,5 @@ public sealed class MonitoringViewModel(HardwareMonitoringService service, IText
     private string Status(TelemetryStatus? status) => text["Status" + (status?.ToString() ?? "WarmingUp")];
     private string Percent(Reading<double>? value) => value is { Status: TelemetryStatus.Available, Value: { } n } && double.IsFinite(n) && n is >= 0 and <= 100 ? n.ToString("F1", Culture) + " %" : "—";
     private string Bytes(Reading<ulong>? value, bool mib) => value is { Status: TelemetryStatus.Available, Value: { } n } ?
-        (mib ? TelemetryMath.MiB(n) : TelemetryMath.GiB(n)).ToString(mib ? "F1" : "F2", Culture) + (mib ? " MiB" : " GiB") : "—";
+        (mib ? TelemetryMath.MiB(n) : TelemetryMath.GiB(n)).ToString(mib ? "F1" : "F2", Culture) + (mib ? " MB" : " GB") : "—"; // binary units, labeled like Task Manager
 }

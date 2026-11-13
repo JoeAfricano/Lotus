@@ -211,10 +211,10 @@
          </Grid>
         </DataTemplate></ItemsControl.ItemTemplate>
        </ItemsControl>
-       <ItemsControl ItemsSource="{Binding Letters}">
+       <ItemsControl ItemsSource="{Binding ScanTargets}">
         <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate><DataTemplate>
-         <Button Click="OnDiskScan" Tag="{Binding}" Style="{StaticResource SoftButtonStyle}"><TextBlock><Run Text="chkdsk /scan "/><Run Text="{Binding}"/></TextBlock></Button>
+         <Button Click="OnDiskScan" Tag="{Binding Letter}" Style="{StaticResource SoftButtonStyle}"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE721;" FontSize="14"/><TextBlock Text="{Binding Label}"/></StackPanel></Button>
         </DataTemplate></ItemsControl.ItemTemplate>
        </ItemsControl>
       </StackPanel>

@@ -15,8 +15,8 @@
     <StackPanel Grid.Column="1" Spacing="8">
      <TextBlock Text="{Binding Text[BenchStep1]}" FontWeight="SemiBold"/>
      <Grid ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-      <ComboBox ItemsSource="{Binding Targets}" SelectedItem="{Binding SelectedTarget, Mode=TwoWay}" DisplayMemberPath="Label" PlaceholderText="{Binding Text[BenchPickTarget]}" HorizontalAlignment="Stretch" IsEnabled="{Binding CanEdit}" AutomationProperties.Name="{Binding Text[BenchStep1]}" AutomationProperties.AutomationId="bench-target"/>
-      <Button Grid.Column="1" Command="{Binding RefreshCommand}" Style="{StaticResource SoftButtonStyle}" AutomationProperties.Name="{Binding Text[BenchRefresh]}">
+      <ComboBox ItemsSource="{Binding Targets}" SelectedItem="{Binding SelectedTarget, Mode=TwoWay}" DisplayMemberPath="Label" PlaceholderText="{Binding Text[BenchPickTarget]}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="40" IsEnabled="{Binding CanEdit}" AutomationProperties.Name="{Binding Text[BenchStep1]}" AutomationProperties.AutomationId="bench-target"/>
+      <Button Grid.Column="1" Command="{Binding RefreshCommand}" Style="{StaticResource SoftButtonStyle}" MinHeight="40" AutomationProperties.Name="{Binding Text[BenchRefresh]}">
        <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE72C;" FontSize="13"/><TextBlock Text="{Binding Text[BenchRefresh]}"/></StackPanel>
       </Button>
      </Grid>
@@ -28,7 +28,7 @@
     <Border Width="28" Height="28" CornerRadius="14" Background="{ThemeResource AccentSoftBrush}" VerticalAlignment="Top"><TextBlock Text="2" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
     <StackPanel Grid.Column="1" Spacing="8">
      <TextBlock Text="{Binding Text[BenchStep2]}" FontWeight="SemiBold"/>
-     <ComboBox ItemsSource="{Binding Durations}" SelectedItem="{Binding SelectedDuration, Mode=TwoWay}" DisplayMemberPath="Label" MinWidth="200" IsEnabled="{Binding CanEdit}" AutomationProperties.Name="{Binding Text[BenchStep2]}" AutomationProperties.AutomationId="bench-duration"/>
+     <ComboBox ItemsSource="{Binding Durations}" SelectedItem="{Binding SelectedDuration, Mode=TwoWay}" DisplayMemberPath="Label" MinWidth="200" MinHeight="40" IsEnabled="{Binding CanEdit}" AutomationProperties.Name="{Binding Text[BenchStep2]}" AutomationProperties.AutomationId="bench-duration"/>
     </StackPanel>
    </Grid>
    <!-- 3. Measure -->

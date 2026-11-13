@@ -43,6 +43,6 @@ public sealed class MemoryAnalysisViewModel : ObservableObject, IDisposable
         if (monitoring.Snapshot is { } snapshot) analyzer.Add(snapshot); else analyzer.Reset();
         OnPropertyChanged(string.Empty);
     }
-    private string Bytes(ulong? value) => value is { } bytes ? TelemetryMath.GiB(bytes).ToString("F2", Culture) + " GiB" : "—";
+    private string Bytes(ulong? value) => value is { } bytes ? TelemetryMath.GiB(bytes).ToString("F2", Culture) + " GB" : "—"; // binary GB, the same unit Windows' Task Manager shows
     public void Dispose() { SetActive(false); monitoring.Updated -= OnUpdated; }
 }

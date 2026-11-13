@@ -327,7 +327,9 @@
         </StackPanel>
        </StackPanel>
        <StackPanel Grid.Column="2" Spacing="6" HorizontalAlignment="Right">
-        <TextBlock Text="{Binding Rating}" FontSize="40" FontWeight="Bold" HorizontalAlignment="Right" Foreground="{Binding RatingKind, Converter={StaticResource DiaryBrush}}"/>
+        <!-- No rating yet: a quiet "Sem nota" instead of a 40 px dash that looks like a broken bar -->
+        <TextBlock Text="{Binding Rating}" FontSize="40" FontWeight="Bold" HorizontalAlignment="Right" Foreground="{Binding RatingKind, Converter={StaticResource DiaryBrush}}" Visibility="{Binding HasRating, Converter={StaticResource BooleanVisibility}}"/>
+        <TextBlock Text="{Binding NoRating}" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right" Visibility="{Binding HasRating, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}"/>
         <Border CornerRadius="12" Padding="10,3" HorizontalAlignment="Right" Background="{Binding StatusKey, Converter={StaticResource DiaryBrush}}">
          <TextBlock Text="{Binding Status}" FontSize="12" FontWeight="SemiBold" Foreground="#12090F"/>
         </Border>

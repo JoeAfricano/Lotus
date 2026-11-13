@@ -4,9 +4,9 @@
   <TextBlock x:Name="Title" Style="{StaticResource SectionTitleStyle}"/>
   <Grid ColumnSpacing="24" RowSpacing="16">
    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-   <!-- Theme cards: a small preview of each mode -->
+   <!-- Theme cards: a small preview of each mode, always 2x2 so no card sits alone on a second row -->
    <ItemsControl x:Name="ThemeCards" AutomationProperties.AutomationId="settings-theme-cards">
-    <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="196" ItemHeight="128"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+    <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="196" ItemHeight="128" MaximumRowsOrColumns="2"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
    </ItemsControl>
    <StackPanel x:Name="AccentArea" Grid.Column="1" Spacing="12" MinWidth="220">
     <TextBlock x:Name="AccentTitle" FontSize="18" FontWeight="SemiBold"/>

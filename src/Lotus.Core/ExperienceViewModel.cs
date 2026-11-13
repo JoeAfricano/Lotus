@@ -69,7 +69,7 @@ public sealed class ExperienceViewModel : ObservableObject, IDisposable
     public string GpuModel => hardware?.Gpu.Devices.FirstOrDefault()?.Name ?? QuickFacts?.Gpu ?? text["UxUnavailable"];
     public string RamCapacity => hardware?.Memory.TotalPhysicalBytes is { Status: TelemetryStatus.Available, Value: { } n } ? Bytes(n) : QuickFacts?.RamBytes is { } q ? Bytes((ulong)q) : text["UxUnavailable"];
     public string SummaryTime => hardware is null ? text[QuickFacts is null ? "UxSummaryWaiting" : "UxSummaryQuick"] : text.Format("UxSummaryTime", hardware.CapturedAt.ToLocalTime().ToString("g", Culture));
-    private string Bytes(ulong? value) => value is { } n ? TelemetryMath.GiB(n).ToString("F2", Culture) + " GiB" : "—";
+    private string Bytes(ulong? value) => value is { } n ? TelemetryMath.GiB(n).ToString("F2", Culture) + " GB" : "—"; // binary GB, the same unit Windows' Task Manager shows
     private async Task AnalyzeAsync()
     {
         using var run = new CancellationTokenSource(); cancellation = run;

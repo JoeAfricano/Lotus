@@ -98,9 +98,8 @@
     <SelectorBar x:Name="OptimizeTabs" SelectionChanged="OnOptimizeTabChanged" AutomationProperties.Name="{Binding Text[UxOptimizeSections]}">
      <SelectorBarItem Text="{Binding Text[UxResultsTab]}"/><SelectorBarItem Text="{Binding Text[UxRestoreTab]}"/>
     </SelectorBar>
-    <!-- Result (design 03): the analysis on the left, safety and reversal on the right -->
+    <!-- Result (design 03): the analysis, full width. The safety promise lives once, in the "Segurança e reversão" card above -->
     <Grid x:Name="DiagnosisContent" x:Load="{x:Bind ShowDiagnosis}" ColumnSpacing="24" RowSpacing="24">
-     <Grid.ColumnDefinitions><ColumnDefinition Width="1.8*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
      <Border Style="{StaticResource CardStyle}">
       <StackPanel Spacing="14">
        <FontIcon Glyph="&#xE9D9;" FontSize="26" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
@@ -119,13 +118,6 @@
        <Expander Visibility="{Binding Experience.HasResult, Converter={StaticResource BooleanVisibility}}" Header="{Binding Text[UxTechnicalDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
         <StackPanel Spacing="12"><TextBlock Text="{Binding Text[RamAvailableLabel]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Experience.Available}" Style="{StaticResource MetricValueStyle}"/><TextBlock Text="{Binding Text[RamCapacityLabel]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Experience.Capacity}"/><TextBlock Text="{Binding Text[RamMinimumLabel]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Experience.MinimumAvailable}"/><TextBlock Text="{Binding Experience.Evidence}" Style="{StaticResource BodyStyle}"/><TextBlock Text="{Binding Text[RamMethod]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[RamCacheExplanation]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[RamLimits]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Experience.Source}" Style="{StaticResource CaptionStyle}"/></StackPanel>
        </Expander>
-      </StackPanel>
-     </Border>
-     <Border Grid.Column="1" Style="{StaticResource CardStyle}" VerticalAlignment="Stretch">
-      <StackPanel Spacing="12">
-       <FontIcon Glyph="&#xE945;" FontSize="26" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
-       <TextBlock Text="{Binding Text[SafetyCategory]}" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap"/>
-       <TextBlock Text="{Binding Text[UxNoChangesDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
       </StackPanel>
      </Border>
     </Grid>
@@ -206,7 +198,7 @@
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.StartWithWindows, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetStartWithWindows]}" AutomationProperties.AutomationId="settings-start-windows"/>
      </Grid></Border>
      <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-      <FontIcon Glyph="&#xE921;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+      <FontIcon Glyph="&#xE73F;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetCloseToTray]}" TextWrapping="Wrap"/><TextBlock app:Rich.Text="{Binding Text[SetCloseToTrayHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.CloseToTray, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetCloseToTray]}" AutomationProperties.AutomationId="settings-close-tray"/>
      </Grid></Border>
@@ -236,7 +228,7 @@
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.MeasurePortsSessions, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetMeasurePorts]}" AutomationProperties.AutomationId="settings-measure-ports"/>
      </Grid></Border>
      <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-      <FontIcon Glyph="&#xE921;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+      <FontIcon Glyph="&#xE7FC;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetMinimizeForGames]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetMinimizeForGamesHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.MinimizeForGames, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetMinimizeForGames]}" AutomationProperties.AutomationId="settings-minimize-for-games"/>
      </Grid></Border>
@@ -261,7 +253,7 @@
       <ComboBox Grid.Column="2" MinWidth="200" SelectedIndex="{Binding Preferences.LanguageIndex, Mode=TwoWay}" ItemsSource="{Binding Preferences.LanguageOptions}" AutomationProperties.AutomationId="settings-language" AutomationProperties.Name="{Binding Text[Language]}"/>
      </Grid></Border>
      <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-      <FontIcon Glyph="&#xE945;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+      <FontIcon Glyph="&#xE769;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
       <TextBlock Grid.Column="1" Text="{Binding Text[ReduceMotion]}" VerticalAlignment="Center" TextWrapping="Wrap"/>
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.ReduceMotion, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.AutomationId="settings-motion" AutomationProperties.Name="{Binding Text[ReduceMotion]}"/>
      </Grid></Border>

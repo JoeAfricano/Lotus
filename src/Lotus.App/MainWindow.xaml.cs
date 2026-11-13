@@ -462,7 +462,8 @@ public sealed partial class MainWindow : Window
             if (child is Button { Name: "TogglePaneButton" } button)
             {
                 AutomationProperties.SetName(button, label);
-                ToolTipService.SetToolTip(button, label);
+                // Opens to the right: the button sits at the window's left edge, so a centered tooltip would be cut off.
+                ToolTipService.SetToolTip(button, new ToolTip { Content = label, Placement = Microsoft.UI.Xaml.Controls.Primitives.PlacementMode.Right });
                 return;
             }
             UpdateToggleAccessibility(child, label);

@@ -94,7 +94,7 @@ public sealed class ExperienceTests
         Assert.Equal(0, service.ConsumerCount); Assert.True(vm.HasResult); Assert.Equal("test CPU", vm.CpuModel);
         Assert.NotEqual(MemoryFinding.Unavailable, vm.Assessment.Finding); Assert.Equal(MemoryFinding.Unavailable, memory.Assessment.Finding);
         vm.ViewResultCommand.Execute(null); Assert.Equal("analysis", shell.CurrentRoute);
-        text.SetLanguage("en-US"); vm.RefreshLanguage(); Assert.Contains("GiB", vm.Capacity);
+        text.SetLanguage("en-US"); vm.RefreshLanguage(); Assert.Contains("GB", vm.Capacity);
         var saved = vm.Assessment; await Task.Delay(50); dispatcher.Drain(); Assert.Same(saved, vm.Assessment);
     }
     [Theory] [InlineData(true)] [InlineData(false)]

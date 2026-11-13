@@ -2896,6 +2896,7 @@ Your games and Windows are not changed.</value></data>
   <data name="DkScanTitle" xml:space="preserve"><value>Check drive {0}?</value></data>
   <data name="DkScanBody" xml:space="preserve"><value>Lotus opens Windows&apos; own check (**chkdsk /scan**) in a visible window. It only reads and reports problems; **it fixes nothing and does not restart the PC**. Windows will ask for administrator permission.</value></data>
   <data name="DkScanGo" xml:space="preserve"><value>Open check</value></data>
+  <data name="DkScanButton" xml:space="preserve"><value>Check {0}</value></data>
   <data name="DkScanStarted" xml:space="preserve"><value>Check of drive {0} opened in a Windows window.</value></data>
   <data name="DkScanDeclined" xml:space="preserve"><value>The check of drive {0} was not opened (administrator permission declined).</value></data>
   <data name="DkNever" xml:space="preserve"><value>**No risk:** nothing here writes to the drive. The check is Windows&apos; own, read-only. Defragmenting an SSD does not help and wears it, so Lotus does not do it.</value></data>

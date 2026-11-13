@@ -148,7 +148,7 @@
   <Grid ColumnSpacing="24">
    <Grid.ColumnDefinitions><ColumnDefinition Width="1.8*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
     <!-- Offline comparison: tiers, then individual parts -->
-    <Border Style="{StaticResource CardStyle}">
+    <Border Style="{StaticResource CardStyle}" VerticalAlignment="Top">
      <StackPanel Spacing="10">
       <TextBlock Text="{Binding Text[ScoreCompareTitle]}" Style="{StaticResource SectionTitleStyle}"/>
       <ItemsControl ItemsSource="{Binding Compare}" AutomationProperties.AutomationId="score-compare">
@@ -190,11 +190,12 @@
      </StackPanel>
     </Border>
    <Grid Grid.Column="1">
-      <!-- History -->
+      <!-- History: a long list scrolls inside its card instead of stretching the comparison card next to it -->
       <Border Style="{StaticResource CardStyle}">
        <StackPanel Spacing="8">
         <TextBlock Text="{Binding Text[ScoreHistoryTitle]}" Style="{StaticResource SectionTitleStyle}"/>
         <TextBlock Text="{Binding Text[ScoreHistoryEmpty]}" Style="{StaticResource CaptionStyle}" Visibility="{Binding NoHistory, Converter={StaticResource BooleanVisibility}}"/>
+        <ScrollViewer MaxHeight="500" VerticalScrollBarVisibility="Auto" Padding="0,0,6,0">
         <ItemsControl ItemsSource="{Binding History}" AutomationProperties.AutomationId="score-history">
          <ItemsControl.ItemTemplate>
           <DataTemplate>
@@ -204,6 +205,7 @@
           </DataTemplate>
          </ItemsControl.ItemTemplate>
         </ItemsControl>
+        </ScrollViewer>
        </StackPanel>
       </Border>
    </Grid>

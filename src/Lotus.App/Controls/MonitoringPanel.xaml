@@ -5,18 +5,19 @@
   <Grid x:Name="Cards" ColumnSpacing="16" RowSpacing="16" SizeChanged="OnCardsSizeChanged">
    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <!-- The line under the big number has a fixed height in both cards, so the two charts start at the same y -->
    <ContentControl x:Name="CpuCard" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="8">
     <TextBlock Text="CPU" Style="{StaticResource EyebrowStyle}"/>
     <TextBlock Text="{Binding CpuName}" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.AutomationId="monitor-cpu-name"/>
     <TextBlock Text="{Binding CpuPercent}" Style="{StaticResource MetricValueStyle}" AutomationProperties.AutomationId="monitor-cpu-percent"/>
-    <TextBlock Text="{Binding CpuStatus}" FontSize="12" Foreground="{ThemeResource MutedBrush}" AutomationProperties.AutomationId="monitor-cpu-status"/>
+    <TextBlock Text="{Binding CpuStatus}" Height="20" VerticalAlignment="Center" Padding="0,2,0,0" FontSize="12" Foreground="{ThemeResource MutedBrush}" AutomationProperties.AutomationId="monitor-cpu-status"/>
     <local:TelemetryChart x:Name="CpuChart" Height="90" AutomationProperties.Name="{Binding Text[CpuChart]}"/>
    </StackPanel></ContentControl>
    <ContentControl x:Name="MemoryCard" Grid.Column="1" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="8">
     <TextBlock Text="{Binding Text[Memory]}" Style="{StaticResource EyebrowStyle}"/>
     <TextBlock Text="{Binding Text[PhysicalMemory]}" FontSize="18" FontWeight="SemiBold"/>
     <TextBlock Text="{Binding MemoryPercent}" Style="{StaticResource MetricValueStyle}" AutomationProperties.AutomationId="monitor-memory-percent"/>
-    <TextBlock Text="{Binding MemorySummary}" FontSize="14" AutomationProperties.AutomationId="monitor-memory-summary"/>
+    <TextBlock Text="{Binding MemorySummary}" Height="20" FontSize="14" AutomationProperties.AutomationId="monitor-memory-summary"/>
     <local:TelemetryChart x:Name="MemoryChart" Height="90" AutomationProperties.Name="{Binding Text[MemoryChart]}"/>
    </StackPanel></ContentControl>
   </Grid>

@@ -27,6 +27,8 @@ public sealed class DiskSystemOverlayTests
         Assert.Equal(text["DkUnavailable"], facts.Single(f => f.Label == text["DkWear"]).Value);
         Assert.False(vm.Rows.Single().Warning);
         Assert.Contains(text["DkNeedsAdmin"], vm.Status);
+        Assert.Equal("Saudável", facts.Single(f => f.Label == text["DkHealth"]).Value);   // stands alone, so it starts uppercase
+        Assert.Equal(new DiskScanTarget("C:", "Verificar C:"), vm.Rows.Single().ScanTargets.Single()); // plain words, not "chkdsk /scan"
     }
 
     [Fact] public async Task RealWarningsAreFlagged()
