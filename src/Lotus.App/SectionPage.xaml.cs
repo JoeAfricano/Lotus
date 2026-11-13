@@ -45,6 +45,7 @@ public sealed partial class SectionPage : Page
     private async void OnContinueLoaded(object sender, RoutedEventArgs e)
     {
         if (DataContext is not SectionViewModel vm || ContinueCard is null) return;
+        ContinueCard.Greeting = vm.Title; // Home has no page header: the greeting sits on the art
         if (vm.Games is { } games)
         {
             // The library may still be scanning (startup): redraw when it fills in.
@@ -56,6 +57,22 @@ public sealed partial class SectionPage : Page
             await games.EnsureLoadedAsync();
         }
         ContinueCard?.Show(vm);
+    }
+    // Meus Jogos: the "Último jogado" band (hidden until a game has been played through Lotus).
+    private async void OnSpotlightLoaded(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not SectionViewModel { Games: { } games } vm || GamesSpotlight is null) return;
+        await games.EnsureLoadedAsync();
+        if (GamesSpotlight is null) return;
+        var has = games.LastPlayed() is { LastPlayed: not null };
+        GamesSpotlight.Visibility = has ? Visibility.Visible : Visibility.Collapsed;
+        if (has) GamesSpotlight.Show(vm);
+    }
+    private void OnSpotlightDetails(object? sender, Lotus.Core.Games.GameEntry game)
+    {
+        if (DataContext is not SectionViewModel { Games: { } games }) return;
+        var card = games.Games.FirstOrDefault(c => c.Game.Key == game.Key);
+        if (card is not null) OnGameDetails(this, card);
     }
     private void OnContinueDetails(object? sender, Lotus.Core.Games.GameEntry game)
     {
@@ -223,6 +240,7 @@ public sealed partial class SectionPage : Page
         OverlayArea.Visibility = overlay ? Visibility.Visible : Visibility.Collapsed;
         // Each tab shows only its own content: the library (and the Steam highlight) or the overlay.
         if (GamesContent is not null) GamesContent.Visibility = overlay ? Visibility.Collapsed : Visibility.Visible;
+        if (GamesSpotlight is not null && DataContext is SectionViewModel { Games: { } lib }) GamesSpotlight.Visibility = !overlay && lib.LastPlayed() is { LastPlayed: not null } ? Visibility.Visible : Visibility.Collapsed;
         if (GamesBanner is not null) GamesBanner.Visibility = overlay ? Visibility.Collapsed : Visibility.Visible;
         if (overlay) Motion.EnterPage(OverlayArea);
     }
@@ -330,6 +348,7 @@ public sealed partial class SectionPage : Page
             ShowSafety = ShowSettings && shell.SettingsCategoryIndex == 2; ShowAdvanced = ShowSettings && shell.SettingsCategoryIndex == 3;
             ShowFaq = ShowSettings && shell.SettingsCategoryIndex == 4; ShowBackup = ShowSettings && shell.SettingsCategoryIndex == 5; ShowUpdates = ShowSettings && shell.SettingsCategoryIndex == 6;
             Bindings.Update();
+            PageHeader.Visibility = ShowHome ? Visibility.Collapsed : Visibility.Visible;
             if (ShowOptimize) OptimizeTabs.SelectedItem = OptimizeTabs.Items[shell.OptimizeTabIndex];
             if (ShowPerformance) PerformanceTabs.SelectedItem = PerformanceTabs.Items[shell.PerformanceTabIndex];
             if (ShowSettings) SyncSettingsTabs(shell);
@@ -395,14 +414,22 @@ public sealed partial class SectionPage : Page
     }
     private void OnContentSizeChanged(object sender, SizeChangedEventArgs e)
     {
-        PageContent.Padding = e.NewSize.Width < 700 ? new Thickness(16, 20, 16, 32) : new Thickness(32, 24, 32, 32);
-        // Home: continue card + side column side by side; stacked below ~980 px.
-        if (HomeTop is not null && HomeSide is not null && HomeSideColumn is not null)
+        var pad = e.NewSize.Width < 700 ? new Thickness(16, 20, 16, 32) : new Thickness(32, 24, 32, 32);
+        PageContent.Padding = pad;
+        // Home: the hero bleeds to the page edges; the readiness card floats on the art, or goes under it when narrow (~1000 px).
+        if (HomeTop is not null && HomeSide is not null && HomeBelow is not null && HomeTiles is not null && HomeTilesColumn is not null)
         {
-            var narrow = e.NewSize.Width < 980;
-            HomeSideColumn.Width = narrow ? new GridLength(0) : new GridLength(360);
-            Grid.SetColumn(HomeSide, narrow ? 0 : 1); Grid.SetRow(HomeSide, narrow ? 1 : 0);
-            HomeTop.ColumnSpacing = narrow ? 0 : 20;
+            HomeTop.Margin = new Thickness(-pad.Left, -pad.Top, -pad.Right, 0);
+            var narrow = e.NewSize.Width < 1000;
+            Grid.SetRow(HomeSide, narrow ? 1 : 0);
+            HomeSide.Width = narrow ? double.NaN : 340;
+            HomeSide.HorizontalAlignment = narrow ? HorizontalAlignment.Stretch : HorizontalAlignment.Right;
+            HomeSide.Margin = narrow ? new Thickness(pad.Left, 0, pad.Right, 0) : new Thickness(0, 28, pad.Right, 0);
+            HomeBelow.Margin = narrow ? new Thickness(0) : new Thickness(0, -48, 0, 0);
+            HomeTilesColumn.Width = narrow ? new GridLength(0) : new GridLength(340);
+            Grid.SetColumn(HomeTiles, narrow ? 0 : 1); Grid.SetRow(HomeTiles, narrow ? 1 : 0);
+            HomeTiles.Margin = narrow ? new Thickness(0) : new Thickness(0, 64, 0, 0);
+            HomeBelow.ColumnSpacing = narrow ? 0 : 24;
         }
     }
 }

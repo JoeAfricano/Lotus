@@ -17,6 +17,23 @@ public sealed partial class GamesPanel : UserControl
     }
     public const string ConnectedCoverKey = "lotus-cover";
     // ElementName bindings do not reach out of the item template, so the "..." button gets its name and tooltip here.
+    // Visual 3.0: the actions over a cover show on hover or when the keyboard reaches the card.
+    private void OnCardEnter(object sender, RoutedEventArgs e) => SetActions(sender, true);
+    private void OnCardLeave(object sender, RoutedEventArgs e)
+    {
+        // Keep them while the keyboard is still on one of the card's buttons.
+        if (sender is FrameworkElement { XamlRoot: { } root } f && Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(root) is Control { FocusState: FocusState.Keyboard } c && IsInside(c, f)) return;
+        SetActions(sender, false);
+    }
+    private static bool IsInside(DependencyObject d, DependencyObject root)
+    {
+        for (var x = d; x is not null; x = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(x)) if (x == root) return true;
+        return false;
+    }
+    private static void SetActions(object sender, bool on)
+    {
+        if (sender is FrameworkElement f && f.FindName("HoverActions") is UIElement actions) actions.Opacity = on ? 1 : 0;
+    }
     private void OnMoreLoaded(object sender, RoutedEventArgs e)
     {
         if (sender is not Button b || DataContext is not GamesViewModel vm) return;
