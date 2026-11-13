@@ -2,14 +2,20 @@
  <StackPanel Spacing="18" app:Motion.Stagger="True">
   <!-- Toolbar: search, store filter, add, rescan -->
   <Grid ColumnSpacing="12" RowSpacing="12">
-   <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+   <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
    <TextBox PlaceholderText="{Binding Text[GamesSearch]}" Text="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="40" VerticalContentAlignment="Center" AutomationProperties.Name="{Binding Text[GamesSearch]}" AutomationProperties.AutomationId="games-search"/>
    <ComboBox Grid.Column="1" ItemsSource="{Binding Stores}" SelectedItem="{Binding SelectedStore, Mode=TwoWay}" DisplayMemberPath="Label" MinWidth="170" MinHeight="40" AutomationProperties.AutomationId="games-store"/>
-   <Button Grid.Column="2" Click="OnAddGame" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.Name="{Binding Text[GamesAdd]}" AutomationProperties.AutomationId="games-add"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE710;" FontSize="13"/><TextBlock Text="{Binding Text[GamesAdd]}"/></StackPanel></Button>
-   <Button x:Name="RescanButton" Grid.Column="3" Click="OnRescan" Style="{StaticResource SoftButtonStyle}" ToolTipService.ToolTip="{Binding Text[GamesReadOnly]}" AutomationProperties.Name="{Binding Text[GamesRescan]}" AutomationProperties.AutomationId="games-rescan"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon x:Name="RescanIcon" Glyph="&#xE72C;" FontSize="13"/><TextBlock x:Name="RescanText" Text="{Binding Text[GamesRescan]}"/></StackPanel></Button>
+   <!-- Visual 2.0: add and rescan live in one "+" menu, so the games come first -->
+   <DropDownButton x:Name="RescanButton" Grid.Column="2" MinHeight="40" MinWidth="56" CornerRadius="{StaticResource ControlRadius}" AutomationProperties.Name="{Binding Text[GamesAdd]}" AutomationProperties.AutomationId="games-more" ToolTipService.ToolTip="{Binding Text[GamesAdd]}">
+    <FontIcon x:Name="RescanIcon" Glyph="&#xE710;" FontSize="14"/>
+    <DropDownButton.Flyout><MenuFlyout Placement="BottomEdgeAlignedRight">
+     <MenuFlyoutItem Text="{Binding Text[GamesAdd]}" Click="OnAddGame" AutomationProperties.AutomationId="games-add"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE710;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
+     <MenuFlyoutItem Text="{Binding Text[GamesRescan]}" Click="OnRescan" ToolTipService.ToolTip="{Binding Text[GamesReadOnly]}" AutomationProperties.AutomationId="games-rescan"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE72C;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
+    </MenuFlyout></DropDownButton.Flyout>
+   </DropDownButton>
   </Grid>
   <StackPanel Spacing="4">
-   <TextBlock Text="{Binding Summary}" FontWeight="SemiBold" AutomationProperties.AutomationId="games-summary"/>
+   <StackPanel Orientation="Horizontal" Spacing="12"><TextBlock Text="{Binding Summary}" FontWeight="SemiBold" AutomationProperties.AutomationId="games-summary"/><TextBlock x:Name="RescanText" Foreground="{ThemeResource SuccessBrush}" AutomationProperties.LiveSetting="Polite"/></StackPanel>
    <TextBlock Text="{Binding Status}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite" app:Motion.Settle="True" AutomationProperties.AutomationId="games-status"/>
   </StackPanel>
   <!-- Lotus Ports: its games, with Jogar (only when Lotus Ports is installed and answers) -->

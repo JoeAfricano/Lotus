@@ -214,8 +214,11 @@ public sealed partial class SectionPage : Page
     {
         if (OverlaySummary is null || OverlayArea is null) return;
         var overlay = sender.Items.IndexOf(sender.SelectedItem) == 1;
-        OverlaySummary.Visibility = overlay ? Visibility.Collapsed : Visibility.Visible;
+        OverlaySummary.Visibility = Visibility.Collapsed; // visual 2.0: no overlay card inside the library
         OverlayArea.Visibility = overlay ? Visibility.Visible : Visibility.Collapsed;
+        // Each tab shows only its own content: the library (and the Steam highlight) or the overlay.
+        if (GamesContent is not null) GamesContent.Visibility = overlay ? Visibility.Collapsed : Visibility.Visible;
+        if (GamesBanner is not null) GamesBanner.Visibility = overlay ? Visibility.Collapsed : Visibility.Visible;
         if (overlay) Motion.EnterPage(OverlayArea);
     }
     private void OnOverlayConfigure(object sender, RoutedEventArgs e) { if (GamesTabs is { } tabs) tabs.SelectedItem = tabs.Items[1]; }

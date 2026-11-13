@@ -83,13 +83,6 @@
       <StackPanel x:Name="HomeShelfRow" Orientation="Horizontal" Spacing="14" Padding="0,0,0,10"/>
      </ScrollViewer>
     </StackPanel>
-    <!-- "Antes de começar": the promise that nothing changes without the player, as a quiet note at the end of Home -->
-    <Border CornerRadius="12" Padding="18,12" Margin="0,8,0,0" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" HorizontalAlignment="Left" AutomationProperties.AutomationId="home-before">
-     <StackPanel Orientation="Horizontal" Spacing="12">
-      <FontIcon Glyph="&#xE945;" FontSize="16" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
-      <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Style="{StaticResource CaptionStyle}"><Run Text="{Binding Text[HbBeforeTitle]}" FontWeight="SemiBold"/><Run Text=" · "/><Run Text="{Binding Text[HbBeforeBody]}"/></TextBlock>
-     </StackPanel>
-    </Border>
    </StackPanel>
 
    <StackPanel x:Name="OptimizeContent" x:Load="{x:Bind ShowOptimize}" Spacing="20">
@@ -140,12 +133,11 @@
 
    <Grid x:Name="GamesArea" x:Load="{x:Bind ShowGames}">
     <StackPanel x:Name="GamesList" Spacing="16" Loaded="OnGamesListLoaded">
-     <controls:HomeBanner x:Name="GamesBanner" Height="300" Loaded="OnGamesBannerLoaded"/>
-     <!-- Library / Overlay (design 04-05): the overlay is condensed in the library and complete in its own tab -->
+     <!-- Library / Overlay: the overlay lives only in its own tab (visual 2.0) -->
      <SelectorBar x:Name="GamesTabs" SelectionChanged="OnGamesTabChanged" AutomationProperties.AutomationId="games-tabs">
       <SelectorBarItem Text="{Binding Text[GmTabLibrary]}" IsSelected="True"/><SelectorBarItem Text="{Binding Text[GmTabOverlay]}"/>
      </SelectorBar>
-     <Border x:Name="OverlaySummary" Style="{StaticResource CardStyle}" Padding="22,16" AutomationProperties.AutomationId="games-overlay-summary">
+     <Border x:Name="OverlaySummary" Visibility="Collapsed" Style="{StaticResource CardStyle}" Padding="22,16" AutomationProperties.AutomationId="games-overlay-summary">
       <Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
        <FontIcon Glyph="&#xE9D9;" FontSize="24" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2"><TextBlock Text="{Binding Text[GmOverlayTitle]}" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[GmOverlayHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/><TextBlock Text="{Binding Integrations.LayoutStatus}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap"/></StackPanel>
@@ -171,6 +163,8 @@
       <controls:RtssCard DataContext="{Binding Integrations}"/>
      </StackPanel>
      <controls:GamesPanel x:Name="GamesContent" DataContext="{Binding Games}" DetailsRequested="OnGameDetails"/>
+     <!-- Visual 2.0: the Steam highlight comes after the player's own games -->
+     <controls:HomeBanner x:Name="GamesBanner" Height="220" Margin="0,16,0,0" Loaded="OnGamesBannerLoaded"/>
     </StackPanel>
     <controls:GameDetailView x:Name="GameDetail" Visibility="Collapsed" DataContext="{Binding GameDetails}" BackRequested="OnGameDetailBack" PlayRequested="OnPlayGame"/>
    </Grid>
@@ -278,6 +272,13 @@
     </StackPanel></ContentControl>
     <StackPanel x:Name="FaqContent" x:Load="{x:Bind ShowFaq}" Spacing="8">
      <TextBlock Text="{Binding Text[FaqTitle]}" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,8"/>
+     <!-- "Antes de começar": the promise that nothing changes without the player (moved from Home in visual 2.0) -->
+     <Border CornerRadius="12" Padding="18,12" Margin="0,0,0,8" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" HorizontalAlignment="Left" AutomationProperties.AutomationId="faq-before">
+      <StackPanel Orientation="Horizontal" Spacing="12">
+       <FontIcon Glyph="&#xE945;" FontSize="16" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+       <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Style="{StaticResource CaptionStyle}"><Run Text="{Binding Text[HbBeforeTitle]}" FontWeight="SemiBold"/><Run Text=" · "/><Run Text="{Binding Text[HbBeforeBody]}"/></TextBlock>
+      </StackPanel>
+     </Border>
      <Expander Header="{Binding Text[Fq1Q]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock app:Rich.Text="{Binding Text[Fq1A]}" Style="{StaticResource BodyStyle}"/></Expander>
      <Expander Header="{Binding Text[Fq2Q]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock app:Rich.Text="{Binding Text[Fq2A]}" Style="{StaticResource BodyStyle}"/></Expander>
      <Expander Header="{Binding Text[Fq3Q]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock app:Rich.Text="{Binding Text[Fq3A]}" Style="{StaticResource BodyStyle}"/></Expander>

@@ -48,10 +48,10 @@ public sealed partial class GamesPanel : UserControl
         if (DataContext is not GamesViewModel vm) return;
         RescanButton.IsEnabled = false; Motion.Pop(RescanIcon);
         var removed = await vm.RescanAsync();
-        // Quick confirmation on the button, then back to its label.
+        // Quick confirmation next to the game count, then it fades away.
         RescanText.Text = "✓ " + vm.Text.Format("HomeRescanDone", vm.InstalledGames().Count); UiSound.Play(UiSound.Cue.Done);
         var back = DispatcherQueue.CreateTimer(); back.Interval = TimeSpan.FromSeconds(3); back.IsRepeating = false;
-        back.Tick += (_, _) => { RescanText.Text = vm.Text["GamesRescan"]; RescanButton.IsEnabled = true; }; back.Start();
+        back.Tick += (_, _) => { RescanText.Text = ""; RescanButton.IsEnabled = true; }; back.Start();
         if (removed.Count == 0) return;
         var list = new ListView { SelectionMode = ListViewSelectionMode.Multiple, MaxHeight = 380, ItemsSource = removed };
         list.ItemTemplate = (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
