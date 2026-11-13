@@ -3187,4 +3187,6 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="ToolGroupSystem" xml:space="preserve"><value>Sistema e rede</value></data>
   <data name="ToolSearch" xml:space="preserve"><value>Buscar ferramenta</value></data>
   <data name="ToolSearchEmpty" xml:space="preserve"><value>Nenhuma ferramenta com esse nome.</value></data>
+  <data name="SlFirstProtect" xml:space="preserve"><value>Proteja seu primeiro jogo: escolha um jogo abaixo e crie o primeiro backup.</value></data>
+  <data name="DyShowcaseInvite" xml:space="preserve"><value>Escolha seus 4 jogos favoritos</value></data>
 </root>

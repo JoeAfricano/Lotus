@@ -14,9 +14,9 @@ public sealed partial class DiaryPanel : UserControl
     public DiaryPanel()
     {
         InitializeComponent();
-        Loaded += (_, _) => Render();
-        DataContextChanged += (_, _) => { if (Vm is { } vm) { vm.PropertyChanged -= OnVm; vm.PropertyChanged += OnVm; Render(); } };
-        Unloaded += (_, _) => { if (Vm is { } vm) vm.PropertyChanged -= OnVm; };
+        Loaded += (_, _) => { Render(); PaintShowcase(); };
+        DataContextChanged += (_, _) => { if (Vm is { } vm) { vm.PropertyChanged -= OnVm; vm.PropertyChanged += OnVm; vm.Showcase.CollectionChanged -= OnShowcaseChanged; vm.Showcase.CollectionChanged += OnShowcaseChanged; Render(); PaintShowcase(); } };
+        Unloaded += (_, _) => { if (Vm is { } vm) { vm.PropertyChanged -= OnVm; vm.Showcase.CollectionChanged -= OnShowcaseChanged; } };
     }
 
     private void OnVm(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -188,10 +188,29 @@ public sealed partial class DiaryPanel : UserControl
         if (await dialog.ShowAsync() == ContentDialogResult.Primary) { vm.SaveCurrentFilter(box.Text); UiSound.Play(UiSound.Cue.Done); BuildChips(); }
     }
 
+    // ---- Top 4 empty: a single invitation (it opens the first slot's list) ----
+    private void OnShowcaseChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => DispatcherQueue.TryEnqueue(PaintShowcase);
+    private void PaintShowcase()
+    {
+        if (Vm is not { } vm) return;
+        var empty = vm.Showcase.Count > 0 && vm.Showcase.All(s => s.IsEmpty);
+        ShowcaseRow.Visibility = empty ? Visibility.Collapsed : Visibility.Visible;
+        ShowcaseInvite.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
+    }
+    private void OnShowcaseInvite(object sender, RoutedEventArgs e)
+    {
+        if (Vm is not { Showcase.Count: > 0 } vm) return;
+        ShowShowcaseMenu(vm.Showcase[0], ShowcaseInvite);
+    }
+
     // ---- "Top 4" showcase: an empty slot lists the diary's games; a filled one opens, swaps or clears ----
     private void OnShowcaseSlot(object sender, RoutedEventArgs e)
     {
-        if (Vm is not { } vm || sender is not FrameworkElement { DataContext: ShowcaseSlot slot } anchor) return;
+        if (sender is FrameworkElement { DataContext: ShowcaseSlot slot } anchor) ShowShowcaseMenu(slot, anchor);
+    }
+    private void ShowShowcaseMenu(ShowcaseSlot slot, FrameworkElement anchor)
+    {
+        if (Vm is not { } vm) return;
         var menu = new MenuFlyout();
         MenuFlyoutItemBase Pick(DiaryEntry entry)
         {

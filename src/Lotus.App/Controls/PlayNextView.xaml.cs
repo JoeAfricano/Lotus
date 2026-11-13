@@ -9,6 +9,8 @@ public sealed partial class PlayNextView : UserControl
 {
     private PlayNextViewModel? Vm => DataContext as PlayNextViewModel;
     private bool filling;
+    // Hidden when the view sits inside an expander that already shows the title (diary, visual 2.0).
+    public bool ShowTitle { get => TitleRow.Visibility == Visibility.Visible; set => TitleRow.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
     public PlayNextView()
     {
         InitializeComponent();

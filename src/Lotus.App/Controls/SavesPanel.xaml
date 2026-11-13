@@ -19,8 +19,13 @@
        <TextBlock Text="{Binding Text[SlHeroTitle]}" FontSize="28" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap"/>
        <TextBlock Text="{Binding Text[SlHeroBody]}" FontSize="14" Foreground="#E6D6DE" TextWrapping="Wrap"/>
       </StackPanel>
+      <!-- Visual 2.0: with nothing protected yet, an invitation replaces the three zeros -->
+      <StackPanel x:Name="FirstProtect" Visibility="Collapsed" Orientation="Horizontal" Spacing="10" AutomationProperties.AutomationId="saves-first">
+       <FontIcon Glyph="&#xE8C8;" FontSize="18" Foreground="{ThemeResource GoldBrush}" VerticalAlignment="Center"/>
+       <TextBlock Text="{Binding Text[SlFirstProtect]}" FontSize="14" FontWeight="SemiBold" Foreground="#F8DDCB" TextWrapping="Wrap" VerticalAlignment="Center" MaxWidth="460"/>
+      </StackPanel>
       <!-- Totals -->
-      <StackPanel Orientation="Horizontal" Spacing="28">
+      <StackPanel x:Name="StatsRow" Orientation="Horizontal" Spacing="28">
        <StackPanel Spacing="0"><TextBlock x:Name="StatProtected" Text="—" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource BrandGoldGradientBrush}" AutomationProperties.AutomationId="saves-stat-protected"/><TextBlock Text="{Binding Text[SlStatProtected]}" FontSize="12" Foreground="#C9B4C0"/></StackPanel>
        <Rectangle Width="1" Fill="#33FFFFFF" Margin="0,6"/>
        <StackPanel Spacing="0"><TextBlock x:Name="StatBackups" Text="—" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource BrandGoldGradientBrush}"/><TextBlock Text="{Binding Text[SlStatBackups]}" FontSize="12" Foreground="#C9B4C0"/></StackPanel>

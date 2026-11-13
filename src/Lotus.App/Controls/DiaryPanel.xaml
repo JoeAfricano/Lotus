@@ -111,7 +111,11 @@
   <local:SteamTrophiesView x:Name="SteamArea" DataContext="{Binding Achievements}" Visibility="Collapsed"/>
 
   <StackPanel x:Name="GamesArea" Spacing="18">
-  <local:PlayNextView DataContext="{Binding PlayNext}"/>
+  <!-- Visual 2.0: "O que jogar agora?" stays one click away instead of a big card above the games -->
+  <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0" AutomationProperties.AutomationId="diary-play-next">
+   <Expander.Header><StackPanel Orientation="Horizontal" Spacing="10" Padding="0,8"><FontIcon Glyph="&#xE7FC;" FontSize="16" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[PnTitle]}" Style="{StaticResource BodyStrongStyle}" VerticalAlignment="Center"/></StackPanel></Expander.Header>
+   <local:PlayNextView DataContext="{Binding PlayNext}" ShowTitle="False"/>
+  </Expander>
   <!-- "Quero jogar" games on sale on Steam (only when there is one) -->
   <Border Style="{StaticResource CardStyle}" Padding="20,16" DataContext="{Binding Deals}" Visibility="{Binding HasDeals, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="diary-deals">
    <StackPanel Spacing="12">
@@ -144,7 +148,11 @@
    </StackPanel>
   </Border>
   <!-- "Top 4" showcase: the player's favorite games, chosen by them (compact, the list stays the main content) -->
-  <Grid ColumnSpacing="18" AutomationProperties.AutomationId="diary-showcase">
+  <!-- With no favorite chosen yet, one invitation replaces the four empty boxes (visual 2.0) -->
+  <Button x:Name="ShowcaseInvite" Visibility="Collapsed" Click="OnShowcaseInvite" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Left" AutomationProperties.AutomationId="diary-showcase-invite">
+   <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE734;" FontSize="14" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyShowcaseInvite]}"/></StackPanel>
+  </Button>
+  <Grid x:Name="ShowcaseRow" ColumnSpacing="18" AutomationProperties.AutomationId="diary-showcase">
    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
    <StackPanel VerticalAlignment="Center" Spacing="4" MaxWidth="170">
     <TextBlock Text="{Binding Text[DyShowcaseTitle]}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
