@@ -3307,7 +3307,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GtUndervolt" xml:space="preserve"><value>Mais frio e estável</value></data>
   <data name="GtUndervoltHint" xml:space="preserve"><value>Undervolt: mesma velocidade com menos tensão. Menos calor e ruído e frametime mais reto.</value></data>
   <data name="GtOverclock" xml:space="preserve"><value>Mais FPS</value></data>
-  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: cerca de 3 a 8% a mais de FPS, com mais calor e consumo.</value></data>
+  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: cerca de 3 a 8% a mais de FPS, com mais calor e consumo. Comece pelo OC Scanner do Afterburner.</value></data>
   <data name="GtStock" xml:space="preserve"><value>Padrão</value></data>
   <data name="GtStockHint" xml:space="preserve"><value>A placa como veio de fábrica. Sem ajuste.</value></data>
   <data name="GtRecommended" xml:space="preserve"><value>Recomendado</value></data>

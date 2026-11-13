@@ -3307,7 +3307,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GtUndervolt" xml:space="preserve"><value>Cooler and steadier</value></data>
   <data name="GtUndervoltHint" xml:space="preserve"><value>Undervolt: same speed with less voltage. Less heat and noise, a flatter frametime.</value></data>
   <data name="GtOverclock" xml:space="preserve"><value>More FPS</value></data>
-  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: about 3 to 8% more FPS, with more heat and power.</value></data>
+  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: about 3 to 8% more FPS, with more heat and power. Start with Afterburner's OC Scanner.</value></data>
   <data name="GtStock" xml:space="preserve"><value>Stock</value></data>
   <data name="GtStockHint" xml:space="preserve"><value>The card as it came from the factory. No tuning.</value></data>
   <data name="GtRecommended" xml:space="preserve"><value>Recommended</value></data>
