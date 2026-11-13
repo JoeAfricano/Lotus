@@ -19,19 +19,21 @@ public static class Fit
     public static void SetGridMinItemWidth(DependencyObject d, double value) => d.SetValue(GridMinItemWidthProperty, value);
     private static void AttachGrid(GridView view, double min)
     {
-        // Re-applied on size changes and whenever items are realized: the panel only exists once the GridView has items,
-        // and without an ItemWidth a stretched item would take the whole row.
-        void Apply()
+        // Sizes each item container directly (ItemsWrapGrid otherwise copies the first item's natural width, which
+        // for a stretched card is its longest title): as many columns of at least `min` as fit, widened to the edge.
+        double Item(FrameworkElement container)
         {
-            var width = view.ActualWidth - view.Padding.Left - view.Padding.Right - 2; // 2 px slack so rounding never pushes a column to the next row
-            if (view.ItemsPanelRoot is not ItemsWrapGrid panel || width < min) return;
-            var columns = Math.Max(1, (int)(width / min));
-            var item = Math.Floor(width / columns);
-            if (Math.Abs(panel.ItemWidth - item) > 0.5) panel.ItemWidth = item;
+            var gap = container.Margin.Left + container.Margin.Right;
+            var width = view.ActualWidth - view.Padding.Left - view.Padding.Right - 1;
+            if (width <= 0) return double.NaN;
+            var columns = Math.Max(1, (int)((width + gap) / min));
+            return Math.Max(40, Math.Floor((width + gap) / columns) - gap);
         }
-        view.SizeChanged += (_, _) => Apply();
-        view.Loaded += (_, _) => Apply();
-        view.ContainerContentChanging += (_, _) => Apply();
+        void Size(FrameworkElement container) { var w = Item(container); if (!double.IsNaN(w) && Math.Abs(container.Width - w) > 0.5) container.Width = w; }
+        void All() { if (view.ItemsPanelRoot is Panel p) foreach (var c in p.Children) if (c is FrameworkElement f) Size(f); }
+        view.ContainerContentChanging += (_, e) => { if (e.ItemContainer is FrameworkElement f) Size(f); };
+        view.SizeChanged += (_, _) => All();
+        view.Loaded += (_, _) => All();
     }
 
     // Visual 3.0: keeps an element's height a fixed multiple of its width (covers stay portrait as columns widen).
