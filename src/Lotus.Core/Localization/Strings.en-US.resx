@@ -835,7 +835,7 @@ Current conditions: {1}</value></data>
   <data name="lotusscoreTitle" xml:space="preserve"><value>Lotus Score</value></data>
   <data name="lotusscoreDescription" xml:space="preserve"><value>Results, references and context to compare with care.</value></data>
   <data name="lotusscoreNext" xml:space="preserve"><value>CPU and GPU test with a comparable score.</value></data>
-  <data name="ScoreIntro" xml:space="preserve"><value>Choose the tests and click Start. Each takes about 15 seconds and nothing in Windows is changed. The GPU test opens a window with the 3D scene; closing it cancels. Close games and heavy apps first.</value></data>
+  <data name="ScoreIntro" xml:space="preserve"><value>Each test takes about 15 seconds and changes nothing in Windows. Close games and heavy apps first. The GPU test opens a 3D window; closing it cancels.</value></data>
   <data name="ScoreStart" xml:space="preserve"><value>Start test</value></data>
   <data name="ScoreCancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="ScoreMachine" xml:space="preserve"><value>{0} · {1}</value></data>

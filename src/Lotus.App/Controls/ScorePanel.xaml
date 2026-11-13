@@ -7,7 +7,7 @@
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <StackPanel Spacing="4">
      <TextBlock Text="{Binding Text[ScoreTotalLabel]}" Style="{StaticResource EyebrowStyle}" Foreground="{ThemeResource RoseBrush}"/>
-     <TextBlock x:Name="TotalText" Text="—" FontSize="60" FontWeight="Bold" Foreground="{ThemeResource MainTextBrush}" AutomationProperties.AutomationId="score-total"/>
+     <TextBlock x:Name="TotalText" Text="—" FontSize="60" FontWeight="SemiBold" Foreground="{ThemeResource MainTextBrush}" AutomationProperties.AutomationId="score-total"/>
      <TextBlock Text="{Binding MachineText}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="score-machine"/>
      <TextBlock Text="{Binding Verdict}" Style="{StaticResource BodyStyle}" TextWrapping="Wrap" Margin="0,6,0,0" AutomationProperties.AutomationId="score-verdict"/>
     </StackPanel>
@@ -48,15 +48,14 @@
    <StackPanel Orientation="Horizontal" Spacing="12"><FontIcon Glyph="&#xE946;" FontSize="18" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[ScoreInsightsEmpty]}" Style="{StaticResource BodyStyle}" TextWrapping="Wrap"/></StackPanel>
   </Border>
   <StackPanel Spacing="24" Visibility="{Binding HasInsights, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="score-insights">
-   <!-- Test details -->
-   <Border Style="{StaticResource CardStyle}">
+   <!-- Test details (visual 2.0): folded behind "Ver detalhes"; each number appears once on the page -->
+   <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AutomationProperties.AutomationId="score-details">
+    <Expander.Header><StackPanel Spacing="2" Padding="0,8"><TextBlock Text="{Binding Text[ScoreDetailsTitle]}" Style="{StaticResource BodyStrongStyle}"/><TextBlock Text="{Binding Text[ScoreDetailsHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel></Expander.Header>
     <StackPanel Spacing="16">
-     <StackPanel Spacing="2"><TextBlock Text="{Binding Text[ScoreDetailsTitle]}" FontSize="20" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[ScoreDetailsHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
      <Grid ColumnSpacing="16" RowSpacing="16">
       <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
       <Border Style="{StaticResource CompactCardStyle}" Padding="16,14"><StackPanel Spacing="6">
        <TextBlock Text="{Binding Text[ScoreGraphics]}" Style="{StaticResource EyebrowStyle}"/>
-       <TextBlock Text="{Binding GraphicsScore}" Style="{StaticResource MetricValueStyle}" AutomationProperties.AutomationId="score-graphics"/>
        <ProgressBar Value="{Binding GpuRank}" Maximum="100" MinHeight="5" CornerRadius="3"/>
        <TextBlock Text="{Binding GpuRankText}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
       </StackPanel></Border>
@@ -77,7 +76,7 @@
       </StackPanel></Border>
      </Grid>
     </StackPanel>
-   </Border>
+   </Expander>
 
    <!-- Estimated FPS per game -->
    <Border Style="{StaticResource CardStyle}" AutomationProperties.AutomationId="score-fps">
