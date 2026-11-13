@@ -61,7 +61,7 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
                 if (rtss.Running() is not null || rtss.GlobalCap() is not null) RtssStatus = RtssStatus.TrimEnd('.');
                 // Read only: open or closed now, and the limit RivaTuner gives every game without its own profile.
                 if (rtss.Running() is { } open) RtssStatus += " · " + Text[open ? "IntRtssOpen" : "IntRtssClosed"];
-                if (rtss.GlobalCap() is { } cap) RtssStatus += " · " + Text.Format("IntRtssGlobalCap", cap.ToString(Math.Abs(cap - Math.Round(cap)) < 0.001 ? "0" : "0.0", System.Globalization.CultureInfo.GetCultureInfo(Text.Language)));
+                if (rtss.GlobalCap() is { } cap) RtssStatus += " · " + Text.Format("IntRtssGlobalCap", cap.ToString("0.##", System.Globalization.CultureInfo.GetCultureInfo(Text.Language)));
             }
             CanRestoreRtss = r.Installed && rtss.HasBackup();
             CanRestoreLayout = r.Installed && rtss.HasLayoutBackup();

@@ -105,6 +105,16 @@ public sealed class RtssPlayTests : IDisposable
         Assert.DoesNotContain(StutterDiagnosis.Analyze(At(74.6, null)), f => f.Key == "WhyCapped"); // no limiter known
     }
 
+    [Fact] public void LimitAboveTheRealRefreshIsACause()
+    {
+        StutterInputs At(double? cap, bool vrr = false) => new(74.6, 70, 0, 30, 80, 75, null, 0, 40, [], true, FrameCap: cap, RealRefreshHz: 74.973, AdaptiveSync: vrr);
+        var above = StutterDiagnosis.Analyze(At(75));
+        Assert.Contains(above, f => f.Key == "WhyCapAboveRefresh" && f.Detail == "75 FPS / 74.973 Hz");
+        Assert.DoesNotContain(StutterDiagnosis.Analyze(At(74.97)), f => f.Key == "WhyCapAboveRefresh");   // just under: right
+        Assert.DoesNotContain(StutterDiagnosis.Analyze(At(75, vrr: true)), f => f.Key == "WhyCapAboveRefresh"); // VRR: no V-Sync queue
+        Assert.DoesNotContain(StutterDiagnosis.Analyze(At(null)), f => f.Key == "WhyCapAboveRefresh");
+    }
+
     [Theory]
     [InlineData(true, true, null, true)]           // frame generation on NVIDIA: Reflex first
     [InlineData(true, true, "Direct3D 12", true)]

@@ -17,7 +17,39 @@ public sealed class WindowsSystemProfile(IDisplayModes display) : ISystemProfile
         var (gpu, vram) = Adapters().OrderByDescending(a => a.Vram).FirstOrDefault();
         var d = display.Primary();
         var ramMb = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes / (1024 * 1024);
-        return new(gpu ?? "", vram, Environment.ProcessorCount, ramMb, d?.Width ?? 1920, d?.Height ?? 1080, d?.CurrentHz ?? 60);
+        return new(gpu ?? "", vram, Environment.ProcessorCount, ramMb, d?.Width ?? 1920, d?.Height ?? 1080, d?.CurrentHz ?? 60, ExactPrimaryRefresh());
+    }
+
+    // The primary display's real refresh rate (numerator/denominator from QueryDisplayConfig, e.g. 74973/1000), where
+    // EnumDisplaySettings only gives whole hertz. Read-only; 0 when Windows does not answer. Raw buffers with fixed
+    // offsets from wingdi.h: DISPLAYCONFIG_PATH_INFO is 72 bytes (source mode index at 12, target refresh rate at 48/52),
+    // DISPLAYCONFIG_MODE_INFO is 64 bytes (source mode position at 28/32; the primary display sits at 0,0).
+    private const uint QdcOnlyActivePaths = 2;
+    private const int PathSize = 72, ModeSize = 64;
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern int GetDisplayConfigBufferSizes(uint flags, out uint paths, out uint modes);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern int QueryDisplayConfig(uint flags, ref uint paths, byte[] pathInfo, ref uint modes, byte[] modeInfo, IntPtr topology);
+    public static double ExactPrimaryRefresh()
+    {
+        try
+        {
+            if (GetDisplayConfigBufferSizes(QdcOnlyActivePaths, out var pathCount, out var modeCount) != 0 || pathCount == 0) return 0;
+            var paths = new byte[pathCount * PathSize]; var modes = new byte[modeCount * ModeSize];
+            if (QueryDisplayConfig(QdcOnlyActivePaths, ref pathCount, paths, ref modeCount, modes, IntPtr.Zero) != 0) return 0;
+            double first = 0;
+            for (var i = 0; i < pathCount; i++)
+            {
+                var o = i * PathSize;
+                uint num = BitConverter.ToUInt32(paths, o + 48), den = BitConverter.ToUInt32(paths, o + 52);
+                if (num == 0 || den == 0) continue;
+                var hz = num / (double)den;
+                if (first == 0) first = hz;
+                var mode = BitConverter.ToUInt32(paths, o + 12);
+                if (mode < modeCount && BitConverter.ToInt32(modes, (int)mode * ModeSize) == 1 // DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE
+                    && BitConverter.ToInt32(modes, (int)mode * ModeSize + 28) == 0 && BitConverter.ToInt32(modes, (int)mode * ModeSize + 32) == 0) return hz;
+            }
+            return first;
+        }
+        catch (Exception ex) when (ex is DllNotFoundException or EntryPointNotFoundException or ArgumentException) { return 0; }
     }
     private static IEnumerable<(string Name, long Vram)> Adapters()
     {
