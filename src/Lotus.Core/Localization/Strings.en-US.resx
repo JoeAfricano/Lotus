@@ -700,6 +700,12 @@ Current conditions: {1}</value></data>
   <data name="PfApplied1" xml:space="preserve"><value>1 change applied and verified. More FPS is not guaranteed; use the benchmark to compare.</value></data>
   <data name="PfAppliedWithConflicts" xml:space="preserve"><value>{0} applied; {1} not applied because the setting changed outside Lotus.</value></data>
   <data name="PfUndo" xml:space="preserve"><value>Undo profile</value></data>
+  <data name="PfActTitle" xml:space="preserve"><value>{0} profile · power plan</value></data>
+  <data name="PfActApplying" xml:space="preserve"><value>Checking</value></data>
+  <data name="PfActApplied" xml:space="preserve"><value>Applied</value></data>
+  <data name="PfActReverting" xml:space="preserve"><value>Undoing</value></data>
+  <data name="PfActReverted" xml:space="preserve"><value>Undone</value></data>
+  <data name="PfActConflict" xml:space="preserve"><value>Needs review</value></data>
   <data name="PfUndoTitle" xml:space="preserve"><value>Undo the profile changes?</value></data>
   <data name="PfUndoBody" xml:space="preserve"><value>Lotus restores the previous state of each item it changed, only if nothing changed it afterwards.</value></data>
   <data name="PfUndone" xml:space="preserve"><value>{0} items restored and verified.</value></data>

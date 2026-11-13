@@ -121,7 +121,7 @@
       </StackPanel>
      </Border>
     </Grid>
-    <controls:OptimizationPanel x:Name="RestoreContent" x:Load="{x:Bind ShowRestore}" DataContext="{Binding Optimizer}"/>
+    <controls:OptimizationPanel x:Name="RestoreContent" x:Load="{x:Bind ShowRestore}" DataContext="{Binding PowerProfiles}"/>
    </StackPanel>
 
    <StackPanel x:Name="PerformanceContent" x:Load="{x:Bind ShowPerformance}" Spacing="20">

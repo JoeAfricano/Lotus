@@ -700,6 +700,12 @@ Condições atuais: {1}</value></data>
   <data name="PfApplied1" xml:space="preserve"><value>1 alteração aplicada e verificada. Não há garantia de mais FPS; use o benchmark para comparar.</value></data>
   <data name="PfAppliedWithConflicts" xml:space="preserve"><value>{0} aplicada(s); {1} não aplicada(s) porque a configuração mudou fora do Lotus.</value></data>
   <data name="PfUndo" xml:space="preserve"><value>Desfazer perfil</value></data>
+  <data name="PfActTitle" xml:space="preserve"><value>Perfil {0} · plano de energia</value></data>
+  <data name="PfActApplying" xml:space="preserve"><value>Em verificação</value></data>
+  <data name="PfActApplied" xml:space="preserve"><value>Aplicado</value></data>
+  <data name="PfActReverting" xml:space="preserve"><value>Desfazendo</value></data>
+  <data name="PfActReverted" xml:space="preserve"><value>Desfeito</value></data>
+  <data name="PfActConflict" xml:space="preserve"><value>Precisa de revisão</value></data>
   <data name="PfUndoTitle" xml:space="preserve"><value>Desfazer as alterações do perfil?</value></data>
   <data name="PfUndoBody" xml:space="preserve"><value>O Lotus restaura o estado anterior de cada item que ele alterou, somente se ninguém tiver mudado depois.</value></data>
   <data name="PfUndone" xml:space="preserve"><value>{0} itens restaurados e verificados.</value></data>

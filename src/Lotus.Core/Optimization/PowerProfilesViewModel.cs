@@ -62,6 +62,12 @@ public sealed class PowerProfilesViewModel : ObservableObject
         return all.Where(x => x.Plan.Batch == batch).ToList();
     }
     public bool CanEdit => !busy;
+    // Restore tab: what the profiles really changed on this PC (plans that were only previewed stay out).
+    public IEnumerable<ActivityRow> Activity => Operations.Where(o => o.Plan.Stage is not (OperationStage.Planned or OperationStage.NoChange))
+        .Select(o => new ActivityRow(o.Plan.CreatedUtc.ToLocalTime().ToString("g", System.Globalization.CultureInfo.GetCultureInfo(Text.Language)),
+            Text.Format("PfActTitle", Text["PowerProfile" + (o.Plan.ProfileId ?? "custom")]), Text["PfAct" + o.Plan.Stage]));
+    public bool HasActivity => Activity.Any();
+    public bool NoActivity => !HasActivity;
     public bool IsGame => profileId == "game";
     public bool IsDaily => profileId == "daily";
     public bool IsCustom => profileId == "custom";
@@ -352,7 +358,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
     }
     private void Notify()
     {
-        foreach (var p in new[] { nameof(CanEdit), nameof(Status), nameof(Summary), nameof(Details), nameof(ActiveName), nameof(ProfileName), nameof(SchemeLabel), nameof(CanUndoProfile) }) OnPropertyChanged(p);
+        foreach (var p in new[] { nameof(CanEdit), nameof(Status), nameof(Summary), nameof(Details), nameof(ActiveName), nameof(ProfileName), nameof(SchemeLabel), nameof(CanUndoProfile), nameof(Activity), nameof(HasActivity), nameof(NoActivity) }) OnPropertyChanged(p);
         SelectProfileCommand?.NotifyCanExecuteChanged(); RefreshCommand?.NotifyCanExecuteChanged(); SaveCommand?.NotifyCanExecuteChanged();
         AnalyzeCommand?.NotifyCanExecuteChanged(); ApplyCommand?.NotifyCanExecuteChanged(); RevertCommand?.NotifyCanExecuteChanged(); StartupCommand?.NotifyCanExecuteChanged();
     }
