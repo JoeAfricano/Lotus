@@ -14,7 +14,7 @@ A tabela fica em `data/fps-reference.json` (com data e fontes) e vai embutida no
 
 Fontes de laboratório: Notebookcheck, comparativo [RTX 5060 vs RTX 5070](https://www.notebookcheck.net/GeForce-RTX-5060-vs-GeForce-RTX-5070_12954_12952.247598.0.html) e [review da Asus Prime RTX 5060 OC](https://www.notebookcheck.net/Asus-Prime-GeForce-RTX-5060-OC-review-Strong-price-performance-GPU-for-1080p-gaming.1039116.0.html). Valores marcados com "~" na página só foram usados quando outro laboratório confirmou (Black Myth: Wukong, confirmado pelo GamersNexus).
 
-Cruzamento: [TechSpot/Hardware Unboxed, review RTX 5060](https://www.techspot.com/review/2992-nvidia-geforce-rtx-5060/) e [GamersNexus, review RTX 5060](https://gamersnexus.net/gpus/forbidden-review-nvidia-rtx-5060-gpu-benchmarks). Quando só existe o valor de uma review no preset mais alto, o Lotus estima o Alto como esse valor ÷ 0,78 (o passo Alto→Ultra da tabela). As páginas do Notebookcheck, TechSpot e Tom's Hardware recusam leitura automática (403), então os valores foram passados à mão; Tom's Hardware ainda não foi incorporado. Calculadoras geradas por site (How Many FPS, CheckFPS e parecidas) não são usadas.
+Cruzamento: [TechSpot/Hardware Unboxed, review RTX 5060](https://www.techspot.com/review/2992-nvidia-geforce-rtx-5060/) e [GamersNexus, review RTX 5060](https://gamersnexus.net/gpus/forbidden-review-nvidia-rtx-5060-gpu-benchmarks). Quando só existe o valor de uma review no preset mais alto, o Lotus estima o Alto como esse valor ÷ 0,78 (o passo Alto→Ultra da tabela). As páginas do Notebookcheck, TechSpot e Tom's Hardware recusam leitura automática (403), então os valores foram passados à mão; Tom's Hardware ainda não foi incorporado. Vídeo de gameplay: [zWORMz Gaming, RTX 5060 em 23 jogos a 1080p (9800X3D), via CHIP](https://ichip.ru/novosti/ideal-dlya-full-hd-geforce-rtx-5060-protestirovali-v-23-igrah-v-razreshenii-1080p-917492). Sozinha conta como confiança média (cena de gameplay diferente da do laboratório); confirma "alta" quando bate até 15% com Notebookcheck, TechSpot ou GamersNexus na mesma qualidade. Valores em Ultra/Máximo viram Alto ÷ 0,78; em Médio, Alto = Médio ÷ 1,38; resultados com ray tracing (The Finals) ficam conservadores. Quando duas fontes divergem (Alan Wake 2: 50 vs ~75 em Alto), fica o menor e confiança média. Calculadoras geradas por site (How Many FPS, CheckFPS e parecidas) não são usadas.
 
 ## Como a conta é feita
 
@@ -37,7 +37,7 @@ Cruzamento: [TechSpot/Hardware Unboxed, review RTX 5060](https://www.techspot.co
 
 ## Estado em 13/11/2026
 
-136 jogos: 4 com confiança alta (Black Myth: Wukong, God of War Ragnarök, S.T.A.L.K.E.R. 2, Star Wars Outlaws), 35 com confiança média e 97 com confiança baixa (22 da tabela inicial e 75 populares calculados pelos requisitos da Steam). Os jogos de esports (CS2, Valorant, Fortnite, Apex, LoL, R6, Rocket League) seguem sem dado de laboratório confiável para a RTX 5060 e ficam como "Estimativa simples".
+138 jogos: 5 com confiança alta (Black Myth: Wukong, God of War Ragnarök, S.T.A.L.K.E.R. 2, Star Wars Outlaws, Kingdom Come: Deliverance II), 46 com confiança média e 87 com confiança baixa. Valorant, League of Legends, Apex Legends, Rocket League, Overwatch 2 e Marvel Rivals seguem sem dado confiável e aparecem como "Estimativa simples", com convite para medir em Preparar e jogar (vira "Medido no seu PC").
 
 ## Medido no seu PC
 

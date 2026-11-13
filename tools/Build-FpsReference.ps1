@@ -29,6 +29,7 @@ $doc = [ordered]@{
         'notebookcheck-5060' = [ordered]@{ label = 'Notebookcheck: GeForce RTX 5060 (desktop), 1080p'; url = 'https://www.notebookcheck.net/GeForce-RTX-5060-vs-GeForce-RTX-5070_12954_12952.247598.0.html' }
         'techspot-5060' = [ordered]@{ label = 'TechSpot / Hardware Unboxed: review RTX 5060, 1080p'; url = 'https://www.techspot.com/review/2992-nvidia-geforce-rtx-5060/' }
         'gamersnexus-5060' = [ordered]@{ label = 'GamersNexus: review RTX 5060, 1080p'; url = 'https://gamersnexus.net/gpus/forbidden-review-nvidia-rtx-5060-gpu-benchmarks' }
+        'zwormz-5060' = [ordered]@{ label = 'zWORMz Gaming (vídeo de gameplay), RTX 5060 1080p, via CHIP'; url = 'https://ichip.ru/novosti/ideal-dlya-full-hd-geforce-rtx-5060-protestirovali-v-23-igrah-v-razreshenii-1080p-917492' }
         'lotus-initial' = [ordered]@{ label = 'Tabela inicial do Lotus (médias públicas de benchmarks)'; url = 'https://github.com/JoeAfricano/Lotus/blob/main/docs/LOTUS_FPS_SOURCES.md' }
         'steam-requirements' = [ordered]@{ label = 'Requisitos recomendados da Steam (estimativa)'; url = 'https://store.steampowered.com/' }
     }

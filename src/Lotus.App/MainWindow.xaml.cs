@@ -178,6 +178,12 @@ public sealed partial class MainWindow : Window
         tools.Storage = new Lotus.Core.Maintenance.StorageViewModel(new Lotus.Core.Maintenance.StorageScanner(places.Resolve), new Lotus.Infrastructure.Maintenance.ShellFileRecycler(),
             new Lotus.Infrastructure.Maintenance.ExplorerRevealer(), Lotus.Infrastructure.Maintenance.LocalDrives.Read, places.Resolve, text, tools.Journal, ex => Serilog.Log.Warning(ex, "Storage"));
         games.Rtss = integrations.Rtss;
+        // Perfil Jogo is for game sessions: applying it turns on the boost and the game priority; Diário turns both off.
+        powerProfiles.ProfileApplied = id =>
+        {
+            if (id == "game") preferences.Update(preferences.Current with { GameBoost = true, GamePriority = true });
+            else if (id == "daily") preferences.Update(preferences.Current with { GameBoost = false, GamePriority = false });
+        };
         // FPS reference table: a saved newer copy first, then (weekly at most, if allowed) a quiet check in the background.
         var fpsUpdater = new Lotus.Infrastructure.Catalog.FpsReferenceUpdater();
         fpsUpdater.LoadSaved();

@@ -67,33 +67,6 @@ public sealed class NotificationsBoostStep() : RegistryBoostStep(BoostSteps.Noti
 public sealed class RecordingBoostStep() : RegistryBoostStep(BoostSteps.BackgroundRecording,
     [(@"System\GameConfigStore", "GameDVR_Enabled"), (@"Software\Microsoft\Windows\CurrentVersion\GameDVR", "AppCaptureEnabled")], 0);
 
-// Asks the apps the player chose to close (like clicking X: they may save or ask first). Never forced, never reopened.
-[SupportedOSPlatform("windows")]
-public sealed class CloseAppsBoostStep(Func<IReadOnlyList<string>> names) : IBoostStep
-{
-    public string Id => BoostSteps.CloseApps;
-    public string? Apply(RunningGame game)
-    {
-        var wanted = names().Select(n => Path.GetFileNameWithoutExtension(n.Trim())).Where(n => n.Length > 0).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var session = Process.GetCurrentProcess().SessionId;
-        var closed = new List<string>();
-        foreach (var p in Process.GetProcesses())
-        {
-            using (p)
-            {
-                try
-                {
-                    if (p.Id == game.Pid || p.SessionId != session || !wanted.Contains(p.ProcessName) || p.MainWindowHandle == 0) continue;
-                    if (p.CloseMainWindow()) closed.Add(p.ProcessName);
-                }
-                catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception) { }
-            }
-        }
-        return null; // nothing to undo: closed apps are not reopened (the player opens them again when wanted)
-    }
-    public bool Revert(string saved) => true;
-}
-
 // The undo record on disk (%LOCALAPPDATA%\Lotus\game-boost.json), written before each change.
 public sealed class FileBoostJournal(string path) : IBoostJournal
 {

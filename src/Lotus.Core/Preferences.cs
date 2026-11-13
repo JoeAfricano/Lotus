@@ -33,12 +33,9 @@ public sealed record InterfacePreferences
     public bool BoostPower { get; init; } = true;          // High performance plan during the game
     public bool BoostNotifications { get; init; } = true;  // Windows notifications silenced during the game
     public bool BoostRecording { get; init; } = true;      // Xbox background recording off during the game
-    public bool BoostCloseApps { get; init; }              // close the apps below when the game opens (not reopened)
-    public string BoostApps { get; init; } = "";           // process names, one per line
+    // Apps are never closed for the game (José's decision): heavy apps only get a lower priority (GamePriority).
     [System.Text.Json.Serialization.JsonIgnore]
-    public Lotus.Core.Games.BoostOptions BoostOptions => new(BoostPower, BoostNotifications, BoostRecording, BoostCloseApps && BoostAppList.Count > 0);
-    [System.Text.Json.Serialization.JsonIgnore]
-    public IReadOnlyList<string> BoostAppList => SplitThemes(BoostApps);
+    public Lotus.Core.Games.BoostOptions BoostOptions => new(BoostPower, BoostNotifications, BoostRecording);
     public bool ResumePrompts { get; init; } = true; // after a game closes normally, offer to write "Onde eu parei?" (discreet in-app notice)
     public string DriveSchedule { get; init; } = "manual"; // Google Drive copy: manual (only on click), weekly or monthly
     public bool AutoUpdate { get; init; } // download and install new Lotus versions from GitHub without asking
@@ -136,6 +133,10 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool AutoSessions { get => service.Current.AutoSessions; set { if (value != service.Current.AutoSessions) { service.Update(service.Current with { AutoSessions = value }); OnPropertyChanged(); } } }
     public bool MinimizeForGames { get => service.Current.MinimizeForGames; set { if (value != service.Current.MinimizeForGames) { service.Update(service.Current with { MinimizeForGames = value }); OnPropertyChanged(); } } }
     public bool GamePriority { get => service.Current.GamePriority; set { if (value != service.Current.GamePriority) { service.Update(service.Current with { GamePriority = value }); OnPropertyChanged(); } } }
+    public bool GameBoost { get => service.Current.GameBoost; set { if (value != service.Current.GameBoost) { service.Update(service.Current with { GameBoost = value }); OnPropertyChanged(); } } }
+    public bool BoostPower { get => service.Current.BoostPower; set { if (value != service.Current.BoostPower) { service.Update(service.Current with { BoostPower = value }); OnPropertyChanged(); } } }
+    public bool BoostNotifications { get => service.Current.BoostNotifications; set { if (value != service.Current.BoostNotifications) { service.Update(service.Current with { BoostNotifications = value }); OnPropertyChanged(); } } }
+    public bool BoostRecording { get => service.Current.BoostRecording; set { if (value != service.Current.BoostRecording) { service.Update(service.Current with { BoostRecording = value }); OnPropertyChanged(); } } }
     public bool DriverNotices { get => service.Current.DriverNotices; set { if (value != service.Current.DriverNotices) { service.Update(service.Current with { DriverNotices = value }); OnPropertyChanged(); } } }
     public bool FpsDataUpdates { get => service.Current.FpsDataUpdates; set { if (value != service.Current.FpsDataUpdates) { service.Update(service.Current with { FpsDataUpdates = value }); OnPropertyChanged(); } } }
     public bool ResumePrompts { get => service.Current.ResumePrompts; set { if (value != service.Current.ResumePrompts) { service.Update(service.Current with { ResumePrompts = value }); OnPropertyChanged(); } } }

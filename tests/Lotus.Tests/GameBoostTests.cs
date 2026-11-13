@@ -137,13 +137,11 @@ public sealed class GameBoostTests
     }
 
     [Fact]
-    public void Preferences_build_the_options_and_close_apps_needs_a_list()
+    public void Preferences_build_the_options_without_closing_apps()
     {
-        var p = new InterfacePreferences { BoostCloseApps = true };
-        Assert.False(p.BoostOptions.CloseApps);
-        p = p with { BoostApps = "opera_gx\nDiscord" };
-        Assert.True(p.BoostOptions.CloseApps);
-        Assert.Equal(["opera_gx", "Discord"], p.BoostAppList);
+        var p = new InterfacePreferences { BoostNotifications = false };
+        Assert.Equal(new BoostOptions(Power: true, Notifications: false, BackgroundRecording: true), p.BoostOptions);
+        Assert.DoesNotContain("close-apps", BoostSteps.All); // apps are never closed for a game
         Assert.False(new InterfacePreferences().GameBoost); // off until the Game profile is applied
     }
 }

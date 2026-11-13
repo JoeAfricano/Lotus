@@ -18,7 +18,6 @@ public sealed partial class MainWindow
         new Lotus.Core.Games.PowerBoostStep(new Lotus.Infrastructure.Optimization.WindowsPowerSchemes()),
         new Lotus.Infrastructure.Games.NotificationsBoostStep(),
         new Lotus.Infrastructure.Games.RecordingBoostStep(),
-        new Lotus.Infrastructure.Games.CloseAppsBoostStep(() => preferences.Current.BoostAppList),
     ], new Lotus.Infrastructure.Games.FileBoostJournal(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "game-boost.json")));
 
     private async Task OnGameCheckAsync(GameEntry? running)

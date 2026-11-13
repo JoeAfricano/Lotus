@@ -73,7 +73,7 @@ public sealed partial class PowerProfilesPanel : UserControl
         var changes = await vm.PreviewProfileAsync();
         var pending = changes.Where(c => !c.AlreadyApplied).ToList();
         if (pending.Count == 0 && vm.PreviewFailed) { vm.ReportPreviewFailed(); return; }
-        if (pending.Count == 0) { await vm.ApplyProfileAsync(changes); return; }
+        if (pending.Count == 0) { await vm.ApplyProfileAsync(changes); vm.ProfileApplied?.Invoke(vm.IsGame ? "game" : vm.IsDaily ? "daily" : "custom"); return; }
         var list = new StackPanel { Spacing = 8, MaxWidth = 460 };
         list.Children.Add(new TextBlock { Text = vm.Text["PfPreviewIntro"], TextWrapping = TextWrapping.Wrap, Opacity = 0.85, Margin = new Thickness(0, 0, 0, 6) });
         foreach (var c in changes)
@@ -89,7 +89,7 @@ public sealed partial class PowerProfilesPanel : UserControl
         if (vm.PreviewSkipped > 0 || vm.PreviewFailed) list.Children.Add(new TextBlock { Text = vm.Text["PfPreviewSkipped"], TextWrapping = TextWrapping.Wrap, FontSize = 12, Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["GoldBrush"], Margin = new Thickness(0, 6, 0, 0) });
         list.Children.Add(new TextBlock { Text = vm.Text["PowerRisk"], TextWrapping = TextWrapping.Wrap, FontSize = 12, Opacity = 0.65, Margin = new Thickness(0, 6, 0, 0) });
         if (await ShowAsync(vm.Text.Format("PfPreviewTitle", vm.Text[ProfileTitleKey(vm)]), list, vm.Text["PfApplyConfirm"], vm.Text))
-            await vm.ApplyProfileAsync(changes);
+        { await vm.ApplyProfileAsync(changes); vm.ProfileApplied?.Invoke(vm.IsGame ? "game" : vm.IsDaily ? "daily" : "custom"); }
     }
     private static string ProfileTitleKey(Lotus.Core.Optimization.PowerProfilesViewModel vm) => vm.IsGame ? "PfGameTitle" : vm.IsDaily ? "PfDailyTitle" : "PfCustomTitle";
     private async void OnUndoProfile(object sender, RoutedEventArgs e)
@@ -140,11 +140,15 @@ public sealed partial class PowerProfilesPanel : UserControl
     // Three columns on wide windows, one stacked column on narrow ones.
     private void OnCardsSizeChanged(object sender, SizeChangedEventArgs e)
     {
-        var stacked = e.NewSize.Width < 820;
-        foreach (var (card, index) in new FrameworkElement[] { GameCard, DailyCard, CustomCard }.Select((c, i) => (c, i)))
+        // Two profiles side by side (Personalizado is hidden: "Ajustar o perfil Jogo" replaced it); stacked when narrow.
+        var stacked = e.NewSize.Width < 680;
+        CustomCard.Visibility = Visibility.Collapsed;
+        ProfileCards.ColumnDefinitions[2].Width = new GridLength(0);
+        foreach (var (card, index) in new FrameworkElement[] { GameCard, DailyCard }.Select((c, i) => (c, i)))
         {
-            Grid.SetColumn(card, stacked ? 0 : index); Grid.SetRow(card, stacked ? index : 0); Grid.SetColumnSpan(card, stacked ? 3 : 1);
+            Grid.SetColumn(card, stacked ? 0 : index); Grid.SetRow(card, stacked ? index : 0); Grid.SetColumnSpan(card, stacked ? 2 : 1);
         }
+        ProfileCards.ColumnSpacing = 16;
     }
 
     // Actions move below the change list when there is no room for a side column.

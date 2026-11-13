@@ -95,6 +95,38 @@
 
    <StackPanel x:Name="OptimizeContent" x:Load="{x:Bind ShowOptimize}" Spacing="20">
     <controls:PowerProfilesPanel DataContext="{Binding PowerProfiles}"/>
+    <!-- Ajustar o perfil Jogo: what happens only while a game is open, each step undone when it closes -->
+    <Border Style="{StaticResource CardStyle}" AutomationProperties.AutomationId="game-boost-settings">
+     <StackPanel Spacing="14">
+      <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+       <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE7FC;" Style="{StaticResource BadgeIconStyle}"/></Border>
+       <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center"><TextBlock Text="{Binding Text[BoTitle]}" Style="{StaticResource SubtitleStyle}"/><TextBlock Text="{Binding Text[BoHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.GameBoost, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" VerticalAlignment="Center" AutomationProperties.Name="{Binding Text[BoTitle]}" AutomationProperties.AutomationId="boost-on"/>
+      </Grid>
+      <StackPanel Spacing="8" Visibility="{Binding Preferences.GameBoost, Converter={StaticResource BooleanVisibility}}">
+       <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <FontIcon Glyph="&#xE945;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[BoPower]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[BoPowerHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+        <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.BoostPower, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[BoPower]}"/>
+       </Grid></Border>
+       <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <FontIcon Glyph="&#xE7E7;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[BoNotifications]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[BoNotificationsHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+        <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.BoostNotifications, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[BoNotifications]}"/>
+       </Grid></Border>
+       <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <FontIcon Glyph="&#xE714;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[BoRecording]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[BoRecordingHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+        <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.BoostRecording, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[BoRecording]}"/>
+       </Grid></Border>
+       <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <FontIcon Glyph="&#xE8CB;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[BoPriority]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[BoPriorityHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+        <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.GamePriority, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[BoPriority]}"/>
+       </Grid></Border>
+      </StackPanel>
+     </StackPanel>
+    </Border>
     <SelectorBar x:Name="OptimizeTabs" SelectionChanged="OnOptimizeTabChanged" AutomationProperties.Name="{Binding Text[UxOptimizeSections]}">
      <SelectorBarItem Text="{Binding Text[UxResultsTab]}"/><SelectorBarItem Text="{Binding Text[UxRestoreTab]}"/>
     </SelectorBar>

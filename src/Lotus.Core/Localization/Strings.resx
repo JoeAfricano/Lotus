@@ -3279,7 +3279,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="ScorePickFromReq" xml:space="preserve"><value>Requisitos recomendados da Steam</value></data>
   <data name="ScoreConfHigh" xml:space="preserve"><value>Confiança alta · 2+ laboratórios</value></data>
   <data name="ScoreConfMid" xml:space="preserve"><value>Confiança média · 1 laboratório</value></data>
-  <data name="ScoreConfLow" xml:space="preserve"><value>Estimativa simples (requisitos ou média)</value></data>
+  <data name="ScoreConfLow" xml:space="preserve"><value>Estimativa simples · meça em Preparar e jogar</value></data>
   <data name="ScoreConfSearched" xml:space="preserve"><value>Estimativa pelos requisitos da Steam</value></data>
   <data name="ScorePickSources" xml:space="preserve"><value>Fontes</value></data>
   <data name="ScorePickRefresh" xml:space="preserve"><value>Atualizar agora</value></data>
@@ -3291,4 +3291,14 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="SetFpsDataHint" xml:space="preserve"><value>Uma vez por semana o Lotus confere se há uma tabela de FPS mais nova no repositório oficial (pequeno arquivo, validado antes de usar).</value></data>
   <data name="ScoreMeasured" xml:space="preserve"><value>Medido no seu PC: {0} FPS (1% low {1})</value></data>
   <data name="ScoreMeasuredLine" xml:space="preserve"><value>Medido no seu PC: {0} FPS de média, 1% low {1}. A estimativa abaixo foi calibrada com essa medição.</value></data>
+  <data name="BoTitle" xml:space="preserve"><value>Ajustar o perfil Jogo</value></data>
+  <data name="BoHint" xml:space="preserve"><value>Só enquanto um jogo da sua biblioteca está aberto. Tudo volta como estava quando o jogo fecha.</value></data>
+  <data name="BoPower" xml:space="preserve"><value>Alto desempenho durante o jogo</value></data>
+  <data name="BoPowerHint" xml:space="preserve"><value>O Windows usa o plano Alto desempenho e volta ao seu plano quando o jogo fecha.</value></data>
+  <data name="BoNotifications" xml:space="preserve"><value>Silenciar notificações</value></data>
+  <data name="BoNotificationsHint" xml:space="preserve"><value>Avisos do Windows não aparecem por cima do jogo; voltam quando ele fecha.</value></data>
+  <data name="BoRecording" xml:space="preserve"><value>Desligar a gravação em segundo plano do Xbox</value></data>
+  <data name="BoRecordingHint" xml:space="preserve"><value>A Game Bar para de gravar os últimos minutos enquanto você joga; volta quando o jogo fecha.</value></data>
+  <data name="BoPriority" xml:space="preserve"><value>Prioridade para o jogo</value></data>
+  <data name="BoPriorityHint" xml:space="preserve"><value>Apps como navegador continuam abertos, só com prioridade menor enquanto você joga.</value></data>
 </root>

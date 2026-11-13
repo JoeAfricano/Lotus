@@ -43,6 +43,8 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public bool ResultOk { get; private set; } = true;
     public bool HasResult => ResultTitle.Length > 0 || ProfileStatus.Length > 0;
     public event EventHandler? ResultShown;
+    // Set by the app: applying Jogo turns on the game-session boost and process priority; Diário turns them off.
+    public Action<string>? ProfileApplied { get; set; }
     private string ProfileTitle => Text[IsGame ? "PfGameTitle" : IsDaily ? "PfDailyTitle" : "PfCustomTitle"];
     private void ShowResult(string titleKey, bool ok, string detail)
     {

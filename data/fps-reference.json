@@ -15,6 +15,10 @@
                                              "label":  "GamersNexus: review RTX 5060, 1080p",
                                              "url":  "https://gamersnexus.net/gpus/forbidden-review-nvidia-rtx-5060-gpu-benchmarks"
                                          },
+                    "zwormz-5060":  {
+                                        "label":  "zWORMz Gaming (vídeo de gameplay), RTX 5060 1080p, via CHIP",
+                                        "url":  "https://ichip.ru/novosti/ideal-dlya-full-hd-geforce-rtx-5060-protestirovali-v-23-igrah-v-razreshenii-1080p-917492"
+                                    },
                     "lotus-initial":  {
                                           "label":  "Tabela inicial do Lotus (médias públicas de benchmarks)",
                                           "url":  "https://github.com/JoeAfricano/Lotus/blob/main/docs/LOTUS_FPS_SOURCES.md"
@@ -28,12 +32,12 @@
                   {
                       "name":  "Counter-Strike 2",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "lotus-initial"
+                                      "zwormz-5060"
                                   ],
                       "steamAppId":  "730",
-                      "gpuHigh":  330,
+                      "gpuHigh":  290,
                       "cpuCap":  360
                   },
                   {
@@ -49,11 +53,11 @@
                   {
                       "name":  "Fortnite",
                       "store":  "epic",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "lotus-initial"
+                                      "zwormz-5060"
                                   ],
-                      "gpuHigh":  165,
+                      "gpuHigh":  186,
                       "cpuCap":  230
                   },
                   {
@@ -108,12 +112,12 @@
                   {
                       "name":  "Rainbow Six Siege",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "lotus-initial"
+                                      "zwormz-5060"
                                   ],
                       "steamAppId":  "359550",
-                      "gpuHigh":  330,
+                      "gpuHigh":  353,
                       "cpuCap":  380
                   },
                   {
@@ -141,12 +145,12 @@
                   {
                       "name":  "Call of Duty: Warzone",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "lotus-initial"
+                                      "zwormz-5060"
                                   ],
                       "steamAppId":  "1962663",
-                      "gpuHigh":  120,
+                      "gpuHigh":  96,
                       "cpuCap":  170
                   },
                   {
@@ -180,12 +184,12 @@
                   {
                       "name":  "Red Dead Redemption 2",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "lotus-initial"
+                                      "zwormz-5060"
                                   ],
                       "steamAppId":  "1174180",
-                      "gpuHigh":  85,
+                      "gpuHigh":  96,
                       "cpuCap":  140
                   },
                   {
@@ -278,11 +282,11 @@
                   {
                       "name":  "Alan Wake 2",
                       "store":  "epic",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "lotus-initial"
+                                      "zwormz-5060"
                                   ],
-                      "gpuHigh":  55,
+                      "gpuHigh":  50,
                       "cpuCap":  120
                   },
                   {
@@ -291,7 +295,8 @@
                       "confidence":  "alta",
                       "sources":  [
                                       "notebookcheck-5060",
-                                      "gamersnexus-5060"
+                                      "gamersnexus-5060",
+                                      "zwormz-5060"
                                   ],
                       "steamAppId":  "2358720",
                       "lab1080":  [
@@ -321,12 +326,12 @@
                   {
                       "name":  "Forza Horizon 5",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "lotus-initial"
+                                      "zwormz-5060"
                                   ],
                       "steamAppId":  "1551360",
-                      "gpuHigh":  140,
+                      "gpuHigh":  154,
                       "cpuCap":  180
                   },
                   {
@@ -506,9 +511,10 @@
                   {
                       "name":  "Kingdom Come: Deliverance II",
                       "store":  "steam",
-                      "confidence":  "media",
+                      "confidence":  "alta",
                       "sources":  [
-                                      "notebookcheck-5060"
+                                      "notebookcheck-5060",
+                                      "zwormz-5060"
                                   ],
                       "steamAppId":  "1771300",
                       "lab1080":  [
@@ -686,7 +692,8 @@
                       "confidence":  "alta",
                       "sources":  [
                                       "notebookcheck-5060",
-                                      "techspot-5060"
+                                      "techspot-5060",
+                                      "zwormz-5060"
                                   ],
                       "steamAppId":  "1643320",
                       "lab1080":  [
@@ -876,11 +883,12 @@
                   {
                       "name":  "The Finals",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "steam-requirements"
+                                      "zwormz-5060"
                                   ],
-                      "steamAppId":  "2073850"
+                      "steamAppId":  "2073850",
+                      "gpuHigh":  109
                   },
                   {
                       "name":  "War Thunder",
@@ -1074,11 +1082,12 @@
                   {
                       "name":  "Horizon Forbidden West",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "steam-requirements"
+                                      "zwormz-5060"
                                   ],
-                      "steamAppId":  "2420110"
+                      "steamAppId":  "2420110",
+                      "gpuHigh":  75
                   },
                   {
                       "name":  "Ghost of Tsushima",
@@ -1428,11 +1437,12 @@
                   {
                       "name":  "Indiana Jones and the Great Circle",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "steam-requirements"
+                                      "zwormz-5060"
                                   ],
-                      "steamAppId":  "2677660"
+                      "steamAppId":  "2677660",
+                      "gpuHigh":  58
                   },
                   {
                       "name":  "Silent Hill 2",
@@ -1499,6 +1509,26 @@
                                   ],
                       "steamAppId":  "1845910",
                       "gpuHigh":  87
+                  },
+                  {
+                      "name":  "The Last of Us Part II Remastered",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "zwormz-5060"
+                                  ],
+                      "steamAppId":  "2531310",
+                      "gpuHigh":  115
+                  },
+                  {
+                      "name":  "Battlefield 2042",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "zwormz-5060"
+                                  ],
+                      "steamAppId":  "1517290",
+                      "gpuHigh":  141
                   }
               ]
 }
