@@ -3181,4 +3181,10 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="IgRaiseQualityBody" xml:space="preserve"><value>Na última análise, a placa ficou em {0}% segurando {1} FPS. Suba um nível de qualidade ou troque o DLSS/FSR para um modo mais bonito e analise de novo: se o FPS continuar firme, mantenha.</value></data>
   <data name="PfPreviewFailed" xml:space="preserve"><value>Não consegui ler o estado atual do Windows, então nada foi mudado. Tente de novo; se continuar, reinicie o Lotus.</value></data>
   <data name="PfPreviewSkipped" xml:space="preserve"><value>Alguns itens não puderam ser lidos agora e ficaram fora desta lista. Nada neles será mudado.</value></data>
+  <data name="ToolGroupClean" xml:space="preserve"><value>Limpeza e espaço</value></data>
+  <data name="ToolGroupSpeed" xml:space="preserve"><value>Desempenho</value></data>
+  <data name="ToolGroupDiagnose" xml:space="preserve"><value>Diagnóstico</value></data>
+  <data name="ToolGroupSystem" xml:space="preserve"><value>Sistema e rede</value></data>
+  <data name="ToolSearch" xml:space="preserve"><value>Buscar ferramenta</value></data>
+  <data name="ToolSearchEmpty" xml:space="preserve"><value>Nenhuma ferramenta com esse nome.</value></data>
 </root>

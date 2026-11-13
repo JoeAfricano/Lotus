@@ -18,52 +18,81 @@ public sealed partial class ToolsPanel : UserControl
         };
     }
 
-    // ---- Tiles: one square per tool; clicking opens that tool alone, with a back button ----
+    // ---- Tiles (visual 2.0): compact squares in four groups, filtered by the search box ----
     private readonly Dictionary<string, FrameworkElement> cards = [];
+    private readonly List<(Button Tile, string Name, FrameworkElement Group)> tiles = [];
+    private static readonly (string Title, string[] Ids)[] Groups =
+    [
+        ("ToolGroupClean", ["clean", "temp", "store", "unin"]),
+        ("ToolGroupSpeed", ["proc", "mem", "startup", "monitor", "features", "overlays"]),
+        ("ToolGroupDiagnose", ["crash", "health", "disk", "drivers"]),
+        ("ToolGroupSystem", ["windows", "net"]),
+    ];
     private void BuildTiles(ToolsViewModel vm)
     {
-        if (Tiles.Items.Count > 0) return;
+        if (TileGroups.Children.Count > 0) return;
         cards["mem"] = MemCard; cards["temp"] = TempCard; cards["clean"] = CleanCard; cards["proc"] = ProcCard; cards["store"] = StoreCard; cards["startup"] = StartCard; cards["health"] = HealthCard; cards["monitor"] = MonitorCard; cards["features"] = FeaturesCard; cards["crash"] = CrashCard; cards["windows"] = UpkeepCard; cards["checkup"] = CheckupCard; cards["unin"] = UninCard; cards["net"] = NetCard; cards["disk"] = DiskCard; cards["drivers"] = DriverCard; cards["overlays"] = OverlayCard;
-        foreach (var (id, glyph, title, status) in new[]
+        var defs = new Dictionary<string, (string Glyph, string Title, string Status)>
         {
-            ("clean", "\uE74D", "ClTitle", "Clean.TileStatus"), ("proc", "\uE964", "PrTitle", "Processes.TileStatus"), ("store", "\uE8B7", "StTitle", "Storage.TileStatus"), ("startup", "\uE7E8", "SuTitle", "Startup.TileStatus"), ("monitor", "\uE7F4", "MnTitle", "Gaming.MonitorTile"), ("features", "\uE7FC", "GfTitle", "Gaming.FeaturesTile"), ("crash", "\uE9D9", "CrashTitle", "Crashes.TileStatus"), ("windows", "\uE895", "WuTitle", "Upkeep.TileStatus"), ("mem", "", "ToolMemTitle", "MemoryStatus"), ("temp", "", "ToolTempTitle", "TempStatus"), ("unin", "", "UninTitle", "Uninstall.Summary"),
-            ("net", "", "ToolNetTile", "NetTileStatus"), ("health", "\uEDA2", "DkTitle", "DiskTool.TileStatus"), ("disk", "", "ToolDiskTitle", "DiskTileStatus"), ("drivers", "", "ToolDriverTitle", "DriverStatus"), ("overlays", "\uE7F4", "OvTitle", "Overlays.Summary")
-        })
+            ["clean"] = ("\uE74D", "ClTitle", "Clean.TileStatus"), ["proc"] = ("\uE964", "PrTitle", "Processes.TileStatus"), ["store"] = ("\uE8B7", "StTitle", "Storage.TileStatus"), ["startup"] = ("\uE7E8", "SuTitle", "Startup.TileStatus"),
+            ["monitor"] = ("\uE7F4", "MnTitle", "Gaming.MonitorTile"), ["features"] = ("\uE7FC", "GfTitle", "Gaming.FeaturesTile"), ["crash"] = ("\uE9D9", "CrashTitle", "Crashes.TileStatus"), ["windows"] = ("\uE895", "WuTitle", "Upkeep.TileStatus"),
+            ["mem"] = ("\uE964", "ToolMemTitle", "MemoryStatus"), ["temp"] = ("\uE74D", "ToolTempTitle", "TempStatus"), ["unin"] = ("\uE71D", "UninTitle", "Uninstall.Summary"), ["net"] = ("\uE701", "ToolNetTile", "NetTileStatus"),
+            ["health"] = ("\uEDA2", "DkTitle", "DiskTool.TileStatus"), ["disk"] = ("\uEDA2", "ToolDiskTitle", "DiskTileStatus"), ["drivers"] = ("\uE7F8", "ToolDriverTitle", "DriverStatus"), ["overlays"] = ("\uE7F4", "OvTitle", "Overlays.Summary"),
+        };
+        foreach (var (groupTitle, ids) in Groups)
         {
-            if (id == "unin" && vm.Uninstall is null) continue;
-            if (id == "clean" && vm.Clean is null) continue;
-            if (id == "proc" && vm.Processes is null) continue;
-            if (id == "store" && vm.Storage is null) continue;
-            if (id == "startup" && vm.Startup is null) continue;
-            if (id == "health" && vm.DiskTool is null) continue;
-            if (id is "monitor" or "features" && vm.Gaming is null) continue;
-            if (id == "crash" && vm.Crashes is null) continue;
-            if (id == "windows" && vm.Upkeep is null) continue;
-            if (id == "disk" && vm.DiskTool is not null) continue; // Saúde do Disco replaces the short list
-            if (id == "mem" && vm.Processes is not null) continue; // Memória e Processos replaces the simple list
-            if (id == "temp" && vm.Clean is not null) continue; // Lotus Clean covers the temporary files (and much more)
-            if (id == "overlays" && vm.Overlays is null) continue;
-            var badge = new FontIcon { Glyph = glyph, FontSize = 26, Foreground = (Brush)Application.Current.Resources["RoseBrush"], HorizontalAlignment = HorizontalAlignment.Left }; // design: outline accent icon
-            var name = new TextBlock { Text = vm.Text[title], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 21, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis };
-            var line = new TextBlock { FontSize = 13.5, Foreground = (Brush)Application.Current.Resources["MutedBrush"], TextWrapping = TextWrapping.Wrap, MaxLines = 3, TextTrimming = TextTrimming.CharacterEllipsis };
-            line.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath(status) });
-            var info = new StackPanel { Spacing = 10 }; info.Children.Add(badge); info.Children.Add(name); info.Children.Add(line);
-            // "Abrir ferramenta →" at the bottom of each card (design 07)
-            var open = new Border { Background = (Brush)Application.Current.Resources["ElevatedBrush"], BorderBrush = (Brush)Application.Current.Resources["CardBorderBrush"], BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(10), Padding = new Thickness(16, 11, 16, 11), VerticalAlignment = VerticalAlignment.Bottom,
-                Child = new TextBlock { Text = vm.Text["ToolOpen"] + "  →", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 14 } };
-            var content = new Grid { RowSpacing = 14 }; content.RowDefinitions.Add(new RowDefinition()); content.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            content.Children.Add(info); Grid.SetRow(open, 1); content.Children.Add(open);
-            var tile = new Button
+            var wrap = new VariableSizedWrapGrid { Orientation = Orientation.Horizontal, ItemWidth = 272, ItemHeight = 156 };
+            var group = new StackPanel { Spacing = 12 };
+            group.Children.Add(new TextBlock { Text = vm.Text[groupTitle], Style = (Style)Application.Current.Resources["SubtitleStyle"] });
+            group.Children.Add(wrap);
+            foreach (var id in ids)
             {
-                Width = 340, Height = 250, Padding = new Thickness(22), CornerRadius = new CornerRadius(16), HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch,
-                Background = (Brush)Application.Current.Resources["CardBrush"], BorderBrush = (Brush)Application.Current.Resources["CardBorderBrush"], BorderThickness = new Thickness(1), Content = content, Tag = id
-            };
-            Motion.SetHover(tile, 1.04); Motion.SetPress(tile, true);
-            Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(tile, "tools-tile-" + id);
-            Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(tile, vm.Text[title]);
-            tile.Click += (_, _) => Open(id);
-            Tiles.Items.Add(tile);
+                if (!Available(vm, id)) continue;
+                var (glyph, title, status) = defs[id];
+                var badge = new FontIcon { Glyph = glyph, FontSize = 20, Foreground = (Brush)Application.Current.Resources["RoseBrush"], HorizontalAlignment = HorizontalAlignment.Left };
+                var name = new TextBlock { Text = vm.Text[title], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 14, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis };
+                var line = new TextBlock { FontSize = 12, LineHeight = 16, Foreground = (Brush)Application.Current.Resources["MutedBrush"], TextWrapping = TextWrapping.Wrap, MaxLines = 3, TextTrimming = TextTrimming.CharacterEllipsis };
+                line.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath(status) });
+                var info = new StackPanel { Spacing = 8 }; info.Children.Add(badge); info.Children.Add(name); info.Children.Add(line);
+                var tile = new Button
+                {
+                    Margin = new Thickness(0, 0, 12, 12), Padding = new Thickness(16), CornerRadius = (CornerRadius)Application.Current.Resources["CardRadius"],
+                    HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Top,
+                    Background = (Brush)Application.Current.Resources["CardBrush"], BorderBrush = (Brush)Application.Current.Resources["CardBorderBrush"], BorderThickness = new Thickness(1), Content = info, Tag = id
+                };
+                Motion.SetHover(tile, 1.02); Motion.SetPress(tile, true);
+                Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(tile, "tools-tile-" + id);
+                Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(tile, vm.Text[title]);
+                ToolTipService.SetToolTip(tile, vm.Text["ToolOpen"]);
+                tile.Click += (_, _) => Open(id);
+                wrap.Children.Add(tile); tiles.Add((tile, vm.Text[title], group));
+            }
+            if (wrap.Children.Count > 0) TileGroups.Children.Add(group);
         }
+    }
+    private static bool Available(ToolsViewModel vm, string id) => id switch
+    {
+        "unin" => vm.Uninstall is not null, "clean" => vm.Clean is not null, "proc" => vm.Processes is not null, "store" => vm.Storage is not null,
+        "startup" => vm.Startup is not null, "health" => vm.DiskTool is not null, "monitor" or "features" => vm.Gaming is not null, "crash" => vm.Crashes is not null,
+        "windows" => vm.Upkeep is not null, "overlays" => vm.Overlays is not null,
+        "disk" => vm.DiskTool is null, // Saúde do Disco replaces the short list
+        "mem" => vm.Processes is null, // Memória e Processos replaces the simple list
+        "temp" => vm.Clean is null, // Lotus Clean covers the temporary files (and much more)
+        _ => true,
+    };
+    // Search: hides the tiles (and empty groups) whose name does not contain the typed text; accents and case ignored.
+    private void OnToolSearch(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+    {
+        var query = Fold(sender.Text.Trim());
+        foreach (var (tile, name, _) in tiles) tile.Visibility = query.Length == 0 || Fold(name).Contains(query) ? Visibility.Visible : Visibility.Collapsed;
+        foreach (var group in tiles.Select(t => t.Group).Distinct())
+            group.Visibility = tiles.Any(t => t.Group == group && t.Tile.Visibility == Visibility.Visible) ? Visibility.Visible : Visibility.Collapsed;
+        ToolSearchEmpty.Visibility = tiles.Any(t => t.Tile.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+    }
+    private static string Fold(string text)
+    {
+        var d = text.Normalize(System.Text.NormalizationForm.FormD);
+        return new string(d.Where(ch => System.Globalization.CharUnicodeInfo.GetUnicodeCategory(ch) != System.Globalization.UnicodeCategory.NonSpacingMark).ToArray()).ToLowerInvariant();
     }
     private void Open(string id)
     {

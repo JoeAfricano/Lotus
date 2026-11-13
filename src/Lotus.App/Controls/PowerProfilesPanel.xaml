@@ -10,7 +10,7 @@
    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
    <Button x:Name="GameCard" Style="{StaticResource CardButtonStyle}" Command="{Binding SelectProfileCommand}" CommandParameter="game" AutomationProperties.AutomationId="profile-game" AutomationProperties.Name="{Binding Text[PfGameTitle]}">
-    <Border CornerRadius="16" Padding="22" BorderThickness="1.5" BorderBrush="{Binding IsGame, Converter={StaticResource SelectedBorder}}" Background="{Binding IsGame, Converter={StaticResource SelectedSurface}}">
+    <Border CornerRadius="{StaticResource CardRadius}" Padding="20" BorderThickness="1.5" BorderBrush="{Binding IsGame, Converter={StaticResource SelectedBorder}}" Background="{Binding IsGame, Converter={StaticResource SelectedSurface}}">
      <Grid RowSpacing="12"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <Grid><FontIcon Glyph="&#xE7FC;" FontSize="28" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
        <Border Style="{StaticResource ChipStyle}" BorderThickness="1" BorderBrush="{Binding IsGame, Converter={StaticResource SelectedBorder}}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,34,0"><TextBlock Text="{Binding GameStatus}" Style="{StaticResource ChipTextStyle}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/></Border>
@@ -18,7 +18,7 @@
       </Grid>
       <StackPanel Grid.Row="1" Spacing="10">
        <Border Style="{StaticResource ChipStyle}" BorderBrush="{ThemeResource RoseBrush}" Background="{ThemeResource AccentSoftBrush}" HorizontalAlignment="Left"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE735;" FontSize="10" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[PfRecommended]}" Style="{StaticResource ChipTextStyle}" FontSize="12" Foreground="{ThemeResource RoseBrush}"/></StackPanel></Border>
-       <TextBlock Text="{Binding Text[PfGameTitle]}" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap"/>
+       <TextBlock Text="{Binding Text[PfGameTitle]}" Style="{StaticResource SubtitleStyle}"/>
       </StackPanel>
       <TextBlock Grid.Row="2" Text="{Binding Text[PfGameDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
       <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
@@ -29,13 +29,13 @@
     </Border>
    </Button>
    <Button x:Name="DailyCard" Grid.Column="1" Style="{StaticResource CardButtonStyle}" Command="{Binding SelectProfileCommand}" CommandParameter="daily" AutomationProperties.AutomationId="profile-daily" AutomationProperties.Name="{Binding Text[PfDailyTitle]}">
-    <Border CornerRadius="16" Padding="22" BorderThickness="1.5" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}" Background="{Binding IsDaily, Converter={StaticResource SelectedSurface}}">
+    <Border CornerRadius="{StaticResource CardRadius}" Padding="20" BorderThickness="1.5" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}" Background="{Binding IsDaily, Converter={StaticResource SelectedSurface}}">
      <Grid RowSpacing="12"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <Grid><FontIcon Glyph="&#xE7F4;" FontSize="28" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
        <Border Style="{StaticResource ChipStyle}" BorderThickness="1" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,34,0"><TextBlock Text="{Binding DailyStatus}" Style="{StaticResource ChipTextStyle}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/></Border>
        <Border x:Name="DailyCheck" Width="24" Height="24" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="1.5" BorderBrush="{Binding IsDaily, Converter={StaticResource SelectedBorder}}"><Border CornerRadius="5" Margin="2" Background="{ThemeResource AccentGradientBrush}" Visibility="{Binding IsDaily, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xE73E;" FontSize="11" Foreground="{ThemeResource OnRoseBrush}"/></Border></Border>
       </Grid>
-      <TextBlock Grid.Row="1" Text="{Binding Text[PfDailyTitle]}" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap"/>
+      <TextBlock Grid.Row="1" Text="{Binding Text[PfDailyTitle]}" Style="{StaticResource SubtitleStyle}"/>
       <TextBlock Grid.Row="2" Text="{Binding Text[PfDailyDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
       <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
        <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE945;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipBalance]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>
@@ -45,13 +45,13 @@
     </Border>
    </Button>
    <Button x:Name="CustomCard" Grid.Column="2" Style="{StaticResource CardButtonStyle}" Command="{Binding SelectProfileCommand}" CommandParameter="custom" AutomationProperties.AutomationId="profile-custom" AutomationProperties.Name="{Binding Text[PfCustomTitle]}">
-    <Border CornerRadius="16" Padding="22" BorderThickness="1.5" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}" Background="{Binding IsCustom, Converter={StaticResource SelectedSurface}}">
+    <Border CornerRadius="{StaticResource CardRadius}" Padding="20" BorderThickness="1.5" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}" Background="{Binding IsCustom, Converter={StaticResource SelectedSurface}}">
      <Grid RowSpacing="12"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <Grid><FontIcon Glyph="&#xE9E9;" FontSize="28" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
        <Border Style="{StaticResource ChipStyle}" BorderThickness="1" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,34,0"><TextBlock Text="{Binding CustomStatus}" Style="{StaticResource ChipTextStyle}" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}"/></Border>
        <Border x:Name="CustomCheck" Width="24" Height="24" CornerRadius="7" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="1.5" BorderBrush="{Binding IsCustom, Converter={StaticResource SelectedBorder}}"><Border CornerRadius="5" Margin="2" Background="{ThemeResource AccentGradientBrush}" Visibility="{Binding IsCustom, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xE73E;" FontSize="11" Foreground="{ThemeResource OnRoseBrush}"/></Border></Border>
       </Grid>
-      <TextBlock Grid.Row="1" Text="{Binding Text[PfCustomTitle]}" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap"/>
+      <TextBlock Grid.Row="1" Text="{Binding Text[PfCustomTitle]}" Style="{StaticResource SubtitleStyle}"/>
       <TextBlock Grid.Row="2" Text="{Binding Text[PfCustomDescription]}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource MutedBrush}"/>
       <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8">
        <Border Style="{StaticResource ChipStyle}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE713;" FontSize="12"/><TextBlock Text="{Binding Text[PfChipManual]}" Style="{StaticResource ChipTextStyle}"/></StackPanel></Border>

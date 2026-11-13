@@ -3181,4 +3181,10 @@ Your games and Windows are not changed.</value></data>
   <data name="IgRaiseQualityBody" xml:space="preserve"><value>In the last analysis the card ran at {0}% while holding {1} FPS. Raise the quality one level or switch DLSS/FSR to a prettier mode and analyze again: if FPS stays steady, keep it.</value></data>
   <data name="PfPreviewFailed" xml:space="preserve"><value>I couldn't read Windows' current state, so nothing was changed. Try again; if it keeps happening, restart Lotus.</value></data>
   <data name="PfPreviewSkipped" xml:space="preserve"><value>Some items couldn't be read right now and were left out of this list. Nothing in them will be changed.</value></data>
+  <data name="ToolGroupClean" xml:space="preserve"><value>Cleanup and space</value></data>
+  <data name="ToolGroupSpeed" xml:space="preserve"><value>Performance</value></data>
+  <data name="ToolGroupDiagnose" xml:space="preserve"><value>Diagnostics</value></data>
+  <data name="ToolGroupSystem" xml:space="preserve"><value>System and network</value></data>
+  <data name="ToolSearch" xml:space="preserve"><value>Search tools</value></data>
+  <data name="ToolSearchEmpty" xml:space="preserve"><value>No tool matches that name.</value></data>
 </root>

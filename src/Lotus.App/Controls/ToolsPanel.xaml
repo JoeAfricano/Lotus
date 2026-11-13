@@ -30,10 +30,12 @@
     </StackPanel>
    </Grid>
   </Border>
-  <!-- Tool tiles: a grid of squares; each opens its tool on its own screen -->
-  <GridView x:Name="Tiles" SelectionMode="None" IsItemClickEnabled="False" ScrollViewer.VerticalScrollMode="Disabled" Padding="0" AutomationProperties.AutomationId="tools-tiles">
-   <GridView.ItemContainerStyle><Style TargetType="GridViewItem"><Setter Property="Margin" Value="0,0,14,14"/><Setter Property="Padding" Value="0"/></Style></GridView.ItemContainerStyle>
-  </GridView>
+  <!-- Tool tiles (visual 2.0): compact squares in four groups, with a search box; each opens its tool on its own screen -->
+  <StackPanel x:Name="Tiles" Spacing="20" AutomationProperties.AutomationId="tools-tiles">
+   <AutoSuggestBox x:Name="ToolSearch" PlaceholderText="{Binding Text[ToolSearch]}" QueryIcon="Find" MaxWidth="420" HorizontalAlignment="Left" MinWidth="280" TextChanged="OnToolSearch" AutomationProperties.Name="{Binding Text[ToolSearch]}" AutomationProperties.AutomationId="tools-search"/>
+   <TextBlock x:Name="ToolSearchEmpty" Text="{Binding Text[ToolSearchEmpty]}" Style="{StaticResource CaptionStyle}" Visibility="Collapsed"/>
+   <StackPanel x:Name="TileGroups" Spacing="24"/>
+  </StackPanel>
   <!-- Detail: back to the tiles -->
   <Button x:Name="BackButton" Click="OnBack" Style="{StaticResource SoftButtonStyle}" Visibility="Collapsed" AutomationProperties.AutomationId="tools-back">
    <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE72B;" FontSize="13"/><TextBlock Text="{Binding Text[ToolBack]}"/></StackPanel>
