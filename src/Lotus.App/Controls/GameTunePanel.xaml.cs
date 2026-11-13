@@ -32,6 +32,7 @@ public sealed partial class GameTunePanel : UserControl
         vm = model; card = game; actions = acts;
         returnFocus = XamlRoot is { } root ? Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(root) as Control : null;
         Eyebrow.Text = model.Text["TuneOpen"].ToUpperInvariant(); GameName.Text = game.Name;
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(CloseButton, model.Text["GsClose"]); // read by screen readers (icon-only button)
         Chips.Children.Clear(); Body.Children.Clear(); Body.Children.Add(LoadingRing); LoadingRing.IsActive = true;
         PrimaryAction.Visibility = SecondaryAction.Visibility = Footer.Visibility = Visibility.Collapsed;
         LoadArt(game);
@@ -94,13 +95,17 @@ public sealed partial class GameTunePanel : UserControl
         grid.ColumnDefinitions.Add(new ColumnDefinition()); grid.ColumnDefinitions.Add(new ColumnDefinition());
         grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         var upscale = r.Upscaler == Upscaler.None ? text["GsLineNoUpscale"] : $"{text["GsUpscaler" + r.Upscaler]} · {text["GsMode" + r.Mode]}";
-        var tiles = new[] { (text["TuneQuality"], text["GsTier" + r.Tier]), (text["TuneTextures"], text["GsTier" + r.TextureTier]), (text["TuneUpscaler"], upscale), (text["TuneCap"], $"{r.FpsCap} FPS") };
+        // With RivaTuner limiting this game, the cap tile shows RivaTuner's limit (the one in force), not the game's own.
+        var rtssCap = t.LowLatency is { On: true, Cap: { } on } && t.LowLatency.Mode != "scanline" ? on : (double?)null;
+        var capValue = rtssCap is { } c ? c.ToString("0.##", System.Globalization.CultureInfo.GetCultureInfo(text.Language)) + " FPS" : $"{r.FpsCap} FPS";
+        var tiles = new[] { (text["TuneQuality"], text["GsTier" + r.Tier]), (text["TuneTextures"], text["GsTier" + r.TextureTier]), (text["TuneUpscaler"], upscale), (text["TuneCap"], capValue) };
         for (var i = 0; i < tiles.Length; i++)
         {
             var tile = new Border { Padding = new Thickness(16, 14, 16, 14), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1), Background = Res("CardBrush"), BorderBrush = Res("CardBorderBrush") };
             var s = new StackPanel { Spacing = 4 };
             s.Children.Add(new TextBlock { Text = tiles[i].Item1.ToUpperInvariant(), FontSize = 11.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, CharacterSpacing = 80, Foreground = Res("RoseBrush") });
             s.Children.Add(new TextBlock { Text = tiles[i].Item2, FontSize = 21, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
+            if (i == 3 && rtssCap is not null) s.Children.Add(new TextBlock { Text = text["TuneCapRtss"], FontSize = 12, Foreground = Res("MutedBrush"), TextWrapping = TextWrapping.Wrap });
             tile.Child = s; Grid.SetColumn(tile, i % 2); Grid.SetRow(tile, i / 2); grid.Children.Add(tile);
         }
         // Lotus Score: the expected FPS of this game on this PC (from the player's own test), or an invitation to run it.

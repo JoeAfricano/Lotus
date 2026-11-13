@@ -1965,6 +1965,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="TuneTextures" xml:space="preserve"><value>Texturas</value></data>
   <data name="TuneUpscaler" xml:space="preserve"><value>Upscaling</value></data>
   <data name="TuneCap" xml:space="preserve"><value>Limite de FPS</value></data>
+  <data name="TuneCapRtss" xml:space="preserve"><value>Pelo RivaTuner, ligado para este jogo. No jogo, deixe o limite de FPS desligado.</value></data>
   <data name="TuneTips" xml:space="preserve"><value>Ajustes dentro do jogo</value></data>
   <data name="TuneLast" xml:space="preserve"><value>Última análise em jogo</value></data>
   <data name="TuneNoLast" xml:space="preserve"><value>Abra o jogo e aperte Ctrl + Shift + L. Em 30 segundos o Lotus mede o jogo, mostra o resultado no próprio jogo e as dicas aqui ficam mais certeiras.</value></data>

@@ -1965,6 +1965,7 @@ Your games and Windows are not changed.</value></data>
   <data name="TuneTextures" xml:space="preserve"><value>Textures</value></data>
   <data name="TuneUpscaler" xml:space="preserve"><value>Upscaling</value></data>
   <data name="TuneCap" xml:space="preserve"><value>FPS cap</value></data>
+  <data name="TuneCapRtss" xml:space="preserve"><value>By RivaTuner, on for this game. In the game, leave the FPS limit off.</value></data>
   <data name="TuneTips" xml:space="preserve"><value>In-game settings</value></data>
   <data name="TuneLast" xml:space="preserve"><value>Last in-game check</value></data>
   <data name="TuneNoLast" xml:space="preserve"><value>Open the game and press Ctrl + Shift + L. In 30 seconds Lotus measures the game, shows the result in the game itself, and the tips here get more precise.</value></data>

@@ -66,6 +66,9 @@ public sealed class GameIntelTests
         Assert.False(FramePacing.AboveRefresh(74.97, 74.973));
     }
 
+    [Fact] public void GameCardReadsAsItsName() // screen readers read list items by their text
+        => Assert.Equal("Palworld", new GameCard(null!, "Palworld", "Steam", "P", null, "", "", null!, null!).ToString());
+
     // The same rule on other monitors: the cap follows each PC's own exact rate (or the exact fraction of it).
     [Theory]
     [InlineData(60, 60.0, 1, 59.99)]

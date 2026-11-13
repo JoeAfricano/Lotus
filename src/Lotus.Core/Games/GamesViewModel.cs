@@ -7,7 +7,11 @@ namespace Lotus.Core.Games;
 // Each card carries its own labels and commands, so item templates never depend on the parent DataContext.
 public sealed record GameCard(GameEntry Game, string Name, string Store, string Initials, string? CoverPath,
     string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove, string OptimizeLabel = "", string MeasureLabel = "",
-    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "", string PrepareLabel = "", string WhyLabel = "", string OptimizeMenuLabel = "", string DetailsLabel = "");
+    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "", string PrepareLabel = "", string WhyLabel = "", string OptimizeMenuLabel = "", string DetailsLabel = "")
+{
+    // Lists show the game's name to screen readers (the default record text listed every field).
+    public override string ToString() => Name;
+}
 public sealed record StoreFilter(string Id, string Label);
 // Result of "Otimizar configurações": hardware, the recommendation as readable lines, and whether Lotus can apply it.
 public sealed record GameSettingsAnalysis(SettingsRecommendation Recommendation, IReadOnlyList<string> Lines, string Hardware, GameSettingsSupport? Support, bool HasOriginal, int? PendingStep = null);
@@ -314,7 +318,8 @@ public sealed partial class GamesViewModel : ObservableObject
                     Text.Format("GsLineCap", r.FpsCap)
                 };
                 lines.AddRange(r.ReasonKeys.Select(k => Text[k]));
-                var hardware = Text.Format("GsHardware", string.IsNullOrWhiteSpace(p.GpuName) ? "?" : p.GpuName, p.VramMb / 1024.0, p.Width, p.Height, p.RefreshHz);
+                var hardware = Text.Format("GsHardware", string.IsNullOrWhiteSpace(p.GpuName) ? "?" : p.GpuName, p.VramMb / 1024.0, p.Width, p.Height,
+                    FramePacing.RealRefresh(p.RefreshHz, p.ExactRefreshHz).ToString("0.###", System.Globalization.CultureInfo.GetCultureInfo(Text.Language))); // real rate (74,973), not the rounded 75
                 return new GameSettingsAnalysis(r, lines, hardware, support, settingsStore?.LoadOriginal(game.Key) is not null, pendingSteps.TryGetValue(game.Key, out var step) ? step : null);
             });
         }
