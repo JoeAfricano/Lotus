@@ -3296,7 +3296,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="BoPower" xml:space="preserve"><value>Alto desempenho durante o jogo</value></data>
   <data name="BoPowerHint" xml:space="preserve"><value>O Windows usa o plano Alto desempenho e volta ao seu plano quando o jogo fecha.</value></data>
   <data name="BoNotifications" xml:space="preserve"><value>Silenciar notificações</value></data>
-  <data name="BoNotificationsHint" xml:space="preserve"><value>Avisos do Windows não aparecem por cima do jogo; voltam quando ele fecha.</value></data>
+  <data name="BoNotificationsHint" xml:space="preserve"><value>O Windows só aplica esta chave depois de sair e entrar na conta, então ela pode não valer na mesma sessão. Para silenciar já, use o &quot;Não incomodar&quot; automático do Windows ao jogar (Configurações › Sistema › Notificações).</value></data>
   <data name="BoRecording" xml:space="preserve"><value>Desligar a gravação em segundo plano do Xbox</value></data>
   <data name="BoRecordingHint" xml:space="preserve"><value>A Game Bar para de gravar os últimos minutos enquanto você joga; volta quando o jogo fecha.</value></data>
   <data name="BoPriority" xml:space="preserve"><value>Prioridade para o jogo</value></data>
@@ -3358,7 +3358,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="PfStagePlaying" xml:space="preserve"><value>Enquanto joga</value></data>
   <data name="PfStageClose" xml:space="preserve"><value>Ao fechar o jogo</value></data>
   <data name="PfWhyPower" xml:space="preserve"><value>O processador e a placa não economizam energia no meio da partida. Ajuda a evitar quedas pontuais; não promete mais FPS.</value></data>
-  <data name="PfWhyNotifications" xml:space="preserve"><value>Avisos do Windows não aparecem por cima do jogo nem roubam o foco. O ganho é sossego, não FPS.</value></data>
+  <data name="PfWhyNotifications" xml:space="preserve"><value>Pede ao Windows para esconder os avisos durante o jogo. No teste no seu PC (Windows 11 22H2) a mudança só vale depois de sair e entrar na conta; o &quot;Não incomodar ao jogar&quot; do próprio Windows é quem silencia na hora.</value></data>
   <data name="PfWhyRecording" xml:space="preserve"><value>A Game Bar para de gravar os últimos minutos em segundo plano, o que libera um pouco a placa e o disco.</value></data>
   <data name="PfPriorityLine" xml:space="preserve"><value>Prioridade: jogo acima; navegadores e launchers abaixo, continuam abertos</value></data>
   <data name="PfWhyPriority" xml:space="preserve"><value>Se um app como o Opera GX disputa o processador, o jogo vem primeiro. Nenhum app é fechado.</value></data>

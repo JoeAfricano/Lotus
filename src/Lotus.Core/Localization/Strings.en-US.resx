@@ -3296,7 +3296,7 @@ Your games and Windows are not changed.</value></data>
   <data name="BoPower" xml:space="preserve"><value>High performance while playing</value></data>
   <data name="BoPowerHint" xml:space="preserve"><value>Windows uses the High performance plan and goes back to your plan when the game closes.</value></data>
   <data name="BoNotifications" xml:space="preserve"><value>Silence notifications</value></data>
-  <data name="BoNotificationsHint" xml:space="preserve"><value>Windows pop-ups do not show over the game; they come back when it closes.</value></data>
+  <data name="BoNotificationsHint" xml:space="preserve"><value>Windows only applies this switch after signing out and back in, so it may not work in the same session. To silence right away, use Windows&apos; automatic &quot;Do not disturb&quot; while gaming (Settings › System › Notifications).</value></data>
   <data name="BoRecording" xml:space="preserve"><value>Turn off Xbox background recording</value></data>
   <data name="BoRecordingHint" xml:space="preserve"><value>Game Bar stops recording the last minutes while you play; it comes back when the game closes.</value></data>
   <data name="BoPriority" xml:space="preserve"><value>Priority for the game</value></data>
@@ -3358,7 +3358,7 @@ Your games and Windows are not changed.</value></data>
   <data name="PfStagePlaying" xml:space="preserve"><value>While you play</value></data>
   <data name="PfStageClose" xml:space="preserve"><value>When the game closes</value></data>
   <data name="PfWhyPower" xml:space="preserve"><value>The processor and graphics card do not save power mid-match. It helps avoid sudden drops; it does not promise more FPS.</value></data>
-  <data name="PfWhyNotifications" xml:space="preserve"><value>Windows pop-ups do not show over the game or steal focus. The gain is peace, not FPS.</value></data>
+  <data name="PfWhyNotifications" xml:space="preserve"><value>Asks Windows to hide pop-ups during the game. In the test on your PC (Windows 11 22H2) the change only took effect after signing out and back in; Windows&apos; own &quot;Do not disturb while gaming&quot; is what silences right away.</value></data>
   <data name="PfWhyRecording" xml:space="preserve"><value>Game Bar stops recording the last minutes in the background, which frees a little of the graphics card and disk.</value></data>
   <data name="PfPriorityLine" xml:space="preserve"><value>Priority: the game first; browsers and launchers lower, still open</value></data>
   <data name="PfWhyPriority" xml:space="preserve"><value>If an app like Opera GX competes for the processor, the game comes first. No app is closed.</value></data>

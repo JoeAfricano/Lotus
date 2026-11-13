@@ -31,7 +31,7 @@ public sealed record InterfacePreferences
     // On when the player applies the Game profile, off with the Daily one. Each step can be turned off.
     public bool GameBoost { get; init; }
     public bool BoostPower { get; init; } = true;          // High performance plan during the game
-    public bool BoostNotifications { get; init; } = true;  // Windows notifications silenced during the game
+    public bool BoostNotifications { get; init; }          // off by default: on Windows 11 22H2 ToastEnabled only applies after signing out (tested 13/11/2026)
     public bool BoostRecording { get; init; } = true;      // Xbox background recording off during the game
     // Apps are never closed for the game (José's decision): heavy apps only get a lower priority (GamePriority).
     [System.Text.Json.Serialization.JsonIgnore]
