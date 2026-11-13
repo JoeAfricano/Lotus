@@ -6,6 +6,7 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 
 ### Melhorado
 - **Linha do framepacer mais reta em monitor sem FreeSync/G-Sync.** O Lotus agora lê a taxa exata do monitor (por exemplo 74,973 Hz num monitor "75 Hz" por HDMI) e o botão Ligar do RivaTuner põe o limite logo abaixo dela (74,97). No teste com o Black Myth: Wukong Benchmark (RTX 5060), o desvio do frametime caiu de 1,59 para 0,73 ms e o quadro chegou à tela uns 4 ms mais cedo. Detalhes em `docs/LOTUS_FRAME_PACING.md`.
+- **Vale para qualquer monitor, não só 75 Hz.** O limite segue a taxa real de cada PC: 59,99 num monitor de 60 Hz, 59,93 em 59,94 Hz, 143,85 em 143,856 Hz, 143,99 em 144 Hz e a metade exata quando o PC não aguenta a taxa cheia. Com FreeSync/G-Sync a regra continua 3 FPS abaixo da taxa. Se o Windows não informar a taxa exata, nada muda.
 - **"Por que está travando?" avisa quando o limite de FPS está acima da taxa real do monitor**, o que faz os quadros esperarem na fila do V-Sync.
 - Limites com casas decimais aparecem certos na tela (74,97, e não 75,0).
 - Dicas mais claras: V-Sync ligado no jogo e limite do próprio jogo desligado quando o RivaTuner limita. Um limitador só.
