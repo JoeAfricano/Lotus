@@ -137,6 +137,7 @@ public sealed partial class MainWindow : Window
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
         games.Heat = cpuHeat;
         WatchCpuHeat();
+        RecoverGpuTune(); // undo a GPU tune left unfinished by a crash
         SetUpPreparation();
         SetUpSaves();
         SetUpUpdates();

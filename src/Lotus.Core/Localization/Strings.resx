@@ -3397,4 +3397,32 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GtStSuits" xml:space="preserve"><value>Você quer zero risco ou vai devolver a placa ao normal depois de um teste.</value></data>
   <data name="GtStCost" xml:space="preserve"><value>Nenhum. Só não ganha o frio do undervolt nem o FPS do overclock.</value></data>
   <data name="GtWhichOne" xml:space="preserve"><value>Na dúvida: com limite de FPS, undervolt; sem limite e com a placa no máximo, overclock. Dá para combinar: depois de achar o clock máximo, manter ele com a menor tensão possível.</value></data>
+  <data name="GtAutoTitle" xml:space="preserve"><value>Ajustar automaticamente</value></data>
+  <data name="GtAutoHint" xml:space="preserve"><value>O Lotus aplica cada passo pelo MSI Afterburner (dentro dos limites dele), testa a placa por 3 minutos a cada passo e mede o desempenho: linha de base, undervolt, overclock (memória e núcleo) e overclock com undervolt. No fim a placa volta exatamente como estava e você escolhe o que manter. Leva cerca de 1 hora.</value></data>
+  <data name="GtAutoRun" xml:space="preserve"><value>Ajustar automaticamente</value></data>
+  <data name="GtAutoNeeds" xml:space="preserve"><value>Para o modo automático, deixe o MSI Afterburner aberto (placa NVIDIA).</value></data>
+  <data name="GtAutoConfirmTitle" xml:space="preserve"><value>Ajustar a placa automaticamente?</value></data>
+  <data name="GtAutoConfirmBody" xml:space="preserve"><value>Cerca de 1 hora com a placa no máximo: feche jogos e programas pesados. A tela pode piscar se um passo não for estável; o Windows se recupera sozinho e o Lotus volta um passo. Se algo travar, o estado original fica salvo e volta na próxima vez que o Lotus abrir. No fim, a placa volta como estava.</value></data>
+  <data name="GtAutoStatusbaseline" xml:space="preserve"><value>Medindo a linha de base (placa como está)…</value></data>
+  <data name="GtAutoStatusundervolt" xml:space="preserve"><value>Testando undervolt…</value></data>
+  <data name="GtAutoStatusoverclock" xml:space="preserve"><value>Testando overclock (memória, depois núcleo)…</value></data>
+  <data name="GtAutoStatuscombined" xml:space="preserve"><value>Testando overclock com undervolt…</value></data>
+  <data name="GtAutoDone" xml:space="preserve"><value>Pronto. A placa voltou como estava; escolha abaixo o que manter.</value></data>
+  <data name="GtAutoStoppedunavailable" xml:space="preserve"><value>O Afterburner não está aberto ou não aceita controle.</value></data>
+  <data name="GtAutoStoppedjournal" xml:space="preserve"><value>Não deu para salvar o estado atual; nada foi mudado.</value></data>
+  <data name="GtAutoStoppedbaseline" xml:space="preserve"><value>A placa já não ficou estável no padrão; nada mais foi testado.</value></data>
+  <data name="GtAutoStoppedfailed" xml:space="preserve"><value>O ajuste parou por um erro; a placa voltou como estava.</value></data>
+  <data name="GtAutoModebaseline" xml:space="preserve"><value>Linha de base</value></data>
+  <data name="GtAutoModeundervolt" xml:space="preserve"><value>Undervolt</value></data>
+  <data name="GtAutoModememory" xml:space="preserve"><value>Memória</value></data>
+  <data name="GtAutoModecore" xml:space="preserve"><value>Núcleo</value></data>
+  <data name="GtAutoModeoverclock" xml:space="preserve"><value>Overclock</value></data>
+  <data name="GtAutoModecombined" xml:space="preserve"><value>Overclock + undervolt</value></data>
+  <data name="GtAutoLine" xml:space="preserve"><value>desempenho {0} · {1} °C · {2} MHz · {3} W</value></data>
+  <data name="GtAutoResults" xml:space="preserve"><value>Resultados</value></data>
+  <data name="GtAutoNone" xml:space="preserve"><value>nenhum passo estável</value></data>
+  <data name="GtAutoSummary" xml:space="preserve"><value>{0}% de desempenho · {1} °C · {2} W</value></data>
+  <data name="GtAutoKeep" xml:space="preserve"><value>Manter este</value></data>
+  <data name="GtAutoKeepTitle" xml:space="preserve"><value>Manter este ajuste?</value></data>
+  <data name="GtAutoKeepBody" xml:space="preserve"><value>O Lotus aplica agora pelo Afterburner: {0}. Para valer só nos jogos, salve no Perfil 2 do Afterburner (veja abaixo). Botão Reset do Afterburner volta ao padrão.</value></data>
 </root>

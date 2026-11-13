@@ -3397,4 +3397,32 @@ Your games and Windows are not changed.</value></data>
   <data name="GtStSuits" xml:space="preserve"><value>You want zero risk or are returning the card to normal after a test.</value></data>
   <data name="GtStCost" xml:space="preserve"><value>None. You just do not get the cooler card of an undervolt or the FPS of an overclock.</value></data>
   <data name="GtWhichOne" xml:space="preserve"><value>If unsure: with an FPS cap, undervolt; no cap and the card maxed out, overclock. You can combine them: after finding the top clock, keep it at the lowest voltage possible.</value></data>
+  <data name="GtAutoTitle" xml:space="preserve"><value>Tune automatically</value></data>
+  <data name="GtAutoHint" xml:space="preserve"><value>Lotus applies each step through MSI Afterburner (within its limits), tests the card for 3 minutes per step and measures performance: baseline, undervolt, overclock (memory and core) and overclock with undervolt. At the end the card goes back exactly as it was and you choose what to keep. Takes about 1 hour.</value></data>
+  <data name="GtAutoRun" xml:space="preserve"><value>Tune automatically</value></data>
+  <data name="GtAutoNeeds" xml:space="preserve"><value>For the automatic mode, keep MSI Afterburner open (NVIDIA card).</value></data>
+  <data name="GtAutoConfirmTitle" xml:space="preserve"><value>Tune the card automatically?</value></data>
+  <data name="GtAutoConfirmBody" xml:space="preserve"><value>About 1 hour with the card at full load: close games and heavy apps. The screen may flicker if a step is not stable; Windows recovers by itself and Lotus steps back. If something hangs, the original state is saved and comes back the next time Lotus opens. At the end, the card goes back as it was.</value></data>
+  <data name="GtAutoStatusbaseline" xml:space="preserve"><value>Measuring the baseline (card as it is)…</value></data>
+  <data name="GtAutoStatusundervolt" xml:space="preserve"><value>Testing undervolt…</value></data>
+  <data name="GtAutoStatusoverclock" xml:space="preserve"><value>Testing overclock (memory, then core)…</value></data>
+  <data name="GtAutoStatuscombined" xml:space="preserve"><value>Testing overclock with undervolt…</value></data>
+  <data name="GtAutoDone" xml:space="preserve"><value>Done. The card is back as it was; choose below what to keep.</value></data>
+  <data name="GtAutoStoppedunavailable" xml:space="preserve"><value>Afterburner is not open or does not accept control.</value></data>
+  <data name="GtAutoStoppedjournal" xml:space="preserve"><value>Could not save the current state; nothing was changed.</value></data>
+  <data name="GtAutoStoppedbaseline" xml:space="preserve"><value>The card was not stable even at stock; nothing else was tested.</value></data>
+  <data name="GtAutoStoppedfailed" xml:space="preserve"><value>Tuning stopped on an error; the card is back as it was.</value></data>
+  <data name="GtAutoModebaseline" xml:space="preserve"><value>Baseline</value></data>
+  <data name="GtAutoModeundervolt" xml:space="preserve"><value>Undervolt</value></data>
+  <data name="GtAutoModememory" xml:space="preserve"><value>Memory</value></data>
+  <data name="GtAutoModecore" xml:space="preserve"><value>Core</value></data>
+  <data name="GtAutoModeoverclock" xml:space="preserve"><value>Overclock</value></data>
+  <data name="GtAutoModecombined" xml:space="preserve"><value>Overclock + undervolt</value></data>
+  <data name="GtAutoLine" xml:space="preserve"><value>performance {0} · {1} °C · {2} MHz · {3} W</value></data>
+  <data name="GtAutoResults" xml:space="preserve"><value>Results</value></data>
+  <data name="GtAutoNone" xml:space="preserve"><value>no stable step</value></data>
+  <data name="GtAutoSummary" xml:space="preserve"><value>{0}% performance · {1} °C · {2} W</value></data>
+  <data name="GtAutoKeep" xml:space="preserve"><value>Keep this</value></data>
+  <data name="GtAutoKeepTitle" xml:space="preserve"><value>Keep this tune?</value></data>
+  <data name="GtAutoKeepBody" xml:space="preserve"><value>Lotus applies it now through Afterburner: {0}. To use it only in games, save it to Afterburner&apos;s Profile 2 (see below). Afterburner&apos;s Reset button goes back to stock.</value></data>
 </root>

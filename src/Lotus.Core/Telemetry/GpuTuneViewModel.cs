@@ -30,7 +30,7 @@ public sealed partial class GpuTuneViewModel(ITextCatalog text, Func<TuneReadine
         OnPropertyChanged(nameof(GpuName)); OnPropertyChanged(nameof(CanTest));
     }
     partial void OnGoalChanged(TuneGoal value) { Current = GpuTuning.Start(value, gpuName()); LastStable = null; Result = null; OnPropertyChanged(nameof(CanTest)); }
-    partial void OnTestingChanged(bool value) => OnPropertyChanged(nameof(CanTest));
+    partial void OnTestingChanged(bool value) { OnPropertyChanged(nameof(CanTest)); OnPropertyChanged(nameof(CanAuto)); }
 
     // The values for Afterburner, in plain words.
     public string Values => Current.Goal switch
@@ -71,4 +71,23 @@ public sealed partial class GpuTuneViewModel(ITextCatalog text, Func<TuneReadine
         finally { Testing = false; cts = null; }
     }
     public void Cancel() => cts?.Cancel();
+
+    // ---- "Ajustar automaticamente": Lotus applies through Afterburner, tests and keeps the card as it was at the end ----
+    public Func<AutoModes, IProgress<AutoStep>, IProgress<string>, CancellationToken, Task<AutoTuneReport>>? AutoTune { get; init; }
+    public Func<bool>? AutoAvailable { get; init; }
+    public Func<GpuSetting, bool>? ApplySetting { get; init; } // keep a result: Afterburner applies it now (save it to Profile 2 for games)
+    public System.Collections.ObjectModel.ObservableCollection<AutoStep> AutoSteps { get; } = [];
+    [ObservableProperty] private string autoStatus = "";
+    [ObservableProperty] private AutoTuneReport? report;
+    public bool CanAuto => AutoTune is not null && !Testing && Ready.Nvidia && (AutoAvailable?.Invoke() ?? false);
+    partial void OnReadyChanged(TuneReadiness value) => OnPropertyChanged(nameof(CanAuto));
+    public async Task AutoAsync(AutoModes modes)
+    {
+        if (!CanAuto || AutoTune is null) return;
+        Testing = true; AutoSteps.Clear(); Report = null; AutoStatus = Text["GtAutoStatusbaseline"];
+        using var run = cts = new CancellationTokenSource();
+        try { Report = await AutoTune(modes, new Progress<AutoStep>(AutoSteps.Add), new Progress<string>(s => AutoStatus = Text["GtAutoStatus" + s]), run.Token); AutoStatus = Text[Report.Stopped is null ? "GtAutoDone" : "GtAutoStopped" + Report.Stopped]; }
+        catch (Exception ex) { log?.Invoke(ex); AutoStatus = Text["GtAutoStoppedfailed"]; }
+        finally { Testing = false; cts = null; OnPropertyChanged(nameof(CanAuto)); }
+    }
 }

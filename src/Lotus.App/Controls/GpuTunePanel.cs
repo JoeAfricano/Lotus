@@ -28,7 +28,7 @@ public sealed class GpuTunePanel : UserControl
     {
         if (vm is not null) vm.PropertyChanged -= OnChanged;
         vm = model;
-        if (vm is not null) vm.PropertyChanged += OnChanged;
+        if (vm is not null) { vm.PropertyChanged += OnChanged; vm.AutoSteps.CollectionChanged += (_, _) => DispatcherQueue.TryEnqueue(Render); }
         Render();
     }
     private void OnChanged(object? sender, PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(Render);
@@ -48,6 +48,42 @@ public sealed class GpuTunePanel : UserControl
         intro.Children.Add(new TextBlock { Text = t["GtEyebrow"].ToUpperInvariant(), FontSize = 12, FontWeight = FontWeights.Bold, CharacterSpacing = 140, Foreground = Res("RoseBrush") });
         intro.Children.Add(Body(t.Format("GtCardIntro", vm.GpuName), true));
         root.Children.Add(intro);
+
+        // 0. Automatic: Lotus applies through Afterburner, tests every step and puts the card back as it was at the end
+        var auto = new StackPanel { Spacing = 10 };
+        auto.Children.Add(Title(t["GtAutoTitle"]));
+        auto.Children.Add(Body(t["GtAutoHint"], true));
+        var autoActions = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        var autoGo = new Button { Style = (Style)Application.Current.Resources["PrimaryButtonStyle"], MinHeight = 44, IsEnabled = vm.CanAuto, Content = t["GtAutoRun"] };
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(autoGo, "gpu-auto");
+        autoGo.Click += async (_, _) => { if (await Confirm(t["GtAutoConfirmTitle"], t["GtAutoConfirmBody"])) await vm.AutoAsync(AutoModes.All); };
+        autoActions.Children.Add(autoGo);
+        if (vm.Testing && vm.AutoStatus.Length > 0) { var stopAuto = new Button { Content = t["UxCancel"], Style = (Style)Application.Current.Resources["SoftButtonStyle"], MinHeight = 44 }; stopAuto.Click += (_, _) => vm.Cancel(); autoActions.Children.Add(stopAuto); }
+        auto.Children.Add(autoActions);
+        if (!vm.CanAuto && !vm.Testing) auto.Children.Add(Body(t["GtAutoNeeds"], true));
+        if (vm.AutoStatus.Length > 0) auto.Children.Add(new TextBlock { Text = vm.AutoStatus, FontWeight = FontWeights.SemiBold, Foreground = Res("GoldBrush"), TextWrapping = TextWrapping.Wrap });
+        foreach (var s in vm.AutoSteps.TakeLast(12)) auto.Children.Add(Body($"{(s.Ok ? "✓" : "✕")}  {t["GtAutoMode" + s.Mode]} · {s.Setting} · {t.Format("GtAutoLine", Math.Round(s.Score), Math.Round(s.MaxTempC), Math.Round(s.AvgCoreMhz), Math.Round(s.AvgPowerW))}", !s.Ok));
+        if (vm.Report is { Baseline: { } baseStep } rep)
+        {
+            auto.Children.Add(new TextBlock { Text = t["GtAutoResults"], FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 6, 0, 0) });
+            foreach (var (key, step) in new[] { ("baseline", (AutoStep?)baseStep), ("undervolt", rep.Undervolt), ("overclock", rep.Overclock), ("combined", rep.Combined) })
+            {
+                if (step is null) { auto.Children.Add(Body(t["GtAutoMode" + key] + " · " + t["GtAutoNone"], true)); continue; }
+                var row = new Grid { ColumnSpacing = 12 };
+                row.ColumnDefinitions.Add(new ColumnDefinition()); row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                var gain = baseStep.Score > 0 ? (step.Score / baseStep.Score - 1) * 100 : 0;
+                row.Children.Add(Body($"{t["GtAutoMode" + key]} · {step.Setting} · {t.Format("GtAutoSummary", gain.ToString("+0.0;-0.0;0", System.Globalization.CultureInfo.GetCultureInfo(t.Language)), Math.Round(step.MaxTempC), Math.Round(step.AvgPowerW))}"));
+                if (key != "baseline" && vm.ApplySetting is { } apply)
+                {
+                    var keep = new Button { Content = t["GtAutoKeep"], Style = (Style)Application.Current.Resources["SoftButtonStyle"] };
+                    var chosen = step.Setting;
+                    keep.Click += async (_, _) => { if (await Confirm(t["GtAutoKeepTitle"], t.Format("GtAutoKeepBody", chosen))) apply(chosen); };
+                    Grid.SetColumn(keep, 1); row.Children.Add(keep);
+                }
+                auto.Children.Add(row);
+            }
+        }
+        root.Children.Add(Card(auto));
 
         // 1. Goal
         var goals = new Grid { ColumnSpacing = 12 };
