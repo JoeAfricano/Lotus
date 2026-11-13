@@ -72,6 +72,27 @@ public sealed class GpuTunePanel : UserControl
         }
         root.Children.Add(goals);
 
+        // What the chosen option is for, in four short lines (purpose, what changes, who it suits, the cost)
+        var gk = vm.Goal switch { TuneGoal.Undervolt => "GtUv", TuneGoal.Overclock => "GtOc", _ => "GtSt" };
+        var explain = new Grid { ColumnSpacing = 16, RowSpacing = 10 };
+        explain.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); explain.ColumnDefinitions.Add(new ColumnDefinition());
+        var rowIndex = 0;
+        foreach (var (label, glyph) in new[] { ("Purpose", ""), ("Changes", ""), ("Suits", ""), ("Cost", "") })
+        {
+            explain.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            var head = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, VerticalAlignment = VerticalAlignment.Top };
+            head.Children.Add(new FontIcon { Glyph = glyph, FontSize = 14, Foreground = Res("RoseBrush") });
+            head.Children.Add(new TextBlock { Text = t["GtLabel" + label], FontWeight = FontWeights.SemiBold, Foreground = Res("GoldBrush"), MinWidth = 120 });
+            Grid.SetRow(head, rowIndex); explain.Children.Add(head);
+            var body = Body(t[gk + label]); Grid.SetRow(body, rowIndex); Grid.SetColumn(body, 1); explain.Children.Add(body);
+            rowIndex++;
+        }
+        var explainBox = new StackPanel { Spacing = 12 };
+        explainBox.Children.Add(Title(t.Format("GtExplainTitle", t[vm.Goal switch { TuneGoal.Undervolt => "GtUndervolt", TuneGoal.Overclock => "GtOverclock", _ => "GtStock" }])));
+        explainBox.Children.Add(explain);
+        explainBox.Children.Add(Body(t["GtWhichOne"], true));
+        root.Children.Add(Card(explainBox));
+
         // 2. Readiness: each missing item with its one-line fix
         var ready = new StackPanel { Spacing = 10 };
         ready.Children.Add(Title(t["GtReadyTitle"]));

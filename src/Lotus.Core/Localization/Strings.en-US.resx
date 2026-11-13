@@ -3307,7 +3307,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GtUndervolt" xml:space="preserve"><value>Cooler and steadier</value></data>
   <data name="GtUndervoltHint" xml:space="preserve"><value>Undervolt: same speed with less voltage. Less heat and noise, a flatter frametime.</value></data>
   <data name="GtOverclock" xml:space="preserve"><value>More FPS</value></data>
-  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: about 3 to 8% more FPS, with more heat and power. Start with Afterburner's OC Scanner.</value></data>
+  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: about 5 to 10% more FPS, with more heat and power. Start with Afterburner's OC Scanner.</value></data>
   <data name="GtStock" xml:space="preserve"><value>Stock</value></data>
   <data name="GtStockHint" xml:space="preserve"><value>The card as it came from the factory. No tuning.</value></data>
   <data name="GtRecommended" xml:space="preserve"><value>Recommended</value></data>
@@ -3379,4 +3379,22 @@ Your games and Windows are not changed.</value></data>
   <data name="PfActivePlaying" xml:space="preserve"><value>On · playing {0}</value></data>
   <data name="PfArmedTitle" xml:space="preserve"><value>{0} turned on</value></data>
   <data name="PfArmedBody" xml:space="preserve"><value>Nothing changed now. The tweaks start when a game from your library opens and end when it closes.</value></data>
+  <data name="GtExplainTitle" xml:space="preserve"><value>About &quot;{0}&quot;</value></data>
+  <data name="GtLabelPurpose" xml:space="preserve"><value>What for</value></data>
+  <data name="GtLabelChanges" xml:space="preserve"><value>What changes</value></data>
+  <data name="GtLabelSuits" xml:space="preserve"><value>Good for you if</value></data>
+  <data name="GtLabelCost" xml:space="preserve"><value>The cost</value></data>
+  <data name="GtUvPurpose" xml:space="preserve"><value>Undervolt: make the card deliver the same performance using less power.</value></data>
+  <data name="GtUvChanges" xml:space="preserve"><value>Voltage goes down, temperature and noise go down, and the clock stays steadier (less up and down), which flattens the frametime. FPS stays the same or a little higher.</value></data>
+  <data name="GtUvSuits" xml:space="preserve"><value>You play with an FPS cap (like RivaTuner&apos;s 74.97), want a cool and quiet card or feel stutters from heat.</value></data>
+  <data name="GtUvCost" xml:space="preserve"><value>Go too low and the game closes or the screen flickers. Going back 25 mV fixes it. It does not damage the card.</value></data>
+  <data name="GtOcPurpose" xml:space="preserve"><value>Overclock: make the card run faster than it ships.</value></data>
+  <data name="GtOcChanges" xml:space="preserve"><value>Core and memory clocks go up. A real gain of about 5 to 10% FPS when the card is the limit; more power and more heat.</value></data>
+  <data name="GtOcSuits" xml:space="preserve"><value>You play without an FPS cap, the card sits at 95-100% usage and every extra frame matters.</value></data>
+  <data name="GtOcCost" xml:space="preserve"><value>More heat and noise. Too much memory clock silently makes the card slower (GDDR7 corrects errors), so each step is measured. Unstable: go back one step.</value></data>
+  <data name="GtStPurpose" xml:space="preserve"><value>Stock: the card exactly as it left the factory.</value></data>
+  <data name="GtStChanges" xml:space="preserve"><value>Nothing. Voltage, clock and power at the original values.</value></data>
+  <data name="GtStSuits" xml:space="preserve"><value>You want zero risk or are returning the card to normal after a test.</value></data>
+  <data name="GtStCost" xml:space="preserve"><value>None. You just do not get the cooler card of an undervolt or the FPS of an overclock.</value></data>
+  <data name="GtWhichOne" xml:space="preserve"><value>If unsure: with an FPS cap, undervolt; no cap and the card maxed out, overclock. You can combine them: after finding the top clock, keep it at the lowest voltage possible.</value></data>
 </root>

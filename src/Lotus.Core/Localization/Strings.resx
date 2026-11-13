@@ -3307,7 +3307,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GtUndervolt" xml:space="preserve"><value>Mais frio e estável</value></data>
   <data name="GtUndervoltHint" xml:space="preserve"><value>Undervolt: mesma velocidade com menos tensão. Menos calor e ruído e frametime mais reto.</value></data>
   <data name="GtOverclock" xml:space="preserve"><value>Mais FPS</value></data>
-  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: cerca de 3 a 8% a mais de FPS, com mais calor e consumo. Comece pelo OC Scanner do Afterburner.</value></data>
+  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: cerca de 5 a 10% a mais de FPS, com mais calor e consumo. Comece pelo OC Scanner do Afterburner.</value></data>
   <data name="GtStock" xml:space="preserve"><value>Padrão</value></data>
   <data name="GtStockHint" xml:space="preserve"><value>A placa como veio de fábrica. Sem ajuste.</value></data>
   <data name="GtRecommended" xml:space="preserve"><value>Recomendado</value></data>
@@ -3379,4 +3379,22 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="PfActivePlaying" xml:space="preserve"><value>Ativo · jogando {0}</value></data>
   <data name="PfArmedTitle" xml:space="preserve"><value>{0} ativado</value></data>
   <data name="PfArmedBody" xml:space="preserve"><value>Nada mudou agora. Os ajustes entram quando um jogo da sua biblioteca abrir e saem quando ele fechar.</value></data>
+  <data name="GtExplainTitle" xml:space="preserve"><value>Sobre &quot;{0}&quot;</value></data>
+  <data name="GtLabelPurpose" xml:space="preserve"><value>Para quê</value></data>
+  <data name="GtLabelChanges" xml:space="preserve"><value>O que muda</value></data>
+  <data name="GtLabelSuits" xml:space="preserve"><value>Bom para você se</value></data>
+  <data name="GtLabelCost" xml:space="preserve"><value>O custo</value></data>
+  <data name="GtUvPurpose" xml:space="preserve"><value>Undervolt: fazer a placa entregar o mesmo desempenho gastando menos energia.</value></data>
+  <data name="GtUvChanges" xml:space="preserve"><value>A tensão cai, a temperatura e o ruído caem, e o clock fica mais firme (menos sobe e desce), o que deixa o frametime mais reto. O FPS fica igual ou um pouco maior.</value></data>
+  <data name="GtUvSuits" xml:space="preserve"><value>Você joga com limite de FPS (como os 74,97 do RivaTuner), quer a placa fria e silenciosa ou sente travadinhas por calor.</value></data>
+  <data name="GtUvCost" xml:space="preserve"><value>Se descer demais, o jogo fecha ou a tela pisca. Resolve voltando 25 mV. Não estraga a placa.</value></data>
+  <data name="GtOcPurpose" xml:space="preserve"><value>Overclock: fazer a placa trabalhar mais rápido do que vem de fábrica.</value></data>
+  <data name="GtOcChanges" xml:space="preserve"><value>Núcleo e memória sobem de clock. Ganho real de uns 5 a 10% de FPS quando a placa é o limite; mais consumo e mais calor.</value></data>
+  <data name="GtOcSuits" xml:space="preserve"><value>Você joga sem limite de FPS, a placa fica em 95-100% de uso e cada quadro a mais importa.</value></data>
+  <data name="GtOcCost" xml:space="preserve"><value>Mais calor e ruído. Memória demais deixa a placa mais lenta sem aviso (a GDDR7 corrige erros), por isso cada passo é medido. Instável: volte um passo.</value></data>
+  <data name="GtStPurpose" xml:space="preserve"><value>Padrão: a placa exatamente como saiu da fábrica.</value></data>
+  <data name="GtStChanges" xml:space="preserve"><value>Nada. Tensão, clock e consumo nos valores originais.</value></data>
+  <data name="GtStSuits" xml:space="preserve"><value>Você quer zero risco ou vai devolver a placa ao normal depois de um teste.</value></data>
+  <data name="GtStCost" xml:space="preserve"><value>Nenhum. Só não ganha o frio do undervolt nem o FPS do overclock.</value></data>
+  <data name="GtWhichOne" xml:space="preserve"><value>Na dúvida: com limite de FPS, undervolt; sem limite e com a placa no máximo, overclock. Dá para combinar: depois de achar o clock máximo, manter ele com a menor tensão possível.</value></data>
 </root>
