@@ -92,7 +92,8 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
   - **Desativar e restaurar** devolve o perfil exatamente como era.
 - **Limite de FPS pelo seu monitor:**
   - **Com FreeSync/G-Sync:** 3 FPS abaixo da taxa do monitor.
-  - **Sem:** a própria taxa, ou uma fração exata dela (por exemplo 37,5 em 75 Hz), com V-Sync, para não trepidar.
+  - **Sem:** logo abaixo da taxa **real** do monitor, que o Lotus lê do Windows (por exemplo 74,97 num monitor de 74,973 Hz), ou uma fração exata dela, com V-Sync no jogo e o limite do próprio jogo desligado. Assim os quadros não fazem fila: a linha fica reta e o atraso cai.
+  - **"Por que está travando?"** avisa quando o limite está acima da taxa real do monitor.
 - **FreeSync/G-Sync.** O Lotus pergunta uma vez. Numa placa NVIDIA, o driver responde sozinho. Na AMD e na Intel, a identificação do monitor (EDID) indica se ele suporta e recomenda ativar.
 - **Overlay de FPS** pelo RivaTuner (layout Lotus). O Lotus abre o RivaTuner antes do jogo quando precisa dele.
 - **Geração de quadros:** na NVIDIA, Reflex como opção principal. Na AMD e na Intel, o Lotus indica o limite do jogo ou do driver.

@@ -2,7 +2,7 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
-## Próxima versão (em preparo)
+## 1.5.3-alpha "Lotus" (12/11/2026)
 
 ### Melhorado
 - **Linha do framepacer mais reta em monitor sem FreeSync/G-Sync.** O Lotus agora lê a taxa exata do monitor (por exemplo 74,973 Hz num monitor "75 Hz" por HDMI) e o botão Ligar do RivaTuner põe o limite logo abaixo dela (74,97). No teste com o Black Myth: Wukong Benchmark (RTX 5060), o desvio do frametime caiu de 1,59 para 0,73 ms e o quadro chegou à tela uns 4 ms mais cedo. Detalhes em `docs/LOTUS_FRAME_PACING.md`.
