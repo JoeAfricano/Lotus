@@ -317,7 +317,7 @@ public sealed partial class GamesViewModel : ObservableObject
                     Text.Format("GsLineCap", r.FpsCap)
                 };
                 lines.AddRange(r.ReasonKeys.Select(k => Text[k]));
-                var hardware = Text.Format("GsHardware", string.IsNullOrWhiteSpace(p.GpuName) ? "?" : p.GpuName, p.VramMb / 1024.0, p.Width, p.Height, Math.Round(FramePacing.RealRefresh(p.RefreshHz, p.ExactRefreshHz), 3)); // 74,973 Hz when Windows gives the exact rate
+                var hardware = Text.Format("GsHardware", string.IsNullOrWhiteSpace(p.GpuName) ? "?" : p.GpuName, p.VramMb / 1024.0, p.Width, p.Height, p.RefreshHz);
                 return new GameSettingsAnalysis(r, lines, hardware, support, settingsStore?.LoadOriginal(game.Key) is not null, pendingSteps.TryGetValue(game.Key, out var step) ? step : null);
             });
         }

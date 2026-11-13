@@ -11,7 +11,6 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 - Limites com casas decimais aparecem certos na tela (74,97, e não 75,0).
 - Dicas mais claras: V-Sync ligado no jogo e o limite do próprio jogo acima do RivaTuner (ou desligado), nunca abaixo. Um limitador manda.
 - O quadro "Limite de FPS" do Otimizar este jogo mostra também o limite do RivaTuner quando ele está ligado (por exemplo "75 no jogo · RivaTuner 74,97 FPS").
-- A linha do PC mostra a taxa real do monitor (74,973 Hz, e não 75).
 - Leitores de tela anunciam o nome do jogo em cada cartão e o botão de fechar do Otimizar este jogo.
 
 ## 1.5.2-alpha "Lotus" (12/11/2026)
