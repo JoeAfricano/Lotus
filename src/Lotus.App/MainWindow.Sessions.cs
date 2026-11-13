@@ -10,6 +10,16 @@ public sealed partial class MainWindow
     private readonly PlaySessionTracker sessions = new();
     private readonly Lotus.Infrastructure.Games.WindowsGamePriority priority = new();
     private bool priorityActive;
+    // Perfil Jogo: Windows tweaks only while a game is open, undone when it closes (or at the next start after a crash).
+    private Lotus.Core.Games.GameBoost? boost;
+    private bool boostRecovered;
+    private Lotus.Core.Games.GameBoost Boost => boost ??= new(
+    [
+        new Lotus.Core.Games.PowerBoostStep(new Lotus.Infrastructure.Optimization.WindowsPowerSchemes()),
+        new Lotus.Infrastructure.Games.NotificationsBoostStep(),
+        new Lotus.Infrastructure.Games.RecordingBoostStep(),
+        new Lotus.Infrastructure.Games.CloseAppsBoostStep(() => preferences.Current.BoostAppList),
+    ], new Lotus.Infrastructure.Games.FileBoostJournal(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "game-boost.json")));
 
     private async Task OnGameCheckAsync(GameEntry? running)
     {
@@ -17,6 +27,7 @@ public sealed partial class MainWindow
         sessionHub.Observe(running, DateTimeOffset.Now); // shared with "Preparar e jogar" (no second polling loop)
         if (sessions.Update(running, DateTimeOffset.Now) is { } done) OnSessionFinished(done);
         if (running is null) ShowPendingResumePrompt();
+        await UpdateBoostAsync(running);
         var wantPriority = preferences.Current.GamePriority && running is not null && !DevBesideInstalled();
         try
         {
@@ -28,6 +39,34 @@ public sealed partial class MainWindow
             else if (priorityActive) { priorityActive = false; var back = await Task.Run(priority.Restore); Serilog.Log.Information("Game priority: {Count} processes restored", back); }
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Game priority"); }
+    }
+
+    private async Task UpdateBoostAsync(GameEntry? running)
+    {
+        try
+        {
+            if (!boostRecovered)
+            {
+                boostRecovered = true;
+                var undone = await Task.Run(Boost.Recover);
+                if (undone.Count > 0) Serilog.Log.Information("Perfil Jogo: {Steps} undone after an unfinished session", string.Join(", ", undone));
+            }
+            var want = preferences.Current.GameBoost && running is not null && !DevBesideInstalled();
+            if (want && !Boost.IsActive)
+            {
+                var process = await Task.Run(() => games.GameProcess(running!));
+                if (process is null) return;
+                var options = preferences.Current.BoostOptions;
+                var result = await Task.Run(() => Boost.Start(process, options));
+                Serilog.Log.Information("Perfil Jogo on for {Game}: {Applied} (failed: {Failed})", running!.Name, string.Join(", ", result.Applied), string.Join(", ", result.Failed));
+            }
+            else if (!want && Boost.IsActive)
+            {
+                var back = await Task.Run(Boost.Stop);
+                Serilog.Log.Information("Perfil Jogo off: {Steps} restored", string.Join(", ", back));
+            }
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Perfil Jogo"); }
     }
 
     // A development build (--dev-instance) next to a running installed Lotus leaves the game to the installed one:
@@ -166,6 +205,7 @@ public sealed partial class MainWindow
     {
         if (sessions.Flush() is { } s) OnSessionFinished(s); // Lotus closing: recorded, never prompted
         if (priorityActive) { priorityActive = false; try { priority.Restore(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Game priority restore"); } }
+        if (boost?.IsActive == true) { try { boost.Stop(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Perfil Jogo restore"); } }
     }
 }
 
