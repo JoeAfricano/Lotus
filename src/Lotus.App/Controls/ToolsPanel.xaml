@@ -4,7 +4,7 @@
   <TextBlock app:Rich.Text="{Binding Text[ToolIntro]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
   <TextBlock Text="{Binding Message}" app:Motion.Settle="True" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" Visibility="{Binding Message, Converter={StaticResource PresenceVisibility}}"/>
   <!-- Check-up hero: one click runs every read-only analysis; the result opens on its own screen -->
-  <Border x:Name="CheckupHero" DataContext="{Binding Checkup}" Visibility="{Binding Converter={StaticResource PresenceVisibility}}" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="16" Padding="28,24" MaxWidth="1100" HorizontalAlignment="Left" AutomationProperties.AutomationId="tools-checkup-hero">
+  <Border x:Name="CheckupHero" DataContext="{Binding Checkup}" Visibility="{Binding Converter={StaticResource PresenceVisibility}}" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="16" Padding="24" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="tools-checkup-hero">
    <Grid ColumnSpacing="22"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <Border Width="64" Height="64" CornerRadius="32" Background="{ThemeResource BadgeBrush}" VerticalAlignment="Top">
      <FontIcon Glyph="&#xE9D9;" FontSize="28" Foreground="{ThemeResource RoseBrush}"/>

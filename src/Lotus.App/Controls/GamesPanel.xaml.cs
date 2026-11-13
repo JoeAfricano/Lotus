@@ -16,6 +16,12 @@ public sealed partial class GamesPanel : UserControl
         DetailsRequested?.Invoke(this, card);
     }
     public const string ConnectedCoverKey = "lotus-cover";
+    // ElementName bindings do not reach out of the item template, so the "..." button gets its name and tooltip here.
+    private void OnMoreLoaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button b || DataContext is not GamesViewModel vm) return;
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(b, vm.Text["GmMore"]); ToolTipService.SetToolTip(b, vm.Text["GmMore"]);
+    }
     private void OnDetails(object sender, RoutedEventArgs e) { if (sender is FrameworkElement { DataContext: GameCard card }) DetailsRequested?.Invoke(this, card); }
     public GamesPanel()
     {

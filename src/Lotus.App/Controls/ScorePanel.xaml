@@ -56,6 +56,7 @@
       <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
       <Border Style="{StaticResource CompactCardStyle}" Padding="16,14"><StackPanel Spacing="6">
        <TextBlock Text="{Binding Text[ScoreGraphics]}" Style="{StaticResource EyebrowStyle}"/>
+       <TextBlock Text="{Binding GraphicsScore}" Style="{StaticResource MetricValueStyle}" AutomationProperties.AutomationId="score-graphics"/>
        <ProgressBar Value="{Binding GpuRank}" Maximum="100" MinHeight="5" CornerRadius="3"/>
        <TextBlock Text="{Binding GpuRankText}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
       </StackPanel></Border>

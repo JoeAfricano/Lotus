@@ -48,7 +48,7 @@
      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
      <TextBlock Text="{Binding Text[HomeGames]}" Style="{StaticResource SectionTitleStyle}"/>
      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
-      <Button x:Name="HomeRescan" Click="OnHomeRescan" Background="Transparent" BorderThickness="0" Padding="10,6" ToolTipService.ToolTip="{Binding Text[HomeRescanHint]}" AutomationProperties.AutomationId="home-rescan">
+      <Button x:Name="HomeRescan" Click="OnHomeRescan" AutomationProperties.Name="{Binding Text[HomeRescan]}" Background="Transparent" BorderThickness="0" Padding="10,6" ToolTipService.ToolTip="{Binding Text[HomeRescanHint]}" AutomationProperties.AutomationId="home-rescan">
        <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon x:Name="HomeRescanIcon" Glyph="&#xE72C;" FontSize="12" Foreground="{ThemeResource RoseBrush}"/><TextBlock x:Name="HomeRescanText" Text="{Binding Text[HomeRescan]}" FontSize="14" Foreground="{ThemeResource RoseBrush}"/></StackPanel>
       </Button>
       <HyperlinkButton Content="{Binding Text[HomeGamesAll]}" Click="OnOpenGames" AutomationProperties.AutomationId="home-games-all"/>
@@ -150,10 +150,10 @@
         <StackPanel Spacing="10"><FontIcon Glyph="&#xE9D9;" FontSize="26" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/><TextBlock Text="{Binding Text[GmOverlayTitle]}" FontSize="20" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[GmOverlayPreviewHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
         <StackPanel Grid.Column="1" Spacing="12" VerticalAlignment="Center">
          <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="170" ItemHeight="64">
-        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmFps]}"/><Run Text=" —"/></TextBlock></Border>
-        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmGpu]}"/><Run Text=" —"/></TextBlock></Border>
-        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmCpu]}"/><Run Text=" —"/></TextBlock></Border>
-        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmMemory]}"/><Run Text=" —"/></TextBlock></Border>
+        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12" Margin="0,0,8,8"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmFps]}"/><Run Text=" —"/></TextBlock></Border>
+        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12" Margin="0,0,8,8"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmGpu]}"/><Run Text=" —"/></TextBlock></Border>
+        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12" Margin="0,0,8,8"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmCpu]}"/><Run Text=" —"/></TextBlock></Border>
+        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12" Margin="0,0,8,8"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmMemory]}"/><Run Text=" —"/></TextBlock></Border>
          </VariableSizedWrapGrid>
          <TextBlock Text="FRAMEPACER" FontSize="12" FontWeight="SemiBold" CharacterSpacing="80" Foreground="{ThemeResource RoseBrush}"/>
          <Grid><Rectangle Height="1" Fill="{ThemeResource DividerBrush}" VerticalAlignment="Center"/><TextBlock Text="{Binding Text[GmFrametimeUnit]}" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right" Margin="0,-22,0,0"/></Grid>
@@ -273,7 +273,7 @@
     <StackPanel x:Name="FaqContent" x:Load="{x:Bind ShowFaq}" Spacing="8">
      <TextBlock Text="{Binding Text[FaqTitle]}" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,8"/>
      <!-- "Antes de começar": the promise that nothing changes without the player (moved from Home in visual 2.0) -->
-     <Border CornerRadius="12" Padding="18,12" Margin="0,0,0,8" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" HorizontalAlignment="Left" AutomationProperties.AutomationId="faq-before">
+     <Border CornerRadius="12" Padding="18,12" Margin="0,0,0,8" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="faq-before">
       <StackPanel Orientation="Horizontal" Spacing="12">
        <FontIcon Glyph="&#xE945;" FontSize="16" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
        <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Style="{StaticResource CaptionStyle}"><Run Text="{Binding Text[HbBeforeTitle]}" FontWeight="SemiBold"/><Run Text=" · "/><Run Text="{Binding Text[HbBeforeBody]}"/></TextBlock>

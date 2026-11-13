@@ -231,6 +231,7 @@ internal static class HomeMotion
         var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
         row.Children.Add(new FontIcon { Glyph = glyph, FontSize = 14 }); row.Children.Add(new TextBlock { Text = label });
         b.Content = row; b.Click += (_, _) => onClick();
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(b, label); // screen readers read the label, not the icon
         return b;
     }
     public static void Fade(UIElement e, double to, int ms)

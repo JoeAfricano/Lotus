@@ -20,7 +20,8 @@ public sealed partial class ToolsPanel : UserControl
 
     // ---- Tiles (visual 2.0): compact squares in four groups, filtered by the search box ----
     private readonly Dictionary<string, FrameworkElement> cards = [];
-    private readonly List<(Button Tile, string Name, FrameworkElement Group)> tiles = [];
+    private readonly List<(Button Tile, string Name, TextBlock Line, VariableSizedWrapGrid Wrap, FrameworkElement Group)> tiles = [];
+    private readonly List<VariableSizedWrapGrid> wraps = [];
     private static readonly (string Title, string[] Ids)[] Groups =
     [
         ("ToolGroupClean", ["clean", "temp", "store", "unin"]),
@@ -41,7 +42,7 @@ public sealed partial class ToolsPanel : UserControl
         };
         foreach (var (groupTitle, ids) in Groups)
         {
-            var wrap = new VariableSizedWrapGrid { Orientation = Orientation.Horizontal, ItemWidth = 272, ItemHeight = 156 };
+            var wrap = new VariableSizedWrapGrid { Orientation = Orientation.Horizontal, ItemWidth = 272, ItemHeight = 156 }; wraps.Add(wrap);
             var group = new StackPanel { Spacing = 12 };
             group.Children.Add(new TextBlock { Text = vm.Text[groupTitle], Style = (Style)Application.Current.Resources["SubtitleStyle"] });
             group.Children.Add(wrap);
@@ -65,10 +66,20 @@ public sealed partial class ToolsPanel : UserControl
                 Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(tile, vm.Text[title]);
                 ToolTipService.SetToolTip(tile, vm.Text["ToolOpen"]);
                 tile.Click += (_, _) => Open(id);
-                wrap.Children.Add(tile); tiles.Add((tile, vm.Text[title], group));
+                wrap.Children.Add(tile); tiles.Add((tile, vm.Text[title], line, wrap, group));
             }
             if (wrap.Children.Count > 0) TileGroups.Children.Add(group);
         }
+        TileGroups.SizeChanged += (_, e) => FitColumns(e.NewSize.Width);
+        FitColumns(TileGroups.ActualWidth);
+    }
+    // The tiles fill the whole width: as many ~270 px columns as fit, then stretched to the edge.
+    private void FitColumns(double width)
+    {
+        if (width < 100) return;
+        var columns = Math.Max(1, (int)((width + 12) / 284));
+        var item = Math.Floor((width + 12) / columns);
+        foreach (var wrap in wraps) wrap.ItemWidth = item;
     }
     private static bool Available(ToolsViewModel vm, string id) => id switch
     {
@@ -83,11 +94,14 @@ public sealed partial class ToolsPanel : UserControl
     // Search: hides the tiles (and empty groups) whose name does not contain the typed text; accents and case ignored.
     private void OnToolSearch(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
+        // Matches the name and the tile's own line (e.g. "disco" also finds Arquivos e Armazenamento).
+        // Matching tiles are re-added in order, so the results start at the first column without gaps.
         var query = Fold(sender.Text.Trim());
-        foreach (var (tile, name, _) in tiles) tile.Visibility = query.Length == 0 || Fold(name).Contains(query) ? Visibility.Visible : Visibility.Collapsed;
-        foreach (var group in tiles.Select(t => t.Group).Distinct())
-            group.Visibility = tiles.Any(t => t.Group == group && t.Tile.Visibility == Visibility.Visible) ? Visibility.Visible : Visibility.Collapsed;
-        ToolSearchEmpty.Visibility = tiles.Any(t => t.Tile.Visibility == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+        foreach (var wrap in wraps) wrap.Children.Clear();
+        foreach (var (tile, name, line, wrap, _) in tiles)
+            if (query.Length == 0 || Fold(name).Contains(query) || Fold(line.Text ?? "").Contains(query)) wrap.Children.Add(tile);
+        foreach (var (_, _, _, wrap, group) in tiles) group.Visibility = wrap.Children.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        ToolSearchEmpty.Visibility = wraps.Any(w => w.Children.Count > 0) ? Visibility.Collapsed : Visibility.Visible;
     }
     private static string Fold(string text)
     {

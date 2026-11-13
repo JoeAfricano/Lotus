@@ -56,9 +56,9 @@
   </Border>
   <!-- Library -->
   <GridView x:Name="Library" ItemsSource="{Binding Games}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="OnGameClick" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0" AutomationProperties.AutomationId="games-grid">
-   <GridView.ItemContainerStyle><Style TargetType="GridViewItem"><Setter Property="Margin" Value="0,0,14,14"/><Setter Property="Padding" Value="0"/></Style></GridView.ItemContainerStyle>
+   <GridView.ItemContainerStyle><Style TargetType="GridViewItem"><Setter Property="Margin" Value="0,0,14,14"/><Setter Property="Padding" Value="0"/><Setter Property="VerticalContentAlignment" Value="Top"/></Style></GridView.ItemContainerStyle>
    <GridView.ItemTemplate><DataTemplate>
-    <Border Width="184" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="16" app:Motion.Hover="1.035">
+    <Border Width="184" VerticalAlignment="Top" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="16" app:Motion.Hover="1.035">
      <Grid>
       <Grid.RowDefinitions><RowDefinition Height="244"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <!-- Cover or initials (named: it flies to the game page) -->
@@ -79,7 +79,7 @@
        </Grid>
       </Border>
       <StackPanel Grid.Row="1" Padding="12,10,12,12" Spacing="10">
-       <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxLines="2" TextWrapping="Wrap" Height="40" ToolTipService.ToolTip="{Binding Name}"/>
+       <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxLines="2" TextWrapping="Wrap" Height="40" LineHeight="20" LineStackingStrategy="BlockLineHeight" ToolTipService.ToolTip="{Binding Name}"/>
        <TextBlock Text="{Binding ShaderLabel}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis" Margin="0,-6,0,0" Visibility="{Binding ShaderLabel, Converter={StaticResource PresenceVisibility}}" ToolTipService.ToolTip="{Binding ShaderLabel}"/>
        <Grid ColumnSpacing="6"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
         <!-- Text only: with the icon, "Otimizar" did not fit next to the two small buttons and was cut ("Otimiz"). -->
@@ -87,7 +87,7 @@
          <TextBlock Text="{Binding OptimizeMenuLabel}" TextTrimming="CharacterEllipsis"/>
         </Button>
         <Button Grid.Column="1" Click="OnDetails" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DetailsLabel}" AutomationProperties.Name="{Binding DetailsLabel}"><FontIcon Glyph="&#xE946;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/></Button>
-        <Button Grid.Column="2" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.Name="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.AutomationId="game-more">
+        <Button Grid.Column="2" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.Name="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.AutomationId="game-more" Loaded="OnMoreLoaded">
          <FontIcon Glyph="&#xE712;" FontSize="13"/>
          <Button.Flyout><MenuFlyout Placement="BottomEdgeAlignedRight" Opening="OnMoreOpening">
           <MenuFlyoutItem Tag="GmEdit" Click="OnEditGame" AutomationProperties.AutomationId="game-edit"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE70F;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
