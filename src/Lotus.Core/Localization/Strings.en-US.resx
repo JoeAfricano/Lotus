@@ -3269,4 +3269,11 @@ Your games and Windows are not changed.</value></data>
   <data name="ScorePickTitle" xml:space="preserve"><value>Estimated FPS by game</value></data>
   <data name="ScorePickHint" xml:space="preserve"><value>Type to filter. Values at 1080p for each quality. Not here? Press Enter to search Steam.</value></data>
   <data name="ScorePickCap" xml:space="preserve"><value>game caps at {0} FPS</value></data>
+  <data name="OsLateral" xml:space="preserve"><value>Side column</value></data>
+  <data name="OsLateralShort" xml:space="preserve"><value>A slim column in the corner, everything stacked.</value></data>
+  <data name="OsLateralWhat" xml:space="preserve"><value>A compact column in the top-left corner with big FPS, frametime and 1% low, frametime graph, GPU and CPU (usage and temperature), VRAM and RAM. Translucent dark panel, readable on bright and dark scenes.</value></data>
+  <data name="OsPendingGame" xml:space="preserve"><value>A game is open: the new style is applied when it closes (the game is not interrupted).</value></data>
+  <data name="OsPendingName" xml:space="preserve"><value>Will be applied when the game closes: {0}.</value></data>
+  <data name="OsAppliedReopened" xml:space="preserve"><value>Style turned on and RivaTuner reopened. Your FPS limits and profiles stay the same.</value></data>
+  <data name="OsFailed" xml:space="preserve"><value>The style could not be changed. If Windows asked for permission and it was declined, try again; if RivaTuner does not reopen, open it from the Start menu.</value></data>
 </root>

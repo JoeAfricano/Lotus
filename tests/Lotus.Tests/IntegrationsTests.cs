@@ -92,8 +92,49 @@ public sealed class IntegrationsTests : IDisposable
         public bool? OverlayConfigured() => configured; public bool HasBackup() => backup;
         public Task<bool> ApplyLotusOverlayAsync() => Task.FromResult(true); public Task<bool> RestoreAsync() => Task.FromResult(false);
         public string ExportLayout(string variant = "top") => @"C:\x\Lotus.ovl"; public bool LayoutActive() => configured == true; public string? ActiveLayoutName() => "Riva Overlay"; public bool HasLayoutBackup() => backup;
-        public Task<bool> ActivateLayoutAsync(string variant = "top") => Task.FromResult(true); public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
+        public Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false) => Task.FromResult(true); public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
     }
+    // Records what the overlay style switch asked RivaTuner to do.
+    private sealed class StyleRtss(bool running) : IRtssIntegration
+    {
+        public List<(string Variant, bool Restart)> Calls { get; } = [];
+        public ToolState State() => new(true, "7.3.5");
+        public bool? OverlayConfigured() => true; public bool HasBackup() => false;
+        public Task<bool> ApplyLotusOverlayAsync() => Task.FromResult(true); public Task<bool> RestoreAsync() => Task.FromResult(true);
+        public string ExportLayout(string variant = "top") => @"C:\x\Lotus.ovl"; public bool LayoutActive() => Calls.Count > 0;
+        public string? ActiveLayoutName() => Calls.Count == 0 ? null : Calls[^1].Variant switch { "neon" => "Lotus-Neon", "lateral" => "Lotus-Lateral", _ => "Lotus" };
+        public bool HasLayoutBackup() => false;
+        public Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false) { Calls.Add((variant, restart)); return Task.FromResult(true); }
+        public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
+        public bool? Running() => running;
+    }
+
+    [Fact] public async Task OverlayStyleNeverSwitchesUnderARunningGame()
+    {
+        var rtss = new StyleRtss(running: true);
+        var game = true;
+        var vm = new IntegrationsViewModel(rtss, new Tools(true, false), new TextCatalog(), _ => { }) { GameRunning = () => Task.FromResult(game) };
+        await vm.UseStyleAsync("lateral");
+        Assert.Empty(rtss.Calls);                        // nothing touched while playing
+        Assert.Equal("lateral", vm.PendingVariant);
+        game = false;
+        await vm.OnGameClosedAsync();
+        Assert.Equal([("lateral", true)], rtss.Calls);   // applied after the game, RivaTuner reopened (it was open)
+        Assert.Null(vm.PendingVariant);
+        Assert.Equal("lateral", vm.ActiveVariant);
+    }
+
+    [Fact] public async Task OverlayStyleOutsideAGameAppliesNowAndReopensOnlyWhenOpen()
+    {
+        var closed = new StyleRtss(running: false);
+        var vm = new IntegrationsViewModel(closed, new Tools(true, false), new TextCatalog(), _ => { }) { GameRunning = () => Task.FromResult(false) };
+        await vm.UseStyleAsync("neon");
+        Assert.Equal([("neon", false)], closed.Calls);   // RivaTuner closed: just switch the layout
+        Assert.Equal("neon", vm.ActiveVariant);
+        await vm.OnGameClosedAsync();                    // nothing pending: nothing more happens
+        Assert.Single(closed.Calls);
+    }
+
     private sealed class Tools(bool ab, bool scs) : IToolDetector
     {
         public ToolState Afterburner() => new(ab, ab ? "4.6.6" : null); public ToolState ScsKiller() => new(scs, scs ? "1.3.2" : null);

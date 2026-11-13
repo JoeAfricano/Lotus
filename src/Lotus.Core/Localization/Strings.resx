@@ -3269,4 +3269,11 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="ScorePickTitle" xml:space="preserve"><value>FPS estimado por jogo</value></data>
   <data name="ScorePickHint" xml:space="preserve"><value>Digite para filtrar. Valores em 1080p para cada qualidade. Não achou? Aperte Enter para buscar na Steam.</value></data>
   <data name="ScorePickCap" xml:space="preserve"><value>limite de {0} FPS do jogo</value></data>
+  <data name="OsLateral" xml:space="preserve"><value>Lateral</value></data>
+  <data name="OsLateralShort" xml:space="preserve"><value>Uma coluna fina no canto, tudo empilhado.</value></data>
+  <data name="OsLateralWhat" xml:space="preserve"><value>Uma coluna compacta no canto superior esquerdo com FPS grande, frametime e 1% low, gráfico de frametime, GPU e CPU (uso e temperatura), VRAM e RAM. Fundo escuro translúcido, legível em cenas claras e escuras.</value></data>
+  <data name="OsPendingGame" xml:space="preserve"><value>Um jogo está aberto: o estilo novo entra quando ele fechar (o jogo não é interrompido).</value></data>
+  <data name="OsPendingName" xml:space="preserve"><value>Vai entrar quando o jogo fechar: {0}.</value></data>
+  <data name="OsAppliedReopened" xml:space="preserve"><value>Estilo ativado e RivaTuner reaberto. Seus limites de FPS e perfis continuam iguais.</value></data>
+  <data name="OsFailed" xml:space="preserve"><value>Não deu para trocar o estilo. Se o Windows pediu permissão e foi negado, tente de novo; se o RivaTuner não reabrir, abra-o pelo menu Iniciar.</value></data>
 </root>

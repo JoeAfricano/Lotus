@@ -44,7 +44,7 @@ public sealed class OverlayStylePicker : UserControl
         use.Style = (Style)res["PrimaryButtonStyle"]; preview.Style = restore.Style = (Style)res["SoftButtonStyle"];
         Motion.SetPress(use, true);
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(use, "overlay-use-style");
-        use.Click += async (_, _) => { if (vm is not null && await Confirm(vm.Text["IntLayoutConfirmTitle"], vm.Text["IntLayoutConfirmBody"])) { await vm.ActivateLayoutAsync(selected); picked = false; Render(); } };
+        use.Click += async (_, _) => { if (vm is not null && await Confirm(vm.Text["IntLayoutConfirmTitle"], vm.Text["IntLayoutConfirmBody"])) { await vm.UseStyleAsync(selected); picked = false; Render(); } };
         preview.Click += (_, _) => vm?.PreviewOverlay();
         restore.Click += async (_, _) => { if (vm is not null && await Confirm(vm.Text["IntLayoutRestoreTitle"], vm.Text["IntRestoreConfirmBody"])) { await vm.RestoreLayoutAsync(); Render(); } };
         statusPill.Child = status;
@@ -93,7 +93,7 @@ public sealed class OverlayStylePicker : UserControl
         title.Text = t["GmOverlayTitle"];
         hint.Text = t["OsPickHint"];
         var on = vm.ActiveVariant;
-        status.Text = on is null ? t["OsNoneActive"] : t.Format("OsActive", t[on == "neon" ? "OsNeon" : "OsTop"]);
+        status.Text = on is null ? t["OsNoneActive"] : t.Format("OsActive", t[Key(on)]);
         var c = on is null ? gold : Ok;
         statusPill.Background = new SolidColorBrush(Color.FromArgb(0x24, c.R, c.G, c.B));
         status.Foreground = new SolidColorBrush(c);
@@ -101,17 +101,18 @@ public sealed class OverlayStylePicker : UserControl
         tileRow.Children.Clear();
         tileRow.Children.Add(Tile("top", t["OsTop"], t["OsTopShort"], on == "top"));
         tileRow.Children.Add(Tile("neon", t["OsNeon"], t["OsNeonShort"], on == "neon"));
+        tileRow.Children.Add(Tile("lateral", t["OsLateral"], t["OsLateralShort"], on == "lateral"));
 
         stage.Children.Clear();
         stage.Children.Add(GameScene());
-        stage.Children.Add(selected == "neon" ? NeonCard(1.0) : TopBar(1.0));
+        stage.Children.Add(Drawing(selected, 1.0));
         stage.Children.Add(new Border { CornerRadius = new CornerRadius(8), Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(14), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Background = new SolidColorBrush(Color.FromArgb(0xB3, 18, 9, 15)),
             Child = new TextBlock { Text = t["OsExample"], FontSize = 12, Foreground = new SolidColorBrush(Color.FromArgb(0xCC, 255, 255, 255)) } });
 
         what.Inlines.Clear();
-        what.Text = t[selected == "neon" ? "OsNeonWhat" : "OsTopWhat"];
+        what.Text = t[Key(selected) + "What"];
         var isOn = on == selected;
-        use.Content = Label(isOn ? "" : "", t.Format(isOn ? "OsInUse" : "OsUse", t[selected == "neon" ? "OsNeon" : "OsTop"]));
+        use.Content = Label(isOn ? "" : "", t.Format(isOn ? "OsInUse" : "OsUse", t[Key(selected)]));
         use.IsEnabled = !isOn && vm.RtssInstalled && !vm.Busy;
         preview.Content = Label("", t["IntPreview"]);
         preview.Visibility = vm.RtssInstalled && vm.CanPreview ? Visibility.Visible : Visibility.Collapsed;
@@ -119,10 +120,33 @@ public sealed class OverlayStylePicker : UserControl
         restore.Visibility = vm.CanRestoreLayout ? Visibility.Visible : Visibility.Collapsed;
         busy.Visibility = vm.Busy ? Visibility.Visible : Visibility.Collapsed;
         // "Ver o overlay agora" shows what RivaTuner has loaded, not the tile being looked at: say so when they differ.
-        message.Text = !vm.RtssInstalled ? t["OsNeedRtss"] : vm.Message.Length > 0 ? vm.Message : !isOn ? t.Format("OsPreviewActive", t[on == "neon" ? "OsNeon" : on == "top" ? "OsTop" : "OsNoneShort"]) : "";
+        message.Text = !vm.RtssInstalled ? t["OsNeedRtss"] : vm.Message.Length > 0 ? vm.Message : !isOn ? vm.PendingVariant is { } pend ? t.Format("OsPendingName", t[Key(pend)]) : t.Format("OsPreviewActive", on is null ? t["OsNoneShort"] : t[Key(on)]) : "";
         message.Visibility = message.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
+    private static string Key(string variant) => variant switch { "neon" => "OsNeon", "lateral" => "OsLateral", _ => "OsTop" };
+    private FrameworkElement Drawing(string variant, double scale) => variant switch { "neon" => NeonCard(scale), "lateral" => LateralColumn(scale), _ => TopBar(scale) };
+    // Lotus Lateral: a slim column in the top-left corner, everything stacked.
+    private FrameworkElement LateralColumn(double scale)
+    {
+        var col = new Border { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(12 * scale), Width = 150 * scale, Padding = new Thickness(12 * scale, 10 * scale, 10 * scale, 10 * scale),
+            Background = new SolidColorBrush(Color.FromArgb(0x99, 0x12, 0x0A, 0x12)), BorderBrush = new SolidColorBrush(rose), BorderThickness = new Thickness(Math.Max(1, 3 * scale), 0, 0, 0) };
+        var p = new StackPanel { Spacing = 4 * scale };
+        p.Children.Add(new TextBlock { Text = "LOTUS", FontSize = Math.Max(5, 10 * scale), FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(gold), CharacterSpacing = 120 });
+        var fps = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6 * scale };
+        fps.Children.Add(new TextBlock { Text = "144", FontSize = Math.Max(10, 34 * scale), FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Colors.White) });
+        fps.Children.Add(new TextBlock { Text = "FPS", FontSize = Math.Max(5, 11 * scale), FontWeight = FontWeights.SemiBold, Foreground = new SolidColorBrush(rose), VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 0, 5 * scale) });
+        p.Children.Add(fps);
+        foreach (var (k, v) in new[] { ("ms", "6.9   1% 118"), ("GPU", "71%  64°"), ("CPU", "38%  58°"), ("VRAM", "52%"), ("RAM", "61%") })
+        {
+            var row = new Grid { ColumnSpacing = 6 * scale }; row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(34 * scale) }); row.ColumnDefinitions.Add(new ColumnDefinition());
+            row.Children.Add(new TextBlock { Text = k, FontSize = Math.Max(5, 10 * scale), FontWeight = FontWeights.SemiBold, Foreground = new SolidColorBrush(gold) });
+            var val = new TextBlock { Text = v, FontSize = Math.Max(5, 11 * scale), Foreground = new SolidColorBrush(Colors.White) }; Grid.SetColumn(val, 1); row.Children.Add(val);
+            p.Children.Add(row);
+        }
+        col.Child = p;
+        return col;
+    }
     private static StackPanel Label(string glyph, string text)
     {
         var p = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
@@ -137,7 +161,7 @@ public sealed class OverlayStylePicker : UserControl
         var chosen = id == selected;
         var mini = new Grid { Height = 96, CornerRadius = new CornerRadius(10) };
         mini.Children.Add(GameScene());
-        mini.Children.Add(id == "neon" ? NeonCard(0.42) : TopBar(0.42));
+        mini.Children.Add(Drawing(id, 0.42));
         var info = new StackPanel { Spacing = 2 };
         var nameRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
         nameRow.Children.Add(new TextBlock { Text = name, FontWeight = FontWeights.SemiBold, FontSize = 14 });

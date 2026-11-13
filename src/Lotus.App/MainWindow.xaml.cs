@@ -178,6 +178,9 @@ public sealed partial class MainWindow : Window
         tools.Storage = new Lotus.Core.Maintenance.StorageViewModel(new Lotus.Core.Maintenance.StorageScanner(places.Resolve), new Lotus.Infrastructure.Maintenance.ShellFileRecycler(),
             new Lotus.Infrastructure.Maintenance.ExplorerRevealer(), Lotus.Infrastructure.Maintenance.LocalDrives.Read, places.Resolve, text, tools.Journal, ex => Serilog.Log.Warning(ex, "Storage"));
         games.Rtss = integrations.Rtss;
+        // Overlay style: never switched under a running game; a pending choice is applied when the game closes.
+        integrations.GameRunning = async () => await Task.Run(games.RunningGame) is not null;
+        sessionHub.Stopped += (_, _) => DispatcherQueue.TryEnqueue(async () => { try { await integrations.OnGameClosedAsync(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Overlay style after game"); } });
         games.AdaptiveSync = () => preferences.Current.AdaptiveSync;
         games.Display = new Lotus.Infrastructure.Games.WindowsDisplaySync();
         games.ScoreLine = (g, r, pc) =>

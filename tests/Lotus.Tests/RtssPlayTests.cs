@@ -137,7 +137,7 @@ public sealed class RtssPlayTests : IDisposable
         public bool? OverlayConfigured() => overlay; public bool HasBackup() => false;
         public Task<bool> ApplyLotusOverlayAsync() => Task.FromResult(true); public Task<bool> RestoreAsync() => Task.FromResult(true);
         public string ExportLayout(string variant = "top") => ""; public bool LayoutActive() => false; public string? ActiveLayoutName() => null; public bool HasLayoutBackup() => false;
-        public Task<bool> ActivateLayoutAsync(string variant = "top") => Task.FromResult(true); public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
+        public Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false) => Task.FromResult(true); public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
         public string? LimiterMode(string exe) => exe == limiterFor ? "fluid" : null;
         public bool? Running() => running;
         public Task<bool> StartAsync() { Starts++; return Task.FromResult(false); }

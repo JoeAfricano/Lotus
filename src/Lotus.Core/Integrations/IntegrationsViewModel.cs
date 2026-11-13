@@ -16,7 +16,7 @@ public interface IRtssIntegration
     bool LayoutActive();
     string? ActiveLayoutName(); // file name of the OverlayEditor layout in use, or null
     bool HasLayoutBackup();
-    Task<bool> ActivateLayoutAsync(string variant = "top");
+    Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false); // restart: reopen RivaTuner in the same approved step
     Task<bool> RestoreLayoutAsync();
     // Low latency per game (RivaTuner NVIDIA Reflex frame limiter, which also turns on Reflex low-latency in games
     // without native Reflex). Only that game's profile changes; disabling restores the profile exactly as it was.
@@ -68,7 +68,7 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             CanRestoreLayout = r.Installed && rtss.HasLayoutBackup();
             var active = r.Installed && rtss.LayoutActive();
             LayoutOn = active || (r.Installed && rtss.ActiveLayoutName() is { } name && name.StartsWith("Lotus", StringComparison.OrdinalIgnoreCase)); // incl. the player's own Lotus layouts
-            ActiveVariant = !active ? null : rtss.ActiveLayoutName() == "Lotus-Neon" ? "neon" : "top";
+            ActiveVariant = !active ? null : rtss.ActiveLayoutName() switch { "Lotus-Neon" => "neon", "Lotus-Lateral" => "lateral", _ => "top" };
             LayoutStatus = !r.Installed ? "" : active ? Text[rtss.ActiveLayoutName() == "Lotus-Neon" ? "IntLayoutActiveNeon" : "IntLayoutActive"] : rtss.ActiveLayoutName() is { } other ? Text.Format("IntLayoutOther", other) : Text["IntLayoutInactive"];
             var ab = tools.Afterburner(); AfterburnerStatus = ab.Installed ? Text.Format("IntAfterburnerOn", ab.Version ?? "?") : Text["IntNotInstalled"];
             var scs = tools.ScsKiller(); ScsStatus = scs.Installed ? Text.Format("IntScsOn", scs.Version ?? "?") : Text["IntScsOff"];
@@ -88,6 +88,22 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
         OnPropertyChanged(nameof(Message));
     }
     public Task ActivateLayoutAsync(string variant = "top") => Run(async () => Message = Text[await rtss.ActivateLayoutAsync(variant) ? "IntLayoutApplied" : "IntOverlayFailed"]);
+    // Choosing a style: outside a game it turns on and RivaTuner reopens (when open) so it shows at once; with a game
+    // running it waits and is applied when the game closes (a running game is never disturbed).
+    public Func<Task<bool>>? GameRunning { get; set; }
+    public string? PendingVariant { get; private set; }
+    public async Task UseStyleAsync(string variant)
+    {
+        if (GameRunning is not null && await GameRunning())
+        {
+            PendingVariant = variant; Message = Text["OsPendingGame"]; OnPropertyChanged(nameof(Message)); OnPropertyChanged(nameof(PendingVariant));
+            return;
+        }
+        PendingVariant = null; OnPropertyChanged(nameof(PendingVariant));
+        var reopen = rtss.Running() == true;
+        await Run(async () => Message = Text[await rtss.ActivateLayoutAsync(variant, reopen) ? (reopen ? "OsAppliedReopened" : "IntLayoutApplied") : "OsFailed"]);
+    }
+    public async Task OnGameClosedAsync() { if (PendingVariant is { } v) await UseStyleAsync(v); }
     public Task RestoreLayoutAsync() => Run(async () => Message = Text[await rtss.RestoreLayoutAsync() ? "IntLayoutRestored" : "IntOverlayFailed"]);
     // null when the file could not be written (locked, disk full); the message explains it.
     public string? ExportLayout()

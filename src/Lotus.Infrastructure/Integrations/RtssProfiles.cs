@@ -102,6 +102,26 @@ public static class RtssInstall
     public static bool Valid(string dir) => Path.IsPathFullyQualified(dir) && File.Exists(Path.Combine(dir, "RTSS.exe"));
 }
 
+// Closes RivaTuner and opens it again from its installed folder (elevated helper only, after the player's UAC "yes").
+// Only RTSS.exe is closed; its profiles (limits, Reflex) are files and stay as they are.
+[SupportedOSPlatform("windows")]
+public static class RtssRestart
+{
+    public static void Run()
+    {
+        var exe = Path.Combine(RtssInstall.Dir, "RTSS.exe");
+        if (!File.Exists(exe)) return;
+        var was = false;
+        foreach (var p in System.Diagnostics.Process.GetProcessesByName("RTSS"))
+        {
+            using (p) { was = true; try { p.Kill(); p.WaitForExit(5000); } catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception) { } }
+        }
+        if (!was) return; // not open: nothing to reopen (the next game start opens it as usual)
+        Thread.Sleep(600);
+        using var started = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exe) { UseShellExecute = true, WorkingDirectory = RtssInstall.Dir });
+    }
+}
+
 // Asks the running RTSS to reload profiles through its documented hooks DLL (same call MSI Afterburner uses).
 [SupportedOSPlatform("windows")]
 public static class RtssReload
@@ -135,7 +155,10 @@ public static class RtssElevatedHelper
         try
         {
             if (args[i] == "--rtss-layout")
+            {
                 LotusOverlayLayout.Activate(args[i + 1], LotusOverlayLayout.DefaultConfig, backups, Path.Combine(data, "Overlays"));
+                if (args.Contains("--rtss-restart")) RtssRestart.Run(); // profiles and limiter live in files, untouched by a restart
+            }
             else if (args[i] == "--rtss-layout-restore")
             { if (!LotusOverlayLayout.Restore(LotusOverlayLayout.DefaultConfig, backups)) return 4; }
             else if (args[i] == "--rtss-apply")
@@ -200,11 +223,13 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
     private string Overlays => overlaysDir ?? LotusOverlayLayout.OverlaysDir;
     public string ExportLayout(string variant = LotusOverlayLayout.Main) => LotusOverlayLayout.Export(Overlays, variant);
     // Active when OverlayEditor uses one of the Lotus layouts (main or Neon) from Lotus's folder.
-    public bool LayoutActive() => LotusOverlayLayout.ActiveLayout(OverlayConfig) is { } active && new[] { LotusOverlayLayout.Main, LotusOverlayLayout.Neon }
+    public bool LayoutActive() => LotusOverlayLayout.ActiveLayout(OverlayConfig) is { } active && new[] { LotusOverlayLayout.Main, LotusOverlayLayout.Neon, LotusOverlayLayout.Lateral }
         .Any(v => string.Equals(Path.GetFullPath(active), Path.GetFullPath(Path.Combine(Overlays, LotusOverlayLayout.FileFor(v))), StringComparison.OrdinalIgnoreCase));
     public bool HasLayoutBackup() => File.Exists(Path.Combine(Backups, "OverlayEditor.cfg.original"));
     public string? ActiveLayoutName() => LotusOverlayLayout.ActiveLayout(OverlayConfig) is { Length: > 0 } p ? Path.GetFileNameWithoutExtension(p) : null;
-    public async Task<bool> ActivateLayoutAsync(string variant = LotusOverlayLayout.Main) => await RunElevated(["--rtss-layout", ExportLayout(variant)]) == 0 && LayoutActive();
+    // restart: RivaTuner is closed and opened again in the same approved step, so the new layout shows without the player doing it.
+    public async Task<bool> ActivateLayoutAsync(string variant = LotusOverlayLayout.Main, bool restart = false) =>
+        await RunElevated(restart ? ["--rtss-layout", ExportLayout(variant), "--rtss-restart"] : ["--rtss-layout", ExportLayout(variant)]) == 0 && LayoutActive();
     public async Task<bool> RestoreLayoutAsync() => await RunElevated(["--rtss-layout-restore"]) == 0 && !HasLayoutBackup();
 
     public static readonly IReadOnlyList<RtssChange> LotusOverlay =
@@ -324,8 +349,10 @@ public static class LotusOverlayLayout
         using var copy = new MemoryStream(); stream.CopyTo(copy); return copy.ToArray();
     }
     // Two layouts by the player: "top" (main: "Lotus Top Sombra", a bar across the top) and "neon" (optional card).
-    public const string Main = "top", Neon = "neon";
-    public static string FileFor(string variant) => variant == Neon ? "Lotus-Neon.ovl" : "Lotus.ovl";
+    // Third: "lateral", a compact column in the top-left corner (tools\New-LotusLateralOverlay.ps1, Neon's sources).
+    public const string Main = "top", Neon = "neon", Lateral = "lateral";
+    public static string FileFor(string variant) => variant switch { Neon => "Lotus-Neon.ovl", Lateral => "Lotus-Lateral.ovl", _ => "Lotus.ovl" };
+    public static string VariantOf(string? layoutName) => layoutName switch { "Lotus-Neon" => Neon, "Lotus-Lateral" => Lateral, "Lotus" => Main, _ => "" };
     public static string Text(string variant = Main) => System.Text.Encoding.Latin1.GetString(Resource(FileFor(variant)));
     public static string Export(string? dir = null, string variant = Main)
     {
