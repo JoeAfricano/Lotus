@@ -668,7 +668,7 @@ Condições atuais: {1}</value></data>
   <data name="GamesAdd" xml:space="preserve"><value>Adicionar jogo</value></data>
   <data name="GamesPlay" xml:space="preserve"><value>Jogar</value></data>
   <data name="GamesScanning" xml:space="preserve"><value>Procurando jogos instalados...</value></data>
-  <data name="GamesSummary" xml:space="preserve"><value>{0} jogo(s) em {1} loja(s)</value></data>
+  <data name="GamesSummary" xml:space="preserve"><value>Jogos: {0} · Lojas: {1}</value></data>
   <data name="GamesNoneFound" xml:space="preserve"><value>Nenhum jogo encontrado nas lojas compatíveis (Steam, Epic, Xbox, GOG, EA e Ubisoft). Use "Adicionar jogo" para incluir um executável.</value></data>
   <data name="GamesNoMatch" xml:space="preserve"><value>Nenhum jogo corresponde à busca.</value></data>
   <data name="GamesScanFailed" xml:space="preserve"><value>Não foi possível procurar os jogos. Detalhes no log.</value></data>
@@ -854,6 +854,7 @@ Condições atuais: {1}</value></data>
   <data name="ScoreVerdict" xml:space="preserve"><value>Seu PC está na faixa {0}: supera {1} de {2} referências.</value></data>
   <data name="ScoreYou" xml:space="preserve"><value>Seu PC</value></data>
   <data name="ScoreHistoryLine" xml:space="preserve"><value>{0} pontos · CPU {1} / {2} · GPU {3}</value></data>
+  <data name="ScoreHistoryPartial" xml:space="preserve"><value>Teste parcial</value></data>
   <data name="ScoreTierEntry" xml:space="preserve"><value>Entrada</value></data>
   <data name="ScoreTierBudget" xml:space="preserve"><value>Básico gamer</value></data>
   <data name="ScoreTierMid" xml:space="preserve"><value>Intermediário</value></data>
@@ -1556,7 +1557,7 @@ Não foi possível medir agora. Tente de novo em alguns segundos.</value></data>
   <data name="DyInList" xml:space="preserve"><value>Na sua lista</value></data>
   <data name="DyLog" xml:space="preserve"><value>Registrar</value></data>
   <data name="DyBio" xml:space="preserve"><value>Sobre você</value></data>
-  <data name="DyBioPlaceholder" xml:space="preserve"><value>Ex.: Um CLT, jogando de vez em quando.</value></data>
+  <data name="DyBioPlaceholder" xml:space="preserve"><value>Ex.: Jogo à noite, depois do trabalho.</value></data>
   <data name="DyStatCompleted" xml:space="preserve"><value>concluídos</value></data>
   <data name="DyStatHours" xml:space="preserve"><value>jogadas</value></data>
   <data name="DyStatAverage" xml:space="preserve"><value>nota média</value></data>

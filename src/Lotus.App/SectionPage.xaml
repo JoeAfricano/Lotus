@@ -30,11 +30,11 @@
     <!-- One full row of covers that fills the width (extra covers wrap below and are clipped; "Ver todos" opens the rest) -->
     <Grid Height="276" Visibility="{Binding Games.HasFeatured, Converter={StaticResource BooleanVisibility}}">
     <Grid.Clip><RectangleGeometry Rect="0,0,4000,276"/></Grid.Clip>
-    <ItemsControl ItemsSource="{Binding Games.Featured}" AutomationProperties.AutomationId="home-games">
+    <ItemsControl ItemsSource="{Binding Games.Featured}" Margin="0,0,-14,0" AutomationProperties.AutomationId="home-games">
      <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="182" ItemHeight="290" app:Fit.MinItemWidth="182"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
      <ItemsControl.ItemTemplate><DataTemplate>
       <StackPanel Spacing="8" Margin="0,0,14,0">
-      <Grid Height="224" CornerRadius="16" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04" Tapped="OnHomeGameTapped" ToolTipService.ToolTip="{Binding Name}">
+      <Grid Height="224" CornerRadius="16" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04" Tapped="OnHomeGameTapped">
        <Image Source="{Binding Name, Converter={StaticResource FallbackCover}}" Stretch="UniformToFill" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}" AutomationProperties.AccessibilityView="Raw"/>
        <TextBlock Text="{Binding Initials}" FontFamily="Georgia" FontSize="32" FontWeight="SemiBold" Foreground="#FFF6F9" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
        <Border Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}}"><Border.Background><ImageBrush ImageSource="{Binding CoverPath, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border.Background></Border>

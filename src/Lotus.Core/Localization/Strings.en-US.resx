@@ -668,7 +668,7 @@ Current conditions: {1}</value></data>
   <data name="GamesAdd" xml:space="preserve"><value>Add game</value></data>
   <data name="GamesPlay" xml:space="preserve"><value>Play</value></data>
   <data name="GamesScanning" xml:space="preserve"><value>Looking for installed games...</value></data>
-  <data name="GamesSummary" xml:space="preserve"><value>{0} game(s) in {1} store(s)</value></data>
+  <data name="GamesSummary" xml:space="preserve"><value>Games: {0} · Stores: {1}</value></data>
   <data name="GamesNoneFound" xml:space="preserve"><value>No games found in supported stores (Steam, Epic, Xbox, GOG, EA and Ubisoft). Use "Add game" to include an executable.</value></data>
   <data name="GamesNoMatch" xml:space="preserve"><value>No game matches the search.</value></data>
   <data name="GamesScanFailed" xml:space="preserve"><value>Games could not be scanned. Details in the log.</value></data>
@@ -854,6 +854,7 @@ Current conditions: {1}</value></data>
   <data name="ScoreVerdict" xml:space="preserve"><value>Your PC is in the {0} tier: it beats {1} of {2} references.</value></data>
   <data name="ScoreYou" xml:space="preserve"><value>Your PC</value></data>
   <data name="ScoreHistoryLine" xml:space="preserve"><value>{0} points · CPU {1} / {2} · GPU {3}</value></data>
+  <data name="ScoreHistoryPartial" xml:space="preserve"><value>Partial test</value></data>
   <data name="ScoreTierEntry" xml:space="preserve"><value>Entry</value></data>
   <data name="ScoreTierBudget" xml:space="preserve"><value>Budget gamer</value></data>
   <data name="ScoreTierMid" xml:space="preserve"><value>Mid-range</value></data>
@@ -1556,7 +1557,7 @@ Could not measure right now. Try again in a few seconds.</value></data>
   <data name="DyInList" xml:space="preserve"><value>In your list</value></data>
   <data name="DyLog" xml:space="preserve"><value>Log it</value></data>
   <data name="DyBio" xml:space="preserve"><value>About you</value></data>
-  <data name="DyBioPlaceholder" xml:space="preserve"><value>E.g. Working full time, playing when I can.</value></data>
+  <data name="DyBioPlaceholder" xml:space="preserve"><value>E.g. I play at night, after work.</value></data>
   <data name="DyStatCompleted" xml:space="preserve"><value>completed</value></data>
   <data name="DyStatHours" xml:space="preserve"><value>played</value></data>
   <data name="DyStatAverage" xml:space="preserve"><value>average score</value></data>

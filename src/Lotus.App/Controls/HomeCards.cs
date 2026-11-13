@@ -63,7 +63,7 @@ public sealed partial class ContinueCard : UserControl
         text.Children.Add(eyebrowRow);
         var big = Compact ? 44 : ActualWidth is > 0 and < 760 ? 48 : 72;
         var title = new TextBlock { Text = game?.Name ?? t["HcEmptyTitle"], FontSize = big, LineHeight = big + 4, LineStackingStrategy = LineStackingStrategy.BlockLineHeight, CharacterSpacing = -30, FontWeight = Microsoft.UI.Text.FontWeights.Bold, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis, Foreground = new SolidColorBrush(Colors.White) };
-        ToolTipService.SetToolTip(title, title.Text); // two lines at most; the full name on hover
+        title.IsTextTrimmedChanged += (_, _) => ToolTipService.SetToolTip(title, title.IsTextTrimmed ? title.Text : null); // full name on hover only when cut
         text.Children.Add(title);
         // "Onde você parou": the player's own note for this game replaces the tagline (no empty space without a note).
         var note = game is null ? null : MainWindow.Shell?.Resume.Get(Lotus.Core.Diary.DiaryGames.KeyFor(game));
@@ -82,11 +82,12 @@ public sealed partial class ContinueCard : UserControl
         if (game is not null && games is not null)
         {
             buttons.Children.Add(HomeMotion.Big(HomeMotion.Button(t[note is null || Compact ? "GiPlay" : "RnContinue"], "", primary: true, () => { UiSound.Play(UiSound.Cue.Open); games.Play(game); }), primary: true));
-            var details = HomeMotion.Button(t["GiDetails"], "", primary: false, () => DetailsRequested?.Invoke(this, game)); HomeMotion.Big(details, primary: false); Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(details, "continue-details"); buttons.Children.Add(details);
+            var details = HomeMotion.Button(t["GiDetails"], "", primary: false, () => DetailsRequested?.Invoke(this, game)); HomeMotion.Big(details, primary: false); HomeMotion.OnPhoto(details); Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(details, "continue-details"); buttons.Children.Add(details);
             if (note is not null && !Compact)
             {
                 Button? view = null;
                 view = HomeMotion.Button(t["RnView"], "\uE8A4", primary: false, () => ShowNote(view!, t, game, note));
+                HomeMotion.Big(view, primary: false); HomeMotion.OnPhoto(view);
                 Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(view, "continue-resume");
                 buttons.Children.Add(view);
             }
@@ -299,6 +300,20 @@ internal static class HomeMotion
         b.Content = row; b.Click += (_, _) => onClick();
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(b, label); // screen readers read the label, not the icon
         return b;
+    }
+    // Secondary buttons over the dark cover art: the same dark glass in every theme (a light theme's soft
+    // button would put white-on-pale or dark-on-dark text on the photo).
+    public static void OnPhoto(Button b)
+    {
+        static SolidColorBrush B(byte a, byte r, byte g, byte bl) => new(Color.FromArgb(a, r, g, bl));
+        b.Resources["ButtonBackground"] = B(0x8C, 0x14, 0x0C, 0x12);
+        b.Resources["ButtonBackgroundPointerOver"] = B(0xB3, 0x2A, 0x18, 0x24);
+        b.Resources["ButtonBackgroundPressed"] = B(0xCC, 0x0E, 0x08, 0x0C);
+        b.Resources["ButtonBackgroundDisabled"] = B(0x59, 0x14, 0x0C, 0x12);
+        b.Resources["ButtonForeground"] = b.Resources["ButtonForegroundPointerOver"] = b.Resources["ButtonForegroundPressed"] = B(0xFF, 0xFF, 0xF4, 0xF8);
+        b.Resources["ButtonForegroundDisabled"] = B(0x99, 0xFF, 0xF4, 0xF8);
+        b.Resources["ButtonBorderBrush"] = b.Resources["ButtonBorderBrushPointerOver"] = b.Resources["ButtonBorderBrushPressed"] = B(0x40, 0xFF, 0xFF, 0xFF);
+        b.Foreground = (SolidColorBrush)b.Resources["ButtonForeground"];
     }
     // Hero buttons: taller, rounder; the primary one a little larger.
     public static Button Big(Button b, bool primary)

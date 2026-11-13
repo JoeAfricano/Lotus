@@ -100,6 +100,15 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     public string PartHint { get; private set; } = "";
     private System.Globalization.CultureInfo Culture => System.Globalization.CultureInfo.GetCultureInfo(Text.Language);
     private string Points(int? value) => value is { } v ? v.ToString("N0", Culture) : "—";
+    // A partial run (CPU or GPU only) says so instead of showing "— points".
+    private string HistorySummary(ScoreRun h)
+    {
+        if (h.Total is not null) return Text.Format("ScoreHistoryLine", Points(h.Total), Points(h.Cpu1), Points(h.CpuAll), Points(h.Gpu));
+        var parts = new List<string> { Text["ScoreHistoryPartial"] };
+        if (h.Cpu1 is not null || h.CpuAll is not null) parts.Add($"CPU {Points(h.Cpu1)} / {Points(h.CpuAll)}");
+        if (h.Gpu is not null) parts.Add($"GPU {Points(h.Gpu)}");
+        return string.Join(" · ", parts);
+    }
 
     public void Refresh()
     {
@@ -223,7 +232,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         try
         {
             foreach (var h in history.Load())
-                History.Add(new(h.Date.ToString("g", Culture), Text.Format("ScoreHistoryLine", Points(h.Total), Points(h.Cpu1), Points(h.CpuAll), Points(h.Gpu))));
+                History.Add(new(h.Date.ToString("g", Culture), HistorySummary(h)));
         }
         catch (Exception ex) { log(ex); }
         BuildInsights();

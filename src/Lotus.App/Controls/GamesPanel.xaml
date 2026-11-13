@@ -3,7 +3,7 @@
   <!-- Toolbar: search, store filter, add, rescan -->
   <Grid ColumnSpacing="12" RowSpacing="12">
    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-   <TextBox PlaceholderText="{Binding Text[GamesSearch]}" Text="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="40" VerticalContentAlignment="Center" AutomationProperties.Name="{Binding Text[GamesSearch]}" AutomationProperties.AutomationId="games-search"/>
+   <TextBox PlaceholderText="{Binding Text[GamesSearch]}" Text="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="12,9,8,9" AutomationProperties.Name="{Binding Text[GamesSearch]}" AutomationProperties.AutomationId="games-search"/>
    <ComboBox Grid.Column="1" ItemsSource="{Binding Stores}" SelectedItem="{Binding SelectedStore, Mode=TwoWay}" DisplayMemberPath="Label" MinWidth="170" MinHeight="40" AutomationProperties.AutomationId="games-store"/>
    <!-- Visual 2.0: add and rescan live in one "+" menu, so the games come first -->
    <DropDownButton x:Name="RescanButton" Grid.Column="2" MinHeight="40" MinWidth="56" CornerRadius="{StaticResource ControlRadius}" AutomationProperties.Name="{Binding Text[GamesAdd]}" AutomationProperties.AutomationId="games-more" ToolTipService.ToolTip="{Binding Text[GamesAdd]}">

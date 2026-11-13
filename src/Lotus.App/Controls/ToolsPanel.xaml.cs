@@ -42,7 +42,7 @@ public sealed partial class ToolsPanel : UserControl
         };
         foreach (var (groupTitle, ids) in Groups)
         {
-            var wrap = new VariableSizedWrapGrid { Orientation = Orientation.Horizontal, ItemWidth = 272, ItemHeight = 156 }; wraps.Add(wrap);
+            var wrap = new VariableSizedWrapGrid { Orientation = Orientation.Horizontal, ItemWidth = 272, ItemHeight = 156, Margin = new Thickness(0, 0, -12, 0) }; // the last tile's 12 px gap hangs outside, so tiles end flush wraps.Add(wrap);
             var group = new StackPanel { Spacing = 12 };
             group.Children.Add(new TextBlock { Text = vm.Text[groupTitle], Style = (Style)Application.Current.Resources["SubtitleStyle"] });
             group.Children.Add(wrap);
@@ -77,6 +77,7 @@ public sealed partial class ToolsPanel : UserControl
     private void FitColumns(double width)
     {
         if (width < 100) return;
+        width += 12; // the wraps reach 12 px past the edge (their last gap)
         var columns = Math.Max(1, (int)(width / 272)); // each cell holds the tile and its 12 px gap, so the row never overflows
         var item = Math.Floor(width / columns);
         foreach (var wrap in wraps) wrap.ItemWidth = item;

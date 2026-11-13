@@ -1,24 +1,7 @@
 <UserControl x:Class="Lotus.App.Controls.OptimizationPanel"
  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:app="using:Lotus.App">
- <!-- Restore (design 03): the reversible test action with confirmation, then the full activity history. -->
+ <!-- Restore: the full activity history (the disposable test action stays out of the product UI). -->
  <StackPanel Spacing="24">
-  <Border Style="{StaticResource CardStyle}">
-   <StackPanel Spacing="14">
-    <FontIcon Glyph="&#xE777;" FontSize="26" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
-    <StackPanel Spacing="4"><TextBlock Text="{Binding Text[OptTitle]}" FontSize="20" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[OptTestDescription]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
-    <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE83D;" FontSize="13" Foreground="{ThemeResource SuccessBrush}" VerticalAlignment="Top" Margin="0,2,0,0"/><TextBlock Text="{Binding Text[OptSafety]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
-    <Button Content="{Binding Text[OptAnalyze]}" Command="{Binding AnalyzeCommand}" Style="{StaticResource SoftButtonStyle}" MinHeight="44"/>
-    <ComboBox Header="{Binding Text[OptHistory]}" ItemsSource="{Binding Plans}" SelectedItem="{Binding Selected, Mode=TwoWay}" DisplayMemberPath="Id" HorizontalAlignment="Left" MinWidth="320" MaxWidth="520" IsEnabled="{Binding CanEdit}"/>
-    <TextBlock Text="{Binding Status}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite" app:Motion.Settle="True"/>
-    <CheckBox Content="{Binding Text[OptConfirm]}" IsChecked="{Binding Confirmed, Mode=TwoWay}" IsEnabled="{Binding CanEdit}"/>
-    <StackPanel Orientation="Horizontal" Spacing="8">
-     <Button Content="{Binding Text[OptApply]}" Command="{Binding ApplyCommand}" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44"/>
-     <Button Content="{Binding Text[OptRevert]}" Command="{Binding RevertCommand}" Style="{StaticResource SoftButtonStyle}" MinHeight="44"/>
-     <Button Content="{Binding Text[OptRefresh]}" Command="{Binding RefreshCommand}" Style="{StaticResource SoftButtonStyle}" MinHeight="44"/>
-    </StackPanel>
-   </StackPanel>
-  </Border>
-
   <!-- Activity -->
   <StackPanel Spacing="12" AutomationProperties.AutomationId="restore-activity">
    <TextBlock Text="{Binding Text[OptActivity]}" FontSize="20" FontWeight="SemiBold"/>
