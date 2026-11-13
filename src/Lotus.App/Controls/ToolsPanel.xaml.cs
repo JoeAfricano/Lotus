@@ -77,8 +77,8 @@ public sealed partial class ToolsPanel : UserControl
     private void FitColumns(double width)
     {
         if (width < 100) return;
-        var columns = Math.Max(1, (int)((width + 12) / 284));
-        var item = Math.Floor((width + 12) / columns);
+        var columns = Math.Max(1, (int)(width / 272)); // each cell holds the tile and its 12 px gap, so the row never overflows
+        var item = Math.Floor(width / columns);
         foreach (var wrap in wraps) wrap.ItemWidth = item;
     }
     private static bool Available(ToolsViewModel vm, string id) => id switch
