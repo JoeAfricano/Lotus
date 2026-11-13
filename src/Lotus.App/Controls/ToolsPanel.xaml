@@ -4,18 +4,18 @@
   <TextBlock app:Rich.Text="{Binding Text[ToolIntro]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
   <TextBlock Text="{Binding Message}" app:Motion.Settle="True" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" Visibility="{Binding Message, Converter={StaticResource PresenceVisibility}}"/>
   <!-- Check-up hero: one click runs every read-only analysis; the result opens on its own screen -->
-  <Border x:Name="CheckupHero" DataContext="{Binding Checkup}" Visibility="{Binding Converter={StaticResource PresenceVisibility}}" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="20" Padding="28,24" MaxWidth="1100" HorizontalAlignment="Left" AutomationProperties.AutomationId="tools-checkup-hero">
+  <Border x:Name="CheckupHero" DataContext="{Binding Checkup}" Visibility="{Binding Converter={StaticResource PresenceVisibility}}" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="16" Padding="28,24" MaxWidth="1100" HorizontalAlignment="Left" AutomationProperties.AutomationId="tools-checkup-hero">
    <Grid ColumnSpacing="22"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <Border Width="64" Height="64" CornerRadius="32" Background="{ThemeResource BadgeBrush}" VerticalAlignment="Top">
      <FontIcon Glyph="&#xE9D9;" FontSize="28" Foreground="{ThemeResource RoseBrush}"/>
     </Border>
     <StackPanel Grid.Column="1" Spacing="8" VerticalAlignment="Center">
-     <TextBlock Text="{Binding Text[CkTitle]}" FontSize="24" FontWeight="SemiBold"/>
+     <TextBlock Text="{Binding Text[CkTitle]}" FontSize="28" FontWeight="SemiBold"/>
      <TextBlock Text="{Binding TileStatus}" app:Motion.Settle="True" Style="{StaticResource BodyStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-checkup-headline"/>
      <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{Binding Done, Converter={StaticResource BooleanVisibility}}" app:Motion.Stagger="True">
-      <Border CornerRadius="12" Padding="12,4" Background="{ThemeResource SubtleBrush}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE7BA;" FontSize="12" Foreground="{ThemeResource WarningBrush}"/><TextBlock Text="{Binding AttentionText}" FontSize="13"/></StackPanel></Border>
-      <Border CornerRadius="12" Padding="12,4" Background="{ThemeResource SubtleBrush}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE946;" FontSize="12" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding TipsText}" FontSize="13"/></StackPanel></Border>
-      <Border CornerRadius="12" Padding="12,4" Background="{ThemeResource SubtleBrush}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE73E;" FontSize="12" Foreground="{ThemeResource SuccessBrush}"/><TextBlock Text="{Binding GoodText}" FontSize="13"/></StackPanel></Border>
+      <Border CornerRadius="12" Padding="12,4" Background="{ThemeResource SubtleBrush}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE7BA;" FontSize="12" Foreground="{ThemeResource WarningBrush}"/><TextBlock Text="{Binding AttentionText}" FontSize="14"/></StackPanel></Border>
+      <Border CornerRadius="12" Padding="12,4" Background="{ThemeResource SubtleBrush}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE946;" FontSize="12" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding TipsText}" FontSize="14"/></StackPanel></Border>
+      <Border CornerRadius="12" Padding="12,4" Background="{ThemeResource SubtleBrush}"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE73E;" FontSize="12" Foreground="{ThemeResource SuccessBrush}"/><TextBlock Text="{Binding GoodText}" FontSize="14"/></StackPanel></Border>
      </StackPanel>
      <StackPanel Spacing="4" Visibility="{Binding Busy, Converter={StaticResource BooleanVisibility}}">
       <TextBlock Text="{Binding Step}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" app:Motion.Settle="True"/>
@@ -96,7 +96,7 @@
        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Location}" Style="{StaticResource CaptionStyle}" TextWrapping="NoWrap" MaxLines="1" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Location}"/></StackPanel>
        <TextBlock Grid.Column="2" Text="{Binding SizeText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
        <TextBlock Grid.Column="3" Text="{Binding CpuText}" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource CaptionStyle}"/>
-       <Border Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Center" CornerRadius="10" Padding="10,3" Background="{ThemeResource BadgeBrush}"><TextBlock Text="{Binding KindText}" FontSize="12" Foreground="{ThemeResource GoldBrush}"/></Border>
+       <Border Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Center" CornerRadius="12" Padding="10,3" Background="{ThemeResource BadgeBrush}"><TextBlock Text="{Binding KindText}" FontSize="12" Foreground="{ThemeResource GoldBrush}"/></Border>
        <Button Grid.Column="5" Click="OnProcToggleList" Visibility="{Binding CanClose, Converter={StaticResource BooleanVisibility}}" Padding="6" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="{Binding DataContext.Text[PrListTip], ElementName=ProcCard}" AutomationProperties.Name="{Binding Name}">
         <Grid><FontIcon Glyph="&#xE734;" FontSize="15" Foreground="{ThemeResource MutedBrush}" Visibility="{Binding InCloseList, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}"/><FontIcon Glyph="&#xE735;" FontSize="15" Foreground="{ThemeResource RoseBrush}" Visibility="{Binding InCloseList, Converter={StaticResource BooleanVisibility}}"/></Grid>
        </Button>
@@ -173,7 +173,7 @@
         <TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="NoWrap" MaxLines="1" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Entry.Command}"/>
         <TextBlock Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"><Run Text="{Binding Mechanism}"/><Run Text=" · "/><Run Text="{Binding SignatureText}"/></TextBlock>
        </StackPanel>
-       <Border Grid.Column="1" VerticalAlignment="Center" CornerRadius="10" Padding="10,3" Background="{ThemeResource BadgeBrush}"><TextBlock Text="{Binding StateText}" FontSize="12" Foreground="{ThemeResource GoldBrush}"/></Border>
+       <Border Grid.Column="1" VerticalAlignment="Center" CornerRadius="12" Padding="10,3" Background="{ThemeResource BadgeBrush}"><TextBlock Text="{Binding StateText}" FontSize="12" Foreground="{ThemeResource GoldBrush}"/></Border>
        <Button Grid.Column="2" Content="{Binding ToggleLabel}" Click="OnStartupToggle" Visibility="{Binding CanToggle, Converter={StaticResource BooleanVisibility}}" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center"/>
       </Grid>
      </DataTemplate></ItemsControl.ItemTemplate>
@@ -236,7 +236,7 @@
      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
      <ItemsControl.ItemContainerTransitions><TransitionCollection><EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="18"/></TransitionCollection></ItemsControl.ItemContainerTransitions>
      <ItemsControl.ItemTemplate><DataTemplate>
-      <Grid Padding="16,12" ColumnSpacing="14" CornerRadius="14" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+      <Grid Padding="16,12" ColumnSpacing="14" CornerRadius="12" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
        <Grid Width="36" Height="36" VerticalAlignment="Center">
         <Ellipse Fill="{ThemeResource BadgeBrush}"/>
@@ -264,10 +264,10 @@
     <Grid ColumnSpacing="18" Padding="24,20" CornerRadius="16" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Settle="True">
      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
      <StackPanel Spacing="2"><TextBlock Text="{Binding Text[MnNow]}" Style="{StaticResource CaptionStyle}"/>
-      <StackPanel Orientation="Horizontal" Spacing="6"><TextBlock Text="{Binding CurrentHz}" FontSize="44" FontWeight="SemiBold" AutomationProperties.AutomationId="tools-monitor-current"/><TextBlock Text="Hz" FontSize="18" VerticalAlignment="Bottom" Margin="0,0,0,8" Foreground="{ThemeResource MutedBrush}"/></StackPanel></StackPanel>
+      <StackPanel Orientation="Horizontal" Spacing="6"><TextBlock Text="{Binding CurrentHz}" FontSize="40" FontWeight="SemiBold" AutomationProperties.AutomationId="tools-monitor-current"/><TextBlock Text="Hz" FontSize="18" VerticalAlignment="Bottom" Margin="0,0,0,8" Foreground="{ThemeResource MutedBrush}"/></StackPanel></StackPanel>
      <FontIcon Grid.Column="1" Glyph="&#xE72A;" FontSize="22" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
      <StackPanel Grid.Column="2" Spacing="2"><TextBlock Text="{Binding Text[MnMax]}" Style="{StaticResource CaptionStyle}"/>
-      <StackPanel Orientation="Horizontal" Spacing="6"><TextBlock Text="{Binding MaxHz}" FontSize="44" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="Hz" FontSize="18" VerticalAlignment="Bottom" Margin="0,0,0,8" Foreground="{ThemeResource MutedBrush}"/></StackPanel></StackPanel>
+      <StackPanel Orientation="Horizontal" Spacing="6"><TextBlock Text="{Binding MaxHz}" FontSize="40" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="Hz" FontSize="18" VerticalAlignment="Bottom" Margin="0,0,0,8" Foreground="{ThemeResource MutedBrush}"/></StackPanel></StackPanel>
      <StackPanel Grid.Column="3" Spacing="4" VerticalAlignment="Center" Margin="12,0,0,0">
       <TextBlock Text="{Binding MonitorText}" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-monitor-status"/>
       <TextBlock Text="{Binding MonitorAdvice}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
@@ -296,14 +296,14 @@
      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
      <ItemsControl.ItemContainerTransitions><TransitionCollection><EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="18"/></TransitionCollection></ItemsControl.ItemContainerTransitions>
      <ItemsControl.ItemTemplate><DataTemplate>
-      <Grid Padding="16,12" ColumnSpacing="14" CornerRadius="14" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+      <Grid Padding="16,12" ColumnSpacing="14" CornerRadius="12" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
        <StackPanel Spacing="4">
         <StackPanel Orientation="Horizontal" Spacing="10">
          <FontIcon Glyph="&#xE7BA;" FontSize="14" Foreground="{ThemeResource WarningBrush}" Visibility="{Binding Attention, Converter={StaticResource BooleanVisibility}}"/>
          <FontIcon Glyph="&#xE73E;" FontSize="14" Foreground="{ThemeResource SuccessBrush}" Visibility="{Binding Attention, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}"/>
          <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
-         <Border CornerRadius="10" Padding="10,2" Background="{ThemeResource BadgeBrush}"><TextBlock Text="{Binding State}" FontSize="12" Foreground="{ThemeResource GoldBrush}"/></Border>
+         <Border CornerRadius="12" Padding="10,2" Background="{ThemeResource BadgeBrush}"><TextBlock Text="{Binding State}" FontSize="12" Foreground="{ThemeResource GoldBrush}"/></Border>
         </StackPanel>
         <TextBlock Text="{Binding Advice}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
        </StackPanel>
@@ -333,9 +333,9 @@
      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="10"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
      <ItemsControl.ItemContainerTransitions><TransitionCollection><EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="18"/></TransitionCollection></ItemsControl.ItemContainerTransitions>
      <ItemsControl.ItemTemplate><DataTemplate>
-      <StackPanel Padding="16,14" Spacing="6" CornerRadius="14" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+      <StackPanel Padding="16,14" Spacing="6" CornerRadius="12" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
        <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="16" TextTrimming="CharacterEllipsis"/>
+        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="18" TextTrimming="CharacterEllipsis"/>
         <TextBlock Grid.Column="1" Text="{Binding When}" Style="{StaticResource CaptionStyle}" VerticalAlignment="Center"/>
        </Grid>
        <StackPanel Orientation="Horizontal" Spacing="8">
@@ -358,7 +358,7 @@
      <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[WuTitle]}" FontWeight="SemiBold"/><TextBlock app:Rich.Text="{Binding Text[WuWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
     </Grid>
     <controls:TaskProgressView State="{Binding Work}"/>
-    <Grid ColumnSpacing="14" Padding="18,16" CornerRadius="14" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Settle="True">
+    <Grid ColumnSpacing="14" Padding="18,16" CornerRadius="12" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Settle="True">
      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
      <Grid Width="40" Height="40" VerticalAlignment="Top"><Ellipse Fill="{ThemeResource BadgeBrush}"/>
       <FontIcon Glyph="&#xE7BA;" FontSize="17" Foreground="{ThemeResource WarningBrush}" Visibility="{Binding RestartNeeded, Converter={StaticResource BooleanVisibility}}"/>
@@ -371,7 +371,7 @@
      </StackPanel>
      <Button Grid.Column="2" Content="{Binding Text[WuOpenUpdate]}" Click="OnOpenWindowsUpdateSettings" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center"/>
     </Grid>
-    <Grid ColumnSpacing="14" Padding="18,16" CornerRadius="14" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+    <Grid ColumnSpacing="14" Padding="18,16" CornerRadius="12" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
      <Grid Width="40" Height="40" VerticalAlignment="Top"><Ellipse Fill="{ThemeResource BadgeBrush}"/><FontIcon Glyph="&#xE81C;" FontSize="17" Foreground="{ThemeResource RoseBrush}"/></Grid>
      <StackPanel Grid.Column="1" Spacing="8">
@@ -409,7 +409,7 @@
        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
        <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}" IsEnabled="{Binding CanSelect}" MinWidth="0" VerticalAlignment="Center" AutomationProperties.Name="{Binding Title}"/>
        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center"><TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
-       <Border Grid.Column="2" VerticalAlignment="Center" CornerRadius="10" Padding="10,3" Background="{ThemeResource BadgeBrush}"><TextBlock Text="{Binding RiskText}" FontSize="12" Foreground="{ThemeResource GoldBrush}"/></Border>
+       <Border Grid.Column="2" VerticalAlignment="Center" CornerRadius="12" Padding="10,3" Background="{ThemeResource BadgeBrush}"><TextBlock Text="{Binding RiskText}" FontSize="12" Foreground="{ThemeResource GoldBrush}"/></Border>
       </Grid>
      </DataTemplate></ItemsControl.ItemTemplate>
     </ItemsControl>

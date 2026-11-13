@@ -7,27 +7,27 @@
   <DataTemplate x:Key="ColumnBar">
    <Grid Background="Transparent" ToolTipService.ToolTip="{Binding Hint}" AutomationProperties.Name="{Binding Hint}" RowSpacing="6">
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="120"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-    <TextBlock Text="{Binding ValueText}" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center" Opacity="{Binding ShowValue, Converter={StaticResource ValueOpacity}}"/>
+    <TextBlock Text="{Binding ValueText}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" Opacity="{Binding ShowValue, Converter={StaticResource ValueOpacity}}"/>
     <Border Grid.Row="1" VerticalAlignment="Bottom" MaxWidth="34" CornerRadius="4,4,0,0" Height="{Binding Fraction, Converter={StaticResource Scale}, ConverterParameter=120}"
             Background="{ThemeResource RoseBrush}" Opacity="{Binding Highlight, Converter={StaticResource BarOpacity}}"/>
-    <TextBlock Grid.Row="2" Text="{Binding Label}" FontSize="11" Foreground="{ThemeResource MutedBrush}" HorizontalAlignment="Center"/>
+    <TextBlock Grid.Row="2" Text="{Binding Label}" FontSize="12" Foreground="{ThemeResource MutedBrush}" HorizontalAlignment="Center"/>
    </Grid>
   </DataTemplate>
   <!-- Row bar: label, bar, value (the value is always text) -->
   <DataTemplate x:Key="RowBar">
    <Grid ColumnSpacing="12" Background="Transparent" ToolTipService.ToolTip="{Binding Hint}" AutomationProperties.Name="{Binding Hint}">
     <Grid.ColumnDefinitions><ColumnDefinition Width="128"/><ColumnDefinition/><ColumnDefinition Width="40"/></Grid.ColumnDefinitions>
-    <TextBlock Text="{Binding Label}" FontSize="13" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+    <TextBlock Text="{Binding Label}" FontSize="14" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
     <ProgressBar Grid.Column="1" Maximum="1" Value="{Binding Fraction}" MinHeight="10" CornerRadius="5" VerticalAlignment="Center" Background="{ThemeResource SubtleBrush}" Foreground="{ThemeResource RoseBrush}"/>
-    <TextBlock Grid.Column="2" Text="{Binding ValueText}" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+    <TextBlock Grid.Column="2" Text="{Binding ValueText}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
    </Grid>
   </DataTemplate>
   <DataTemplate x:Key="Chip">
-   <Border CornerRadius="14" Padding="12,6" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+   <Border CornerRadius="12" Padding="12,6" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
     <StackPanel Orientation="Horizontal" Spacing="8">
      <FontIcon Glyph="{Binding Glyph}" FontSize="13" Foreground="{ThemeResource GoldBrush}"/>
-     <TextBlock Text="{Binding Label}" FontSize="12.5"/>
-     <TextBlock Text="{Binding Count}" FontSize="12.5" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
+     <TextBlock Text="{Binding Label}" FontSize="12"/>
+     <TextBlock Text="{Binding Count}" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
     </StackPanel>
    </Border>
   </DataTemplate>
@@ -40,7 +40,7 @@
   <Grid ColumnSpacing="14">
    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
    <StackPanel Spacing="2" VerticalAlignment="Center">
-    <TextBlock Text="{Binding Text[DyStTitle]}" FontFamily="Georgia" FontSize="22" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
+    <TextBlock Text="{Binding Text[DyStTitle]}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
     <TextBlock Text="{Binding Text[DyStHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
    </StackPanel>
    <ComboBox x:Name="YearBox" Grid.Column="1" VerticalAlignment="Center" MinWidth="110" ItemsSource="{Binding Years}" SelectionChanged="OnYear"
@@ -57,13 +57,13 @@
    <ItemsRepeater ItemsSource="{Binding Tiles}">
     <ItemsRepeater.Layout><UniformGridLayout x:Name="TilesLayout" MinItemWidth="100" MinItemHeight="96" MinColumnSpacing="12" MinRowSpacing="12" MaximumRowsOrColumns="6" ItemsStretch="Fill"/></ItemsRepeater.Layout>
     <ItemsRepeater.ItemTemplate><DataTemplate>
-     <Border Style="{StaticResource CardStyle}" Padding="16,12" CornerRadius="14">
+     <Border Style="{StaticResource CardStyle}" Padding="16,12" CornerRadius="12">
       <Grid ColumnSpacing="12">
        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
        <Border Width="36" Height="36" CornerRadius="18" Background="{ThemeResource AccentSoftBrush}" VerticalAlignment="Center"><FontIcon Glyph="{Binding Glyph}" FontSize="15" Foreground="{ThemeResource GoldBrush}"/></Border>
        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
-        <TextBlock Text="{Binding Value}" FontSize="22" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}" TextTrimming="CharacterEllipsis"/>
-        <TextBlock Text="{Binding Label}" FontSize="11.5" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap" MaxLines="2"/>
+        <TextBlock Text="{Binding Value}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}" TextTrimming="CharacterEllipsis"/>
+        <TextBlock Text="{Binding Label}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap" MaxLines="2"/>
        </StackPanel>
       </Grid>
      </Border>
@@ -83,7 +83,7 @@
         <ItemsRepeater.Layout><UniformGridLayout MaximumRowsOrColumns="12" MinItemWidth="22" MinColumnSpacing="6" ItemsStretch="Fill"/></ItemsRepeater.Layout>
        </ItemsRepeater>
       </Grid>
-      <TextBlock Text="{Binding Text[DyStMonthNote]}" FontSize="11" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap"/>
+      <TextBlock Text="{Binding Text[DyStMonthNote]}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap"/>
      </StackPanel>
     </Border>
     <Border x:Name="RatingCard" Grid.Column="1" Style="{StaticResource ChartCard}">

@@ -9,8 +9,8 @@
       <FontIcon x:Name="BadgeIcon" Glyph="&#xE9D9;" FontSize="26" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AccessibilityView="Raw"/>
      </Border>
      <StackPanel Grid.Column="1" Spacing="6">
-      <TextBlock Text="{Binding Heading}" FontSize="21" FontWeight="SemiBold" TextWrapping="Wrap" app:Motion.Settle="True" AutomationProperties.HeadingLevel="Level2"/>
-      <TextBlock app:Rich.Text="{Binding Description}" FontSize="13.5" LineHeight="20" TextWrapping="Wrap" MaxWidth="720" HorizontalAlignment="Left" Foreground="{ThemeResource MutedBrush}"/>
+      <TextBlock Text="{Binding Heading}" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" app:Motion.Settle="True" AutomationProperties.HeadingLevel="Level2"/>
+      <TextBlock app:Rich.Text="{Binding Description}" FontSize="14" LineHeight="20" TextWrapping="Wrap" MaxWidth="720" HorizontalAlignment="Left" Foreground="{ThemeResource MutedBrush}"/>
      </StackPanel>
     </Grid>
 
@@ -36,20 +36,20 @@
     <ItemsControl ItemsSource="{Binding Questions}" Visibility="{Binding ShowQuestionList, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="guided-questions">
      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="10" app:Motion.Stagger="True"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
      <ItemsControl.ItemTemplate><DataTemplate>
-      <Border Padding="16,14" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+      <Border Padding="16,14" CornerRadius="12" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
        <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
         <Border Width="40" Height="40" CornerRadius="12" Background="{StaticResource BadgeBrush}" VerticalAlignment="Top">
          <FontIcon Glyph="{Binding Glyph}" FontSize="17" Foreground="{StaticResource RoseBrush}"/>
         </Border>
         <StackPanel Grid.Column="1" Spacing="4">
-         <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="15" TextWrapping="Wrap"/>
+         <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14" TextWrapping="Wrap"/>
          <TextBlock app:Rich.Text="{Binding Detail}" Style="{StaticResource CaptionStyle}"/>
          <!-- Heavy apps: the player picks which ones close -->
          <ItemsControl ItemsSource="{Binding Apps}" Visibility="{Binding ShowApps, Converter={StaticResource BooleanVisibility}}" Margin="0,4,0,0">
           <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="250" ItemHeight="36"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
           <ItemsControl.ItemTemplate><DataTemplate><CheckBox IsChecked="{Binding Selected, Mode=TwoWay}"><TextBlock><Run Text="{Binding Name}"/><Run Text=" · " Foreground="{ThemeResource MutedBrush}"/><Run Text="{Binding SizeText}" Foreground="{ThemeResource MutedBrush}"/></TextBlock></CheckBox></DataTemplate></ItemsControl.ItemTemplate>
          </ItemsControl>
-         <TextBlock Text="{Binding Result}" FontSize="12.5" TextWrapping="Wrap" Foreground="{ThemeResource GoldBrush}" app:Motion.Settle="True" Visibility="{Binding Result, Converter={StaticResource PresenceVisibility}}"/>
+         <TextBlock Text="{Binding Result}" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource GoldBrush}" app:Motion.Settle="True" Visibility="{Binding Result, Converter={StaticResource PresenceVisibility}}"/>
         </StackPanel>
         <!-- Answer, then live state -->
         <Grid Grid.Column="2" VerticalAlignment="Center" MinWidth="64">

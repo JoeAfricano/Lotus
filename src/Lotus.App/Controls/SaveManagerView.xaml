@@ -12,7 +12,7 @@
       <Border Style="{StaticResource IconBadgeStyle}" VerticalAlignment="Top"><FontIcon x:Name="StateIcon" Glyph="&#xEA18;" Style="{StaticResource BadgeIconStyle}"/></Border>
       <StackPanel Grid.Column="1" Spacing="3">
        <TextBlock Text="{Binding Text[SpTitle]}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" FontWeight="SemiBold" CharacterSpacing="40"/>
-       <TextBlock Text="{Binding Summary}" TextWrapping="Wrap" FontSize="15" FontWeight="SemiBold" AutomationProperties.AutomationId="saves-status" AutomationProperties.LiveSetting="Polite"/>
+       <TextBlock Text="{Binding Summary}" TextWrapping="Wrap" FontSize="14" FontWeight="SemiBold" AutomationProperties.AutomationId="saves-status" AutomationProperties.LiveSetting="Polite"/>
       </StackPanel>
      </Grid>
      <StackPanel Orientation="Horizontal" Spacing="8">
@@ -34,7 +34,7 @@
    <Border Style="{StaticResource CardStyle}" Visibility="{Binding Supported, Converter={StaticResource BooleanVisibility}}">
     <StackPanel Spacing="6">
      <TextBlock Text="{Binding Text[SpFolderLabel]}" FontWeight="SemiBold"/>
-     <TextBlock Text="{Binding FolderPath}" IsTextSelectionEnabled="True" TextWrapping="Wrap" FontSize="12.5" Foreground="{ThemeResource MutedBrush}" Visibility="{Binding FolderPath, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="saves-folder"/>
+     <TextBlock Text="{Binding FolderPath}" IsTextSelectionEnabled="True" TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource MutedBrush}" Visibility="{Binding FolderPath, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="saves-folder"/>
      <TextBlock Text="{Binding FolderInfo}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" Visibility="{Binding FolderInfo, Converter={StaticResource PresenceVisibility}}"/>
      <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
       <Button Style="{StaticResource SoftButtonStyle}" Click="OnOpen" Visibility="{Binding FolderPath, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="saves-open">
@@ -56,14 +56,14 @@
      <ComboBox x:Name="KeepBox" Header="{Binding Text[SpKeep]}" SelectionChanged="OnKeep" MinWidth="220" AutomationProperties.AutomationId="saves-keep"/>
     </StackPanel>
    </Border>
-   <TextBlock Text="{Binding Text[SpWhere]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" FontSize="11.5"/>
+   <TextBlock Text="{Binding Text[SpWhere]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" FontSize="12"/>
   </StackPanel>
 
   <!-- Saved backups -->
   <Border Grid.Column="1" Style="{StaticResource CardStyle}" VerticalAlignment="Top" Visibility="{Binding Supported, Converter={StaticResource BooleanVisibility}}">
    <StackPanel Spacing="12">
     <Grid>
-     <TextBlock Text="{Binding Text[SpManage]}" FontWeight="SemiBold" FontSize="16"/>
+     <TextBlock Text="{Binding Text[SpManage]}" FontWeight="SemiBold" FontSize="18"/>
      <TextBlock x:Name="CountText" HorizontalAlignment="Right" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" VerticalAlignment="Center"/>
     </Grid>
     <StackPanel x:Name="NoBackups" Spacing="10" Padding="0,18" HorizontalAlignment="Center">
@@ -80,7 +80,7 @@
          <FontIcon Glyph="&#xE81C;" FontSize="15" Foreground="{ThemeResource GoldBrush}"/>
         </Border>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
-         <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="13.5"/>
+         <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14"/>
          <TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
         </StackPanel>
         <Button Grid.Column="2" Tag="{Binding Id}" Click="OnRestore" IsEnabled="{Binding CanRestore}" Style="{StaticResource SoftButtonStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="saves-restore">

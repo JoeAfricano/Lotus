@@ -387,7 +387,7 @@ public sealed partial class SectionPage : Page
     }
     private void OnContentSizeChanged(object sender, SizeChangedEventArgs e)
     {
-        PageContent.Padding = e.NewSize.Width < 700 ? new Thickness(16, 20, 16, 32) : new Thickness(32, 28, 32, 40);
+        PageContent.Padding = e.NewSize.Width < 700 ? new Thickness(16, 20, 16, 32) : new Thickness(32, 24, 32, 32);
         // Home: continue card + side column side by side; stacked below ~980 px.
         if (HomeTop is not null && HomeSide is not null && HomeSideColumn is not null)
         {

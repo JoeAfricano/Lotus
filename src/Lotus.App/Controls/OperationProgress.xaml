@@ -2,7 +2,7 @@
  <StackPanel Spacing="10">
   <TextBlock Text="{Binding Text[UxCurrentCheck]}" FontWeight="SemiBold" TextWrapping="Wrap"/>
   <ProgressBar Minimum="0" Maximum="30" Value="{Binding ObservationSeconds}" IsIndeterminate="{Binding WaitingAnimation}" Height="8" AutomationProperties.Name="{Binding ObservationProgress}" AutomationProperties.AutomationId="analysis-observation-progress"/>
-  <TextBlock Text="{Binding ElapsedTime}" TextWrapping="Wrap" FontSize="22" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AutomationId="analysis-elapsed"/>
+  <TextBlock Text="{Binding ElapsedTime}" TextWrapping="Wrap" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AutomationId="analysis-elapsed"/>
   <TextBlock Text="{Binding ObservationProgress}" Style="{StaticResource CaptionStyle}"/>
  </StackPanel>
 </UserControl>

@@ -56,14 +56,14 @@
      <Grid>
       <Grid.RowDefinitions><RowDefinition Height="244"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <!-- Cover or initials -->
-      <Border CornerRadius="15,15,0,0" Background="{ThemeResource HeroBrush}">
+      <Border CornerRadius="16,16,0,0" Background="{ThemeResource HeroBrush}">
        <Grid>
         <Image Source="{Binding Name, Converter={StaticResource FallbackCover}}" Stretch="UniformToFill" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}" AutomationProperties.AccessibilityView="Raw"/>
         <TextBlock Text="{Binding Initials}" FontFamily="Georgia" FontSize="44" FontWeight="SemiBold" Foreground="#FFF6F9" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
-        <Border CornerRadius="15,15,0,0" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}}">
+        <Border CornerRadius="16,16,0,0" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}}">
          <Border.Background><ImageBrush ImageSource="{Binding CoverPath, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border.Background>
         </Border>
-        <Border Background="#B312090F" CornerRadius="6" Padding="7,3" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top"><TextBlock Text="{Binding Store}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource MainTextBrush}"/></Border>
+        <Border Background="#B312090F" CornerRadius="6" Padding="7,3" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top"><TextBlock Text="{Binding Store}" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource MainTextBrush}"/></Border>
         <!-- Play: launches the game directly -->
         <Button Click="OnCoverPlay" Width="60" Height="60" CornerRadius="30" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center"
                 Background="{ThemeResource AccentGradientBrush}" BorderBrush="#66FFFFFF" BorderThickness="2" app:Motion.Hover="1.1" app:Motion.Press="True"
@@ -74,7 +74,7 @@
       </Border>
       <StackPanel Grid.Row="1" Padding="12,10,12,12" Spacing="10">
        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxLines="2" TextWrapping="Wrap" Height="40" ToolTipService.ToolTip="{Binding Name}"/>
-       <TextBlock Text="{Binding ShaderLabel}" FontSize="11" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis" Margin="0,-6,0,0" Visibility="{Binding ShaderLabel, Converter={StaticResource PresenceVisibility}}" ToolTipService.ToolTip="{Binding ShaderLabel}"/>
+       <TextBlock Text="{Binding ShaderLabel}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis" Margin="0,-6,0,0" Visibility="{Binding ShaderLabel, Converter={StaticResource PresenceVisibility}}" ToolTipService.ToolTip="{Binding ShaderLabel}"/>
        <Grid ColumnSpacing="6"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
         <!-- Text only: with the icon, "Otimizar" did not fit next to the two small buttons and was cut ("Otimiz"). -->
         <Button Click="OnOpenTune" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="34" Padding="6,4" AutomationProperties.Name="{Binding OptimizeMenuLabel}" AutomationProperties.AutomationId="game-optimize">

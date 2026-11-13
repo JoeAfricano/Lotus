@@ -4,7 +4,7 @@
   <Grid.RowDefinitions><RowDefinition Height="48"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
   <Grid x:Name="DragRegion" Background="Transparent" Padding="18,0,0,0" Margin="0,0,140,0">
    <!-- Playing now: shows only while a library game runs (Lotus is then in light mode) -->
-   <Border x:Name="PlayingPill" Visibility="Collapsed" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,14,0" Padding="12,4,14,4" CornerRadius="14" Background="{ThemeResource AccentSoftBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" AutomationProperties.AutomationId="title-playing">
+   <Border x:Name="PlayingPill" Visibility="Collapsed" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,14,0" Padding="12,4,14,4" CornerRadius="12" Background="{ThemeResource AccentSoftBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" AutomationProperties.AutomationId="title-playing">
     <StackPanel Orientation="Horizontal" Spacing="8"><Ellipse x:Name="PlayingDot" Width="7" Height="7" Fill="{ThemeResource SuccessBrush}" VerticalAlignment="Center"/><TextBlock x:Name="PlayingText" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" MaxWidth="320" TextTrimming="CharacterEllipsis"/></StackPanel>
    </Border>
    <StackPanel x:Name="TitleBrand" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
@@ -13,16 +13,11 @@
     <Rectangle Width="1" Height="14" Fill="{ThemeResource CardBorderBrush}" VerticalAlignment="Center" Margin="2,0"/><TextBlock Text="PLAY BETTER." Foreground="{StaticResource BrandRoseBrush}" FontSize="9.5" FontWeight="SemiBold" CharacterSpacing="220" VerticalAlignment="Center"/>
    </StackPanel>
   </Grid>
-  <!-- Game list: top right, above the profile (outside the drag area so it can be clicked) -->
-  <Button x:Name="GameListButton" Visibility="Collapsed" Click="OnGameListButton" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,4,150,0" Height="32" Padding="12,0" CornerRadius="16"
-          Background="#2EF27BA8" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="1" SizeChanged="OnGameListButtonSize" ToolTipService.ToolTip="{Binding Text[gamelistDescription]}" AutomationProperties.AutomationId="title-gamelist">
-   <StackPanel Orientation="Horizontal" Spacing="7"><FontIcon x:Name="GameListIcon" Glyph="&#xE8B1;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[gamelistTitle]}" FontSize="12.5" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/></StackPanel>
-  </Button>
-  <InfoBar x:Name="PreferenceWarning" Grid.Row="1" Severity="Warning" IsOpen="False" IsClosable="True" Margin="12,0,12,8" CornerRadius="10"/>
+  <InfoBar x:Name="PreferenceWarning" Grid.Row="1" Severity="Warning" IsOpen="False" IsClosable="True" Margin="12,0,12,8" CornerRadius="12"/>
   <NavigationView Grid.Row="2" x:Name="Navigation" Background="Transparent" IsBackButtonVisible="Collapsed" IsSettingsVisible="False" PaneDisplayMode="Left" OpenPaneLength="232" CompactPaneLength="60" IsPaneToggleButtonVisible="True" SelectionChanged="OnSelectionChanged" ItemInvoked="OnItemInvoked" IsPaneOpen="True" IsTitleBarAutoPaddingEnabled="False" AutomationProperties.Name="{Binding Text[Navigation]}">
    <NavigationView.PaneHeader>
     <StackPanel x:Name="BrandHeader" Orientation="Horizontal" Spacing="12" Margin="14,4,12,20" Visibility="Collapsed">
-     <Border Width="48" Height="48" CornerRadius="14" Background="{StaticResource BrandSoftBrush}">
+     <Border Width="48" Height="48" CornerRadius="12" Background="{StaticResource BrandSoftBrush}">
       <Viewbox x:Name="BrandFlower" Width="32" Height="32" AutomationProperties.Name="{Binding Text[LotusFlower]}"><Canvas Width="64" Height="64"><Path Fill="{StaticResource BrandPetalBrush}" Opacity="0.82" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z"/><Path Fill="{StaticResource BrandPetalBrush}" Data="M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z"/><Path Fill="{StaticResource BrandGoldGradientBrush}" Data="M32,0.5 L33.5,3.5 L32,6 L30.5,3.5 Z M32,51 L34,55 L32,62.5 L30,55 Z M9,14 L10.4,16.5 L9,19 L7.6,16.5 Z M55,14 L56.4,16.5 L55,19 L53.6,16.5 Z"/><Path Stroke="{StaticResource BrandGoldGradientBrush}" StrokeThickness="2.2" StrokeLineJoin="Round" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z M32,17 C36.5,23.5 37.5,31.5 32,39 C26.5,31.5 27.5,23.5 32,17 Z"/></Canvas></Viewbox>
      </Border>
      <StackPanel VerticalAlignment="Center" Spacing="2"><TextBlock x:Name="BrandLogo" Text="Lotus" Foreground="{StaticResource BrandGoldBrush}" FontFamily="Georgia" FontSize="26" FontWeight="SemiBold" CharacterSpacing="40"/><TextBlock Text="PLAY BETTER." FontSize="9" CharacterSpacing="170" Foreground="{StaticResource BrandRoseBrush}"/></StackPanel>
@@ -32,22 +27,22 @@
     <Grid Margin="8,4,8,12" VerticalAlignment="Center">
      <StackPanel x:Name="FooterRow" Spacing="8">
      <!-- My diary: highlighted next to the player's name -->
-     <Button x:Name="DiaryButton" Click="OnDiaryButton" VerticalAlignment="Stretch" Padding="12,0,6,0" CornerRadius="10" Background="#2EF27BA8" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="1"
+     <Button x:Name="DiaryButton" Click="OnDiaryButton" VerticalAlignment="Stretch" Padding="12,0,6,0" CornerRadius="12" Background="#2EF27BA8" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="1"
              PointerEntered="OnDiaryEnter" PointerExited="OnDiaryLeave" ToolTipService.ToolTip="{Binding Text[diaryDescription]}" AutomationProperties.Name="{Binding Text[diaryTitle]}" AutomationProperties.AutomationId="title-diary">
       <StackPanel Orientation="Horizontal" Spacing="8">
        <FontIcon x:Name="DiaryIcon" Glyph="&#xE8F1;" FontSize="14" Foreground="{ThemeResource GoldBrush}" VerticalAlignment="Center"/>
-       <TextBlock Text="{Binding Text[diaryTitle]}" FontSize="12.5" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}" VerticalAlignment="Center"/>
-       <Border CornerRadius="8" Padding="7,2" Background="{ThemeResource AccentGradientBrush}" VerticalAlignment="Center"><TextBlock x:Name="DiaryLevel" FontSize="10.5" FontWeight="Bold" Foreground="{ThemeResource OnRoseBrush}" AutomationProperties.AutomationId="title-diary-level"/></Border>
+       <TextBlock Text="{Binding Text[diaryTitle]}" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}" VerticalAlignment="Center"/>
+       <Border CornerRadius="8" Padding="7,2" Background="{ThemeResource AccentGradientBrush}" VerticalAlignment="Center"><TextBlock x:Name="DiaryLevel" FontSize="12" FontWeight="Bold" Foreground="{ThemeResource OnRoseBrush}" AutomationProperties.AutomationId="title-diary-level"/></Border>
       </StackPanel>
      </Button>
      <Button x:Name="ProfileButton" Click="OnProfileClick" Style="{StaticResource CardButtonStyle}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AutomationProperties.AutomationId="profile-button" AutomationProperties.Name="{Binding Text[ProfileAccessible]}">
      <Border x:Name="ExpandedFooter" PointerEntered="OnProfileEnter" PointerExited="OnProfileLeave" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="12" Padding="8,8,14,8" ToolTipService.ToolTip="{Binding Text[FooterVersion]}" AutomationProperties.Name="{Binding Text[ProfileAccessible]}">
       <StackPanel Orientation="Horizontal" Spacing="10">
        <Grid Width="30" Height="30">
-        <Border CornerRadius="8" Background="{ThemeResource AccentGradientBrush}"><TextBlock x:Name="ProfileInitial" Text="P" FontWeight="SemiBold" FontSize="13" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+        <Border CornerRadius="8" Background="{ThemeResource AccentGradientBrush}"><TextBlock x:Name="ProfileInitial" Text="P" FontWeight="SemiBold" FontSize="14" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
         <Border x:Name="ProfilePicture" CornerRadius="8" Visibility="Collapsed"><Border.Background><ImageBrush x:Name="ProfilePictureBrush" Stretch="UniformToFill"/></Border.Background></Border>
        </Grid>
-       <StackPanel VerticalAlignment="Center"><TextBlock x:Name="ProfileName" Text="Player" FontWeight="SemiBold" FontSize="12.5" MaxWidth="150" TextTrimming="CharacterEllipsis" AutomationProperties.AutomationId="profile-name"/><TextBlock Text="{Binding Text[ProfileSubtitle]}" FontSize="10.5" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
+       <StackPanel VerticalAlignment="Center"><TextBlock x:Name="ProfileName" Text="Player" FontWeight="SemiBold" FontSize="12" MaxWidth="150" TextTrimming="CharacterEllipsis" AutomationProperties.AutomationId="profile-name"/><TextBlock Text="{Binding Text[ProfileSubtitle]}" FontSize="12" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
       </StackPanel>
      </Border>
      </Button>

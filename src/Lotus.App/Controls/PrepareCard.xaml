@@ -7,7 +7,7 @@
     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
     <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE768;" Style="{StaticResource BadgeIconStyle}"/></Border>
     <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-     <TextBlock x:Name="Title" FontWeight="SemiBold" FontSize="15"/>
+     <TextBlock x:Name="Title" FontWeight="SemiBold" FontSize="14"/>
      <TextBlock Text="{Binding Summary}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
     </StackPanel>
    </Grid>
