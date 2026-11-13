@@ -61,7 +61,7 @@ public sealed partial class GpuTuneViewModel(ITextCatalog text, Func<TuneReadine
         {
             var tried = Current;
             var (samples, reset) = await runTest(TestLength, new Progress<double>(p => Progress = p), run.Token);
-            var r = GpuTuning.Judge(tried, samples, reset, LastStable);
+            var r = GpuTuning.Judge(tried, samples, reset, LastStable, GpuTuning.For(gpuName()));
             if (r.Verdict == TuneVerdict.Stable) LastStable = tried;
             Result = r;
             if (r.Next is { } next) Current = next;

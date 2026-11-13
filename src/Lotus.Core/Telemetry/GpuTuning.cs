@@ -30,12 +30,14 @@ public static class GpuTuning
 
     // Conservative first tries per card family (what owners and MSI's guides report as a safe start; every chip is
     // different, so the test decides). Undervolt = flat curve from this voltage point at this clock.
-    public sealed record CardStart(string Family, int UndervoltMv, int UndervoltMhz, int StepMhz, string Note);
+    // OcCoreMax / OcMemMax: the highest offsets reviews report as stable for that family, where the overclock ladder stops.
+    public sealed record CardStart(string Family, int UndervoltMv, int UndervoltMhz, int StepMhz, string Note, int OcCoreMax = 400, int OcMemMax = 1000);
     private static readonly (System.Text.RegularExpressions.Regex Match, CardStart Start)[] Cards =
     [
         (new(@"RTX\s*50(9|8)0", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 5080/5090", 950, 2600, 15, "voltage-cap")),
         (new(@"RTX\s*507\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 5070", 950, 2600, 15, "")),
-        (new(@"RTX\s*506\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 5060", 950, 2700, 15, "")),
+        (new(@"RTX\s*5060\s*Ti", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 5060 Ti", 950, 2700, 15, "", 375, 1000)), // TechPowerUp / FPS Review: core +200..+375, memory up to +1000
+        (new(@"RTX\s*506\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 5060", 950, 2700, 15, "", 450, 1000)),       // MSI 5060 Gaming OC: core +450, memory +1000 stable
         (new(@"RTX\s*4090", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 4090", 985, 2700, 15, "voltage-cap")),
         (new(@"RTX\s*40(7|8)\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 4070/4080", 950, 2700, 15, "")),
         (new(@"RTX\s*406\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 4060", 925, 2650, 15, "")),
@@ -65,7 +67,7 @@ public static class GpuTuning
 
     // The next try after a result: undervolt walks the voltage down at the same clock until it fails, then goes back
     // one step; overclock walks the offsets up until it fails, then keeps 70% of the last one that passed.
-    public static TuneStep? Next(TuneStep tried, TuneVerdict verdict, TuneStep? lastStable) => (tried.Goal, verdict) switch
+    public static TuneStep? Next(TuneStep tried, TuneVerdict verdict, TuneStep? lastStable, CardStart? card = null) => (tried.Goal, verdict) switch
     {
         (TuneGoal.Stock, _) => null,
         (_, TuneVerdict.TooHot) => tried.Goal == TuneGoal.Overclock
@@ -73,7 +75,7 @@ public static class GpuTuning
             : tried with { CoreMhz = tried.CoreMhz - 100 },             // undervolt too hot: lower clock at the same voltage
         (TuneGoal.Undervolt, TuneVerdict.Stable) => tried.VoltageMv - 25 >= 850 ? tried with { VoltageMv = tried.VoltageMv - 25 } : null,
         (TuneGoal.Undervolt, TuneVerdict.Crashed or TuneVerdict.Throttled) => lastStable ?? tried with { CoreMhz = tried.CoreMhz - 15 },
-        (TuneGoal.Overclock, TuneVerdict.Stable) => tried.CoreMhz + 50 <= 400 ? tried with { CoreMhz = tried.CoreMhz + 50, MemoryMhz = Math.Min(tried.MemoryMhz + 100, 1000) } : Keep(tried),
+        (TuneGoal.Overclock, TuneVerdict.Stable) => tried.CoreMhz + 50 <= (card?.OcCoreMax ?? 400) ? tried with { CoreMhz = tried.CoreMhz + 50, MemoryMhz = Math.Min(tried.MemoryMhz + 100, card?.OcMemMax ?? 1000) } : Keep(tried),
         (TuneGoal.Overclock, TuneVerdict.Crashed or TuneVerdict.Throttled) => lastStable is null ? Start(TuneGoal.Stock) : Keep(lastStable),
         _ => null
     };
@@ -86,15 +88,15 @@ public static class GpuTuning
 
     // Verdict of one test run. A GPU driver reset during the test is a crash; above 83 °C the test was stopped;
     // a clock that keeps falling far below its average means the card is hitting its power or heat limit.
-    public static TuneResult Judge(TuneStep tried, IReadOnlyList<TuneSample> samples, bool driverReset, TuneStep? lastStable)
+    public static TuneResult Judge(TuneStep tried, IReadOnlyList<TuneSample> samples, bool driverReset, TuneStep? lastStable, CardStart? card = null)
     {
-        if (driverReset) return new(TuneVerdict.Crashed, Max(samples, s => s.TempC), Avg(samples), Spread(samples), Next(tried, TuneVerdict.Crashed, lastStable));
+        if (driverReset) return new(TuneVerdict.Crashed, Max(samples, s => s.TempC), Avg(samples), Spread(samples), Next(tried, TuneVerdict.Crashed, lastStable, card));
         if (samples.Count < 5) return new(TuneVerdict.NoData, 0, 0, 0, null);
         var maxTemp = Max(samples, s => s.TempC);
-        if (maxTemp > StopTempC) return new(TuneVerdict.TooHot, maxTemp, Avg(samples), Spread(samples), Next(tried, TuneVerdict.TooHot, lastStable));
+        if (maxTemp > StopTempC) return new(TuneVerdict.TooHot, maxTemp, Avg(samples), Spread(samples), Next(tried, TuneVerdict.TooHot, lastStable, card));
         var spread = Spread(samples);
         var verdict = spread > 150 ? TuneVerdict.Throttled : TuneVerdict.Stable;
-        return new(verdict, maxTemp, Avg(samples), spread, Next(tried, verdict, verdict == TuneVerdict.Stable ? tried : lastStable));
+        return new(verdict, maxTemp, Avg(samples), spread, Next(tried, verdict, verdict == TuneVerdict.Stable ? tried : lastStable, card));
     }
 
     private static double Max(IReadOnlyList<TuneSample> s, Func<TuneSample, double> f) => s.Count == 0 ? 0 : s.Max(f);
