@@ -311,7 +311,7 @@ Get in the game.</value>
   <data name="AxisNow" xml:space="preserve">
     <value>now</value>
   </data>
-  <data name="GpuProviders" xml:space="preserve"><value>GPU · NVIDIA NVML (read only)</value></data>
+  <data name="GpuProviders" xml:space="preserve"><value>NVIDIA graphics card · read from the driver (read only)</value></data>
   <data name="GpuHistory" xml:space="preserve"><value>GPU utilization history, 0–100%, last 60 seconds</value></data>
   <data name="VramHistory" xml:space="preserve"><value>Allocated VRAM history, 0–100%, last 60 seconds</value></data>
   <data name="VramTotal" xml:space="preserve"><value>Reported capacity</value></data>
@@ -330,8 +330,8 @@ Get in the game.</value>
   <data name="PowerLimitReported" xml:space="preserve"><value>Power event reported</value></data>
   <data name="NoThermalPowerFlag" xml:space="preserve"><value>No explicit thermal/power flag</value></data>
   <data name="CpuTemperatureUnavailable" xml:space="preserve"><value>CPU temperature: unavailable. The native APIs used do not provide a reliable Ryzen sensor. No additional driver was installed.</value></data>
-  <data name="GpuDefinitions" xml:space="preserve"><value>Source: NVML installed with the driver. VRAM is reported allocation, not activity or DXGI budget; reserved fields remain separate and the percentage is allocated / capacity. WDDM accounting depends on Windows and the driver. RTX 5060 power is a driver average of approximately 1 s. Memory clock is not effective transfer rate. Fan speed is not RPM; 0% may be fan-stop. Low utilization does not diagnose a bottleneck. Timestamps indicate local acquisition; internal sampling windows may differ.</value></data>
-  <data name="MonitoringFocus" xml:space="preserve"><value>CPU, RAM, GPU and VRAM usage — not FPS. The — symbol means no reading.</value></data>
+  <data name="GpuDefinitions" xml:space="preserve"><value>The data comes from the NVIDIA driver. Video memory shows how much programs have reserved, not how much is in use at each moment. Power is an average of about 1 second. The fan shows %, not RPM; 0% can be normal (many cards stop the fan when cool). Low usage alone does not mean something is holding the game back.</value></data>
+  <data name="MonitoringFocus" xml:space="preserve"><value>Shows how hard your processor, memory and graphics card are working (this is not FPS). A dash (—) means that value could not be read.</value></data>
   <data name="CompactHistory" xml:space="preserve"><value>60 s · now → · scale 0–100%</value></data>
   <data name="CollectorDetails" xml:space="preserve"><value>CPU, RAM and Lotus collector details</value></data>
   <data name="SensorDetails" xml:space="preserve"><value>GPU sensors, sources and details</value></data>
@@ -344,7 +344,7 @@ Get in the game.</value>
 <data name="BrandProofFailed" xml:space="preserve"><value>Composition could not be created. Check the logs; do not consider this test passed.</value></data>
 <data name="BrandProofRunning" xml:space="preserve"><value>Scale started on the compositor. Visual verification is still required.</value></data>
 <data name="BrandProofStopped" xml:space="preserve"><value>Paused: window hidden/minimized, high contrast or reduced motion.</value></data>
-<data name="BrandMotionPolicy" xml:space="preserve"><value>The brand follows Lotus’s “Reduce animations” setting. Windows animation settings remain unchanged.</value></data>
+<data name="BrandMotionPolicy" xml:space="preserve"><value>Less motion in Lotus, including the brand flower. Windows animations stay as they are.</value></data>
   <data name="RamAnalysisTitle" xml:space="preserve"><value>RAM diagnosis</value></data>
   <data name="RamFindingUnavailable" xml:space="preserve"><value>Waiting for valid data</value></data>
   <data name="RamFindingObserving" xml:space="preserve"><value>Observing availability</value></data>
@@ -3198,4 +3198,5 @@ Your games and Windows are not changed.</value></data>
   <data name="SlFirstProtect" xml:space="preserve"><value>Protect your first game: pick one below and make its first backup.</value></data>
   <data name="DyShowcaseInvite" xml:space="preserve"><value>Pick your 4 favorite games</value></data>
   <data name="GmSpotlight" xml:space="preserve"><value>Last played</value></data>
+  <data name="GmFrametimeSample" xml:space="preserve"><value>Example: a flat line is smooth play; each spike is a stutter.</value></data>
 </root>

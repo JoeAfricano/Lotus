@@ -181,27 +181,19 @@
 
   <!-- Tabs with counts -->
   <ScrollViewer HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled">
-   <ItemsControl x:Name="TabBar" ItemsSource="{Binding Tabs}" AutomationProperties.AutomationId="diary-tabs">
-    <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-    <ItemsControl.ItemTemplate><DataTemplate>
-     <Button Click="OnTab" Tag="{Binding Id}" Background="Transparent" BorderThickness="0,0,0,2" BorderBrush="Transparent" Padding="12,5" AutomationProperties.Name="{Binding Label}">
-      <StackPanel Orientation="Horizontal" Spacing="7"><TextBlock Text="{Binding Label}" FontSize="14" VerticalAlignment="Center"/><TextBlock Text="{Binding Count}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" Opacity="0.75"/></StackPanel>
-     </Button>
-    </DataTemplate></ItemsControl.ItemTemplate>
-   </ItemsControl>
+   <!-- Same SelectorBar look as the sections above and the layout switch below (one tab style on the page) -->
+   <SelectorBar x:Name="TabBar" SelectionChanged="OnTabBar" AutomationProperties.AutomationId="diary-tabs"/>
   </ScrollViewer>
   <!-- Toolbar: search, sort and the layout switch (grid / list / table) -->
   <Grid ColumnSpacing="12">
    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="200"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
    <AutoSuggestBox PlaceholderText="{Binding Text[DySearch]}" QueryIcon="Find" TextChanged="OnSearch" VerticalAlignment="Center" AutomationProperties.AutomationId="diary-search"/>
    <ComboBox Grid.Column="1" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedValue="{Binding Sort, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-   <Border Grid.Column="2" CornerRadius="12" Padding="3" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" AutomationProperties.AutomationId="diary-view">
-    <StackPanel Orientation="Horizontal" Spacing="2">
-     <Button x:Name="ViewGrid" Tag="grid" Click="OnView" Padding="12,6" CornerRadius="9" BorderThickness="0" ToolTipService.ToolTip="{Binding Text[DyViewGrid]}" AutomationProperties.Name="{Binding Text[DyViewGrid]}" AutomationProperties.AutomationId="diary-view-grid"><FontIcon Glyph="&#xF0E2;" FontSize="15"/></Button>
-     <Button x:Name="ViewList" Tag="list" Click="OnView" Padding="12,6" CornerRadius="9" BorderThickness="0" ToolTipService.ToolTip="{Binding Text[DyViewList]}" AutomationProperties.Name="{Binding Text[DyViewList]}" AutomationProperties.AutomationId="diary-view-list"><FontIcon Glyph="&#xE8FD;" FontSize="15"/></Button>
-     <Button x:Name="ViewTable" Tag="table" Click="OnView" Padding="12,6" CornerRadius="9" BorderThickness="0" ToolTipService.ToolTip="{Binding Text[DyViewTable]}" AutomationProperties.Name="{Binding Text[DyViewTable]}" AutomationProperties.AutomationId="diary-view-table"><FontIcon Glyph="&#xE80A;" FontSize="15"/></Button>
-    </StackPanel>
-   </Border>
+   <SelectorBar x:Name="ViewBar" Grid.Column="2" SelectionChanged="OnViewBar" VerticalAlignment="Center" AutomationProperties.AutomationId="diary-view">
+    <SelectorBarItem x:Name="ViewGrid" Tag="grid" ToolTipService.ToolTip="{Binding Text[DyViewGrid]}" AutomationProperties.Name="{Binding Text[DyViewGrid]}" AutomationProperties.AutomationId="diary-view-grid"><SelectorBarItem.Icon><FontIcon Glyph="&#xF0E2;"/></SelectorBarItem.Icon></SelectorBarItem>
+    <SelectorBarItem x:Name="ViewList" Tag="list" ToolTipService.ToolTip="{Binding Text[DyViewList]}" AutomationProperties.Name="{Binding Text[DyViewList]}" AutomationProperties.AutomationId="diary-view-list"><SelectorBarItem.Icon><FontIcon Glyph="&#xE8FD;"/></SelectorBarItem.Icon></SelectorBarItem>
+    <SelectorBarItem x:Name="ViewTable" Tag="table" ToolTipService.ToolTip="{Binding Text[DyViewTable]}" AutomationProperties.Name="{Binding Text[DyViewTable]}" AutomationProperties.AutomationId="diary-view-table"><SelectorBarItem.Icon><FontIcon Glyph="&#xE80A;"/></SelectorBarItem.Icon></SelectorBarItem>
+   </SelectorBar>
   </Grid>
   <!-- Filter chips (built from the player's own games), saved filters, and the active filters as text -->
   <StackPanel Spacing="8">

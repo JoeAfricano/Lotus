@@ -22,6 +22,11 @@ public sealed partial class ContinueCard : UserControl
     public bool Bleed { get; set; }
     public bool Compact { get; set; }
     public string? Greeting { get; set; }
+    // Tight: narrow Home, where the readiness card sits right under the art; less empty band under the buttons.
+    public bool Tight { get => tight; set { tight = value; if (heroText is not null) heroText.Margin = TextMargin(); } }
+    private bool tight;
+    private StackPanel? heroText;
+    private Thickness TextMargin() => Bleed ? new Thickness(40, 0, 40, tight ? 28 : 64) : new Thickness(32, 0, 32, 28);
     public ContinueCard() { Content = root; root.Background = (Brush)Application.Current.Resources["HeroBrush"]; RequestedTheme = ElementTheme.Dark; } // photo hero: white text and dark buttons in both themes
 
     public void Show(SectionViewModel vm)
@@ -54,7 +59,7 @@ public sealed partial class ContinueCard : UserControl
         if (Bleed && !string.IsNullOrWhiteSpace(Greeting))
             root.Children.Add(new TextBlock { Text = Greeting, FontSize = 20, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Margin = new Thickness(40, 28, 40, 0), VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left, Foreground = new SolidColorBrush(Color.FromArgb(0xF2, 255, 244, 248)) });
 
-        var text = new StackPanel { Spacing = Compact ? 8 : 12, VerticalAlignment = VerticalAlignment.Bottom, Margin = Bleed ? new Thickness(40, 0, 40, 64) : new Thickness(32, 0, 32, 28), MaxWidth = 560, HorizontalAlignment = HorizontalAlignment.Left };
+        var text = heroText = new StackPanel { Spacing = Compact ? 8 : 12, VerticalAlignment = VerticalAlignment.Bottom, Margin = TextMargin(), MaxWidth = 560, HorizontalAlignment = HorizontalAlignment.Left };
         var eyebrowRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
         eyebrowRow.Children.Add(new Rectangle { Width = 24, Height = 2, VerticalAlignment = VerticalAlignment.Center, Fill = new SolidColorBrush(Color.FromArgb(255, 0xF5, 0x8B, 0xB7)) });
         var eyebrowText = t[game is null ? "HcEmptyEyebrow" : Compact ? "GmSpotlight" : "HcEyebrow"].ToUpperInvariant();

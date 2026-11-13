@@ -76,7 +76,16 @@
        </Border>
        <Grid x:Name="HoverActions" Opacity="0" Padding="12" CornerRadius="13">
         <Grid.OpacityTransition><ScalarTransition Duration="0:0:0.15"/></Grid.OpacityTransition>
-        <Grid.Background><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#0012090F" Offset="0.3"/><GradientStop Color="#EB12090F" Offset="1"/></LinearGradientBrush></Grid.Background>
+        <!-- Same dark glass as the hero buttons in every theme: light cover art never washes the labels out -->
+        <Grid.Resources>
+         <SolidColorBrush x:Key="ButtonBackground" Color="#B3140C12"/><SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#D92A1824"/>
+         <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#E60E080C"/><SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#59140C12"/>
+         <SolidColorBrush x:Key="ButtonForeground" Color="#FFF4F8"/><SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="#FFF4F8"/>
+         <SolidColorBrush x:Key="ButtonForegroundPressed" Color="#FFF4F8"/><SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#99FFF4F8"/>
+         <SolidColorBrush x:Key="ButtonBorderBrush" Color="#40FFFFFF"/><SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="#66FFFFFF"/>
+         <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="#40FFFFFF"/>
+        </Grid.Resources>
+        <Grid.Background><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#0012090F" Offset="0.2"/><GradientStop Color="#B812090F" Offset="0.52"/><GradientStop Color="#F212090F" Offset="1"/></LinearGradientBrush></Grid.Background>
         <StackPanel VerticalAlignment="Bottom" Spacing="8">
          <!-- Play: launches the game directly -->
          <Button Click="OnCoverPlay" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="40" Padding="8,6" ToolTipService.ToolTip="{Binding PlayLabel}" AutomationProperties.Name="{Binding PlayLabel}" AutomationProperties.AutomationId="game-play">

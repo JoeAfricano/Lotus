@@ -427,7 +427,7 @@ public sealed partial class SectionPage : Page
             HomeSide.HorizontalAlignment = narrow ? HorizontalAlignment.Stretch : HorizontalAlignment.Right;
             HomeSide.Margin = narrow ? new Thickness(pad.Left, 0, pad.Right, 24) : new Thickness(0, 28, pad.Right, 0); // narrow: room before "Seus jogos"
             ReadinessCard?.SetCompact(narrow);
-            if (ContinueCard is not null) ContinueCard.Height = narrow ? 440 : 540; // narrow: the readiness card goes under the art, so no tall empty band
+            if (ContinueCard is not null) { ContinueCard.Height = narrow ? 430 : 540; ContinueCard.Tight = narrow; } // narrow: the readiness card goes under the art, so no tall empty band
             // Game list and Lotus Ports: side by side, stacked when narrow.
             Grid.SetColumn(HomePorts, narrow ? 0 : 1); Grid.SetRow(HomePorts, narrow ? 1 : 0); Grid.SetColumnSpan(HomeGameList, narrow ? 2 : 1); Grid.SetColumnSpan(HomePorts, narrow ? 2 : 1);
         }

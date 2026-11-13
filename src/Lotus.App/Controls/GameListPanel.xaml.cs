@@ -53,6 +53,7 @@ public sealed partial class GameListPanel : UserControl
             PrimaryButtonText = vm.Text["GtApply"], SecondaryButtonText = vm.Text["GtClear"], CloseButtonText = vm.Text["DlgCancel"], DefaultButton = ContentDialogButton.Primary,
         };
         dialog.Resources["ContentDialogMaxWidth"] = 980.0;
+        picker.FitTo(XamlRoot.Size.Height);
         dialog.SecondaryButtonClick += (_, args) => { args.Cancel = true; picker.Clear(); }; // "Clear" keeps the window open
         if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
         UiSound.Play(UiSound.Cue.Done);

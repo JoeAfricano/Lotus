@@ -206,8 +206,9 @@
        </StackPanel>
        <ItemsControl ItemsSource="{Binding Facts}">
         <ItemsControl.ItemTemplate><DataTemplate>
-         <Grid ColumnSpacing="12" Margin="0,1"><Grid.ColumnDefinitions><ColumnDefinition Width="200"/><ColumnDefinition/></Grid.ColumnDefinitions>
-          <TextBlock Text="{Binding Label}" Style="{StaticResource CaptionStyle}"/><TextBlock Grid.Column="1" Text="{Binding Value}" Foreground="{Binding Warning, Converter={StaticResource WarnOrText}}" TextWrapping="Wrap"/>
+         <Grid ColumnSpacing="12" Margin="0,2"><Grid.ColumnDefinitions><ColumnDefinition Width="220"/><ColumnDefinition/></Grid.ColumnDefinitions>
+          <!-- Labels at the same 14 px as the values (muted), like the other tool cards -->
+          <TextBlock Text="{Binding Label}" Style="{StaticResource CaptionStyle}" FontSize="14" TextWrapping="Wrap"/><TextBlock Grid.Column="1" Text="{Binding Value}" Foreground="{Binding Warning, Converter={StaticResource WarnOrText}}" TextWrapping="Wrap"/>
          </Grid>
         </DataTemplate></ItemsControl.ItemTemplate>
        </ItemsControl>

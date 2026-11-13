@@ -72,46 +72,53 @@ public sealed partial class DiaryPanel : UserControl
         ShowSection(animate: false);
     }
 
-    // Selected tab: gold underline and full text; others muted.
+    // Status tabs ("Todos 7", "Jogando 2"…) as a SelectorBar, the same style as the sections and the layout switch.
+    // Items are updated in place so the selection pill doesn't jump when the counts change.
+    private bool painting;
     private void PaintTabs()
     {
         if (Vm is not { } vm) return;
         DispatcherQueue.TryEnqueue(() =>
         {
-            for (var i = 0; i < TabBar.Items.Count; i++)
-                if (TabBar.ContainerFromIndex(i) is ContentPresenter { Content: DiaryTab tab } cp && Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(cp) > 0 && Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(cp, 0) is Button b)
+            painting = true;
+            try
+            {
+                var tabs = vm.Tabs.ToList();
+                if (TabBar.Items.Count != tabs.Count) { TabBar.Items.Clear(); foreach (var _ in tabs) TabBar.Items.Add(new SelectorBarItem()); }
+                for (var i = 0; i < tabs.Count; i++)
                 {
-                    var on = tab.Id == vm.Tab;
-                    b.BorderBrush = on ? (Brush)Application.Current.Resources["GoldGradientBrush"] : new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-                    b.Opacity = on ? 1 : 0.65;
+                    var item = TabBar.Items[i];
+                    item.Text = $"{tabs[i].Label}  {tabs[i].Count}"; item.Tag = tabs[i].Id;
+                    Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(item, $"{tabs[i].Label} {tabs[i].Count}");
+                    if (tabs[i].Id == vm.Tab && TabBar.SelectedItem != item) TabBar.SelectedItem = item;
                 }
+            }
+            finally { painting = false; }
         });
     }
 
-    private void OnTab(object sender, RoutedEventArgs e)
+    private void OnTabBar(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
-        if (Vm is not { } vm || sender is not FrameworkElement { Tag: string id } f) return;
-        vm.Tab = id; Motion.Pop(f); UiSound.Play(UiSound.Cue.Toggle); PaintTabs();
+        if (painting || Vm is not { } vm || sender.SelectedItem?.Tag is not string id || id == vm.Tab) return;
+        vm.Tab = id; UiSound.Play(UiSound.Cue.Toggle); PaintTabs();
     }
     private void OnSearch(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args) { if (Vm is { } vm && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput) vm.Query = sender.Text; }
     private void OnEntry(object sender, RoutedEventArgs e) { if (sender is FrameworkElement { DataContext: DiaryCard card }) MainWindow.Shell?.OpenDiaryEditor(card.Entry); }
 
     // ---- Layout switch ----
-    private void OnView(object sender, RoutedEventArgs e)
+    private void OnViewBar(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
-        if (Vm is not { } vm || sender is not FrameworkElement { Tag: string mode } f || mode == vm.ViewMode) return;
-        vm.ViewMode = mode; UiSound.Play(UiSound.Cue.Toggle); Motion.Pop(f);
+        if (painting || Vm is not { } vm || sender.SelectedItem?.Tag is not string mode || mode == vm.ViewMode) return;
+        vm.ViewMode = mode; UiSound.Play(UiSound.Cue.Toggle);
     }
-    // The active layout button is filled with the accent; the others stay plain.
+    // The active layout is the selected item of the layout SelectorBar.
     private void PaintView()
     {
         if (Vm is not { } vm) return;
-        foreach (var b in new[] { ViewGrid, ViewList, ViewTable })
-        {
-            var on = (string)b.Tag == vm.ViewMode;
-            b.Background = on ? (Brush)Application.Current.Resources["AccentSoftBrush"] : new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-            b.Foreground = (Brush)Application.Current.Resources[on ? "RoseBrush" : "MutedBrush"];
-        }
+        var item = new[] { ViewGrid, ViewList, ViewTable }.FirstOrDefault(i => (string)i.Tag == vm.ViewMode);
+        if (item is null || ViewBar.SelectedItem == item) return;
+        painting = true;
+        try { ViewBar.SelectedItem = item; } finally { painting = false; }
     }
     private async void OnDeal(object sender, RoutedEventArgs e) { if (sender is FrameworkElement { DataContext: DealRow d } && Uri.TryCreate(d.StoreUrl, UriKind.Absolute, out var u)) await Windows.System.Launcher.LaunchUriAsync(u); }
     private void OnGridItem(object sender, ItemClickEventArgs e) { if (e.ClickedItem is DiaryCard card) MainWindow.Shell?.OpenDiaryEditor(card.Entry); }

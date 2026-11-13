@@ -63,8 +63,14 @@ public sealed class GameTypePicker : UserControl
         count = new TextBlock { FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = (Brush)Application.Current.Resources["RoseBrush"] };
         root.Children.Add(count);
         UpdateCount();
-        Content = new ScrollViewer { Content = root, MaxHeight = 560, Padding = new Thickness(0, 0, 14, 0) };
+        scroller = new ScrollViewer { Content = root, MaxHeight = 560, Padding = new Thickness(0, 0, 14, 0), VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        Content = scroller;
     }
+
+    private readonly ScrollViewer scroller;
+
+    // Keeps the dialog (title + this list + buttons) inside the window, with room above and below.
+    public void FitTo(double windowHeight) => scroller.MaxHeight = Math.Clamp(windowHeight - 330, 220, 560);
 
     private static void AutomationProperties(UIElement e, string id, string name)
     {

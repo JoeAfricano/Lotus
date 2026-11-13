@@ -158,7 +158,12 @@
         <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12" Margin="0,0,8,8"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmMemory]}"/><Run Text=" —"/></TextBlock></Border>
          </VariableSizedWrapGrid>
          <TextBlock Text="FRAMEPACER" FontSize="12" FontWeight="SemiBold" CharacterSpacing="80" Foreground="{ThemeResource RoseBrush}"/>
-         <Grid><Rectangle Height="1" Fill="{ThemeResource DividerBrush}" VerticalAlignment="Center"/><TextBlock Text="{Binding Text[GmFrametimeUnit]}" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right" Margin="0,-22,0,0"/></Grid>
+         <!-- Illustrative sample (not a measurement): a steady line with one small hitch, labeled as an example -->
+         <Grid Height="48" AutomationProperties.Name="{Binding Text[GmFrametimeSample]}">
+          <Rectangle Height="1" Fill="{ThemeResource DividerBrush}" VerticalAlignment="Bottom"/>
+          <Polyline Points="0,30 24,29 48,31 72,30 96,30 120,29 144,31 168,30 192,30 216,30 240,8 252,30 276,29 300,31 324,30 348,30 372,29 396,30 420,31 444,30 468,30 492,29 516,30" Stretch="Fill" Margin="0,6,0,6" Stroke="{ThemeResource RoseBrush}" StrokeThickness="2" StrokeLineJoin="Round" Opacity="0.85"/>
+         </Grid>
+         <Grid><TextBlock Text="{Binding Text[GmFrametimeSample]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" Margin="0,0,120,0"/><TextBlock Text="{Binding Text[GmFrametimeUnit]}" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right"/></Grid>
         </StackPanel>
        </Grid>
       </Border>
@@ -254,11 +259,10 @@
      </Grid></Border>
      <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <FontIcon Glyph="&#xE769;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
-      <TextBlock Grid.Column="1" Text="{Binding Text[ReduceMotion]}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[ReduceMotion]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[BrandMotionPolicy]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.ReduceMotion, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.AutomationId="settings-motion" AutomationProperties.Name="{Binding Text[ReduceMotion]}"/>
      </Grid></Border>
      <TextBlock Text="{Binding Text[ImmediateHint]}" Style="{StaticResource CaptionStyle}" Margin="4,4,0,0"/><TextBlock Text="{Binding Preferences.Message}" Foreground="{ThemeResource RoseBrush}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" app:Motion.Settle="True"/>
-     <Expander Header="{Binding Text[UxMotionDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><TextBlock Text="{Binding Text[BrandMotionPolicy]}" Style="{StaticResource CaptionStyle}"/></Expander>
     </StackPanel>
     <ContentControl x:Name="MonitoringSettingsContent" x:Load="{x:Bind ShowMonitoringSettings}" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="12"><TextBlock Text="{Binding Text[MonitoringCategory]}" Style="{StaticResource SectionTitleStyle}"/><ContentControl Content="{Binding Experience.CollectorStatus}" Style="{StaticResource StatusBadgeStyle}"/><TextBlock Text="{Binding Text[UxMonitoringSettings]}" Style="{StaticResource CaptionStyle}"/></StackPanel></ContentControl>
     <controls:IntegrationsPanel x:Name="IntegrationsContent" x:Load="{x:Bind ShowIntegrations}" DataContext="{Binding Integrations}"/>

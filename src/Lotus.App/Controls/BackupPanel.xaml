@@ -10,7 +10,7 @@
   <Border Style="{StaticResource CardStyle}">
    <StackPanel Spacing="14">
     <StackPanel Orientation="Horizontal" Spacing="12">
-     <Border Width="40" Height="40" CornerRadius="12" Background="{ThemeResource AccentGradientBrush}"><FontIcon Glyph="&#xE7F8;" FontSize="17" Foreground="{ThemeResource OnRoseBrush}"/></Border>
+     <Border Style="{StaticResource IconBadgeStyle}" VerticalAlignment="Center"><FontIcon Glyph="&#xE7F8;" Style="{StaticResource BadgeIconStyle}"/></Border>
      <StackPanel VerticalAlignment="Center"><TextBlock Text="{Binding Text[BkLocalTitle]}" FontWeight="SemiBold" FontSize="18"/><TextBlock Text="{Binding Text[BkLocalHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
     </StackPanel>
     <StackPanel Orientation="Horizontal" Spacing="10">
@@ -32,7 +32,7 @@
   <Border Style="{StaticResource CardStyle}">
    <StackPanel Spacing="14">
     <StackPanel Orientation="Horizontal" Spacing="12">
-     <Border Width="40" Height="40" CornerRadius="12" Background="{ThemeResource GoldGradientBrush}"><FontIcon Glyph="&#xE753;" FontSize="17" Foreground="#3A0F24"/></Border>
+     <Border Style="{StaticResource IconBadgeStyle}" VerticalAlignment="Center"><FontIcon Glyph="&#xE753;" Style="{StaticResource BadgeIconStyle}"/></Border>
      <StackPanel VerticalAlignment="Center"><TextBlock Text="{Binding Text[BkCloudTitle]}" FontWeight="SemiBold" FontSize="18"/><TextBlock Text="{Binding Text[BkCloudHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
     </StackPanel>
     <!-- Not available in this build -->

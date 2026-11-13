@@ -311,7 +311,7 @@ Entre no jogo.</value>
   <data name="AxisNow" xml:space="preserve">
     <value>agora</value>
   </data>
-  <data name="GpuProviders" xml:space="preserve"><value>GPU · NVIDIA NVML (somente leitura)</value></data>
+  <data name="GpuProviders" xml:space="preserve"><value>Placa de vídeo NVIDIA · dados do próprio driver (só leitura)</value></data>
   <data name="GpuHistory" xml:space="preserve"><value>Histórico de utilização da GPU, 0 a 100%, últimos 60 segundos</value></data>
   <data name="VramHistory" xml:space="preserve"><value>Histórico de VRAM alocada, 0 a 100%, últimos 60 segundos</value></data>
   <data name="VramTotal" xml:space="preserve"><value>Capacidade reportada</value></data>
@@ -330,8 +330,8 @@ Entre no jogo.</value>
   <data name="PowerLimitReported" xml:space="preserve"><value>Sinal de potência reportado</value></data>
   <data name="NoThermalPowerFlag" xml:space="preserve"><value>Sem sinal explícito térmico/de potência</value></data>
   <data name="CpuTemperatureUnavailable" xml:space="preserve"><value>Temperatura da CPU: indisponível. As APIs nativas usadas não fornecem um sensor confiável do Ryzen. Nenhum driver adicional foi instalado.</value></data>
-  <data name="GpuDefinitions" xml:space="preserve"><value>Fonte: NVML instalada com o driver. VRAM é alocação reportada, não atividade efetiva nem orçamento DXGI; campos reservados permanecem separados e o percentual é alocada / capacidade. Em WDDM, a contabilização depende do driver e do Windows. Potência na RTX 5060 corresponde à média do driver de aproximadamente 1 s. Clock de memória não é taxa efetiva de transferência. Ventoinha não é RPM; 0% pode ser fan-stop. Utilização baixa não diagnostica gargalo. Cada horário indica aquisição local; a janela de amostragem interna pode diferir.</value></data>
-  <data name="MonitoringFocus" xml:space="preserve"><value>Uso de CPU, RAM, GPU e VRAM — não é FPS. O símbolo — indica ausência de leitura.</value></data>
+  <data name="GpuDefinitions" xml:space="preserve"><value>Os dados vêm do driver da NVIDIA. A memória de vídeo mostra quanto os programas reservaram, não quanto está em uso a cada instante. A potência é uma média de cerca de 1 segundo. A ventoinha aparece em %, não em rotações; 0% pode ser normal (muitas placas param a ventoinha quando estão frias). Uso baixo, sozinho, não quer dizer que algo esteja segurando o jogo.</value></data>
+  <data name="MonitoringFocus" xml:space="preserve"><value>Mostra o quanto o processador, a memória e a placa de vídeo estão trabalhando (não é o FPS). Um traço (—) quer dizer que não deu para ler esse valor.</value></data>
   <data name="CompactHistory" xml:space="preserve"><value>60 s · agora → · escala 0–100%</value></data>
   <data name="CollectorDetails" xml:space="preserve"><value>Detalhes de CPU, RAM e do coletor Lotus</value></data>
   <data name="SensorDetails" xml:space="preserve"><value>Sensores, fontes e detalhes da GPU</value></data>
@@ -344,7 +344,7 @@ Entre no jogo.</value>
 <data name="BrandProofFailed" xml:space="preserve"><value>Falha ao criar a composição. Consulte os logs; não considerar o teste aprovado.</value></data>
 <data name="BrandProofRunning" xml:space="preserve"><value>Escala iniciada no compositor. A validação visual ainda é necessária.</value></data>
 <data name="BrandProofStopped" xml:space="preserve"><value>Pausado: janela invisível/minimizada, alto contraste ou redução de movimento.</value></data>
-<data name="BrandMotionPolicy" xml:space="preserve"><value>A marca segue “Reduzir animações” do Lotus. As configurações de animação do Windows permanecem inalteradas.</value></data>
+<data name="BrandMotionPolicy" xml:space="preserve"><value>Menos movimento no Lotus, incluindo a flor da marca. As animações do Windows não mudam.</value></data>
   <data name="RamAnalysisTitle" xml:space="preserve"><value>Diagnóstico de RAM</value></data>
   <data name="RamFindingUnavailable" xml:space="preserve"><value>Aguardando dados válidos</value></data>
   <data name="RamFindingObserving" xml:space="preserve"><value>Observando a disponibilidade</value></data>
@@ -3198,4 +3198,5 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="SlFirstProtect" xml:space="preserve"><value>Proteja seu primeiro jogo: escolha um jogo abaixo e crie o primeiro backup.</value></data>
   <data name="DyShowcaseInvite" xml:space="preserve"><value>Escolha seus 4 jogos favoritos</value></data>
   <data name="GmSpotlight" xml:space="preserve"><value>Último jogado</value></data>
+  <data name="GmFrametimeSample" xml:space="preserve"><value>Exemplo: linha reta é jogo fluido; cada pico é uma travadinha.</value></data>
 </root>

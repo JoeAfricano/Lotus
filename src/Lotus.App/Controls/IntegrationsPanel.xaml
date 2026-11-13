@@ -5,14 +5,14 @@
   <!-- MSI Afterburner -->
   <Border Style="{StaticResource CardStyle}">
    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-    <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE9CA;" Style="{StaticResource BadgeIconStyle}"/></Border>
+    <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xEC4A;" Style="{StaticResource BadgeIconStyle}"/></Border>
     <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="MSI Afterburner" FontWeight="SemiBold"/><TextBlock Text="{Binding AfterburnerStatus}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[IntAfterburnerWhat]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
    </Grid>
   </Border>
   <!-- SCSKiller -->
   <Border Style="{StaticResource CardStyle}">
    <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-    <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE945;" Style="{StaticResource BadgeIconStyle}"/></Border>
+    <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE9F5;" Style="{StaticResource BadgeIconStyle}"/></Border>
     <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="SCSKiller" FontWeight="SemiBold"/><TextBlock Text="{Binding ScsStatus}" Style="{StaticResource CaptionStyle}"/></StackPanel>
     <HyperlinkButton Grid.Column="2" Content="{Binding Text[ScsOfferLink]}" Click="OnScsLink" VerticalAlignment="Center"/>
    </Grid>

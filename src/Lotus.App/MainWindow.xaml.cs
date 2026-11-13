@@ -229,7 +229,7 @@ public sealed partial class MainWindow : Window
             };
             AutomationProperties.SetName(item, section.Title);
             AutomationProperties.SetAutomationId(item, "nav-" + section.Id);
-            ToolTipService.SetToolTip(item, section.Title);
+            ToolTipService.SetToolTip(item, NavTip(section.Title));
             if (section.Id == "settings") Navigation.FooterMenuItems.Add(item); else Navigation.MenuItems.Add(item);
             if (section.Id == "diary") { diaryNav = item; item.InfoBadge = new InfoBadge { Value = diaryPage.Progress.Level }; AutomationProperties.SetHelpText(item, diaryPage.LevelText); }
         }
@@ -351,7 +351,7 @@ public sealed partial class MainWindow : Window
             var section = ViewModel.Items.Single(s => s.Id == (string)item.Tag);
             item.Content = NavLabel(section);
             AutomationProperties.SetName(item, section.Title);
-            ToolTipService.SetToolTip(item, section.Title);
+            ToolTipService.SetToolTip(item, NavTip(section.Title));
         }
         if (ShellRoot.IsLoaded) UpdateNavigationMode(ShellRoot.ActualWidth); // keep icon-only menu when narrow
         UpdatePaneChrome();
@@ -474,6 +474,10 @@ public sealed partial class MainWindow : Window
         PreferenceWarning.Message = message;
         PreferenceWarning.IsOpen = true;
     }
+    // Menu tooltips open to the right of the item: with the menu collapsed the icons sit at the window's left edge,
+    // and a tooltip centered above them was cut off.
+    private static ToolTip NavTip(string label) => new() { Content = label, Placement = Microsoft.UI.Xaml.Controls.Primitives.PlacementMode.Right };
+
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
         if (updatingNavigation || args.SelectedItem is not NavigationViewItem { Tag: string id } item) return;
