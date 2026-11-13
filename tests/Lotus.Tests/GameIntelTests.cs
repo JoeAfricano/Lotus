@@ -47,6 +47,25 @@ public sealed class GameIntelTests
         Assert.Equal(0, 240 % (int)SettingsAdvisor.Recommend(fast).PacedCap);                                   // fixed rate: an exact fraction of 240
     }
 
+    // Wukong benchmark, RTX 5060, HDMI monitor at 74.973 Hz (12/11/2026): 75 queued frames behind V-Sync, 74.95 repeated a
+    // frame every ~43 s, 74.97 was the flattest with the least delay. The limiter cap follows the exact rate.
+    [Fact] public void FixedRateCapSitsJustUnderTheRealRefresh()
+    {
+        var pc = new SystemProfile("NVIDIA GeForce RTX 5060", 8151, 12, 16_000, 1920, 1080, 75, 74.973);
+        var r = SettingsAdvisor.Recommend(pc);
+        Assert.Equal(74.97, r.PacedCap, 3);
+        Assert.Equal(75, r.FpsCap);                                                                    // the game's whole-number limit stays at 75
+        Assert.Contains("GsReasonFixedCap", r.ReasonKeys);
+        Assert.Equal(75, SettingsAdvisor.Recommend(pc with { ExactRefreshHz = 0 }).PacedCap);         // exact rate unknown: as before
+        Assert.Equal(72, SettingsAdvisor.Recommend(pc, adaptiveSync: true).PacedCap);                   // VRR keeps 3 below
+        Assert.Equal(59.99, FramePacing.FixedCap(60.0), 3);
+        Assert.Equal(37.48, FramePacing.FixedCap(74.973, 2), 3);                                        // exact half of the real rate
+        Assert.Equal(75, FramePacing.RealRefresh(75, 0));
+        Assert.Equal(75, FramePacing.RealRefresh(75, 59.94));                                           // another display's rate: ignored
+        Assert.True(FramePacing.AboveRefresh(75, 74.973));
+        Assert.False(FramePacing.AboveRefresh(74.97, 74.973));
+    }
+
     [Fact] public void EdidRevealsNameRangeAndFreeSync()
     {
         var edid = new byte[256];

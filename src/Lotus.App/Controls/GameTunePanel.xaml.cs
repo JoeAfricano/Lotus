@@ -157,13 +157,13 @@ public sealed partial class GameTunePanel : UserControl
         var text = vm!.Text; var info = t.LowLatency; var r = t.Settings.Recommendation;
         var culture = System.Globalization.CultureInfo.GetCultureInfo(text.Language);
         var cap = r.PacedCap > 0 ? r.PacedCap : r.FpsCap;
-        var capText = cap.ToString(Math.Abs(cap - Math.Round(cap)) < 0.001 ? "0" : "0.0", culture);
+        var capText = cap.ToString("0.##", culture);
         var box = new Border { Padding = new Thickness(16, 14, 16, 14), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1), Background = Res("CardBrush"), BorderBrush = info is { On: true } ? Res("SuccessBrush") : Res("CardBorderBrush") };
         var s = new StackPanel { Spacing = 8 }; box.Child = s;
         var head = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
         head.Children.Add(new FontIcon { Glyph = "", FontSize = 18, Foreground = Res(info is { On: true } ? "SuccessBrush" : "RoseBrush") });
         // The state shows the cap actually written in RivaTuner (it may differ from today's recommendation).
-        var current = info?.Cap is { } written ? written.ToString(Math.Abs(written - Math.Round(written)) < 0.001 ? "0" : "0.0", culture) : capText;
+        var current = info?.Cap is { } written ? written.ToString("0.##", culture) : capText;
         var state = info?.Mode switch
         {
             "fluid" => text.Format("LlStateFluid", current), "responsive" => text.Format("LlStateOn", current), "scanline" => text["LlStateScanline"], _ => text["LlStateOff"],
@@ -175,7 +175,7 @@ public sealed partial class GameTunePanel : UserControl
         if (info?.State != "ok") { s.Children.Add(Caption(text[info?.State == "noRtss" ? "LlNoRtss" : "LlNoExe"])); return box; }
         // What RivaTuner does right now, read only: closed (Lotus opens it on Play) and its limit for every game.
         if (info.Running == false) s.Children.Add(Caption(text["LlRtssClosed"]));
-        if (!info.On && info.GlobalCap is { } global) s.Children.Add(Caption(text.Format("LlGlobalCap", global.ToString(Math.Abs(global - Math.Round(global)) < 0.001 ? "0" : "0.0", culture))));
+        if (!info.On && info.GlobalCap is { } global) s.Children.Add(Caption(text.Format("LlGlobalCap", global.ToString("0.##", culture))));
 
         // Frame generation stays the player's choice: more FPS on screen for a bit more delay. Lotus adapts the limiter.
         if (info.FrameGen && card is { } c)

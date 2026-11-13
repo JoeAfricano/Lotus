@@ -385,7 +385,9 @@ public sealed partial class GamesViewModel : ObservableObject
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
             var canRaise = raw is not null && recipe!.StepQuality(raw, +1) is not null;
             var canLower = raw is not null && recipe!.StepQuality(raw, -1) is not null;
-            var target = SettingsAdvisor.Recommend(profileSource!.Read(), Goal?.Invoke() ?? "balanced", AdaptiveSync?.Invoke() == "on").TargetFps;
+            var pc = profileSource!.Read();
+            var vrr = AdaptiveSync?.Invoke() == "on";
+            var target = SettingsAdvisor.Recommend(pc, Goal?.Invoke() ?? "balanced", vrr).TargetFps;
             var decision = QualityTuner.Decide(s.AverageFps, s.Low1Fps, target, gpuBusy, canRaise, canLower);
             if (decision.Step != 0) pendingSteps[game.Key] = decision.Step; else pendingSteps.Remove(game.Key);
             var summary = Text.Format("GsMeasureSummary", s.AverageFps, s.Low1Fps, gpuBusy is { } g ? $"{g:0}%" : "?", target);
@@ -570,12 +572,15 @@ public sealed partial class GamesViewModel : ObservableObject
             var (recipe, support) = Recipe(game);
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
             var canLower = raw is not null && recipe!.StepQuality(raw, -1) is not null;
-            var target = SettingsAdvisor.Recommend(profileSource!.Read(), Goal?.Invoke() ?? "balanced", AdaptiveSync?.Invoke() == "on").TargetFps;
+            var pc = profileSource!.Read();
+            var vrr = AdaptiveSync?.Invoke() == "on";
+            var target = SettingsAdvisor.Recommend(pc, Goal?.Invoke() ?? "balanced", vrr).TargetFps;
             var pending = GameProfile is null ? 0 : (await GameProfile.PreviewAsync()).Count(p => !p.AlreadyApplied);
             var (load, apps) = Memory is null ? (0d, (IReadOnlyList<string>)[]) : await Task.Run(() => Memory.Read(game), token);
             IReadOnlyList<string> overlays = Overlays is null ? [] : await Task.Run(() => (IReadOnlyList<string>)[.. Overlays.Scan().Where(o => o.Heavy).Select(o => o.Name)], token);
             var findings = StutterDiagnosis.Analyze(new(s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds, gpuBusy, target,
-                ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower, overlays, cpuHeat, await Task.Run(() => RtssCapFor(run.Executable), token)));
+                ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower, overlays, cpuHeat, await Task.Run(() => RtssCapFor(run.Executable), token),
+                FramePacing.RealRefresh(pc.RefreshHz, pc.ExactRefreshHz), vrr));
             if (findings.Any(f => f.Fix == StutterFix.LowerQuality)) pendingSteps[game.Key] = -1; // ready for "Otimizar configurações" after closing
             var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds)
                 + (latencyMs is { } ms ? " · " + Text.Format("WhyLatency", ms) : "");

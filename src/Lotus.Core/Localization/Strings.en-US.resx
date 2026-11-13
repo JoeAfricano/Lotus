@@ -2006,10 +2006,10 @@ Your games and Windows are not changed.</value></data>
   <data name="SyncLineOn" xml:space="preserve"><value>FreeSync/G-Sync: on</value></data>
   <data name="SyncLineOff" xml:space="preserve"><value>FreeSync/G-Sync: off</value></data>
   <data name="SyncChange" xml:space="preserve"><value>Change</value></data>
-  <data name="GsReasonFixedCap" xml:space="preserve"><value>Without FreeSync/G-Sync, the cap matches the monitor rate with V-Sync: every frame shows for the same time, without judder.</value></data>
+  <data name="GsReasonFixedCap" xml:space="preserve"><value>Without FreeSync/G-Sync, the cap sits just under the monitor's real rate (for example 74.97 on a 74.973 Hz monitor), with V-Sync: every frame shows for the same time, without queueing or judder.</value></data>
   <data name="GsReasonHalfRate" xml:space="preserve"><value>Your PC cannot hold the monitor rate, so the cap sits at an exact fraction of it: fewer FPS, but locked and smooth, like a console.</value></data>
   <data name="IgVsyncTitle" xml:space="preserve"><value>Turn on V-Sync and lock at {0} FPS</value></data>
-  <data name="IgVsyncBody" xml:space="preserve"><value>Without FreeSync/G-Sync, the secret of console smoothness is FPS locked to the monitor rate (or half of it). Turn on V-Sync in the game and use the RivaTuner Turn on button below: Lotus picks the right mode and the frame pacing line goes flat.</value></data>
+  <data name="IgVsyncBody" xml:space="preserve"><value>Without FreeSync/G-Sync, the secret of console smoothness is FPS locked to the monitor rate (or half of it). Turn on V-Sync in the game and use the RivaTuner Turn on button below: Lotus picks the right mode and the frame pacing line goes flat. With RivaTuner on, leave the game's own FPS limit off: one limiter only.</value></data>
   <data name="IgVrrVsyncTitle" xml:space="preserve"><value>With FreeSync/G-Sync: V-Sync in the driver, not in the game</value></data>
   <data name="IgVrrVsyncBody" xml:space="preserve"><value>Keep V-Sync on in the graphics driver panel and off in the game. With the cap 3 FPS below the monitor rate, the screen follows every frame without tearing or V-Sync delay.</value></data>
   <data name="IgEnableVrrTitle" xml:space="preserve"><value>Turn on your monitor&apos;s FreeSync/G-Sync</value></data>
@@ -3139,6 +3139,9 @@ Your games and Windows are not changed.</value></data>
   <data name="WhyCappedTitle" xml:space="preserve"><value>FPS is at the limit you set</value></data>
   <data name="WhyCappedBody" xml:space="preserve"><value>The game stayed at about **{0} FPS** because RivaTuner's limiter is set there. It is not the PC running out of power. For more FPS, raise or turn off the limit in Optimize this game.</value></data>
   <data name="WhyCappedTip" xml:space="preserve"><value>Tip: the limit keeps pacing steady; raise it only if your monitor keeps up.</value></data>
+  <data name="WhyCapAboveRefreshTitle" xml:space="preserve"><value>The FPS limit is above the monitor's real rate</value></data>
+  <data name="WhyCapAboveRefreshBody" xml:space="preserve"><value>RivaTuner limits this game at **{0}**. Without FreeSync/G-Sync, a limit above the real rate makes frames **wait in the V-Sync queue**: more delay and a jagged frame pacing line, even with FPS at the top. In Optimize this game, use the RivaTuner Turn on button: Lotus sets the limit just under the real rate.</value></data>
+  <data name="WhyCapAboveRefreshTip" xml:space="preserve"><value>Tip: limit just under the monitor's real rate, with V-Sync.</value></data>
   <data name="GiBeatTitle" xml:space="preserve"><value>Time to beat</value></data>
   <data name="GiBeatStory" xml:space="preserve"><value>main story</value></data>
   <data name="GiBeatPlus" xml:space="preserve"><value>main + extras</value></data>
@@ -3171,7 +3174,7 @@ Your games and Windows are not changed.</value></data>
   <data name="LlUseFrameGen" xml:space="preserve"><value>I use frame generation in this game</value></data>
   <data name="LlUseFrameGenHint" xml:space="preserve"><value>Your call: more FPS on screen for a bit more delay. Lotus sets the limiter to match it.</value></data>
   <data name="LlWhyFrameGenChosen" xml:space="preserve"><value>You use frame generation, and only the Reflex limiter works alongside it. Limit of {0} FPS, the smoothest it gets with frame generation on this monitor.</value></data>
-  <data name="LlWhyFixedReflex" xml:space="preserve"><value>Monitor without FreeSync/G-Sync and an NVIDIA card: Reflex with V-Sync and a {0} FPS limit gives the quickest response with the same steadiness as Fluid.</value></data>
+  <data name="LlWhyFixedReflex" xml:space="preserve"><value>Monitor without FreeSync/G-Sync and an NVIDIA card: Reflex with V-Sync and a {0} FPS limit gives the flattest line with the least delay. The limit sits just under the monitor's real rate so frames do not queue. In the game: V-Sync on and the FPS limit off.</value></data>
   <data name="IgRaiseQualityTitle" xml:space="preserve"><value>There is room for a prettier image</value></data>
   <data name="IgRaiseQualityBody" xml:space="preserve"><value>In the last analysis the card ran at {0}% while holding {1} FPS. Raise the quality one level or switch DLSS/FSR to a prettier mode and analyze again: if FPS stays steady, keep it.</value></data>
   <data name="PfPreviewFailed" xml:space="preserve"><value>I couldn't read Windows' current state, so nothing was changed. Try again; if it keeps happening, restart Lotus.</value></data>

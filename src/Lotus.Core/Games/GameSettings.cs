@@ -7,7 +7,21 @@ public enum Upscaler { None, Dlss, Fsr, Xess }
 public enum UpscaleMode { Off, Quality, Balanced, Performance }
 
 // What the PC can do: GPU class/VRAM, CPU threads, RAM and the display the game runs on.
-public sealed record SystemProfile(string GpuName, long VramMb, int CpuThreads, long RamMb, int Width, int Height, int RefreshHz);
+// ExactRefreshHz: the refresh rate as the display really runs it (74.973 on a "75 Hz" HDMI monitor), 0 when unknown.
+public sealed record SystemProfile(string GpuName, long VramMb, int CpuThreads, long RamMb, int Width, int Height, int RefreshHz, double ExactRefreshHz = 0);
+
+// Frame limiter cap for a monitor without FreeSync/G-Sync, with V-Sync on. Measured on the Wukong benchmark (RTX 5060,
+// HDMI monitor at 74.973 Hz, 12/11/2026): a cap of 75 (above the real rate) let frames queue behind V-Sync (more delay,
+// uneven line); 74.95 (too far below) repeated one frame every ~43 s; 74.97, just under the real rate, gave the
+// flattest line and the lowest delay. So the cap is the exact rate (or exact fraction) rounded down to 0.01 FPS.
+public static class FramePacing
+{
+    // The exact rate when Windows reports one close to the nominal rate; otherwise the nominal rate itself.
+    public static double RealRefresh(int nominalHz, double exactHz) => exactHz > 0 && Math.Abs(exactHz - nominalHz) < 1.5 ? exactHz : nominalHz;
+    public static double FixedCap(double realHz, int divisor = 1) => Math.Floor((realHz / Math.Max(1, divisor) - 0.001) * 100) / 100;
+    // A limit above the monitor's real rate makes frames wait in line behind V-Sync. 0.005 FPS of tolerance for rounding.
+    public static bool AboveRefresh(double cap, double realHz) => cap > 0 && realHz > 0 && cap > realHz + 0.005;
+}
 
 // PacedCap: exact cap for a frame limiter (can be fractional, e.g. 37.5 on 75 Hz); AdaptiveSync: computed for a VRR monitor.
 public sealed record SettingsRecommendation(QualityTier Tier, QualityTier TextureTier, Upscaler Upscaler, UpscaleMode Mode, int FpsCap, int TargetFps,
@@ -94,10 +108,16 @@ public static class SettingsAdvisor
         // no tearing). Without it: the refresh rate itself, or an exact fraction of it (1/2, 1/3) when the PC cannot hold
         // it, so every frame stays on screen for the same time (console-like pacing, no judder); V-Sync on in the game.
         // The goal changes quality, not the cap.
-        double paced;
-        if (adaptiveSync) paced = target < refresh ? target : Math.Max(57, refresh - 3);
-        else { var n = 1; while (refresh / (double)n > target + 0.5 && refresh / (double)(n + 1) >= 30) n++; paced = refresh / (double)n; }
-        var cap = (int)Math.Floor(paced);
+        // With the exact rate known, the fixed-rate cap sits just under it (FramePacing); the game's own whole-number
+        // limit stays at the nominal rate, since a whole number below it would repeat a frame every second.
+        double paced; int cap;
+        if (adaptiveSync) { paced = target < refresh ? target : Math.Max(57, refresh - 3); cap = (int)Math.Floor(paced); }
+        else
+        {
+            var n = 1; while (refresh / (double)n > target + 0.5 && refresh / (double)(n + 1) >= 30) n++;
+            cap = (int)Math.Floor(refresh / (double)n);
+            paced = p.ExactRefreshHz > 0 && p.RefreshHz == refresh ? FramePacing.FixedCap(FramePacing.RealRefresh(refresh, p.ExactRefreshHz), n) : refresh / (double)n;
+        }
         if (goal is "fps" or "competitive")
         {
             var drop = goal == "fps" ? 1 : 2;
@@ -106,7 +126,7 @@ public static class SettingsAdvisor
             reasons.Add(goal == "fps" ? "GsReasonGoalFps" : "GsReasonGoalCompetitive");
         }
         else reasons.Add("GsReasonCap");
-        reasons.Add(adaptiveSync ? "GsReasonMonitorCap" : paced < refresh ? "GsReasonHalfRate" : "GsReasonFixedCap");
+        reasons.Add(adaptiveSync ? "GsReasonMonitorCap" : cap < refresh ? "GsReasonHalfRate" : "GsReasonFixedCap");
         return new(tier, textures, upscaler, mode, cap, target, score, reasons, paced, adaptiveSync);
     }
 }

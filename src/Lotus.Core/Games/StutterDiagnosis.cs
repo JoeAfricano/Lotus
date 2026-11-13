@@ -6,7 +6,8 @@ public enum StutterFix { None, Precompile, PrepareProfile, LowerQuality, CloseAp
 public sealed record StutterFinding(string Key, StutterFix Fix, int Weight, string? Detail = null);
 public sealed record StutterInputs(double AverageFps, double Low1Fps, int SpikeCount, double DurationSeconds, double? GpuBusy, int TargetFps,
     ShaderState? Shaders, int PendingProfileSteps, double? MemoryLoadPercent, IReadOnlyList<string> TopMemoryApps, bool CanLowerQuality, IReadOnlyList<string>? Overlays = null, CpuHeat? Heat = null,
-    double? FrameCap = null); // a frame limiter in force (RivaTuner), when known
+    double? FrameCap = null, // a frame limiter in force (RivaTuner), when known
+    double RealRefreshHz = 0, bool AdaptiveSync = false); // the monitor's real rate (e.g. 74.973) and whether FreeSync/G-Sync is on
 
 public static class StutterDiagnosis
 {
@@ -21,6 +22,11 @@ public static class StutterDiagnosis
             list.Add(new("WhyCapped", StutterFix.None, 65, Math.Round(cap, 1).ToString(System.Globalization.CultureInfo.InvariantCulture)));
             lowFps = false;
         }
+        // Without FreeSync/G-Sync, a limit above the monitor's real rate (75 on a 74.973 Hz monitor) lets frames queue
+        // behind V-Sync: more delay and an uneven line, even with FPS at the top (measured on Wukong, 12/11/2026).
+        if (!i.AdaptiveSync && i.FrameCap is { } limit && FramePacing.AboveRefresh(limit, i.RealRefreshHz))
+            list.Add(new("WhyCapAboveRefresh", StutterFix.None, stutters ? 58 : 40,
+                string.Create(System.Globalization.CultureInfo.InvariantCulture, $"{limit:0.##} FPS / {i.RealRefreshHz:0.###} Hz")));
         // Sudden drops: shader compilation is the classic cause in modern DirectX 12 games.
         if (stutters && i.Shaders is ShaderState.Ready or ShaderState.Stale) list.Add(new("WhyShaders", StutterFix.Precompile, 90));
         if (i.MemoryLoadPercent is >= 85) list.Add(new("WhyMemory", StutterFix.CloseApps, stutters ? 80 : 50, string.Join(", ", i.TopMemoryApps.Take(3))));
