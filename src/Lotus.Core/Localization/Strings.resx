@@ -3301,4 +3301,53 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="BoRecordingHint" xml:space="preserve"><value>A Game Bar para de gravar os últimos minutos enquanto você joga; volta quando o jogo fecha.</value></data>
   <data name="BoPriority" xml:space="preserve"><value>Prioridade para o jogo</value></data>
   <data name="BoPriorityHint" xml:space="preserve"><value>Apps como navegador continuam abertos, só com prioridade menor enquanto você joga.</value></data>
+  <data name="OpTabProfiles" xml:space="preserve"><value>Perfis</value></data>
+  <data name="OpTabGpu" xml:space="preserve"><value>Ajuste da placa</value></data>
+  <data name="GtEyebrow" xml:space="preserve"><value>Ajuste da placa</value></data>
+  <data name="GtUndervolt" xml:space="preserve"><value>Mais frio e estável</value></data>
+  <data name="GtUndervoltHint" xml:space="preserve"><value>Undervolt: mesma velocidade com menos tensão. Menos calor e ruído e frametime mais reto.</value></data>
+  <data name="GtOverclock" xml:space="preserve"><value>Mais FPS</value></data>
+  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: cerca de 3 a 8% a mais de FPS, com mais calor e consumo.</value></data>
+  <data name="GtStock" xml:space="preserve"><value>Padrão</value></data>
+  <data name="GtStockHint" xml:space="preserve"><value>A placa como veio de fábrica. Sem ajuste.</value></data>
+  <data name="GtRecommended" xml:space="preserve"><value>Recomendado</value></data>
+  <data name="GtReadyTitle" xml:space="preserve"><value>Antes de começar</value></data>
+  <data name="GtReadyNvidia" xml:space="preserve"><value>Placa NVIDIA</value></data>
+  <data name="GtFixNvidia" xml:space="preserve"><value>O assistente usa o MSI Afterburner com placas NVIDIA. Em placas Radeon, o ajuste é feito no AMD Adrenalin.</value></data>
+  <data name="GtReadyAfterburner" xml:space="preserve"><value>MSI Afterburner instalado</value></data>
+  <data name="GtFixAfterburner" xml:space="preserve"><value>Instale o MSI Afterburner pelo site oficial da MSI.</value></data>
+  <data name="GtReadyRivaTuner" xml:space="preserve"><value>RivaTuner instalado</value></data>
+  <data name="GtFixRivaTuner" xml:space="preserve"><value>O Afterburner precisa do RivaTuner para trocar de perfil sozinho nos jogos.</value></data>
+  <data name="GtReadyVoltage" xml:space="preserve"><value>Controle de tensão liberado no Afterburner</value></data>
+  <data name="GtFixVoltage" xml:space="preserve"><value>No Afterburner: Configurações › Geral › marque &quot;Desbloquear controle de tensão&quot;.</value></data>
+  <data name="GtReadyAuto" xml:space="preserve"><value>Perfil automático para jogos (3D)</value></data>
+  <data name="GtFixAuto" xml:space="preserve"><value>No Afterburner: Configurações › Perfis › 3D = Perfil 2 e 2D = Perfil 1. Assim o ajuste só vale nos jogos.</value></data>
+  <data name="GtOpenAfterburner" xml:space="preserve"><value>Abrir Afterburner</value></data>
+  <data name="GtValuesTitle" xml:space="preserve"><value>Valores para colocar no Afterburner</value></data>
+  <data name="GtValuesUndervolt" xml:space="preserve"><value>Curva reta a partir de {0} mV em {1} MHz</value></data>
+  <data name="GtValuesOverclock" xml:space="preserve"><value>Núcleo +{0} MHz · Memória +{1} MHz · Limite de energia no máximo</value></data>
+  <data name="GtValuesStock" xml:space="preserve"><value>Tudo no padrão (botão Reset do Afterburner)</value></data>
+  <data name="GtHowUndervolt" xml:space="preserve"><value>No Afterburner, aperte Ctrl+F para abrir o editor de curva. Arraste o ponto da tensão indicada até o clock indicado, segure Shift e arraste os pontos à direita para baixo até a linha ficar reta, e clique em Aplicar.</value></data>
+  <data name="GtHowOverclock" xml:space="preserve"><value>No Afterburner, leve &quot;Power Limit&quot; ao máximo, some os valores em &quot;Core Clock&quot; e &quot;Memory Clock&quot; e clique em Aplicar. Também dá para usar o OC Scanner (Ctrl+F › OC Scanner) e depois testar aqui.</value></data>
+  <data name="GtHowStock" xml:space="preserve"><value>No Afterburner, clique em Reset e depois em Aplicar. Pronto: a placa volta ao padrão.</value></data>
+  <data name="GtHowRadeon" xml:space="preserve"><value>Placas Radeon: AMD Adrenalin › Desempenho › Ajuste. Comece com a tensão em -40 mV e desça 25 mV a cada teste estável.</value></data>
+  <data name="GtTestTitle" xml:space="preserve"><value>Testar estabilidade</value></data>
+  <data name="GtTestHint" xml:space="preserve"><value>Cerca de 5 minutos de carga na placa com os valores aplicados. O teste para sozinho acima de 83 °C e avisa se o driver de vídeo reiniciar.</value></data>
+  <data name="GtTestRun" xml:space="preserve"><value>Testar por 5 minutos</value></data>
+  <data name="GtTestConfirmTitle" xml:space="preserve"><value>Testar os valores aplicados?</value></data>
+  <data name="GtTestConfirmBody" xml:space="preserve"><value>Aplique antes no Afterburner: {0}. A placa vai trabalhar no máximo por cerca de 5 minutos; a tela pode piscar se os valores não forem estáveis (o Windows se recupera sozinho).</value></data>
+  <data name="GtStable" xml:space="preserve"><value>Estável: máximo de {0} °C, clock médio {1} MHz. Próximo passo: os valores acima ficaram um degrau adiante; aplique e teste de novo, ou salve este ajuste.</value></data>
+  <data name="GtStableWarm" xml:space="preserve"><value>Estável, mas quente: {0} °C (clock médio {1} MHz). Melhor não ir além; salve este ajuste.</value></data>
+  <data name="GtCrashed" xml:space="preserve"><value>O driver de vídeo reiniciou: não é estável. Os valores acima voltaram ao último que funcionou; aplique-os.</value></data>
+  <data name="GtTooHot" xml:space="preserve"><value>Ficou quente demais ({0} °C) e o teste parou. Os valores acima são mais leves; aplique e teste de novo.</value></data>
+  <data name="GtThrottled" xml:space="preserve"><value>O clock oscilou {0} MHz: a placa bateu no limite de energia ou calor. Os valores acima são mais leves.</value></data>
+  <data name="GtNoData" xml:space="preserve"><value>Sem leitura dos sensores durante o teste. Confira se a placa é NVIDIA e tente de novo.</value></data>
+  <data name="GtSaveTitle" xml:space="preserve"><value>Salvar só para os jogos</value></data>
+  <data name="GtSaveBody" xml:space="preserve"><value>No Afterburner, clique no cadeado, depois em Salvar e no número 2 (Perfil 2). Deixe o Perfil 1 com tudo no padrão. Em Configurações › Perfis, escolha 3D = Perfil 2 e 2D = Perfil 1. Assim o ajuste entra só quando um jogo abre.</value></data>
+  <data name="GtRisksTitle" xml:space="preserve"><value>Riscos, em poucas palavras</value></data>
+  <data name="GtRiskCrash" xml:space="preserve"><value>Travou ou a tela piscou? Volte um passo. Dentro dos limites de fábrica a placa não estraga.</value></data>
+  <data name="GtRiskHeat" xml:space="preserve"><value>Passou de 80 °C? Diminua o ajuste ou melhore a ventilação.</value></data>
+  <data name="GtRiskStartup" xml:space="preserve"><value>Nada é aplicado ao ligar o Windows: só no jogo, pelo perfil 3D.</value></data>
+  <data name="GtRiskStock" xml:space="preserve"><value>Voltar ao padrão: Perfil 1 ou o botão Reset do Afterburner.</value></data>
+  <data name="GtCardIntro" xml:space="preserve"><value>O Lotus guia um ajuste para a sua {0}; quem aplica os valores é o MSI Afterburner, dentro dos limites de fábrica. O Lotus não muda clock nem tensão sozinho.</value></data>
 </root>

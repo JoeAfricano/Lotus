@@ -24,6 +24,7 @@ public sealed partial class SectionPage : Page
     public bool ShowSettings { get; private set; }
     public bool ShowDiagnosis { get; private set; }
     public bool ShowRestore { get; private set; }
+    public bool ShowGpuTune { get; private set; }
     public bool ShowLive { get; private set; }
     public bool ShowCompare { get; private set; }
     public bool ShowHistory { get; private set; }
@@ -344,9 +345,11 @@ public sealed partial class SectionPage : Page
         try
         {
             ShowHome = vm.Section.Id == "home"; ShowOptimize = vm.Section.Id == "optimize";
-            ShowPerformance = vm.Section.Id == "performance"; ShowGames = vm.Section.Id == "games"; ShowGameList = vm.Section.Id == "gamelist"; ShowSaves = vm.Section.Id == "saves"; ShowDiary = vm.Section.Id == "diary"; ShowScore = vm.Section.Id == "lotusscore"; ShowTools = vm.Section.Id == "tools"; ShowSettings = vm.Section.Id == "settings";
+            ShowGames = vm.Section.Id == "games"; ShowGameList = vm.Section.Id == "gamelist"; ShowSaves = vm.Section.Id == "saves"; ShowDiary = vm.Section.Id == "diary"; ShowScore = vm.Section.Id == "lotusscore"; ShowTools = vm.Section.Id == "tools"; ShowSettings = vm.Section.Id == "settings";
             ShowDiagnosis = ShowOptimize && shell.OptimizeTabIndex == 0;
-            ShowRestore = ShowOptimize && shell.OptimizeTabIndex == 1;
+            ShowPerformance = ShowOptimize && shell.OptimizeTabIndex == 1;
+            ShowGpuTune = ShowOptimize && shell.OptimizeTabIndex == 2;
+            ShowRestore = ShowOptimize && shell.OptimizeTabIndex == 3;
             ShowLive = ShowPerformance && shell.PerformanceTabIndex == 0;
             ShowCompare = ShowPerformance && shell.PerformanceTabIndex == 1; ShowHistory = ShowPerformance && shell.PerformanceTabIndex == 2;
             ShowAppearance = ShowSettings && shell.SettingsCategoryIndex == 0;
@@ -391,7 +394,7 @@ public sealed partial class SectionPage : Page
     {
         if (synchronizing || shell is null || sender.SelectedItem is null) return;
         var index = sender.Items.IndexOf(sender.SelectedItem);
-        if (index is >= 0 and <= 1) shell.NavigateCommand.Execute(new[] { "analysis", "restore" }[index]);
+        if (index is >= 0 and <= 3) shell.NavigateCommand.Execute(new[] { "analysis", "monitoring", "gputune", "restore" }[index]);
     }
     private void OnPerformanceTabChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {

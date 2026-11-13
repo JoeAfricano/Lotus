@@ -528,7 +528,7 @@ public sealed partial class MainWindow : Window
         if (force || displayedSectionId != group)
         {
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
-                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, Saves = saveLibrary, GameDetails = gameDetails, Diary = diaryPage, Backup = backup, Updates = updates }, new SuppressNavigationTransitionInfo());
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, Saves = saveLibrary, GameDetails = gameDetails, Diary = diaryPage, Backup = backup, Updates = updates, GpuTune = GpuTune }, new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
             Motion.EnterPage(ContentFrame); // new section rises and fades in
         }
@@ -784,7 +784,7 @@ public sealed partial class MainWindow : Window
         if (!visible) experience.Interrupt();
         var demand = MonitoringDemand.For(ViewModel.CurrentRoute, visible, experience.IsAnalyzing);
         memoryAnalysis.SetActive(demand.Analyze);
-        monitoring.SetActive(demand.Collect || score.Busy); // the Score reads temperature/power while its tests run
+        monitoring.SetActive(demand.Collect || score.Busy || gpuTestRunning); // the Score and the GPU stability test read temperature/power while they run
     }
     public void PrepareForClose()
     {

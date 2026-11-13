@@ -14,9 +14,9 @@ public sealed class ExperienceTests
     [InlineData("analysis", "optimize", "analysis")]
     [InlineData("optimizations", "optimize", "analysis")]
     [InlineData("restore", "optimize", "restore")]
-    [InlineData("monitoring", "performance", "monitoring")]
-    [InlineData("benchmark", "performance", "benchmark")]
-    [InlineData("history", "performance", "history")]
+    [InlineData("monitoring", "optimize", "monitoring")]
+    [InlineData("benchmark", "optimize", "benchmark")]
+    [InlineData("history", "optimize", "history")]
     [InlineData("games", "games", "games")]
     [InlineData("settings", "settings", "settings")]
     [InlineData("logs", "settings", "logs")]
@@ -24,14 +24,16 @@ public sealed class ExperienceTests
     public void LegacyDestinationsMapToFiveGroups(string requested, string group, string route)
     {
         var shell = new ShellViewModel(new Events()); shell.NavigateCommand.Execute(requested);
-        Assert.Equal(group, shell.SelectedSection.Id); Assert.Equal(route, shell.CurrentRoute); Assert.Equal(10, shell.Items.Count); // incl. Game list, save backups and diary (opened from Home, title bar and profile)
+        Assert.Equal(group, shell.SelectedSection.Id); Assert.Equal(route, shell.CurrentRoute); Assert.Equal(9, shell.Items.Count); // incl. Game list, save backups and diary (opened from Home, title bar and profile)
     }
     [Fact] public void InternalTabsAndLanguageKeepExactRoute()
     {
         var text = new TextCatalog(); var shell = new ShellViewModel(new Events(), text);
         shell.NavigateCommand.Execute("history"); Assert.Equal(2, shell.PerformanceTabIndex);
         text.SetLanguage("en-US"); shell.RefreshLanguage(); Assert.Equal("history", shell.CurrentRoute);
-        shell.NavigateCommand.Execute("restore"); Assert.Equal(1, shell.OptimizeTabIndex);
+        shell.NavigateCommand.Execute("restore"); Assert.Equal(3, shell.OptimizeTabIndex);
+        shell.NavigateCommand.Execute("performance"); Assert.Equal(1, shell.OptimizeTabIndex); Assert.Equal("optimize", shell.SelectedSection.Id); // old Desempenho link
+        shell.NavigateCommand.Execute("gputune"); Assert.Equal(2, shell.OptimizeTabIndex);
         shell.SettingsCategoryIndex = 3; Assert.Equal("logs", shell.CurrentRoute);
         Assert.Equal("Advanced", shell.SettingsCategories[3]); Assert.Equal(7, shell.SettingsCategories.Count);
         shell.SettingsCategoryIndex = -1; Assert.Equal("logs", shell.CurrentRoute);

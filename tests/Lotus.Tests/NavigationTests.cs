@@ -24,8 +24,8 @@ public sealed class NavigationTests
         vm.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(vm.SelectedSection)) changes++; };
         foreach (var section in vm.Items.Skip(1).Append(vm.Items[0]))
         { vm.NavigateCommand.Execute(section.Id); Assert.Same(section, vm.SelectedSection); }
-        Assert.Equal(10, changes); Assert.Equal(10, events.Visited.Count);
-        Assert.Equal(10, vm.Items.Select(s => s.Id).Distinct().Count());
+        Assert.Equal(9, changes); Assert.Equal(9, events.Visited.Count); // Desempenho is a tab of Otimizar now
+        Assert.Equal(9, vm.Items.Select(s => s.Id).Distinct().Count());
     }
     [Theory][InlineData(null)][InlineData("unknown")][InlineData("dashboard")]
     public void InvalidOrRepeatedNavigationDoesNotChangeState(string? id)

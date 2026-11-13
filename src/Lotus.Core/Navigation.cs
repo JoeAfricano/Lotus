@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Lotus.Core;
@@ -13,7 +13,7 @@ public static class Sections
     private static IEnumerable<(string Id, string Glyph)> Definitions => new[]
     {
         ("home", "\uE80F"), ("optimize", "\uE945"), ("games", "\uE7FC"), ("gamelist", "\uE721"), ("saves", "\uE74E"), ("diary", "\uE736"), ("lotusscore", "\uEC4A"), ("tools", "\uE90F"),
-        ("performance", "\uE9D2"), ("settings", "\uE713")
+        ("settings", "\uE713") // Desempenho lives inside Otimizar meu PC (a tab), no sidebar item of its own
     };
 }
 
@@ -29,8 +29,10 @@ public static class AppRoutes
         "optimize" or "optimizations" or "analysis" => new("analysis", "optimize"),
         "advice" => new("analysis", "optimize"), "restore" => new("restore", "optimize"),
         "games" => new("games", "games"), "gamelist" => new("gamelist", "gamelist"), "saves" => new("saves", "saves"), "diary" => new("diary", "diary"), "score" or "lotusscore" => new("lotusscore", "lotusscore"), "tools" => new("tools", "tools"),
-        "performance" or "monitoring" => new("monitoring", "performance"),
-        "benchmark" => new("benchmark", "performance"), "history" => new("history", "performance"),
+        // Desempenho is a tab of Otimizar meu PC: its old links still land there.
+        "performance" or "monitoring" => new("monitoring", "optimize"),
+        "benchmark" => new("benchmark", "optimize"), "history" => new("history", "optimize"),
+        "gputune" => new("gputune", "optimize"),
         "settings" or "settings-monitoring" => new("settings", "settings"),
         "settings-integrations" => new("settings-integrations", "settings"),
         "settings-security" => new("settings-security", "settings"), "logs" => new("logs", "settings"), "faq" => new("faq", "settings"), "backup" => new("backup", "settings"), "updates" => new("updates", "settings"),
@@ -48,7 +50,8 @@ public sealed class ShellViewModel : ObservableObject
     public Section SelectedSection => selectedSection;
     public IRelayCommand<string> NavigateCommand { get; }
     public int PerformanceTabIndex => CurrentRoute == "benchmark" ? 1 : CurrentRoute == "history" ? 2 : 0;
-    public int OptimizeTabIndex => CurrentRoute == "restore" ? 1 : 0;
+    // Otimizar tabs: Perfis · Desempenho · Ajuste da placa · Restaurar.
+    public int OptimizeTabIndex => CurrentRoute switch { "monitoring" or "benchmark" or "history" => 1, "gputune" => 2, "restore" => 3, _ => 0 };
     public int SettingsCategoryIndex
     {
         get => CurrentRoute switch { "settings-integrations" => 1, "settings-security" => 2, "logs" => 3, "faq" => 4, "backup" => 5, "updates" => 6, _ => 0 };

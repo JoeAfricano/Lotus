@@ -3301,4 +3301,53 @@ Your games and Windows are not changed.</value></data>
   <data name="BoRecordingHint" xml:space="preserve"><value>Game Bar stops recording the last minutes while you play; it comes back when the game closes.</value></data>
   <data name="BoPriority" xml:space="preserve"><value>Priority for the game</value></data>
   <data name="BoPriorityHint" xml:space="preserve"><value>Apps like the browser stay open, just with a lower priority while you play.</value></data>
+  <data name="OpTabProfiles" xml:space="preserve"><value>Profiles</value></data>
+  <data name="OpTabGpu" xml:space="preserve"><value>Graphics card tuning</value></data>
+  <data name="GtEyebrow" xml:space="preserve"><value>Graphics card tuning</value></data>
+  <data name="GtUndervolt" xml:space="preserve"><value>Cooler and steadier</value></data>
+  <data name="GtUndervoltHint" xml:space="preserve"><value>Undervolt: same speed with less voltage. Less heat and noise, a flatter frametime.</value></data>
+  <data name="GtOverclock" xml:space="preserve"><value>More FPS</value></data>
+  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: about 3 to 8% more FPS, with more heat and power.</value></data>
+  <data name="GtStock" xml:space="preserve"><value>Stock</value></data>
+  <data name="GtStockHint" xml:space="preserve"><value>The card as it came from the factory. No tuning.</value></data>
+  <data name="GtRecommended" xml:space="preserve"><value>Recommended</value></data>
+  <data name="GtReadyTitle" xml:space="preserve"><value>Before you start</value></data>
+  <data name="GtReadyNvidia" xml:space="preserve"><value>NVIDIA graphics card</value></data>
+  <data name="GtFixNvidia" xml:space="preserve"><value>The assistant uses MSI Afterburner with NVIDIA cards. On Radeon cards, tuning is done in AMD Adrenalin.</value></data>
+  <data name="GtReadyAfterburner" xml:space="preserve"><value>MSI Afterburner installed</value></data>
+  <data name="GtFixAfterburner" xml:space="preserve"><value>Install MSI Afterburner from MSI&apos;s official site.</value></data>
+  <data name="GtReadyRivaTuner" xml:space="preserve"><value>RivaTuner installed</value></data>
+  <data name="GtFixRivaTuner" xml:space="preserve"><value>Afterburner needs RivaTuner to switch profiles by itself in games.</value></data>
+  <data name="GtReadyVoltage" xml:space="preserve"><value>Voltage control unlocked in Afterburner</value></data>
+  <data name="GtFixVoltage" xml:space="preserve"><value>In Afterburner: Settings › General › tick &quot;Unlock voltage control&quot;.</value></data>
+  <data name="GtReadyAuto" xml:space="preserve"><value>Automatic profile for games (3D)</value></data>
+  <data name="GtFixAuto" xml:space="preserve"><value>In Afterburner: Settings › Profiles › 3D = Profile 2 and 2D = Profile 1. The tune then applies only in games.</value></data>
+  <data name="GtOpenAfterburner" xml:space="preserve"><value>Open Afterburner</value></data>
+  <data name="GtValuesTitle" xml:space="preserve"><value>Values to set in Afterburner</value></data>
+  <data name="GtValuesUndervolt" xml:space="preserve"><value>Flat curve from {0} mV at {1} MHz</value></data>
+  <data name="GtValuesOverclock" xml:space="preserve"><value>Core +{0} MHz · Memory +{1} MHz · Power limit at maximum</value></data>
+  <data name="GtValuesStock" xml:space="preserve"><value>Everything at stock (Afterburner&apos;s Reset button)</value></data>
+  <data name="GtHowUndervolt" xml:space="preserve"><value>In Afterburner, press Ctrl+F to open the curve editor. Drag the point at the shown voltage up to the shown clock, hold Shift and drag the points to the right down until the line is flat, then click Apply.</value></data>
+  <data name="GtHowOverclock" xml:space="preserve"><value>In Afterburner, move &quot;Power Limit&quot; to the maximum, add the values to &quot;Core Clock&quot; and &quot;Memory Clock&quot; and click Apply. You can also run OC Scanner (Ctrl+F › OC Scanner) and then test here.</value></data>
+  <data name="GtHowStock" xml:space="preserve"><value>In Afterburner, click Reset and then Apply. The card is back to stock.</value></data>
+  <data name="GtHowRadeon" xml:space="preserve"><value>Radeon cards: AMD Adrenalin › Performance › Tuning. Start with voltage at -40 mV and go 25 mV lower after each stable test.</value></data>
+  <data name="GtTestTitle" xml:space="preserve"><value>Test stability</value></data>
+  <data name="GtTestHint" xml:space="preserve"><value>About 5 minutes of load on the card with the values applied. The test stops by itself above 83 °C and tells you if the graphics driver restarts.</value></data>
+  <data name="GtTestRun" xml:space="preserve"><value>Test for 5 minutes</value></data>
+  <data name="GtTestConfirmTitle" xml:space="preserve"><value>Test the applied values?</value></data>
+  <data name="GtTestConfirmBody" xml:space="preserve"><value>Apply them in Afterburner first: {0}. The card will run at full load for about 5 minutes; the screen may flicker if the values are not stable (Windows recovers by itself).</value></data>
+  <data name="GtStable" xml:space="preserve"><value>Stable: {0} °C at most, {1} MHz average clock. Next: the values above moved one step further; apply and test again, or save this tune.</value></data>
+  <data name="GtStableWarm" xml:space="preserve"><value>Stable but warm: {0} °C ({1} MHz average clock). Better not go further; save this tune.</value></data>
+  <data name="GtCrashed" xml:space="preserve"><value>The graphics driver restarted: not stable. The values above went back to the last one that worked; apply them.</value></data>
+  <data name="GtTooHot" xml:space="preserve"><value>It got too hot ({0} °C) and the test stopped. The values above are lighter; apply and test again.</value></data>
+  <data name="GtThrottled" xml:space="preserve"><value>The clock swung {0} MHz: the card hit its power or heat limit. The values above are lighter.</value></data>
+  <data name="GtNoData" xml:space="preserve"><value>No sensor readings during the test. Check that the card is NVIDIA and try again.</value></data>
+  <data name="GtSaveTitle" xml:space="preserve"><value>Save for games only</value></data>
+  <data name="GtSaveBody" xml:space="preserve"><value>In Afterburner, click the lock, then Save and slot 2 (Profile 2). Keep Profile 1 at stock. In Settings › Profiles, set 3D = Profile 2 and 2D = Profile 1. The tune then applies only when a game opens.</value></data>
+  <data name="GtRisksTitle" xml:space="preserve"><value>Risks, in short</value></data>
+  <data name="GtRiskCrash" xml:space="preserve"><value>A freeze or flicker? Go back one step. Within factory limits the card is not damaged.</value></data>
+  <data name="GtRiskHeat" xml:space="preserve"><value>Above 80 °C? Lower the tune or improve airflow.</value></data>
+  <data name="GtRiskStartup" xml:space="preserve"><value>Nothing is applied when Windows starts: only in games, through the 3D profile.</value></data>
+  <data name="GtRiskStock" xml:space="preserve"><value>Back to stock: Profile 1 or Afterburner&apos;s Reset button.</value></data>
+  <data name="GtCardIntro" xml:space="preserve"><value>Lotus guides a tune for your {0}; MSI Afterburner applies the values, within factory limits. Lotus never changes clocks or voltage by itself.</value></data>
 </root>

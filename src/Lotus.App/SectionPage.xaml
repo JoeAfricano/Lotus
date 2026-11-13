@@ -94,6 +94,11 @@
    </StackPanel>
 
    <StackPanel x:Name="OptimizeContent" x:Load="{x:Bind ShowOptimize}" Spacing="20">
+    <!-- Otimizar meu PC: Perfis · Desempenho · Ajuste da placa · Restaurar (Desempenho is no longer a sidebar item) -->
+    <SelectorBar x:Name="OptimizeTabs" SelectionChanged="OnOptimizeTabChanged" AutomationProperties.Name="{Binding Text[UxOptimizeSections]}" AutomationProperties.AutomationId="optimize-tabs">
+     <SelectorBarItem Text="{Binding Text[OpTabProfiles]}"/><SelectorBarItem Text="{Binding Text[performanceTitle]}"/><SelectorBarItem Text="{Binding Text[OpTabGpu]}"/><SelectorBarItem Text="{Binding Text[UxRestoreTab]}"/>
+    </SelectorBar>
+    <StackPanel x:Name="ProfilesTab" x:Load="{x:Bind ShowDiagnosis}" Spacing="20">
     <controls:PowerProfilesPanel DataContext="{Binding PowerProfiles}"/>
     <!-- Ajustar o perfil Jogo: what happens only while a game is open, each step undone when it closes -->
     <Border Style="{StaticResource CardStyle}" AutomationProperties.AutomationId="game-boost-settings">
@@ -127,9 +132,7 @@
       </StackPanel>
      </StackPanel>
     </Border>
-    <SelectorBar x:Name="OptimizeTabs" SelectionChanged="OnOptimizeTabChanged" AutomationProperties.Name="{Binding Text[UxOptimizeSections]}">
-     <SelectorBarItem Text="{Binding Text[UxResultsTab]}"/><SelectorBarItem Text="{Binding Text[UxRestoreTab]}"/>
-    </SelectorBar>
+
     <!-- Result (design 03): the analysis, full width. The safety promise lives once, in the "Segurança e reversão" card above -->
     <StackPanel x:Name="DiagnosisContent" x:Load="{x:Bind ShowDiagnosis}" Spacing="12">
      <!-- Raio-X para jogar: memory measurement + the whole read-only Check-up, with prioritized suggestions -->
@@ -142,14 +145,15 @@
       </StackPanel>
      </Border>
     </StackPanel>
-    <controls:OptimizationPanel x:Name="RestoreContent" x:Load="{x:Bind ShowRestore}" DataContext="{Binding PowerProfiles}"/>
-   </StackPanel>
-
-   <StackPanel x:Name="PerformanceContent" x:Load="{x:Bind ShowPerformance}" Spacing="20">
+    </StackPanel>
+    <StackPanel x:Name="PerformanceContent" x:Load="{x:Bind ShowPerformance}" Spacing="20">
     <SelectorBar x:Name="PerformanceTabs" SelectionChanged="OnPerformanceTabChanged" AutomationProperties.Name="{Binding Text[UxPerformanceSections]}"><SelectorBarItem Text="{Binding Text[UxLiveTab]}"/><SelectorBarItem Text="{Binding Text[UxCompareTab]}"/><SelectorBarItem Text="{Binding Text[UxHistoryTab]}"/></SelectorBar>
     <controls:MonitoringPanel x:Name="MonitoringContent" x:Load="{x:Bind ShowLive}" DataContext="{Binding Monitoring}"/>
     <controls:BenchmarkPanel x:Name="CompareContent" x:Load="{x:Bind ShowCompare}" DataContext="{Binding Benchmark}"/>
     <controls:ReportPanel x:Name="HistoryContent" x:Load="{x:Bind ShowHistory}"/>
+    </StackPanel>
+    <controls:GpuTunePanel x:Name="GpuTuneContent" x:Load="{x:Bind ShowGpuTune}" DataContext="{Binding GpuTune}"/>
+    <controls:OptimizationPanel x:Name="RestoreContent" x:Load="{x:Bind ShowRestore}" DataContext="{Binding PowerProfiles}"/>
    </StackPanel>
 
    <Grid x:Name="GamesArea" x:Load="{x:Bind ShowGames}">
