@@ -19,15 +19,19 @@ public static class Fit
     public static void SetGridMinItemWidth(DependencyObject d, double value) => d.SetValue(GridMinItemWidthProperty, value);
     private static void AttachGrid(GridView view, double min)
     {
-        void Apply(double width)
+        // Re-applied on size changes and whenever items are realized: the panel only exists once the GridView has items,
+        // and without an ItemWidth a stretched item would take the whole row.
+        void Apply()
         {
+            var width = view.ActualWidth - view.Padding.Left - view.Padding.Right - 2; // 2 px slack so rounding never pushes a column to the next row
             if (view.ItemsPanelRoot is not ItemsWrapGrid panel || width < min) return;
             var columns = Math.Max(1, (int)(width / min));
             var item = Math.Floor(width / columns);
             if (Math.Abs(panel.ItemWidth - item) > 0.5) panel.ItemWidth = item;
         }
-        view.SizeChanged += (_, e) => Apply(e.NewSize.Width);
-        view.Loaded += (_, _) => Apply(view.ActualWidth);
+        view.SizeChanged += (_, _) => Apply();
+        view.Loaded += (_, _) => Apply();
+        view.ContainerContentChanging += (_, _) => Apply();
     }
 
     // Visual 3.0: keeps an element's height a fixed multiple of its width (covers stay portrait as columns widen).
