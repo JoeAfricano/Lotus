@@ -28,14 +28,40 @@ public static class GpuTuning
     public const double WarnTempC = 80;   // stable, but hotter than we like
     public const double SafetyShare = 0.7; // keep 70% of the highest overclock that passed (margin for long sessions)
 
-    // Starting points that work on most RTX 40/50 cards (MSI's own guides): undervolt at 950 mV, ~2700 MHz;
-    // overclock from stock with the power limit at its maximum, small steps.
-    public static TuneStep Start(TuneGoal goal) => goal switch
+    // Conservative first tries per card family (what owners and MSI's guides report as a safe start; every chip is
+    // different, so the test decides). Undervolt = flat curve from this voltage point at this clock.
+    public sealed record CardStart(string Family, int UndervoltMv, int UndervoltMhz, int StepMhz, string Note);
+    private static readonly (System.Text.RegularExpressions.Regex Match, CardStart Start)[] Cards =
+    [
+        (new(@"RTX\s*50(9|8)0", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 5080/5090", 950, 2600, 15, "voltage-cap")),
+        (new(@"RTX\s*507\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 5070", 950, 2600, 15, "")),
+        (new(@"RTX\s*506\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 5060", 950, 2700, 15, "")),
+        (new(@"RTX\s*4090", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 4090", 985, 2700, 15, "voltage-cap")),
+        (new(@"RTX\s*40(7|8)\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 4070/4080", 950, 2700, 15, "")),
+        (new(@"RTX\s*406\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 4060", 925, 2650, 15, "")),
+        (new(@"RTX\s*306\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 3060", 900, 1850, 25, "")),
+        (new(@"RTX\s*30[789]\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 3070/3080/3090", 875, 1800, 25, "")),
+        (new(@"RTX\s*20\d\d|GTX\s*16\d\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase), new("RTX 20/GTX 16", 900, 1800, 15, "")),
+    ];
+    // Unknown NVIDIA cards get the most common start; AMD Radeon is tuned in AMD Adrenalin (negative voltage offset).
+    public static CardStart For(string? gpuName) =>
+        Cards.FirstOrDefault(c => gpuName is not null && c.Match.IsMatch(gpuName)).Start ?? new("NVIDIA", 950, 2600, 15, "");
+    public static bool IsRadeon(string? gpuName) => gpuName?.Contains("Radeon", StringComparison.OrdinalIgnoreCase) == true;
+    // AMD Adrenalin: start at -40 mV, 25 mV deeper per test; most RX 9070 XT owners end between -70 and -100 mV.
+    public const int AmdStartOffsetMv = -40, AmdStepMv = -25, AmdTypicalMinMv = -100;
+
+    // Starting points: undervolt at the card's point; overclock from stock with the power limit at its maximum,
+    // small steps (core +50, memory +100 MHz).
+    public static TuneStep Start(TuneGoal goal, string? gpuName = null)
     {
-        TuneGoal.Undervolt => new(goal, 2700, 0, 950, 100),
-        TuneGoal.Overclock => new(goal, 100, 200, 0, 0), // 0 = power limit slider to its maximum
-        _ => new(goal, 0, 0, 0, 100)
-    };
+        var card = For(gpuName);
+        return goal switch
+        {
+            TuneGoal.Undervolt => new(goal, card.UndervoltMhz, 0, card.UndervoltMv, 100),
+            TuneGoal.Overclock => new(goal, 100, 200, 0, 0), // 0 = power limit slider to its maximum
+            _ => new(goal, 0, 0, 0, 100)
+        };
+    }
 
     // The next try after a result: undervolt walks the voltage down at the same clock until it fails, then goes back
     // one step; overclock walks the offsets up until it fails, then keeps 70% of the last one that passed.

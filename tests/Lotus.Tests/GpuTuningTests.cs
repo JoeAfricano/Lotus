@@ -20,7 +20,7 @@ public sealed class GpuTuningTests
     [Fact]
     public void Undervolt_walks_voltage_down_while_stable()
     {
-        var start = GpuTuning.Start(TuneGoal.Undervolt);
+        var start = GpuTuning.Start(TuneGoal.Undervolt, "NVIDIA GeForce RTX 5060");
         Assert.Equal(950, start.VoltageMv); Assert.Equal(2700, start.CoreMhz);
         var r = GpuTuning.Judge(start, Steady(70, 2700), driverReset: false, lastStable: null);
         Assert.Equal(TuneVerdict.Stable, r.Verdict);
@@ -77,5 +77,26 @@ public sealed class GpuTuningTests
     public void Too_few_samples_is_no_verdict()
     {
         Assert.Equal(TuneVerdict.NoData, GpuTuning.Judge(GpuTuning.Start(TuneGoal.Undervolt), Steady(60, 2700, 3), false, null).Verdict);
+    }
+
+    [Theory]
+    [InlineData("NVIDIA GeForce RTX 5060", 950, 2700)]
+    [InlineData("NVIDIA GeForce RTX 4060 Ti", 925, 2650)]
+    [InlineData("NVIDIA GeForce RTX 3080", 875, 1800)]
+    [InlineData("NVIDIA GeForce RTX 3060", 900, 1850)]
+    [InlineData("NVIDIA GeForce GTX 1660 SUPER", 900, 1800)]
+    [InlineData("NVIDIA GeForce RTX 5090", 950, 2600)]
+    [InlineData("Some future NVIDIA card", 950, 2600)]
+    public void Each_card_family_gets_its_own_undervolt_start(string gpu, int mv, int mhz)
+    {
+        var s = GpuTuning.Start(TuneGoal.Undervolt, gpu);
+        Assert.Equal(mv, s.VoltageMv); Assert.Equal(mhz, s.CoreMhz);
+    }
+
+    [Fact]
+    public void Radeon_is_recognised_for_the_adrenalin_guide()
+    {
+        Assert.True(GpuTuning.IsRadeon("AMD Radeon RX 9070 XT"));
+        Assert.False(GpuTuning.IsRadeon("NVIDIA GeForce RTX 5060"));
     }
 }
