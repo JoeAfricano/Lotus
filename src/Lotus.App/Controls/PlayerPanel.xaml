@@ -1,112 +1,121 @@
 <UserControl x:Class="Lotus.App.Controls.PlayerPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:app="using:Lotus.App" Visibility="Collapsed" AutomationProperties.AutomationId="player-panel">
- <Grid>
+ <Grid x:Name="Root" SizeChanged="OnRootSize">
   <Border x:Name="Backdrop" Background="#990C060A" Opacity="0" Tapped="OnBackdrop"/>
-  <Grid x:Name="Sheet" Width="440" HorizontalAlignment="Right" Background="{ThemeResource WindowBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1,0,0,0">
-   <Grid.RenderTransform><TranslateTransform x:Name="SheetShift" X="460"/></Grid.RenderTransform>
-   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-   <!-- Who -->
-   <Grid Padding="24,22,20,16" ColumnSpacing="14">
-    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-    <Grid Width="56" Height="56">
-     <Border CornerRadius="16" Background="{ThemeResource AccentGradientBrush}"><TextBlock x:Name="Initial" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-     <Border x:Name="Picture" CornerRadius="16" Visibility="Collapsed"><Border.Background><ImageBrush x:Name="PictureBrush" Stretch="UniformToFill"/></Border.Background></Border>
-    </Grid>
-    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-     <TextBlock x:Name="PlayerName" FontSize="20" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-     <TextBlock Text="{Binding Stats}" Style="{StaticResource CaptionStyle}"/>
-     <TextBlock Text="{Binding TotalHours}" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}" Visibility="{Binding HasTotal, Converter={StaticResource BooleanVisibility}}"/>
-    </StackPanel>
-    <Button x:Name="CloseButton" Grid.Column="2" Click="OnClose" Background="Transparent" BorderThickness="0" Padding="8" VerticalAlignment="Top" AutomationProperties.Name="{Binding Text[PpClose]}" AutomationProperties.AutomationId="player-close"><FontIcon Glyph="&#xE711;" FontSize="14"/></Button>
-   </Grid>
-   <ScrollViewer Grid.Row="1" Padding="24,0,20,24" VerticalScrollBarVisibility="Auto">
-    <StackPanel Spacing="18">
-     <!-- Diary in miniature: level, XP, quick numbers, what's on the shelf, and the way into the full diary -->
-     <Border x:Name="DiaryMini" CornerRadius="16" Padding="16,14" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="1" AutomationProperties.AutomationId="player-diary">
-      <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#55C2185B" Offset="0"/><GradientStop Color="#2AE7AE93" Offset="1"/></LinearGradientBrush></Border.Background>
-      <StackPanel Spacing="10">
-       <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-        <Border Width="44" Height="44" CornerRadius="22" Background="{ThemeResource GoldGradientBrush}"><TextBlock x:Name="MiniLevel" FontWeight="Bold" FontSize="18" Foreground="#3A0F24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-        <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
-         <Grid><TextBlock x:Name="MiniTitle" FontWeight="SemiBold"/><TextBlock x:Name="MiniXp" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right"/></Grid>
-         <ProgressBar x:Name="MiniBar" Maximum="100" MinHeight="6" CornerRadius="3"/>
-        </StackPanel>
+  <!-- Visual 3.0: the profile opens centered as a large card, two columns (one on a narrow window) -->
+  <Grid x:Name="Sheet" MaxWidth="1100" Margin="40,32" HorizontalAlignment="Stretch" VerticalAlignment="Center" Opacity="0" CornerRadius="22" Background="{ThemeResource WindowBrush}" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="1">
+   <Grid.RenderTransform><TranslateTransform x:Name="SheetShift" Y="28"/></Grid.RenderTransform>
+   <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <Grid x:Name="Columns" Padding="32,30,32,24" ColumnSpacing="32" RowSpacing="24">
+     <Grid.ColumnDefinitions><ColumnDefinition Width="5*"/><ColumnDefinition Width="6*"/></Grid.ColumnDefinitions>
+     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+
+     <!-- Left: who, level and numbers, top covers -->
+     <StackPanel x:Name="LeftColumn" Spacing="22">
+      <Grid ColumnSpacing="20">
+       <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <Grid Width="120" Height="120">
+        <Border CornerRadius="60" Background="{ThemeResource AccentGradientBrush}" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="3"><TextBlock x:Name="Initial" FontSize="46" FontWeight="SemiBold" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+        <Border x:Name="Picture" CornerRadius="60" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="3" Visibility="Collapsed"><Border.Background><ImageBrush x:Name="PictureBrush" Stretch="UniformToFill"/></Border.Background></Border>
        </Grid>
-       <Grid ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-        <StackPanel><TextBlock x:Name="MiniDone" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock x:Name="MiniDoneLabel" FontSize="12" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
-        <StackPanel Grid.Column="1"><TextBlock x:Name="MiniHours" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock x:Name="MiniHoursLabel" FontSize="12" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
-        <StackPanel Grid.Column="2"><TextBlock x:Name="MiniBadges" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock x:Name="MiniBadgesLabel" FontSize="12" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
-       </Grid>
-       <StackPanel x:Name="MiniShelf" Orientation="Horizontal" Spacing="8"/>
-       <Button x:Name="MiniOpen" Click="OnOpenDiary" Visibility="Collapsed"/>
-      </StackPanel>
-     </Border>
-     <!-- Last played -->
-     <Grid x:Name="LastCard" Height="170" CornerRadius="16" Background="{ThemeResource HeroBrush}" Visibility="{Binding HasLast, Converter={StaticResource BooleanVisibility}}">
-      <Image x:Name="LastArt" Stretch="UniformToFill" Opacity="0"/>
-      <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#2012090F" Offset="0"/><GradientStop Color="#E612090F" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
-      <StackPanel VerticalAlignment="Bottom" Padding="18,0,18,16" Spacing="4">
-       <TextBlock Text="{Binding Text[PpLast]}" Style="{StaticResource EyebrowStyle}" Foreground="{ThemeResource GoldBrush}"/>
-       <TextBlock Text="{Binding Last.Name}" FontSize="20" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="White"/>
-       <TextBlock Text="{Binding Last.Note}" FontSize="12" FontStyle="Italic" MaxLines="1" TextTrimming="CharacterEllipsis" Foreground="#F2FFE4EE" Visibility="{Binding Last.HasNote, Converter={StaticResource BooleanVisibility}}" ToolTipService.ToolTip="{Binding Last.Note}" AutomationProperties.AutomationId="player-last-note"/>
-       <Grid ColumnSpacing="10"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding Last.When}" FontSize="12" Foreground="#D9FFF0F6" VerticalAlignment="Center"/>
-        <Button Grid.Column="1" Click="OnPlayLast" Style="{StaticResource PrimaryButtonStyle}" MinHeight="34" Padding="14,4" AutomationProperties.AutomationId="player-play-last">
-         <StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xF5B0;" FontSize="12"/><TextBlock Text="{Binding Text[GiPlay]}"/></StackPanel>
-        </Button>
-       </Grid>
-      </StackPanel>
+       <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="6">
+        <TextBlock x:Name="PlayerName" FontSize="34" FontWeight="Bold" TextTrimming="CharacterEllipsis" CharacterSpacing="-10"/>
+        <TextBlock Text="{Binding Stats}" FontSize="14" Foreground="{ThemeResource MutedBrush}"/>
+        <TextBlock Text="{Binding TotalHours}" FontSize="14" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}" Visibility="{Binding HasTotal, Converter={StaticResource BooleanVisibility}}"/>
+       </StackPanel>
+      </Grid>
+      <!-- Diary in miniature: level, XP, quick numbers, what's on the shelf -->
+      <Border x:Name="DiaryMini" CornerRadius="18" Padding="22,20" BorderBrush="{ThemeResource GoldGradientBrush}" BorderThickness="1" AutomationProperties.AutomationId="player-diary">
+       <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#55C2185B" Offset="0"/><GradientStop Color="#2AE7AE93" Offset="1"/></LinearGradientBrush></Border.Background>
+       <StackPanel Spacing="18">
+        <Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+         <Border Width="56" Height="56" CornerRadius="28" Background="{ThemeResource GoldGradientBrush}"><TextBlock x:Name="MiniLevel" FontWeight="Bold" FontSize="24" Foreground="#3A0F24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+         <StackPanel Grid.Column="1" Spacing="8" VerticalAlignment="Center">
+          <Grid><TextBlock x:Name="MiniTitle" FontWeight="SemiBold" FontSize="18"/><TextBlock x:Name="MiniXp" FontSize="14" Foreground="{ThemeResource MutedBrush}" HorizontalAlignment="Right" VerticalAlignment="Center"/></Grid>
+          <ProgressBar x:Name="MiniBar" Maximum="100" MinHeight="8" CornerRadius="4"/>
+         </StackPanel>
+        </Grid>
+        <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+         <StackPanel Spacing="2"><TextBlock x:Name="MiniDone" FontSize="30" FontWeight="Bold" Foreground="{ThemeResource GoldBrush}"/><TextBlock x:Name="MiniDoneLabel" FontSize="14" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
+         <StackPanel Grid.Column="1" Spacing="2"><TextBlock x:Name="MiniHours" FontSize="30" FontWeight="Bold" Foreground="{ThemeResource GoldBrush}"/><TextBlock x:Name="MiniHoursLabel" FontSize="14" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
+         <StackPanel Grid.Column="2" Spacing="2"><TextBlock x:Name="MiniBadges" FontSize="30" FontWeight="Bold" Foreground="{ThemeResource GoldBrush}"/><TextBlock x:Name="MiniBadgesLabel" FontSize="14" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
+        </Grid>
+        <StackPanel x:Name="MiniShelf" Orientation="Horizontal" Spacing="10"/>
+        <Button x:Name="MiniOpen" Click="OnOpenDiary" Visibility="Collapsed"/>
+       </StackPanel>
+      </Border>
+     </StackPanel>
+
+     <!-- Right: last game as a big hero, then the player's games as a grid of covers -->
+     <Grid x:Name="RightColumn" Grid.Column="1">
+      <Grid x:Name="LastCard" MinHeight="260" CornerRadius="18" Background="{ThemeResource HeroBrush}" Visibility="{Binding HasLast, Converter={StaticResource BooleanVisibility}}">
+       <Image x:Name="LastArt" Stretch="UniformToFill" Opacity="0"/>
+       <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#2012090F" Offset="0"/><GradientStop Color="#E612090F" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
+       <StackPanel VerticalAlignment="Bottom" Padding="24,0,24,20" Spacing="6">
+        <TextBlock Text="{Binding Text[PpLast]}" Style="{StaticResource EyebrowStyle}" Foreground="{ThemeResource GoldBrush}"/>
+        <TextBlock Text="{Binding Last.Name}" FontSize="30" FontWeight="Bold" TextTrimming="CharacterEllipsis" Foreground="White"/>
+        <TextBlock Text="{Binding Last.Note}" FontSize="14" FontStyle="Italic" MaxLines="1" TextTrimming="CharacterEllipsis" Foreground="#F2FFE4EE" Visibility="{Binding Last.HasNote, Converter={StaticResource BooleanVisibility}}" ToolTipService.ToolTip="{Binding Last.Note}" AutomationProperties.AutomationId="player-last-note"/>
+        <Grid ColumnSpacing="10"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+         <TextBlock Text="{Binding Last.When}" FontSize="14" Foreground="#D9FFF0F6" VerticalAlignment="Center"/>
+         <Button Grid.Column="1" Click="OnPlayLast" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" Padding="20,6" app:Motion.Press="True" AutomationProperties.AutomationId="player-play-last">
+          <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xF5B0;" FontSize="14"/><TextBlock Text="{Binding Text[GiPlay]}"/></StackPanel>
+         </Button>
+        </Grid>
+       </StackPanel>
+      </Grid>
+      <!-- No last game yet: an invitation instead of an empty card -->
+      <Border Padding="18,16" CornerRadius="16" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" Visibility="{Binding HasLast, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}">
+       <StackPanel Orientation="Horizontal" Spacing="12"><FontIcon Glyph="&#xE7FC;" FontSize="20" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[PpNoLast]}" Style="{StaticResource BodyStyle}" TextWrapping="Wrap" MaxWidth="460"/></StackPanel>
+      </Border>
      </Grid>
 
-     <!-- No last game yet: an invitation instead of an empty card -->
-     <Border Padding="16,14" CornerRadius="16" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" Visibility="{Binding HasLast, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}">
-      <StackPanel Orientation="Horizontal" Spacing="12"><FontIcon Glyph="&#xE7FC;" FontSize="20" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[PpNoLast]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" MaxWidth="330"/></StackPanel>
-     </Border>
-
-     <!-- My games: favorite + note -->
-     <StackPanel Spacing="4">
-      <TextBlock Text="{Binding Text[PpGames]}" Style="{StaticResource SectionTitleStyle}"/>
-      <TextBlock Text="{Binding Text[PpGamesHint]}" Style="{StaticResource CaptionStyle}"/>
+     <!-- My games: favorite + note, as covers (full width under both columns) -->
+     <StackPanel x:Name="GamesBlock" Grid.Row="1" Grid.ColumnSpan="2" Spacing="12">
+      <StackPanel Spacing="4">
+       <TextBlock Text="{Binding Text[PpGames]}" Style="{StaticResource SectionTitleStyle}"/>
+       <TextBlock Text="{Binding Text[PpGamesHint]}" FontSize="14" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap"/>
+      </StackPanel>
+      <TextBlock Text="{Binding Text[PpNoGames]}" Style="{StaticResource CaptionStyle}" Visibility="{Binding HasGames, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}"/>
+      <ItemsControl ItemsSource="{Binding Rows}" Margin="0,0,-14,0" AutomationProperties.AutomationId="player-games">
+       <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="166" app:Fit.MinItemWidth="160"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+       <ItemsControl.ItemTemplate><DataTemplate>
+        <Border Tag="noterow" Margin="0,0,14,14" Padding="8" CornerRadius="14" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+         <StackPanel Spacing="8">
+          <Grid Height="170" CornerRadius="10" Background="{ThemeResource HeroBrush}">
+           <Image Source="{Binding Cover, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/>
+           <Button Click="OnStar" Width="34" Height="34" CornerRadius="17" Padding="0" Margin="6" HorizontalAlignment="Right" VerticalAlignment="Top" Background="#B312090F" BorderBrush="#40FFFFFF" BorderThickness="1"
+                   ToolTipService.ToolTip="{Binding DataContext.Text[PpFavorite], ElementName=Sheet}" AutomationProperties.Name="{Binding Name}">
+            <FontIcon Glyph="{Binding StarGlyph}" FontSize="15" Foreground="{ThemeResource GoldBrush}"/>
+           </Button>
+          </Grid>
+          <Grid ColumnSpacing="4"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+           <StackPanel Spacing="1" VerticalAlignment="Center">
+            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Name}"/>
+            <TextBlock Text="{Binding When}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis"/>
+           </StackPanel>
+           <Button Grid.Column="1" Click="OnNoteToggle" Background="Transparent" BorderThickness="0" Padding="6" VerticalAlignment="Center" ToolTipService.ToolTip="{Binding DataContext.Text[PpNote], ElementName=Sheet}">
+            <FontIcon Glyph="&#xE70F;" FontSize="14" Foreground="{ThemeResource RoseBrush}"/>
+           </Button>
+          </Grid>
+          <TextBlock Text="{Binding Note}" FontSize="12" TextWrapping="Wrap" MaxLines="3" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource GoldBrush}" Visibility="{Binding HasNote, Converter={StaticResource BooleanVisibility}}"/>
+          <TextBox Visibility="Collapsed" Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" MaxLength="600" TextWrapping="Wrap" PlaceholderText="{Binding DataContext.Text[PpNotePlaceholder], ElementName=Sheet}" KeyDown="OnNoteKey" LostFocus="OnNoteDone"/>
+         </StackPanel>
+        </Border>
+       </DataTemplate></ItemsControl.ItemTemplate>
+      </ItemsControl>
      </StackPanel>
-     <TextBlock Text="{Binding Text[PpNoGames]}" Style="{StaticResource CaptionStyle}" Visibility="{Binding HasGames, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}"/>
-     <ItemsControl ItemsSource="{Binding Rows}" AutomationProperties.AutomationId="player-games">
-      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-      <ItemsControl.ItemTemplate><DataTemplate>
-       <Border Tag="noterow" Padding="10" CornerRadius="12" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
-        <StackPanel Spacing="8">
-         <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-          <Border Width="38" Height="50" CornerRadius="8" Background="{ThemeResource HeroBrush}">
-           <Border.Child><Image Source="{Binding Cover, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border.Child>
-          </Border>
-          <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-           <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-           <TextBlock Text="{Binding When}" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
-          </StackPanel>
-          <Button Grid.Column="2" Click="OnStar" Background="Transparent" BorderThickness="0" Padding="8" VerticalAlignment="Center"
-                  ToolTipService.ToolTip="{Binding DataContext.Text[PpFavorite], ElementName=Sheet}" AutomationProperties.Name="{Binding Name}">
-           <FontIcon Glyph="{Binding StarGlyph}" FontSize="16" Foreground="{ThemeResource GoldBrush}"/>
-          </Button>
-          <Button Grid.Column="3" Click="OnNoteToggle" Background="Transparent" BorderThickness="0" Padding="8" VerticalAlignment="Center" ToolTipService.ToolTip="{Binding DataContext.Text[PpNote], ElementName=Sheet}">
-           <FontIcon Glyph="&#xE70F;" FontSize="14" Foreground="{ThemeResource RoseBrush}"/>
-          </Button>
-         </Grid>
-         <TextBlock Text="{Binding Note}" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource GoldBrush}" Visibility="{Binding HasNote, Converter={StaticResource BooleanVisibility}}" Margin="50,0,0,0"/>
-         <TextBox Visibility="Collapsed" Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" MaxLength="600" PlaceholderText="{Binding DataContext.Text[PpNotePlaceholder], ElementName=Sheet}" KeyDown="OnNoteKey" LostFocus="OnNoteDone" Margin="50,0,0,0"/>
-        </StackPanel>
-       </Border>
-      </DataTemplate></ItemsControl.ItemTemplate>
-     </ItemsControl>
-
-    </StackPanel>
+    </Grid>
    </ScrollViewer>
+   <Button x:Name="CloseButton" Click="OnClose" Width="40" Height="40" CornerRadius="20" Padding="0" Margin="14" HorizontalAlignment="Right" VerticalAlignment="Top" Background="{ThemeResource SubtleBrush}" BorderThickness="0" AutomationProperties.Name="{Binding Text[PpClose]}" AutomationProperties.AutomationId="player-close"><FontIcon Glyph="&#xE711;" FontSize="13"/></Button>
    <!-- Fixed footer: the two ways out of the panel -->
-   <Grid Grid.Row="2" Padding="24,12,20,20" ColumnSpacing="10" BorderBrush="{ThemeResource DividerBrush}" BorderThickness="0,1,0,0">
+   <Grid Grid.Row="1" Padding="32,16,32,24" ColumnSpacing="12" BorderBrush="{ThemeResource DividerBrush}" BorderThickness="0,1,0,0">
     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-    <Button Click="OnEditProfile" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="44" AutomationProperties.AutomationId="player-edit">
-     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE77B;" FontSize="13"/><TextBlock Text="{Binding Text[ProfileEdit]}"/></StackPanel>
+    <Button Click="OnEditProfile" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48" AutomationProperties.AutomationId="player-edit">
+     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE77B;" FontSize="14"/><TextBlock Text="{Binding Text[ProfileEdit]}"/></StackPanel>
     </Button>
-    <Button Grid.Column="1" Click="OnOpenDiary" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="44" AutomationProperties.AutomationId="player-open-diary">
-     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE736;" FontSize="13"/><TextBlock Text="{Binding Text[diaryTitle]}"/></StackPanel>
+    <Button Grid.Column="1" Click="OnOpenDiary" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48" AutomationProperties.AutomationId="player-open-diary">
+     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE736;" FontSize="14"/><TextBlock Text="{Binding Text[diaryTitle]}"/></StackPanel>
     </Button>
    </Grid>
   </Grid>

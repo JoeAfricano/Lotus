@@ -145,10 +145,20 @@ public sealed partial class ContinueCard : UserControl
 public sealed partial class ReadinessCard : UserControl
 {
     private readonly Border card;
-    private readonly Microsoft.UI.Xaml.Shapes.Path arc = new() { StrokeThickness = Stroke, StrokeStartLineCap = PenLineCap.Round, StrokeEndLineCap = PenLineCap.Round };
-    private readonly TextBlock score = new() { FontSize = 72, FontWeight = Microsoft.UI.Text.FontWeights.Bold, CharacterSpacing = -40, HorizontalAlignment = HorizontalAlignment.Center, LineHeight = 74, LineStackingStrategy = LineStackingStrategy.BlockLineHeight };
+    private readonly Microsoft.UI.Xaml.Shapes.Path arc = new() { StrokeThickness = Stroke - 2, StrokeStartLineCap = PenLineCap.Round, StrokeEndLineCap = PenLineCap.Round };
+    private readonly Grid arcGlow = new() { IsHitTestVisible = false }; // hosts the composition glow under the arc
+    private readonly RadialGradientBrush glow = new();
+    private readonly Ellipse tip = new() { Width = 12, Height = 12, Fill = new SolidColorBrush(Color.FromArgb(255, 255, 250, 252)) };
+    private readonly Ellipse tipHalo = new() { Width = 30, Height = 30 };
+    private Microsoft.UI.Composition.DropShadow? arcShadow;
+    private int colorState = -1; private Color colorKey;
+    private readonly TextBlock score = new() { FontSize = 76, FontWeight = Microsoft.UI.Text.FontWeights.Black, CharacterSpacing = -40, HorizontalAlignment = HorizontalAlignment.Center, LineHeight = 74, LineStackingStrategy = LineStackingStrategy.BlockLineHeight };
     private readonly TextBlock eyebrow = new() { FontSize = 12, CharacterSpacing = 160, FontWeight = Microsoft.UI.Text.FontWeights.Bold };
-    private readonly TextBlock headline = new() { FontSize = 13, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, HorizontalAlignment = HorizontalAlignment.Center, TextAlignment = TextAlignment.Center, TextWrapping = TextWrapping.Wrap, MaxWidth = 116, MaxLines = 2 };
+    private readonly TextBlock headline = new() { FontSize = 14, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.NoWrap };
+    // State pill under the ring: icon + one short line, tinted by the state (ready / almost / needs attention).
+    private readonly FontIcon pillIcon = new() { FontSize = 13, VerticalAlignment = VerticalAlignment.Center };
+    private readonly Border pill = new() { CornerRadius = new CornerRadius(14), Padding = new Thickness(12, 5, 14, 5), BorderThickness = new Thickness(1), HorizontalAlignment = HorizontalAlignment.Center };
+    private int pillState = -1;
     private readonly TextBlock advice = new() { FontSize = 14, TextWrapping = TextWrapping.Wrap };
     private readonly StackPanel factRows = new() { Spacing = 10 };
     private readonly TextBlock facts = new() { FontSize = 12, TextWrapping = TextWrapping.Wrap };
@@ -171,22 +181,28 @@ public sealed partial class ReadinessCard : UserControl
         var gold = res["GoldBrush"] is SolidColorBrush gb ? gb.Color : Color.FromArgb(255, 0xEE, 0xC1, 0xA8);
         var accent = res["AccentFillColorDefaultBrush"] is SolidColorBrush ab ? ab.Color : Color.FromArgb(255, 0xD6, 0x30, 0x6F);
         advice.Foreground = facts.Foreground = summary.Foreground = new SolidColorBrush(Color.FromArgb(255, 0xC9, 0xB6, 0xC0));
-        arc.Stroke = HomeMotion.Gradient(new(0, 0), new(1, 1), (0, accent), (0.55, rose), (1, gold));
+        // Premium ring (visual 3.0): thin translucent track, the arc in the theme's gradient with a soft glow (composition
+        // shadow, GPU), a bright dot at its tip and a radial glow behind the number. Colors follow the theme and the state.
         var ring = new Grid { Width = Ring, Height = Ring, HorizontalAlignment = HorizontalAlignment.Center };
-        var glow = new RadialGradientBrush(); glow.GradientStops.Add(new GradientStop { Color = Color.FromArgb(0x66, accent.R, accent.G, accent.B), Offset = 0 }); glow.GradientStops.Add(new GradientStop { Color = Color.FromArgb(0, accent.R, accent.G, accent.B), Offset = 1 });
-        ring.Children.Add(new Ellipse { Fill = glow, Margin = new Thickness(18) });
-        ring.Children.Add(new Ellipse { Stroke = new SolidColorBrush(Color.FromArgb(0x1A, 255, 255, 255)), StrokeThickness = Stroke });
+        glow.GradientStops.Add(new GradientStop { Offset = 0 }); glow.GradientStops.Add(new GradientStop { Offset = 1 });
+        ring.Children.Add(new Ellipse { Fill = glow, Margin = new Thickness(14) });
+        ring.Children.Add(new Ellipse { Stroke = new SolidColorBrush(Color.FromArgb(0x24, 255, 255, 255)), StrokeThickness = Stroke - 4, Margin = new Thickness(2) });
+        ring.Children.Add(arcGlow);
         ring.Children.Add(arc);
+        var tipLayer = new Canvas { Width = Ring, Height = Ring, IsHitTestVisible = false };
+        tipLayer.Children.Add(tipHalo); tipLayer.Children.Add(tip);
+        ring.Children.Add(tipLayer);
         var center = new StackPanel { VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Spacing = 2 };
-        headline.Foreground = new SolidColorBrush(Color.FromArgb(255, 0x9F, 0xE3, 0xC1));
-        center.Children.Add(score); center.Children.Add(headline);
+        center.Children.Add(score);
+        var pillRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 }; pillRow.Children.Add(pillIcon); pillRow.Children.Add(headline); pill.Child = pillRow;
         ring.Children.Add(center);
-        eyebrow.Foreground = new SolidColorBrush(gold);
+        arcGlow.Loaded += (_, _) => SetUpGlow();
+        ApplyColors(0);        eyebrow.Foreground = new SolidColorBrush(gold);
         action.Style = (Style)res["PrimaryButtonStyle"]; action.HorizontalAlignment = HorizontalAlignment.Stretch; action.MinHeight = 44;
         action.Click += (_, _) => NavigateRequested?.Invoke(this, target);
         // The ring sits in a Viewbox so the compact layout (narrow window) can shrink it whole, text included.
         ringBox = new Viewbox { Child = ring, Width = Ring, Height = Ring, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top };
-        details.Children.Add(advice); details.Children.Add(factRows); details.Children.Add(action);
+        details.Children.Add(pill); details.Children.Add(advice); details.Children.Add(factRows); details.Children.Add(action);
         body.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); body.ColumnDefinitions.Add(new ColumnDefinition());
         body.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); body.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); body.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         body.Children.Add(eyebrow); body.Children.Add(ringBox); body.Children.Add(details);
@@ -208,7 +224,7 @@ public sealed partial class ReadinessCard : UserControl
     public void SetCompact(bool compact)
     {
         ringBox.Width = ringBox.Height = compact ? 132 : Ring;
-        headline.Visibility = compact ? Visibility.Collapsed : Visibility.Visible; // too small to read in the small ring; the advice beside it says it
+        pill.Visibility = compact ? Visibility.Collapsed : Visibility.Visible; // the advice beside the small ring says it
         Grid.SetColumnSpan(eyebrow, 2);
         Grid.SetRow(ringBox, 1); Grid.SetColumn(ringBox, 0); Grid.SetColumnSpan(ringBox, compact ? 1 : 2);
         Grid.SetRow(details, compact ? 1 : 2); Grid.SetColumn(details, compact ? 1 : 0); Grid.SetColumnSpan(details, compact ? 1 : 2);
@@ -234,15 +250,55 @@ public sealed partial class ReadinessCard : UserControl
         if (!scanned && model.Tools is { Busy: false } tools) { scanned = true; try { await tools.RefreshAsync(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Readiness tools scan"); } Render(); }
     }
 
-    private void OnUpdated(object? sender, EventArgs e) => DispatcherQueue.TryEnqueue(Render);
+    // Live and cheap: the shared telemetry loop (~1 s, only while Home is visible) drives the card; every 5th sample the
+    // heavy app's memory is re-read from its known process ids (no full scan). The card repaints only on a real change.
+    private int ticks;
+    private (string Name, long Bytes)? heavyLive;
+    private string lastSignature = "";
+    private void OnUpdated(object? sender, EventArgs e)
+    {
+        if (++ticks % 5 == 0 && vm?.Tools?.Apps.OrderByDescending(a => a.App.Bytes).FirstOrDefault() is { } top)
+        {
+            var pids = top.App.Pids; var name = top.Name;
+            _ = Task.Run(() =>
+            {
+                long bytes = 0;
+                foreach (var pid in pids) { try { using var proc = System.Diagnostics.Process.GetProcessById(pid); bytes += proc.WorkingSet64; } catch (ArgumentException) { } catch (InvalidOperationException) { } }
+                DispatcherQueue.TryEnqueue(() => { heavyLive = bytes > 0 ? (name, bytes) : (name, 0); Render(); });
+            });
+        }
+        DispatcherQueue.TryEnqueue(Render);
+    }
+    // Called after Liberar memória / Check-up / applying a profile: read again now instead of waiting for the cycle.
+    public void RefreshNow() { heavyLive = null; lastSignature = ""; Render(); }
+
+    private void Pill(ITextCatalog t, int state)
+    {
+        headline.Text = t[state switch { 0 => "RdPillReady", 1 => "RdPillAlmost", _ => "RdPillAttention" }];
+        if (state == pillState) return;
+        pillState = state;
+        var c = state switch { 0 => Color.FromArgb(255, 0x7F, 0xD1, 0xA8), 1 => Color.FromArgb(255, 0xF0, 0xC2, 0x7D), _ => Color.FromArgb(255, 0xF2, 0x7B, 0xA8) };
+        pillIcon.Glyph = state == 0 ? "" : state == 1 ? "" : "";
+        pillIcon.Foreground = headline.Foreground = new SolidColorBrush(c);
+        pill.Background = new SolidColorBrush(Color.FromArgb(0x24, c.R, c.G, c.B));
+        pill.BorderBrush = new SolidColorBrush(Color.FromArgb(0x59, c.R, c.G, c.B));
+        pill.Opacity = 0; HomeMotion.Fade(pill, 1, 260);
+    }
 
     private void Render()
     {
         if (vm is null) return;
         var t = vm.Text;
-        var heavy = vm.Tools?.Apps.OrderByDescending(a => a.App.Bytes).Select(a => ((string Name, long Bytes)?)(a.Name, a.App.Bytes)).FirstOrDefault();
+        var heavy = heavyLive is { } live ? (live.Bytes > 0 ? live : null) : vm.Tools?.Apps.OrderByDescending(a => a.App.Bytes).Select(a => ((string Name, long Bytes)?)(a.Name, a.App.Bytes)).FirstOrDefault();
         var r = PcReadiness.From(vm.Monitoring?.Snapshot, heavy, vm.Tools?.DiskTip.Length > 0);
-        headline.Text = t[r.Score >= 85 ? "RdGreat" : r.Score >= 65 ? "RdGood" : "RdBusy"];
+        // Repaint only when something visible changes (score, issue, 1% steps, 100 MB steps, language or theme).
+        var theme = Application.Current.Resources["RoseBrush"] is SolidColorBrush tb ? tb.Color : default;
+        var signature = $"{r.Score}|{r.Issue}|{Math.Round(r.MemoryPercent ?? -1)}|{Math.Round(r.CpuPercent ?? -1)}|{Math.Round(r.GpuTemp ?? -1)}|{r.HeavyApp}|{r.HeavyBytes / (100L << 20)}|{t.Language}|{theme}";
+        if (signature == lastSignature) return;
+        lastSignature = signature;
+        var state = r.Score >= 85 ? 0 : r.Score >= 65 ? 1 : 2;
+        Pill(t, state);
+        ApplyColors(state);
         (advice.Text, target, action.Content) = r.Issue switch
         {
             ReadinessIssue.Memory => (t["RdMemory"], "tools:checkup", t["RdFreeMemory"]),
@@ -279,9 +335,57 @@ public sealed partial class ReadinessCard : UserControl
             var v = from + (value - from) * p;
             score.Text = Math.Round(v).ToString();
             arc.Data = ArcGeometry(v / 100);
+            PlaceTip(v / 100);
         }
         Step(0);
-        Motion.Tween(arc, TimeSpan.FromMilliseconds(1000), Step, Motion.EaseOutQuart);
+        Motion.Tween(arc, TimeSpan.FromMilliseconds(700), Step, Motion.EaseOutQuart);
+    }
+    // The bright dot rides the end of the arc.
+    private void PlaceTip(double fraction)
+    {
+        fraction = Math.Clamp(fraction, 0.001, 0.999);
+        const double r = (Ring - Stroke) / 2, c = Ring / 2; var angle = fraction * 2 * Math.PI - Math.PI / 2;
+        double x = c + r * Math.Cos(angle), y = c + r * Math.Sin(angle);
+        Canvas.SetLeft(tip, x - tip.Width / 2); Canvas.SetTop(tip, y - tip.Height / 2);
+        Canvas.SetLeft(tipHalo, x - tipHalo.Width / 2); Canvas.SetTop(tipHalo, y - tipHalo.Height / 2);
+    }
+    // Arc, glow, number and tip take the theme's colors when ready; amber when almost; rose-crimson when it needs attention.
+    private void ApplyColors(int state)
+    {
+        var res = Application.Current.Resources;
+        var rose = res["RoseBrush"] is SolidColorBrush rb ? rb.Color : Color.FromArgb(255, 0xF2, 0x7B, 0xA8);
+        var gold = res["GoldBrush"] is SolidColorBrush gb ? gb.Color : Color.FromArgb(255, 0xEE, 0xC1, 0xA8);
+        var accent = res["AccentFillColorDefaultBrush"] is SolidColorBrush ab ? ab.Color : Color.FromArgb(255, 0xD6, 0x30, 0x6F);
+        if (state == colorState && rose == colorKey) return;
+        colorState = state; colorKey = rose;
+        var (a, b, c) = state switch
+        {
+            0 => (accent, rose, gold),
+            1 => (Color.FromArgb(255, 0xE0, 0x8A, 0x3C), Color.FromArgb(255, 0xF0, 0xB0, 0x5E), Color.FromArgb(255, 0xF7, 0xD3, 0x8E)),
+            _ => (Color.FromArgb(255, 0xC2, 0x18, 0x5B), Color.FromArgb(255, 0xE5, 0x48, 0x7E), Color.FromArgb(255, 0xF2, 0x7B, 0xA8)),
+        };
+        arc.Stroke = HomeMotion.Gradient(new(0, 0), new(1, 1), (0, a), (0.55, b), (1, c));
+        glow.GradientStops[0].Color = Color.FromArgb(0x59, b.R, b.G, b.B); glow.GradientStops[1].Color = Color.FromArgb(0, b.R, b.G, b.B);
+        tipHalo.Fill = new RadialGradientBrush { GradientStops = { new GradientStop { Color = Color.FromArgb(0xB3, c.R, c.G, c.B), Offset = 0 }, new GradientStop { Color = Color.FromArgb(0, c.R, c.G, c.B), Offset = 1 } } };
+        score.Foreground = HomeMotion.Gradient(new(0, 0), new(0, 1), (0, Color.FromArgb(255, 255, 255, 255)), (1, Blend(c, Colors.White, 0.45)));
+        if (arcShadow is not null) arcShadow.Color = Color.FromArgb(0xCC, b.R, b.G, b.B);
+    }
+    private static Color Blend(Color x, Color y, double k) => Color.FromArgb(255, (byte)(x.R + (y.R - x.R) * k), (byte)(x.G + (y.G - x.G) * k), (byte)(x.B + (y.B - x.B) * k));
+    // The arc's glow: a composition drop shadow masked by the arc itself (drawn by the GPU, no per-frame work).
+    private void SetUpGlow()
+    {
+        if (arcShadow is not null) return;
+        try
+        {
+            var visual = ElementCompositionPreview.GetElementVisual(arcGlow);
+            var compositor = visual.Compositor;
+            arcShadow = compositor.CreateDropShadow();
+            arcShadow.BlurRadius = 18; arcShadow.Mask = arc.GetAlphaMask();
+            var sprite = compositor.CreateSpriteVisual(); sprite.Size = new System.Numerics.Vector2((float)Ring, (float)Ring); sprite.Shadow = arcShadow;
+            ElementCompositionPreview.SetElementChildVisual(arcGlow, sprite);
+            colorState = -1; ApplyColors(pillState < 0 ? 0 : pillState);
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Readiness glow"); }
     }
     private static Geometry ArcGeometry(double fraction)
     {

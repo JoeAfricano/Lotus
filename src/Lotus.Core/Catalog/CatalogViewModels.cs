@@ -133,7 +133,7 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     public GameDetailsViewModel Details { get; } = new(catalog, text, log);
     public int? ChartCount(string id) => id == chart && !Searching ? Items.Count : charts.TryGetValue(id, out var c) ? c.Items.Count : null; // null until that list was loaded once
     public IReadOnlyList<ChartTab> Tabs =>[.. CatalogText.Charts.Select(c => new ChartTab(c, text["GlChart" + c]))];
-    public ObservableCollection<CatalogCard> Items { get; } = [];
+    public BatchCollection<CatalogCard> Items { get; } = [];
     public string Chart { get => chart; set { if (value is not null && SetProperty(ref chart, value)) _ = ShowAsync(); } }
     public bool Loading { get => loading; private set => SetProperty(ref loading, value); }
     public string Status { get => status; private set => SetProperty(ref status, value); }
@@ -285,8 +285,7 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
         };
         // Shown in pages: a long chart never realizes every cover at once (the page asks for more while scrolling).
         filtered = [.. ordered.Select(r => new CatalogCard(r.item, Meta(r.item), owned.Contains(r.item.AppId)) { Rank = Searching || !r.chart ? "" : (r.index + 1).ToString() })];
-        Items.Clear();
-        foreach (var card in filtered.Take(PageSize)) Items.Add(card);
+        Items.ReplaceAll(filtered.Take(PageSize)); // one reset instead of one event per card: the grid lays out once
         OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(ActiveFilters)); OnPropertyChanged(nameof(HasActiveFilters)); OnPropertyChanged(nameof(ChartHint)); OnPropertyChanged(nameof(CanShowMore)); OnPropertyChanged(nameof(MoreText));
     }
 
@@ -313,7 +312,7 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     public void ShowMore()
     {
         if (!CanShowMore) return;
-        foreach (var card in filtered.Skip(Items.Count).Take(PageSize).ToList()) Items.Add(card);
+        Items.AddRange(filtered.Skip(Items.Count).Take(PageSize).ToList());
         OnPropertyChanged(nameof(CanShowMore)); OnPropertyChanged(nameof(MoreText));
     }
 
@@ -409,4 +408,23 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
         "Indie" => ["Indie"], "Racing" => ["Racing", "Corrida"], "Sports" => ["Sports", "Esportes"], "Simulation" => ["Simulation", "Simulação"], "Casual" => ["Casual"], _ => [g],
     };
     private void NotifyPick() { foreach (var n in new[] { nameof(Picking), nameof(PickStatus), nameof(Picked), nameof(HasPick) }) OnPropertyChanged(n); }
+}
+
+// An ObservableCollection that can swap or extend its whole content with a single notification.
+public sealed class BatchCollection<T> : ObservableCollection<T>
+{
+    public void ReplaceAll(IEnumerable<T> items)
+    {
+        CheckReentrancy();
+        Items.Clear();
+        foreach (var i in items) Items.Add(i);
+        OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(Count)));
+        OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("Item[]"));
+        OnCollectionChanged(new System.Collections.Specialized.NotifyCollectionChangedEventArgs(System.Collections.Specialized.NotifyCollectionChangedAction.Reset));
+    }
+    public void AddRange(IReadOnlyList<T> items)
+    {
+        if (items.Count == 0) return;
+        foreach (var i in items) Add(i); // appended items keep the grid's realized rows; few per page
+    }
 }

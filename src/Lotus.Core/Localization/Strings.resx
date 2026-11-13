@@ -1429,7 +1429,7 @@ Não foi possível medir agora. Tente de novo em alguns segundos.</value></data>
   <data name="RdBusy" xml:space="preserve"><value>Seu PC está ocupado agora</value></data>
   <data name="RdAllClear" xml:space="preserve"><value>Memória folgada e sistema tranquilo. Bom momento para uma partida.</value></data>
   <data name="RdMemory" xml:space="preserve"><value>A memória está quase cheia. Fechar programas abertos ajuda o jogo a rodar liso.</value></data>
-  <data name="RdHeavy" xml:space="preserve"><value>O {0} está usando {1} de memória. Fechar antes de jogar ajuda.</value></data>
+  <data name="RdHeavy" xml:space="preserve"><value>O {0} está usando {1}. O perfil Jogo baixa a prioridade dele enquanto você joga; fechar libera mais memória.</value></data>
   <data name="RdCpu" xml:space="preserve"><value>O processador está trabalhando bastante. Veja o que está pesando em Desempenho.</value></data>
   <data name="RdGpuHot" xml:space="preserve"><value>A placa de vídeo está quente. Confira as ventoinhas e a temperatura em Desempenho.</value></data>
   <data name="RdDisk" xml:space="preserve"><value>Pouco espaço livre no disco. Jogos e shaders precisam de folga.</value></data>
@@ -3252,4 +3252,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="OsNeedRtss" xml:space="preserve"><value>Para mostrar o overlay no jogo, instale o RivaTuner Statistics Server (gratuito).</value></data>
   <data name="GlFeaturedOpen" xml:space="preserve"><value>Ver o jogo</value></data>
   <data name="GlFeatured" xml:space="preserve"><value>Destaque</value></data>
+  <data name="RdPillReady" xml:space="preserve"><value>Pronto para jogar</value></data>
+  <data name="RdPillAlmost" xml:space="preserve"><value>Quase pronto</value></data>
+  <data name="RdPillAttention" xml:space="preserve"><value>Precisa de atenção</value></data>
 </root>

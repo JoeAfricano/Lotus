@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Lotus.App.Controls;
 
-// Profile side sheet: slides in from the right over a dimmed backdrop; Esc, the X or a click outside closes it.
+// Profile card: centered over a dimmed backdrop, rising in; Esc, the X or a click outside closes it.
 public sealed partial class PlayerPanel : UserControl
 {
     public event EventHandler? EditProfileRequested;
@@ -38,7 +38,7 @@ public sealed partial class PlayerPanel : UserControl
         }
         Visibility = Visibility.Visible;
         Animate(Backdrop, "Opacity", 0, 1, 220);
-        Animate(SheetShift, "X", 460, 0, 380, Motion.Decelerate());
+        Animate(SheetShift, "Y", 28, 0, 340, Motion.Decelerate()); Animate(Sheet, "Opacity", 0, 1, 240);
         UiSound.Play(UiSound.Cue.Open);
         // Focus moves into the panel; Escape / close gives it back to whatever opened it.
         returnFocus = XamlRoot is { } root ? Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(root) as Control : null;
@@ -51,12 +51,23 @@ public sealed partial class PlayerPanel : UserControl
         UiSound.Play(UiSound.Cue.Close);
         FocusHelper.Commit(this); // commits a note being typed
         var sb = new Storyboard();
-        Add(sb, Backdrop, "Opacity", 1, 0, 180); Add(sb, SheetShift, "X", 0, 460, 260, Motion.Accelerate());
+        Add(sb, Backdrop, "Opacity", 1, 0, 180); Add(sb, SheetShift, "Y", 0, 28, 200, Motion.Accelerate()); Add(sb, Sheet, "Opacity", 1, 0, 180);
         sb.Completed += (_, _) => { Visibility = Visibility.Collapsed; returnFocus?.Focus(FocusState.Programmatic); returnFocus = null; };
         sb.Begin();
     }
 
     private void OnClose(object sender, RoutedEventArgs e) => Close();
+    // About 85% of the window; two columns when wide, one column on a narrow window.
+    private void OnRootSize(object sender, SizeChangedEventArgs e)
+    {
+        Sheet.MaxHeight = Math.Max(360, e.NewSize.Height * 0.88);
+        var narrow = e.NewSize.Width < 960;
+        Columns.ColumnDefinitions[1].Width = narrow ? new GridLength(0) : new GridLength(6, GridUnitType.Star);
+        Columns.ColumnSpacing = narrow ? 0 : 32;
+        Grid.SetColumn(RightColumn, narrow ? 0 : 1); Grid.SetRow(RightColumn, narrow ? 1 : 0);
+        if (Columns.RowDefinitions.Count < 3) Columns.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        Grid.SetRow(GamesBlock, narrow ? 2 : 1);
+    }
     private void OnBackdrop(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) => Close();
     private void OnPlayLast(object sender, RoutedEventArgs e) { if (Vm is { Last: { } row } vm) { vm.Play(row); Close(); } }
     private void OnOpenDiary(object sender, RoutedEventArgs e) { Close(); DiaryRequested?.Invoke(this, EventArgs.Empty); }
