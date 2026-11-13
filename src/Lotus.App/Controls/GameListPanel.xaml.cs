@@ -77,12 +77,46 @@ public sealed partial class GameListPanel : UserControl
             ToolTipService.SetToolTip(tile, vm.Text["GlHint" + tab.Id]);
             Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(tile, tab.Label);
             Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(tile, "gamelist-chart-" + tab.Id);
-            tile.Click += (_, _) => { if (Vm is { } v) { v.Chart = tab.Id; PaintChartTiles(v); } };
+            tile.Click += (_, _) => { if (Vm is { } v) { switchClock.Restart(); v.Chart = tab.Id; PaintChartTiles(v); } };
             Grid.SetColumn(tile, ChartTiles.Children.Count);
             ChartTiles.Children.Add(tile);
         }
-        PaintChartTiles(vm);
-        vm.Items.CollectionChanged += (_, _) => DispatcherQueue.TryEnqueue(() => { if (Vm is { } v) { PaintChartTiles(v); PaintFeatured(v); } });
+        foreach (var id in new[] { "week", "month", "year", "all" })
+        {
+            var b = new Button { Content = vm.Text["GlPeriod" + id], Tag = id, Padding = new Thickness(14, 6, 14, 6), MinHeight = 34, CornerRadius = new CornerRadius(9), BorderThickness = new Thickness(0) };
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(b, "gamelist-period-" + id);
+            b.Click += (_, _) => { if (Vm is { } v) { switchClock.Restart(); v.Period = id; PaintPeriod(v); } };
+            PeriodBar.Children.Add(b);
+        }
+        PeriodLabel.Text = vm.Text["GlPeriodLabel"];
+        PaintChartTiles(vm); PaintPeriod(vm);
+        // One repaint per change (a list reset is a single event); the timing is logged to compare tab switches.
+        vm.Items.CollectionChanged += (_, _) =>
+        {
+            if (repaintQueued) return;
+            repaintQueued = true;
+            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+            {
+                repaintQueued = false;
+                if (Vm is not { } v) return;
+                PaintChartTiles(v); PaintFeatured(v); PaintPeriod(v);
+                if (switchClock.IsRunning) { Serilog.Log.Information("Game list switch {Chart}/{Period} shown in {Ms} ms ({Count} cards)", v.Chart, v.Period, switchClock.ElapsedMilliseconds, v.Items.Count); switchClock.Reset(); }
+            });
+        };
+    }
+    private bool repaintQueued;
+    private readonly System.Diagnostics.Stopwatch switchClock = new();
+    private void PaintPeriod(GameListViewModel vm)
+    {
+        var res = Application.Current.Resources;
+        foreach (var b in PeriodBar.Children.OfType<Button>())
+        {
+            var on = (string)b.Tag == vm.Period;
+            b.IsEnabled = vm.PeriodAvailable || (string)b.Tag == "all";
+            b.Background = on ? (Brush)res["AccentGradientBrush"] : new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+            b.Foreground = (Brush)res[on ? "OnRoseBrush" : "MainTextBrush"];
+            ToolTipService.SetToolTip(b, vm.PeriodAvailable ? vm.Text["GlPeriodHint" + (vm.Chart == "upcoming" ? "Soon" : "")] : vm.Text["GlPeriodNoDates"]);
+        }
     }
     private void PaintChartTiles(GameListViewModel vm)
     {

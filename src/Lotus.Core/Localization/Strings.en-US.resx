@@ -3255,4 +3255,18 @@ Your games and Windows are not changed.</value></data>
   <data name="RdPillReady" xml:space="preserve"><value>Ready to play</value></data>
   <data name="RdPillAlmost" xml:space="preserve"><value>Almost ready</value></data>
   <data name="RdPillAttention" xml:space="preserve"><value>Needs attention</value></data>
+  <data name="GlPeriodweek" xml:space="preserve"><value>Weekly</value></data>
+  <data name="GlPeriodmonth" xml:space="preserve"><value>Monthly</value></data>
+  <data name="GlPeriodyear" xml:space="preserve"><value>Yearly</value></data>
+  <data name="GlPeriodall" xml:space="preserve"><value>All time</value></data>
+  <data name="GlPeriodLabel" xml:space="preserve"><value>Released</value></data>
+  <data name="GlPeriodHint" xml:space="preserve"><value>Games on this list released in this period.</value></data>
+  <data name="GlPeriodHintSoon" xml:space="preserve"><value>Games on this list coming out in this period.</value></data>
+  <data name="GlPeriodNoDates" xml:space="preserve"><value>This list has no release dates, so the period does not apply.</value></data>
+  <data name="OsPreviewActive" xml:space="preserve"><value>&quot;See the overlay now&quot; shows the style active in RivaTuner ({0}). To see another, use the Use button and, if it does not change, close and reopen RivaTuner.</value></data>
+  <data name="OsNoneShort" xml:space="preserve"><value>none from Lotus</value></data>
+  <data name="ScorePickButton" xml:space="preserve"><value>Choose a game</value></data>
+  <data name="ScorePickTitle" xml:space="preserve"><value>Estimated FPS by game</value></data>
+  <data name="ScorePickHint" xml:space="preserve"><value>Type to filter. Values at 1080p for each quality. Not here? Press Enter to search Steam.</value></data>
+  <data name="ScorePickCap" xml:space="preserve"><value>game caps at {0} FPS</value></data>
 </root>

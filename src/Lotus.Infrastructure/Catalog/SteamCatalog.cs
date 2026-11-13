@@ -327,7 +327,7 @@ public sealed class SteamCatalog : IGameCatalog
     // ---- Charts ----
     public async Task<CatalogChart?> ChartAsync(string id, TimeSpan maxAge, CancellationToken token)
     {
-        var file = Path.Combine(cache, $"chart4-{id}-{language}.json"); // "4": up to 250 items per chart (older caches are ignored)
+        var file = Path.Combine(cache, $"chart5-{id}-{language}.json"); // "5": store charts carry release dates (older caches are ignored)
         if (Fresh(file, maxAge) && ReadChart(file) is { } cached) return cached;
         try
         {
@@ -339,8 +339,8 @@ public sealed class SteamCatalog : IGameCatalog
                 "toprated" => SpyList([await JsonAsync("https://steamspy.com/api.php?request=top100forever", null, maxAge, token),
                     await JsonAsync("https://steamspy.com/api.php?request=all&page=0", "spy-all.json", TimeSpan.FromDays(1), token)], byRating: true),
                 // The store's own search, games only: what Steam shows as top sellers / popular new / popular upcoming (3 pages).
-                "topsellers" => [.. (await StorePagesAsync("filter=topsellers", maxAge, token)).Take(ChartSize)],
-                "upcoming" => [.. (await StorePagesAsync("filter=popularcomingsoon", maxAge, token)).Take(ChartSize)],
+                "topsellers" => [.. (await StorePagesAsync("filter=topsellers", maxAge, token, u => u.Replace("l=" + language, "l=english"))).Take(ChartSize)], // English page: release dates parse (period filter)
+                "upcoming" => [.. (await StorePagesAsync("filter=popularcomingsoon", maxAge, token, u => u.Replace("l=" + language, "l=english"))).Take(ChartSize)],
                 // "New": best sellers released in the last 120 days (English page so the dates parse).
                 "new" => [.. (await StorePagesAsync("filter=topsellers", maxAge, token, u => u.Replace("l=" + language, "l=english"), pages: 5))
                     .Where(i => i.Released is { } d && d <= DateTime.Today && DateTime.Today - d <= TimeSpan.FromDays(120)).Take(ChartSize)],

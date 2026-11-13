@@ -315,6 +315,33 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     public string SourceAUrl => CurrentGame is { Basis: not null, SteamAppId: { } id } ? $"https://store.steampowered.com/app/{id}/" : "https://pc-builds.com/pt/fps-calculator/";
     public string SourceBLabel => CurrentGame?.Basis is null ? "How Many FPS" : "pc-builds";
     public string SourceBUrl => CurrentGame?.Basis is null ? "https://howmanyfps.com/" : "https://pc-builds.com/pt/fps-calculator/";
+    // The game picker (cards): every game in the list with its 1080p estimate per quality, filtered by the typed text.
+    public sealed record FpsPick(int Index, string Name, string? Cover, string Initials, string Low, string Medium, string High, string Ultra, string LowKind, string MediumKind, string HighKind, string UltraKind, bool Selected, string CapText = "")
+    {
+        public bool HasCap => CapText.Length > 0;
+    }
+    public IReadOnlyList<FpsPick> Picks(string filter)
+    {
+        filter = (filter ?? "").Trim();
+        var list = new List<FpsPick>();
+        static string Kind(int fps) => fps >= 60 ? "good" : fps >= 30 ? "mixed" : "bad";
+        for (var i = 0; i < gameList.Count; i++)
+        {
+            var g = gameList[i];
+            if (filter.Length > 0 && !g.Name.Contains(filter, StringComparison.CurrentCultureIgnoreCase)) continue;
+            string[] fps = ["—", "—", "—", "—"]; string[] kinds = ["none", "none", "none", "none"];
+            if (last is { Cpu1: { } s, CpuAll: { } m, Gpu: { } gpu })
+            {
+                var cells = Enum.GetValues<Preset>().Select(p => ScoreInsights.Estimate(g, Resolution.P1080, p, s, m, gpu)).ToArray();
+                fps = [.. cells.Select(c => c.Fps.ToString(Culture))]; kinds = [.. cells.Select(c => Kind(c.Fps))];
+            }
+            var initials = string.Concat(g.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => char.ToUpperInvariant(w[0])));
+            // A game that caps its own frame rate shows the same number everywhere: say so instead of looking like an error.
+            var capped = g.Cap is { } cap && fps.All(f => f == cap.ToString(Culture)) ? Text.Format("ScorePickCap", cap) : "";
+            list.Add(new(i, g.Name, g.SteamAppId is { Length: > 0 } id ? Catalog.CatalogText.Portrait(id) : null, initials, fps[0], fps[1], fps[2], fps[3], kinds[0], kinds[1], kinds[2], kinds[3], i == gameIndex, capped));
+        }
+        return list;
+    }
     public async Task SearchGameAsync(string query)
     {
         query = (query ?? "").Trim();

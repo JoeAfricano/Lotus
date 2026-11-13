@@ -86,8 +86,10 @@
       <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="300"/></Grid.ColumnDefinitions>
       <StackPanel Spacing="2"><TextBlock Text="{Binding Text[ScoreFpsTitle]}" FontSize="20" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[ScoreFpsHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
       <StackPanel Grid.Column="1" Spacing="8">
-       <ComboBox Header="{Binding Text[ScoreFpsGame]}" ItemsSource="{Binding GameNames}" SelectedIndex="{Binding GameIndex, Mode=TwoWay}" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="score-fps-game"/>
-       <AutoSuggestBox PlaceholderText="{Binding Text[ScoreFpsSearch]}" QueryIcon="Find" QuerySubmitted="OnFpsSearch" AutomationProperties.AutomationId="score-fps-search"/>
+       <!-- One button opens the game picker (search + cards with the estimate per quality) -->
+       <Button Click="OnPickGame" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48" app:Motion.Press="True" AutomationProperties.AutomationId="score-fps-pick">
+        <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE721;" FontSize="14"/><TextBlock Text="{Binding Text[ScorePickButton]}"/></StackPanel>
+       </Button>
        <TextBlock Text="{Binding FpsSearchStatus}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" Visibility="{Binding FpsSearchStatus, Converter={StaticResource PresenceVisibility}}" AutomationProperties.LiveSetting="Polite"/>
       </StackPanel>
      </Grid>

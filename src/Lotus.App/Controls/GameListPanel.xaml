@@ -72,6 +72,13 @@
      </Border>
     </ScrollViewer>
     <TextBlock x:Name="ChartHeading" Visibility="Collapsed"/>
+    <!-- Period by release date: Semanal · Mensal · Anual · Sempre (off for lists that carry no dates) -->
+    <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+     <TextBlock x:Name="PeriodLabel" Style="{StaticResource CaptionStyle}" VerticalAlignment="Center"/>
+     <Border CornerRadius="12" Padding="4" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+      <StackPanel x:Name="PeriodBar" Orientation="Horizontal" Spacing="4" AutomationProperties.AutomationId="gamelist-period"/>
+     </Border>
+    </StackPanel>
    </StackPanel>
    <Grid ColumnSpacing="12">
     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>

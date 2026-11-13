@@ -118,7 +118,8 @@ public sealed class OverlayStylePicker : UserControl
         restore.Content = t["IntLayoutRestore"];
         restore.Visibility = vm.CanRestoreLayout ? Visibility.Visible : Visibility.Collapsed;
         busy.Visibility = vm.Busy ? Visibility.Visible : Visibility.Collapsed;
-        message.Text = !vm.RtssInstalled ? t["OsNeedRtss"] : vm.Message;
+        // "Ver o overlay agora" shows what RivaTuner has loaded, not the tile being looked at: say so when they differ.
+        message.Text = !vm.RtssInstalled ? t["OsNeedRtss"] : vm.Message.Length > 0 ? vm.Message : !isOn ? t.Format("OsPreviewActive", t[on == "neon" ? "OsNeon" : on == "top" ? "OsTop" : "OsNoneShort"]) : "";
         message.Visibility = message.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
