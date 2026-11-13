@@ -7,6 +7,14 @@
                                                "label":  "Notebookcheck: GeForce RTX 5060 (desktop), 1080p",
                                                "url":  "https://www.notebookcheck.net/GeForce-RTX-5060-vs-GeForce-RTX-5070_12954_12952.247598.0.html"
                                            },
+                    "techspot-5060":  {
+                                          "label":  "TechSpot / Hardware Unboxed: review RTX 5060, 1080p",
+                                          "url":  "https://www.techspot.com/review/2992-nvidia-geforce-rtx-5060/"
+                                      },
+                    "gamersnexus-5060":  {
+                                             "label":  "GamersNexus: review RTX 5060, 1080p",
+                                             "url":  "https://gamersnexus.net/gpus/forbidden-review-nvidia-rtx-5060-gpu-benchmarks"
+                                         },
                     "lotus-initial":  {
                                           "label":  "Tabela inicial do Lotus (médias públicas de benchmarks)",
                                           "url":  "https://github.com/JoeAfricano/Lotus/blob/main/docs/LOTUS_FPS_SOURCES.md"
@@ -280,12 +288,18 @@
                   {
                       "name":  "Black Myth: Wukong",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "alta",
                       "sources":  [
-                                      "lotus-initial"
+                                      "notebookcheck-5060",
+                                      "gamersnexus-5060"
                                   ],
                       "steamAppId":  "2358720",
-                      "gpuHigh":  55,
+                      "lab1080":  [
+                                      112,
+                                      85,
+                                      65,
+                                      36
+                                  ],
                       "cpuCap":  110
                   },
                   {
@@ -566,9 +580,10 @@
                   {
                       "name":  "Star Wars Outlaws",
                       "store":  "ubisoft",
-                      "confidence":  "media",
+                      "confidence":  "alta",
                       "sources":  [
-                                      "notebookcheck-5060"
+                                      "notebookcheck-5060",
+                                      "techspot-5060"
                                   ],
                       "lab1080":  [
                                       76,
@@ -668,9 +683,10 @@
                   {
                       "name":  "S.T.A.L.K.E.R. 2: Heart of Chornobyl",
                       "store":  "steam",
-                      "confidence":  "media",
+                      "confidence":  "alta",
                       "sources":  [
-                                      "notebookcheck-5060"
+                                      "notebookcheck-5060",
+                                      "techspot-5060"
                                   ],
                       "steamAppId":  "1643320",
                       "lab1080":  [
@@ -698,9 +714,10 @@
                   {
                       "name":  "God of War Ragnarök",
                       "store":  "steam",
-                      "confidence":  "media",
+                      "confidence":  "alta",
                       "sources":  [
-                                      "notebookcheck-5060"
+                                      "notebookcheck-5060",
+                                      "techspot-5060"
                                   ],
                       "steamAppId":  "2322010",
                       "lab1080":  [
@@ -1075,20 +1092,22 @@
                   {
                       "name":  "Marvel\u0027s Spider-Man Remastered",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "steam-requirements"
+                                      "techspot-5060"
                                   ],
-                      "steamAppId":  "1817070"
+                      "steamAppId":  "1817070",
+                      "gpuHigh":  204
                   },
                   {
                       "name":  "The Last of Us Part I",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "steam-requirements"
+                                      "techspot-5060"
                                   ],
-                      "steamAppId":  "1888930"
+                      "steamAppId":  "1888930",
+                      "gpuHigh":  109
                   },
                   {
                       "name":  "Death Stranding Director\u0027s Cut",
@@ -1102,11 +1121,12 @@
                   {
                       "name":  "Clair Obscur: Expedition 33",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "steam-requirements"
+                                      "techspot-5060"
                                   ],
-                      "steamAppId":  "1903340"
+                      "steamAppId":  "1903340",
+                      "gpuHigh":  62
                   },
                   {
                       "name":  "Split Fiction",
@@ -1426,11 +1446,12 @@
                   {
                       "name":  "Dragon\u0027s Dogma 2",
                       "store":  "steam",
-                      "confidence":  "baixa",
+                      "confidence":  "media",
                       "sources":  [
-                                      "steam-requirements"
+                                      "gamersnexus-5060"
                                   ],
-                      "steamAppId":  "2054970"
+                      "steamAppId":  "2054970",
+                      "gpuHigh":  97
                   },
                   {
                       "name":  "Stray",
@@ -1458,6 +1479,26 @@
                                       "steam-requirements"
                                   ],
                       "steamAppId":  "934700"
+                  },
+                  {
+                      "name":  "Star Wars Jedi: Survivor",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "techspot-5060"
+                                  ],
+                      "steamAppId":  "1774580",
+                      "gpuHigh":  122
+                  },
+                  {
+                      "name":  "Dragon Age: The Veilguard",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "techspot-5060"
+                                  ],
+                      "steamAppId":  "1845910",
+                      "gpuHigh":  87
                   }
               ]
 }

@@ -207,6 +207,12 @@ public sealed partial class MainWindow : Window
         // Lotus Score: sensors during the tests (3DMark-style) and the player's games for the FPS estimates.
         score.Sensors = () => { var s = monitoring.Snapshot; var g = s?.Gpu.Devices.FirstOrDefault(); return (s?.Cpu.TotalUtilizationPercent.Value, g?.Get(Lotus.Core.Telemetry.GpuSensor.Temperature)?.Value, g?.Get(Lotus.Core.Telemetry.GpuSensor.Power)?.Value); };
         score.FindGame = (q, t) => catalog.RequirementsAsync(q, t);
+        // "Medido no seu PC": the last measurement Lotus took of that game (Preparar e jogar / overlay), when there is one.
+        score.Measured = (name, steamId) =>
+        {
+            var entry = games.InstalledGames().FirstOrDefault(g => (steamId is not null && g.Store == Lotus.Core.Games.GameStores.Steam && g.Id == steamId) || string.Equals(g.Name, name, StringComparison.OrdinalIgnoreCase));
+            return entry is not null && games.LastReport(entry) is { AverageFps: > 0 } r ? (r.AverageFps, r.Low1Fps, r.When) : null;
+        };
         score.InstalledGames = () => games.InstalledGames().Select(g => (g.Name, g.Store == Lotus.Core.Games.GameStores.Steam ? (string?)g.Id : null));
         score.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(score.Busy)) DispatcherQueue.TryEnqueue(() => { UpdateMonitoringDemand(); UpdateLightMode(); }); };
         InitializeComponent();

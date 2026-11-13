@@ -309,6 +309,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     public string FpsSearchStatus { get; private set; } = "";
     private GameDemand? CurrentGame => gameIndex < gameList.Count ? gameList[gameIndex] : null;
     public string FpsGameName => CurrentGame?.Name ?? "";
+    public string FpsMeasured { get; private set; } = "";
     public string? FpsGameArt => CurrentGame?.SteamAppId is { Length: > 0 } id ? Catalog.CatalogText.Hero(id) : null; // Steam header art, when the game is on Steam
     public string FpsSource => CurrentGame?.Basis is { } basis ? Text.Format("ScoreFpsSourceSteam", basis) : Text["ScoreFpsSourceTable"];
     public string SourceALabel => CurrentGame?.Basis is null ? "pc-builds" : "Steam";
@@ -318,7 +319,17 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     // ---- Reference table: date, sources, weekly update and the games worked out from Steam requirements ----
     public string ReferenceDate => ScoreInsights.Reference.Date.ToDateTime(TimeOnly.MinValue).ToString("d", Culture);
     public IReadOnlyDictionary<string, FpsSource> ReferenceSources => ScoreInsights.Reference.Sources;
-    public Func<bool, Task<bool>>? CheckReference { get; set; } // set by the app: true when a newer table is now in use
+    public Func<bool, Task<bool>>? CheckReference { get; set; }
+    // The player's own measurement of a game (average and 1% low), the most reliable number there is.
+    public Func<string, string?, (double Avg, double Low, DateTimeOffset? When)?>? Measured { get; set; }
+    // Calibration: the estimate for a measured game is scaled so its 1080p High matches what was measured (bounded, as the
+    // measurement may have used other settings or resolution).
+    private double Calibration(GameDemand g, int s, int m, int gpu)
+    {
+        if (Measured?.Invoke(g.Name, g.SteamAppId) is not { } me) return 1;
+        var est = ScoreInsights.Estimate(g, Resolution.P1080, Preset.High, s, m, gpu).Fps;
+        return est <= 0 ? 1 : Math.Clamp(me.Avg / est, 0.6, 1.4);
+    } // set by the app: true when a newer table is now in use
     public string RequirementsCache { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "cache", "fps-requirements.json");
     private sealed record CachedDemand(string Name, string? AppId, double Gpu, double Cpu, string? Basis, DateTimeOffset At);
     private bool resolving;
@@ -375,13 +386,15 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
             string[] fps = ["—", "—", "—", "—"]; string[] kinds = ["none", "none", "none", "none"];
             if (last is { Cpu1: { } s, CpuAll: { } m, Gpu: { } gpu })
             {
-                var cells = Enum.GetValues<Preset>().Select(p => ScoreInsights.Estimate(g, Resolution.P1080, p, s, m, gpu)).ToArray();
+                var k = Calibration(g, s, m, gpu);
+                var cells = Enum.GetValues<Preset>().Select(p => ScoreInsights.Estimate(g, Resolution.P1080, p, s, m, gpu)).Select(c => c with { Fps = c.Limiter == Limiter.Cap ? c.Fps : (int)Math.Round(c.Fps * k) }).ToArray();
                 fps = [.. cells.Select(c => c.Fps.ToString(Culture))]; kinds = [.. cells.Select(c => Kind(c.Fps))];
             }
             var initials = string.Concat(g.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => char.ToUpperInvariant(w[0])));
             // A game that caps its own frame rate shows the same number everywhere: say so instead of looking like an error.
             var capped = g.Cap is { } cap && fps.All(f => f == cap.ToString(Culture)) ? Text.Format("ScorePickCap", cap) : "";
             list.Add(new(i, g.Name, g.SteamAppId is { Length: > 0 } id ? Catalog.CatalogText.Portrait(id) : null, initials, fps[0], fps[1], fps[2], fps[3], kinds[0], kinds[1], kinds[2], kinds[3], i == gameIndex, capped,
+                Measured?.Invoke(g.Name, g.SteamAppId) is { } me ? Text.Format("ScoreMeasured", Math.Round(me.Avg), Math.Round(me.Low)) :
                 g.Basis is not null && g.Confidence == "" ? Text["ScoreConfSearched"] : g.Confidence switch { "alta" => Text["ScoreConfHigh"], "media" => Text["ScoreConfMid"], "baixa" => Text["ScoreConfLow"], _ => "" }));
         }
         return list;
@@ -449,7 +462,10 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         var game = gameList[gameIndex];
         foreach (var n in new[] { nameof(FpsSource), nameof(SourceALabel), nameof(SourceAUrl), nameof(SourceBLabel), nameof(SourceBUrl) }) OnPropertyChanged(n);
         static string Kind(int fps) => fps >= 60 ? "good" : fps >= 30 ? "mixed" : "bad";
-        var table = Enum.GetValues<Resolution>().Select(r => (r, Cells: Enum.GetValues<Preset>().Select(p => ScoreInsights.Estimate(game, r, p, s, m, g)).ToArray())).ToList();
+        var k = Calibration(game, s, m, g);
+        var table = Enum.GetValues<Resolution>().Select(r => (r, Cells: Enum.GetValues<Preset>().Select(p => ScoreInsights.Estimate(game, r, p, s, m, g)).Select(c => c with { Fps = c.Limiter == Limiter.Cap ? c.Fps : (int)Math.Round(c.Fps * k) }).ToArray())).ToList();
+        FpsMeasured = Measured?.Invoke(game.Name, game.SteamAppId) is { } me ? Text.Format("ScoreMeasuredLine", Math.Round(me.Avg), Math.Round(me.Low)) : "";
+        OnPropertyChanged(nameof(FpsMeasured));
         double top = Math.Max(60, table.SelectMany(x => x.Cells).Max(c => c.Fps));
         foreach (var (r, cells) in table)
         {

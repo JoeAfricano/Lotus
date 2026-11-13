@@ -3289,4 +3289,6 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="ScorePickCurrent" xml:space="preserve"><value>A tabela já é a mais recente.</value></data>
   <data name="SetFpsData" xml:space="preserve"><value>Atualizar a tabela de FPS sozinho</value></data>
   <data name="SetFpsDataHint" xml:space="preserve"><value>Uma vez por semana o Lotus confere se há uma tabela de FPS mais nova no repositório oficial (pequeno arquivo, validado antes de usar).</value></data>
+  <data name="ScoreMeasured" xml:space="preserve"><value>Medido no seu PC: {0} FPS (1% low {1})</value></data>
+  <data name="ScoreMeasuredLine" xml:space="preserve"><value>Medido no seu PC: {0} FPS de média, 1% low {1}. A estimativa abaixo foi calibrada com essa medição.</value></data>
 </root>

@@ -8,13 +8,13 @@ A tabela fica em `data/fps-reference.json` (com data e fontes) e vai embutida no
 
 | Confiança | O que significa | Origem |
 |---|---|---|
-| alta | 2 ou mais laboratórios com até 15% de diferença | (ainda nenhum jogo) |
+| alta | 2 ou mais laboratórios com até 15% de diferença | Notebookcheck cruzado com TechSpot/HUB ou GamersNexus |
 | média | 1 laboratório | Notebookcheck, GeForce RTX 5060 desktop, 1080p, por qualidade (Baixo/Médio/Alto/Ultra) |
 | baixa | sem medição de laboratório | tabela inicial do Lotus (médias públicas, sem registro de origem) ou requisitos recomendados da Steam |
 
-Fontes de laboratório: Notebookcheck, comparativo [RTX 5060 vs RTX 5070](https://www.notebookcheck.net/GeForce-RTX-5060-vs-GeForce-RTX-5070_12954_12952.247598.0.html) e [review da Asus Prime RTX 5060 OC](https://www.notebookcheck.net/Asus-Prime-GeForce-RTX-5060-OC-review-Strong-price-performance-GPU-for-1080p-gaming.1039116.0.html). Valores marcados com "~" na página não foram usados.
+Fontes de laboratório: Notebookcheck, comparativo [RTX 5060 vs RTX 5070](https://www.notebookcheck.net/GeForce-RTX-5060-vs-GeForce-RTX-5070_12954_12952.247598.0.html) e [review da Asus Prime RTX 5060 OC](https://www.notebookcheck.net/Asus-Prime-GeForce-RTX-5060-OC-review-Strong-price-performance-GPU-for-1080p-gaming.1039116.0.html). Valores marcados com "~" na página só foram usados quando outro laboratório confirmou (Black Myth: Wukong, confirmado pelo GamersNexus).
 
-Para usar depois (ainda não lançados na tabela): Tom's Hardware GPU hierarchy 2026, TechSpot/Hardware Unboxed (review RTX 5060) e GamersNexus, para cruzar e subir jogos para confiança alta. Calculadoras geradas por site (How Many FPS, CheckFPS e parecidas) não são usadas.
+Cruzamento: [TechSpot/Hardware Unboxed, review RTX 5060](https://www.techspot.com/review/2992-nvidia-geforce-rtx-5060/) e [GamersNexus, review RTX 5060](https://gamersnexus.net/gpus/forbidden-review-nvidia-rtx-5060-gpu-benchmarks). Quando só existe o valor de uma review no preset mais alto, o Lotus estima o Alto como esse valor ÷ 0,78 (o passo Alto→Ultra da tabela). As páginas do Notebookcheck, TechSpot e Tom's Hardware recusam leitura automática (403), então os valores foram passados à mão; Tom's Hardware ainda não foi incorporado. Calculadoras geradas por site (How Many FPS, CheckFPS e parecidas) não são usadas.
 
 ## Como a conta é feita
 
@@ -37,4 +37,8 @@ Para usar depois (ainda não lançados na tabela): Tom's Hardware GPU hierarchy 
 
 ## Estado em 13/11/2026
 
-134 jogos: 32 com confiança média (Notebookcheck) e 102 com confiança baixa (22 da tabela inicial e 80 populares calculados pelos requisitos da Steam). Nenhum ainda com confiança alta. Pendente: cruzar com Tom's Hardware, TechSpot e GamersNexus; mostrar "Medido no seu PC" quando o jogo já foi medido pelo Lotus.
+136 jogos: 4 com confiança alta (Black Myth: Wukong, God of War Ragnarök, S.T.A.L.K.E.R. 2, Star Wars Outlaws), 35 com confiança média e 97 com confiança baixa (22 da tabela inicial e 75 populares calculados pelos requisitos da Steam). Os jogos de esports (CS2, Valorant, Fortnite, Apex, LoL, R6, Rocket League) seguem sem dado de laboratório confiável para a RTX 5060 e ficam como "Estimativa simples".
+
+## Medido no seu PC
+
+Quando o Lotus já mediu o jogo neste PC (Preparar e jogar / medição com PresentMon), o cartão mostra "Medido no seu PC: X FPS (1% low Y)" e a estimativa daquele jogo é calibrada: os números são escalados para que 1080p Alto bata com a média medida (limitado entre 0,6× e 1,4×, porque a medição pode ter usado outra qualidade ou resolução).

@@ -27,6 +27,8 @@ $doc = [ordered]@{
     calibration = 'Ryzen 5 5500 + RTX 5060 (1080p)'
     sources = [ordered]@{
         'notebookcheck-5060' = [ordered]@{ label = 'Notebookcheck: GeForce RTX 5060 (desktop), 1080p'; url = 'https://www.notebookcheck.net/GeForce-RTX-5060-vs-GeForce-RTX-5070_12954_12952.247598.0.html' }
+        'techspot-5060' = [ordered]@{ label = 'TechSpot / Hardware Unboxed: review RTX 5060, 1080p'; url = 'https://www.techspot.com/review/2992-nvidia-geforce-rtx-5060/' }
+        'gamersnexus-5060' = [ordered]@{ label = 'GamersNexus: review RTX 5060, 1080p'; url = 'https://gamersnexus.net/gpus/forbidden-review-nvidia-rtx-5060-gpu-benchmarks' }
         'lotus-initial' = [ordered]@{ label = 'Tabela inicial do Lotus (médias públicas de benchmarks)'; url = 'https://github.com/JoeAfricano/Lotus/blob/main/docs/LOTUS_FPS_SOURCES.md' }
         'steam-requirements' = [ordered]@{ label = 'Requisitos recomendados da Steam (estimativa)'; url = 'https://store.steampowered.com/' }
     }

@@ -3289,4 +3289,6 @@ Your games and Windows are not changed.</value></data>
   <data name="ScorePickCurrent" xml:space="preserve"><value>The table is already the latest.</value></data>
   <data name="SetFpsData" xml:space="preserve"><value>Update the FPS table automatically</value></data>
   <data name="SetFpsDataHint" xml:space="preserve"><value>Once a week Lotus checks the official repository for a newer FPS table (a small file, validated before use).</value></data>
+  <data name="ScoreMeasured" xml:space="preserve"><value>Measured on your PC: {0} FPS (1% low {1})</value></data>
+  <data name="ScoreMeasuredLine" xml:space="preserve"><value>Measured on your PC: {0} FPS average, 1% low {1}. The estimate below is calibrated with that measurement.</value></data>
 </root>

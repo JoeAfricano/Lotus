@@ -100,6 +100,7 @@
       <StackPanel VerticalAlignment="Center" Padding="22,0" Spacing="2" RequestedTheme="Dark">
        <TextBlock Text="{Binding Text[ScoreFpsTitle]}" FontSize="12" FontWeight="Bold" CharacterSpacing="140" Foreground="#F58BB7"/>
        <TextBlock Text="{Binding FpsGameName}" FontSize="26" FontWeight="Bold" Foreground="White" TextTrimming="CharacterEllipsis"/>
+       <TextBlock Text="{Binding FpsMeasured}" FontSize="14" FontWeight="SemiBold" Foreground="#9FE3C1" Visibility="{Binding FpsMeasured, Converter={StaticResource PresenceVisibility}}"/>
       </StackPanel>
      </Grid>
      <ItemsControl x:Name="FpsTable" ItemsSource="{Binding FpsRows}" AutomationProperties.AutomationId="score-fps-table">
