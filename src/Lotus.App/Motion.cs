@@ -28,7 +28,7 @@ public static class Motion
     private static bool systemAnimations = true;
     private static long systemCheckedAt = long.MinValue / 2;
     public static bool Active => On;
-    public static readonly TimeSpan Fast = TimeSpan.FromMilliseconds(120), Normal = TimeSpan.FromMilliseconds(220), Slow = TimeSpan.FromMilliseconds(360);
+    public static readonly TimeSpan Fast = TimeSpan.FromMilliseconds(120), Hover = TimeSpan.FromMilliseconds(150), Normal = TimeSpan.FromMilliseconds(220), Slow = TimeSpan.FromMilliseconds(360);
 
     private static CompositionEasingFunction Ease(Compositor c) => c.CreateCubicBezierEasingFunction(new Vector2(0.05f, 0.7f), new Vector2(0.1f, 1f));
 
@@ -90,7 +90,7 @@ public static class Motion
     }
 
     // ---- Page entrance: content rises 14 px and fades in ----
-    public static void EnterPage(UIElement element) => Rise(element, 16, TimeSpan.FromMilliseconds(420), fromScale: 0.985f);
+    public static void EnterPage(UIElement element) => Rise(element, 16, TimeSpan.FromMilliseconds(300), fromScale: 0.985f); // visual 2.0: 300 ms in (Windows motion guidance)
 
     // Fade in while moving up from `distance` px, on the element's Translation (layout is never touched).
     private static void Rise(UIElement element, float distance, TimeSpan duration, float fromOpacity = 0, float fromScale = 1)
@@ -140,7 +140,7 @@ public static class Motion
 
     // ---- Staggered entrance for a panel's children (cards arrive one after another) ----
     public static readonly DependencyProperty StaggerProperty = DependencyProperty.RegisterAttached("Stagger", typeof(bool), typeof(Motion),
-        new PropertyMetadata(false, (d, e) => { if (d is Panel p) p.ChildrenTransitions = e.NewValue is true && On ? [new EntranceThemeTransition { IsStaggeringEnabled = true, FromVerticalOffset = 24 }, new RepositionThemeTransition()] : null; }));
+        new PropertyMetadata(false, (d, e) => { if (d is Panel p) p.ChildrenTransitions = e.NewValue is true && On ? [new EntranceThemeTransition { IsStaggeringEnabled = true, FromVerticalOffset = 16 }, new RepositionThemeTransition()] : null; }));
     public static bool GetStagger(DependencyObject d) => (bool)d.GetValue(StaggerProperty);
     public static void SetStagger(DependencyObject d, bool value) => d.SetValue(StaggerProperty, value);
 
@@ -152,7 +152,7 @@ public static class Motion
 
     private static void AttachHover(FrameworkElement f, double scale)
     {
-        f.ScaleTransition = new Vector3Transition { Duration = Normal }; f.TranslationTransition = new Vector3Transition { Duration = Normal };
+        f.ScaleTransition = new Vector3Transition { Duration = Hover }; f.TranslationTransition = new Vector3Transition { Duration = Hover };
         f.SizeChanged += (_, _) => f.CenterPoint = new Vector3((float)f.ActualWidth / 2, (float)f.ActualHeight / 2, 0);
         // Cards (Borders) also light their edge in the accent while the pointer is over them.
         Microsoft.UI.Xaml.Media.Brush? restBorder = null;

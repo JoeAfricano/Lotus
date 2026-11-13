@@ -8,7 +8,14 @@ namespace Lotus.App.Controls;
 public sealed partial class GamesPanel : UserControl
 {
     public event EventHandler<GameCard>? DetailsRequested; // the page shows the game's details
-    private void OnGameClick(object sender, ItemClickEventArgs e) { if (e.ClickedItem is GameCard card) DetailsRequested?.Invoke(this, card); }
+    // Visual 2.0: the clicked cover flies to the game page (connected animation; off with Reduce motion).
+    private void OnGameClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is not GameCard card) return;
+        if (Motion.Active) try { Library.PrepareConnectedAnimation(ConnectedCoverKey, card, "CoverArt"); } catch (Exception ex) { Serilog.Log.Debug(ex, "Cover animation unavailable"); }
+        DetailsRequested?.Invoke(this, card);
+    }
+    public const string ConnectedCoverKey = "lotus-cover";
     private void OnDetails(object sender, RoutedEventArgs e) { if (sender is FrameworkElement { DataContext: GameCard card }) DetailsRequested?.Invoke(this, card); }
     public GamesPanel()
     {

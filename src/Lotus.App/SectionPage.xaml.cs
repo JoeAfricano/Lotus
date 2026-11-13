@@ -192,7 +192,12 @@ public sealed partial class SectionPage : Page
     private async void OnGameDetails(object? sender, Lotus.Core.Games.GameCard card)
     {
         if (DataContext is not SectionViewModel { GameDetails: { } details } || GamesList is null || GameDetail is null) return;
-        GamesList.Visibility = Visibility.Collapsed; GameDetail.Visibility = Visibility.Visible; Motion.EnterPage(GameDetail);
+        GamesList.Visibility = Visibility.Collapsed; GameDetail.Visibility = Visibility.Visible;
+        // The cover flies into the page's hero when it was prepared (a click on a library cover); otherwise the page rises.
+        var flight = Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.GetForCurrentView().GetAnimation(Controls.GamesPanel.ConnectedCoverKey);
+        var flying = false;
+        if (flight is not null) try { flight.Configuration = new Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration(); flying = flight.TryStart(GameDetail.HeroElement); } catch (Exception ex) { Serilog.Log.Debug(ex, "Cover animation"); }
+        if (!flying) Motion.EnterPage(GameDetail);
         PageScroll.ChangeView(null, 0, null, true);
         await details.LoadInstalledAsync(card.Game);
     }
