@@ -47,7 +47,7 @@ public sealed partial class ContinueCard : UserControl
         root.CornerRadius = new CornerRadius(Bleed ? 0 : 16);
         root.Children.Add(new Rectangle { Fill = HomeMotion.Gradient(new(0, 0), new(1, 0), (0, Color.FromArgb(0xF2, 18, 9, 15)), (0.38, Color.FromArgb(0xB3, 18, 9, 15)), (0.62, Color.FromArgb(0x1A, 18, 9, 15)), (1, Color.FromArgb(Bleed ? (byte)0x8C : (byte)0x33, 18, 9, 15))) }); // dark behind the text, the art bright in the middle
         // Bleed: the art melts into the page background instead of ending on a hard edge.
-        var page = Application.Current.Resources["NavigationViewContentBackground"] is SolidColorBrush pb ? pb.Color : Color.FromArgb(255, 18, 9, 15);
+        var page = PageColor(); // Home paints this same solid color behind the page, so the fade has no edge
         root.Children.Add(new Rectangle { Fill = Bleed
             ? HomeMotion.Gradient(new(0, 0), new(0, 1), (0.45, Color.FromArgb(0, page.R, page.G, page.B)), (0.8, Color.FromArgb((byte)(page.A * 0.85), page.R, page.G, page.B)), (1, page))
             : HomeMotion.Gradient(new(0, 0), new(0, 1), (0.5, Color.FromArgb(0, 18, 9, 15)), (1, Color.FromArgb(0xB3, 18, 9, 15))) });
@@ -98,6 +98,8 @@ public sealed partial class ContinueCard : UserControl
         HomeMotion.Rise(text);
     }
 
+    // The opaque page color under Home (the theme canvas); SectionPage uses it as Home's background.
+    public static Color PageColor() => Application.Current.Resources["WindowBrush"] is SolidColorBrush b ? Color.FromArgb(255, b.Color.R, b.Color.G, b.Color.B) : Color.FromArgb(255, 18, 9, 15);
     private bool watching;
     private SectionViewModel? shown;
 
@@ -140,7 +142,7 @@ public sealed partial class ReadinessCard : UserControl
     private readonly Microsoft.UI.Xaml.Shapes.Path arc = new() { StrokeThickness = Stroke, StrokeStartLineCap = PenLineCap.Round, StrokeEndLineCap = PenLineCap.Round };
     private readonly TextBlock score = new() { FontSize = 72, FontWeight = Microsoft.UI.Text.FontWeights.Bold, CharacterSpacing = -40, HorizontalAlignment = HorizontalAlignment.Center, LineHeight = 74, LineStackingStrategy = LineStackingStrategy.BlockLineHeight };
     private readonly TextBlock eyebrow = new() { FontSize = 12, CharacterSpacing = 160, FontWeight = Microsoft.UI.Text.FontWeights.Bold };
-    private readonly TextBlock headline = new() { FontSize = 14, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, HorizontalAlignment = HorizontalAlignment.Center, TextAlignment = TextAlignment.Center, TextWrapping = TextWrapping.Wrap, MaxWidth = 116, MaxLines = 2, FontSize = 13 };
+    private readonly TextBlock headline = new() { FontSize = 13, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, HorizontalAlignment = HorizontalAlignment.Center, TextAlignment = TextAlignment.Center, TextWrapping = TextWrapping.Wrap, MaxWidth = 116, MaxLines = 2 };
     private readonly TextBlock advice = new() { FontSize = 14, TextWrapping = TextWrapping.Wrap };
     private readonly StackPanel factRows = new() { Spacing = 10 };
     private readonly TextBlock facts = new() { FontSize = 12, TextWrapping = TextWrapping.Wrap };
@@ -200,6 +202,7 @@ public sealed partial class ReadinessCard : UserControl
     public void SetCompact(bool compact)
     {
         ringBox.Width = ringBox.Height = compact ? 132 : Ring;
+        headline.Visibility = compact ? Visibility.Collapsed : Visibility.Visible; // too small to read in the small ring; the advice beside it says it
         Grid.SetColumnSpan(eyebrow, 2);
         Grid.SetRow(ringBox, 1); Grid.SetColumn(ringBox, 0); Grid.SetColumnSpan(ringBox, compact ? 1 : 2);
         Grid.SetRow(details, compact ? 1 : 2); Grid.SetColumn(details, compact ? 1 : 0); Grid.SetColumnSpan(details, compact ? 1 : 2);

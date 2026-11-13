@@ -349,6 +349,7 @@ public sealed partial class SectionPage : Page
             ShowFaq = ShowSettings && shell.SettingsCategoryIndex == 4; ShowBackup = ShowSettings && shell.SettingsCategoryIndex == 5; ShowUpdates = ShowSettings && shell.SettingsCategoryIndex == 6;
             Bindings.Update();
             PageHeader.Visibility = ShowHome ? Visibility.Collapsed : Visibility.Visible;
+            Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(ShowHome ? Controls.ContinueCard.PageColor() : Microsoft.UI.Colors.Transparent); // Home: one solid color so the hero fades into it
             if (ShowOptimize) OptimizeTabs.SelectedItem = OptimizeTabs.Items[shell.OptimizeTabIndex];
             if (ShowPerformance) PerformanceTabs.SelectedItem = PerformanceTabs.Items[shell.PerformanceTabIndex];
             if (ShowSettings) SyncSettingsTabs(shell);

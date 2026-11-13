@@ -55,7 +55,7 @@
    <StackPanel Spacing="12"><Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE7FC;" Style="{StaticResource BadgeIconStyle}"/></Border><TextBlock Text="{Binding EmptyMessage}" Style="{StaticResource BodyStyle}"/></StackPanel>
   </Border>
   <!-- Library -->
-  <GridView x:Name="Library" SizeChanged="OnLibrarySizeChanged" ItemsSource="{Binding Games}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="OnGameClick" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0" AutomationProperties.AutomationId="games-grid">
+  <GridView x:Name="Library" app:Fit.GridMinItemWidth="200" ItemsSource="{Binding Games}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="OnGameClick" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0" AutomationProperties.AutomationId="games-grid">
    <GridView.Resources>
     <!-- Visual 3.0: no grey hover/selection rectangle over the rounded covers (the cover itself lifts) -->
     <SolidColorBrush x:Key="GridViewItemBackgroundPointerOver" Color="Transparent"/><SolidColorBrush x:Key="GridViewItemBackgroundPressed" Color="Transparent"/>
@@ -65,9 +65,9 @@
    <GridView.ItemTemplate><DataTemplate>
     <!-- Visual 3.0: the cover is the card. Play, Otimizar and the rest appear over it on hover or keyboard focus. -->
     <Grid VerticalAlignment="Top" RowSpacing="10" Background="Transparent" PointerEntered="OnCardEnter" PointerExited="OnCardLeave" GotFocus="OnCardEnter" LostFocus="OnCardLeave">
-     <Grid.RowDefinitions><RowDefinition Height="276"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
      <!-- Cover or initials (named: it flies to the game page) -->
-     <Border x:Name="CoverArt" CornerRadius="14" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04">
+     <Border x:Name="CoverArt" app:Fit.Aspect="1.5" Height="276" CornerRadius="14" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04">
       <Grid>
        <Image Source="{Binding Name, Converter={StaticResource FallbackCover}}" Stretch="UniformToFill" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}" AutomationProperties.AccessibilityView="Raw"/>
        <TextBlock Text="{Binding Initials}" FontFamily="Georgia" FontSize="44" FontWeight="SemiBold" Foreground="#FFF6F9" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>

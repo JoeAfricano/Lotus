@@ -14,7 +14,7 @@
      </StackPanel>
     </Grid>
     <!-- Your games on the left, Game list and Lotus Ports as two big tiles on the right -->
-    <StackPanel x:Name="HomeBelow" Spacing="24" Margin="0,8,0,0">
+    <StackPanel x:Name="HomeBelow" Spacing="24" Margin="0,-28,0,0">
      <StackPanel x:Name="HomeGamesBlock" Spacing="12">
     <!-- Your games: quick shortcuts; the cover opens My Games, Play starts the game -->
     <Grid ColumnSpacing="12" Margin="0,8,0,0" Visibility="{Binding Games.HasFeatured, Converter={StaticResource BooleanVisibility}}">
