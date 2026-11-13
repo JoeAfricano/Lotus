@@ -3328,7 +3328,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GtValuesOverclock" xml:space="preserve"><value>Core +{0} MHz · Memory +{1} MHz · Power limit at maximum</value></data>
   <data name="GtValuesStock" xml:space="preserve"><value>Everything at stock (Afterburner&apos;s Reset button)</value></data>
   <data name="GtHowUndervolt" xml:space="preserve"><value>In Afterburner, press Ctrl+F to open the curve editor. Drag the point at the shown voltage up to the shown clock, hold Shift and drag the points to the right down until the line is flat, then click Apply.</value></data>
-  <data name="GtHowOverclock" xml:space="preserve"><value>In Afterburner, move &quot;Power Limit&quot; to the maximum, add the values to &quot;Core Clock&quot; and &quot;Memory Clock&quot; and click Apply. You can also run OC Scanner (Ctrl+F › OC Scanner) and then test here.</value></data>
+  <data name="GtHowOverclock" xml:space="preserve"><value>Fastest and safest: Afterburner&apos;s OC Scanner (Ctrl+F › OC Scanner › Scan, about 20 minutes). It tests by itself and applies a conservative gain; then use &quot;Test for 5 minutes&quot; here to check. Advanced alternative (Lotus ladder): move &quot;Power Limit&quot; to the maximum, add the values above to &quot;Core Clock&quot; and &quot;Memory Clock&quot;, click Apply and test.</value></data>
   <data name="GtHowStock" xml:space="preserve"><value>In Afterburner, click Reset and then Apply. The card is back to stock.</value></data>
   <data name="GtHowRadeon" xml:space="preserve"><value>Radeon cards: AMD Adrenalin › Performance › Tuning. Start with voltage at -40 mV and go 25 mV lower after each stable test.</value></data>
   <data name="GtTestTitle" xml:space="preserve"><value>Test stability</value></data>
