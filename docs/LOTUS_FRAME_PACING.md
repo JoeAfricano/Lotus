@@ -28,6 +28,26 @@ Estudo feito em 12/11/2026 no PC do José: Ryzen 5 5500, RTX 5060 8 GB em PCIe 3
 - Quando a taxa exata é desconhecida, nada muda em relação ao comportamento anterior.
 - O "Por que está travando?" avisa quando o limite do RivaTuner (do jogo ou Global) está acima da taxa real em monitor sem VRR (`WhyCapAboveRefresh`).
 
+## Em outros PCs
+
+O 74,97 é do PC do José. O Lotus não grava esse número para todos: ele lê a taxa exata do monitor de cada PC e aplica a mesma regra.
+
+| Monitor (taxa real) | Limite do RivaTuner |
+|---|---|
+| 60,000 Hz | 59,99 |
+| 59,94 Hz (o Windows mostra "59") | 59,93 |
+| 74,973 Hz (o do José) | 74,97 |
+| 143,856 Hz | 143,85 |
+| 144,000 Hz | 143,99 |
+| 164,917 Hz | 164,91 |
+| PC mais fraco em monitor de 143,856 Hz (metade da taxa) | 71,92 |
+
+- **Monitor com FreeSync/G-Sync:** a regra é outra. O limite fica 3 FPS abaixo da taxa (no mínimo 57), sem V-Sync na fila.
+- **Placa NVIDIA com Direct3D 11/12:** usa o limitador Reflex. Nas placas AMD e Intel, e nos jogos em outras APIs, usa o limitador "fluido" (front edge sync).
+- **PC que não aguenta a taxa do monitor:** usa a metade exata da taxa (ou um terço), também logo abaixo do valor real.
+- **Taxa exata desconhecida** (o Windows não respondeu): usa a taxa inteira, como antes.
+- Os testes `FixedRateCapFollowsEachMonitor` conferem a tabela acima.
+
 ## Não verificado
 
 - Só um jogo foi medido (benchmark, sem jogar de verdade). O atraso do controle não foi medido, só o tempo do quadro até a tela.

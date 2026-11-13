@@ -66,6 +66,22 @@ public sealed class GameIntelTests
         Assert.False(FramePacing.AboveRefresh(74.97, 74.973));
     }
 
+    // The same rule on other monitors: the cap follows each PC's own exact rate (or the exact fraction of it).
+    [Theory]
+    [InlineData(60, 60.0, 1, 59.99)]
+    [InlineData(59, 59.94, 1, 59.93)]       // Windows lists a 59.94 Hz mode as 59
+    [InlineData(144, 144.0, 1, 143.99)]
+    [InlineData(144, 143.856, 1, 143.85)]
+    [InlineData(165, 164.917, 1, 164.91)]
+    [InlineData(144, 143.856, 2, 71.92)]    // weaker PC on a fast monitor: exact half
+    [InlineData(60, 60.0, 2, 29.99)]
+    public void FixedRateCapFollowsEachMonitor(int nominal, double exact, int divisor, double expected)
+    {
+        var cap = FramePacing.FixedCap(FramePacing.RealRefresh(nominal, exact), divisor);
+        Assert.Equal(expected, cap, 3);
+        Assert.False(FramePacing.AboveRefresh(cap * divisor, exact));
+    }
+
     [Fact] public void EdidRevealsNameRangeAndFreeSync()
     {
         var edid = new byte[256];
