@@ -315,8 +315,51 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     public string SourceAUrl => CurrentGame is { Basis: not null, SteamAppId: { } id } ? $"https://store.steampowered.com/app/{id}/" : "https://pc-builds.com/pt/fps-calculator/";
     public string SourceBLabel => CurrentGame?.Basis is null ? "How Many FPS" : "pc-builds";
     public string SourceBUrl => CurrentGame?.Basis is null ? "https://howmanyfps.com/" : "https://pc-builds.com/pt/fps-calculator/";
+    // ---- Reference table: date, sources, weekly update and the games worked out from Steam requirements ----
+    public string ReferenceDate => ScoreInsights.Reference.Date.ToDateTime(TimeOnly.MinValue).ToString("d", Culture);
+    public IReadOnlyDictionary<string, FpsSource> ReferenceSources => ScoreInsights.Reference.Sources;
+    public Func<bool, Task<bool>>? CheckReference { get; set; } // set by the app: true when a newer table is now in use
+    public string RequirementsCache { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "cache", "fps-requirements.json");
+    private sealed record CachedDemand(string Name, string? AppId, double Gpu, double Cpu, string? Basis, DateTimeOffset At);
+    private bool resolving;
+    // Games listed by name only (popular, no lab numbers): estimated from their Steam requirements, one at a time,
+    // kept 30 days so each is asked again only after that.
+    public async Task ResolvePendingAsync(CancellationToken token = default)
+    {
+        if (resolving || FindGame is null) return;
+        resolving = true;
+        try
+        {
+            var cache = new Dictionary<string, CachedDemand>();
+            try { if (File.Exists(RequirementsCache)) cache = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, CachedDemand>>(File.ReadAllText(RequirementsCache)) ?? cache; }
+            catch (Exception ex) when (ex is IOException or System.Text.Json.JsonException) { log(ex); }
+            var changed = false;
+            foreach (var p in ScoreInsights.Reference.Pending)
+            {
+                if (token.IsCancellationRequested) break;
+                if (cache.TryGetValue(p.Name, out var c) && DateTimeOffset.Now - c.At < FpsReference.RequirementsKeep)
+                { if (c.Gpu > 0) ScoreInsights.AddResolved(new(p.Name, c.Gpu, c.Cpu, p.Cap, c.AppId ?? p.SteamAppId, c.Basis, Confidence: "baixa", Store: p.Store) { SourceText = Text["ScorePickFromReq"] }); continue; }
+                try
+                {
+                    var found = await FindGame(p.Name, token);
+                    var d = found is { } f ? ScoreInsights.FromRequirements(p.Name, f.AppId, f.Requirements) : null;
+                    cache[p.Name] = new(p.Name, d?.SteamAppId ?? p.SteamAppId, d?.GpuFps ?? 0, d?.CpuFps ?? 0, d?.Basis, DateTimeOffset.Now); changed = true;
+                    if (d is not null) ScoreInsights.AddResolved(d with { Confidence = "baixa", Cap = p.Cap, Store = p.Store, SteamAppId = p.SteamAppId ?? d.SteamAppId, SourceText = Text["ScorePickFromReq"] });
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
+                await Task.Delay(350, token);
+            }
+            if (changed)
+                try { Directory.CreateDirectory(Path.GetDirectoryName(RequirementsCache)!); File.WriteAllText(RequirementsCache, System.Text.Json.JsonSerializer.Serialize(cache)); }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { log(ex); }
+            BuildInsights();
+        }
+        catch (OperationCanceledException) { }
+        finally { resolving = false; }
+    }
+
     // The game picker (cards): every game in the list with its 1080p estimate per quality, filtered by the typed text.
-    public sealed record FpsPick(int Index, string Name, string? Cover, string Initials, string Low, string Medium, string High, string Ultra, string LowKind, string MediumKind, string HighKind, string UltraKind, bool Selected, string CapText = "")
+    public sealed record FpsPick(int Index, string Name, string? Cover, string Initials, string Low, string Medium, string High, string Ultra, string LowKind, string MediumKind, string HighKind, string UltraKind, bool Selected, string CapText = "", string Note = "")
     {
         public bool HasCap => CapText.Length > 0;
     }
@@ -338,7 +381,8 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
             var initials = string.Concat(g.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => char.ToUpperInvariant(w[0])));
             // A game that caps its own frame rate shows the same number everywhere: say so instead of looking like an error.
             var capped = g.Cap is { } cap && fps.All(f => f == cap.ToString(Culture)) ? Text.Format("ScorePickCap", cap) : "";
-            list.Add(new(i, g.Name, g.SteamAppId is { Length: > 0 } id ? Catalog.CatalogText.Portrait(id) : null, initials, fps[0], fps[1], fps[2], fps[3], kinds[0], kinds[1], kinds[2], kinds[3], i == gameIndex, capped));
+            list.Add(new(i, g.Name, g.SteamAppId is { Length: > 0 } id ? Catalog.CatalogText.Portrait(id) : null, initials, fps[0], fps[1], fps[2], fps[3], kinds[0], kinds[1], kinds[2], kinds[3], i == gameIndex, capped,
+                g.Basis is not null && g.Confidence == "" ? Text["ScoreConfSearched"] : g.Confidence switch { "alta" => Text["ScoreConfHigh"], "media" => Text["ScoreConfMid"], "baixa" => Text["ScoreConfLow"], _ => "" }));
         }
         return list;
     }

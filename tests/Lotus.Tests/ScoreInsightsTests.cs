@@ -12,8 +12,8 @@ public sealed class ScoreInsightsTests
     {
         var cp = Game("Cyberpunk 2077");
         var high = ScoreInsights.Estimate(cp, Resolution.P1080, Preset.High, S, M, G);
-        Assert.InRange(high.Fps, 80, 86);                                  // GPU-limited, a bit under the 85 reference
-        Assert.Equal(Limiter.Gpu, high.Limiter);
+        Assert.InRange(high.Fps, 100, 125);                                // lab 125 at High (RTX 5060), held a little by the 5500
+        Assert.NotEqual(Limiter.Cap, high.Limiter);
         var low = ScoreInsights.Estimate(cp, Resolution.P1080, Preset.Low, S, M, G).Fps;
         var k4 = ScoreInsights.Estimate(cp, Resolution.P2160, Preset.High, S, M, G).Fps;
         Assert.True(low > high.Fps && k4 < high.Fps);
@@ -53,6 +53,40 @@ public sealed class ScoreInsightsTests
         var list = ScoreInsights.Ordered([("God of War", "1593500"), ("Unknown Indie", null), ("persona 5 royal", null)]);
         Assert.Equal(["God of War", "Persona 5 Royal"], list.Take(2).Select(g => g.Name));
         Assert.Equal(ScoreInsights.Games.Count, list.Count);
+    }
+
+    [Fact] public void BuiltInReferenceIsValidAndLarge()
+    {
+        var r = FpsReference.Builtin();
+        Assert.True(r.Count >= 100);                                   // 100+ games (lab numbers or Steam requirements)
+        Assert.All(r.Games, g => Assert.InRange(g.GpuFps, 1, 2000));
+        Assert.All(r.Games.Concat(r.Pending), g => Assert.Contains(g.Confidence, new[] { "alta", "media", "baixa" }));
+        Assert.Contains(r.Games, g => g.Lab is { Count: 4 });
+        Assert.NotEmpty(r.Sources);
+    }
+
+    [Fact] public void ReferenceRejectsBadDataAndKeepsTheCopyInUse()
+    {
+        var good = FpsReference.Builtin();
+        Assert.Null(FpsReference.Parse("not json"));
+        Assert.Null(FpsReference.Parse("{\"schema\":2}"));
+        var json = System.Text.Json.Nodes.JsonNode.Parse(new StreamReader(typeof(FpsReference).Assembly.GetManifestResourceStream("fps-reference.json")!).ReadToEnd())!;
+        json["games"]![0]!["lab1080"] = new System.Text.Json.Nodes.JsonArray(99999, 1, 1, 1);  // impossible FPS
+        Assert.Null(FpsReference.Parse(json.ToJsonString()));
+        var older = good with { Date = good.Date.AddDays(-1) };
+        Assert.False(FpsReference.IsNewer(older, good));                // never go back to older data
+        Assert.False(FpsReference.IsNewer(null, good));
+        Assert.True(FpsReference.IsNewer(good with { Date = good.Date.AddDays(7) }, good));
+    }
+
+    [Fact] public void ReferenceIsCheckedWeeklyAtMostAndOnlyWhenAllowed()
+    {
+        var now = DateTimeOffset.Now;
+        Assert.True(FpsReference.ShouldCheck(null, now, true));
+        Assert.False(FpsReference.ShouldCheck(now.AddDays(-3), now, true));
+        Assert.True(FpsReference.ShouldCheck(now.AddDays(-8), now, true));
+        Assert.False(FpsReference.ShouldCheck(null, now, false));     // option off: never asks
+        Assert.True(FpsReference.ShouldCheck(now.AddDays(2), now, true)); // clock went back: check again
     }
 
     [Fact] public void AnyGameFromSteamRequirements()

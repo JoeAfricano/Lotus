@@ -26,7 +26,7 @@ public static class FpsGamePicker
            <Image Source="{Binding Cover, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/>
            <Border Visibility="{Binding HasCap, Converter={StaticResource BooleanVisibility}}" Margin="6" Padding="8,3" CornerRadius="8" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="#D912090F"><TextBlock Text="{Binding CapText}" FontSize="12" FontWeight="SemiBold" Foreground="#EEC1A8"/></Border>
           </Grid>
-          <TextBlock Grid.Row="1" Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" TextTrimming="CharacterEllipsis"/>
+          <StackPanel Grid.Row="1" Spacing="1"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Note}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis"/></StackPanel>
           <Grid Grid.Row="2" ColumnSpacing="4">
            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
            <StackPanel><TextBlock Text="L" FontSize="12" Foreground="{ThemeResource MutedBrush}"/><TextBlock Text="{Binding Low}" FontSize="16" FontWeight="Bold" Foreground="{Binding LowKind, Converter={StaticResource DiaryBrush}}"/></StackPanel>
@@ -56,7 +56,7 @@ public static class FpsGamePicker
         var sheet = new Grid { MaxWidth = 1100, Margin = new Thickness(40, 32, 40, 32), CornerRadius = new CornerRadius(22), BorderThickness = new Thickness(1),
             Background = (Brush)res["WindowBrush"], BorderBrush = (Brush)res["GoldGradientBrush"], Padding = new Thickness(28, 24, 28, 24), RowSpacing = 16 };
         sheet.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); sheet.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        sheet.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); sheet.RowDefinitions.Add(new RowDefinition());
+        sheet.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); sheet.RowDefinitions.Add(new RowDefinition()); sheet.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
         var head = new Grid { ColumnSpacing = 12 };
         head.ColumnDefinitions.Add(new ColumnDefinition()); head.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -97,7 +97,29 @@ public static class FpsGamePicker
         };
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(grid, "score-pick-grid");
         Grid.SetRow(grid, 3); sheet.Children.Add(grid);
+        // Footer: when the numbers are from, their sources, and a manual check for a newer table.
+        var foot = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12 };
+        var dated = new TextBlock { FontSize = 12, Foreground = (Brush)res["MutedBrush"], VerticalAlignment = VerticalAlignment.Center };
+        var sourcesFlyout = new MenuFlyout();
+        void Sources() { sourcesFlyout.Items.Clear(); foreach (var s in vm.ReferenceSources.Values) { var item = new MenuFlyoutItem { Text = s.Label }; var url = s.Url; item.Click += async (_, _) => await Windows.System.Launcher.LaunchUriAsync(new Uri(url)); sourcesFlyout.Items.Add(item); } }
+        var sourcesButton = new HyperlinkButton { Content = t["ScorePickSources"], Padding = new Thickness(4, 2, 4, 2) };
+        sourcesButton.Click += (_, _) => sourcesFlyout.ShowAt(sourcesButton);
+        var refresh = new HyperlinkButton { Content = t["ScorePickRefresh"], Padding = new Thickness(4, 2, 4, 2) };
+        foot.Children.Add(dated); foot.Children.Add(sourcesButton); foot.Children.Add(refresh);
+        void Foot() { dated.Text = t.Format("ScorePickDate", vm.ReferenceDate, ScoreInsights.Games.Count); Sources(); }
+        refresh.Click += async (_, _) =>
+        {
+            refresh.IsEnabled = false; status.Text = t["ScorePickChecking"];
+            var newer = vm.CheckReference is { } check && await check(true);
+            await vm.ResolvePendingAsync();
+            Fill(box.Text); Foot(); status.Text = t[newer ? "ScorePickUpdated" : "ScorePickCurrent"]; refresh.IsEnabled = true;
+        };
+        Grid.SetRow(foot, 4); sheet.Children.Add(foot);
+        Foot();
         host.Children.Add(sheet);
+        // Popular games listed by name are worked out from Steam requirements in the background (cached 30 days).
+        async void Resolve() { try { await vm.ResolvePendingAsync(); if (popup.IsOpen) { Fill(box.Text); Foot(); } } catch (Exception ex) { Serilog.Log.Warning(ex, "FPS requirements"); } }
+        Resolve(); // network waits only; the view model stays on the UI thread
 
         void Fill(string text) { grid.ItemsSource = vm.Picks(text); status.Text = vm.FpsSearchStatus; }
         Fill("");

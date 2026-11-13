@@ -1,0 +1,1463 @@
+{
+    "schema":  1,
+    "date":  "2026-11-13",
+    "calibration":  "Ryzen 5 5500 + RTX 5060 (1080p)",
+    "sources":  {
+                    "notebookcheck-5060":  {
+                                               "label":  "Notebookcheck: GeForce RTX 5060 (desktop), 1080p",
+                                               "url":  "https://www.notebookcheck.net/GeForce-RTX-5060-vs-GeForce-RTX-5070_12954_12952.247598.0.html"
+                                           },
+                    "lotus-initial":  {
+                                          "label":  "Tabela inicial do Lotus (médias públicas de benchmarks)",
+                                          "url":  "https://github.com/JoeAfricano/Lotus/blob/main/docs/LOTUS_FPS_SOURCES.md"
+                                      },
+                    "steam-requirements":  {
+                                               "label":  "Requisitos recomendados da Steam (estimativa)",
+                                               "url":  "https://store.steampowered.com/"
+                                           }
+                },
+    "games":  [
+                  {
+                      "name":  "Counter-Strike 2",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "730",
+                      "gpuHigh":  330,
+                      "cpuCap":  360
+                  },
+                  {
+                      "name":  "Valorant",
+                      "store":  "riot",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "gpuHigh":  600,
+                      "cpuCap":  520
+                  },
+                  {
+                      "name":  "Fortnite",
+                      "store":  "epic",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "gpuHigh":  165,
+                      "cpuCap":  230
+                  },
+                  {
+                      "name":  "Apex Legends",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "1172470",
+                      "gpuHigh":  190,
+                      "cpuCap":  240,
+                      "cap":  300
+                  },
+                  {
+                      "name":  "League of Legends",
+                      "store":  "riot",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "gpuHigh":  480,
+                      "cpuCap":  420
+                  },
+                  {
+                      "name":  "Dota 2",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "570",
+                      "lab1080":  [
+                                      365,
+                                      332,
+                                      316,
+                                      294
+                                  ],
+                      "cpuCap":  230
+                  },
+                  {
+                      "name":  "PUBG: Battlegrounds",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "578080",
+                      "gpuHigh":  150,
+                      "cpuCap":  185
+                  },
+                  {
+                      "name":  "Rainbow Six Siege",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "359550",
+                      "gpuHigh":  330,
+                      "cpuCap":  380
+                  },
+                  {
+                      "name":  "Rocket League",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "252950",
+                      "gpuHigh":  360,
+                      "cpuCap":  400
+                  },
+                  {
+                      "name":  "Marvel Rivals",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "2767030",
+                      "gpuHigh":  110,
+                      "cpuCap":  145
+                  },
+                  {
+                      "name":  "Call of Duty: Warzone",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "1962663",
+                      "gpuHigh":  120,
+                      "cpuCap":  170
+                  },
+                  {
+                      "name":  "Helldivers 2",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "553850",
+                      "gpuHigh":  85,
+                      "cpuCap":  95
+                  },
+                  {
+                      "name":  "Grand Theft Auto V",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "271590",
+                      "lab1080":  [
+                                      188,
+                                      188,
+                                      188,
+                                      172
+                                  ],
+                      "cpuCap":  170,
+                      "cap":  188
+                  },
+                  {
+                      "name":  "Red Dead Redemption 2",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "1174180",
+                      "gpuHigh":  85,
+                      "cpuCap":  140
+                  },
+                  {
+                      "name":  "Cyberpunk 2077",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "1091500",
+                      "lab1080":  [
+                                      187,
+                                      148,
+                                      125,
+                                      111
+                                  ],
+                      "cpuCap":  120
+                  },
+                  {
+                      "name":  "The Witcher 3: Wild Hunt",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "292030",
+                      "lab1080":  [
+                                      309,
+                                      246,
+                                      203,
+                                      165
+                                  ],
+                      "cpuCap":  140
+                  },
+                  {
+                      "name":  "Elden Ring",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "1245620",
+                      "gpuHigh":  95,
+                      "cpuCap":  120,
+                      "cap":  60
+                  },
+                  {
+                      "name":  "Baldur\u0027s Gate 3",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "1086940",
+                      "lab1080":  [
+                                      188,
+                                      149,
+                                      130,
+                                      128
+                                  ],
+                      "cpuCap":  95
+                  },
+                  {
+                      "name":  "Hogwarts Legacy",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "990080",
+                      "lab1080":  [
+                                      175,
+                                      141,
+                                      107,
+                                      81
+                                  ],
+                      "cpuCap":  88
+                  },
+                  {
+                      "name":  "Starfield",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "1716740",
+                      "gpuHigh":  60,
+                      "cpuCap":  75
+                  },
+                  {
+                      "name":  "Alan Wake 2",
+                      "store":  "epic",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "gpuHigh":  55,
+                      "cpuCap":  120
+                  },
+                  {
+                      "name":  "Black Myth: Wukong",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "2358720",
+                      "gpuHigh":  55,
+                      "cpuCap":  110
+                  },
+                  {
+                      "name":  "God of War",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "1593500",
+                      "lab1080":  [
+                                      189,
+                                      163,
+                                      134,
+                                      90
+                                  ],
+                      "cpuCap":  160
+                  },
+                  {
+                      "name":  "Forza Horizon 5",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "1551360",
+                      "gpuHigh":  140,
+                      "cpuCap":  180
+                  },
+                  {
+                      "name":  "Monster Hunter Wilds",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "2246340",
+                      "lab1080":  [
+                                      89,
+                                      74,
+                                      43,
+                                      26
+                                  ],
+                      "cpuCap":  70
+                  },
+                  {
+                      "name":  "Palworld",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "1623730",
+                      "gpuHigh":  100,
+                      "cpuCap":  110
+                  },
+                  {
+                      "name":  "Persona 5 Royal",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "1687950",
+                      "gpuHigh":  240,
+                      "cpuCap":  300
+                  },
+                  {
+                      "name":  "No Rest for the Wicked",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "1371980",
+                      "gpuHigh":  75,
+                      "cpuCap":  90
+                  },
+                  {
+                      "name":  "Minecraft",
+                      "store":  "mojang",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "gpuHigh":  300,
+                      "cpuCap":  250
+                  },
+                  {
+                      "name":  "Stardew Valley",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "lotus-initial"
+                                  ],
+                      "steamAppId":  "413150",
+                      "gpuHigh":  500,
+                      "cpuCap":  500,
+                      "cap":  144
+                  },
+                  {
+                      "name":  "ARC Raiders",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "1808500",
+                      "lab1080":  [
+                                      260,
+                                      162,
+                                      124,
+                                      79
+                                  ]
+                  },
+                  {
+                      "name":  "Anno 117: Pax Romana",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "lab1080":  [
+                                      124,
+                                      103,
+                                      76,
+                                      40
+                                  ]
+                  },
+                  {
+                      "name":  "The Outer Worlds 2",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "lab1080":  [
+                                      132,
+                                      110,
+                                      86,
+                                      50
+                                  ]
+                  },
+                  {
+                      "name":  "Battlefield 6",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "2807960",
+                      "lab1080":  [
+                                      158,
+                                      143,
+                                      121,
+                                      82
+                                  ]
+                  },
+                  {
+                      "name":  "Borderlands 4",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "1285190",
+                      "lab1080":  [
+                                      95,
+                                      77,
+                                      61,
+                                      34
+                                  ]
+                  },
+                  {
+                      "name":  "Doom: The Dark Ages",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "3017860",
+                      "lab1080":  [
+                                      66,
+                                      57,
+                                      52,
+                                      50
+                                  ]
+                  },
+                  {
+                      "name":  "The Elder Scrolls IV: Oblivion Remastered",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "2623190",
+                      "lab1080":  [
+                                      173,
+                                      110,
+                                      73,
+                                      25
+                                  ]
+                  },
+                  {
+                      "name":  "Kingdom Come: Deliverance II",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "1771300",
+                      "lab1080":  [
+                                      167,
+                                      129,
+                                      106,
+                                      75
+                                  ]
+                  },
+                  {
+                      "name":  "Call of Duty: Black Ops 6",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "lab1080":  [
+                                      178,
+                                      162,
+                                      115,
+                                      107
+                                  ]
+                  },
+                  {
+                      "name":  "Until Dawn",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "2172010",
+                      "lab1080":  [
+                                      176,
+                                      107,
+                                      77,
+                                      58
+                                  ]
+                  },
+                  {
+                      "name":  "Final Fantasy XVI",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "2515020",
+                      "lab1080":  [
+                                      98,
+                                      95,
+                                      82,
+                                      74
+                                  ]
+                  },
+                  {
+                      "name":  "Warhammer 40,000: Space Marine 2",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "2183900",
+                      "lab1080":  [
+                                      146,
+                                      125,
+                                      121,
+                                      0
+                                  ]
+                  },
+                  {
+                      "name":  "Star Wars Outlaws",
+                      "store":  "ubisoft",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "lab1080":  [
+                                      76,
+                                      69,
+                                      60,
+                                      49
+                                  ]
+                  },
+                  {
+                      "name":  "F1 24",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "lab1080":  [
+                                      383,
+                                      326,
+                                      247,
+                                      85
+                                  ]
+                  },
+                  {
+                      "name":  "Lies of P",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "1627720",
+                      "lab1080":  [
+                                      246,
+                                      214,
+                                      185,
+                                      165
+                                  ]
+                  },
+                  {
+                      "name":  "Far Cry 6",
+                      "store":  "ubisoft",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "lab1080":  [
+                                      314,
+                                      211,
+                                      182,
+                                      151
+                                  ]
+                  },
+                  {
+                      "name":  "Anno 1800",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "916440",
+                      "lab1080":  [
+                                      290,
+                                      268,
+                                      214,
+                                      143
+                                  ]
+                  },
+                  {
+                      "name":  "Strange Brigade",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "312670",
+                      "lab1080":  [
+                                      746,
+                                      373,
+                                      296,
+                                      257
+                                  ]
+                  },
+                  {
+                      "name":  "Farming Simulator 22",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "1248130",
+                      "lab1080":  [
+                                      423,
+                                      359,
+                                      308,
+                                      268
+                                  ]
+                  },
+                  {
+                      "name":  "S.T.A.L.K.E.R. 2: Heart of Chornobyl",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "1643320",
+                      "lab1080":  [
+                                      94,
+                                      80,
+                                      67,
+                                      55
+                                  ]
+                  },
+                  {
+                      "name":  "Assassin\u0027s Creed Shadows",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "3159330",
+                      "lab1080":  [
+                                      79,
+                                      71,
+                                      61,
+                                      43
+                                  ]
+                  },
+                  {
+                      "name":  "God of War Ragnarök",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "2322010",
+                      "lab1080":  [
+                                      186,
+                                      157,
+                                      138,
+                                      127
+                                  ]
+                  },
+                  {
+                      "name":  "Final Fantasy XV",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "steamAppId":  "637650",
+                      "lab1080":  [
+                                      235,
+                                      200,
+                                      148,
+                                      106
+                                  ]
+                  },
+                  {
+                      "name":  "Alone in the Dark",
+                      "store":  "steam",
+                      "confidence":  "media",
+                      "sources":  [
+                                      "notebookcheck-5060"
+                                  ],
+                      "lab1080":  [
+                                      307,
+                                      269,
+                                      232,
+                                      148
+                                  ]
+                  },
+                  {
+                      "name":  "Path of Exile 2",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2694490"
+                  },
+                  {
+                      "name":  "Path of Exile",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "238960"
+                  },
+                  {
+                      "name":  "Warframe",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "230410"
+                  },
+                  {
+                      "name":  "Team Fortress 2",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "440"
+                  },
+                  {
+                      "name":  "Rust",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "252490"
+                  },
+                  {
+                      "name":  "ARK: Survival Ascended",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2399830"
+                  },
+                  {
+                      "name":  "Destiny 2",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1085660"
+                  },
+                  {
+                      "name":  "Dead by Daylight",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "381210"
+                  },
+                  {
+                      "name":  "Valheim",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "892970"
+                  },
+                  {
+                      "name":  "Terraria",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "105600"
+                  },
+                  {
+                      "name":  "Deep Rock Galactic",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "548430"
+                  },
+                  {
+                      "name":  "Lethal Company",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1966720"
+                  },
+                  {
+                      "name":  "Sea of Thieves",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1172620"
+                  },
+                  {
+                      "name":  "The Finals",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2073850"
+                  },
+                  {
+                      "name":  "War Thunder",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "236390"
+                  },
+                  {
+                      "name":  "Euro Truck Simulator 2",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "227300"
+                  },
+                  {
+                      "name":  "Cities: Skylines II",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "949230"
+                  },
+                  {
+                      "name":  "Satisfactory",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "526870"
+                  },
+                  {
+                      "name":  "Hades II",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1145350"
+                  },
+                  {
+                      "name":  "Hollow Knight: Silksong",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1030300"
+                  },
+                  {
+                      "name":  "Phasmophobia",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "739630"
+                  },
+                  {
+                      "name":  "Overwatch 2",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2357570"
+                  },
+                  {
+                      "name":  "Naraka: Bladepoint",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1203220"
+                  },
+                  {
+                      "name":  "Once Human",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2139460"
+                  },
+                  {
+                      "name":  "Elden Ring Nightreign",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2622380"
+                  },
+                  {
+                      "name":  "Sons of the Forest",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1326470"
+                  },
+                  {
+                      "name":  "Left 4 Dead 2",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "550"
+                  },
+                  {
+                      "name":  "Garry\u0027s Mod",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "4000"
+                  },
+                  {
+                      "name":  "Hunt: Showdown 1896",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "594650"
+                  },
+                  {
+                      "name":  "Assetto Corsa Competizione",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "805550"
+                  },
+                  {
+                      "name":  "Forza Horizon 4",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1293830"
+                  },
+                  {
+                      "name":  "Resident Evil 4",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2050650"
+                  },
+                  {
+                      "name":  "Resident Evil Village",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1196590"
+                  },
+                  {
+                      "name":  "Sekiro: Shadows Die Twice",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "814380"
+                  },
+                  {
+                      "name":  "Dark Souls III",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "374320"
+                  },
+                  {
+                      "name":  "Horizon Forbidden West",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2420110"
+                  },
+                  {
+                      "name":  "Ghost of Tsushima",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2215430"
+                  },
+                  {
+                      "name":  "Marvel\u0027s Spider-Man Remastered",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1817070"
+                  },
+                  {
+                      "name":  "The Last of Us Part I",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1888930"
+                  },
+                  {
+                      "name":  "Death Stranding Director\u0027s Cut",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1850570"
+                  },
+                  {
+                      "name":  "Clair Obscur: Expedition 33",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1903340"
+                  },
+                  {
+                      "name":  "Split Fiction",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2001120"
+                  },
+                  {
+                      "name":  "It Takes Two",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1426210"
+                  },
+                  {
+                      "name":  "Schedule I",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "3164500"
+                  },
+                  {
+                      "name":  "R.E.P.O.",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "3241660"
+                  },
+                  {
+                      "name":  "Halo Infinite",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1240440"
+                  },
+                  {
+                      "name":  "Diablo IV",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2344520"
+                  },
+                  {
+                      "name":  "Monster Hunter: World",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "582010"
+                  },
+                  {
+                      "name":  "Street Fighter 6",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1364780"
+                  },
+                  {
+                      "name":  "Tekken 8",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1778820"
+                  },
+                  {
+                      "name":  "The Sims 4",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1222670"
+                  },
+                  {
+                      "name":  "Total War: Warhammer III",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1142710"
+                  },
+                  {
+                      "name":  "Sid Meier\u0027s Civilization VI",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "289070"
+                  },
+                  {
+                      "name":  "Hearts of Iron IV",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "394360"
+                  },
+                  {
+                      "name":  "Stellaris",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "281990"
+                  },
+                  {
+                      "name":  "RimWorld",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "294100"
+                  },
+                  {
+                      "name":  "Factorio",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "427520"
+                  },
+                  {
+                      "name":  "Don\u0027t Starve Together",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "322330"
+                  },
+                  {
+                      "name":  "7 Days to Die",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "251570"
+                  },
+                  {
+                      "name":  "Project Zomboid",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "108600"
+                  },
+                  {
+                      "name":  "The Forest",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "242760"
+                  },
+                  {
+                      "name":  "Raft",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "648800"
+                  },
+                  {
+                      "name":  "Grounded",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "962130"
+                  },
+                  {
+                      "name":  "Enshrouded",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1203620"
+                  },
+                  {
+                      "name":  "V Rising",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1604030"
+                  },
+                  {
+                      "name":  "Ready or Not",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1144200"
+                  },
+                  {
+                      "name":  "Squad",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "393380"
+                  },
+                  {
+                      "name":  "Hell Let Loose",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "686810"
+                  },
+                  {
+                      "name":  "Arma 3",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "107410"
+                  },
+                  {
+                      "name":  "DayZ",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "221100"
+                  },
+                  {
+                      "name":  "Fallout 4",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "377160"
+                  },
+                  {
+                      "name":  "The Elder Scrolls V: Skyrim Special Edition",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "489830"
+                  },
+                  {
+                      "name":  "Mount \u0026 Blade II: Bannerlord",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "261550"
+                  },
+                  {
+                      "name":  "Dying Light 2 Stay Human",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "534380"
+                  },
+                  {
+                      "name":  "Indiana Jones and the Great Circle",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2677660"
+                  },
+                  {
+                      "name":  "Silent Hill 2",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2124490"
+                  },
+                  {
+                      "name":  "Dragon\u0027s Dogma 2",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "2054970"
+                  },
+                  {
+                      "name":  "Stray",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1332010"
+                  },
+                  {
+                      "name":  "Hades",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "1145360"
+                  },
+                  {
+                      "name":  "Dead Island 2",
+                      "store":  "steam",
+                      "confidence":  "baixa",
+                      "sources":  [
+                                      "steam-requirements"
+                                  ],
+                      "steamAppId":  "934700"
+                  }
+              ]
+}

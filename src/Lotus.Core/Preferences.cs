@@ -42,6 +42,7 @@ public sealed record InterfacePreferences
     public bool ResumePrompts { get; init; } = true; // after a game closes normally, offer to write "Onde eu parei?" (discreet in-app notice)
     public string DriveSchedule { get; init; } = "manual"; // Google Drive copy: manual (only on click), weekly or monthly
     public bool AutoUpdate { get; init; } // download and install new Lotus versions from GitHub without asking
+    public bool FpsDataUpdates { get; init; } = true; // weekly check for a newer FPS reference table in the official repository
     public bool DriverNotices { get; init; } = true; // a quiet weekly check for a newer graphics driver (Lotus never installs it)
     public DateTimeOffset? DriverCheckedAt { get; init; }
     public string? DriverNoticeKey { get; init; } // the last driver notice shown ("nvidia:581.57"), so each one is told once
@@ -136,6 +137,7 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool MinimizeForGames { get => service.Current.MinimizeForGames; set { if (value != service.Current.MinimizeForGames) { service.Update(service.Current with { MinimizeForGames = value }); OnPropertyChanged(); } } }
     public bool GamePriority { get => service.Current.GamePriority; set { if (value != service.Current.GamePriority) { service.Update(service.Current with { GamePriority = value }); OnPropertyChanged(); } } }
     public bool DriverNotices { get => service.Current.DriverNotices; set { if (value != service.Current.DriverNotices) { service.Update(service.Current with { DriverNotices = value }); OnPropertyChanged(); } } }
+    public bool FpsDataUpdates { get => service.Current.FpsDataUpdates; set { if (value != service.Current.FpsDataUpdates) { service.Update(service.Current with { FpsDataUpdates = value }); OnPropertyChanged(); } } }
     public bool ResumePrompts { get => service.Current.ResumePrompts; set { if (value != service.Current.ResumePrompts) { service.Update(service.Current with { ResumePrompts = value }); OnPropertyChanged(); } } }
     public bool PreparePlay { get => service.Current.PreparePlay; set { if (value != service.Current.PreparePlay) { service.Update(service.Current with { PreparePlay = value }); OnPropertyChanged(); } } }
     public bool MeasurePortsSessions { get => service.Current.MeasurePortsSessions; set { if (value != service.Current.MeasurePortsSessions) { service.Update(service.Current with { MeasurePortsSessions = value }); OnPropertyChanged(); } } }

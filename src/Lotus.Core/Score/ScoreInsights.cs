@@ -8,7 +8,12 @@ namespace Lotus.Core.Score;
 // FPS a game reaches on the calibration PC (Ryzen 5 5500 + RTX 5060) at 1080p "High": GPU-limited FPS, the CPU-limited
 // ceiling, and an engine cap when the game has one. Approximate values from public benchmarks (±20%).
 // Basis: for searched games, the recommended parts the numbers come from (else null = benchmark table).
-public sealed record GameDemand(string Name, double GpuFps, double CpuFps, int? Cap = null, string? SteamAppId = null, string? Basis = null);
+public sealed record GameDemand(string Name, double GpuFps, double CpuFps, int? Cap = null, string? SteamAppId = null, string? Basis = null,
+    IReadOnlyList<double>? Lab = null, string Confidence = "", string? Store = null, IReadOnlyList<string>? SourceIds = null)
+{
+    // Lab numbers at 1080p per preset (Low → Ultra; 0 = not measured) from the reference table, when there are any.
+    public string SourceText { get; init; } = "";
+}
 
 public enum Resolution { P1080, P1440, P2160 }
 public enum Preset { Low, Medium, High, Ultra }
@@ -25,29 +30,20 @@ public static class ScoreInsights
     private static readonly double[] PresetGpu = [1.85, 1.38, 1.0, 0.78];          // Low → Ultra
     private static readonly double[] PresetCpu = [1.12, 1.05, 1.0, 0.94];
 
-    public static IReadOnlyList<GameDemand> Games { get; } =
-    [
-        new("Counter-Strike 2", 330, 360, SteamAppId: "730"), new("Valorant", 600, 520), new("Fortnite", 165, 230),
-        new("Apex Legends", 190, 240, 300, "1172470"), new("League of Legends", 480, 420), new("Dota 2", 260, 230, SteamAppId: "570"),
-        new("PUBG: Battlegrounds", 150, 185, SteamAppId: "578080"), new("Rainbow Six Siege", 330, 380, SteamAppId: "359550"),
-        new("Rocket League", 360, 400, SteamAppId: "252950"), new("Marvel Rivals", 110, 145, SteamAppId: "2767030"),
-        new("Call of Duty: Warzone", 120, 170, SteamAppId: "1962663"), new("Helldivers 2", 85, 95, SteamAppId: "553850"),
-        new("Grand Theft Auto V", 160, 170, 188, "271590"), new("Red Dead Redemption 2", 85, 140, SteamAppId: "1174180"),
-        new("Cyberpunk 2077", 85, 120, SteamAppId: "1091500"), new("The Witcher 3: Wild Hunt", 120, 140, SteamAppId: "292030"),
-        new("Elden Ring", 95, 120, 60, "1245620"), new("Baldur's Gate 3", 110, 95, SteamAppId: "1086940"),
-        new("Hogwarts Legacy", 80, 88, SteamAppId: "990080"), new("Starfield", 60, 75, SteamAppId: "1716740"),
-        new("Alan Wake 2", 55, 120), new("Black Myth: Wukong", 55, 110, SteamAppId: "2358720"),
-        new("God of War", 110, 160, SteamAppId: "1593500"), new("Forza Horizon 5", 140, 180, SteamAppId: "1551360"),
-        new("Monster Hunter Wilds", 50, 70, SteamAppId: "2246340"), new("Palworld", 100, 110, SteamAppId: "1623730"),
-        new("Persona 5 Royal", 240, 300, SteamAppId: "1687950"), new("No Rest for the Wicked", 75, 90, SteamAppId: "1371980"),
-        new("Minecraft", 300, 250), new("Stardew Valley", 500, 500, 144, "413150"),
-    ];
+    // The reference table in use (built-in copy, or a newer validated one from the official repository).
+    public static FpsReferenceData Reference { get; private set; } = FpsReference.Builtin();
+    public static IReadOnlyList<GameDemand> Games { get; private set; } = Reference.Games;
+    private static readonly List<GameDemand> resolved = []; // requirement-based entries already worked out
+    public static void Use(FpsReferenceData data) { Reference = data; Games = [.. data.Games, .. resolved.Where(r => data.Pending.Any(p => p.Name == r.Name))]; }
+    public static void AddResolved(GameDemand g) { if (Games.Any(x => x.Name == g.Name)) return; resolved.Add(g); Games = [.. Games, g]; }
 
     // Expected FPS for one cell. The slower of the GPU and CPU limits wins (a soft minimum, as real frames overlap a little).
     public static FpsCell Estimate(GameDemand g, Resolution r, Preset p, int single, int multi, int gpu)
     {
         if (single <= 0 || multi <= 0 || gpu <= 0) return new(0, Limiter.Balanced);
-        var gpuFps = g.GpuFps * (gpu / RefGpu) * ResolutionLoad[(int)r] * PresetGpu[(int)p];
+        // With lab numbers per preset they are used as measured (scaled to this GPU); otherwise the High value and fixed preset steps.
+        var basePreset = g.Lab is { Count: 4 } lab && lab[(int)p] > 0 ? lab[(int)p] : g.GpuFps * PresetGpu[(int)p];
+        var gpuFps = basePreset * (gpu / RefGpu) * ResolutionLoad[(int)r];
         var cpuFps = g.CpuFps * Math.Pow(single / RefSingle, 0.6) * Math.Pow(multi / RefMulti, 0.4) * PresetCpu[(int)p];
         const double k = 6;
         var fps = Math.Pow(Math.Pow(gpuFps, -k) + Math.Pow(cpuFps, -k), -1 / k);

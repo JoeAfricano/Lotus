@@ -3276,4 +3276,17 @@ Your games and Windows are not changed.</value></data>
   <data name="OsPendingName" xml:space="preserve"><value>Will be applied when the game closes: {0}.</value></data>
   <data name="OsAppliedReopened" xml:space="preserve"><value>Style turned on and RivaTuner reopened. Your FPS limits and profiles stay the same.</value></data>
   <data name="OsFailed" xml:space="preserve"><value>The style could not be changed. If Windows asked for permission and it was declined, try again; if RivaTuner does not reopen, open it from the Start menu.</value></data>
+  <data name="ScorePickFromReq" xml:space="preserve"><value>Steam recommended requirements</value></data>
+  <data name="ScoreConfHigh" xml:space="preserve"><value>High confidence · 2+ labs</value></data>
+  <data name="ScoreConfMid" xml:space="preserve"><value>Medium confidence · 1 lab</value></data>
+  <data name="ScoreConfLow" xml:space="preserve"><value>Rough estimate (requirements or average)</value></data>
+  <data name="ScoreConfSearched" xml:space="preserve"><value>Estimate from Steam requirements</value></data>
+  <data name="ScorePickSources" xml:space="preserve"><value>Sources</value></data>
+  <data name="ScorePickRefresh" xml:space="preserve"><value>Update now</value></data>
+  <data name="ScorePickDate" xml:space="preserve"><value>Data from {0} · {1} games</value></data>
+  <data name="ScorePickChecking" xml:space="preserve"><value>Looking for newer data…</value></data>
+  <data name="ScorePickUpdated" xml:space="preserve"><value>Table updated.</value></data>
+  <data name="ScorePickCurrent" xml:space="preserve"><value>The table is already the latest.</value></data>
+  <data name="SetFpsData" xml:space="preserve"><value>Update the FPS table automatically</value></data>
+  <data name="SetFpsDataHint" xml:space="preserve"><value>Once a week Lotus checks the official repository for a newer FPS table (a small file, validated before use).</value></data>
 </root>
