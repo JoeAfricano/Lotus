@@ -14,9 +14,9 @@
       <Image x:Name="Cover" Stretch="UniformToFill"/>
      </Border>
     </Grid>
-    <TextBlock x:Name="Title" FontSize="34" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{ThemeResource GoldBrush}"/>
-    <TextBlock x:Name="GameName" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
-    <TextBlock x:Name="Xp" FontSize="26" FontWeight="SemiBold" HorizontalAlignment="Center" Foreground="{ThemeResource RoseBrush}"/>
+    <TextBlock x:Name="Title" FontSize="40" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{ThemeResource GoldBrush}"/>
+    <TextBlock x:Name="GameName" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+    <TextBlock x:Name="Xp" FontSize="28" FontWeight="SemiBold" HorizontalAlignment="Center" Foreground="{ThemeResource RoseBrush}"/>
     <StackPanel Spacing="6">
      <Grid><TextBlock x:Name="LevelLabel" FontWeight="SemiBold"/><TextBlock x:Name="XpLabel" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right"/></Grid>
      <ProgressBar x:Name="LevelBar" Maximum="100" MinHeight="8" CornerRadius="4"/>

@@ -8,7 +8,37 @@ namespace Lotus.App.Controls;
 public sealed partial class GamesPanel : UserControl
 {
     public event EventHandler<GameCard>? DetailsRequested; // the page shows the game's details
-    private void OnGameClick(object sender, ItemClickEventArgs e) { if (e.ClickedItem is GameCard card) DetailsRequested?.Invoke(this, card); }
+    // Visual 2.0: the clicked cover flies to the game page (connected animation; off with Reduce motion).
+    private void OnGameClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is not GameCard card) return;
+        if (Motion.Active) try { Library.PrepareConnectedAnimation(ConnectedCoverKey, card, "CoverArt"); } catch (Exception ex) { Serilog.Log.Debug(ex, "Cover animation unavailable"); }
+        DetailsRequested?.Invoke(this, card);
+    }
+    public const string ConnectedCoverKey = "lotus-cover";
+    // ElementName bindings do not reach out of the item template, so the "..." button gets its name and tooltip here.
+    // Visual 3.0: the actions over a cover show on hover or when the keyboard reaches the card.
+    private void OnCardEnter(object sender, RoutedEventArgs e) => SetActions(sender, true);
+    private void OnCardLeave(object sender, RoutedEventArgs e)
+    {
+        // Keep them while the keyboard is still on one of the card's buttons.
+        if (sender is FrameworkElement { XamlRoot: { } root } f && Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(root) is Control { FocusState: FocusState.Keyboard } c && IsInside(c, f)) return;
+        SetActions(sender, false);
+    }
+    private static bool IsInside(DependencyObject d, DependencyObject root)
+    {
+        for (var x = d; x is not null; x = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(x)) if (x == root) return true;
+        return false;
+    }
+    private static void SetActions(object sender, bool on)
+    {
+        if (sender is FrameworkElement f && f.FindName("HoverActions") is UIElement actions) actions.Opacity = on ? 1 : 0;
+    }
+    private void OnMoreLoaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button b || DataContext is not GamesViewModel vm) return;
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(b, vm.Text["GmMore"]); ToolTipService.SetToolTip(b, vm.Text["GmMore"]);
+    }
     private void OnDetails(object sender, RoutedEventArgs e) { if (sender is FrameworkElement { DataContext: GameCard card }) DetailsRequested?.Invoke(this, card); }
     public GamesPanel()
     {
@@ -48,10 +78,10 @@ public sealed partial class GamesPanel : UserControl
         if (DataContext is not GamesViewModel vm) return;
         RescanButton.IsEnabled = false; Motion.Pop(RescanIcon);
         var removed = await vm.RescanAsync();
-        // Quick confirmation on the button, then back to its label.
+        // Quick confirmation next to the game count, then it fades away.
         RescanText.Text = "✓ " + vm.Text.Format("HomeRescanDone", vm.InstalledGames().Count); UiSound.Play(UiSound.Cue.Done);
         var back = DispatcherQueue.CreateTimer(); back.Interval = TimeSpan.FromSeconds(3); back.IsRepeating = false;
-        back.Tick += (_, _) => { RescanText.Text = vm.Text["GamesRescan"]; RescanButton.IsEnabled = true; }; back.Start();
+        back.Tick += (_, _) => { RescanText.Text = ""; RescanButton.IsEnabled = true; }; back.Start();
         if (removed.Count == 0) return;
         var list = new ListView { SelectionMode = ListViewSelectionMode.Multiple, MaxHeight = 380, ItemsSource = removed };
         list.ItemTemplate = (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(

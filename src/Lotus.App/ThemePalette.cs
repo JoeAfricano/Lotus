@@ -96,7 +96,7 @@ public sealed class ThemePalette
         Set("TopNavigationViewItemForegroundSelected", t.Text); Set("TopNavigationViewItemForegroundSelectedPointerOver", t.Text); Set("TopNavigationViewItemForegroundSelectedPressed", t.Text);
         Set("NavigationViewItemBackgroundPointerOver", light ? WithAlpha(fill, 0x14) : Argb(0x12, 255, 255, 255));
         Set("NavigationViewItemBackgroundPressed", light ? WithAlpha(fill, 0x22) : Argb(0x0C, 255, 255, 255));
-        var selected = light ? WithAlpha(fill, 0x2A) : t.Raised; // light: a clear rose pill on the current page
+        var selected = WithAlpha(fill, light ? (byte)0x2A : (byte)0x59); // visual 3.0: a clear accent pill on the current page in every theme
         Set("NavigationViewItemBackgroundSelected", selected); Set("NavigationViewItemBackgroundSelectedPointerOver", selected); Set("NavigationViewItemBackgroundSelectedPressed", selected);
         Set("NavigationViewSelectionIndicatorForeground", accentText);
         Set("SystemControlFocusVisualPrimaryBrush", light ? Rgb(0x28, 0x1C, 0x30) : Rgb(0xF8, 0xF5, 0xFA));

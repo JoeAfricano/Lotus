@@ -41,6 +41,9 @@ public sealed partial class SavesPanel : UserControl
         var t = vm.Text;
         StatProtected.Text = vm.Loaded ? vm.ProtectedCount.ToString() : "—";
         StatBackups.Text = vm.Loaded ? vm.BackupCount.ToString() : "—";
+        var none = vm.Loaded && vm.ProtectedCount == 0;
+        StatsRow.Visibility = none ? Visibility.Collapsed : Visibility.Visible;
+        FirstProtect.Visibility = none ? Visibility.Visible : Visibility.Collapsed;
         // Filters show how many games each one has.
         syncing = true;
         var current = vm.Filter;

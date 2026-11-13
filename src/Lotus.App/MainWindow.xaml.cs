@@ -224,8 +224,8 @@ public sealed partial class MainWindow : Window
             var item = new NavigationViewItem
             {
                 Content = NavLabel(section), Tag = section.Id,
-                Icon = section.Id == "diary" ? new FontIcon { Glyph = section.Glyph, FontSize = 17, Foreground = (Brush)Application.Current.Resources["GoldBrush"] } : new FontIcon { Glyph = section.Glyph, FontSize = 17 },
-                MinHeight = 44, Margin = new Thickness(1, 2, 1, 2), CornerRadius = new CornerRadius(10), HorizontalContentAlignment = HorizontalAlignment.Stretch
+                Icon = new FontIcon { Glyph = section.Glyph, FontSize = 16 },
+                MinHeight = 40, Margin = new Thickness(0, 2, 0, 2), CornerRadius = new CornerRadius(8), HorizontalContentAlignment = HorizontalAlignment.Stretch
             };
             AutomationProperties.SetName(item, section.Title);
             AutomationProperties.SetAutomationId(item, "nav-" + section.Id);
@@ -473,9 +473,6 @@ public sealed partial class MainWindow : Window
         PreferenceWarning.Message = message;
         PreferenceWarning.IsOpen = true;
     }
-    private void OnGameListButton(object sender, RoutedEventArgs e) { Motion.Pop(GameListIcon); UiSound.Play(UiSound.Cue.Navigate); ViewModel.NavigateCommand.Execute("gamelist"); }
-    // The drag area stops where the Game list button begins.
-    private void OnGameListButtonSize(object sender, SizeChangedEventArgs e) => DragRegion.Margin = new Thickness(0, 0, e.NewSize.Width + 160, 0);
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
         if (updatingNavigation || args.SelectedItem is not NavigationViewItem { Tag: string id } item) return;
@@ -514,11 +511,10 @@ public sealed partial class MainWindow : Window
     }
     private void OnExperienceDemandChanged(object? sender, EventArgs args) => UpdateMonitoringDemand();
 
-    // "Meu diário" is a main part of Lotus: its menu label and icon stand out in gold, like the name.
+    // Every menu item looks the same (visual 2.0): one weight, one color; the diary keeps its level badge.
     private IEnumerable<NavigationViewItem> NavItems() => Navigation.MenuItems.Concat(Navigation.FooterMenuItems).OfType<NavigationViewItem>();
     private NavigationViewItem? diaryNav;
-    private static object NavLabel(Section section) => section.Id != "diary" ? section.Title
-        : new TextBlock { Text = section.Title, FontWeight = Microsoft.UI.Text.FontWeights.Bold, Foreground = (Brush)Application.Current.Resources["GoldBrush"] };
+    private static object NavLabel(Section section) => section.Title;
 
     // ---- Background mode: tray icon, close-to-tray, start with Windows, in-game hotkey ----
     private TrayIcon? tray;

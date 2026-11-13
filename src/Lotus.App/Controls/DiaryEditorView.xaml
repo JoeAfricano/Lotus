@@ -3,7 +3,7 @@
  <Grid>
   <Border x:Name="Backdrop" Background="#B30C060A" Opacity="0" Tapped="OnBackdrop"/>
   <Grid x:Name="Card" MaxWidth="1120" Margin="24,20" VerticalAlignment="Stretch" HorizontalAlignment="Center" Background="{ThemeResource WindowBrush}"
-        BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="22" Opacity="0">
+        BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="16" Opacity="0">
    <Grid.RenderTransform><CompositeTransform x:Name="CardMove" TranslateY="24"/></Grid.RenderTransform>
    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
 
@@ -23,20 +23,20 @@
       <Image x:Name="CoverArt" Stretch="UniformToFill"/>
      </Border>
      <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Spacing="4">
-      <TextBlock x:Name="Eyebrow" FontSize="11" FontWeight="SemiBold" CharacterSpacing="100" Foreground="#F07A9C"/>
-      <TextBlock Text="{Binding Name}" FontSize="30" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
+      <TextBlock x:Name="Eyebrow" FontSize="12" FontWeight="SemiBold" CharacterSpacing="100" Foreground="#F07A9C"/>
+      <TextBlock Text="{Binding Name}" FontSize="28" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
      </StackPanel>
      <!-- Score ring -->
      <Grid Grid.Column="2" Width="104" Height="104" VerticalAlignment="Bottom">
       <Ellipse Width="104" Height="104" Stroke="#33FFFFFF" StrokeThickness="7"/>
       <Path x:Name="ScoreArc" StrokeThickness="7" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
       <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-       <TextBlock x:Name="ScoreBig" Text="{Binding RatingText}" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
-       <TextBlock Text="{Binding RatingLabel}" FontSize="10.5" FontWeight="SemiBold" Foreground="#E6D6DE" HorizontalAlignment="Center" TextAlignment="Center" MaxWidth="86" TextWrapping="Wrap"/>
+       <TextBlock x:Name="ScoreBig" Text="{Binding RatingText}" FontSize="40" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
+       <TextBlock Text="{Binding RatingLabel}" FontSize="12" FontWeight="SemiBold" Foreground="#E6D6DE" HorizontalAlignment="Center" TextAlignment="Center" MaxWidth="86" TextWrapping="Wrap"/>
       </StackPanel>
      </Grid>
     </Grid>
-    <Button Click="OnCancel" Background="#8012090F" BorderThickness="0" Padding="9" CornerRadius="18" Margin="14" HorizontalAlignment="Right" VerticalAlignment="Top" AutomationProperties.Name="{Binding Text[DyCancel]}"><FontIcon Glyph="&#xE711;" FontSize="12" Foreground="White"/></Button>
+    <Button Click="OnCancel" Background="#8012090F" BorderThickness="0" Padding="9" CornerRadius="16" Margin="14" HorizontalAlignment="Right" VerticalAlignment="Top" AutomationProperties.Name="{Binding Text[DyCancel]}"><FontIcon Glyph="&#xE711;" FontSize="12" Foreground="White"/></Button>
    </Grid>
 
    <ScrollViewer Grid.Row="1" Padding="28,18,28,12" VerticalScrollBarVisibility="Auto">
@@ -47,36 +47,36 @@
      <!-- Left: score, categories, status -->
      <StackPanel x:Name="LeftColumn" Spacing="22">
       <StackPanel Spacing="8">
-       <TextBlock Text="{Binding Text[DyScore]}" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
+       <TextBlock Text="{Binding Text[DyScore]}" Style="{StaticResource SectionTitleStyle}" FontSize="18"/>
        <Slider x:Name="ScoreSlider" Minimum="0" Maximum="10" StepFrequency="0.5" TickFrequency="1" TickPlacement="Outside" Value="{Binding Rating, Mode=TwoWay}" ValueChanged="OnScore" AutomationProperties.Name="{Binding Text[DyScore]}" AutomationProperties.AutomationId="diary-score"/>
-       <Grid><TextBlock Text="0" FontSize="11" Foreground="{ThemeResource MutedBrush}"/><TextBlock Text="10" FontSize="11" Foreground="{ThemeResource MutedBrush}" HorizontalAlignment="Right"/></Grid>
+       <Grid><TextBlock Text="0" FontSize="12" Foreground="{ThemeResource MutedBrush}"/><TextBlock Text="10" FontSize="12" Foreground="{ThemeResource MutedBrush}" HorizontalAlignment="Right"/></Grid>
       </StackPanel>
       <!-- Category scores (optional); their average can become the score -->
       <StackPanel Spacing="8">
-       <Grid><TextBlock Text="{Binding Text[DyCategories]}" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
+       <Grid><TextBlock Text="{Binding Text[DyCategories]}" Style="{StaticResource SectionTitleStyle}" FontSize="18"/>
         <HyperlinkButton Content="{Binding CategoryAverageText}" Click="OnUseAverage" Padding="4,0" FontSize="12" HorizontalAlignment="Right" Visibility="{Binding CategoryAverageText, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="diary-use-average"/></Grid>
        <ItemsControl ItemsSource="{Binding Categories}" AutomationProperties.AutomationId="diary-categories">
         <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="2"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate><DataTemplate>
          <Grid ColumnSpacing="10"><Grid.ColumnDefinitions><ColumnDefinition Width="96"/><ColumnDefinition/><ColumnDefinition Width="30"/></Grid.ColumnDefinitions>
-          <TextBlock Text="{Binding Label}" FontSize="12.5" VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding Label}" FontSize="12" VerticalAlignment="Center"/>
           <Slider Grid.Column="1" Minimum="0" Maximum="10" StepFrequency="0.5" Value="{Binding Value, Mode=TwoWay}" ValueChanged="OnCategory" AutomationProperties.Name="{Binding Label}"/>
-          <TextBlock Grid.Column="2" Text="{Binding ValueText}" FontSize="12.5" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="{ThemeResource GoldBrush}"/>
+          <TextBlock Grid.Column="2" Text="{Binding ValueText}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="{ThemeResource GoldBrush}"/>
          </Grid>
         </DataTemplate></ItemsControl.ItemTemplate>
        </ItemsControl>
       </StackPanel>
       <!-- Status: illustrated cards, each in its own color -->
       <StackPanel Spacing="8">
-       <TextBlock Text="{Binding Text[DyStatus]}" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
+       <TextBlock Text="{Binding Text[DyStatus]}" Style="{StaticResource SectionTitleStyle}" FontSize="18"/>
        <ItemsControl x:Name="StatusList" ItemsSource="{Binding Statuses}" AutomationProperties.AutomationId="diary-status">
         <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="170" ItemHeight="66"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate><DataTemplate>
-         <Button Click="OnStatus" Margin="0,0,8,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Left" CornerRadius="14" Padding="12,8" app:Motion.Press="True"
+         <Button Click="OnStatus" Margin="0,0,8,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Left" CornerRadius="12" Padding="12,8" app:Motion.Press="True"
                  Background="{ThemeResource CardBrush}" BorderThickness="1.5" BorderBrush="{ThemeResource CardBorderBrush}" AutomationProperties.Name="{Binding Label}">
           <StackPanel Orientation="Horizontal" Spacing="10">
            <Grid Width="32" Height="32"><Ellipse Fill="{ThemeResource SubtleBrush}"/><FontIcon Glyph="{Binding Glyph}" FontSize="14"/></Grid>
-           <TextBlock Text="{Binding Label}" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+           <TextBlock Text="{Binding Label}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
           </StackPanel>
          </Button>
         </DataTemplate></ItemsControl.ItemTemplate>
@@ -87,7 +87,7 @@
      <!-- Right: details, playthroughs, feats, moods, review -->
      <StackPanel x:Name="RightColumn" Grid.Column="1" Spacing="22">
       <StackPanel Spacing="10">
-       <TextBlock Text="{Binding Text[DyDetails]}" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
+       <TextBlock Text="{Binding Text[DyDetails]}" Style="{StaticResource SectionTitleStyle}" FontSize="18"/>
        <Grid ColumnSpacing="12" RowSpacing="12">
         <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
@@ -97,14 +97,14 @@
          <HyperlinkButton Content="{Binding SteamHoursLabel}" Click="OnSteamHours" Padding="0,2" FontSize="12" Visibility="{Binding HasSteamHours, Converter={StaticResource BooleanVisibility}}"/>
          <!-- "Tempo para zerar" (HowLongToBeat): read-only community times -->
          <StackPanel Spacing="0" Visibility="{Binding HasLength, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="diary-beat">
-          <TextBlock Text="{Binding Text[DyBeatTitle]}" Style="{StaticResource CaptionStyle}" FontSize="11" Opacity="0.75"/>
+          <TextBlock Text="{Binding Text[DyBeatTitle]}" Style="{StaticResource CaptionStyle}" FontSize="12" Opacity="0.75"/>
           <TextBlock Text="{Binding LengthText}" Style="{StaticResource CaptionStyle}" FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource GoldBrush}"/>
          </StackPanel>
         </StackPanel>
         <ComboBox Grid.Column="2" Header="{Binding Text[DyDifficulty]}" ItemsSource="{Binding Difficulties}" DisplayMemberPath="Label" SelectedValuePath="Id" SelectedValue="{Binding Difficulty, Mode=TwoWay}" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="diary-difficulty"/>
         <CalendarDatePicker x:Name="StartPicker" Grid.Row="1" Header="{Binding Text[DyStarted]}" DateChanged="OnStartChanged" HorizontalAlignment="Stretch"/>
         <CalendarDatePicker x:Name="EndPicker" Grid.Row="1" Grid.Column="1" Header="{Binding Text[DyFinished]}" DateChanged="OnEndChanged" HorizontalAlignment="Stretch"/>
-        <TextBlock Grid.Row="2" Grid.ColumnSpan="3" Text="{Binding DateError}" Foreground="{ThemeResource ErrorBrush}" FontSize="12.5" TextWrapping="Wrap" Visibility="{Binding DateError, Converter={StaticResource PresenceVisibility}}" AutomationProperties.LiveSetting="Assertive" AutomationProperties.AutomationId="diary-date-error"/>
+        <TextBlock Grid.Row="2" Grid.ColumnSpan="3" Text="{Binding DateError}" Foreground="{ThemeResource ErrorBrush}" FontSize="12" TextWrapping="Wrap" Visibility="{Binding DateError, Converter={StaticResource PresenceVisibility}}" AutomationProperties.LiveSetting="Assertive" AutomationProperties.AutomationId="diary-date-error"/>
        </Grid>
       </StackPanel>
       <!-- "Onde eu parei?": a personal note saved on its own (never changes score, hours or status) -->
@@ -112,9 +112,9 @@
        <Grid ColumnSpacing="8">
         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
         <FontIcon Glyph="&#xE8A4;" FontSize="14" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
-        <TextBlock Grid.Column="1" Text="{Binding Text[RnTitle]}" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
+        <TextBlock Grid.Column="1" Text="{Binding Text[RnTitle]}" Style="{StaticResource SectionTitleStyle}" FontSize="18"/>
         <Border Grid.Column="2" CornerRadius="8" Padding="8,2" Background="{ThemeResource AccentSoftBrush}" VerticalAlignment="Center" Visibility="{Binding ResumeFromLastSession, Converter={StaticResource BooleanVisibility}}">
-         <TextBlock Text="{Binding Text[RnLastSession]}" FontSize="11.5" Foreground="{ThemeResource GoldBrush}"/>
+         <TextBlock Text="{Binding Text[RnLastSession]}" FontSize="12" Foreground="{ThemeResource GoldBrush}"/>
         </Border>
        </Grid>
        <TextBlock Text="{Binding Text[RnHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" Visibility="{Binding ShowResumeEmpty, Converter={StaticResource BooleanVisibility}}"/>
@@ -147,8 +147,8 @@
       </StackPanel>
       <!-- Extra playthroughs -->
       <StackPanel Spacing="8">
-       <Grid><TextBlock Text="{Binding Text[DyRuns]}" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
-        <HyperlinkButton Click="OnAddRun" Padding="4,0" FontSize="12.5" HorizontalAlignment="Right" AutomationProperties.AutomationId="diary-add-run"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE710;" FontSize="11"/><TextBlock Text="{Binding Text[DyRunAdd]}"/></StackPanel></HyperlinkButton></Grid>
+       <Grid><TextBlock Text="{Binding Text[DyRuns]}" Style="{StaticResource SectionTitleStyle}" FontSize="18"/>
+        <HyperlinkButton Click="OnAddRun" Padding="4,0" FontSize="12" HorizontalAlignment="Right" AutomationProperties.AutomationId="diary-add-run"><StackPanel Orientation="Horizontal" Spacing="6"><FontIcon Glyph="&#xE710;" FontSize="11"/><TextBlock Text="{Binding Text[DyRunAdd]}"/></StackPanel></HyperlinkButton></Grid>
        <TextBlock Text="{Binding Text[DyRunsHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
        <ItemsControl ItemsSource="{Binding Runs}" AutomationProperties.AutomationId="diary-runs">
         <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
@@ -166,34 +166,34 @@
       </StackPanel>
       <!-- Feats -->
       <StackPanel Spacing="6">
-       <TextBlock Text="{Binding Text[DyFeats]}" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
+       <TextBlock Text="{Binding Text[DyFeats]}" Style="{StaticResource SectionTitleStyle}" FontSize="18"/>
        <TextBlock Text="{Binding Text[DyFeatsHint]}" Style="{StaticResource CaptionStyle}"/>
        <ItemsControl ItemsSource="{Binding FeatToggles}" Margin="0,4,0,0" AutomationProperties.AutomationId="diary-feats">
         <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="172" ItemHeight="46"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate><DataTemplate>
-         <ToggleButton IsChecked="{Binding Selected, Mode=TwoWay}" Click="OnFeat" Margin="0,0,8,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="20" AutomationProperties.Name="{Binding Label}">
-          <StackPanel Orientation="Horizontal" Spacing="7"><FontIcon Glyph="{Binding Glyph}" FontSize="13"/><TextBlock Text="{Binding Label}" FontSize="12.5"/></StackPanel>
+         <ToggleButton IsChecked="{Binding Selected, Mode=TwoWay}" Click="OnFeat" Margin="0,0,8,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="16" AutomationProperties.Name="{Binding Label}">
+          <StackPanel Orientation="Horizontal" Spacing="7"><FontIcon Glyph="{Binding Glyph}" FontSize="13"/><TextBlock Text="{Binding Label}" FontSize="12"/></StackPanel>
          </ToggleButton>
         </DataTemplate></ItemsControl.ItemTemplate>
        </ItemsControl>
       </StackPanel>
       <!-- How it felt -->
       <StackPanel Spacing="6">
-       <TextBlock Text="{Binding Text[DyMoods]}" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
+       <TextBlock Text="{Binding Text[DyMoods]}" Style="{StaticResource SectionTitleStyle}" FontSize="18"/>
        <ItemsControl ItemsSource="{Binding Moods}" Margin="0,4,0,0" AutomationProperties.AutomationId="diary-moods">
         <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="160" ItemHeight="44"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate><DataTemplate>
-         <ToggleButton IsChecked="{Binding Selected, Mode=TwoWay}" Click="OnFeat" Margin="0,0,8,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="20" AutomationProperties.Name="{Binding Label}">
-          <StackPanel Orientation="Horizontal" Spacing="7"><FontIcon Glyph="{Binding Glyph}" FontSize="12"/><TextBlock Text="{Binding Label}" FontSize="12.5"/></StackPanel>
+         <ToggleButton IsChecked="{Binding Selected, Mode=TwoWay}" Click="OnFeat" Margin="0,0,8,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="16" AutomationProperties.Name="{Binding Label}">
+          <StackPanel Orientation="Horizontal" Spacing="7"><FontIcon Glyph="{Binding Glyph}" FontSize="12"/><TextBlock Text="{Binding Label}" FontSize="12"/></StackPanel>
          </ToggleButton>
         </DataTemplate></ItemsControl.ItemTemplate>
        </ItemsControl>
       </StackPanel>
       <!-- Review -->
       <StackPanel Spacing="6">
-       <TextBlock Text="{Binding Text[DyReview]}" Style="{StaticResource SectionTitleStyle}" FontSize="16"/>
+       <TextBlock Text="{Binding Text[DyReview]}" Style="{StaticResource SectionTitleStyle}" FontSize="18"/>
        <TextBox Text="{Binding Review, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="{Binding Text[DyReviewPlaceholder]}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="150" MaxHeight="320" MaxLength="5000" ScrollViewer.VerticalScrollBarVisibility="Auto" AutomationProperties.AutomationId="diary-review"/>
-       <TextBlock Text="{Binding ReviewCount}" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right" FontSize="11.5"/>
+       <TextBlock Text="{Binding ReviewCount}" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right" FontSize="12"/>
       </StackPanel>
      </StackPanel>
     </Grid>

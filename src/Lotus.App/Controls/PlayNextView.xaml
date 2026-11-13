@@ -6,15 +6,15 @@
    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
    <StackPanel x:Name="Ask" Spacing="10" VerticalAlignment="Center" MaxWidth="360">
-    <StackPanel Orientation="Horizontal" Spacing="10">
+    <StackPanel x:Name="TitleRow" Orientation="Horizontal" Spacing="10">
      <FontIcon Glyph="&#xE7FC;" FontSize="18" Foreground="{ThemeResource GoldBrush}"/>
-     <TextBlock Text="{Binding Text[PnTitle]}" FontFamily="Georgia" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
+     <TextBlock Text="{Binding Text[PnTitle]}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
     </StackPanel>
     <TextBlock Text="{Binding Text[PnTimeAsk]}" Style="{StaticResource CaptionStyle}"/>
     <StackPanel Orientation="Horizontal" Spacing="6">
-     <Button x:Name="TimeShort" Tag="Short" Click="OnTime" Content="{Binding Text[PnTimeShort]}" Padding="12,5" CornerRadius="14" AutomationProperties.AutomationId="play-next-short"/>
-     <Button x:Name="TimeEvening" Tag="Evening" Click="OnTime" Content="{Binding Text[PnTimeEvening]}" Padding="12,5" CornerRadius="14" AutomationProperties.AutomationId="play-next-evening"/>
-     <Button x:Name="TimeLong" Tag="Long" Click="OnTime" Content="{Binding Text[PnTimeLong]}" Padding="12,5" CornerRadius="14" AutomationProperties.AutomationId="play-next-long"/>
+     <Button x:Name="TimeShort" Tag="Short" Click="OnTime" Content="{Binding Text[PnTimeShort]}" Padding="12,5" CornerRadius="12" AutomationProperties.AutomationId="play-next-short"/>
+     <Button x:Name="TimeEvening" Tag="Evening" Click="OnTime" Content="{Binding Text[PnTimeEvening]}" Padding="12,5" CornerRadius="12" AutomationProperties.AutomationId="play-next-evening"/>
+     <Button x:Name="TimeLong" Tag="Long" Click="OnTime" Content="{Binding Text[PnTimeLong]}" Padding="12,5" CornerRadius="12" AutomationProperties.AutomationId="play-next-long"/>
     </StackPanel>
     <ComboBox x:Name="VibeBox" SelectionChanged="OnVibe" MinWidth="220" Header="{Binding Text[PnVibeAsk]}" AutomationProperties.AutomationId="play-next-vibe"/>
    </StackPanel>
@@ -30,7 +30,7 @@
     </Grid>
     <StackPanel x:Name="PickText" Grid.Column="1" Spacing="6" VerticalAlignment="Center">
      <TextBlock Text="{Binding Text[PnSuggest]}" Style="{StaticResource EyebrowStyle}"/>
-     <TextBlock Text="{Binding Top.Entry.Name}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
+     <TextBlock Text="{Binding Top.Entry.Name}" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
      <TextBlock Text="{Binding TopReasons}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
      <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,6,0,0">
       <Button Style="{StaticResource PrimaryButtonStyle}" Click="OnOpen" AutomationProperties.AutomationId="play-next-open">

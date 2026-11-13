@@ -9,32 +9,32 @@
     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <Grid Width="60" Height="60" VerticalAlignment="Center">
      <Ellipse Fill="{ThemeResource AccentGradientBrush}"/>
-     <TextBlock x:Name="Initial" FontSize="24" FontWeight="SemiBold" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+     <TextBlock x:Name="Initial" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
      <Ellipse x:Name="Picture" Visibility="Collapsed"><Ellipse.Fill><ImageBrush x:Name="PictureBrush" Stretch="UniformToFill"/></Ellipse.Fill></Ellipse>
      <Ellipse Stroke="{ThemeResource GoldGradientBrush}" StrokeThickness="2"/>
      <Border CornerRadius="9" Padding="6,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-8" Background="{ThemeResource GoldGradientBrush}">
-      <TextBlock Text="{Binding Progress.Level}" FontWeight="Bold" FontSize="11" Foreground="#3A0F24"/>
+      <TextBlock Text="{Binding Progress.Level}" FontWeight="Bold" FontSize="12" Foreground="#3A0F24"/>
      </Border>
     </Grid>
     <StackPanel Grid.Column="1" Spacing="3" VerticalAlignment="Center">
      <StackPanel Orientation="Horizontal" Spacing="10">
       <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-      <Border CornerRadius="9" Padding="8,2" Background="{ThemeResource AccentSoftBrush}" VerticalAlignment="Center"><TextBlock FontSize="11.5" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"><Run Text="{Binding LevelText}"/><Run Text=" · "/><Run Text="{Binding TitleText}"/></TextBlock></Border>
+      <Border CornerRadius="9" Padding="8,2" Background="{ThemeResource AccentSoftBrush}" VerticalAlignment="Center"><TextBlock FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"><Run Text="{Binding LevelText}"/><Run Text=" · "/><Run Text="{Binding TitleText}"/></TextBlock></Border>
      </StackPanel>
-     <TextBox x:Name="BioBox" Text="{Binding Bio, Mode=TwoWay}" PlaceholderText="{Binding Text[DyBioPlaceholder]}" MaxLength="160" Background="Transparent" BorderThickness="0,0,0,1" Padding="0,2" FontSize="13" MinHeight="26" MinWidth="280" HorizontalAlignment="Left"
+     <TextBox x:Name="BioBox" Text="{Binding Bio, Mode=TwoWay}" PlaceholderText="{Binding Text[DyBioPlaceholder]}" MaxLength="160" Background="Transparent" BorderThickness="0,0,0,1" Padding="0,2" FontSize="14" MinHeight="26" MinWidth="280" HorizontalAlignment="Left"
               AutomationProperties.Name="{Binding Text[DyBio]}" AutomationProperties.AutomationId="diary-bio"/>
     </StackPanel>
     <!-- Stats: four compact numbers in a row -->
     <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="20" VerticalAlignment="Center">
-     <StackPanel><TextBlock Text="{Binding StatCompleted}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatCompleted]}" FontSize="11" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
-     <StackPanel><TextBlock Text="{Binding StatHours}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatHours]}" FontSize="11" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
-     <StackPanel><TextBlock Text="{Binding StatAverage}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatAverage]}" FontSize="11" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
-     <StackPanel><TextBlock Text="{Binding StatYear}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatYear]}" FontSize="11" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
+     <StackPanel><TextBlock Text="{Binding StatCompleted}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatCompleted]}" FontSize="12" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
+     <StackPanel><TextBlock Text="{Binding StatHours}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatHours]}" FontSize="12" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
+     <StackPanel><TextBlock Text="{Binding StatAverage}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatAverage]}" FontSize="12" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
+     <StackPanel><TextBlock Text="{Binding StatYear}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatYear]}" FontSize="12" Foreground="{ThemeResource MutedBrush}"/></StackPanel>
     </StackPanel>
     <StackPanel Grid.Column="3" Width="190" Spacing="5" VerticalAlignment="Center">
-     <Grid><TextBlock Text="{Binding TitleText}" FontWeight="SemiBold" FontSize="12.5"/><TextBlock Text="{Binding XpText}" FontSize="11.5" Foreground="{ThemeResource MutedBrush}" HorizontalAlignment="Right"/></Grid>
+     <Grid><TextBlock Text="{Binding TitleText}" FontWeight="SemiBold" FontSize="12"/><TextBlock Text="{Binding XpText}" FontSize="12" Foreground="{ThemeResource MutedBrush}" HorizontalAlignment="Right"/></Grid>
      <ProgressBar x:Name="XpBar" Maximum="100" MinHeight="6" CornerRadius="3"/>
-     <TextBlock Text="{Binding Achievements.SummaryText}" FontSize="11" Foreground="{ThemeResource MutedBrush}"/>
+     <TextBlock Text="{Binding Achievements.SummaryText}" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
     </StackPanel>
     </Grid>
     <Grid x:Name="HeaderFull" ColumnSpacing="22" RowSpacing="18" Padding="6,8,6,4" Visibility="Collapsed">
@@ -42,7 +42,7 @@
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <Grid Width="96" Height="96">
      <Ellipse Fill="{ThemeResource AccentGradientBrush}"/>
-     <TextBlock x:Name="FullInitial" FontSize="36" FontWeight="SemiBold" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+     <TextBlock x:Name="FullInitial" FontSize="40" FontWeight="SemiBold" Foreground="{ThemeResource OnRoseBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
      <Ellipse x:Name="FullPicture" Visibility="Collapsed"><Ellipse.Fill><ImageBrush x:Name="FullPictureBrush" Stretch="UniformToFill"/></Ellipse.Fill></Ellipse>
      <Ellipse Stroke="{ThemeResource GoldGradientBrush}" StrokeThickness="2.5"/>
      <Border CornerRadius="11" Padding="8,2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-10" Background="{ThemeResource GoldGradientBrush}">
@@ -52,8 +52,8 @@
     <StackPanel Grid.Column="1" Spacing="6" VerticalAlignment="Center">
      <TextBlock Text="{Binding Name}" FontSize="28" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
      <StackPanel Orientation="Horizontal" Spacing="8">
-      <Border CornerRadius="10" Padding="10,3" Background="{ThemeResource AccentSoftBrush}"><TextBlock FontSize="12.5" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"><Run Text="{Binding LevelText}"/><Run Text=" · "/><Run Text="{Binding TitleText}"/></TextBlock></Border>
-      <Border CornerRadius="10" Padding="10,3" Background="{ThemeResource SubtleBrush}"><TextBlock Text="{Binding Achievements.SummaryText}" FontSize="12.5"/></Border>
+      <Border CornerRadius="12" Padding="10,3" Background="{ThemeResource AccentSoftBrush}"><TextBlock FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"><Run Text="{Binding LevelText}"/><Run Text=" · "/><Run Text="{Binding TitleText}"/></TextBlock></Border>
+      <Border CornerRadius="12" Padding="10,3" Background="{ThemeResource SubtleBrush}"><TextBlock Text="{Binding Achievements.SummaryText}" FontSize="12"/></Border>
      </StackPanel>
      <TextBox x:Name="FullBioBox" Text="{Binding Bio, Mode=TwoWay}" PlaceholderText="{Binding Text[DyBioPlaceholder]}" MaxLength="160" Background="Transparent" BorderThickness="0,0,0,1" Padding="0,4" MinWidth="320" HorizontalAlignment="Left"
               AutomationProperties.Name="{Binding Text[DyBio]}" AutomationProperties.AutomationId="diary-bio-full"/>
@@ -65,10 +65,10 @@
     <!-- Stats -->
     <Grid Grid.Row="1" Grid.ColumnSpan="3" ColumnSpacing="12">
      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-     <Border Style="{StaticResource CompactCardStyle}" Padding="14,10"><StackPanel><TextBlock Text="{Binding StatCompleted}" FontSize="26" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatCompleted]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Border>
-     <Border Grid.Column="1" Style="{StaticResource CompactCardStyle}" Padding="14,10"><StackPanel><TextBlock Text="{Binding StatHours}" FontSize="26" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatHours]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Border>
-     <Border Grid.Column="2" Style="{StaticResource CompactCardStyle}" Padding="14,10"><StackPanel><TextBlock Text="{Binding StatAverage}" FontSize="26" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatAverage]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Border>
-     <Border Grid.Column="3" Style="{StaticResource CompactCardStyle}" Padding="14,10"><StackPanel><TextBlock Text="{Binding StatYear}" FontSize="26" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatYear]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Border>
+     <Border Style="{StaticResource CompactCardStyle}" Padding="14,10"><StackPanel><TextBlock Text="{Binding StatCompleted}" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatCompleted]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Border>
+     <Border Grid.Column="1" Style="{StaticResource CompactCardStyle}" Padding="14,10"><StackPanel><TextBlock Text="{Binding StatHours}" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatHours]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Border>
+     <Border Grid.Column="2" Style="{StaticResource CompactCardStyle}" Padding="14,10"><StackPanel><TextBlock Text="{Binding StatAverage}" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatAverage]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Border>
+     <Border Grid.Column="3" Style="{StaticResource CompactCardStyle}" Padding="14,10"><StackPanel><TextBlock Text="{Binding StatYear}" FontSize="28" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyStatYear]}" Style="{StaticResource CaptionStyle}"/></StackPanel></Border>
     </Grid>
     </Grid>
     <Grid Grid.Row="1" ColumnSpacing="8">
@@ -87,7 +87,7 @@
           <TextBlock Text="{Binding Detail}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
           <Grid ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
            <ProgressBar Value="{Binding Fraction}" Maximum="1" MinHeight="4" VerticalAlignment="Center"/>
-           <TextBlock Grid.Column="1" Text="{Binding ProgressText}" FontSize="11.5" Foreground="{ThemeResource MutedBrush}"/>
+           <TextBlock Grid.Column="1" Text="{Binding ProgressText}" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
           </Grid>
          </StackPanel>
         </Grid>
@@ -95,7 +95,7 @@
       </DataTemplate></ItemsRepeater.ItemTemplate>
      </ItemsRepeater>
     </Expander>
-     <Button x:Name="HeaderToggle" Grid.Column="1" Click="OnHeaderToggle" Padding="10,8" CornerRadius="10" VerticalAlignment="Top" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" AutomationProperties.AutomationId="diary-header-toggle"><FontIcon x:Name="HeaderToggleIcon" Glyph="&#xE740;" FontSize="13"/></Button>
+     <Button x:Name="HeaderToggle" Grid.Column="1" Click="OnHeaderToggle" Padding="10,8" CornerRadius="12" VerticalAlignment="Top" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" AutomationProperties.AutomationId="diary-header-toggle"><FontIcon x:Name="HeaderToggleIcon" Glyph="&#xE740;" FontSize="13"/></Button>
     </Grid>
    </Grid>
   </Border>
@@ -111,13 +111,17 @@
   <local:SteamTrophiesView x:Name="SteamArea" DataContext="{Binding Achievements}" Visibility="Collapsed"/>
 
   <StackPanel x:Name="GamesArea" Spacing="18">
-  <local:PlayNextView DataContext="{Binding PlayNext}"/>
+  <!-- Visual 2.0: "O que jogar agora?" stays one click away instead of a big card above the games -->
+  <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0" AutomationProperties.AutomationId="diary-play-next">
+   <Expander.Header><StackPanel Orientation="Horizontal" Spacing="10" Padding="0,8"><FontIcon Glyph="&#xE7FC;" FontSize="16" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[PnTitle]}" Style="{StaticResource BodyStrongStyle}" VerticalAlignment="Center"/></StackPanel></Expander.Header>
+   <local:PlayNextView DataContext="{Binding PlayNext}" ShowTitle="False"/>
+  </Expander>
   <!-- "Quero jogar" games on sale on Steam (only when there is one) -->
   <Border Style="{StaticResource CardStyle}" Padding="20,16" DataContext="{Binding Deals}" Visibility="{Binding HasDeals, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="diary-deals">
    <StackPanel Spacing="12">
     <StackPanel Orientation="Horizontal" Spacing="10">
      <FontIcon Glyph="&#xE8EC;" FontSize="16" Foreground="{ThemeResource GoldBrush}"/>
-     <TextBlock Text="{Binding Title}" FontSize="16" FontWeight="SemiBold"/>
+     <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="SemiBold"/>
      <TextBlock Text="{Binding Text[DlHint]}" Style="{StaticResource CaptionStyle}" VerticalAlignment="Center"/>
     </StackPanel>
     <ScrollViewer HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled">
@@ -144,10 +148,14 @@
    </StackPanel>
   </Border>
   <!-- "Top 4" showcase: the player's favorite games, chosen by them (compact, the list stays the main content) -->
-  <Grid ColumnSpacing="18" AutomationProperties.AutomationId="diary-showcase">
+  <!-- With no favorite chosen yet, one invitation replaces the four empty boxes (visual 2.0) -->
+  <Button x:Name="ShowcaseInvite" Visibility="Collapsed" Click="OnShowcaseInvite" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Left" AutomationProperties.AutomationId="diary-showcase-invite">
+   <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE734;" FontSize="14" Foreground="{ThemeResource GoldBrush}"/><TextBlock Text="{Binding Text[DyShowcaseInvite]}"/></StackPanel>
+  </Button>
+  <Grid x:Name="ShowcaseRow" ColumnSpacing="18" AutomationProperties.AutomationId="diary-showcase">
    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
    <StackPanel VerticalAlignment="Center" Spacing="4" MaxWidth="170">
-    <TextBlock Text="{Binding Text[DyShowcaseTitle]}" FontFamily="Georgia" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
+    <TextBlock Text="{Binding Text[DyShowcaseTitle]}" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
     <TextBlock Text="{Binding Text[DyShowcaseHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
    </StackPanel>
    <ItemsControl Grid.Column="1" ItemsSource="{Binding Showcase}">
@@ -177,7 +185,7 @@
     <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
     <ItemsControl.ItemTemplate><DataTemplate>
      <Button Click="OnTab" Tag="{Binding Id}" Background="Transparent" BorderThickness="0,0,0,2" BorderBrush="Transparent" Padding="12,5" AutomationProperties.Name="{Binding Label}">
-      <StackPanel Orientation="Horizontal" Spacing="7"><TextBlock Text="{Binding Label}" FontSize="13" VerticalAlignment="Center"/><TextBlock Text="{Binding Count}" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Opacity="0.75"/></StackPanel>
+      <StackPanel Orientation="Horizontal" Spacing="7"><TextBlock Text="{Binding Label}" FontSize="14" VerticalAlignment="Center"/><TextBlock Text="{Binding Count}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" Opacity="0.75"/></StackPanel>
      </Button>
     </DataTemplate></ItemsControl.ItemTemplate>
    </ItemsControl>
@@ -227,26 +235,26 @@
    <GridView.ItemContainerTransitions><TransitionCollection><EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="18"/><RepositionThemeTransition/></TransitionCollection></GridView.ItemContainerTransitions>
    <GridView.ItemContainerStyle><Style TargetType="GridViewItem"><Setter Property="Margin" Value="0,0,14,14"/><Setter Property="Padding" Value="0"/></Style></GridView.ItemContainerStyle>
    <GridView.ItemTemplate><DataTemplate>
-    <Grid Width="168" Height="252" CornerRadius="14" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04" AutomationProperties.Name="{Binding Name}" RequestedTheme="Dark">
+    <Grid Width="168" Height="252" CornerRadius="12" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04" AutomationProperties.Name="{Binding Name}" RequestedTheme="Dark">
      <TextBlock Text="{Binding Name}" TextWrapping="Wrap" TextAlignment="Center" Margin="14" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{ThemeResource GoldBrush}"/>
      <Image Source="{Binding Cover, Converter={StaticResource CoverImage}}" Stretch="UniformToFill" Opacity="{Binding CoverOpacity}"/>
      <!-- Special covers: platinum shimmer + ribbon, a 10 gets a gold frame and seal -->
-     <Border CornerRadius="13" app:Motion.Sheen="True" Visibility="{Binding IsPlatinum, Converter={StaticResource BooleanVisibility}}" BorderThickness="2"><Border.BorderBrush><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#FFB8E3FF" Offset="0"/><GradientStop Color="#FFF3C6FF" Offset="0.35"/><GradientStop Color="#FFFFE6B0" Offset="0.7"/><GradientStop Color="#FFB8FFE0" Offset="1"/></LinearGradientBrush></Border.BorderBrush></Border>
-     <Border CornerRadius="13" BorderThickness="2" BorderBrush="{StaticResource GoldGradientBrush}" Visibility="{Binding IsPerfect, Converter={StaticResource BooleanVisibility}}"/>
+     <Border CornerRadius="12" app:Motion.Sheen="True" Visibility="{Binding IsPlatinum, Converter={StaticResource BooleanVisibility}}" BorderThickness="2"><Border.BorderBrush><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#FFB8E3FF" Offset="0"/><GradientStop Color="#FFF3C6FF" Offset="0.35"/><GradientStop Color="#FFFFE6B0" Offset="0.7"/><GradientStop Color="#FFB8FFE0" Offset="1"/></LinearGradientBrush></Border.BorderBrush></Border>
+     <Border CornerRadius="12" BorderThickness="2" BorderBrush="{StaticResource GoldGradientBrush}" Visibility="{Binding IsPerfect, Converter={StaticResource BooleanVisibility}}"/>
      <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#00160C14" Offset="0.5"/><GradientStop Color="#F0160C14" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
      <Border CornerRadius="8" Padding="7,2" Margin="8" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="{Binding IsPlatinum, Converter={StaticResource BooleanVisibility}}"><Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#FFB8E3FF" Offset="0"/><GradientStop Color="#FFF3C6FF" Offset="0.5"/><GradientStop Color="#FFFFE6B0" Offset="1"/></LinearGradientBrush></Border.Background><TextBlock Text="{Binding DataContext.Text[DyPlatinumRibbon], ElementName=DiaryGrid}" FontSize="10" FontWeight="Bold" CharacterSpacing="80" Foreground="#2A1430"/></Border>
      <!-- Rating, top right -->
      <!-- A 10 shows a gold seal instead of the plain badge -->
-     <Border Width="40" Height="40" CornerRadius="20" Margin="6" HorizontalAlignment="Right" VerticalAlignment="Top" Background="{StaticResource GoldGradientBrush}" Visibility="{Binding IsPerfect, Converter={StaticResource BooleanVisibility}}"><TextBlock Text="10" FontWeight="Bold" FontSize="15" Foreground="#3A0F24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-     <Border CornerRadius="10" Padding="8,2" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top" Background="#D912090F" BorderThickness="1" BorderBrush="{Binding RatingKind, Converter={StaticResource DiaryBrush}}" Visibility="{Binding IsPerfect, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}">
-      <TextBlock Text="{Binding Rating}" FontSize="15" FontWeight="Bold" Foreground="{Binding RatingKind, Converter={StaticResource DiaryBrush}}"/>
+     <Border Width="40" Height="40" CornerRadius="20" Margin="6" HorizontalAlignment="Right" VerticalAlignment="Top" Background="{StaticResource GoldGradientBrush}" Visibility="{Binding IsPerfect, Converter={StaticResource BooleanVisibility}}"><TextBlock Text="10" FontWeight="Bold" FontSize="14" Foreground="#3A0F24" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+     <Border CornerRadius="12" Padding="8,2" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top" Background="#D912090F" BorderThickness="1" BorderBrush="{Binding RatingKind, Converter={StaticResource DiaryBrush}}" Visibility="{Binding IsPerfect, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}">
+      <TextBlock Text="{Binding Rating}" FontSize="14" FontWeight="Bold" Foreground="{Binding RatingKind, Converter={StaticResource DiaryBrush}}"/>
      </Border>
      <!-- Name, status and hours at the bottom -->
      <StackPanel VerticalAlignment="Bottom" Padding="12,0,12,12" Spacing="6">
       <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" Foreground="White" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis"/>
       <StackPanel Orientation="Horizontal" Spacing="6">
-       <Border CornerRadius="8" Padding="8,2" Background="{Binding StatusKey, Converter={StaticResource DiaryBrush}}"><TextBlock Text="{Binding Status}" FontSize="11" FontWeight="SemiBold" Foreground="#12090F"/></Border>
-       <Border CornerRadius="8" Padding="7,2" Background="#8012090F" Visibility="{Binding HasHours, Converter={StaticResource BooleanVisibility}}"><TextBlock Text="{Binding Hours}" FontSize="11" Foreground="#E6D6DE"/></Border>
+       <Border CornerRadius="8" Padding="8,2" Background="{Binding StatusKey, Converter={StaticResource DiaryBrush}}"><TextBlock Text="{Binding Status}" FontSize="12" FontWeight="SemiBold" Foreground="#12090F"/></Border>
+       <Border CornerRadius="8" Padding="7,2" Background="#8012090F" Visibility="{Binding HasHours, Converter={StaticResource BooleanVisibility}}"><TextBlock Text="{Binding Hours}" FontSize="12" Foreground="#E6D6DE"/></Border>
       </StackPanel>
      </StackPanel>
     </Grid>
@@ -269,12 +277,12 @@
     <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="4"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
     <ItemsControl.ItemTemplate><DataTemplate>
      <Button Click="OnEntry" Style="{StaticResource CardButtonStyle}" AutomationProperties.Name="{Binding Name}">
-      <Grid Padding="12,6" ColumnSpacing="12" CornerRadius="10" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
+      <Grid Padding="12,6" ColumnSpacing="12" CornerRadius="12" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
        <Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="3*"/><ColumnDefinition Width="1.3*"/><ColumnDefinition Width="0.8*"/><ColumnDefinition Width="0.9*"/><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions>
        <Border Width="32" Height="44" CornerRadius="6" Background="{ThemeResource HeroBrush}"><Image Source="{Binding Cover, Converter={StaticResource CoverImage}}" Stretch="UniformToFill" Opacity="{Binding CoverOpacity}"/></Border>
-       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Genre}" FontSize="11.5" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis"/></StackPanel>
-       <Border Grid.Column="2" CornerRadius="8" Padding="8,2" HorizontalAlignment="Left" VerticalAlignment="Center" Background="{Binding StatusKey, Converter={StaticResource DiaryBrush}}"><TextBlock Text="{Binding Status}" FontSize="11" FontWeight="SemiBold" Foreground="#12090F"/></Border>
-       <TextBlock Grid.Column="3" Text="{Binding Rating}" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Foreground="{Binding RatingKind, Converter={StaticResource DiaryBrush}}"/>
+       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Genre}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis"/></StackPanel>
+       <Border Grid.Column="2" CornerRadius="8" Padding="8,2" HorizontalAlignment="Left" VerticalAlignment="Center" Background="{Binding StatusKey, Converter={StaticResource DiaryBrush}}"><TextBlock Text="{Binding Status}" FontSize="12" FontWeight="SemiBold" Foreground="#12090F"/></Border>
+       <TextBlock Grid.Column="3" Text="{Binding Rating}" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" Foreground="{Binding RatingKind, Converter={StaticResource DiaryBrush}}"/>
        <TextBlock Grid.Column="4" Text="{Binding HoursOrDash}" VerticalAlignment="Center"/>
        <TextBlock Grid.Column="5" Text="{Binding StartedText}" VerticalAlignment="Center" Foreground="{ThemeResource MutedBrush}"/>
        <TextBlock Grid.Column="6" Text="{Binding FinishedText}" VerticalAlignment="Center" Foreground="{ThemeResource MutedBrush}"/>
@@ -295,7 +303,7 @@
       <Grid ColumnSpacing="16" RowSpacing="10">
        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-       <Border Width="84" Height="112" CornerRadius="10" Background="{ThemeResource HeroBrush}" VerticalAlignment="Top">
+       <Border Width="84" Height="112" CornerRadius="12" Background="{ThemeResource HeroBrush}" VerticalAlignment="Top">
         <Image Source="{Binding Cover, Converter={StaticResource CoverImage}}" Stretch="UniformToFill" Opacity="{Binding CoverOpacity}"/>
        </Border>
        <StackPanel Grid.Column="1" Spacing="4">
@@ -304,11 +312,11 @@
          <TextBlock Text="{Binding Name}" FontSize="18" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
         </StackPanel>
         <TextBlock Text="{Binding Meta}" Style="{StaticResource CaptionStyle}"/>
-        <TextBlock Text="{Binding DateText}" Style="{StaticResource CaptionStyle}" FontSize="11.5"/>
+        <TextBlock Text="{Binding DateText}" Style="{StaticResource CaptionStyle}" FontSize="12"/>
         <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
-         <Border CornerRadius="8" Padding="8,2" Background="{ThemeResource SubtleBrush}"><TextBlock Text="{Binding Platform}" FontSize="11.5"/></Border>
+         <Border CornerRadius="8" Padding="8,2" Background="{ThemeResource SubtleBrush}"><TextBlock Text="{Binding Platform}" FontSize="12"/></Border>
          <Border CornerRadius="8" Padding="8,2" Background="{ThemeResource SubtleBrush}" Visibility="{Binding HasHours, Converter={StaticResource BooleanVisibility}}">
-          <StackPanel Orientation="Horizontal" Spacing="4"><FontIcon Glyph="&#xE916;" FontSize="10" Foreground="{ThemeResource SuccessBrush}"/><TextBlock Text="{Binding Hours}" FontSize="11.5" Foreground="{ThemeResource SuccessBrush}"/></StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="4"><FontIcon Glyph="&#xE916;" FontSize="10" Foreground="{ThemeResource SuccessBrush}"/><TextBlock Text="{Binding Hours}" FontSize="12" Foreground="{ThemeResource SuccessBrush}"/></StackPanel>
          </Border>
          <ItemsControl ItemsSource="{Binding Feats}" Visibility="{Binding HasFeats, Converter={StaticResource BooleanVisibility}}">
           <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
@@ -319,12 +327,12 @@
         </StackPanel>
        </StackPanel>
        <StackPanel Grid.Column="2" Spacing="6" HorizontalAlignment="Right">
-        <TextBlock Text="{Binding Rating}" FontSize="34" FontWeight="Bold" HorizontalAlignment="Right" Foreground="{Binding RatingKind, Converter={StaticResource DiaryBrush}}"/>
-        <Border CornerRadius="10" Padding="10,3" HorizontalAlignment="Right" Background="{Binding StatusKey, Converter={StaticResource DiaryBrush}}">
+        <TextBlock Text="{Binding Rating}" FontSize="40" FontWeight="Bold" HorizontalAlignment="Right" Foreground="{Binding RatingKind, Converter={StaticResource DiaryBrush}}"/>
+        <Border CornerRadius="12" Padding="10,3" HorizontalAlignment="Right" Background="{Binding StatusKey, Converter={StaticResource DiaryBrush}}">
          <TextBlock Text="{Binding Status}" FontSize="12" FontWeight="SemiBold" Foreground="#12090F"/>
         </Border>
        </StackPanel>
-       <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding Review}" Style="{StaticResource BodyStyle}" FontSize="13.5" MaxLines="4" TextTrimming="WordEllipsis" Visibility="{Binding HasReview, Converter={StaticResource BooleanVisibility}}"/>
+       <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding Review}" Style="{StaticResource BodyStyle}" FontSize="14" MaxLines="4" TextTrimming="WordEllipsis" Visibility="{Binding HasReview, Converter={StaticResource BooleanVisibility}}"/>
       </Grid>
      </Border>
     </Button>

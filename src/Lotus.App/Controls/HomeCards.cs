@@ -15,8 +15,13 @@ namespace Lotus.App.Controls;
 // Home, part 1: "Continue playing" — the last game the player opened, big art, one click to play.
 public sealed partial class ContinueCard : UserControl
 {
-    private readonly Grid root = new() { CornerRadius = new CornerRadius(22), MinHeight = 300 };
+    private readonly Grid root = new() { CornerRadius = new CornerRadius(22), MinHeight = 200 };
     public event EventHandler<GameEntry>? DetailsRequested;
+    // Bleed: Home's edge-to-edge hero (no corners, art fades into the page, greeting on top).
+    // Compact: the "Último jogado" band at the top of Meus Jogos (smaller title, no note).
+    public bool Bleed { get; set; }
+    public bool Compact { get; set; }
+    public string? Greeting { get; set; }
     public ContinueCard() { Content = root; root.Background = (Brush)Application.Current.Resources["HeroBrush"]; RequestedTheme = ElementTheme.Dark; } // photo hero: white text and dark buttons in both themes
 
     public void Show(SectionViewModel vm)
@@ -39,32 +44,46 @@ public sealed partial class ContinueCard : UserControl
             ((BitmapImage)img.Source).ImageFailed += (_, _) => img.Visibility = Visibility.Collapsed;
             root.Children.Add(img);
         }
-        root.Children.Add(new Rectangle { Fill = HomeMotion.Gradient(new(0, 0), new(1, 0), (0, Color.FromArgb(0xF0, 18, 9, 15)), (0.6, Color.FromArgb(0x80, 18, 9, 15)), (1, Color.FromArgb(0x10, 18, 9, 15))) });
-        root.Children.Add(new Rectangle { Fill = HomeMotion.Gradient(new(0, 0), new(0, 1), (0.45, Color.FromArgb(0, 18, 9, 15)), (1, Color.FromArgb(0xCC, 18, 9, 15))) });
+        root.CornerRadius = new CornerRadius(Bleed ? 0 : 16);
+        root.Children.Add(new Rectangle { Fill = HomeMotion.Gradient(new(0, 0), new(1, 0), (0, Color.FromArgb(0xF2, 18, 9, 15)), (0.38, Color.FromArgb(0xB3, 18, 9, 15)), (0.62, Color.FromArgb(0x1A, 18, 9, 15)), (1, Color.FromArgb(Bleed ? (byte)0x8C : (byte)0x33, 18, 9, 15))) }); // dark behind the text, the art bright in the middle
+        // Bleed: the art melts into the page background instead of ending on a hard edge.
+        var page = PageColor(); // Home paints this same solid color behind the page, so the fade has no edge
+        root.Children.Add(new Rectangle { Fill = Bleed
+            ? HomeMotion.Gradient(new(0, 0), new(0, 1), (0.45, Color.FromArgb(0, page.R, page.G, page.B)), (0.8, Color.FromArgb((byte)(page.A * 0.85), page.R, page.G, page.B)), (1, page))
+            : HomeMotion.Gradient(new(0, 0), new(0, 1), (0.5, Color.FromArgb(0, 18, 9, 15)), (1, Color.FromArgb(0xB3, 18, 9, 15))) });
+        if (Bleed && !string.IsNullOrWhiteSpace(Greeting))
+            root.Children.Add(new TextBlock { Text = Greeting, FontSize = 20, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Margin = new Thickness(40, 28, 40, 0), VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left, Foreground = new SolidColorBrush(Color.FromArgb(0xF2, 255, 244, 248)) });
 
-        var text = new StackPanel { Spacing = 8, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(32, 0, 32, 28), MaxWidth = 520, HorizontalAlignment = HorizontalAlignment.Left };
-        text.Children.Add(new TextBlock { Text = t[game is null ? "HcEmptyEyebrow" : "HcEyebrow"].ToUpperInvariant(), FontSize = 11.5, CharacterSpacing = 160, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Color.FromArgb(255, 0xF5, 0x8B, 0xB7)) }); // rose eyebrow on the dark photo
-        var title = new TextBlock { Text = game?.Name ?? t["HcEmptyTitle"], FontSize = 42, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis, Foreground = new SolidColorBrush(Colors.White) };
+        var text = new StackPanel { Spacing = Compact ? 8 : 12, VerticalAlignment = VerticalAlignment.Bottom, Margin = Bleed ? new Thickness(40, 0, 40, 64) : new Thickness(32, 0, 32, 28), MaxWidth = 560, HorizontalAlignment = HorizontalAlignment.Left };
+        var eyebrowRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
+        eyebrowRow.Children.Add(new Rectangle { Width = 24, Height = 2, VerticalAlignment = VerticalAlignment.Center, Fill = new SolidColorBrush(Color.FromArgb(255, 0xF5, 0x8B, 0xB7)) });
+        var eyebrowText = t[game is null ? "HcEmptyEyebrow" : Compact ? "GmSpotlight" : "HcEyebrow"].ToUpperInvariant();
+        if (Compact && game?.LastPlayed is not null) eyebrowText += " · " + When(t, game.LastPlayed).ToUpperInvariant();
+        eyebrowRow.Children.Add(new TextBlock { Text = eyebrowText, FontSize = 12, CharacterSpacing = 160, FontWeight = Microsoft.UI.Text.FontWeights.Bold, Foreground = new SolidColorBrush(Color.FromArgb(255, 0xF5, 0x8B, 0xB7)) }); // rose eyebrow on the dark photo
+        text.Children.Add(eyebrowRow);
+        var big = Compact ? 44 : ActualWidth is > 0 and < 760 ? 48 : 72;
+        var title = new TextBlock { Text = game?.Name ?? t["HcEmptyTitle"], FontSize = big, LineHeight = big + 4, LineStackingStrategy = LineStackingStrategy.BlockLineHeight, CharacterSpacing = -30, FontWeight = Microsoft.UI.Text.FontWeights.Bold, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis, Foreground = new SolidColorBrush(Colors.White) };
         ToolTipService.SetToolTip(title, title.Text); // two lines at most; the full name on hover
         text.Children.Add(title);
         // "Onde você parou": the player's own note for this game replaces the tagline (no empty space without a note).
         var note = game is null ? null : MainWindow.Shell?.Resume.Get(Lotus.Core.Diary.DiaryGames.KeyFor(game));
-        if (note is not null) text.Children.Add(ResumeBlock(t, note));
-        else text.Children.Add(new TextBlock { Text = game is null ? t["HcEmptyBody"] : t["HcTagline"], FontSize = 16, TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromArgb(0xE6, 255, 240, 246)) });
-        if (game is not null) // when it was last played, as a small pill (hidden when unknown)
+        if (Compact) { }
+        else if (note is not null) text.Children.Add(ResumeBlock(t, note));
+        else text.Children.Add(new TextBlock { Text = game is null ? t["HcEmptyBody"] : t["HcTagline"], FontSize = 18, TextWrapping = TextWrapping.Wrap, Foreground = new SolidColorBrush(Color.FromArgb(0xE6, 255, 240, 246)) });
+        if (game is not null && !Compact) // when it was last played, as a small pill (hidden when unknown)
         {
             var when = When(t, game.LastPlayed);
             if (game.LastPlayed is not null)
                 text.Children.Add(new Border { CornerRadius = new CornerRadius(12), Padding = new Thickness(12, 4, 12, 4), HorizontalAlignment = HorizontalAlignment.Left, Margin = new Thickness(0, 4, 0, 0),
                     Background = new SolidColorBrush(Color.FromArgb(0x59, 0x6B, 0x22, 0x46)), BorderBrush = new SolidColorBrush(Color.FromArgb(0x66, 0xF5, 0x8B, 0xB7)), BorderThickness = new Thickness(1),
-                    Child = new TextBlock { Text = when, FontSize = 12.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Color.FromArgb(255, 0xF8, 0xD6, 0xE5)) } });
+                    Child = new TextBlock { Text = when, FontSize = 12, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Color.FromArgb(255, 0xF8, 0xD6, 0xE5)) } });
         }
-        var buttons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, Margin = new Thickness(0, 8, 0, 0) };
+        var buttons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, Margin = new Thickness(0, Compact ? 4 : 10, 0, 0) };
         if (game is not null && games is not null)
         {
-            buttons.Children.Add(HomeMotion.Button(t[note is null ? "GiPlay" : "RnContinue"], "", primary: true, () => { UiSound.Play(UiSound.Cue.Open); games.Play(game); }));
-            var details = HomeMotion.Button(t["GiDetails"], "", primary: false, () => DetailsRequested?.Invoke(this, game)); Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(details, "continue-details"); buttons.Children.Add(details);
-            if (note is not null)
+            buttons.Children.Add(HomeMotion.Big(HomeMotion.Button(t[note is null || Compact ? "GiPlay" : "RnContinue"], "", primary: true, () => { UiSound.Play(UiSound.Cue.Open); games.Play(game); }), primary: true));
+            var details = HomeMotion.Button(t["GiDetails"], "", primary: false, () => DetailsRequested?.Invoke(this, game)); HomeMotion.Big(details, primary: false); Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(details, "continue-details"); buttons.Children.Add(details);
+            if (note is not null && !Compact)
             {
                 Button? view = null;
                 view = HomeMotion.Button(t["RnView"], "\uE8A4", primary: false, () => ShowNote(view!, t, game, note));
@@ -79,6 +98,8 @@ public sealed partial class ContinueCard : UserControl
         HomeMotion.Rise(text);
     }
 
+    // The opaque page color under Home (the theme canvas); SectionPage uses it as Home's background.
+    public static Color PageColor() => Application.Current.Resources["WindowBrush"] is SolidColorBrush b ? Color.FromArgb(255, b.Color.R, b.Color.G, b.Color.B) : Color.FromArgb(255, 18, 9, 15);
     private bool watching;
     private SectionViewModel? shown;
 
@@ -86,8 +107,8 @@ public sealed partial class ContinueCard : UserControl
     private static FrameworkElement ResumeBlock(ITextCatalog t, Lotus.Core.Diary.ResumeNote note)
     {
         var box = new StackPanel { Spacing = 3 };
-        box.Children.Add(new TextBlock { Text = t["RnHomeEyebrow"].ToUpperInvariant(), FontSize = 11, CharacterSpacing = 120, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Color.FromArgb(255, 0xF5, 0x8B, 0xB7)) });
-        box.Children.Add(new TextBlock { Text = "\u201C" + note.Text.ReplaceLineEndings(" ") + "\u201D", FontSize = 16, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis, Foreground = new SolidColorBrush(Color.FromArgb(0xF2, 255, 244, 248)) });
+        box.Children.Add(new TextBlock { Text = t["RnHomeEyebrow"].ToUpperInvariant(), FontSize = 12, CharacterSpacing = 120, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = new SolidColorBrush(Color.FromArgb(255, 0xF5, 0x8B, 0xB7)) });
+        box.Children.Add(new TextBlock { Text = "\u201C" + note.Text.ReplaceLineEndings(" ") + "\u201D", FontSize = 18, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis, Foreground = new SolidColorBrush(Color.FromArgb(0xF2, 255, 244, 248)) });
         return new Border { Child = box, Padding = new Thickness(14, 8, 14, 10), CornerRadius = new CornerRadius(12), HorizontalAlignment = HorizontalAlignment.Left,
             Background = new SolidColorBrush(Color.FromArgb(0x66, 18, 9, 15)), BorderBrush = new SolidColorBrush(Color.FromArgb(0x55, 0xF5, 0x8B, 0xB7)), BorderThickness = new Thickness(1.5, 0, 0, 0) };
     }
@@ -96,7 +117,7 @@ public sealed partial class ContinueCard : UserControl
     private static void ShowNote(FrameworkElement anchor, ITextCatalog t, GameEntry game, Lotus.Core.Diary.ResumeNote note)
     {
         var panel = new StackPanel { Spacing = 8, MaxWidth = 380, Padding = new Thickness(4) };
-        panel.Children.Add(new TextBlock { Text = t["RnTitle"], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 15 });
+        panel.Children.Add(new TextBlock { Text = t["RnTitle"], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 14 });
         panel.Children.Add(new TextBlock { Text = note.Text, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true, FontSize = 14 });
         panel.Children.Add(new TextBlock { Text = t.Format("RnUpdated", note.Updated.LocalDateTime.ToString("g", System.Globalization.CultureInfo.GetCultureInfo(t.Language))), FontSize = 12, Opacity = 0.7 });
         var flyout = new Flyout { Content = panel };
@@ -118,11 +139,12 @@ public sealed partial class ContinueCard : UserControl
 public sealed partial class ReadinessCard : UserControl
 {
     private readonly Border card;
-    private readonly Microsoft.UI.Xaml.Shapes.Path arc = new() { StrokeThickness = 10, StrokeStartLineCap = PenLineCap.Round, StrokeEndLineCap = PenLineCap.Round };
-    private readonly TextBlock score = new() { FontSize = 34, FontWeight = Microsoft.UI.Text.FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
-    private readonly TextBlock eyebrow = new() { FontSize = 11, CharacterSpacing = 160, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold };
-    private readonly TextBlock headline = new() { FontSize = 17, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap };
-    private readonly TextBlock advice = new() { FontSize = 12.5, TextWrapping = TextWrapping.Wrap };
+    private readonly Microsoft.UI.Xaml.Shapes.Path arc = new() { StrokeThickness = Stroke, StrokeStartLineCap = PenLineCap.Round, StrokeEndLineCap = PenLineCap.Round };
+    private readonly TextBlock score = new() { FontSize = 72, FontWeight = Microsoft.UI.Text.FontWeights.Bold, CharacterSpacing = -40, HorizontalAlignment = HorizontalAlignment.Center, LineHeight = 74, LineStackingStrategy = LineStackingStrategy.BlockLineHeight };
+    private readonly TextBlock eyebrow = new() { FontSize = 12, CharacterSpacing = 160, FontWeight = Microsoft.UI.Text.FontWeights.Bold };
+    private readonly TextBlock headline = new() { FontSize = 13, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, HorizontalAlignment = HorizontalAlignment.Center, TextAlignment = TextAlignment.Center, TextWrapping = TextWrapping.Wrap, MaxWidth = 116, MaxLines = 2 };
+    private readonly TextBlock advice = new() { FontSize = 14, TextWrapping = TextWrapping.Wrap };
+    private readonly StackPanel factRows = new() { Spacing = 10 };
     private readonly TextBlock facts = new() { FontSize = 12, TextWrapping = TextWrapping.Wrap };
     private readonly TextBlock summary = new() { FontSize = 11.5, TextWrapping = TextWrapping.Wrap };
     private readonly Button action = new();
@@ -131,28 +153,69 @@ public sealed partial class ReadinessCard : UserControl
     private static bool scanned; // the Tools scan feeds this card once per session, not on every visit
     private string target = "optimize";
     public event EventHandler<string>? NavigateRequested;
+    private const double Ring = 196, Stroke = 14;
 
+    // Visual 3.0: the readiness number is the centerpiece of Home — a big glowing ring on a dark glass card
+    // that floats over the game art, with the live facts behind the score as short rows under it.
     public ReadinessCard()
     {
-        advice.Foreground = facts.Foreground = summary.Foreground = (Brush)Application.Current.Resources["MutedBrush"];
-        arc.Stroke = (Brush)Application.Current.Resources["AccentGradientBrush"];
-        var ring = new Grid { Width = 110, Height = 110 };
-        ring.Children.Add(new Ellipse { Stroke = new SolidColorBrush(Color.FromArgb(0x22, 255, 255, 255)), StrokeThickness = 10 });
-        ring.Children.Add(arc); ring.Children.Add(score);
-        var head = new Grid { ColumnSpacing = 16 };
-        head.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); head.ColumnDefinitions.Add(new ColumnDefinition());
-        var words = new StackPanel { Spacing = 4, VerticalAlignment = VerticalAlignment.Center };
-        eyebrow.Foreground = (Brush)Application.Current.Resources["GoldBrush"];
-        words.Children.Add(eyebrow);
-        words.Children.Add(headline); words.Children.Add(advice);
-        Grid.SetColumn(words, 1); head.Children.Add(ring); head.Children.Add(words);
-        action.Style = (Style)Application.Current.Resources["SoftButtonStyle"]; action.HorizontalAlignment = HorizontalAlignment.Stretch;
+        RequestedTheme = ElementTheme.Dark; // it sits on the photo hero in every theme
+        var res = Application.Current.Resources;
+        var rose = res["RoseBrush"] is SolidColorBrush rb ? rb.Color : Color.FromArgb(255, 0xF2, 0x7B, 0xA8);
+        var gold = res["GoldBrush"] is SolidColorBrush gb ? gb.Color : Color.FromArgb(255, 0xEE, 0xC1, 0xA8);
+        var accent = res["AccentFillColorDefaultBrush"] is SolidColorBrush ab ? ab.Color : Color.FromArgb(255, 0xD6, 0x30, 0x6F);
+        advice.Foreground = facts.Foreground = summary.Foreground = new SolidColorBrush(Color.FromArgb(255, 0xC9, 0xB6, 0xC0));
+        arc.Stroke = HomeMotion.Gradient(new(0, 0), new(1, 1), (0, accent), (0.55, rose), (1, gold));
+        var ring = new Grid { Width = Ring, Height = Ring, HorizontalAlignment = HorizontalAlignment.Center };
+        var glow = new RadialGradientBrush(); glow.GradientStops.Add(new GradientStop { Color = Color.FromArgb(0x66, accent.R, accent.G, accent.B), Offset = 0 }); glow.GradientStops.Add(new GradientStop { Color = Color.FromArgb(0, accent.R, accent.G, accent.B), Offset = 1 });
+        ring.Children.Add(new Ellipse { Fill = glow, Margin = new Thickness(18) });
+        ring.Children.Add(new Ellipse { Stroke = new SolidColorBrush(Color.FromArgb(0x1A, 255, 255, 255)), StrokeThickness = Stroke });
+        ring.Children.Add(arc);
+        var center = new StackPanel { VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Spacing = 2 };
+        headline.Foreground = new SolidColorBrush(Color.FromArgb(255, 0x9F, 0xE3, 0xC1));
+        center.Children.Add(score); center.Children.Add(headline);
+        ring.Children.Add(center);
+        eyebrow.Foreground = new SolidColorBrush(gold);
+        action.Style = (Style)res["PrimaryButtonStyle"]; action.HorizontalAlignment = HorizontalAlignment.Stretch; action.MinHeight = 44;
         action.Click += (_, _) => NavigateRequested?.Invoke(this, target);
-        var body = new StackPanel { Spacing = 14 };
-        body.Children.Add(head); body.Children.Add(facts); body.Children.Add(action); body.Children.Add(summary);
-        card = new Border { Style = (Style)Application.Current.Resources["HeroCardStyle"], Padding = new Thickness(22), Child = body };
+        // The ring sits in a Viewbox so the compact layout (narrow window) can shrink it whole, text included.
+        ringBox = new Viewbox { Child = ring, Width = Ring, Height = Ring, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top };
+        details.Children.Add(advice); details.Children.Add(factRows); details.Children.Add(action);
+        body.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); body.ColumnDefinitions.Add(new ColumnDefinition());
+        body.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); body.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); body.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        body.Children.Add(eyebrow); body.Children.Add(ringBox); body.Children.Add(details);
+        SetCompact(false);
+        card = new Border
+        {
+            Padding = new Thickness(24), CornerRadius = new CornerRadius(22), BorderThickness = new Thickness(1), Child = body,
+            Background = new SolidColorBrush(Color.FromArgb(0xD1, 0x16, 0x0A, 0x13)), BorderBrush = new SolidColorBrush(Color.FromArgb(0x29, 0xFF, 0xE4, 0xEE)),
+        };
+        Motion.SetHover(card, 1.01);
         Content = card;
         Unloaded += (_, _) => { if (vm?.Monitoring is { } m) m.Updated -= OnUpdated; };
+    }
+
+    private readonly Grid body = new() { RowSpacing = 16, ColumnSpacing = 20 };
+    private readonly StackPanel details = new() { Spacing = 14, VerticalAlignment = VerticalAlignment.Center };
+    private readonly Viewbox ringBox;
+    // Compact: a smaller ring beside the facts (narrow window, card under the hero); otherwise the ring on top.
+    public void SetCompact(bool compact)
+    {
+        ringBox.Width = ringBox.Height = compact ? 132 : Ring;
+        headline.Visibility = compact ? Visibility.Collapsed : Visibility.Visible; // too small to read in the small ring; the advice beside it says it
+        Grid.SetColumnSpan(eyebrow, 2);
+        Grid.SetRow(ringBox, 1); Grid.SetColumn(ringBox, 0); Grid.SetColumnSpan(ringBox, compact ? 1 : 2);
+        Grid.SetRow(details, compact ? 1 : 2); Grid.SetColumn(details, compact ? 1 : 0); Grid.SetColumnSpan(details, compact ? 1 : 2);
+    }
+
+    // One live fact as a row: a status dot (green / amber) and the text.
+    private static FrameworkElement FactRow(string text, bool warn)
+    {
+        var color = warn ? Color.FromArgb(255, 0xF0, 0xC2, 0x7D) : Color.FromArgb(255, 0x7F, 0xD1, 0xA8);
+        var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12 };
+        row.Children.Add(new Ellipse { Width = 10, Height = 10, Fill = new SolidColorBrush(color), VerticalAlignment = VerticalAlignment.Center });
+        row.Children.Add(new TextBlock { Text = text, FontSize = 14, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center });
+        return row;
     }
 
     public async void Attach(SectionViewModel model)
@@ -188,7 +251,15 @@ public sealed partial class ReadinessCard : UserControl
         if (r.CpuPercent is { } cpu) parts.Add(t.Format("RdFactCpu", Math.Round(cpu)));
         if (r.GpuTemp is { } temp) parts.Add(t.Format("RdFactGpu", Math.Round(temp)));
         facts.Text = parts.Count == 0 ? t["RdWaiting"] : string.Join("   ·   ", parts);
+        factRows.Children.Clear();
+        if (r.MemoryPercent is { } m2) factRows.Children.Add(FactRow(t.Format("RdFactMem", Math.Round(m2)), m2 >= 80));
+        if (r.CpuPercent is { } c2) factRows.Children.Add(FactRow(t.Format("RdFactCpu", Math.Round(c2)), c2 >= 70));
+        if (r.GpuTemp is { } g2) factRows.Children.Add(FactRow(t.Format("RdFactGpu", Math.Round(g2)), g2 >= 80));
+        if (factRows.Children.Count == 0) factRows.Children.Add(new TextBlock { Text = t["RdWaiting"], FontSize = 12, Foreground = advice.Foreground });
         summary.Text = vm.Guided?.ReadySummary ?? "";
+        var more = string.Join("\n", new[] { facts.Text, summary.Text }.Where(x => x.Length > 0));
+        ToolTipService.SetToolTip(card, more.Length > 0 ? more : null);
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetHelpText(card, more);
         Animate(r.Score);
     }
 
@@ -209,7 +280,7 @@ public sealed partial class ReadinessCard : UserControl
     private static Geometry ArcGeometry(double fraction)
     {
         fraction = Math.Clamp(fraction, 0.001, 0.999);
-        const double r = 50, c = 55; var angle = fraction * 2 * Math.PI - Math.PI / 2;
+        const double r = (Ring - Stroke) / 2, c = Ring / 2; var angle = fraction * 2 * Math.PI - Math.PI / 2;
         var end = new Windows.Foundation.Point(c + r * Math.Cos(angle), c + r * Math.Sin(angle));
         var figure = new PathFigure { StartPoint = new Windows.Foundation.Point(c, c - r), IsClosed = false };
         figure.Segments.Add(new ArcSegment { Point = end, Size = new Windows.Foundation.Size(r, r), IsLargeArc = fraction > 0.5, SweepDirection = SweepDirection.Clockwise });
@@ -226,6 +297,14 @@ internal static class HomeMotion
         var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
         row.Children.Add(new FontIcon { Glyph = glyph, FontSize = 14 }); row.Children.Add(new TextBlock { Text = label });
         b.Content = row; b.Click += (_, _) => onClick();
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(b, label); // screen readers read the label, not the icon
+        return b;
+    }
+    // Hero buttons: taller, rounder; the primary one a little larger.
+    public static Button Big(Button b, bool primary)
+    {
+        b.MinHeight = 52; b.CornerRadius = new CornerRadius(14);
+        if (primary) { b.Padding = new Thickness(28, 10, 28, 10); b.FontSize = 16; }
         return b;
     }
     public static void Fade(UIElement e, double to, int ms)

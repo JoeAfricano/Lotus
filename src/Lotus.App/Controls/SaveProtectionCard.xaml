@@ -6,7 +6,7 @@
    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
    <Border Style="{StaticResource IconBadgeStyle}"><FontIcon x:Name="Icon" Glyph="&#xE74E;" Style="{StaticResource BadgeIconStyle}"/></Border>
    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-    <TextBlock x:Name="Title" FontWeight="SemiBold" FontSize="15"/>
+    <TextBlock x:Name="Title" FontWeight="SemiBold" FontSize="14"/>
     <TextBlock x:Name="Summary" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="game-saves-status"/>
    </StackPanel>
    <Button x:Name="OpenButton" Grid.Column="2" Style="{StaticResource SoftButtonStyle}" Click="OnOpen" VerticalAlignment="Center" app:Motion.Press="True" AutomationProperties.AutomationId="game-saves-open">

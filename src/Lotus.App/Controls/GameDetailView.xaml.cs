@@ -12,6 +12,7 @@ namespace Lotus.App.Controls;
 public sealed partial class GameDetailView : UserControl
 {
     public event EventHandler? BackRequested;
+    public UIElement HeroElement => Hero; // target of the cover's connected animation
     public event EventHandler<Lotus.Core.Games.GameEntry>? PlayRequested; // the host launches it through Meus Jogos
     private GameDetailsViewModel? vm;
     public GameDetailView()

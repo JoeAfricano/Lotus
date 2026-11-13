@@ -99,7 +99,9 @@ public sealed class LotusAmbientBackground : FrameworkElement, IDisposable
                 petals.Shapes.Add(line);
             }
         }
-        flowerMotion.Children.InsertAtTop(petals); flowerPlacement.Children.InsertAtTop(flowerMotion); root.Children.InsertAtTop(flowerPlacement);
+        flowerMotion.Children.InsertAtTop(petals); flowerPlacement.Children.InsertAtTop(flowerMotion);
+        // Visual 2.0: the flower contour sat behind the cards and read as stray lines; only the soft glow stays.
+        // (The contour is still built so the motion code keeps working; it is just not attached to the scene.)
         Resize(); ElementCompositionPreview.SetElementChildVisual(this, root);
         Serilog.Log.Information("Ambient resources created {Objects} {Auroras} {Contours} Viewport {Width}x{Height}", owned.Count + 1, auroras.Count, petals.Shapes.Count, ActualWidth, ActualHeight);
     }
@@ -135,6 +137,7 @@ public sealed class LotusAmbientBackground : FrameworkElement, IDisposable
             drift.Duration = TimeSpan.FromSeconds(index == 0 ? 18 : 23); drift.IterationBehavior = AnimationIterationBehavior.Forever;
             auroras[index].StartAnimation("EllipseCenter", drift);
         }
+        if (flowerPlacement?.Parent is null) { running = true; return; } // contour not shown: nothing else to animate
         using var scale = compositor.CreateVector3KeyFrameAnimation();
         scale.InsertKeyFrame(0, Vector3.One); scale.InsertKeyFrame(0.5f, new(1.02f, 1.02f, 1), ease); scale.InsertKeyFrame(1, Vector3.One, ease);
         scale.Duration = TimeSpan.FromSeconds(14); scale.IterationBehavior = AnimationIterationBehavior.Forever;

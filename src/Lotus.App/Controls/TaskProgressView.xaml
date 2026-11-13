@@ -4,7 +4,7 @@
   <Grid x:Name="RunningPart" ColumnSpacing="12" Visibility="Collapsed">
    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="48"/></Grid.ColumnDefinitions>
    <ProgressBar x:Name="Bar" Maximum="100" MinHeight="6" VerticalAlignment="Center"/>
-   <TextBlock x:Name="PercentLabel" Grid.Column="1" FontWeight="SemiBold" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.LiveSetting="Polite"/>
+   <TextBlock x:Name="PercentLabel" Grid.Column="1" FontWeight="SemiBold" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" AutomationProperties.LiveSetting="Polite"/>
   </Grid>
   <!-- Done: check mark that pops in, then the result -->
   <StackPanel x:Name="DonePart" Orientation="Horizontal" Spacing="10" Visibility="Collapsed">

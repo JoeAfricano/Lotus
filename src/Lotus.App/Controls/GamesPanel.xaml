@@ -2,14 +2,20 @@
  <StackPanel Spacing="18" app:Motion.Stagger="True">
   <!-- Toolbar: search, store filter, add, rescan -->
   <Grid ColumnSpacing="12" RowSpacing="12">
-   <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+   <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
    <TextBox PlaceholderText="{Binding Text[GamesSearch]}" Text="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="40" VerticalContentAlignment="Center" AutomationProperties.Name="{Binding Text[GamesSearch]}" AutomationProperties.AutomationId="games-search"/>
    <ComboBox Grid.Column="1" ItemsSource="{Binding Stores}" SelectedItem="{Binding SelectedStore, Mode=TwoWay}" DisplayMemberPath="Label" MinWidth="170" MinHeight="40" AutomationProperties.AutomationId="games-store"/>
-   <Button Grid.Column="2" Click="OnAddGame" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.Name="{Binding Text[GamesAdd]}" AutomationProperties.AutomationId="games-add"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE710;" FontSize="13"/><TextBlock Text="{Binding Text[GamesAdd]}"/></StackPanel></Button>
-   <Button x:Name="RescanButton" Grid.Column="3" Click="OnRescan" Style="{StaticResource SoftButtonStyle}" ToolTipService.ToolTip="{Binding Text[GamesReadOnly]}" AutomationProperties.Name="{Binding Text[GamesRescan]}" AutomationProperties.AutomationId="games-rescan"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon x:Name="RescanIcon" Glyph="&#xE72C;" FontSize="13"/><TextBlock x:Name="RescanText" Text="{Binding Text[GamesRescan]}"/></StackPanel></Button>
+   <!-- Visual 2.0: add and rescan live in one "+" menu, so the games come first -->
+   <DropDownButton x:Name="RescanButton" Grid.Column="2" MinHeight="40" MinWidth="56" CornerRadius="{StaticResource ControlRadius}" AutomationProperties.Name="{Binding Text[GamesAdd]}" AutomationProperties.AutomationId="games-more" ToolTipService.ToolTip="{Binding Text[GamesAdd]}">
+    <FontIcon x:Name="RescanIcon" Glyph="&#xE710;" FontSize="14"/>
+    <DropDownButton.Flyout><MenuFlyout Placement="BottomEdgeAlignedRight">
+     <MenuFlyoutItem Text="{Binding Text[GamesAdd]}" Click="OnAddGame" AutomationProperties.AutomationId="games-add"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE710;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
+     <MenuFlyoutItem Text="{Binding Text[GamesRescan]}" Click="OnRescan" ToolTipService.ToolTip="{Binding Text[GamesReadOnly]}" AutomationProperties.AutomationId="games-rescan"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE72C;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
+    </MenuFlyout></DropDownButton.Flyout>
+   </DropDownButton>
   </Grid>
   <StackPanel Spacing="4">
-   <TextBlock Text="{Binding Summary}" FontWeight="SemiBold" AutomationProperties.AutomationId="games-summary"/>
+   <StackPanel Orientation="Horizontal" Spacing="12"><TextBlock Text="{Binding Summary}" FontWeight="SemiBold" AutomationProperties.AutomationId="games-summary"/><TextBlock x:Name="RescanText" Foreground="{ThemeResource SuccessBrush}" AutomationProperties.LiveSetting="Polite"/></StackPanel>
    <TextBlock Text="{Binding Status}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite" app:Motion.Settle="True" AutomationProperties.AutomationId="games-status"/>
   </StackPanel>
   <!-- Lotus Ports: its games, with Jogar (only when Lotus Ports is installed and answers) -->
@@ -49,49 +55,57 @@
    <StackPanel Spacing="12"><Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE7FC;" Style="{StaticResource BadgeIconStyle}"/></Border><TextBlock Text="{Binding EmptyMessage}" Style="{StaticResource BodyStyle}"/></StackPanel>
   </Border>
   <!-- Library -->
-  <GridView ItemsSource="{Binding Games}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="OnGameClick" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0" AutomationProperties.AutomationId="games-grid">
-   <GridView.ItemContainerStyle><Style TargetType="GridViewItem"><Setter Property="Margin" Value="0,0,14,14"/><Setter Property="Padding" Value="0"/></Style></GridView.ItemContainerStyle>
+  <GridView x:Name="Library" Margin="0,0,-16,0" app:Fit.GridMinItemWidth="184" ItemsSource="{Binding Games}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="OnGameClick" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0" AutomationProperties.AutomationId="games-grid">
+   <GridView.Resources>
+    <!-- Visual 3.0: no grey hover/selection rectangle over the rounded covers (the cover itself lifts) -->
+    <SolidColorBrush x:Key="GridViewItemBackgroundPointerOver" Color="Transparent"/><SolidColorBrush x:Key="GridViewItemBackgroundPressed" Color="Transparent"/>
+    <SolidColorBrush x:Key="GridViewItemBackgroundSelected" Color="Transparent"/><SolidColorBrush x:Key="GridViewItemBackgroundSelectedPointerOver" Color="Transparent"/><SolidColorBrush x:Key="GridViewItemBackgroundSelectedPressed" Color="Transparent"/>
+   </GridView.Resources>
+   <GridView.ItemContainerStyle><Style TargetType="GridViewItem"><Setter Property="Margin" Value="0,0,16,24"/><Setter Property="Padding" Value="0"/><Setter Property="VerticalContentAlignment" Value="Top"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/></Style></GridView.ItemContainerStyle>
    <GridView.ItemTemplate><DataTemplate>
-    <Border Width="184" Background="{ThemeResource CardBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" CornerRadius="16" app:Motion.Hover="1.035">
-     <Grid>
-      <Grid.RowDefinitions><RowDefinition Height="244"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-      <!-- Cover or initials -->
-      <Border CornerRadius="15,15,0,0" Background="{ThemeResource HeroBrush}">
-       <Grid>
-        <Image Source="{Binding Name, Converter={StaticResource FallbackCover}}" Stretch="UniformToFill" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}" AutomationProperties.AccessibilityView="Raw"/>
-        <TextBlock Text="{Binding Initials}" FontFamily="Georgia" FontSize="44" FontWeight="SemiBold" Foreground="#FFF6F9" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
-        <Border CornerRadius="15,15,0,0" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}}">
-         <Border.Background><ImageBrush ImageSource="{Binding CoverPath, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border.Background>
-        </Border>
-        <Border Background="#B312090F" CornerRadius="6" Padding="7,3" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top"><TextBlock Text="{Binding Store}" FontSize="11" FontWeight="SemiBold" Foreground="{ThemeResource MainTextBrush}"/></Border>
-        <!-- Play: launches the game directly -->
-        <Button Click="OnCoverPlay" Width="60" Height="60" CornerRadius="30" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                Background="{ThemeResource AccentGradientBrush}" BorderBrush="#66FFFFFF" BorderThickness="2" app:Motion.Hover="1.1" app:Motion.Press="True"
-                ToolTipService.ToolTip="{Binding PlayLabel}" AutomationProperties.Name="{Binding PlayLabel}">
-         <FontIcon Glyph="&#xF5B0;" FontSize="22" Foreground="White" Margin="3,0,0,0"/>
-        </Button>
-       </Grid>
-      </Border>
-      <StackPanel Grid.Row="1" Padding="12,10,12,12" Spacing="10">
-       <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxLines="2" TextWrapping="Wrap" Height="40" ToolTipService.ToolTip="{Binding Name}"/>
-       <TextBlock Text="{Binding ShaderLabel}" FontSize="11" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis" Margin="0,-6,0,0" Visibility="{Binding ShaderLabel, Converter={StaticResource PresenceVisibility}}" ToolTipService.ToolTip="{Binding ShaderLabel}"/>
-       <Grid ColumnSpacing="6"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-        <!-- Text only: with the icon, "Otimizar" did not fit next to the two small buttons and was cut ("Otimiz"). -->
-        <Button Click="OnOpenTune" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="34" Padding="6,4" AutomationProperties.Name="{Binding OptimizeMenuLabel}" AutomationProperties.AutomationId="game-optimize">
-         <TextBlock Text="{Binding OptimizeMenuLabel}" TextTrimming="CharacterEllipsis"/>
-        </Button>
-        <Button Grid.Column="1" Click="OnDetails" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DetailsLabel}" AutomationProperties.Name="{Binding DetailsLabel}"><FontIcon Glyph="&#xE946;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/></Button>
-        <Button Grid.Column="2" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.Name="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.AutomationId="game-more">
+    <!-- Visual 3.0: the cover is the card. Play, Otimizar and the rest appear over it on hover or keyboard focus. -->
+    <Grid VerticalAlignment="Top" RowSpacing="10" Background="Transparent" PointerEntered="OnCardEnter" PointerExited="OnCardLeave" GotFocus="OnCardEnter" LostFocus="OnCardLeave">
+     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+     <!-- Cover or initials (named: it flies to the game page) -->
+     <Border x:Name="CoverArt" app:Fit.Aspect="1.5" Height="276" CornerRadius="14" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04">
+      <Grid>
+       <Image Source="{Binding Name, Converter={StaticResource FallbackCover}}" Stretch="UniformToFill" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}" AutomationProperties.AccessibilityView="Raw"/>
+       <TextBlock Text="{Binding Initials}" FontFamily="Georgia" FontSize="44" FontWeight="SemiBold" Foreground="#FFF6F9" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
+       <Border CornerRadius="13" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}}">
+        <Border.Background><ImageBrush ImageSource="{Binding CoverPath, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border.Background>
+       </Border>
+       <Grid x:Name="HoverActions" Opacity="0" Padding="12" CornerRadius="13">
+        <Grid.OpacityTransition><ScalarTransition Duration="0:0:0.15"/></Grid.OpacityTransition>
+        <Grid.Background><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#0012090F" Offset="0.3"/><GradientStop Color="#EB12090F" Offset="1"/></LinearGradientBrush></Grid.Background>
+        <StackPanel VerticalAlignment="Bottom" Spacing="8">
+         <!-- Play: launches the game directly -->
+         <Button Click="OnCoverPlay" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="40" Padding="8,6" ToolTipService.ToolTip="{Binding PlayLabel}" AutomationProperties.Name="{Binding PlayLabel}" AutomationProperties.AutomationId="game-play">
+          <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xF5B0;" FontSize="14"/><TextBlock Text="{Binding PlayLabel}"/></StackPanel>
+         </Button>
+         <Grid ColumnSpacing="6"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <Button Click="OnOpenTune" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="34" Padding="6,4" AutomationProperties.Name="{Binding OptimizeMenuLabel}" AutomationProperties.AutomationId="game-optimize">
+           <TextBlock Text="{Binding OptimizeMenuLabel}" TextTrimming="CharacterEllipsis"/>
+          </Button>
+          <Button Grid.Column="1" Click="OnDetails" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DetailsLabel}" AutomationProperties.Name="{Binding DetailsLabel}"><FontIcon Glyph="&#xE946;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/></Button>
+        <Button Grid.Column="2" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.Name="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.AutomationId="game-more" Loaded="OnMoreLoaded">
          <FontIcon Glyph="&#xE712;" FontSize="13"/>
          <Button.Flyout><MenuFlyout Placement="BottomEdgeAlignedRight" Opening="OnMoreOpening">
           <MenuFlyoutItem Tag="GmEdit" Click="OnEditGame" AutomationProperties.AutomationId="game-edit"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE70F;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
           <MenuFlyoutItem Tag="GmRemove" Click="OnRemoveGame" AutomationProperties.AutomationId="game-remove"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE74D;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
          </MenuFlyout></Button.Flyout>
         </Button>
+         </Grid>
+        </StackPanel>
        </Grid>
-      </StackPanel>
-     </Grid>
-    </Border>
+      </Grid>
+     </Border>
+     <!-- Name, store and shader state under the cover; fixed height so every row lines up -->
+     <StackPanel Grid.Row="1" Spacing="2" Padding="2,0" Height="58">
+      <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" TextTrimming="CharacterEllipsis" MaxLines="1" ToolTipService.ToolTip="{Binding Name}"/>
+      <TextBlock Text="{Binding Store}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis"/>
+      <TextBlock Text="{Binding ShaderLabel}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis" Visibility="{Binding ShaderLabel, Converter={StaticResource PresenceVisibility}}" ToolTipService.ToolTip="{Binding ShaderLabel}"/>
+     </StackPanel>
+    </Grid>
    </DataTemplate></GridView.ItemTemplate>
   </GridView>
  </StackPanel>

@@ -7,7 +7,7 @@
   </StackPanel>
 
   <!-- Version, check and download: the flower sits inside a ring that fills while the new version downloads -->
-  <Border CornerRadius="20" BorderThickness="1" BorderBrush="{ThemeResource CardBorderBrush}" Background="#160C14" RequestedTheme="Dark" Padding="28,24" AutomationProperties.AutomationId="updates-hero">
+  <Border CornerRadius="16" BorderThickness="1" BorderBrush="{ThemeResource CardBorderBrush}" Background="#160C14" RequestedTheme="Dark" Padding="28,24" AutomationProperties.AutomationId="updates-hero">
    <Grid ColumnSpacing="28">
     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
     <Grid Width="168" Height="168" VerticalAlignment="Center">
@@ -27,15 +27,15 @@
       <Viewbox.RenderTransform><CompositeTransform x:Name="FlowerMove"/></Viewbox.RenderTransform>
       <Canvas Width="64" Height="64"><Path Fill="{StaticResource BrandPetalBrush}" Opacity="0.82" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z"/><Path Fill="{StaticResource BrandPetalBrush}" Data="M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z"/><Path Fill="{StaticResource BrandGoldGradientBrush}" Data="M32,0.5 L33.5,3.5 L32,6 L30.5,3.5 Z M32,51 L34,55 L32,62.5 L30,55 Z M9,14 L10.4,16.5 L9,19 L7.6,16.5 Z M55,14 L56.4,16.5 L55,19 L53.6,16.5 Z"/><Path Stroke="{StaticResource BrandGoldGradientBrush}" StrokeThickness="2.2" StrokeLineJoin="Round" Data="M31,50 C18,50 7,43 2,31 C14,30 25,37 31,50 Z M33,50 C46,50 57,43 62,31 C50,30 39,37 33,50 Z M30,48 C19,42 13,30 16,17 C25,23 30,34 30,48 Z M34,48 C45,42 51,30 48,17 C39,23 34,34 34,48 Z M32,7 C41,17 44,32 32,48 C20,32 23,17 32,7 Z M32,17 C36.5,23.5 37.5,31.5 32,39 C26.5,31.5 27.5,23.5 32,17 Z"/></Canvas>
      </Viewbox>
-     <TextBlock x:Name="Percent" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource BrandGoldBrush}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,34" Opacity="0"/>
+     <TextBlock x:Name="Percent" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource BrandGoldBrush}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,34" Opacity="0"/>
      <FontIcon x:Name="DoneIcon" Glyph="&#xE73E;" FontSize="18" Foreground="#7FD1A8" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,32" Opacity="0"/>
     </Grid>
 
     <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="10">
      <TextBlock Text="{Binding CurrentText}" FontSize="12" FontWeight="SemiBold" CharacterSpacing="80" Foreground="#F07A9C" AutomationProperties.AutomationId="updates-current"/>
-     <TextBlock x:Name="Headline" FontSize="26" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap"/>
+     <TextBlock x:Name="Headline" FontSize="28" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap"/>
      <TextBlock Text="{Binding Status}" FontSize="14" Foreground="#E6D6DE" TextWrapping="Wrap" app:Motion.Settle="True" AutomationProperties.LiveSetting="Polite" AutomationProperties.AutomationId="updates-status"/>
-     <TextBlock Text="{Binding ProgressText}" FontSize="12.5" Foreground="#C9B4C0" Visibility="{Binding IsDownloading, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="updates-progress"/>
+     <TextBlock Text="{Binding ProgressText}" FontSize="12" Foreground="#C9B4C0" Visibility="{Binding IsDownloading, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="updates-progress"/>
      <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,6,0,0">
       <Button Click="OnCheck" IsEnabled="{Binding CanCheck}" Style="{StaticResource SoftButtonStyle}" Visibility="{Binding HasUpdate, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}" app:Motion.Press="True" AutomationProperties.AutomationId="updates-check">
        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon x:Name="CheckIcon" Glyph="&#xE72C;" FontSize="13"/><TextBlock Text="{Binding Text[UpCheck]}"/></StackPanel>
@@ -45,7 +45,7 @@
       </Button>
       <Button Click="OnCancel" Content="{Binding Text[DlgCancel]}" Style="{StaticResource SoftButtonStyle}" Visibility="{Binding IsDownloading, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="updates-cancel"/>
      </StackPanel>
-     <TextBlock Text="{Binding LastChecked}" FontSize="11.5" Foreground="#A8939F"/>
+     <TextBlock Text="{Binding LastChecked}" FontSize="12" Foreground="#A8939F"/>
     </StackPanel>
    </Grid>
   </Border>
@@ -55,13 +55,13 @@
    <StackPanel Spacing="10">
     <Grid>
      <StackPanel Spacing="2">
-      <TextBlock Text="{Binding LatestTitle}" FontWeight="SemiBold" FontSize="16"/>
+      <TextBlock Text="{Binding LatestTitle}" FontWeight="SemiBold" FontSize="18"/>
       <TextBlock Style="{StaticResource CaptionStyle}"><Run Text="{Binding LatestDate}"/><Run Text=" · "/><Run Text="{Binding LatestSize}"/></TextBlock>
      </StackPanel>
      <HyperlinkButton Content="{Binding Text[UpOpenPage]}" Click="OnOpenPage" HorizontalAlignment="Right" VerticalAlignment="Center"/>
     </Grid>
     <ScrollViewer MaxHeight="260" VerticalScrollBarVisibility="Auto">
-     <TextBlock x:Name="Notes" TextWrapping="Wrap" FontSize="13" LineHeight="21" IsTextSelectionEnabled="True"/>
+     <TextBlock x:Name="Notes" TextWrapping="Wrap" FontSize="14" LineHeight="21" IsTextSelectionEnabled="True"/>
     </ScrollViewer>
    </StackPanel>
   </Border>

@@ -16,9 +16,9 @@
      <StackPanel Grid.Column="1" Spacing="3">
       <Grid ColumnSpacing="8">
        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-       <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14.5" TextTrimming="CharacterEllipsis"/>
+       <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" TextTrimming="CharacterEllipsis"/>
        <Border Grid.Column="1" CornerRadius="8" Padding="7,1" Background="{ThemeResource SubtleBrush}" VerticalAlignment="Top">
-        <TextBlock Text="{Binding TierLabel}" FontSize="11" FontWeight="SemiBold" Foreground="{Binding Tier, Converter={StaticResource DiaryBrush}}"/>
+        <TextBlock Text="{Binding TierLabel}" FontSize="12" FontWeight="SemiBold" Foreground="{Binding Tier, Converter={StaticResource DiaryBrush}}"/>
        </Border>
       </Grid>
       <TextBlock Text="{Binding Detail}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextWrapping="Wrap" MaxLines="3" TextTrimming="CharacterEllipsis"/>
@@ -26,8 +26,8 @@
      <Grid Grid.Row="1" Grid.ColumnSpan="2" ColumnSpacing="10">
       <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <ProgressBar Value="{Binding Percent}" Maximum="100" MinHeight="5" CornerRadius="3" VerticalAlignment="Center"/>
-      <TextBlock Grid.Column="1" Text="{Binding ProgressText}" FontSize="11.5" Foreground="{ThemeResource MutedBrush}"/>
-      <TextBlock Grid.Column="2" Text="{Binding XpText}" FontSize="11.5" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
+      <TextBlock Grid.Column="1" Text="{Binding ProgressText}" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
+      <TextBlock Grid.Column="2" Text="{Binding XpText}" FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource GoldBrush}"/>
      </Grid>
     </Grid>
    </Border>
@@ -38,7 +38,7 @@
            ToolTipService.ToolTip="{Binding Description}" AutomationProperties.Name="{Binding Name}" app:Motion.Hover="1.03">
     <Grid ColumnSpacing="12">
      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-     <Border Width="64" Height="64" CornerRadius="10" Background="{ThemeResource HeroBrush}"><Image Source="{Binding Icon, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border>
+     <Border Width="64" Height="64" CornerRadius="12" Background="{ThemeResource HeroBrush}"><Image Source="{Binding Icon, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border>
      <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
       <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
       <TextBlock Text="{Binding Game}" FontSize="12" Foreground="{ThemeResource MutedBrush}" TextTrimming="CharacterEllipsis"/>
