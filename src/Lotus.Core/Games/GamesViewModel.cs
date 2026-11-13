@@ -7,7 +7,10 @@ namespace Lotus.Core.Games;
 // Each card carries its own labels and commands, so item templates never depend on the parent DataContext.
 public sealed record GameCard(GameEntry Game, string Name, string Store, string Initials, string? CoverPath,
     string PlayLabel, string RemoveLabel, System.Windows.Input.ICommand Launch, System.Windows.Input.ICommand Remove, string OptimizeLabel = "", string MeasureLabel = "",
-    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "", string PrepareLabel = "", string WhyLabel = "", string OptimizeMenuLabel = "", string DetailsLabel = "");
+    string? ShaderLabel = null, bool CanPrecompile = false, string PrecompileLabel = "", string? ShaderId = null, string OpenShaderLabel = "", string PrepareLabel = "", string WhyLabel = "", string OptimizeMenuLabel = "", string DetailsLabel = "")
+{
+    public override string ToString() => Name; // what screen readers announce for a card in the game grid
+}
 public sealed record StoreFilter(string Id, string Label);
 // Result of "Otimizar configurações": hardware, the recommendation as readable lines, and whether Lotus can apply it.
 public sealed record GameSettingsAnalysis(SettingsRecommendation Recommendation, IReadOnlyList<string> Lines, string Hardware, GameSettingsSupport? Support, bool HasOriginal, int? PendingStep = null);

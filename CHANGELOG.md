@@ -9,7 +9,9 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 - **Vale para qualquer monitor, não só 75 Hz.** O limite segue a taxa real de cada PC: 59,99 num monitor de 60 Hz, 59,93 em 59,94 Hz, 143,85 em 143,856 Hz, 143,99 em 144 Hz e a metade exata quando o PC não aguenta a taxa cheia. Com FreeSync/G-Sync a regra continua 3 FPS abaixo da taxa. Se o Windows não informar a taxa exata, nada muda.
 - **"Por que está travando?" avisa quando o limite de FPS está acima da taxa real do monitor**, o que faz os quadros esperarem na fila do V-Sync.
 - Limites com casas decimais aparecem certos na tela (74,97, e não 75,0).
-- Dicas mais claras: V-Sync ligado no jogo e limite do próprio jogo desligado quando o RivaTuner limita. Um limitador só.
+- Dicas mais claras: V-Sync ligado no jogo e o limite do próprio jogo acima do RivaTuner (ou desligado), nunca abaixo. Um limitador manda.
+- O quadro "Limite de FPS" do Otimizar este jogo mostra também o limite do RivaTuner quando ele está ligado (por exemplo "75 no jogo · RivaTuner 74,97 FPS").
+- Leitores de tela anunciam o nome do jogo em cada cartão e o botão de fechar do Otimizar este jogo.
 
 ## 1.5.2-alpha "Lotus" (12/11/2026)
 
