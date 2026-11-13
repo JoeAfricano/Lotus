@@ -32,6 +32,7 @@ public sealed partial class GameTunePanel : UserControl
         vm = model; card = game; actions = acts;
         returnFocus = XamlRoot is { } root ? Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(root) as Control : null;
         Eyebrow.Text = model.Text["TuneOpen"].ToUpperInvariant(); GameName.Text = game.Name;
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(CloseButton, model.Text["PpClose"]); // screen readers: the X had no name
         Chips.Children.Clear(); Body.Children.Clear(); Body.Children.Add(LoadingRing); LoadingRing.IsActive = true;
         PrimaryAction.Visibility = SecondaryAction.Visibility = Footer.Visibility = Visibility.Collapsed;
         LoadArt(game);
@@ -87,6 +88,15 @@ public sealed partial class GameTunePanel : UserControl
             });
     }
 
+    // The game's own limit, and RivaTuner's when its limiter is on for this game (that one, lower, is the one that holds).
+    private string CapTile(GamesViewModel.GameTune t)
+    {
+        var text = vm!.Text; var r = t.Settings.Recommendation;
+        if (t.LowLatency is not { On: true } info) return $"{r.FpsCap} FPS";
+        if (info.Mode == "scanline" || info.Cap is not { } rtss) return text.Format("TuneCapRtssSync", r.FpsCap);
+        return text.Format("TuneCapRtss", r.FpsCap, rtss.ToString("0.##", System.Globalization.CultureInfo.GetCultureInfo(text.Language)));
+    }
+
     private UIElement RecommendedTiles(GamesViewModel.GameTune t)
     {
         var r = t.Settings.Recommendation; var text = vm!.Text;
@@ -94,7 +104,7 @@ public sealed partial class GameTunePanel : UserControl
         grid.ColumnDefinitions.Add(new ColumnDefinition()); grid.ColumnDefinitions.Add(new ColumnDefinition());
         grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         var upscale = r.Upscaler == Upscaler.None ? text["GsLineNoUpscale"] : $"{text["GsUpscaler" + r.Upscaler]} · {text["GsMode" + r.Mode]}";
-        var tiles = new[] { (text["TuneQuality"], text["GsTier" + r.Tier]), (text["TuneTextures"], text["GsTier" + r.TextureTier]), (text["TuneUpscaler"], upscale), (text["TuneCap"], $"{r.FpsCap} FPS") };
+        var tiles = new[] { (text["TuneQuality"], text["GsTier" + r.Tier]), (text["TuneTextures"], text["GsTier" + r.TextureTier]), (text["TuneUpscaler"], upscale), (text["TuneCap"], CapTile(t)) };
         for (var i = 0; i < tiles.Length; i++)
         {
             var tile = new Border { Padding = new Thickness(16, 14, 16, 14), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1), Background = Res("CardBrush"), BorderBrush = Res("CardBorderBrush") };

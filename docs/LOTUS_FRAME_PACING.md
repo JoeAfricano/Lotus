@@ -16,7 +16,7 @@ Estudo feito em 12/11/2026 no PC do José: Ryzen 5 5500, RTX 5060 8 GB em PCIe 3
 
 - **Um limite acima da taxa real** (75 num monitor de 74,973 Hz) faz os quadros esperarem na fila do V-Sync. O resultado é mais atraso e a linha serrilhada.
 - **Um limite abaixo demais** (74,95) faz um quadro se repetir de tempos em tempos.
-- **O certo é ficar logo abaixo da taxa real**, arredondando para 0,01 FPS: 74,97. Um limitador só (o do RivaTuner), com o V-Sync ligado no jogo e o limite do próprio jogo desligado.
+- **O certo é ficar logo abaixo da taxa real**, arredondando para 0,01 FPS: 74,97. Um limitador manda (o do RivaTuner), com o V-Sync ligado no jogo e o limite do próprio jogo acima dele ou desligado.
 - **Os picos que sobraram vieram de coisas aparecendo por cima do jogo**: avisos, janelas e prints. Nesses momentos o Windows sai do modo direto de tela (Independent Flip) e passa a compor a imagem, o que gera quadros de 26 a 40 ms. O "Não perturbe ao jogar" do Windows ajuda.
 - Fechar FanControl e MSI Afterburner, sozinho, mudou pouco.
 - Os picos de carregamento do Unreal (CPU) continuam. Nenhum ajuste de ritmo resolve isso.

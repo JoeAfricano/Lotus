@@ -1965,6 +1965,8 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="TuneTextures" xml:space="preserve"><value>Texturas</value></data>
   <data name="TuneUpscaler" xml:space="preserve"><value>Upscaling</value></data>
   <data name="TuneCap" xml:space="preserve"><value>Limite de FPS</value></data>
+  <data name="TuneCapRtss" xml:space="preserve"><value>{0} no jogo · RivaTuner {1} FPS</value></data>
+  <data name="TuneCapRtssSync" xml:space="preserve"><value>{0} no jogo · RivaTuner sincroniza</value></data>
   <data name="TuneTips" xml:space="preserve"><value>Ajustes dentro do jogo</value></data>
   <data name="TuneLast" xml:space="preserve"><value>Última análise em jogo</value></data>
   <data name="TuneNoLast" xml:space="preserve"><value>Abra o jogo e aperte Ctrl + Shift + L. Em 30 segundos o Lotus mede o jogo, mostra o resultado no próprio jogo e as dicas aqui ficam mais certeiras.</value></data>
@@ -2009,7 +2011,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GsReasonFixedCap" xml:space="preserve"><value>Sem FreeSync/G-Sync, o limite fica logo abaixo da taxa real do monitor (por exemplo 74,97 num monitor de 74,973 Hz), com V-Sync: cada quadro aparece pelo mesmo tempo, sem fila e sem trepidação.</value></data>
   <data name="GsReasonHalfRate" xml:space="preserve"><value>O seu PC não sustenta a taxa do monitor, então o limite fica numa fração exata dela: menos FPS, mas cravado e liso, como em console.</value></data>
   <data name="IgVsyncTitle" xml:space="preserve"><value>Ligue o V-Sync e trave em {0} FPS</value></data>
-  <data name="IgVsyncBody" xml:space="preserve"><value>Sem FreeSync/G-Sync, o segredo da fluidez de console é o FPS cravado na taxa do monitor (ou na metade). Ligue o V-Sync no jogo e use o botão Ligar do RivaTuner abaixo: o Lotus escolhe o modo certo e a linha do framepacer fica reta. Com o RivaTuner ligado, deixe o limite de FPS do próprio jogo desligado: um limitador só.</value></data>
+  <data name="IgVsyncBody" xml:space="preserve"><value>Sem FreeSync/G-Sync, o segredo da fluidez de console é o FPS cravado na taxa do monitor (ou na metade). Ligue o V-Sync no jogo e use o botão Ligar do RivaTuner abaixo: o Lotus escolhe o modo certo e a linha do framepacer fica reta. O limite do próprio jogo fica igual ou acima do RivaTuner (ou desligado), nunca abaixo: um limitador manda.</value></data>
   <data name="IgVrrVsyncTitle" xml:space="preserve"><value>Com FreeSync/G-Sync: V-Sync no driver, não no jogo</value></data>
   <data name="IgVrrVsyncBody" xml:space="preserve"><value>Deixe o V-Sync ligado no painel da placa de vídeo e desligado no jogo. Com o limite 3 FPS abaixo da taxa do monitor, a tela acompanha cada quadro sem tearing e sem o atraso do V-Sync.</value></data>
   <data name="IgEnableVrrTitle" xml:space="preserve"><value>Ative o FreeSync/G-Sync do seu monitor</value></data>
@@ -3174,7 +3176,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="LlUseFrameGen" xml:space="preserve"><value>Uso o gerador de quadros neste jogo</value></data>
   <data name="LlUseFrameGenHint" xml:space="preserve"><value>Sua escolha: mais FPS na tela em troca de um pouco mais de atraso. O Lotus ajusta o limitador para combinar com ela.</value></data>
   <data name="LlWhyFrameGenChosen" xml:space="preserve"><value>Você usa o gerador de quadros, e só o limitador Reflex funciona junto com ele. Limite de {0} FPS, o mais suave possível com o gerador neste monitor.</value></data>
-  <data name="LlWhyFixedReflex" xml:space="preserve"><value>Monitor sem FreeSync/G-Sync e placa NVIDIA: o Reflex com V-Sync e limite de {0} FPS dá a linha mais reta com o menor atraso. O limite fica logo abaixo da taxa real do monitor, para os quadros não fazerem fila. No jogo: V-Sync ligado e limite de FPS desligado.</value></data>
+  <data name="LlWhyFixedReflex" xml:space="preserve"><value>Monitor sem FreeSync/G-Sync e placa NVIDIA: o Reflex com V-Sync e limite de {0} FPS dá a linha mais reta com o menor atraso. O limite fica logo abaixo da taxa real do monitor, para os quadros não fazerem fila. No jogo: V-Sync ligado; o limite do próprio jogo fica acima disso (ou desligado), então quem segura é o RivaTuner.</value></data>
   <data name="IgRaiseQualityTitle" xml:space="preserve"><value>Dá para deixar mais bonito</value></data>
   <data name="IgRaiseQualityBody" xml:space="preserve"><value>Na última análise, a placa ficou em {0}% segurando {1} FPS. Suba um nível de qualidade ou troque o DLSS/FSR para um modo mais bonito e analise de novo: se o FPS continuar firme, mantenha.</value></data>
   <data name="PfPreviewFailed" xml:space="preserve"><value>Não consegui ler o estado atual do Windows, então nada foi mudado. Tente de novo; se continuar, reinicie o Lotus.</value></data>
