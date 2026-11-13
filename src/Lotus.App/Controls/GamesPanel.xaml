@@ -55,7 +55,7 @@
    <StackPanel Spacing="12"><Border Style="{StaticResource IconBadgeStyle}" HorizontalAlignment="Left"><FontIcon Glyph="&#xE7FC;" Style="{StaticResource BadgeIconStyle}"/></Border><TextBlock Text="{Binding EmptyMessage}" Style="{StaticResource BodyStyle}"/></StackPanel>
   </Border>
   <!-- Library -->
-  <GridView x:Name="Library" app:Fit.GridMinItemWidth="200" ItemsSource="{Binding Games}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="OnGameClick" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0" AutomationProperties.AutomationId="games-grid">
+  <GridView x:Name="Library" Margin="0,0,-16,0" app:Fit.GridMinItemWidth="184" ItemsSource="{Binding Games}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="OnGameClick" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0" AutomationProperties.AutomationId="games-grid">
    <GridView.Resources>
     <!-- Visual 3.0: no grey hover/selection rectangle over the rounded covers (the cover itself lifts) -->
     <SolidColorBrush x:Key="GridViewItemBackgroundPointerOver" Color="Transparent"/><SolidColorBrush x:Key="GridViewItemBackgroundPressed" Color="Transparent"/>

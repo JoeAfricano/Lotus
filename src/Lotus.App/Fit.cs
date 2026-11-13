@@ -26,10 +26,10 @@ public static class Fit
             var gap = container.Margin.Left + container.Margin.Right;
             var width = view.ActualWidth - view.Padding.Left - view.Padding.Right - 1;
             if (width <= 0) return double.NaN;
-            var columns = Math.Max(1, (int)((width + gap) / min));
-            return Math.Max(40, Math.Floor((width + gap) / columns) - gap);
+            var columns = Math.Max(1, (int)(width / (min + gap))); // the panel reserves width + margin per item
+            return Math.Max(40, Math.Floor(width / columns) - gap);
         }
-        void Size(FrameworkElement container) { var w = Item(container); if (!double.IsNaN(w) && Math.Abs(container.Width - w) > 0.5) container.Width = w; }
+        void Size(FrameworkElement container) { var w = Item(container); if (!double.IsNaN(w) && (double.IsNaN(container.Width) || Math.Abs(container.Width - w) > 0.5)) container.Width = w; }
         void All() { if (view.ItemsPanelRoot is Panel p) foreach (var c in p.Children) if (c is FrameworkElement f) Size(f); }
         view.ContainerContentChanging += (_, e) => { if (e.ItemContainer is FrameworkElement f) Size(f); };
         view.SizeChanged += (_, _) => All();
