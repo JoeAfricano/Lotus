@@ -3199,4 +3199,57 @@ Your games and Windows are not changed.</value></data>
   <data name="DyShowcaseInvite" xml:space="preserve"><value>Pick your 4 favorite games</value></data>
   <data name="GmSpotlight" xml:space="preserve"><value>Last played</value></data>
   <data name="GmFrametimeSample" xml:space="preserve"><value>Example: a flat line is smooth play; each spike is a stutter.</value></data>
+  <data name="PxEyebrow" xml:space="preserve"><value>Gaming X-ray</value></data>
+  <data name="PxTitleReady" xml:space="preserve"><value>Find out what is holding your games back</value></data>
+  <data name="PxBodyReady" xml:space="preserve"><value>A full check in about 30 seconds: processor, graphics card, memory, disk, Windows and background apps. Analyzing changes nothing on the PC.</value></data>
+  <data name="PxTitleRunning" xml:space="preserve"><value>Analyzing your PC…</value></data>
+  <data name="PxBodyRunning" xml:space="preserve"><value>Keep using the PC. Lotus measures memory for a few seconds and checks each part, one at a time.</value></data>
+  <data name="PxTitleDone" xml:space="preserve"><value>Check complete</value></data>
+  <data name="PxBodyDone" xml:space="preserve"><value>What we found, most important first. Each suggestion opens the tool that fixes it, and nothing changes without your OK.</value></data>
+  <data name="PxAnalyze" xml:space="preserve"><value>Analyze my PC</value></data>
+  <data name="PxAnalyzeAgain" xml:space="preserve"><value>Analyze again</value></data>
+  <data name="PxStepMemory" xml:space="preserve"><value>Measuring memory…</value></data>
+  <data name="PxCpu" xml:space="preserve"><value>Processor</value></data>
+  <data name="PxGpu" xml:space="preserve"><value>Graphics card</value></data>
+  <data name="PxRam" xml:space="preserve"><value>Memory (RAM)</value></data>
+  <data name="PxTemp" xml:space="preserve"><value>GPU temperature</value></data>
+  <data name="PxRamUse" xml:space="preserve"><value>{0} of {1} in use</value></data>
+  <data name="PxNoReading" xml:space="preserve"><value>Shows up during the check</value></data>
+  <data name="PxUnavailable" xml:space="preserve"><value>Unavailable on this PC</value></data>
+  <data name="PxTempOk" xml:space="preserve"><value>Within normal range</value></data>
+  <data name="PxTempHot" xml:space="preserve"><value>Hot: check the airflow</value></data>
+  <data name="PxHoldLabel" xml:space="preserve"><value>What weighs most right now</value></data>
+  <data name="PxHoldMem" xml:space="preserve"><value>memory is almost full. Closing heavy apps before playing helps.</value></data>
+  <data name="PxHoldCpu" xml:space="preserve"><value>the processor is busy with other apps.</value></data>
+  <data name="PxHoldHot" xml:space="preserve"><value>the graphics card is hot.</value></data>
+  <data name="PxHoldNone" xml:space="preserve"><value>nothing: your PC is free to play.</value></data>
+  <data name="PxSuggestions" xml:space="preserve"><value>Suggestions for you</value></data>
+  <data name="PxFix" xml:space="preserve"><value>Fix it</value></data>
+  <data name="PxGoodShow" xml:space="preserve"><value>See the {0} items that are fine</value></data>
+  <data name="PxGoodHide" xml:space="preserve"><value>Hide the {0} items that are fine</value></data>
+  <data name="PxAllGood" xml:space="preserve"><value>All set to play</value></data>
+  <data name="PxAllGoodDetail" xml:space="preserve"><value>Nothing needs attention right now.</value></data>
+  <data name="PxMemLow" xml:space="preserve"><value>Low free memory for games</value></data>
+  <data name="PxMemLowDetail" xml:space="preserve"><value>Available memory stayed low during the check. Closing heavy apps before playing helps.</value></data>
+  <data name="PxMemOk" xml:space="preserve"><value>Enough free memory to play</value></data>
+  <data name="PxMemOkDetail" xml:space="preserve"><value>{0} available at the end of the check.</value></data>
+  <data name="PxPartial" xml:space="preserve"><value>The memory measurement did not finish</value></data>
+  <data name="PxPartialDetail" xml:space="preserve"><value>Everything else was checked. Analyze again to measure memory.</value></data>
+  <data name="PxSafe" xml:space="preserve"><value>Analyzing never changes Windows. Something changes only if you confirm it inside the tool.</value></data>
+  <data name="OsPickHint" xml:space="preserve"><value>Pick a style by looking at the preview. It shows up in game through RivaTuner.</value></data>
+  <data name="OsTop" xml:space="preserve"><value>Top bar</value></data>
+  <data name="OsNeon" xml:space="preserve"><value>Neon card</value></data>
+  <data name="OsTopShort" xml:space="preserve"><value>A slim strip at the top with every number.</value></data>
+  <data name="OsNeonShort" xml:space="preserve"><value>A corner card with big FPS and bars.</value></data>
+  <data name="OsTopWhat" xml:space="preserve"><value>A slim strip across the top with FPS, 1% and 0.1% lows, frametime, CPU and GPU usage and temperature, and RAM. It barely gets in the way.</value></data>
+  <data name="OsNeonWhat" xml:space="preserve"><value>A corner card with big FPS, the lows and GPU, CPU and RAM usage bars. Good if you like everything in one place.</value></data>
+  <data name="OsActive" xml:space="preserve"><value>Active in game: {0}</value></data>
+  <data name="OsNoneActive" xml:space="preserve"><value>No Lotus style active</value></data>
+  <data name="OsActiveBadge" xml:space="preserve"><value>Active</value></data>
+  <data name="OsUse" xml:space="preserve"><value>Use {0}</value></data>
+  <data name="OsInUse" xml:space="preserve"><value>{0} is already active</value></data>
+  <data name="OsExample" xml:space="preserve"><value>Illustrative example</value></data>
+  <data name="OsNeedRtss" xml:space="preserve"><value>To show the overlay in game, install RivaTuner Statistics Server (free).</value></data>
+  <data name="GlFeaturedOpen" xml:space="preserve"><value>See the game</value></data>
+  <data name="GlFeatured" xml:space="preserve"><value>Featured</value></data>
 </root>

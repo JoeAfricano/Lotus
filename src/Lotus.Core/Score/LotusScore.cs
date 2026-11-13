@@ -279,7 +279,8 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
 
 
     // ---- Deeper reading (FPS calculators and 3DMark): sub-scores, rank, stability, sensors, bottleneck, FPS per game ----
-    public sealed record FpsRowView(string Resolution, string Low, string Medium, string High, string Ultra, string LowKind, string MediumKind, string HighKind, string UltraKind, string Limiter);
+    public sealed record FpsRowView(string Resolution, string Low, string Medium, string High, string Ultra, string LowKind, string MediumKind, string HighKind, string UltraKind, string Limiter,
+        double LowBar = 0, double MediumBar = 0, double HighBar = 0, double UltraBar = 0); // bar lengths 0..1, against the table's highest FPS
     public sealed record BottleneckView(string Resolution, string Text, double Percent, string Kind);
     public Func<IEnumerable<(string Name, string? SteamId)>>? InstalledGames { get; set; }
     private IReadOnlyList<GameDemand> gameList = ScoreInsights.Games;
@@ -307,6 +308,8 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     private readonly List<GameDemand> searched = [];
     public string FpsSearchStatus { get; private set; } = "";
     private GameDemand? CurrentGame => gameIndex < gameList.Count ? gameList[gameIndex] : null;
+    public string FpsGameName => CurrentGame?.Name ?? "";
+    public string? FpsGameArt => CurrentGame?.SteamAppId is { Length: > 0 } id ? Catalog.CatalogText.Hero(id) : null; // Steam header art, when the game is on Steam
     public string FpsSource => CurrentGame?.Basis is { } basis ? Text.Format("ScoreFpsSourceSteam", basis) : Text["ScoreFpsSourceTable"];
     public string SourceALabel => CurrentGame?.Basis is null ? "pc-builds" : "Steam";
     public string SourceAUrl => CurrentGame is { Basis: not null, SteamAppId: { } id } ? $"https://store.steampowered.com/app/{id}/" : "https://pc-builds.com/pt/fps-calculator/";
@@ -375,13 +378,16 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         var game = gameList[gameIndex];
         foreach (var n in new[] { nameof(FpsSource), nameof(SourceALabel), nameof(SourceAUrl), nameof(SourceBLabel), nameof(SourceBUrl) }) OnPropertyChanged(n);
         static string Kind(int fps) => fps >= 60 ? "good" : fps >= 30 ? "mixed" : "bad";
-        foreach (var r in Enum.GetValues<Resolution>())
+        var table = Enum.GetValues<Resolution>().Select(r => (r, Cells: Enum.GetValues<Preset>().Select(p => ScoreInsights.Estimate(game, r, p, s, m, g)).ToArray())).ToList();
+        double top = Math.Max(60, table.SelectMany(x => x.Cells).Max(c => c.Fps));
+        foreach (var (r, cells) in table)
         {
-            var cells = Enum.GetValues<Preset>().Select(p => ScoreInsights.Estimate(game, r, p, s, m, g)).ToArray();
             var limiter = cells[2].Limiter switch { Limiter.Cpu => Text["ScoreLimitCpu"], Limiter.Gpu => Text["ScoreLimitGpu"], Limiter.Cap => Text["ScoreLimitCap"], _ => Text["ScoreLimitBalanced"] };
             FpsRows.Add(new(Text["ScoreRes" + r], cells[0].Fps.ToString(Culture), cells[1].Fps.ToString(Culture), cells[2].Fps.ToString(Culture), cells[3].Fps.ToString(Culture),
-                Kind(cells[0].Fps), Kind(cells[1].Fps), Kind(cells[2].Fps), Kind(cells[3].Fps), limiter));
+                Kind(cells[0].Fps), Kind(cells[1].Fps), Kind(cells[2].Fps), Kind(cells[3].Fps), limiter,
+                cells[0].Fps / top, cells[1].Fps / top, cells[2].Fps / top, cells[3].Fps / top));
         }
+        OnPropertyChanged(nameof(FpsGameName)); OnPropertyChanged(nameof(FpsGameArt));
     }
     private void Notify()
     {

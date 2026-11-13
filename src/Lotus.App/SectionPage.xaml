@@ -99,28 +99,17 @@
      <SelectorBarItem Text="{Binding Text[UxResultsTab]}"/><SelectorBarItem Text="{Binding Text[UxRestoreTab]}"/>
     </SelectorBar>
     <!-- Result (design 03): the analysis, full width. The safety promise lives once, in the "Segurança e reversão" card above -->
-    <Grid x:Name="DiagnosisContent" x:Load="{x:Bind ShowDiagnosis}" ColumnSpacing="24" RowSpacing="24">
-     <Border Style="{StaticResource CardStyle}">
+    <StackPanel x:Name="DiagnosisContent" x:Load="{x:Bind ShowDiagnosis}" Spacing="12">
+     <!-- Raio-X para jogar: memory measurement + the whole read-only Check-up, with prioritized suggestions -->
+     <controls:PcScanCard x:Name="PcScan" Loaded="OnPcScanLoaded" NavigateRequested="OnPcScanNavigate"/>
+     <Border Style="{StaticResource CardStyle}" Padding="20,8" Visibility="{Binding Experience.HasResult, Converter={StaticResource BooleanVisibility}}">
       <StackPanel Spacing="14">
-       <FontIcon Glyph="&#xE9D9;" FontSize="26" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/>
-       <TextBlock Text="{Binding Text[UxResultsTitle]}" FontSize="20" FontWeight="SemiBold"/>
-       <ContentControl Content="{Binding Experience.Finding}" Style="{StaticResource StatusBadgeStyle}"/>
-       <controls:OperationProgress DataContext="{Binding Experience}" Visibility="{Binding Experience.IsAnalyzing, Converter={StaticResource BooleanVisibility}}"/>
-       <TextBlock Text="{Binding Experience.Advice}" FontSize="18" TextWrapping="Wrap"/>
-       <TextBlock Text="{Binding Experience.LastAnalysis}" Style="{StaticResource CaptionStyle}"/>
-       <StackPanel Orientation="Horizontal" Spacing="10">
-        <Button Command="{Binding Experience.AnalyzeCommand}" Style="{StaticResource PrimaryButtonStyle}" MinHeight="44" Visibility="{Binding Experience.IsAnalyzing, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}" AutomationProperties.AutomationId="result-analyze">
-         <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE9D9;" FontSize="14"/><TextBlock Text="{Binding Text[UxAnalyzeNow]}"/></StackPanel>
-        </Button>
-        <Button Content="{Binding Text[UxCancel]}" Command="{Binding Experience.CancelCommand}" Style="{StaticResource SoftButtonStyle}" MinHeight="44" Visibility="{Binding Experience.IsAnalyzing, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="result-cancel"/>
-       </StackPanel>
-       <TextBlock Text="{Binding Text[UxAdviceInformational]}" Style="{StaticResource CaptionStyle}"/>
-       <Expander Visibility="{Binding Experience.HasResult, Converter={StaticResource BooleanVisibility}}" Header="{Binding Text[UxTechnicalDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+       <Expander Header="{Binding Text[UxTechnicalDetails]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
         <StackPanel Spacing="12"><TextBlock Text="{Binding Text[RamAvailableLabel]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Experience.Available}" Style="{StaticResource MetricValueStyle}"/><TextBlock Text="{Binding Text[RamCapacityLabel]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Experience.Capacity}"/><TextBlock Text="{Binding Text[RamMinimumLabel]}" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Experience.MinimumAvailable}"/><TextBlock Text="{Binding Experience.Evidence}" Style="{StaticResource BodyStyle}"/><TextBlock Text="{Binding Text[RamMethod]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[RamCacheExplanation]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Text[RamLimits]}" Style="{StaticResource CaptionStyle}"/><TextBlock Text="{Binding Experience.Source}" Style="{StaticResource CaptionStyle}"/></StackPanel>
        </Expander>
       </StackPanel>
      </Border>
-    </Grid>
+    </StackPanel>
     <controls:OptimizationPanel x:Name="RestoreContent" x:Load="{x:Bind ShowRestore}" DataContext="{Binding PowerProfiles}"/>
    </StackPanel>
 
@@ -147,26 +136,8 @@
       </Grid>
      </Border>
      <StackPanel x:Name="OverlayArea" Spacing="16" Visibility="Collapsed">
-      <Border Style="{StaticResource CardStyle}" AutomationProperties.AutomationId="games-overlay-preview">
-       <Grid ColumnSpacing="28" RowSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition/></Grid.ColumnDefinitions>
-        <StackPanel Spacing="10"><FontIcon Glyph="&#xE9D9;" FontSize="26" Foreground="{ThemeResource RoseBrush}" HorizontalAlignment="Left"/><TextBlock Text="{Binding Text[GmOverlayTitle]}" FontSize="20" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[GmOverlayPreviewHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
-        <StackPanel Grid.Column="1" Spacing="12" VerticalAlignment="Center">
-         <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="140" ItemHeight="64" HorizontalAlignment="Stretch" app:Fit.MinItemWidth="140">
-        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12" Margin="0,0,8,8"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmFps]}"/><Run Text=" —"/></TextBlock></Border>
-        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12" Margin="0,0,8,8"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmGpu]}"/><Run Text=" —"/></TextBlock></Border>
-        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12" Margin="0,0,8,8"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmCpu]}"/><Run Text=" —"/></TextBlock></Border>
-        <Border Style="{StaticResource CompactCardStyle}" MinWidth="130" Padding="14,12" Margin="0,0,8,8"><TextBlock FontSize="18" FontWeight="SemiBold"><Run Text="{Binding Text[GmMemory]}"/><Run Text=" —"/></TextBlock></Border>
-         </VariableSizedWrapGrid>
-         <TextBlock Text="FRAMEPACER" FontSize="12" FontWeight="SemiBold" CharacterSpacing="80" Foreground="{ThemeResource RoseBrush}"/>
-         <!-- Illustrative sample (not a measurement): a steady line with one small hitch, labeled as an example -->
-         <Grid Height="48" AutomationProperties.Name="{Binding Text[GmFrametimeSample]}">
-          <Rectangle Height="1" Fill="{ThemeResource DividerBrush}" VerticalAlignment="Bottom"/>
-          <Polyline Points="0,30 24,29 48,31 72,30 96,30 120,29 144,31 168,30 192,30 216,30 240,8 252,30 276,29 300,31 324,30 348,30 372,29 396,30 420,31 444,30 468,30 492,29 516,30" Stretch="Fill" Margin="0,6,0,6" Stroke="{ThemeResource RoseBrush}" StrokeThickness="2" StrokeLineJoin="Round" Opacity="0.85"/>
-         </Grid>
-         <Grid><TextBlock Text="{Binding Text[GmFrametimeSample]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" Margin="0,0,120,0"/><TextBlock Text="{Binding Text[GmFrametimeUnit]}" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right"/></Grid>
-        </StackPanel>
-       </Grid>
-      </Border>
+      <!-- Pick the style by looking at it: the big preview follows the chosen tile; one button turns it on -->
+      <controls:OverlayStylePicker DataContext="{Binding Integrations}"/>
       <controls:RtssCard DataContext="{Binding Integrations}"/>
      </StackPanel>
      <controls:GamesPanel x:Name="GamesContent" DataContext="{Binding Games}" DetailsRequested="OnGameDetails"/>

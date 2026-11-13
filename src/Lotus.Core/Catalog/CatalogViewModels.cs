@@ -131,7 +131,8 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     private bool loading;
     public ITextCatalog Text => text;
     public GameDetailsViewModel Details { get; } = new(catalog, text, log);
-    public IReadOnlyList<ChartTab> Tabs => [.. CatalogText.Charts.Select(c => new ChartTab(c, text["GlChart" + c]))];
+    public int? ChartCount(string id) => id == chart && !Searching ? Items.Count : charts.TryGetValue(id, out var c) ? c.Items.Count : null; // null until that list was loaded once
+    public IReadOnlyList<ChartTab> Tabs =>[.. CatalogText.Charts.Select(c => new ChartTab(c, text["GlChart" + c]))];
     public ObservableCollection<CatalogCard> Items { get; } = [];
     public string Chart { get => chart; set { if (value is not null && SetProperty(ref chart, value)) _ = ShowAsync(); } }
     public bool Loading { get => loading; private set => SetProperty(ref loading, value); }

@@ -3199,4 +3199,57 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="DyShowcaseInvite" xml:space="preserve"><value>Escolha seus 4 jogos favoritos</value></data>
   <data name="GmSpotlight" xml:space="preserve"><value>Último jogado</value></data>
   <data name="GmFrametimeSample" xml:space="preserve"><value>Exemplo: linha reta é jogo fluido; cada pico é uma travadinha.</value></data>
+  <data name="PxEyebrow" xml:space="preserve"><value>Raio-X para jogar</value></data>
+  <data name="PxTitleReady" xml:space="preserve"><value>Descubra o que está segurando seus jogos</value></data>
+  <data name="PxBodyReady" xml:space="preserve"><value>Uma análise completa em cerca de 30 segundos: processador, placa de vídeo, memória, disco, Windows e programas em segundo plano. Analisar não muda nada no PC.</value></data>
+  <data name="PxTitleRunning" xml:space="preserve"><value>Analisando seu PC…</value></data>
+  <data name="PxBodyRunning" xml:space="preserve"><value>Pode continuar usando o PC. O Lotus mede a memória por alguns segundos e confere cada parte, uma de cada vez.</value></data>
+  <data name="PxTitleDone" xml:space="preserve"><value>Análise concluída</value></data>
+  <data name="PxBodyDone" xml:space="preserve"><value>O que encontramos, do mais importante para o menos. Cada sugestão abre a ferramenta que resolve, e nada muda sem você confirmar.</value></data>
+  <data name="PxAnalyze" xml:space="preserve"><value>Analisar meu PC</value></data>
+  <data name="PxAnalyzeAgain" xml:space="preserve"><value>Analisar de novo</value></data>
+  <data name="PxStepMemory" xml:space="preserve"><value>Medindo a memória…</value></data>
+  <data name="PxCpu" xml:space="preserve"><value>Processador</value></data>
+  <data name="PxGpu" xml:space="preserve"><value>Placa de vídeo</value></data>
+  <data name="PxRam" xml:space="preserve"><value>Memória RAM</value></data>
+  <data name="PxTemp" xml:space="preserve"><value>Temperatura da GPU</value></data>
+  <data name="PxRamUse" xml:space="preserve"><value>{0} de {1} em uso</value></data>
+  <data name="PxNoReading" xml:space="preserve"><value>Aparece durante a análise</value></data>
+  <data name="PxUnavailable" xml:space="preserve"><value>Indisponível neste PC</value></data>
+  <data name="PxTempOk" xml:space="preserve"><value>Dentro do normal</value></data>
+  <data name="PxTempHot" xml:space="preserve"><value>Quente: confira a ventilação</value></data>
+  <data name="PxHoldLabel" xml:space="preserve"><value>O que mais pesa agora</value></data>
+  <data name="PxHoldMem" xml:space="preserve"><value>memória quase cheia. Fechar programas pesados antes de jogar ajuda.</value></data>
+  <data name="PxHoldCpu" xml:space="preserve"><value>processador ocupado com outros programas.</value></data>
+  <data name="PxHoldHot" xml:space="preserve"><value>placa de vídeo quente.</value></data>
+  <data name="PxHoldNone" xml:space="preserve"><value>nada pesando: seu PC está livre para jogar.</value></data>
+  <data name="PxSuggestions" xml:space="preserve"><value>Sugestões para você</value></data>
+  <data name="PxFix" xml:space="preserve"><value>Resolver</value></data>
+  <data name="PxGoodShow" xml:space="preserve"><value>Ver os {0} itens em ordem</value></data>
+  <data name="PxGoodHide" xml:space="preserve"><value>Esconder os {0} itens em ordem</value></data>
+  <data name="PxAllGood" xml:space="preserve"><value>Tudo pronto para jogar</value></data>
+  <data name="PxAllGoodDetail" xml:space="preserve"><value>Nenhum ponto pede atenção agora.</value></data>
+  <data name="PxMemLow" xml:space="preserve"><value>Pouca memória livre para jogos</value></data>
+  <data name="PxMemLowDetail" xml:space="preserve"><value>Durante a análise a memória disponível ficou baixa. Fechar programas pesados antes de jogar ajuda.</value></data>
+  <data name="PxMemOk" xml:space="preserve"><value>Memória livre suficiente para jogar</value></data>
+  <data name="PxMemOkDetail" xml:space="preserve"><value>{0} disponíveis no fim da análise.</value></data>
+  <data name="PxPartial" xml:space="preserve"><value>A medição da memória não terminou</value></data>
+  <data name="PxPartialDetail" xml:space="preserve"><value>O restante foi analisado. Analise de novo para medir a memória.</value></data>
+  <data name="PxSafe" xml:space="preserve"><value>Analisar nunca altera o Windows. Só muda algo se você confirmar dentro da ferramenta.</value></data>
+  <data name="OsPickHint" xml:space="preserve"><value>Escolha o estilo olhando a prévia. Ele aparece no jogo pelo RivaTuner.</value></data>
+  <data name="OsTop" xml:space="preserve"><value>Barra no topo</value></data>
+  <data name="OsNeon" xml:space="preserve"><value>Cartão Neon</value></data>
+  <data name="OsTopShort" xml:space="preserve"><value>Uma faixa fina no alto com todos os números.</value></data>
+  <data name="OsNeonShort" xml:space="preserve"><value>Um cartão no canto com FPS grande e barras.</value></data>
+  <data name="OsTopWhat" xml:space="preserve"><value>Uma faixa fina no alto da tela com FPS, 1% e 0,1% low, frametime, uso e temperatura de CPU e GPU e RAM. Atrapalha pouco a visão do jogo.</value></data>
+  <data name="OsNeonWhat" xml:space="preserve"><value>Um cartão no canto com o FPS grande, as médias baixas e barras de uso de GPU, CPU e RAM. Bom para quem prefere tudo agrupado.</value></data>
+  <data name="OsActive" xml:space="preserve"><value>Ativo no jogo: {0}</value></data>
+  <data name="OsNoneActive" xml:space="preserve"><value>Nenhum estilo do Lotus ativo</value></data>
+  <data name="OsActiveBadge" xml:space="preserve"><value>Ativo</value></data>
+  <data name="OsUse" xml:space="preserve"><value>Usar {0}</value></data>
+  <data name="OsInUse" xml:space="preserve"><value>{0} já está ativo</value></data>
+  <data name="OsExample" xml:space="preserve"><value>Exemplo ilustrativo</value></data>
+  <data name="OsNeedRtss" xml:space="preserve"><value>Para mostrar o overlay no jogo, instale o RivaTuner Statistics Server (gratuito).</value></data>
+  <data name="GlFeaturedOpen" xml:space="preserve"><value>Ver o jogo</value></data>
+  <data name="GlFeatured" xml:space="preserve"><value>Destaque</value></data>
 </root>

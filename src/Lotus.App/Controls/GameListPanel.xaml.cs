@@ -25,10 +25,9 @@ public sealed partial class GameListPanel : UserControl
     {
         HookScroll();
         if (Vm is not { } vm) return;
-        if (ChartBar.Items.Count == 0)
+        if (ChartTiles.Children.Count == 0)
         {
-            foreach (var tab in vm.Tabs) ChartBar.Items.Add(new SelectorBarItem { Text = tab.Label, Tag = tab.Id });
-            ChartBar.SelectedItem = ChartBar.Items.FirstOrDefault(i => (string)i.Tag == vm.Chart);
+            BuildChartTiles(vm);
             foreach (var d in new[] { "any", "easy", "medium", "hard" }) DiffBox.Items.Add(new ComboBoxItem { Content = vm.Text["GlDiff" + d], Tag = d });
             DiffBox.SelectedIndex = 0;
         }
@@ -60,7 +59,83 @@ public sealed partial class GameListPanel : UserControl
         await vm.SetTypesAsync(picker.Selected, picker.MatchAll);
     }
     private void OnClearPick(object sender, RoutedEventArgs e) { DiffBox.SelectedIndex = 0; }
-    private void OnChart(SelectorBar sender, SelectorBarSelectionChangedEventArgs args) { if (Vm is { } vm && sender.SelectedItem?.Tag is string id) vm.Chart = id; }
+    // ---- Category tabs (José's "Destaque + abas"): icon, name and how many games; the chosen one is lit ----
+    private static readonly Dictionary<string, string> ChartGlyphs = new() { ["trending"] = "", ["toprated"] = "", ["topsellers"] = "", ["new"] = "", ["upcoming"] = "" };
+    private void BuildChartTiles(GameListViewModel vm)
+    {
+        ChartTiles.Children.Clear(); ChartTiles.ColumnDefinitions.Clear();
+        foreach (var tab in vm.Tabs)
+        {
+            ChartTiles.ColumnDefinitions.Add(new ColumnDefinition());
+            var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, HorizontalAlignment = HorizontalAlignment.Center };
+            row.Children.Add(new FontIcon { Glyph = ChartGlyphs.GetValueOrDefault(tab.Id, ""), FontSize = 16, VerticalAlignment = VerticalAlignment.Center });
+            row.Children.Add(new TextBlock { Text = tab.Label, FontSize = 14, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center });
+            row.Children.Add(new Border { CornerRadius = new CornerRadius(9), Padding = new Thickness(8, 1, 8, 1), VerticalAlignment = VerticalAlignment.Center, Child = new TextBlock { FontSize = 12, FontWeight = Microsoft.UI.Text.FontWeights.Bold } });
+            var tile = new Button { Content = row, Tag = tab.Id, Padding = new Thickness(16, 10, 16, 10), MinHeight = 46, CornerRadius = new CornerRadius(12), BorderThickness = new Thickness(0),
+                HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Center };
+            Motion.SetPress(tile, true);
+            ToolTipService.SetToolTip(tile, vm.Text["GlHint" + tab.Id]);
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(tile, tab.Label);
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(tile, "gamelist-chart-" + tab.Id);
+            tile.Click += (_, _) => { if (Vm is { } v) { v.Chart = tab.Id; PaintChartTiles(v); } };
+            Grid.SetColumn(tile, ChartTiles.Children.Count);
+            ChartTiles.Children.Add(tile);
+        }
+        PaintChartTiles(vm);
+        vm.Items.CollectionChanged += (_, _) => DispatcherQueue.TryEnqueue(() => { if (Vm is { } v) { PaintChartTiles(v); PaintFeatured(v); } });
+    }
+    private void PaintChartTiles(GameListViewModel vm)
+    {
+        var res = Application.Current.Resources;
+        foreach (var tile in ChartTiles.Children.OfType<Button>())
+        {
+            var on = (string)tile.Tag == vm.Chart;
+            var row = (StackPanel)tile.Content;
+            tile.Background = on ? (Brush)res["AccentGradientBrush"] : new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+            var fg = (Brush)res[on ? "OnRoseBrush" : "MainTextBrush"];
+            ((FontIcon)row.Children[0]).Foreground = on ? fg : (Brush)res["RoseBrush"];
+            ((TextBlock)row.Children[1]).Foreground = fg;
+            var pill = (Border)row.Children[2];
+            var count = vm.ChartCount((string)tile.Tag);
+            pill.Visibility = count is > 0 ? Visibility.Visible : Visibility.Collapsed;
+            ((TextBlock)pill.Child).Text = count?.ToString() ?? "";
+            ((TextBlock)pill.Child).Foreground = on ? fg : (Brush)res["MutedBrush"];
+            pill.Background = on ? new SolidColorBrush(Windows.UI.Color.FromArgb(0x38, 255, 255, 255)) : (Brush)res["BadgeBrush"];
+        }
+        ChartHeading.Text = vm.Tabs.FirstOrDefault(t => t.Id == vm.Chart)?.Label ?? "";
+    }
+    // The tabs fill the width; on a narrow window they keep a readable size and scroll sideways.
+    private void OnChartTilesSize(object sender, SizeChangedEventArgs e) => ChartTiles.Width = Math.Max(e.NewSize.Width - 14, ChartTiles.ColumnDefinitions.Count * 196);
+
+    // ---- Featured: the first game of the chosen list, with its wide art ----
+    private CatalogCard? featured;
+    private void PaintFeatured(GameListViewModel vm)
+    {
+        var card = vm.Searching ? null : vm.Items.FirstOrDefault();
+        Featured.Visibility = card is null ? Visibility.Collapsed : Visibility.Visible;
+        if (card is null || card == featured) return;
+        featured = card;
+        FeaturedWant.DataContext = card;
+        FeaturedEyebrow.Text = (vm.Tabs.FirstOrDefault(t => t.Id == vm.Chart)?.Label ?? "").ToUpperInvariant() + " · " + vm.Text["GlFeatured"].ToUpperInvariant();
+        FeaturedName.Text = card.Name;
+        FeaturedMeta.Text = card.Meta;
+        FeaturedArt.Opacity = 0;
+        var art = new BitmapImage(new Uri(CatalogText.Hero(card.Item.AppId))) { DecodePixelWidth = 1600 };
+        art.ImageOpened += (_, _) => HomeMotion.Fade(FeaturedArt, 1, 500);
+        art.ImageFailed += (_, _) => { if (Uri.TryCreate(card.Wide, UriKind.Absolute, out var w)) FeaturedArt.Source = new BitmapImage(w) { DecodePixelWidth = 1600 }; FeaturedArt.Opacity = 1; };
+        FeaturedArt.Source = art;
+    }
+    private async void OnFeaturedOpen(object sender, RoutedEventArgs e)
+    {
+        if (Vm is not { } vm || featured is null) return;
+        ShowDetail(true);
+        await vm.OpenAsync(featured.Item);
+    }
+    private void OnTogglePick(object sender, RoutedEventArgs e)
+    {
+        PickCard.Visibility = PickCard.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+        if (PickCard.Visibility == Visibility.Visible) Motion.EnterPage(PickCard);
+    }
     private void OnSearch(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args) { if (Vm is { } vm && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput) vm.Query = sender.Text; }
     private void OnSearchSubmit(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) { if (Vm is { } vm) vm.Query = sender.Text; }
     private void OnDifficulty(object sender, SelectionChangedEventArgs e) { if (Vm is { } vm && DiffBox.SelectedItem is ComboBoxItem { Tag: string d }) vm.DifficultyWanted = d; }

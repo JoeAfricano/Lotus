@@ -86,24 +86,25 @@
          <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="#40FFFFFF"/>
         </Grid.Resources>
         <Grid.Background><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#0012090F" Offset="0.2"/><GradientStop Color="#B812090F" Offset="0.52"/><GradientStop Color="#F212090F" Offset="1"/></LinearGradientBrush></Grid.Background>
-        <StackPanel VerticalAlignment="Bottom" Spacing="8">
+        <!-- Centered game menu (visual 3.0): Play in the middle, then three round buttons centered under it -->
+        <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Spacing="10" Margin="0,0,0,4">
          <!-- Play: launches the game directly -->
-         <Button Click="OnCoverPlay" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="40" Padding="8,6" ToolTipService.ToolTip="{Binding PlayLabel}" AutomationProperties.Name="{Binding PlayLabel}" AutomationProperties.AutomationId="game-play">
+         <Button Click="OnCoverPlay" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Center" MinWidth="150" MinHeight="40" Padding="16,6" CornerRadius="20" app:Motion.Press="True" ToolTipService.ToolTip="{Binding PlayLabel}" AutomationProperties.Name="{Binding PlayLabel}" AutomationProperties.AutomationId="game-play">
           <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xF5B0;" FontSize="14"/><TextBlock Text="{Binding PlayLabel}"/></StackPanel>
          </Button>
-         <Grid ColumnSpacing="6"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-          <Button Click="OnOpenTune" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="34" Padding="6,4" AutomationProperties.Name="{Binding OptimizeMenuLabel}" AutomationProperties.AutomationId="game-optimize">
-           <TextBlock Text="{Binding OptimizeMenuLabel}" TextTrimming="CharacterEllipsis"/>
+         <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+          <Button Click="OnOpenTune" Width="40" Height="40" CornerRadius="20" Padding="0" app:Motion.Press="True" ToolTipService.ToolTip="{Binding OptimizeMenuLabel}" AutomationProperties.Name="{Binding OptimizeMenuLabel}" AutomationProperties.AutomationId="game-optimize">
+           <FontIcon Glyph="&#xE945;" FontSize="15" Foreground="{ThemeResource RoseBrush}"/>
           </Button>
-          <Button Grid.Column="1" Click="OnDetails" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DetailsLabel}" AutomationProperties.Name="{Binding DetailsLabel}"><FontIcon Glyph="&#xE946;" FontSize="13" Foreground="{ThemeResource GoldBrush}"/></Button>
-        <Button Grid.Column="2" Style="{StaticResource SoftButtonStyle}" MinHeight="34" MinWidth="34" Padding="8,4" ToolTipService.ToolTip="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.Name="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.AutomationId="game-more" Loaded="OnMoreLoaded">
-         <FontIcon Glyph="&#xE712;" FontSize="13"/>
-         <Button.Flyout><MenuFlyout Placement="BottomEdgeAlignedRight" Opening="OnMoreOpening">
-          <MenuFlyoutItem Tag="GmEdit" Click="OnEditGame" AutomationProperties.AutomationId="game-edit"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE70F;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
-          <MenuFlyoutItem Tag="GmRemove" Click="OnRemoveGame" AutomationProperties.AutomationId="game-remove"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE74D;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
-         </MenuFlyout></Button.Flyout>
-        </Button>
-         </Grid>
+          <Button Click="OnDetails" Width="40" Height="40" CornerRadius="20" Padding="0" app:Motion.Press="True" ToolTipService.ToolTip="{Binding DetailsLabel}" AutomationProperties.Name="{Binding DetailsLabel}"><FontIcon Glyph="&#xE946;" FontSize="15" Foreground="{ThemeResource GoldBrush}"/></Button>
+          <Button Width="40" Height="40" CornerRadius="20" Padding="0" app:Motion.Press="True" ToolTipService.ToolTip="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.Name="{Binding DataContext.Text[GmMore], ElementName=Root}" AutomationProperties.AutomationId="game-more" Loaded="OnMoreLoaded">
+           <FontIcon Glyph="&#xE712;" FontSize="15"/>
+           <Button.Flyout><MenuFlyout Placement="Bottom" Opening="OnMoreOpening">
+            <MenuFlyoutItem Tag="GmEdit" Click="OnEditGame" AutomationProperties.AutomationId="game-edit"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE70F;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
+            <MenuFlyoutItem Tag="GmRemove" Click="OnRemoveGame" AutomationProperties.AutomationId="game-remove"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE74D;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
+           </MenuFlyout></Button.Flyout>
+          </Button>
+         </StackPanel>
         </StackPanel>
        </Grid>
       </Grid>

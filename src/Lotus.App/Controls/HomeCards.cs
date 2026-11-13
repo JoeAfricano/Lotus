@@ -245,8 +245,8 @@ public sealed partial class ReadinessCard : UserControl
         headline.Text = t[r.Score >= 85 ? "RdGreat" : r.Score >= 65 ? "RdGood" : "RdBusy"];
         (advice.Text, target, action.Content) = r.Issue switch
         {
-            ReadinessIssue.Memory => (t["RdMemory"], "tools", t["RdFreeMemory"]),
-            ReadinessIssue.HeavyApps => (t.Format("RdHeavy", r.HeavyApp ?? "?", vm.Tools?.Size(r.HeavyBytes) ?? ""), "tools", t["RdFreeMemory"]),
+            ReadinessIssue.Memory => (t["RdMemory"], "tools:checkup", t["RdFreeMemory"]),
+            ReadinessIssue.HeavyApps => (t.Format("RdHeavy", r.HeavyApp ?? "?", vm.Tools?.Size(r.HeavyBytes) ?? ""), "tools:checkup", t["RdFreeMemory"]),
             ReadinessIssue.Cpu => (t["RdCpu"], "performance", t["RdSeeLive"]),
             ReadinessIssue.GpuHot => (t["RdGpuHot"], "performance", t["RdSeeLive"]),
             ReadinessIssue.Disk => (t["RdDisk"], "tools", t["RdCleanDisk"]),

@@ -155,7 +155,14 @@ public sealed partial class SectionPage : Page
             back.Tick += (_, _) => { if (HomeRescan is null) return; HomeRescanText.Text = vm.Text["HomeRescan"]; HomeRescan.IsEnabled = true; }; back.Start();
         }
     }
-    private void OnGuidedNavigate(object? sender, string id) => shell?.NavigateCommand.Execute(id);
+    // "tools:<card>" opens Ferramentas straight on that tool; "tools:checkup" also starts the Check-up there.
+    private void OnGuidedNavigate(object? sender, string id)
+    {
+        if (id.StartsWith("tools:", StringComparison.Ordinal)) { Controls.ToolsPanel.PendingOpen = id[6..]; id = "tools"; }
+        shell?.NavigateCommand.Execute(id);
+    }
+    private void OnPcScanLoaded(object sender, RoutedEventArgs e) { if (DataContext is SectionViewModel vm) PcScan?.Attach(vm); }
+    private void OnPcScanNavigate(object? sender, string tool) => OnGuidedNavigate(sender, "tools:" + tool);
     private void OnDiaryGameList(object? sender, EventArgs e) => shell?.NavigateCommand.Execute("gamelist");
 
     // ---- Home: diary shelf (repainted whenever the diary changes while Home is open) ----

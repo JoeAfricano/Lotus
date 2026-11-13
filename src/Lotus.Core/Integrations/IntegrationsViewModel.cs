@@ -46,6 +46,7 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
     public bool CanRestoreLayout { get; private set; }
     public string LayoutStatus { get; private set; } = "";
     public bool LayoutOn { get; private set; } // a Lotus layout is the one RivaTuner shows
+    public string? ActiveVariant { get; private set; } // "top" or "neon" when a Lotus layout is active, else null
     public string? ExportedPath { get; private set; }
     public bool Busy { get; private set; }
 
@@ -67,12 +68,13 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             CanRestoreLayout = r.Installed && rtss.HasLayoutBackup();
             var active = r.Installed && rtss.LayoutActive();
             LayoutOn = active || (r.Installed && rtss.ActiveLayoutName() is { } name && name.StartsWith("Lotus", StringComparison.OrdinalIgnoreCase)); // incl. the player's own Lotus layouts
+            ActiveVariant = !active ? null : rtss.ActiveLayoutName() == "Lotus-Neon" ? "neon" : "top";
             LayoutStatus = !r.Installed ? "" : active ? Text[rtss.ActiveLayoutName() == "Lotus-Neon" ? "IntLayoutActiveNeon" : "IntLayoutActive"] : rtss.ActiveLayoutName() is { } other ? Text.Format("IntLayoutOther", other) : Text["IntLayoutInactive"];
             var ab = tools.Afterburner(); AfterburnerStatus = ab.Installed ? Text.Format("IntAfterburnerOn", ab.Version ?? "?") : Text["IntNotInstalled"];
             var scs = tools.ScsKiller(); ScsStatus = scs.Installed ? Text.Format("IntScsOn", scs.Version ?? "?") : Text["IntScsOff"];
         }
         catch (Exception ex) { log(ex); }
-        foreach (var p in new[] { nameof(RtssStatus), nameof(AfterburnerStatus), nameof(ScsStatus), nameof(RtssInstalled), nameof(CanRestoreRtss), nameof(CanRestoreLayout), nameof(LayoutStatus) }) OnPropertyChanged(p);
+        foreach (var p in new[] { nameof(RtssStatus), nameof(AfterburnerStatus), nameof(ScsStatus), nameof(RtssInstalled), nameof(CanRestoreRtss), nameof(CanRestoreLayout), nameof(LayoutStatus), nameof(ActiveVariant) }) OnPropertyChanged(p);
     }
 
     public Task ApplyOverlayAsync() => Run(async () => Message = Text[await rtss.ApplyLotusOverlayAsync() ? "IntOverlayApplied" : "IntOverlayFailed"]);

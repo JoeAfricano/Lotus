@@ -14,8 +14,17 @@ public sealed partial class ToolsPanel : UserControl
         {
             if (DataContext is not ToolsViewModel vm) return;
             BuildTiles(vm);
+            // Arrived from Home or the PC X-ray with a tool in mind: open it; "checkup" also starts the Check-up right away.
+            if (PendingOpen is { } id) { PendingOpen = null; await OpenPendingAsync(vm, id); }
             await vm.RefreshAsync();
         };
+    }
+    public static string? PendingOpen { get; set; }
+    private async Task OpenPendingAsync(ToolsViewModel vm, string id)
+    {
+        if (!cards.ContainsKey(id)) return;
+        Open(id);
+        if (id == "checkup" && vm.Checkup is { Busy: false } c) { try { await c.RunAsync(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Check-up from Home"); } }
     }
 
     // ---- Tiles (visual 2.0): compact squares in four groups, filtered by the search box ----
