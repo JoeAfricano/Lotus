@@ -99,9 +99,9 @@
      <SelectorBarItem Text="{Binding Text[OpTabProfiles]}"/><SelectorBarItem Text="{Binding Text[performanceTitle]}"/><SelectorBarItem Text="{Binding Text[OpTabGpu]}"/><SelectorBarItem Text="{Binding Text[UxRestoreTab]}"/>
     </SelectorBar>
     <StackPanel x:Name="ProfilesTab" x:Load="{x:Bind ShowDiagnosis}" Spacing="20">
-    <controls:PowerProfilesPanel DataContext="{Binding PowerProfiles}"/>
+    <controls:PowerProfilesPanel DataContext="{Binding PowerProfiles}" AdjustRequested="OnAdjustBoost"/>
     <!-- Ajustar o perfil Jogo: what happens only while a game is open, each step undone when it closes -->
-    <Border Style="{StaticResource CardStyle}" AutomationProperties.AutomationId="game-boost-settings">
+    <Border x:Name="BoostSettings" Style="{StaticResource CardStyle}" AutomationProperties.AutomationId="game-boost-settings">
      <StackPanel Spacing="14">
       <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
        <Border Style="{StaticResource IconBadgeStyle}"><FontIcon Glyph="&#xE7FC;" Style="{StaticResource BadgeIconStyle}"/></Border>

@@ -569,7 +569,7 @@ Condições atuais: {1}</value></data>
   <data name="PfGameTitle" xml:space="preserve"><value>Perfil Jogo</value></data>
   <data name="PfDailyTitle" xml:space="preserve"><value>Perfil Diário</value></data>
   <data name="PfCustomTitle" xml:space="preserve"><value>Perfil Personalizado</value></data>
-  <data name="PfGameDescription" xml:space="preserve"><value>Prioriza desempenho: sugere Alto desempenho quando o PC está ligado à energia.</value></data>
+  <data name="PfGameDescription" xml:space="preserve"><value>Só enquanto você joga: Alto desempenho, sem notificações e prioridade para o jogo. Tudo volta ao fechar.</value></data>
   <data name="PfDailyDescription" xml:space="preserve"><value>Equilíbrio entre desempenho e eficiência para o uso do dia a dia.</value></data>
   <data name="PfCustomDescription" xml:space="preserve"><value>Você escolhe manualmente qual plano de energia existente usar.</value></data>
   <data name="PfRecommended" xml:space="preserve"><value>Recomendado para desempenho</value></data>
@@ -1847,7 +1847,7 @@ Não foi possível medir agora. Tente de novo em alguns segundos.</value></data>
   <data name="PfResultUndone" xml:space="preserve"><value>Alterações desfeitas</value></data>
   <data name="PfResultUndoPartial" xml:space="preserve"><value>Desfeito em parte</value></data>
   <data name="PfResultNone" xml:space="preserve"><value>Nada para desfazer</value></data>
-  <data name="PfSwitched" xml:space="preserve"><value>{0} selecionado. Toque em Aplicar perfil para ativar.</value></data>
+  <data name="PfSwitched" xml:space="preserve"><value>{0} selecionado. Toque em Ativar para ligar.</value></data>
   <data name="GlFilters" xml:space="preserve"><value>Filtros</value></data>
   <data name="GlFiltersNone" xml:space="preserve"><value>Sem filtros: lista completa na ordem da fonte.</value></data>
   <data name="GlFiltersActive" xml:space="preserve"><value>Filtros ativos: {0}</value></data>
@@ -3350,4 +3350,33 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GtRiskStartup" xml:space="preserve"><value>Nada é aplicado ao ligar o Windows: só no jogo, pelo perfil 3D.</value></data>
   <data name="GtRiskStock" xml:space="preserve"><value>Voltar ao padrão: Perfil 1 ou o botão Reset do Afterburner.</value></data>
   <data name="GtCardIntro" xml:space="preserve"><value>O Lotus guia um ajuste para a sua {0}; quem aplica os valores é o MSI Afterburner, dentro dos limites de fábrica. O Lotus não muda clock nem tensão sozinho.</value></data>
+  <data name="PfPlanGameTitle" xml:space="preserve"><value>O que acontece quando você joga</value></data>
+  <data name="PfPlanGameSubtitle" xml:space="preserve"><value>O perfil Jogo age só enquanto um jogo da sua biblioteca está aberto.</value></data>
+  <data name="PfPlanDailyTitle" xml:space="preserve"><value>Uso normal</value></data>
+  <data name="PfPlanDailySubtitle" xml:space="preserve"><value>Plano Equilibrado e nenhum ajuste durante os jogos.</value></data>
+  <data name="PfStageOpen" xml:space="preserve"><value>Ao abrir um jogo</value></data>
+  <data name="PfStagePlaying" xml:space="preserve"><value>Enquanto joga</value></data>
+  <data name="PfStageClose" xml:space="preserve"><value>Ao fechar o jogo</value></data>
+  <data name="PfWhyPower" xml:space="preserve"><value>O processador e a placa não economizam energia no meio da partida. Ajuda a evitar quedas pontuais; não promete mais FPS.</value></data>
+  <data name="PfWhyNotifications" xml:space="preserve"><value>Avisos do Windows não aparecem por cima do jogo nem roubam o foco. O ganho é sossego, não FPS.</value></data>
+  <data name="PfWhyRecording" xml:space="preserve"><value>A Game Bar para de gravar os últimos minutos em segundo plano, o que libera um pouco a placa e o disco.</value></data>
+  <data name="PfPriorityLine" xml:space="preserve"><value>Prioridade: jogo acima; navegadores e launchers abaixo, continuam abertos</value></data>
+  <data name="PfWhyPriority" xml:space="preserve"><value>Se um app como o Opera GX disputa o processador, o jogo vem primeiro. Nenhum app é fechado.</value></data>
+  <data name="PfNothingOn" xml:space="preserve"><value>Nenhum ajuste ligado</value></data>
+  <data name="PfNothingOnWhy" xml:space="preserve"><value>Ligue os ajustes em &quot;Ajustar o perfil Jogo&quot;.</value></data>
+  <data name="PfPlayingLine" xml:space="preserve"><value>O Lotus fica leve e quieto</value></data>
+  <data name="PfWhyPlaying" xml:space="preserve"><value>O Lotus entra em modo econômico e não mexe em mais nada enquanto você joga.</value></data>
+  <data name="PfRestoreLine" xml:space="preserve"><value>Tudo volta como estava</value></data>
+  <data name="PfWhyRestore" xml:space="preserve"><value>Cada ajuste é desfeito. Se você mudou algo no meio do jogo, fica como você deixou.</value></data>
+  <data name="PfDailyLine" xml:space="preserve"><value>Plano Equilibrado, sem ajustes nos jogos</value></data>
+  <data name="PfWhyDaily" xml:space="preserve"><value>O Windows volta ao comportamento normal; nada muda quando um jogo abre.</value></data>
+  <data name="PfDecideGame" xml:space="preserve"><value>O perfil Jogo só age enquanto um jogo da sua biblioteca está aberto e desfaz tudo ao fechar. Não garante mais FPS; reduz interrupções e disputa por recursos.</value></data>
+  <data name="PfDecideDaily" xml:space="preserve"><value>O perfil Diário deixa o Windows no uso normal e não age durante os jogos.</value></data>
+  <data name="PfActivateGame" xml:space="preserve"><value>Ativar perfil Jogo</value></data>
+  <data name="PfActivateDaily" xml:space="preserve"><value>Ativar perfil Diário</value></data>
+  <data name="PfSeeScan" xml:space="preserve"><value>Inicialização e recursos do Windows: ver no Raio-X</value></data>
+  <data name="PfActiveWaiting" xml:space="preserve"><value>Ativo · aguardando um jogo</value></data>
+  <data name="PfActivePlaying" xml:space="preserve"><value>Ativo · jogando {0}</value></data>
+  <data name="PfArmedTitle" xml:space="preserve"><value>{0} ativado</value></data>
+  <data name="PfArmedBody" xml:space="preserve"><value>Nada mudou agora. Os ajustes entram quando um jogo da sua biblioteca abrir e saem quando ele fechar.</value></data>
 </root>

@@ -76,11 +76,13 @@
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <StackPanel Spacing="14">
      <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-      <FontIcon Glyph="&#xE8FD;" FontSize="22" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Top" Margin="0,2,0,0"/>
-      <StackPanel Grid.Column="1" Spacing="2"><TextBlock Text="{Binding Text[PfChangesTitle]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[PfChangesSubtitle]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
+      <FontIcon Glyph="&#xE7FC;" FontSize="22" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Top" Margin="0,2,0,0"/>
+      <StackPanel Grid.Column="1" Spacing="2"><TextBlock x:Name="ChangesTitle" Style="{StaticResource SectionTitleStyle}" TextWrapping="Wrap"/><TextBlock x:Name="ChangesSubtitle" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
      </Grid>
-     <!-- Power plan -->
-     <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+     <!-- Perfil Jogo: what happens around a game session (built in code from the "Ajustar o perfil Jogo" switches) -->
+     <StackPanel x:Name="GameTimeline" Spacing="10" AutomationProperties.AutomationId="profile-timeline"/>
+     <!-- Power plan (Perfil Diário: the plan for normal use) -->
+     <Expander x:Name="PowerRow" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
       <Expander.Header><Grid ColumnSpacing="14" Padding="0,6"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
        <Grid Width="30" Height="30"><Border CornerRadius="9" Background="{ThemeResource SuccessBrush}"/><FontIcon Glyph="&#xE73E;" FontSize="13" Foreground="#0F1A14"/></Grid>
        <StackPanel Grid.Column="1"><TextBlock Text="{Binding Text[PfRowPower]}" FontWeight="SemiBold"/><TextBlock Text="{Binding SchemeLabel}" Style="{StaticResource CaptionStyle}" AutomationProperties.AutomationId="profile-scheme"/></StackPanel>
@@ -93,54 +95,7 @@
        <Button Content="{Binding Text[PowerSave]}" Command="{Binding SaveCommand}" AutomationProperties.AutomationId="profile-save" Style="{StaticResource SoftButtonStyle}"/>
       </StackPanel>
      </Expander>
-     <!-- Startup apps (read-only) -->
-     <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
-      <Expander.Header><Grid ColumnSpacing="14" Padding="0,6"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-       <Grid Width="30" Height="30"><Border CornerRadius="9" Background="{ThemeResource AccentSoftBrush}"/><FontIcon Glyph="&#xE7E8;" FontSize="13" Foreground="{ThemeResource RoseBrush}"/></Grid>
-       <StackPanel Grid.Column="1"><TextBlock Text="{Binding Text[PfRowStartup]}" FontWeight="SemiBold"/><TextBlock Text="{Binding Text[PfRowStartupHint]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
-      </Grid></Expander.Header>
-      <StackPanel Spacing="12"><TextBlock Text="{Binding Text[PowerStartupLimits]}" Style="{StaticResource CaptionStyle}"/>
-       <StackPanel Orientation="Horizontal" Spacing="12"><Button Content="{Binding Text[PowerStartupRead]}" Command="{Binding StartupCommand}" AutomationProperties.AutomationId="startup-read" Style="{StaticResource SoftButtonStyle}"/><TextBlock Text="{Binding StartupStatus}" Style="{StaticResource CaptionStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="startup-status"/></StackPanel>
-       <ItemsControl ItemsSource="{Binding StartupEntries}">
-        <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate><DataTemplate>
-         <Border Background="{ThemeResource CardHoverBrush}" CornerRadius="12" Padding="14,10"><Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-          <StackPanel Spacing="2"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding Location}" Style="{StaticResource CaptionStyle}"/></StackPanel>
-          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-           <ContentControl Content="{Binding State}" Style="{StaticResource StatusBadgeStyle}" VerticalAlignment="Center" Opacity="{Binding IsDisabled, Converter={StaticResource DimWhenTrue}}"/>
-           <Button Content="{Binding ToggleLabel}" Click="OnToggleStartup" Style="{StaticResource SoftButtonStyle}" MinHeight="30" Padding="10,3" Visibility="{Binding CanToggle, Converter={StaticResource BooleanVisibility}}"/>
-          </StackPanel>
-         </Grid></Border>
-        </DataTemplate></ItemsControl.ItemTemplate>
-       </ItemsControl>
-      </StackPanel>
-     </Expander>
-     <!-- Windows gaming features (read-only, manual guidance) -->
-     <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AutomationProperties.AutomationId="features-row">
-      <Expander.Header><Grid ColumnSpacing="14" Padding="0,6"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-       <Grid Width="30" Height="30"><Border CornerRadius="9" Background="{ThemeResource AccentSoftBrush}"/><FontIcon Glyph="&#xE7FC;" FontSize="13" Foreground="{ThemeResource RoseBrush}"/></Grid>
-       <StackPanel Grid.Column="1"><TextBlock Text="{Binding Text[PfRowFeatures]}" FontWeight="SemiBold"/><TextBlock Text="{Binding FeaturesSummary}" Style="{StaticResource CaptionStyle}" AutomationProperties.AutomationId="features-summary"/></StackPanel>
-      </Grid></Expander.Header>
-      <StackPanel Spacing="10">
-       <TextBlock Text="{Binding Text[FeatManual]}" Style="{StaticResource CaptionStyle}"/>
-       <ItemsControl ItemsSource="{Binding Features}">
-        <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="8"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate><DataTemplate>
-         <Border Background="{ThemeResource CardHoverBrush}" CornerRadius="12" Padding="14,12"><Grid ColumnSpacing="14" RowSpacing="6"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-          <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE7BA;" FontSize="13" Foreground="{ThemeResource WarningBrush}" Visibility="{Binding NeedsAttention, Converter={StaticResource BooleanVisibility}}"/><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel>
-          <ContentControl Grid.Column="1" Content="{Binding State}" Style="{StaticResource StatusBadgeStyle}" VerticalAlignment="Center"/>
-          <TextBlock Grid.Row="1" Text="{Binding Advice}" Style="{StaticResource CaptionStyle}"/>
-          <StackPanel Grid.Row="1" Grid.Column="1" Spacing="6" HorizontalAlignment="Right" VerticalAlignment="Center">
-           <Button Content="{Binding DataContext.Text[FeatApplyButton], ElementName=ProfileCards}" Tag="{Binding Id}" Click="OnApplyFeature" Style="{StaticResource PrimaryButtonStyle}" MinHeight="32" Padding="12,4" HorizontalAlignment="Right" Visibility="{Binding CanApply, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="feature-apply"/>
-           <Button Content="{Binding DataContext.Text[FeatUndoButton], ElementName=ProfileCards}" Tag="{Binding Id}" Click="OnUndoFeature" Style="{StaticResource SoftButtonStyle}" MinHeight="32" Padding="12,4" HorizontalAlignment="Right" Visibility="{Binding CanUndo, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="feature-undo"/>
-           <HyperlinkButton Content="{Binding DataContext.Text[FeatOpenSettings], ElementName=ProfileCards}" Tag="{Binding SettingsUri}" Click="OnOpenSettings" Padding="6,2" HorizontalAlignment="Right"/>
-          </StackPanel>
-         </Grid></Border>
-        </DataTemplate></ItemsControl.ItemTemplate>
-       </ItemsControl>
-       <TextBlock Text="{Binding FeatureStatus}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite" app:Motion.Settle="True" AutomationProperties.AutomationId="feature-status"/>
-      </StackPanel>
-     </Expander>
+     <HyperlinkButton x:Name="ScanLink" Click="OnSeeScan" Padding="2,2"/>
      <!-- Reversible actions -->
      <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
       <Expander.Header><Grid ColumnSpacing="14" Padding="0,6"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
@@ -159,8 +114,11 @@
 
     <StackPanel x:Name="ActionsColumn" Grid.Column="1" Spacing="14" VerticalAlignment="Top">
      <!-- "Você decide" (design): impact and reversal stay next to the action -->
-     <StackPanel Spacing="6"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE945;" FontSize="20" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[PfDecideTitle]}" FontSize="20" FontWeight="SemiBold"/></StackPanel><TextBlock Text="{Binding Text[PfDecideBody]}" Style="{StaticResource CaptionStyle}" FontSize="14" TextWrapping="Wrap"/></StackPanel>
-     <Button Click="OnApplyProfile" IsEnabled="{Binding CanEdit}" AutomationProperties.AutomationId="profile-apply" AutomationProperties.Name="{Binding Text[PfApply]}" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE768;" FontSize="14"/><TextBlock Text="{Binding Text[PfApply]}"/></StackPanel></Button>
+     <StackPanel Spacing="6"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE945;" FontSize="20" Foreground="{ThemeResource RoseBrush}"/><TextBlock Text="{Binding Text[PfDecideTitle]}" FontSize="20" FontWeight="SemiBold"/></StackPanel><TextBlock x:Name="DecideBody" Style="{StaticResource CaptionStyle}" FontSize="14" TextWrapping="Wrap"/></StackPanel>
+     <!-- Live state of the session boost -->
+     <Border x:Name="ActiveBadge" CornerRadius="12" Padding="12,6" BorderThickness="1" HorizontalAlignment="Left" Visibility="Collapsed"><StackPanel Orientation="Horizontal" Spacing="8"><Ellipse x:Name="ActiveDot" Width="8" Height="8" VerticalAlignment="Center"/><TextBlock x:Name="ActiveText" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/></StackPanel></Border>
+     <Button Click="OnApplyProfile" IsEnabled="{Binding CanEdit}" AutomationProperties.AutomationId="profile-apply" AutomationProperties.Name="{Binding Text[PfApply]}" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48"><StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE768;" FontSize="14"/><TextBlock x:Name="ApplyLabel" Text="{Binding Text[PfApply]}"/></StackPanel></Button>
+     <Button x:Name="AdjustButton" Click="OnAdjustBoost" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="40" AutomationProperties.AutomationId="profile-adjust"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE713;" FontSize="13"/><TextBlock x:Name="AdjustLabel"/></StackPanel></Button>
      <!-- Result: animated confirmation after applying / undoing; a quiet hint after switching profiles -->
      <Border x:Name="ResultCard" CornerRadius="12" Padding="14,12" BorderThickness="1" BorderBrush="{ThemeResource DividerBrush}" Background="{ThemeResource CardHoverBrush}" Visibility="{Binding HasResult, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="profile-result-card">
       <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>

@@ -9,8 +9,91 @@ public sealed partial class PowerProfilesPanel : UserControl
     {
         InitializeComponent();
         // Loads power plans, saved profiles and journal history (read-only queries).
-        Loaded += async (_, _) => { if (DataContext is Lotus.Core.Optimization.PowerProfilesViewModel model) await model.RefreshAsync(); };
+        Loaded += async (_, _) =>
+        {
+            RenderPlan();
+            // The live badge ("aguardando um jogo" / "jogando X") is re-read every 3 s only while this panel is on screen.
+            live ??= DispatcherQueue.CreateTimer(); live.Interval = TimeSpan.FromSeconds(3); live.Tick -= OnLive; live.Tick += OnLive; live.Start();
+            if (DataContext is Lotus.Core.Optimization.PowerProfilesViewModel model) await model.RefreshAsync();
+        };
+        Unloaded += (_, _) => live?.Stop();
         DataContextChanged += (_, _) => Attach(DataContext as Lotus.Core.Optimization.PowerProfilesViewModel);
+    }
+
+    private Microsoft.UI.Dispatching.DispatcherQueueTimer? live;
+    private void OnLive(Microsoft.UI.Dispatching.DispatcherQueueTimer sender, object args) => RenderBadge();
+    public event EventHandler? AdjustRequested;
+    private void OnAdjustBoost(object sender, RoutedEventArgs e) => AdjustRequested?.Invoke(this, EventArgs.Empty);
+    private void OnSeeScan(object sender, RoutedEventArgs e) => MainWindow.Shell?.ViewModel.NavigateCommand.Execute("analysis");
+
+    // "O que acontece quando você joga": Perfil Jogo as a three-step timeline built from the switches the player left on;
+    // Perfil Diário as normal use. Each item opens to say why and what to honestly expect.
+    private void RenderPlan()
+    {
+        if (DataContext is not Lotus.Core.Optimization.PowerProfilesViewModel vm) return;
+        var t = vm.Text;
+        var game = vm.IsGame;
+        ChangesTitle.Text = t[game ? "PfPlanGameTitle" : "PfPlanDailyTitle"];
+        ChangesSubtitle.Text = t[game ? "PfPlanGameSubtitle" : "PfPlanDailySubtitle"];
+        DecideBody.Text = t[game ? "PfDecideGame" : "PfDecideDaily"];
+        ApplyLabel.Text = t[game ? "PfActivateGame" : "PfActivateDaily"];
+        AdjustLabel.Text = t["BoTitle"];
+        AdjustButton.Visibility = game ? Visibility.Visible : Visibility.Collapsed;
+        PowerRow.Visibility = game ? Visibility.Collapsed : Visibility.Visible;
+        ScanLink.Content = t["PfSeeScan"];
+        GameTimeline.Children.Clear();
+        if (game)
+        {
+            var s = vm.BoostState?.Invoke() ?? (true, true, true, true, true);
+            GameTimeline.Children.Add(Stage("1", t["PfStageOpen"]));
+            if (s.Power) GameTimeline.Children.Add(Item("", t["BoPower"], t["PfWhyPower"]));
+            if (s.Notifications) GameTimeline.Children.Add(Item("", t["BoNotifications"], t["PfWhyNotifications"]));
+            if (s.Recording) GameTimeline.Children.Add(Item("", t["BoRecording"], t["PfWhyRecording"]));
+            if (s.Priority) GameTimeline.Children.Add(Item("", t["PfPriorityLine"], t["PfWhyPriority"]));
+            if (!(s.Power || s.Notifications || s.Recording || s.Priority)) GameTimeline.Children.Add(Item("", t["PfNothingOn"], t["PfNothingOnWhy"]));
+            GameTimeline.Children.Add(Stage("2", t["PfStagePlaying"]));
+            GameTimeline.Children.Add(Item("", t["PfPlayingLine"], t["PfWhyPlaying"]));
+            GameTimeline.Children.Add(Stage("3", t["PfStageClose"]));
+            GameTimeline.Children.Add(Item("", t["PfRestoreLine"], t["PfWhyRestore"]));
+        }
+        else GameTimeline.Children.Add(Item("", t["PfDailyLine"], t["PfWhyDaily"]));
+        RenderBadge();
+    }
+    private static FrameworkElement Stage(string number, string text)
+    {
+        var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, Margin = new Thickness(0, 6, 0, 0) };
+        row.Children.Add(new Border { Width = 26, Height = 26, CornerRadius = new CornerRadius(13), Background = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["AccentGradientBrush"],
+            Child = new TextBlock { Text = number, FontSize = 12, FontWeight = Microsoft.UI.Text.FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["OnRoseBrush"] } });
+        row.Children.Add(new TextBlock { Text = text, FontSize = 14, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center });
+        return row;
+    }
+    private static FrameworkElement Item(string glyph, string title, string why)
+    {
+        var head = new Grid { ColumnSpacing = 14, Padding = new Thickness(0, 4, 0, 4) };
+        head.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); head.ColumnDefinitions.Add(new ColumnDefinition());
+        var icon = new Grid { Width = 30, Height = 30 };
+        icon.Children.Add(new Border { CornerRadius = new CornerRadius(9), Background = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["AccentSoftBrush"] });
+        icon.Children.Add(new FontIcon { Glyph = glyph, FontSize = 13, Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["RoseBrush"] });
+        head.Children.Add(icon);
+        var label = new TextBlock { Text = title, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, VerticalAlignment = VerticalAlignment.Center };
+        Grid.SetColumn(label, 1); head.Children.Add(label);
+        return new Expander { Header = head, HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch, Margin = new Thickness(36, 0, 0, 0),
+            Content = new TextBlock { Text = why, TextWrapping = TextWrapping.Wrap, Style = (Style)Application.Current.Resources["CaptionStyle"], FontSize = 13 } };
+    }
+    // "Ativo · aguardando um jogo" / "Ativo · jogando X" while the Game profile is on.
+    private void RenderBadge()
+    {
+        if (DataContext is not Lotus.Core.Optimization.PowerProfilesViewModel vm) return;
+        var s = vm.BoostState?.Invoke();
+        if (s is not { On: true }) { ActiveBadge.Visibility = Visibility.Collapsed; return; }
+        var playing = vm.PlayingGame?.Invoke();
+        var c = playing is null ? Windows.UI.Color.FromArgb(255, 0xF0, 0xC2, 0x7D) : Windows.UI.Color.FromArgb(255, 0x7F, 0xD1, 0xA8);
+        ActiveText.Text = playing is null ? vm.Text["PfActiveWaiting"] : vm.Text.Format("PfActivePlaying", playing);
+        ActiveText.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(c);
+        ActiveDot.Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(c);
+        ActiveBadge.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(0x24, c.R, c.G, c.B));
+        ActiveBadge.BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(0x59, c.R, c.G, c.B));
+        ActiveBadge.Visibility = Visibility.Visible;
     }
 
     // Visual confirmation: the chosen card's check springs when the profile changes; applying/undoing
@@ -30,6 +113,7 @@ public sealed partial class PowerProfilesPanel : UserControl
         var check = vm.IsGame ? GameCheck : vm.IsDaily ? DailyCheck : CustomCheck;
         DispatcherQueue.TryEnqueue(() =>
         {
+            RenderPlan();
             // Neutral hint style (the success/warning look belongs to a finished apply or undo).
             ResultIcon.Glyph = ""; ResultIcon.Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["RoseBrush"];
             ResultBadge.Background = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["AccentSoftBrush"];
@@ -70,6 +154,7 @@ public sealed partial class PowerProfilesPanel : UserControl
     private async void OnApplyProfile(object sender, RoutedEventArgs e)
     {
         if (DataContext is not Lotus.Core.Optimization.PowerProfilesViewModel vm) return;
+        if (vm.IsGame) { vm.ArmGameSession(); RenderPlan(); return; } // Perfil Jogo: only during games, nothing to change now
         var changes = await vm.PreviewProfileAsync();
         var pending = changes.Where(c => !c.AlreadyApplied).ToList();
         if (pending.Count == 0 && vm.PreviewFailed) { vm.ReportPreviewFailed(); return; }

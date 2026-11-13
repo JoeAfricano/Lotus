@@ -569,7 +569,7 @@ Current conditions: {1}</value></data>
   <data name="PfGameTitle" xml:space="preserve"><value>Game profile</value></data>
   <data name="PfDailyTitle" xml:space="preserve"><value>Daily profile</value></data>
   <data name="PfCustomTitle" xml:space="preserve"><value>Custom profile</value></data>
-  <data name="PfGameDescription" xml:space="preserve"><value>Favors performance: suggests High performance while plugged in.</value></data>
+  <data name="PfGameDescription" xml:space="preserve"><value>Only while you play: High performance, no notifications and priority for the game. Everything goes back when it closes.</value></data>
   <data name="PfDailyDescription" xml:space="preserve"><value>Balance between performance and efficiency for everyday use.</value></data>
   <data name="PfCustomDescription" xml:space="preserve"><value>You choose which existing power plan to use.</value></data>
   <data name="PfRecommended" xml:space="preserve"><value>Recommended for performance</value></data>
@@ -1847,7 +1847,7 @@ Could not measure right now. Try again in a few seconds.</value></data>
   <data name="PfResultUndone" xml:space="preserve"><value>Changes undone</value></data>
   <data name="PfResultUndoPartial" xml:space="preserve"><value>Partly undone</value></data>
   <data name="PfResultNone" xml:space="preserve"><value>Nothing to undo</value></data>
-  <data name="PfSwitched" xml:space="preserve"><value>{0} selected. Tap Apply profile to turn it on.</value></data>
+  <data name="PfSwitched" xml:space="preserve"><value>{0} selected. Tap Turn on to switch it on.</value></data>
   <data name="GlFilters" xml:space="preserve"><value>Filters</value></data>
   <data name="GlFiltersNone" xml:space="preserve"><value>No filters: full list in source order.</value></data>
   <data name="GlFiltersActive" xml:space="preserve"><value>Active filters: {0}</value></data>
@@ -3350,4 +3350,33 @@ Your games and Windows are not changed.</value></data>
   <data name="GtRiskStartup" xml:space="preserve"><value>Nothing is applied when Windows starts: only in games, through the 3D profile.</value></data>
   <data name="GtRiskStock" xml:space="preserve"><value>Back to stock: Profile 1 or Afterburner&apos;s Reset button.</value></data>
   <data name="GtCardIntro" xml:space="preserve"><value>Lotus guides a tune for your {0}; MSI Afterburner applies the values, within factory limits. Lotus never changes clocks or voltage by itself.</value></data>
+  <data name="PfPlanGameTitle" xml:space="preserve"><value>What happens when you play</value></data>
+  <data name="PfPlanGameSubtitle" xml:space="preserve"><value>The Game profile acts only while a game from your library is open.</value></data>
+  <data name="PfPlanDailyTitle" xml:space="preserve"><value>Normal use</value></data>
+  <data name="PfPlanDailySubtitle" xml:space="preserve"><value>Balanced plan and no tweaks during games.</value></data>
+  <data name="PfStageOpen" xml:space="preserve"><value>When a game opens</value></data>
+  <data name="PfStagePlaying" xml:space="preserve"><value>While you play</value></data>
+  <data name="PfStageClose" xml:space="preserve"><value>When the game closes</value></data>
+  <data name="PfWhyPower" xml:space="preserve"><value>The processor and graphics card do not save power mid-match. It helps avoid sudden drops; it does not promise more FPS.</value></data>
+  <data name="PfWhyNotifications" xml:space="preserve"><value>Windows pop-ups do not show over the game or steal focus. The gain is peace, not FPS.</value></data>
+  <data name="PfWhyRecording" xml:space="preserve"><value>Game Bar stops recording the last minutes in the background, which frees a little of the graphics card and disk.</value></data>
+  <data name="PfPriorityLine" xml:space="preserve"><value>Priority: the game first; browsers and launchers lower, still open</value></data>
+  <data name="PfWhyPriority" xml:space="preserve"><value>If an app like Opera GX competes for the processor, the game comes first. No app is closed.</value></data>
+  <data name="PfNothingOn" xml:space="preserve"><value>No tweak turned on</value></data>
+  <data name="PfNothingOnWhy" xml:space="preserve"><value>Turn tweaks on in &quot;Adjust the Game profile&quot;.</value></data>
+  <data name="PfPlayingLine" xml:space="preserve"><value>Lotus stays light and quiet</value></data>
+  <data name="PfWhyPlaying" xml:space="preserve"><value>Lotus goes into economy mode and changes nothing else while you play.</value></data>
+  <data name="PfRestoreLine" xml:space="preserve"><value>Everything goes back as it was</value></data>
+  <data name="PfWhyRestore" xml:space="preserve"><value>Each tweak is undone. If you changed something during the game, it stays the way you left it.</value></data>
+  <data name="PfDailyLine" xml:space="preserve"><value>Balanced plan, no tweaks in games</value></data>
+  <data name="PfWhyDaily" xml:space="preserve"><value>Windows goes back to normal behavior; nothing changes when a game opens.</value></data>
+  <data name="PfDecideGame" xml:space="preserve"><value>The Game profile acts only while a game from your library is open and undoes everything when it closes. It does not guarantee more FPS; it reduces interruptions and competition for resources.</value></data>
+  <data name="PfDecideDaily" xml:space="preserve"><value>The Daily profile keeps Windows in normal use and does not act during games.</value></data>
+  <data name="PfActivateGame" xml:space="preserve"><value>Turn on Game profile</value></data>
+  <data name="PfActivateDaily" xml:space="preserve"><value>Turn on Daily profile</value></data>
+  <data name="PfSeeScan" xml:space="preserve"><value>Startup and Windows features: see in the X-ray</value></data>
+  <data name="PfActiveWaiting" xml:space="preserve"><value>On · waiting for a game</value></data>
+  <data name="PfActivePlaying" xml:space="preserve"><value>On · playing {0}</value></data>
+  <data name="PfArmedTitle" xml:space="preserve"><value>{0} turned on</value></data>
+  <data name="PfArmedBody" xml:space="preserve"><value>Nothing changed now. The tweaks start when a game from your library opens and end when it closes.</value></data>
 </root>

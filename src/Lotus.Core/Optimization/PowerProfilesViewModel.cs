@@ -45,6 +45,11 @@ public sealed class PowerProfilesViewModel : ObservableObject
     public event EventHandler? ResultShown;
     // Set by the app: applying Jogo turns on the game-session boost and process priority; Diário turns them off.
     public Action<string>? ProfileApplied { get; set; }
+    // The Game profile acts only during game sessions: its switches and the game being played now (for the live badge).
+    public Func<(bool On, bool Power, bool Notifications, bool Recording, bool Priority)>? BoostState { get; set; }
+    public Func<string?>? PlayingGame { get; set; }
+    // Applying Jogo changes nothing in Windows right away: it arms the session boost, shown as a result.
+    public void ArmGameSession() { ProfileApplied?.Invoke("game"); ShowResult("PfArmedTitle", true, Text["PfArmedBody"]); }
     private string ProfileTitle => Text[IsGame ? "PfGameTitle" : IsDaily ? "PfDailyTitle" : "PfCustomTitle"];
     private void ShowResult(string titleKey, bool ok, string detail)
     {

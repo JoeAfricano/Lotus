@@ -179,6 +179,8 @@ public sealed partial class MainWindow : Window
             new Lotus.Infrastructure.Maintenance.ExplorerRevealer(), Lotus.Infrastructure.Maintenance.LocalDrives.Read, places.Resolve, text, tools.Journal, ex => Serilog.Log.Warning(ex, "Storage"));
         games.Rtss = integrations.Rtss;
         // Perfil Jogo is for game sessions: applying it turns on the boost and the game priority; Diário turns both off.
+        powerProfiles.BoostState = () => (preferences.Current.GameBoost, preferences.Current.BoostPower, preferences.Current.BoostNotifications, preferences.Current.BoostRecording, preferences.Current.GamePriority);
+        powerProfiles.PlayingGame = () => lightGame?.Name;
         powerProfiles.ProfileApplied = id =>
         {
             if (id == "game") preferences.Update(preferences.Current with { GameBoost = true, GamePriority = true });

@@ -162,6 +162,7 @@ public sealed partial class SectionPage : Page
         if (id.StartsWith("tools:", StringComparison.Ordinal)) { Controls.ToolsPanel.PendingOpen = id[6..]; id = "tools"; }
         shell?.NavigateCommand.Execute(id);
     }
+    private void OnAdjustBoost(object? sender, EventArgs e) => BoostSettings?.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = true, VerticalAlignmentRatio = 0.1 });
     private void OnPcScanLoaded(object sender, RoutedEventArgs e) { if (DataContext is SectionViewModel vm) PcScan?.Attach(vm); }
     private void OnPcScanNavigate(object? sender, string tool) => OnGuidedNavigate(sender, "tools:" + tool);
     private void OnDiaryGameList(object? sender, EventArgs e) => shell?.NavigateCommand.Execute("gamelist");
