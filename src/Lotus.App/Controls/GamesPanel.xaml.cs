@@ -17,6 +17,14 @@ public sealed partial class GamesPanel : UserControl
     }
     public const string ConnectedCoverKey = "lotus-cover";
     // ElementName bindings do not reach out of the item template, so the "..." button gets its name and tooltip here.
+    // Visual 3.0: the covers fill the whole row (as many columns of at least ~184 px as fit, no empty strip on the right).
+    private void OnLibrarySizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (Library.ItemsPanelRoot is not ItemsWrapGrid grid || e.NewSize.Width <= 0) return;
+        const double min = 200; // 184 cover + 16 gap
+        var columns = Math.Max(1, (int)(e.NewSize.Width / min));
+        grid.ItemWidth = Math.Floor(e.NewSize.Width / columns);
+    }
     // Visual 3.0: the actions over a cover show on hover or when the keyboard reaches the card.
     private void OnCardEnter(object sender, RoutedEventArgs e) => SetActions(sender, true);
     private void OnCardLeave(object sender, RoutedEventArgs e)

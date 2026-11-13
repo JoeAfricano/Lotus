@@ -417,7 +417,7 @@ public sealed partial class SectionPage : Page
         var pad = e.NewSize.Width < 700 ? new Thickness(16, 20, 16, 32) : new Thickness(32, 24, 32, 32);
         PageContent.Padding = pad;
         // Home: the hero bleeds to the page edges; the readiness card floats on the art, or goes under it when narrow (~1000 px).
-        if (HomeTop is not null && HomeSide is not null && HomeBelow is not null && HomeTiles is not null && HomeTilesColumn is not null)
+        if (HomeTop is not null && HomeSide is not null && HomeTiles is not null && HomePorts is not null)
         {
             HomeTop.Margin = new Thickness(-pad.Left, -pad.Top, -pad.Right, 0);
             var narrow = e.NewSize.Width < 1000;
@@ -425,11 +425,9 @@ public sealed partial class SectionPage : Page
             HomeSide.Width = narrow ? double.NaN : 340;
             HomeSide.HorizontalAlignment = narrow ? HorizontalAlignment.Stretch : HorizontalAlignment.Right;
             HomeSide.Margin = narrow ? new Thickness(pad.Left, 0, pad.Right, 0) : new Thickness(0, 28, pad.Right, 0);
-            HomeBelow.Margin = narrow ? new Thickness(0) : new Thickness(0, -48, 0, 0);
-            HomeTilesColumn.Width = narrow ? new GridLength(0) : new GridLength(340);
-            Grid.SetColumn(HomeTiles, narrow ? 0 : 1); Grid.SetRow(HomeTiles, narrow ? 1 : 0);
-            HomeTiles.Margin = narrow ? new Thickness(0) : new Thickness(0, 64, 0, 0);
-            HomeBelow.ColumnSpacing = narrow ? 0 : 24;
+            ReadinessCard?.SetCompact(narrow);
+            // Game list and Lotus Ports: side by side, stacked when narrow.
+            Grid.SetColumn(HomePorts, narrow ? 0 : 1); Grid.SetRow(HomePorts, narrow ? 1 : 0); Grid.SetColumnSpan(HomeGameList, narrow ? 2 : 1); Grid.SetColumnSpan(HomePorts, narrow ? 2 : 1);
         }
     }
 }

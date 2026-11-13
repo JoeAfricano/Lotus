@@ -47,9 +47,9 @@ public sealed partial class ContinueCard : UserControl
         root.CornerRadius = new CornerRadius(Bleed ? 0 : 16);
         root.Children.Add(new Rectangle { Fill = HomeMotion.Gradient(new(0, 0), new(1, 0), (0, Color.FromArgb(0xF2, 18, 9, 15)), (0.38, Color.FromArgb(0xB3, 18, 9, 15)), (0.62, Color.FromArgb(0x1A, 18, 9, 15)), (1, Color.FromArgb(Bleed ? (byte)0x8C : (byte)0x33, 18, 9, 15))) }); // dark behind the text, the art bright in the middle
         // Bleed: the art melts into the page background instead of ending on a hard edge.
-        var page = Application.Current.Resources["NavigationViewContentBackground"] is SolidColorBrush pb ? Color.FromArgb(255, pb.Color.R, pb.Color.G, pb.Color.B) : Color.FromArgb(255, 18, 9, 15);
+        var page = Application.Current.Resources["NavigationViewContentBackground"] is SolidColorBrush pb ? pb.Color : Color.FromArgb(255, 18, 9, 15);
         root.Children.Add(new Rectangle { Fill = Bleed
-            ? HomeMotion.Gradient(new(0, 0), new(0, 1), (0.55, Color.FromArgb(0, page.R, page.G, page.B)), (1, page))
+            ? HomeMotion.Gradient(new(0, 0), new(0, 1), (0.45, Color.FromArgb(0, page.R, page.G, page.B)), (0.8, Color.FromArgb((byte)(page.A * 0.85), page.R, page.G, page.B)), (1, page))
             : HomeMotion.Gradient(new(0, 0), new(0, 1), (0.5, Color.FromArgb(0, 18, 9, 15)), (1, Color.FromArgb(0xB3, 18, 9, 15))) });
         if (Bleed && !string.IsNullOrWhiteSpace(Greeting))
             root.Children.Add(new TextBlock { Text = Greeting, FontSize = 20, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Margin = new Thickness(40, 28, 40, 0), VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left, Foreground = new SolidColorBrush(Color.FromArgb(0xF2, 255, 244, 248)) });
@@ -140,7 +140,7 @@ public sealed partial class ReadinessCard : UserControl
     private readonly Microsoft.UI.Xaml.Shapes.Path arc = new() { StrokeThickness = Stroke, StrokeStartLineCap = PenLineCap.Round, StrokeEndLineCap = PenLineCap.Round };
     private readonly TextBlock score = new() { FontSize = 72, FontWeight = Microsoft.UI.Text.FontWeights.Bold, CharacterSpacing = -40, HorizontalAlignment = HorizontalAlignment.Center, LineHeight = 74, LineStackingStrategy = LineStackingStrategy.BlockLineHeight };
     private readonly TextBlock eyebrow = new() { FontSize = 12, CharacterSpacing = 160, FontWeight = Microsoft.UI.Text.FontWeights.Bold };
-    private readonly TextBlock headline = new() { FontSize = 14, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, HorizontalAlignment = HorizontalAlignment.Center, TextAlignment = TextAlignment.Center, TextWrapping = TextWrapping.Wrap, MaxWidth = 150 };
+    private readonly TextBlock headline = new() { FontSize = 14, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, HorizontalAlignment = HorizontalAlignment.Center, TextAlignment = TextAlignment.Center, TextWrapping = TextWrapping.Wrap, MaxWidth = 116, MaxLines = 2, FontSize = 13 };
     private readonly TextBlock advice = new() { FontSize = 14, TextWrapping = TextWrapping.Wrap };
     private readonly StackPanel factRows = new() { Spacing = 10 };
     private readonly TextBlock facts = new() { FontSize = 12, TextWrapping = TextWrapping.Wrap };
@@ -176,8 +176,13 @@ public sealed partial class ReadinessCard : UserControl
         eyebrow.Foreground = new SolidColorBrush(gold);
         action.Style = (Style)res["PrimaryButtonStyle"]; action.HorizontalAlignment = HorizontalAlignment.Stretch; action.MinHeight = 44;
         action.Click += (_, _) => NavigateRequested?.Invoke(this, target);
-        var body = new StackPanel { Spacing = 16 };
-        body.Children.Add(eyebrow); body.Children.Add(ring); body.Children.Add(advice); body.Children.Add(factRows); body.Children.Add(action);
+        // The ring sits in a Viewbox so the compact layout (narrow window) can shrink it whole, text included.
+        ringBox = new Viewbox { Child = ring, Width = Ring, Height = Ring, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top };
+        details.Children.Add(advice); details.Children.Add(factRows); details.Children.Add(action);
+        body.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); body.ColumnDefinitions.Add(new ColumnDefinition());
+        body.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); body.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); body.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        body.Children.Add(eyebrow); body.Children.Add(ringBox); body.Children.Add(details);
+        SetCompact(false);
         card = new Border
         {
             Padding = new Thickness(24), CornerRadius = new CornerRadius(22), BorderThickness = new Thickness(1), Child = body,
@@ -186,6 +191,18 @@ public sealed partial class ReadinessCard : UserControl
         Motion.SetHover(card, 1.01);
         Content = card;
         Unloaded += (_, _) => { if (vm?.Monitoring is { } m) m.Updated -= OnUpdated; };
+    }
+
+    private readonly Grid body = new() { RowSpacing = 16, ColumnSpacing = 20 };
+    private readonly StackPanel details = new() { Spacing = 14, VerticalAlignment = VerticalAlignment.Center };
+    private readonly Viewbox ringBox;
+    // Compact: a smaller ring beside the facts (narrow window, card under the hero); otherwise the ring on top.
+    public void SetCompact(bool compact)
+    {
+        ringBox.Width = ringBox.Height = compact ? 132 : Ring;
+        Grid.SetColumnSpan(eyebrow, 2);
+        Grid.SetRow(ringBox, 1); Grid.SetColumn(ringBox, 0); Grid.SetColumnSpan(ringBox, compact ? 1 : 2);
+        Grid.SetRow(details, compact ? 1 : 2); Grid.SetColumn(details, compact ? 1 : 0); Grid.SetColumnSpan(details, compact ? 1 : 2);
     }
 
     // One live fact as a row: a status dot (green / amber) and the text.

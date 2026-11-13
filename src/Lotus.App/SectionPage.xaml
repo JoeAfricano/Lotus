@@ -14,9 +14,7 @@
      </StackPanel>
     </Grid>
     <!-- Your games on the left, Game list and Lotus Ports as two big tiles on the right -->
-    <Grid x:Name="HomeBelow" ColumnSpacing="24" RowSpacing="16" Margin="0,-48,0,0">
-     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition x:Name="HomeTilesColumn" Width="340"/></Grid.ColumnDefinitions>
-     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <StackPanel x:Name="HomeBelow" Spacing="24" Margin="0,8,0,0">
      <StackPanel x:Name="HomeGamesBlock" Spacing="12">
     <!-- Your games: quick shortcuts; the cover opens My Games, Play starts the game -->
     <Grid ColumnSpacing="12" Margin="0,8,0,0" Visibility="{Binding Games.HasFeatured, Converter={StaticResource BooleanVisibility}}">
@@ -29,17 +27,18 @@
       <HyperlinkButton Content="{Binding Text[HomeGamesAll]}" Click="OnOpenGames" AutomationProperties.AutomationId="home-games-all"/>
      </StackPanel>
     </Grid>
-    <Grid>
-    <ScrollViewer HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" Padding="0,0,0,10" Visibility="{Binding Games.HasFeatured, Converter={StaticResource BooleanVisibility}}">
+    <!-- One full row of covers that fills the width (extra covers wrap below and are clipped; "Ver todos" opens the rest) -->
+    <Grid Height="276" Visibility="{Binding Games.HasFeatured, Converter={StaticResource BooleanVisibility}}">
+    <Grid.Clip><RectangleGeometry Rect="0,0,4000,276"/></Grid.Clip>
     <ItemsControl ItemsSource="{Binding Games.Featured}" AutomationProperties.AutomationId="home-games">
-     <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="14"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+     <ItemsControl.ItemsPanel><ItemsPanelTemplate><VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="182" ItemHeight="290" app:Fit.MinItemWidth="182"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
      <ItemsControl.ItemTemplate><DataTemplate>
-      <StackPanel Width="168" Spacing="8">
+      <StackPanel Spacing="8" Margin="0,0,14,0">
       <Grid Height="224" CornerRadius="16" Background="{ThemeResource HeroBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1" app:Motion.Hover="1.04" Tapped="OnHomeGameTapped" ToolTipService.ToolTip="{Binding Name}">
        <Image Source="{Binding Name, Converter={StaticResource FallbackCover}}" Stretch="UniformToFill" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}" AutomationProperties.AccessibilityView="Raw"/>
        <TextBlock Text="{Binding Initials}" FontFamily="Georgia" FontSize="32" FontWeight="SemiBold" Foreground="#FFF6F9" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}, ConverterParameter=Invert}"/>
        <Border Visibility="{Binding CoverPath, Converter={StaticResource PresenceVisibility}}"><Border.Background><ImageBrush ImageSource="{Binding CoverPath, Converter={StaticResource CoverImage}}" Stretch="UniformToFill"/></Border.Background></Border>
-       <Button Click="OnCoverPlay" Width="40" Height="40" CornerRadius="20" Padding="0" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+       <Button Click="OnCoverPlay" Width="34" Height="34" CornerRadius="17" Padding="0" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                Background="{ThemeResource AccentGradientBrush}" BorderBrush="#66FFFFFF" BorderThickness="1.5" app:Motion.Press="True" ToolTipService.ToolTip="{Binding PlayLabel}" AutomationProperties.Name="{Binding Name}">
         <FontIcon Glyph="&#xF5B0;" FontSize="15" Foreground="White" Margin="2,0,0,0"/>
        </Button>
@@ -49,10 +48,11 @@
       </StackPanel>
      </DataTemplate></ItemsControl.ItemTemplate>
     </ItemsControl>
-    </ScrollViewer>
    </Grid>
      </StackPanel>
-     <StackPanel x:Name="HomeTiles" Grid.Column="1" Spacing="14" Margin="0,64,0,0">
+     <Grid x:Name="HomeTiles" ColumnSpacing="16" RowSpacing="14">
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <Button x:Name="HomeGameList" Click="OnHomeGameList" Style="{StaticResource CardButtonStyle}" AutomationProperties.AutomationId="home-gamelist" AutomationProperties.Name="{Binding Text[gamelistTitle]}">
        <Border CornerRadius="16" Padding="18,16" BorderThickness="1" BorderBrush="{ThemeResource GoldGradientBrush}" app:Motion.Hover="1.02" app:Motion.Sheen="True">
         <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#66C2185B" Offset="0"/><GradientStop Color="#40E7AE93" Offset="1"/></LinearGradientBrush></Border.Background>
@@ -67,7 +67,7 @@
        </Border>
       </Button>
       <!-- Lotus Ports (sibling app): a small invitation; the click explains it and installs only after the player confirms -->
-      <Button x:Name="HomePorts" Click="OnHomePorts" Loaded="OnHomePortsLoaded" Style="{StaticResource CardButtonStyle}" AutomationProperties.AutomationId="home-ports" AutomationProperties.Name="Lotus Ports">
+      <Button x:Name="HomePorts" Grid.Column="1" Click="OnHomePorts" Loaded="OnHomePortsLoaded" Style="{StaticResource CardButtonStyle}" AutomationProperties.AutomationId="home-ports" AutomationProperties.Name="Lotus Ports">
        <Border CornerRadius="16" Padding="16,14" BorderThickness="1" BorderBrush="{ThemeResource CardBorderBrush}" Background="{ThemeResource CardBrush}" app:Motion.Hover="1.02">
         <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
          <Image x:Name="HomePortsIcon" Width="44" Height="44" VerticalAlignment="Center"/>
@@ -82,8 +82,8 @@
         </Grid>
        </Border>
       </Button>
-     </StackPanel>
-    </Grid>
+     </Grid>
+    </StackPanel>
     <!-- Diary shelf: what the player is playing and wants to play (filled in code) -->
     <StackPanel x:Name="HomeShelf" Spacing="12" Margin="0,8,0,0" Loaded="OnHomeShelfLoaded" Visibility="Collapsed">
      <StackPanel Spacing="2"><TextBlock Text="{Binding Text[DyShelf]}" Style="{StaticResource SectionTitleStyle}"/><TextBlock Text="{Binding Text[DyShelfHint]}" Style="{StaticResource CaptionStyle}"/></StackPanel>
