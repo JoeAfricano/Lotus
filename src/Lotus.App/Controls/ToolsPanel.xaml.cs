@@ -14,8 +14,17 @@ public sealed partial class ToolsPanel : UserControl
         {
             if (DataContext is not ToolsViewModel vm) return;
             BuildTiles(vm);
+            // Arrived from Home or the PC X-ray with a tool in mind: open it; "checkup" also starts the Check-up right away.
+            if (PendingOpen is { } id) { PendingOpen = null; await OpenPendingAsync(vm, id); }
             await vm.RefreshAsync();
         };
+    }
+    public static string? PendingOpen { get; set; }
+    private async Task OpenPendingAsync(ToolsViewModel vm, string id)
+    {
+        if (!cards.ContainsKey(id)) return;
+        Open(id);
+        if (id == "checkup" && vm.Checkup is { Busy: false } c) { try { await c.RunAsync(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Check-up from Home"); } }
     }
 
     // ---- Tiles (visual 2.0): compact squares in four groups, filtered by the search box ----
@@ -42,7 +51,7 @@ public sealed partial class ToolsPanel : UserControl
         };
         foreach (var (groupTitle, ids) in Groups)
         {
-            var wrap = new VariableSizedWrapGrid { Orientation = Orientation.Horizontal, ItemWidth = 272, ItemHeight = 156 }; wraps.Add(wrap);
+            var wrap = new VariableSizedWrapGrid { Orientation = Orientation.Horizontal, ItemWidth = 272, ItemHeight = 156, Margin = new Thickness(0, 0, -12, 0) }; // the last tile's 12 px gap hangs outside, so tiles end flush wraps.Add(wrap);
             var group = new StackPanel { Spacing = 12 };
             group.Children.Add(new TextBlock { Text = vm.Text[groupTitle], Style = (Style)Application.Current.Resources["SubtitleStyle"] });
             group.Children.Add(wrap);
@@ -77,6 +86,7 @@ public sealed partial class ToolsPanel : UserControl
     private void FitColumns(double width)
     {
         if (width < 100) return;
+        width += 12; // the wraps reach 12 px past the edge (their last gap)
         var columns = Math.Max(1, (int)(width / 272)); // each cell holds the tile and its 12 px gap, so the row never overflows
         var item = Math.Floor(width / columns);
         foreach (var wrap in wraps) wrap.ItemWidth = item;

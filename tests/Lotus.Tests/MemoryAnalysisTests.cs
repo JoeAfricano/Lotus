@@ -117,9 +117,9 @@ public sealed class MemoryAnalysisTests(ITestOutputHelper output)
         using var analysis = new MemoryAnalysisViewModel(monitoring, text);
         analysis.SetActive(true); monitoring.SetActive(true);
         await Until(() => !dispatcher.Queue.IsEmpty); dispatcher.Drain();
-        Assert.Equal(1, service.ConsumerCount); Assert.Equal("4,00 GiB", analysis.Available);
+        Assert.Equal(1, service.ConsumerCount); Assert.Equal("4,00 GB", analysis.Available);
         text.SetLanguage("en-US"); monitoring.RefreshLanguage();
-        Assert.Equal("4.00 GiB", analysis.Available); Assert.Equal("Observing availability", analysis.Status);
+        Assert.Equal("4.00 GB", analysis.Available); Assert.Equal("Observing availability", analysis.Status);
         Assert.Contains("insufficient", text["RamConfidenceObserved"]);
         analysis.SetActive(false); monitoring.SetActive(false); dispatcher.Drain();
         Assert.Equal("—", analysis.Available); Assert.Equal(MemoryFinding.Unavailable, analysis.Assessment.Finding);

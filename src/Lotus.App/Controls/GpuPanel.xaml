@@ -7,7 +7,8 @@
    <ContentControl x:Name="GpuCard" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="8">
     <TextBlock Text="GPU" Style="{StaticResource EyebrowStyle}"/>
     <TextBlock Text="{Binding Utilization}" Style="{StaticResource MetricValueStyle}" AutomationProperties.AutomationId="monitor-gpu-utilization"/>
-    <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+    <!-- Same height as the VRAM card's two lines, so the GPU and VRAM charts line up -->
+    <Grid ColumnSpacing="12" Height="44"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
      <StackPanel><TextBlock Text="{Binding Text[TemperatureShort]}" FontSize="12" Foreground="{ThemeResource MutedBrush}"/><TextBlock Text="{Binding Temperature}" FontSize="18" AutomationProperties.AutomationId="monitor-gpu-temperature"/></StackPanel>
      <StackPanel Grid.Column="1"><TextBlock Text="{Binding Text[PowerShort]}" FontSize="12" Foreground="{ThemeResource MutedBrush}"/><TextBlock Text="{Binding Power}" FontSize="18" AutomationProperties.AutomationId="monitor-gpu-power"/></StackPanel>
     </Grid>
@@ -16,8 +17,10 @@
    <ContentControl x:Name="VramCard" Grid.Column="1" Style="{StaticResource CardControlStyle}"><StackPanel Spacing="8">
     <TextBlock Text="VRAM" Style="{StaticResource EyebrowStyle}"/>
     <TextBlock Text="{Binding MemoryPercent}" Style="{StaticResource MetricValueStyle}" AutomationProperties.AutomationId="monitor-vram-percent"/>
+    <StackPanel Height="44">
     <TextBlock Text="{Binding MemorySummary}" FontSize="18" AutomationProperties.AutomationId="monitor-vram-summary"/>
     <TextBlock Text="{Binding Text[VramAllocatedShort]}" FontSize="12" Foreground="{ThemeResource MutedBrush}"/>
+    </StackPanel>
     <local:TelemetryChart x:Name="VramChart" Height="90" AutomationProperties.Name="{Binding Text[VramHistory]}"/>
    </StackPanel></ContentControl>
   </Grid>

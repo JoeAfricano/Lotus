@@ -49,7 +49,7 @@ public sealed class GpuTelemetryTests(ITestOutputHelper output)
         Assert.Equal("test GPU", device.Id); Assert.Null(device.Get(GpuSensor.Temperature));
         Assert.Equal(Time, device.Get(GpuSensor.MemoryUsed)!.CapturedAt);
         var vm = new GpuViewModel(device, new TextCatalog());
-        Assert.Equal("8,00 GiB", vm.MemoryTotal); Assert.Equal("4,00 GiB", vm.MemoryUsed); Assert.Equal("4,00 GiB / 8,00 GiB", vm.MemorySummary);
+        Assert.Equal("8,00 GB", vm.MemoryTotal); Assert.Equal("4,00 GB", vm.MemoryUsed); Assert.Equal("4,00 GB / 8,00 GB", vm.MemorySummary);
         Assert.Equal("—", vm.MemoryFree);
         Assert.All(vm.Sensors, s => Assert.Equal("—", s.Value));
     }

@@ -24,6 +24,7 @@ public sealed partial class SectionPage : Page
     public bool ShowSettings { get; private set; }
     public bool ShowDiagnosis { get; private set; }
     public bool ShowRestore { get; private set; }
+    public bool ShowGpuTune { get; private set; }
     public bool ShowLive { get; private set; }
     public bool ShowCompare { get; private set; }
     public bool ShowHistory { get; private set; }
@@ -155,7 +156,15 @@ public sealed partial class SectionPage : Page
             back.Tick += (_, _) => { if (HomeRescan is null) return; HomeRescanText.Text = vm.Text["HomeRescan"]; HomeRescan.IsEnabled = true; }; back.Start();
         }
     }
-    private void OnGuidedNavigate(object? sender, string id) => shell?.NavigateCommand.Execute(id);
+    // "tools:<card>" opens Ferramentas straight on that tool; "tools:checkup" also starts the Check-up there.
+    private void OnGuidedNavigate(object? sender, string id)
+    {
+        if (id.StartsWith("tools:", StringComparison.Ordinal)) { Controls.ToolsPanel.PendingOpen = id[6..]; id = "tools"; }
+        shell?.NavigateCommand.Execute(id);
+    }
+    private void OnAdjustBoost(object? sender, EventArgs e) => BoostSettings?.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = true, VerticalAlignmentRatio = 0.1 });
+    private void OnPcScanLoaded(object sender, RoutedEventArgs e) { if (DataContext is SectionViewModel vm) PcScan?.Attach(vm); }
+    private void OnPcScanNavigate(object? sender, string tool) => OnGuidedNavigate(sender, "tools:" + tool);
     private void OnDiaryGameList(object? sender, EventArgs e) => shell?.NavigateCommand.Execute("gamelist");
 
     // ---- Home: diary shelf (repainted whenever the diary changes while Home is open) ----
@@ -337,9 +346,11 @@ public sealed partial class SectionPage : Page
         try
         {
             ShowHome = vm.Section.Id == "home"; ShowOptimize = vm.Section.Id == "optimize";
-            ShowPerformance = vm.Section.Id == "performance"; ShowGames = vm.Section.Id == "games"; ShowGameList = vm.Section.Id == "gamelist"; ShowSaves = vm.Section.Id == "saves"; ShowDiary = vm.Section.Id == "diary"; ShowScore = vm.Section.Id == "lotusscore"; ShowTools = vm.Section.Id == "tools"; ShowSettings = vm.Section.Id == "settings";
+            ShowGames = vm.Section.Id == "games"; ShowGameList = vm.Section.Id == "gamelist"; ShowSaves = vm.Section.Id == "saves"; ShowDiary = vm.Section.Id == "diary"; ShowScore = vm.Section.Id == "lotusscore"; ShowTools = vm.Section.Id == "tools"; ShowSettings = vm.Section.Id == "settings";
             ShowDiagnosis = ShowOptimize && shell.OptimizeTabIndex == 0;
-            ShowRestore = ShowOptimize && shell.OptimizeTabIndex == 1;
+            ShowPerformance = ShowOptimize && shell.OptimizeTabIndex == 1;
+            ShowGpuTune = ShowOptimize && shell.OptimizeTabIndex == 2;
+            ShowRestore = ShowOptimize && shell.OptimizeTabIndex == 3;
             ShowLive = ShowPerformance && shell.PerformanceTabIndex == 0;
             ShowCompare = ShowPerformance && shell.PerformanceTabIndex == 1; ShowHistory = ShowPerformance && shell.PerformanceTabIndex == 2;
             ShowAppearance = ShowSettings && shell.SettingsCategoryIndex == 0;
@@ -384,7 +395,7 @@ public sealed partial class SectionPage : Page
     {
         if (synchronizing || shell is null || sender.SelectedItem is null) return;
         var index = sender.Items.IndexOf(sender.SelectedItem);
-        if (index is >= 0 and <= 1) shell.NavigateCommand.Execute(new[] { "analysis", "restore" }[index]);
+        if (index is >= 0 and <= 3) shell.NavigateCommand.Execute(new[] { "analysis", "monitoring", "gputune", "restore" }[index]);
     }
     private void OnPerformanceTabChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
@@ -425,8 +436,9 @@ public sealed partial class SectionPage : Page
             Grid.SetRow(HomeSide, narrow ? 1 : 0);
             HomeSide.Width = narrow ? double.NaN : 340;
             HomeSide.HorizontalAlignment = narrow ? HorizontalAlignment.Stretch : HorizontalAlignment.Right;
-            HomeSide.Margin = narrow ? new Thickness(pad.Left, 0, pad.Right, 0) : new Thickness(0, 28, pad.Right, 0);
+            HomeSide.Margin = narrow ? new Thickness(pad.Left, 0, pad.Right, 24) : new Thickness(0, 28, pad.Right, 0); // narrow: room before "Seus jogos"
             ReadinessCard?.SetCompact(narrow);
+            if (ContinueCard is not null) { ContinueCard.Height = narrow ? 430 : 540; ContinueCard.Tight = narrow; } // narrow: the readiness card goes under the art, so no tall empty band
             // Game list and Lotus Ports: side by side, stacked when narrow.
             Grid.SetColumn(HomePorts, narrow ? 0 : 1); Grid.SetRow(HomePorts, narrow ? 1 : 0); Grid.SetColumnSpan(HomeGameList, narrow ? 2 : 1); Grid.SetColumnSpan(HomePorts, narrow ? 2 : 1);
         }

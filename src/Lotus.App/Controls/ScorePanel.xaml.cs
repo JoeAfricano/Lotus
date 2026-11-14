@@ -85,6 +85,7 @@ public sealed partial class ScorePanel : UserControl
         if (starting && vm.HasResult && vm.Idle) UiSound.Play(UiSound.Cue.Score); // finished, not cancelled
     }
     // FPS estimate: any game (Steam requirements) and the source sites.
+    private void OnPickGame(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) { if (DataContext is Lotus.Core.Score.LotusScoreViewModel vm && XamlRoot is { } root) FpsGamePicker.Show(root, vm); }
     private async void OnFpsSearch(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) { if (DataContext is Lotus.Core.Score.LotusScoreViewModel vm) await vm.SearchGameAsync(args.QueryText); }
     private async void OnFpsSourceLink(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {

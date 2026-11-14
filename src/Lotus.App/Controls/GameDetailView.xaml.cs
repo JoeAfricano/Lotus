@@ -15,6 +15,15 @@ public sealed partial class GameDetailView : UserControl
     public UIElement HeroElement => Hero; // target of the cover's connected animation
     public event EventHandler<Lotus.Core.Games.GameEntry>? PlayRequested; // the host launches it through Meus Jogos
     private GameDetailsViewModel? vm;
+    // Gallery arrows: one screenshot (320 px + 12 spacing) per click; each arrow shows only when it can move.
+    private void OnShotsPrev(object sender, RoutedEventArgs e) => Shots.ChangeView(Math.Max(0, Shots.HorizontalOffset - 332), null, null);
+    private void OnShotsNext(object sender, RoutedEventArgs e) => Shots.ChangeView(Math.Min(Shots.ScrollableWidth, Shots.HorizontalOffset + 332), null, null);
+    private void OnShotsMoved(object? sender, ScrollViewerViewChangedEventArgs e) => PaintShotArrows();
+    private void PaintShotArrows()
+    {
+        ShotsPrev.Visibility = Shots.HorizontalOffset > 1 ? Visibility.Visible : Visibility.Collapsed;
+        ShotsNext.Visibility = Shots.HorizontalOffset < Shots.ScrollableWidth - 1 ? Visibility.Visible : Visibility.Collapsed;
+    }
     public GameDetailView()
     {
         InitializeComponent();
@@ -28,6 +37,7 @@ public sealed partial class GameDetailView : UserControl
             while (up is not null and not ScrollViewer) up = VisualTreeHelper.GetParent(up);
             if (up is ScrollViewer page) { page.ChangeView(null, page.VerticalOffset - point.Properties.MouseWheelDelta, null, true); e.Handled = true; }
         }), true);
+        Shots.RegisterPropertyChangedCallback(ScrollViewer.ScrollableWidthProperty, (_, _) => PaintShotArrows());
         // Repaint the diary buttons when the diary changes (saved from the sheet, removed, added elsewhere).
         EventHandler onDiary = (_, _) => DispatcherQueue.TryEnqueue(PaintDiary);
         Loaded += (_, _) => { if (MainWindow.Shell is { } s) { s.Diary.Changed -= onDiary; s.Diary.Changed += onDiary; s.Trophies.Changed -= onDiary; s.Trophies.Changed += onDiary; } PaintDiary(); };
@@ -104,7 +114,7 @@ public sealed partial class GameDetailView : UserControl
     {
         if (vm is null || MainWindow.Shell is not { } shell) return;
         var saved = vm.HasTitle ? shell.Diary.Get(vm.ToDiaryEntry().Key) : null;
-        WantText.Text = saved is null ? vm.Text["DyWant"] : "✓ " + vm.Text["DyStatus" + saved.Status];
+        WantText.Text = saved is null ? vm.Text["DyWant"] : vm.Text["DyStatus" + saved.Status]; // the filled star already says "in your diary"
         WantIcon.Glyph = saved is null ? "" : "";
         LogText.Text = vm.Text[saved is null ? "DyLog" : "DyEditorEdit"];
         PaintTrophies();

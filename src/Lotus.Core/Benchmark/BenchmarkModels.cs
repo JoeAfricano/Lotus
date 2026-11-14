@@ -10,7 +10,7 @@ public sealed record FrameStatistics(int Count, double DurationSeconds, double A
     double P95Ms, double P99Ms, double MedianMs, int SpikeCount, double SpikeThresholdMs);
 public sealed record ParsedCapture(string SwapChain, int OtherSwapChains, int InvalidRows, int TotalRows,
     IReadOnlyList<FrameSample> Frames, FrameStatistics? Statistics, string FrameTypes, bool Truncated,
-    long? LostEvents = null, long? LostBuffers = null, long? OverflowedPresents = null);
+    long? LostEvents = null, long? LostBuffers = null, long? OverflowedPresents = null, string? PresentMode = null); // PresentMode: the most frequent one of the measured swap chain
 public sealed record BenchmarkSession(Guid Id, CaptureTarget Target, DateTimeOffset StartedUtc, double WallSeconds,
     string Status, string ProviderVersion, string AlgorithmVersion, string RawPath, string RawSha256,
     string Conditions, string HardwareJson, ParsedCapture? Data, string Diagnostics)

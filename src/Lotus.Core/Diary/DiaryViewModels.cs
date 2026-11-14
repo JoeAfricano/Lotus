@@ -22,6 +22,8 @@ public sealed class DiaryCard(DiaryEntry e, ITextCatalog t, int rank)
     public string Status => t["DyStatus" + Entry.Status];
     public string StatusKey => Entry.Status.ToString();
     public string Rating => Entry.Rating is { } r ? r.ToString(r % 1 == 0 ? "0" : "0.0", Culture(t)) : "—";
+    public bool HasRating => Entry.Rating is not null;
+    public string NoRating => t["DyNoScore"];
     public string RatingKind => DiaryText.RatingKind(Entry.Rating);
     public bool HasHours => Entry.Minutes > 0;
     public string Hours => DiaryText.Hours(Entry.Minutes);

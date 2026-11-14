@@ -71,7 +71,7 @@ public sealed class GpuViewModel : ObservableObject
         }
         return reading.Unit switch
         {
-            SensorUnit.Bytes => (value / 1_073_741_824d).ToString("F2", culture) + " GiB",
+            SensorUnit.Bytes => (value / 1_073_741_824d).ToString("F2", culture) + " GB",
             SensorUnit.MHz => value.ToString("F0", culture) + " MHz",
             SensorUnit.Celsius => value.ToString("F0", culture) + " °C",
             SensorUnit.Watts => value.ToString("F2", culture) + " W",

@@ -131,9 +131,25 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     private bool loading;
     public ITextCatalog Text => text;
     public GameDetailsViewModel Details { get; } = new(catalog, text, log);
-    public IReadOnlyList<ChartTab> Tabs => [.. CatalogText.Charts.Select(c => new ChartTab(c, text["GlChart" + c]))];
-    public ObservableCollection<CatalogCard> Items { get; } = [];
-    public string Chart { get => chart; set { if (value is not null && SetProperty(ref chart, value)) _ = ShowAsync(); } }
+    // Period (Semanal / Mensal / Anual / Sempre): by release date, the only date these lists really carry. Past window for
+    // the charts, the coming window for "Em breve". Lists without dates (SteamSpy) keep the pills off instead of guessing.
+    private string period = "all";
+    public string Period { get => period; set { if (value is not null && SetProperty(ref period, value)) ApplyFilters(); } }
+    public bool PeriodAvailable => !Searching && source.Any(i => i.Released is not null);
+    private bool InPeriod(CatalogItem i)
+    {
+        if (period == "all" || !PeriodAvailable) return true;
+        if (i.Released is not { } d) return false;
+        var days = period switch { "week" => 7, "month" => 30, _ => 365 };
+        var today = DateTime.Today;
+        return chart == "upcoming" ? d >= today && d <= today.AddDays(days) : d <= today && d >= today.AddDays(-days);
+    }
+    public int? ChartCount(string id) => id == chart && !Searching ? filtered.Count : charts.TryGetValue(id, out var c) ? c.Items.Count : null; // null until that list was loaded once
+    public IReadOnlyList<ChartTab> Tabs =>[.. CatalogText.Charts.Select(c => new ChartTab(c, text["GlChart" + c]))];
+    public BatchCollection<CatalogCard> Items { get; } = [];
+    public string Chart { get => chart; set { if (value is not null && SetProperty(ref chart, value)) { ChartChanged?.Invoke(value); _ = ShowAsync(); } } }
+    public Action<string>? ChartChanged { get; set; } // remembers the last list (preferences)
+    public void StartOn(string id) { if (CatalogText.Charts.Contains(id)) chart = id; }
     public bool Loading { get => loading; private set => SetProperty(ref loading, value); }
     public string Status { get => status; private set => SetProperty(ref status, value); }
 
@@ -242,6 +258,16 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
         }
         catch (Exception ex) { log(ex); Status = text["GlOffline"]; }
         finally { Loading = false; ApplyFilters(); OnPropertyChanged(nameof(ChartHint)); }
+        if (!prefetched) { prefetched = true; _ = PrefetchAsync(); }
+    }
+    // The other lists download quietly, one at a time, after the first one shows: the first click on each tab is then instant.
+    private bool prefetched;
+    private async Task PrefetchAsync()
+    {
+        foreach (var id in CatalogText.Charts.Where(c => c != chart))
+        {
+            try { await Get(id, false); } catch (Exception ex) { log(ex); }
+        }
     }
 
     // Typing searches the whole Steam store (after a short pause); clearing the box goes back to the chart.
@@ -268,7 +294,8 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
         var owned = OwnedIds(); var min = int.TryParse(minRating, out var m) ? m : 0;
         bool Keep(CatalogItem i) => (!hideOwned || !owned.Contains(i.AppId))
             && price switch { "free" => i.Free == true, "paid" => i.Free != true, _ => true }
-            && (min == 0 || (i.PositivePercent ?? i.Metacritic ?? 0) >= min);
+            && (min == 0 || (i.PositivePercent ?? i.Metacritic ?? 0) >= min)
+            && InPeriod(i);
         var rows = source.Select((item, index) => (item, index, chart: true)).Where(r => MatchesTypes(r.item.AppId) && Keep(r.item)).ToList();
         // With kinds chosen, the chart alone holds few games: popular games of those kinds follow, ordered by what the
         // chart means (players now, best rated, most reviewed). New and upcoming lists are not filled (no dates there).
@@ -284,9 +311,8 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
         };
         // Shown in pages: a long chart never realizes every cover at once (the page asks for more while scrolling).
         filtered = [.. ordered.Select(r => new CatalogCard(r.item, Meta(r.item), owned.Contains(r.item.AppId)) { Rank = Searching || !r.chart ? "" : (r.index + 1).ToString() })];
-        Items.Clear();
-        foreach (var card in filtered.Take(PageSize)) Items.Add(card);
-        OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(ActiveFilters)); OnPropertyChanged(nameof(HasActiveFilters)); OnPropertyChanged(nameof(ChartHint)); OnPropertyChanged(nameof(CanShowMore)); OnPropertyChanged(nameof(MoreText));
+        Items.ReplaceAll(filtered.Take(PageSize)); // one reset instead of one event per card: the grid lays out once
+        OnPropertyChanged(nameof(IsEmpty)); OnPropertyChanged(nameof(PeriodAvailable)); OnPropertyChanged(nameof(ActiveFilters)); OnPropertyChanged(nameof(HasActiveFilters)); OnPropertyChanged(nameof(ChartHint)); OnPropertyChanged(nameof(CanShowMore)); OnPropertyChanged(nameof(MoreText));
     }
 
     private IEnumerable<CatalogItem> Extras(HashSet<string> inChart)
@@ -312,7 +338,7 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     public void ShowMore()
     {
         if (!CanShowMore) return;
-        foreach (var card in filtered.Skip(Items.Count).Take(PageSize).ToList()) Items.Add(card);
+        Items.AddRange(filtered.Skip(Items.Count).Take(PageSize).ToList());
         OnPropertyChanged(nameof(CanShowMore)); OnPropertyChanged(nameof(MoreText));
     }
 
@@ -408,4 +434,23 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
         "Indie" => ["Indie"], "Racing" => ["Racing", "Corrida"], "Sports" => ["Sports", "Esportes"], "Simulation" => ["Simulation", "Simulação"], "Casual" => ["Casual"], _ => [g],
     };
     private void NotifyPick() { foreach (var n in new[] { nameof(Picking), nameof(PickStatus), nameof(Picked), nameof(HasPick) }) OnPropertyChanged(n); }
+}
+
+// An ObservableCollection that can swap or extend its whole content with a single notification.
+public sealed class BatchCollection<T> : ObservableCollection<T>
+{
+    public void ReplaceAll(IEnumerable<T> items)
+    {
+        CheckReentrancy();
+        Items.Clear();
+        foreach (var i in items) Items.Add(i);
+        OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(Count)));
+        OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs("Item[]"));
+        OnCollectionChanged(new System.Collections.Specialized.NotifyCollectionChangedEventArgs(System.Collections.Specialized.NotifyCollectionChangedAction.Reset));
+    }
+    public void AddRange(IReadOnlyList<T> items)
+    {
+        if (items.Count == 0) return;
+        foreach (var i in items) Add(i); // appended items keep the grid's realized rows; few per page
+    }
 }

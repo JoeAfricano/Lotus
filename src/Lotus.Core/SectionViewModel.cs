@@ -22,6 +22,7 @@ public sealed class SectionViewModel
     public Backup.BackupViewModel? Backup { get; init; }
     public global::Lotus.Core.Updates.UpdateViewModel? Updates { get; init; } // Settings › Atualizações            // Settings › Backup
     public Catalog.GameDetailsViewModel? GameDetails { get; init; } // game page in Meus Jogos
+    public Telemetry.GpuTuneViewModel? GpuTune { get; init; }       // Otimizar › Ajuste da placa
     public ITextCatalog Text { get; }
     public PreferencesViewModel Preferences { get; }
     public Telemetry.MonitoringViewModel? Monitoring { get; }

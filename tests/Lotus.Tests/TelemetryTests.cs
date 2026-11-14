@@ -137,7 +137,7 @@ public sealed class TelemetryTests(ITestOutputHelper output)
         Assert.Equal("—", vm.CpuPercent); Assert.Empty(vm.History.Points);
         vm.SetActive(true); vm.SetActive(true); Assert.Equal(1, service.ConsumerCount);
         await Until(() => service.SampleCount >= 3); dispatcher.Drain();
-        Assert.NotNull(vm.Snapshot); Assert.Equal("25,0 %", vm.CpuPercent); Assert.Equal("16,00 GiB", vm.TotalMemory); Assert.Equal("128,0 MiB", vm.WorkingSet);
+        Assert.NotNull(vm.Snapshot); Assert.Equal("25,0 %", vm.CpuPercent); Assert.Equal("16,00 GB", vm.TotalMemory); Assert.Equal("128,0 MB", vm.WorkingSet);
         text.SetLanguage("en-US"); vm.RefreshLanguage(); Assert.Equal("25.0 %", vm.CpuPercent);
         await Until(() => dispatcher.Actions.Count > 0);
         var snapshot = vm.Snapshot; vm.SetActive(false); dispatcher.Drain(); Assert.Same(snapshot, vm.Snapshot);

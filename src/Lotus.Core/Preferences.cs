@@ -27,9 +27,24 @@ public sealed record InterfacePreferences
     public bool AutoSessions { get; init; } = true; // record play sessions (time, dates) in the diary while a library game is open
     public bool MinimizeForGames { get; init; } = true; // a game opened: Lotus minimizes; it closed: Lotus comes back
     public bool GamePriority { get; init; } // while a game is open: game above normal, known launchers/browsers below normal (restored after)
+    // Perfil Jogo (game sessions only): tweaks applied while a game is open and undone when it closes (see GameBoost).
+    // On when the player applies the Game profile, off with the Daily one. Each step can be turned off.
+    public bool GameBoost { get; init; }
+    public bool BoostPower { get; init; } = true;          // High performance plan during the game
+    public bool BoostNotifications { get; init; }          // off by default: on Windows 11 22H2 ToastEnabled only applies after signing out (tested 13/11/2026)
+    public bool BoostRecording { get; init; } = true;      // Xbox background recording off during the game
+    // Apps are never closed for the game (José's decision): heavy apps only get a lower priority (GamePriority).
+    [System.Text.Json.Serialization.JsonIgnore]
+    public Lotus.Core.Games.BoostOptions BoostOptions => new(BoostPower, BoostNotifications, BoostRecording);
     public bool ResumePrompts { get; init; } = true; // after a game closes normally, offer to write "Onde eu parei?" (discreet in-app notice)
     public string DriveSchedule { get; init; } = "manual"; // Google Drive copy: manual (only on click), weekly or monthly
     public bool AutoUpdate { get; init; } // download and install new Lotus versions from GitHub without asking
+    public bool FpsDataUpdates { get; init; } = true; // weekly check for a newer FPS reference table in the official repository
+    public string GameListChart { get; init; } = "trending"; // the Game list opens on the last list used
+    // "Ajuste da placa" without administrator: the tune the player kept, applied by Lotus (Afterburner's control memory)
+    // while a game is open and undone when it closes. On by default, but it acts only after the player kept a tune.
+    public bool GpuTuneOnGames { get; init; } = true;
+    public Lotus.Core.Telemetry.GpuSetting? GpuTuneKept { get; init; }
     public bool DriverNotices { get; init; } = true; // a quiet weekly check for a newer graphics driver (Lotus never installs it)
     public DateTimeOffset? DriverCheckedAt { get; init; }
     public string? DriverNoticeKey { get; init; } // the last driver notice shown ("nvidia:581.57"), so each one is told once
@@ -123,7 +138,12 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool AutoSessions { get => service.Current.AutoSessions; set { if (value != service.Current.AutoSessions) { service.Update(service.Current with { AutoSessions = value }); OnPropertyChanged(); } } }
     public bool MinimizeForGames { get => service.Current.MinimizeForGames; set { if (value != service.Current.MinimizeForGames) { service.Update(service.Current with { MinimizeForGames = value }); OnPropertyChanged(); } } }
     public bool GamePriority { get => service.Current.GamePriority; set { if (value != service.Current.GamePriority) { service.Update(service.Current with { GamePriority = value }); OnPropertyChanged(); } } }
+    public bool GameBoost { get => service.Current.GameBoost; set { if (value != service.Current.GameBoost) { service.Update(service.Current with { GameBoost = value }); OnPropertyChanged(); } } }
+    public bool BoostPower { get => service.Current.BoostPower; set { if (value != service.Current.BoostPower) { service.Update(service.Current with { BoostPower = value }); OnPropertyChanged(); } } }
+    public bool BoostNotifications { get => service.Current.BoostNotifications; set { if (value != service.Current.BoostNotifications) { service.Update(service.Current with { BoostNotifications = value }); OnPropertyChanged(); } } }
+    public bool BoostRecording { get => service.Current.BoostRecording; set { if (value != service.Current.BoostRecording) { service.Update(service.Current with { BoostRecording = value }); OnPropertyChanged(); } } }
     public bool DriverNotices { get => service.Current.DriverNotices; set { if (value != service.Current.DriverNotices) { service.Update(service.Current with { DriverNotices = value }); OnPropertyChanged(); } } }
+    public bool FpsDataUpdates { get => service.Current.FpsDataUpdates; set { if (value != service.Current.FpsDataUpdates) { service.Update(service.Current with { FpsDataUpdates = value }); OnPropertyChanged(); } } }
     public bool ResumePrompts { get => service.Current.ResumePrompts; set { if (value != service.Current.ResumePrompts) { service.Update(service.Current with { ResumePrompts = value }); OnPropertyChanged(); } } }
     public bool PreparePlay { get => service.Current.PreparePlay; set { if (value != service.Current.PreparePlay) { service.Update(service.Current with { PreparePlay = value }); OnPropertyChanged(); } } }
     public bool MeasurePortsSessions { get => service.Current.MeasurePortsSessions; set { if (value != service.Current.MeasurePortsSessions) { service.Update(service.Current with { MeasurePortsSessions = value }); OnPropertyChanged(); } } }

@@ -110,13 +110,17 @@
    </StackPanel>
   </Border>
 
-  <!-- Screenshots -->
-  <ScrollViewer x:Name="Shots" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" Visibility="{Binding HasInfo, Converter={StaticResource BooleanVisibility}}">
+  <!-- Screenshots: no raw scrollbar; round arrows at the ends scroll the strip (Shift+wheel and touch still work) -->
+  <Grid Visibility="{Binding HasInfo, Converter={StaticResource BooleanVisibility}}">
+  <ScrollViewer x:Name="Shots" HorizontalScrollBarVisibility="Hidden" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled" ViewChanged="OnShotsMoved">
    <ItemsControl ItemsSource="{Binding Screenshots}">
     <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="12" Padding="0,0,0,12"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
     <ItemsControl.ItemTemplate><DataTemplate><Border Width="320" Height="180" CornerRadius="12" app:Motion.Hover="1.04"><Border.Background><ImageBrush ImageSource="{Binding}" Stretch="UniformToFill"/></Border.Background></Border></DataTemplate></ItemsControl.ItemTemplate>
    </ItemsControl>
   </ScrollViewer>
+  <Button x:Name="ShotsPrev" Click="OnShotsPrev" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,12" Width="40" Height="40" CornerRadius="20" Padding="0" Background="#B312090F" BorderBrush="#33FFFFFF" Foreground="White" Visibility="Collapsed" AutomationProperties.AutomationId="game-shots-prev"><FontIcon Glyph="&#xE76B;" FontSize="14"/></Button>
+  <Button x:Name="ShotsNext" Click="OnShotsNext" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,12" Width="40" Height="40" CornerRadius="20" Padding="0" Background="#B312090F" BorderBrush="#33FFFFFF" Foreground="White" Visibility="Collapsed" AutomationProperties.AutomationId="game-shots-next"><FontIcon Glyph="&#xE76C;" FontSize="14"/></Button>
+  </Grid>
   <!-- Installed games: "Preparar e Jogar" for this game -->
   <local:PrepareCard/>
   <local:SaveProtectionCard/>

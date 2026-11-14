@@ -311,7 +311,7 @@ Get in the game.</value>
   <data name="AxisNow" xml:space="preserve">
     <value>now</value>
   </data>
-  <data name="GpuProviders" xml:space="preserve"><value>GPU · NVIDIA NVML (read only)</value></data>
+  <data name="GpuProviders" xml:space="preserve"><value>NVIDIA graphics card · read from the driver (read only)</value></data>
   <data name="GpuHistory" xml:space="preserve"><value>GPU utilization history, 0–100%, last 60 seconds</value></data>
   <data name="VramHistory" xml:space="preserve"><value>Allocated VRAM history, 0–100%, last 60 seconds</value></data>
   <data name="VramTotal" xml:space="preserve"><value>Reported capacity</value></data>
@@ -330,8 +330,8 @@ Get in the game.</value>
   <data name="PowerLimitReported" xml:space="preserve"><value>Power event reported</value></data>
   <data name="NoThermalPowerFlag" xml:space="preserve"><value>No explicit thermal/power flag</value></data>
   <data name="CpuTemperatureUnavailable" xml:space="preserve"><value>CPU temperature: unavailable. The native APIs used do not provide a reliable Ryzen sensor. No additional driver was installed.</value></data>
-  <data name="GpuDefinitions" xml:space="preserve"><value>Source: NVML installed with the driver. VRAM is reported allocation, not activity or DXGI budget; reserved fields remain separate and the percentage is allocated / capacity. WDDM accounting depends on Windows and the driver. RTX 5060 power is a driver average of approximately 1 s. Memory clock is not effective transfer rate. Fan speed is not RPM; 0% may be fan-stop. Low utilization does not diagnose a bottleneck. Timestamps indicate local acquisition; internal sampling windows may differ.</value></data>
-  <data name="MonitoringFocus" xml:space="preserve"><value>CPU, RAM, GPU and VRAM usage — not FPS. The — symbol means no reading.</value></data>
+  <data name="GpuDefinitions" xml:space="preserve"><value>The data comes from the NVIDIA driver. Video memory shows how much programs have reserved, not how much is in use at each moment. Power is an average of about 1 second. The fan shows %, not RPM; 0% can be normal (many cards stop the fan when cool). Low usage alone does not mean something is holding the game back.</value></data>
+  <data name="MonitoringFocus" xml:space="preserve"><value>Shows how hard your processor, memory and graphics card are working (this is not FPS). A dash (—) means that value could not be read.</value></data>
   <data name="CompactHistory" xml:space="preserve"><value>60 s · now → · scale 0–100%</value></data>
   <data name="CollectorDetails" xml:space="preserve"><value>CPU, RAM and Lotus collector details</value></data>
   <data name="SensorDetails" xml:space="preserve"><value>GPU sensors, sources and details</value></data>
@@ -344,7 +344,7 @@ Get in the game.</value>
 <data name="BrandProofFailed" xml:space="preserve"><value>Composition could not be created. Check the logs; do not consider this test passed.</value></data>
 <data name="BrandProofRunning" xml:space="preserve"><value>Scale started on the compositor. Visual verification is still required.</value></data>
 <data name="BrandProofStopped" xml:space="preserve"><value>Paused: window hidden/minimized, high contrast or reduced motion.</value></data>
-<data name="BrandMotionPolicy" xml:space="preserve"><value>The brand follows Lotus’s “Reduce animations” setting. Windows animation settings remain unchanged.</value></data>
+<data name="BrandMotionPolicy" xml:space="preserve"><value>Less motion in Lotus, including the brand flower. Windows animations stay as they are.</value></data>
   <data name="RamAnalysisTitle" xml:space="preserve"><value>RAM diagnosis</value></data>
   <data name="RamFindingUnavailable" xml:space="preserve"><value>Waiting for valid data</value></data>
   <data name="RamFindingObserving" xml:space="preserve"><value>Observing availability</value></data>
@@ -569,7 +569,7 @@ Current conditions: {1}</value></data>
   <data name="PfGameTitle" xml:space="preserve"><value>Game profile</value></data>
   <data name="PfDailyTitle" xml:space="preserve"><value>Daily profile</value></data>
   <data name="PfCustomTitle" xml:space="preserve"><value>Custom profile</value></data>
-  <data name="PfGameDescription" xml:space="preserve"><value>Favors performance: suggests High performance while plugged in.</value></data>
+  <data name="PfGameDescription" xml:space="preserve"><value>Only while you play: High performance, no notifications and priority for the game. Everything goes back when it closes.</value></data>
   <data name="PfDailyDescription" xml:space="preserve"><value>Balance between performance and efficiency for everyday use.</value></data>
   <data name="PfCustomDescription" xml:space="preserve"><value>You choose which existing power plan to use.</value></data>
   <data name="PfRecommended" xml:space="preserve"><value>Recommended for performance</value></data>
@@ -668,7 +668,7 @@ Current conditions: {1}</value></data>
   <data name="GamesAdd" xml:space="preserve"><value>Add game</value></data>
   <data name="GamesPlay" xml:space="preserve"><value>Play</value></data>
   <data name="GamesScanning" xml:space="preserve"><value>Looking for installed games...</value></data>
-  <data name="GamesSummary" xml:space="preserve"><value>{0} game(s) in {1} store(s)</value></data>
+  <data name="GamesSummary" xml:space="preserve"><value>Games: {0} · Stores: {1}</value></data>
   <data name="GamesNoneFound" xml:space="preserve"><value>No games found in supported stores (Steam, Epic, Xbox, GOG, EA and Ubisoft). Use "Add game" to include an executable.</value></data>
   <data name="GamesNoMatch" xml:space="preserve"><value>No game matches the search.</value></data>
   <data name="GamesScanFailed" xml:space="preserve"><value>Games could not be scanned. Details in the log.</value></data>
@@ -700,6 +700,12 @@ Current conditions: {1}</value></data>
   <data name="PfApplied1" xml:space="preserve"><value>1 change applied and verified. More FPS is not guaranteed; use the benchmark to compare.</value></data>
   <data name="PfAppliedWithConflicts" xml:space="preserve"><value>{0} applied; {1} not applied because the setting changed outside Lotus.</value></data>
   <data name="PfUndo" xml:space="preserve"><value>Undo profile</value></data>
+  <data name="PfActTitle" xml:space="preserve"><value>{0} profile · power plan</value></data>
+  <data name="PfActApplying" xml:space="preserve"><value>Checking</value></data>
+  <data name="PfActApplied" xml:space="preserve"><value>Applied</value></data>
+  <data name="PfActReverting" xml:space="preserve"><value>Undoing</value></data>
+  <data name="PfActReverted" xml:space="preserve"><value>Undone</value></data>
+  <data name="PfActConflict" xml:space="preserve"><value>Needs review</value></data>
   <data name="PfUndoTitle" xml:space="preserve"><value>Undo the profile changes?</value></data>
   <data name="PfUndoBody" xml:space="preserve"><value>Lotus restores the previous state of each item it changed, only if nothing changed it afterwards.</value></data>
   <data name="PfUndone" xml:space="preserve"><value>{0} items restored and verified.</value></data>
@@ -854,6 +860,7 @@ Current conditions: {1}</value></data>
   <data name="ScoreVerdict" xml:space="preserve"><value>Your PC is in the {0} tier: it beats {1} of {2} references.</value></data>
   <data name="ScoreYou" xml:space="preserve"><value>Your PC</value></data>
   <data name="ScoreHistoryLine" xml:space="preserve"><value>{0} points · CPU {1} / {2} · GPU {3}</value></data>
+  <data name="ScoreHistoryPartial" xml:space="preserve"><value>Partial test</value></data>
   <data name="ScoreTierEntry" xml:space="preserve"><value>Entry</value></data>
   <data name="ScoreTierBudget" xml:space="preserve"><value>Budget gamer</value></data>
   <data name="ScoreTierMid" xml:space="preserve"><value>Mid-range</value></data>
@@ -1422,7 +1429,7 @@ Could not measure right now. Try again in a few seconds.</value></data>
   <data name="RdBusy" xml:space="preserve"><value>Your PC is busy right now</value></data>
   <data name="RdAllClear" xml:space="preserve"><value>Plenty of memory and a quiet system. Good time for a match.</value></data>
   <data name="RdMemory" xml:space="preserve"><value>Memory is almost full. Closing open programs helps the game run smoothly.</value></data>
-  <data name="RdHeavy" xml:space="preserve"><value>{0} is using {1} of memory. Closing it before playing helps.</value></data>
+  <data name="RdHeavy" xml:space="preserve"><value>{0} is using {1}. The Game profile lowers its priority while you play; closing it frees more memory.</value></data>
   <data name="RdCpu" xml:space="preserve"><value>The processor is working hard. See what's heavy in Performance.</value></data>
   <data name="RdGpuHot" xml:space="preserve"><value>The graphics card is hot. Check fans and temperature in Performance.</value></data>
   <data name="RdDisk" xml:space="preserve"><value>Low free disk space. Games and shaders need room.</value></data>
@@ -1556,7 +1563,7 @@ Could not measure right now. Try again in a few seconds.</value></data>
   <data name="DyInList" xml:space="preserve"><value>In your list</value></data>
   <data name="DyLog" xml:space="preserve"><value>Log it</value></data>
   <data name="DyBio" xml:space="preserve"><value>About you</value></data>
-  <data name="DyBioPlaceholder" xml:space="preserve"><value>E.g. Working full time, playing when I can.</value></data>
+  <data name="DyBioPlaceholder" xml:space="preserve"><value>E.g. I play at night, after work.</value></data>
   <data name="DyStatCompleted" xml:space="preserve"><value>completed</value></data>
   <data name="DyStatHours" xml:space="preserve"><value>played</value></data>
   <data name="DyStatAverage" xml:space="preserve"><value>average score</value></data>
@@ -1840,7 +1847,7 @@ Could not measure right now. Try again in a few seconds.</value></data>
   <data name="PfResultUndone" xml:space="preserve"><value>Changes undone</value></data>
   <data name="PfResultUndoPartial" xml:space="preserve"><value>Partly undone</value></data>
   <data name="PfResultNone" xml:space="preserve"><value>Nothing to undo</value></data>
-  <data name="PfSwitched" xml:space="preserve"><value>{0} selected. Tap Apply profile to turn it on.</value></data>
+  <data name="PfSwitched" xml:space="preserve"><value>{0} selected. Tap Turn on to switch it on.</value></data>
   <data name="GlFilters" xml:space="preserve"><value>Filters</value></data>
   <data name="GlFiltersNone" xml:space="preserve"><value>No filters: full list in source order.</value></data>
   <data name="GlFiltersActive" xml:space="preserve"><value>Active filters: {0}</value></data>
@@ -2895,6 +2902,7 @@ Your games and Windows are not changed.</value></data>
   <data name="DkScanTitle" xml:space="preserve"><value>Check drive {0}?</value></data>
   <data name="DkScanBody" xml:space="preserve"><value>Lotus opens Windows&apos; own check (**chkdsk /scan**) in a visible window. It only reads and reports problems; **it fixes nothing and does not restart the PC**. Windows will ask for administrator permission.</value></data>
   <data name="DkScanGo" xml:space="preserve"><value>Open check</value></data>
+  <data name="DkScanButton" xml:space="preserve"><value>Check {0}</value></data>
   <data name="DkScanStarted" xml:space="preserve"><value>Check of drive {0} opened in a Windows window.</value></data>
   <data name="DkScanDeclined" xml:space="preserve"><value>The check of drive {0} was not opened (administrator permission declined).</value></data>
   <data name="DkNever" xml:space="preserve"><value>**No risk:** nothing here writes to the drive. The check is Windows&apos; own, read-only. Defragmenting an SSD does not help and wears it, so Lotus does not do it.</value></data>
@@ -3190,4 +3198,256 @@ Your games and Windows are not changed.</value></data>
   <data name="SlFirstProtect" xml:space="preserve"><value>Protect your first game: pick one below and make its first backup.</value></data>
   <data name="DyShowcaseInvite" xml:space="preserve"><value>Pick your 4 favorite games</value></data>
   <data name="GmSpotlight" xml:space="preserve"><value>Last played</value></data>
+  <data name="GmFrametimeSample" xml:space="preserve"><value>Example: a flat line is smooth play; each spike is a stutter.</value></data>
+  <data name="PxEyebrow" xml:space="preserve"><value>Gaming X-ray</value></data>
+  <data name="PxTitleReady" xml:space="preserve"><value>Find out what is holding your games back</value></data>
+  <data name="PxBodyReady" xml:space="preserve"><value>A full check in about 30 seconds: processor, graphics card, memory, disk, Windows and background apps. Analyzing changes nothing on the PC.</value></data>
+  <data name="PxTitleRunning" xml:space="preserve"><value>Analyzing your PC…</value></data>
+  <data name="PxBodyRunning" xml:space="preserve"><value>Keep using the PC. Lotus measures memory for a few seconds and checks each part, one at a time.</value></data>
+  <data name="PxTitleDone" xml:space="preserve"><value>Check complete</value></data>
+  <data name="PxBodyDone" xml:space="preserve"><value>What we found, most important first. Each suggestion opens the tool that fixes it, and nothing changes without your OK.</value></data>
+  <data name="PxAnalyze" xml:space="preserve"><value>Analyze my PC</value></data>
+  <data name="PxAnalyzeAgain" xml:space="preserve"><value>Analyze again</value></data>
+  <data name="PxStepMemory" xml:space="preserve"><value>Measuring memory…</value></data>
+  <data name="PxCpu" xml:space="preserve"><value>Processor</value></data>
+  <data name="PxGpu" xml:space="preserve"><value>Graphics card</value></data>
+  <data name="PxRam" xml:space="preserve"><value>Memory (RAM)</value></data>
+  <data name="PxTemp" xml:space="preserve"><value>GPU temperature</value></data>
+  <data name="PxRamUse" xml:space="preserve"><value>{0} of {1} in use</value></data>
+  <data name="PxNoReading" xml:space="preserve"><value>Shows up during the check</value></data>
+  <data name="PxUnavailable" xml:space="preserve"><value>Unavailable on this PC</value></data>
+  <data name="PxTempOk" xml:space="preserve"><value>Within normal range</value></data>
+  <data name="PxTempHot" xml:space="preserve"><value>Hot: check the airflow</value></data>
+  <data name="PxHoldLabel" xml:space="preserve"><value>What weighs most right now</value></data>
+  <data name="PxHoldMem" xml:space="preserve"><value>memory is almost full. Closing heavy apps before playing helps.</value></data>
+  <data name="PxHoldCpu" xml:space="preserve"><value>the processor is busy with other apps.</value></data>
+  <data name="PxHoldHot" xml:space="preserve"><value>the graphics card is hot.</value></data>
+  <data name="PxHoldNone" xml:space="preserve"><value>nothing: your PC is free to play.</value></data>
+  <data name="PxSuggestions" xml:space="preserve"><value>Suggestions for you</value></data>
+  <data name="PxFix" xml:space="preserve"><value>Fix it</value></data>
+  <data name="PxGoodShow" xml:space="preserve"><value>See the {0} items that are fine</value></data>
+  <data name="PxGoodHide" xml:space="preserve"><value>Hide the {0} items that are fine</value></data>
+  <data name="PxAllGood" xml:space="preserve"><value>All set to play</value></data>
+  <data name="PxAllGoodDetail" xml:space="preserve"><value>Nothing needs attention right now.</value></data>
+  <data name="PxMemLow" xml:space="preserve"><value>Low free memory for games</value></data>
+  <data name="PxMemLowDetail" xml:space="preserve"><value>Available memory stayed low during the check. Closing heavy apps before playing helps.</value></data>
+  <data name="PxMemOk" xml:space="preserve"><value>Enough free memory to play</value></data>
+  <data name="PxMemOkDetail" xml:space="preserve"><value>{0} available at the end of the check.</value></data>
+  <data name="PxPartial" xml:space="preserve"><value>The memory measurement did not finish</value></data>
+  <data name="PxPartialDetail" xml:space="preserve"><value>Everything else was checked. Analyze again to measure memory.</value></data>
+  <data name="PxSafe" xml:space="preserve"><value>Analyzing never changes Windows. Something changes only if you confirm it inside the tool.</value></data>
+  <data name="OsPickHint" xml:space="preserve"><value>Pick a style by looking at the preview. It shows up in game through RivaTuner.</value></data>
+  <data name="OsTop" xml:space="preserve"><value>Top bar</value></data>
+  <data name="OsNeon" xml:space="preserve"><value>Neon card</value></data>
+  <data name="OsTopShort" xml:space="preserve"><value>A slim strip at the top with every number.</value></data>
+  <data name="OsNeonShort" xml:space="preserve"><value>A corner card with big FPS and bars.</value></data>
+  <data name="OsTopWhat" xml:space="preserve"><value>A slim strip across the top with FPS, 1% and 0.1% lows, frametime, CPU and GPU usage and temperature, and RAM. It barely gets in the way.</value></data>
+  <data name="OsNeonWhat" xml:space="preserve"><value>A corner card with big FPS, the lows and GPU, CPU and RAM usage bars. Good if you like everything in one place.</value></data>
+  <data name="OsActive" xml:space="preserve"><value>Active in game: {0}</value></data>
+  <data name="OsNoneActive" xml:space="preserve"><value>No Lotus style active</value></data>
+  <data name="OsActiveBadge" xml:space="preserve"><value>Active</value></data>
+  <data name="OsUse" xml:space="preserve"><value>Use {0}</value></data>
+  <data name="OsInUse" xml:space="preserve"><value>{0} is already active</value></data>
+  <data name="OsExample" xml:space="preserve"><value>Illustrative example</value></data>
+  <data name="OsNeedRtss" xml:space="preserve"><value>To show the overlay in game, install RivaTuner Statistics Server (free).</value></data>
+  <data name="GlFeaturedOpen" xml:space="preserve"><value>See the game</value></data>
+  <data name="GlFeatured" xml:space="preserve"><value>Featured</value></data>
+  <data name="RdPillReady" xml:space="preserve"><value>Ready to play</value></data>
+  <data name="RdPillAlmost" xml:space="preserve"><value>Almost ready</value></data>
+  <data name="RdPillAttention" xml:space="preserve"><value>Needs attention</value></data>
+  <data name="GlPeriodweek" xml:space="preserve"><value>Weekly</value></data>
+  <data name="GlPeriodmonth" xml:space="preserve"><value>Monthly</value></data>
+  <data name="GlPeriodyear" xml:space="preserve"><value>Yearly</value></data>
+  <data name="GlPeriodall" xml:space="preserve"><value>All time</value></data>
+  <data name="GlPeriodLabel" xml:space="preserve"><value>Released</value></data>
+  <data name="GlPeriodHint" xml:space="preserve"><value>Games on this list released in this period.</value></data>
+  <data name="GlPeriodHintSoon" xml:space="preserve"><value>Games on this list coming out in this period.</value></data>
+  <data name="GlPeriodNoDates" xml:space="preserve"><value>This list has no release dates, so the period does not apply.</value></data>
+  <data name="OsPreviewActive" xml:space="preserve"><value>&quot;See the overlay now&quot; shows the style active in RivaTuner ({0}). To see another, use the Use button and, if it does not change, close and reopen RivaTuner.</value></data>
+  <data name="OsNoneShort" xml:space="preserve"><value>none from Lotus</value></data>
+  <data name="ScorePickButton" xml:space="preserve"><value>Choose a game</value></data>
+  <data name="ScorePickTitle" xml:space="preserve"><value>Estimated FPS by game</value></data>
+  <data name="ScorePickHint" xml:space="preserve"><value>Type to filter. Values at 1080p for each quality. Not here? Press Enter to search Steam.</value></data>
+  <data name="ScorePickCap" xml:space="preserve"><value>game caps at {0} FPS</value></data>
+  <data name="OsLateral" xml:space="preserve"><value>Side column</value></data>
+  <data name="OsLateralShort" xml:space="preserve"><value>A slim column in the corner, everything stacked.</value></data>
+  <data name="OsLateralWhat" xml:space="preserve"><value>A compact column in the top-left corner with big FPS, frametime and 1% low, frametime graph, GPU and CPU (usage and temperature), VRAM and RAM. Translucent dark panel, readable on bright and dark scenes.</value></data>
+  <data name="OsPendingGame" xml:space="preserve"><value>A game is open: the new style is applied when it closes (the game is not interrupted).</value></data>
+  <data name="OsPendingName" xml:space="preserve"><value>Will be applied when the game closes: {0}.</value></data>
+  <data name="OsAppliedReopened" xml:space="preserve"><value>Style turned on and RivaTuner reopened. Your FPS limits and profiles stay the same.</value></data>
+  <data name="OsFailed" xml:space="preserve"><value>The style could not be changed. If Windows asked for permission and it was declined, try again; if RivaTuner does not reopen, open it from the Start menu.</value></data>
+  <data name="ScorePickFromReq" xml:space="preserve"><value>Steam recommended requirements</value></data>
+  <data name="ScoreConfHigh" xml:space="preserve"><value>High confidence · 2+ labs</value></data>
+  <data name="ScoreConfMid" xml:space="preserve"><value>Medium confidence · 1 lab</value></data>
+  <data name="ScoreConfLow" xml:space="preserve"><value>Rough estimate · measure it in Prepare and play</value></data>
+  <data name="ScoreConfSearched" xml:space="preserve"><value>Estimate from Steam requirements</value></data>
+  <data name="ScorePickSources" xml:space="preserve"><value>Sources</value></data>
+  <data name="ScorePickRefresh" xml:space="preserve"><value>Update now</value></data>
+  <data name="ScorePickDate" xml:space="preserve"><value>Data from {0} · {1} games</value></data>
+  <data name="ScorePickChecking" xml:space="preserve"><value>Looking for newer data…</value></data>
+  <data name="ScorePickUpdated" xml:space="preserve"><value>Table updated.</value></data>
+  <data name="ScorePickCurrent" xml:space="preserve"><value>The table is already the latest.</value></data>
+  <data name="SetFpsData" xml:space="preserve"><value>Update the FPS table automatically</value></data>
+  <data name="SetFpsDataHint" xml:space="preserve"><value>Once a week Lotus checks the official repository for a newer FPS table (a small file, validated before use).</value></data>
+  <data name="ScoreMeasured" xml:space="preserve"><value>Measured on your PC: {0} FPS (1% low {1})</value></data>
+  <data name="ScoreMeasuredLine" xml:space="preserve"><value>Measured on your PC: {0} FPS average, 1% low {1}. The estimate below is calibrated with that measurement.</value></data>
+  <data name="BoTitle" xml:space="preserve"><value>Adjust the Game profile</value></data>
+  <data name="BoHint" xml:space="preserve"><value>Only while a game from your library is open. Everything goes back when the game closes.</value></data>
+  <data name="BoPower" xml:space="preserve"><value>High performance while playing</value></data>
+  <data name="BoPowerHint" xml:space="preserve"><value>Windows uses the High performance plan and goes back to your plan when the game closes.</value></data>
+  <data name="BoNotifications" xml:space="preserve"><value>Silence notifications</value></data>
+  <data name="BoNotificationsHint" xml:space="preserve"><value>Windows only applies this switch after signing out and back in, so it may not work in the same session. To silence right away, use Windows&apos; automatic &quot;Do not disturb&quot; while gaming (Settings › System › Notifications).</value></data>
+  <data name="BoRecording" xml:space="preserve"><value>Turn off Xbox background recording</value></data>
+  <data name="BoRecordingHint" xml:space="preserve"><value>Game Bar stops recording the last minutes while you play; it comes back when the game closes.</value></data>
+  <data name="BoPriority" xml:space="preserve"><value>Priority for the game</value></data>
+  <data name="BoPriorityHint" xml:space="preserve"><value>Apps like the browser stay open, just with a lower priority while you play.</value></data>
+  <data name="OpTabProfiles" xml:space="preserve"><value>Profiles</value></data>
+  <data name="OpTabGpu" xml:space="preserve"><value>Graphics card tuning</value></data>
+  <data name="GtEyebrow" xml:space="preserve"><value>Graphics card tuning</value></data>
+  <data name="GtUndervolt" xml:space="preserve"><value>Cooler and steadier</value></data>
+  <data name="GtUndervoltHint" xml:space="preserve"><value>Undervolt: same speed with less voltage. Less heat and noise, a flatter frametime.</value></data>
+  <data name="GtOverclock" xml:space="preserve"><value>More FPS</value></data>
+  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: about 5 to 10% more FPS, with more heat and power. Start with Afterburner's OC Scanner.</value></data>
+  <data name="GtStock" xml:space="preserve"><value>Stock</value></data>
+  <data name="GtStockHint" xml:space="preserve"><value>The card as it came from the factory. No tuning.</value></data>
+  <data name="GtRecommended" xml:space="preserve"><value>Recommended</value></data>
+  <data name="GtReadyTitle" xml:space="preserve"><value>Before you start</value></data>
+  <data name="GtReadyNvidia" xml:space="preserve"><value>NVIDIA graphics card</value></data>
+  <data name="GtFixNvidia" xml:space="preserve"><value>The assistant uses MSI Afterburner with NVIDIA cards. On Radeon cards, tuning is done in AMD Adrenalin.</value></data>
+  <data name="GtReadyAfterburner" xml:space="preserve"><value>MSI Afterburner installed</value></data>
+  <data name="GtFixAfterburner" xml:space="preserve"><value>Install MSI Afterburner from MSI&apos;s official site.</value></data>
+  <data name="GtReadyRivaTuner" xml:space="preserve"><value>RivaTuner installed</value></data>
+  <data name="GtFixRivaTuner" xml:space="preserve"><value>Afterburner needs RivaTuner to switch profiles by itself in games.</value></data>
+  <data name="GtReadyVoltage" xml:space="preserve"><value>Voltage control unlocked in Afterburner</value></data>
+  <data name="GtFixVoltage" xml:space="preserve"><value>In Afterburner: Settings › General › tick &quot;Unlock voltage control&quot;.</value></data>
+  <data name="GtReadyAuto" xml:space="preserve"><value>Tune turns on by itself in games</value></data>
+  <data name="GtFixAuto" xml:space="preserve"><value>Keep a result of the automatic tune (Keep this) and leave Lotus&apos;s option under Save, below, turned on.</value></data>
+  <data name="GtOpenAfterburner" xml:space="preserve"><value>Open Afterburner</value></data>
+  <data name="GtValuesTitle" xml:space="preserve"><value>Values to set in Afterburner</value></data>
+  <data name="GtValuesUndervolt" xml:space="preserve"><value>Flat curve from {0} mV at {1} MHz</value></data>
+  <data name="GtValuesOverclock" xml:space="preserve"><value>Core +{0} MHz · Memory +{1} MHz · Power limit at maximum</value></data>
+  <data name="GtValuesStock" xml:space="preserve"><value>Everything at stock (Afterburner&apos;s Reset button)</value></data>
+  <data name="GtHowUndervolt" xml:space="preserve"><value>In Afterburner, press Ctrl+F to open the curve editor. Drag the point at the shown voltage up to the shown clock, hold Shift and drag the points to the right down until the line is flat, then click Apply.</value></data>
+  <data name="GtHowOverclock" xml:space="preserve"><value>Fastest and safest: Afterburner&apos;s OC Scanner (Ctrl+F › OC Scanner › Scan, about 20 minutes). It tests by itself and applies a conservative gain; then use &quot;Test for 5 minutes&quot; here to check. Advanced alternative (Lotus ladder): move &quot;Power Limit&quot; to the maximum, add the values above to &quot;Core Clock&quot; and &quot;Memory Clock&quot;, click Apply and test.</value></data>
+  <data name="GtHowStock" xml:space="preserve"><value>In Afterburner, click Reset and then Apply. The card is back to stock.</value></data>
+  <data name="GtHowRadeon" xml:space="preserve"><value>Radeon cards: AMD Adrenalin › Performance › Tuning. Start with voltage at -40 mV and go 25 mV lower after each stable test.</value></data>
+  <data name="GtTestTitle" xml:space="preserve"><value>Test stability</value></data>
+  <data name="GtTestHint" xml:space="preserve"><value>About 5 minutes of load on the card with the values applied. The test stops by itself above 83 °C and tells you if the graphics driver restarts.</value></data>
+  <data name="GtTestRun" xml:space="preserve"><value>Test for 5 minutes</value></data>
+  <data name="GtTestConfirmTitle" xml:space="preserve"><value>Test the applied values?</value></data>
+  <data name="GtTestConfirmBody" xml:space="preserve"><value>Apply them in Afterburner first: {0}. The card will run at full load for about 5 minutes; the screen may flicker if the values are not stable (Windows recovers by itself).</value></data>
+  <data name="GtStable" xml:space="preserve"><value>Stable: {0} °C at most, {1} MHz average clock. Next: the values above moved one step further; apply and test again, or save this tune.</value></data>
+  <data name="GtStableWarm" xml:space="preserve"><value>Stable but warm: {0} °C ({1} MHz average clock). Better not go further; save this tune.</value></data>
+  <data name="GtCrashed" xml:space="preserve"><value>The graphics driver restarted: not stable. The values above went back to the last one that worked; apply them.</value></data>
+  <data name="GtTooHot" xml:space="preserve"><value>It got too hot ({0} °C) and the test stopped. The values above are lighter; apply and test again.</value></data>
+  <data name="GtThrottled" xml:space="preserve"><value>The clock swung {0} MHz: the card hit its power or heat limit. The values above are lighter.</value></data>
+  <data name="GtNoData" xml:space="preserve"><value>No sensor readings during the test. Check that the card is NVIDIA and try again.</value></data>
+  <data name="GtSaveTitle" xml:space="preserve"><value>The tune in games</value></data>
+  <data name="GtRisksTitle" xml:space="preserve"><value>Risks, in short</value></data>
+  <data name="GtRiskCrash" xml:space="preserve"><value>A freeze or flicker? Go back one step. Within factory limits the card is not damaged.</value></data>
+  <data name="GtRiskHeat" xml:space="preserve"><value>Above 80 °C? Lower the tune or improve airflow.</value></data>
+  <data name="GtRiskStartup" xml:space="preserve"><value>Nothing is applied when Windows starts: only while a game is open.</value></data>
+  <data name="GtRiskStock" xml:space="preserve"><value>Back to stock: Profile 1 or Afterburner&apos;s Reset button.</value></data>
+  <data name="GtCardIntro" xml:space="preserve"><value>Lotus guides a tune for your {0}; MSI Afterburner applies the values, within factory limits. Lotus never changes clocks or voltage by itself.</value></data>
+  <data name="PfPlanGameTitle" xml:space="preserve"><value>What happens when you play</value></data>
+  <data name="PfPlanGameSubtitle" xml:space="preserve"><value>The Game profile acts only while a game from your library is open.</value></data>
+  <data name="PfPlanDailyTitle" xml:space="preserve"><value>Normal use</value></data>
+  <data name="PfPlanDailySubtitle" xml:space="preserve"><value>Balanced plan and no tweaks during games.</value></data>
+  <data name="PfStageOpen" xml:space="preserve"><value>When a game opens</value></data>
+  <data name="PfStagePlaying" xml:space="preserve"><value>While you play</value></data>
+  <data name="PfStageClose" xml:space="preserve"><value>When the game closes</value></data>
+  <data name="PfWhyPower" xml:space="preserve"><value>The processor and graphics card do not save power mid-match. It helps avoid sudden drops; it does not promise more FPS.</value></data>
+  <data name="PfWhyNotifications" xml:space="preserve"><value>Asks Windows to hide pop-ups during the game. In the test on your PC (Windows 11 22H2) the change only took effect after signing out and back in; Windows&apos; own &quot;Do not disturb while gaming&quot; is what silences right away.</value></data>
+  <data name="PfWhyRecording" xml:space="preserve"><value>Game Bar stops recording the last minutes in the background, which frees a little of the graphics card and disk.</value></data>
+  <data name="PfPriorityLine" xml:space="preserve"><value>Priority: the game first; browsers and launchers lower, still open</value></data>
+  <data name="PfWhyPriority" xml:space="preserve"><value>If an app like Opera GX competes for the processor, the game comes first. No app is closed.</value></data>
+  <data name="PfNothingOn" xml:space="preserve"><value>No tweak turned on</value></data>
+  <data name="PfNothingOnWhy" xml:space="preserve"><value>Turn tweaks on in &quot;Adjust the Game profile&quot;.</value></data>
+  <data name="PfPlayingLine" xml:space="preserve"><value>Lotus stays light and quiet</value></data>
+  <data name="PfWhyPlaying" xml:space="preserve"><value>Lotus goes into economy mode and changes nothing else while you play.</value></data>
+  <data name="PfRestoreLine" xml:space="preserve"><value>Everything goes back as it was</value></data>
+  <data name="PfWhyRestore" xml:space="preserve"><value>Each tweak is undone. If you changed something during the game, it stays the way you left it.</value></data>
+  <data name="PfDailyLine" xml:space="preserve"><value>Balanced plan, no tweaks in games</value></data>
+  <data name="PfWhyDaily" xml:space="preserve"><value>Windows goes back to normal behavior; nothing changes when a game opens.</value></data>
+  <data name="PfDecideGame" xml:space="preserve"><value>The Game profile acts only while a game from your library is open and undoes everything when it closes. It does not guarantee more FPS; it reduces interruptions and competition for resources.</value></data>
+  <data name="PfDecideDaily" xml:space="preserve"><value>The Daily profile keeps Windows in normal use and does not act during games.</value></data>
+  <data name="PfActivateGame" xml:space="preserve"><value>Turn on Game profile</value></data>
+  <data name="PfActivateDaily" xml:space="preserve"><value>Turn on Daily profile</value></data>
+  <data name="PfSeeScan" xml:space="preserve"><value>Startup and Windows features: see in the X-ray</value></data>
+  <data name="PfActiveWaiting" xml:space="preserve"><value>On · waiting for a game</value></data>
+  <data name="PfActivePlaying" xml:space="preserve"><value>On · playing {0}</value></data>
+  <data name="PfArmedTitle" xml:space="preserve"><value>{0} turned on</value></data>
+  <data name="PfArmedBody" xml:space="preserve"><value>Nothing changed now. The tweaks start when a game from your library opens and end when it closes.</value></data>
+  <data name="GtExplainTitle" xml:space="preserve"><value>About &quot;{0}&quot;</value></data>
+  <data name="GtLabelPurpose" xml:space="preserve"><value>What for</value></data>
+  <data name="GtLabelChanges" xml:space="preserve"><value>What changes</value></data>
+  <data name="GtLabelSuits" xml:space="preserve"><value>Good for you if</value></data>
+  <data name="GtLabelCost" xml:space="preserve"><value>The cost</value></data>
+  <data name="GtUvPurpose" xml:space="preserve"><value>Undervolt: make the card deliver the same performance using less power.</value></data>
+  <data name="GtUvChanges" xml:space="preserve"><value>Voltage goes down, temperature and noise go down, and the clock stays steadier (less up and down), which flattens the frametime. FPS stays the same or a little higher.</value></data>
+  <data name="GtUvSuits" xml:space="preserve"><value>You play with an FPS cap (like RivaTuner&apos;s 74.97), want a cool and quiet card or feel stutters from heat.</value></data>
+  <data name="GtUvCost" xml:space="preserve"><value>Go too low and the game closes or the screen flickers. Going back 25 mV fixes it. It does not damage the card.</value></data>
+  <data name="GtOcPurpose" xml:space="preserve"><value>Overclock: make the card run faster than it ships.</value></data>
+  <data name="GtOcChanges" xml:space="preserve"><value>Core and memory clocks go up. A real gain of about 5 to 10% FPS when the card is the limit; more power and more heat.</value></data>
+  <data name="GtOcSuits" xml:space="preserve"><value>You play without an FPS cap, the card sits at 95-100% usage and every extra frame matters.</value></data>
+  <data name="GtOcCost" xml:space="preserve"><value>More heat and noise. Too much memory clock silently makes the card slower (GDDR7 corrects errors), so each step is measured. Unstable: go back one step.</value></data>
+  <data name="GtStPurpose" xml:space="preserve"><value>Stock: the card exactly as it left the factory.</value></data>
+  <data name="GtStChanges" xml:space="preserve"><value>Nothing. Voltage, clock and power at the original values.</value></data>
+  <data name="GtStSuits" xml:space="preserve"><value>You want zero risk or are returning the card to normal after a test.</value></data>
+  <data name="GtStCost" xml:space="preserve"><value>None. You just do not get the cooler card of an undervolt or the FPS of an overclock.</value></data>
+  <data name="GtWhichOne" xml:space="preserve"><value>If unsure: with an FPS cap, undervolt; no cap and the card maxed out, overclock. You can combine them: after finding the top clock, keep it at the lowest voltage possible.</value></data>
+  <data name="GtAutoTitle" xml:space="preserve"><value>Tune automatically</value></data>
+  <data name="GtAutoHint" xml:space="preserve"><value>Lotus applies each step through MSI Afterburner (within its limits), tests the card for 3 minutes per step and measures performance: baseline, undervolt, overclock (memory and core) and overclock with undervolt. At the end the card goes back exactly as it was and you choose what to keep. Takes about 1 hour.</value></data>
+  <data name="GtAutoRun" xml:space="preserve"><value>Tune automatically</value></data>
+  <data name="GtAutoNeeds" xml:space="preserve"><value>For the automatic mode, keep MSI Afterburner open (NVIDIA card).</value></data>
+  <data name="GtAutoConfirmTitle" xml:space="preserve"><value>Tune the card automatically?</value></data>
+  <data name="GtAutoConfirmBody" xml:space="preserve"><value>About 1 hour with the card at full load: close games and heavy apps. The screen may flicker if a step is not stable; Windows recovers by itself and Lotus steps back. If something hangs, the original state is saved and comes back the next time Lotus opens. At the end, the card goes back as it was.</value></data>
+  <data name="GtAutoStatusbaseline" xml:space="preserve"><value>Measuring the baseline (card as it is)…</value></data>
+  <data name="GtAutoStatusundervolt" xml:space="preserve"><value>Testing undervolt…</value></data>
+  <data name="GtAutoStatusoverclock" xml:space="preserve"><value>Testing overclock (memory, then core)…</value></data>
+  <data name="GtAutoStatuscombined" xml:space="preserve"><value>Testing overclock with undervolt…</value></data>
+  <data name="GtAutoDone" xml:space="preserve"><value>Done. The card is back as it was; choose below what to keep.</value></data>
+  <data name="GtAutoStoppedunavailable" xml:space="preserve"><value>Afterburner is not open or does not accept control.</value></data>
+  <data name="GtAutoStoppedjournal" xml:space="preserve"><value>Could not save the current state; nothing was changed.</value></data>
+  <data name="GtAutoStoppedbaseline" xml:space="preserve"><value>The card was not stable even at stock; nothing else was tested.</value></data>
+  <data name="GtAutoStoppedfailed" xml:space="preserve"><value>Tuning stopped on an error; the card is back as it was.</value></data>
+  <data name="GtAutoModebaseline" xml:space="preserve"><value>Baseline</value></data>
+  <data name="GtAutoModeundervolt" xml:space="preserve"><value>Undervolt</value></data>
+  <data name="GtAutoModememory" xml:space="preserve"><value>Memory</value></data>
+  <data name="GtAutoModecore" xml:space="preserve"><value>Core</value></data>
+  <data name="GtAutoModeoverclock" xml:space="preserve"><value>Overclock</value></data>
+  <data name="GtAutoModecombined" xml:space="preserve"><value>Overclock + undervolt</value></data>
+  <data name="GtAutoLine" xml:space="preserve"><value>performance {0} · {1} °C · {2} MHz · {3} W</value></data>
+  <data name="GtAutoResults" xml:space="preserve"><value>Results</value></data>
+  <data name="GtAutoNone" xml:space="preserve"><value>no stable step</value></data>
+  <data name="GtAutoSummary" xml:space="preserve"><value>{0}% performance · {1} °C · {2} W</value></data>
+  <data name="GtAutoKeep" xml:space="preserve"><value>Keep this</value></data>
+  <data name="GtAutoKeepTitle" xml:space="preserve"><value>Keep this tune?</value></data>
+  <data name="GtAutoStatuscurrent" xml:space="preserve"><value>Measuring the card as you left it…</value></data>
+  <data name="GtAutoModecurrent" xml:space="preserve"><value>Your current tune</value></data>
+  <data name="GtAutoAsIs" xml:space="preserve"><value>as it was</value></data>
+  <data name="GtSaveBodyAuto" xml:space="preserve"><value>Lotus writes the tune the card is using now into Afterburner&apos;s Profile 2 and keeps Profile 1 at factory defaults. Windows asks for permission once (UAC); first Lotus keeps a copy of the profiles and checks that Afterburner loaded them right. If not, everything goes back as it was. For the tune to turn on by itself in games, keep the option below on.</value></data>
+  <data name="GtSaveRun" xml:space="preserve"><value>Save for all games</value></data>
+  <data name="GtSaveConfirmTitle" xml:space="preserve"><value>Save the tune in Afterburner&apos;s profiles?</value></data>
+  <data name="GtSaveConfirmBody" xml:space="preserve"><value>Afterburner closes and opens again for a few seconds. Profile 2 = the current tune, Profile 1 = factory defaults. Your current profiles are kept so you can go back any time.</value></data>
+  <data name="GtSaveOk" xml:space="preserve"><value>Done: the tune is stored in Afterburner&apos;s Profile 2 and Profile 1 is at defaults.</value></data>
+  <data name="GtSaveDeclined" xml:space="preserve"><value>Nothing changed: Windows permission was declined.</value></data>
+  <data name="GtSaveRolledBack" xml:space="preserve"><value>Afterburner did not load the tune as written, so Lotus put your profiles back as they were. Nothing changed.</value></data>
+  <data name="GtSaveFailed" xml:space="preserve"><value>Could not save now (is Afterburner open, with a single card?). Nothing changed.</value></data>
+  <data name="GtSaveRestore" xml:space="preserve"><value>Go back to the previous profiles</value></data>
+  <data name="GtSaveRestored" xml:space="preserve"><value>Your Afterburner profiles are back as they were before Lotus.</value></data>
+  <data name="GtSaveSaving" xml:space="preserve"><value>Saving and checking in Afterburner…</value></data>
+  <data name="GtSaveLotus" xml:space="preserve"><value>Lotus applies the kept tune when a game opens and goes back to defaults when it closes (no administrator, with Lotus open or in the tray)</value></data>
+  <data name="GtSaveLotusNone" xml:space="preserve"><value>Keep a result of the automatic tune first (Keep this button).</value></data>
+  <data name="GtAutoKeepBodyAuto" xml:space="preserve"><value>Lotus applies it now through Afterburner: {0}. After that it applies it again whenever a game opens and goes back to defaults when it closes (option under Save, below). Afterburner&apos;s Reset button goes back to defaults.</value></data>
+  <data name="OsPulse" xml:space="preserve"><value>Pulse</value></data>
+  <data name="OsPulseShort" xml:space="preserve"><value>Big FPS, graph with reference lines, in your theme&apos;s colors.</value></data>
+  <data name="OsPulseWhat" xml:space="preserve"><value>Lotus&apos;s new style, generated in the colors of the theme you use: big FPS with 1% and 0.1% low highlighted, frametime graph with reference lines and your FPS limit (a flat line right on it is ideal), GPU and CPU with bars, VRAM, RAM and the average. If you change the theme or the limit, Pulse updates when RivaTuner opens again (or when you pick the style again).</value></data>
+  <data name="PmDirect" xml:space="preserve"><value>Direct presentation ✓ ({0}): the game went straight to the screen, no extra Windows frame.</value></data>
+  <data name="PmComposed" xml:space="preserve"><value>Composed by Windows ({0}): Windows merged the game into the desktop, about +1 frame of delay. Fullscreen, or borderless with nothing on top, usually fixes it.</value></data>
+  <data name="PmUnknown" xml:space="preserve"><value>Presentation mode: {0}.</value></data>
+  <data name="MpoSupported" xml:space="preserve"><value>This display has an extra video plane (MPO): a window on top of the game need not delay the picture.</value></data>
+  <data name="MpoNoOverlayPlane" xml:space="preserve"><value>This display has no extra video plane (MPO): any window on top of the game makes Windows compose the picture (+1 frame). RivaTuner overlays don&apos;t have this problem.</value></data>
+  <data name="MpoSwitchedOff" xml:space="preserve"><value>The extra video plane (MPO) is turned off in Windows: windows on top of the game make Windows compose the picture (+1 frame).</value></data>
+  <data name="MpoUnknown" xml:space="preserve"><value>Extra video plane (MPO): not verified.</value></data>
 </root>

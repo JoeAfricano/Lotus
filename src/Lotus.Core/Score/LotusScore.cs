@@ -100,6 +100,15 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     public string PartHint { get; private set; } = "";
     private System.Globalization.CultureInfo Culture => System.Globalization.CultureInfo.GetCultureInfo(Text.Language);
     private string Points(int? value) => value is { } v ? v.ToString("N0", Culture) : "—";
+    // A partial run (CPU or GPU only) says so instead of showing "— points".
+    private string HistorySummary(ScoreRun h)
+    {
+        if (h.Total is not null) return Text.Format("ScoreHistoryLine", Points(h.Total), Points(h.Cpu1), Points(h.CpuAll), Points(h.Gpu));
+        var parts = new List<string> { Text["ScoreHistoryPartial"] };
+        if (h.Cpu1 is not null || h.CpuAll is not null) parts.Add($"CPU {Points(h.Cpu1)} / {Points(h.CpuAll)}");
+        if (h.Gpu is not null) parts.Add($"GPU {Points(h.Gpu)}");
+        return string.Join(" · ", parts);
+    }
 
     public void Refresh()
     {
@@ -223,7 +232,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         try
         {
             foreach (var h in history.Load())
-                History.Add(new(h.Date.ToString("g", Culture), Text.Format("ScoreHistoryLine", Points(h.Total), Points(h.Cpu1), Points(h.CpuAll), Points(h.Gpu))));
+                History.Add(new(h.Date.ToString("g", Culture), HistorySummary(h)));
         }
         catch (Exception ex) { log(ex); }
         BuildInsights();
@@ -270,7 +279,8 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
 
 
     // ---- Deeper reading (FPS calculators and 3DMark): sub-scores, rank, stability, sensors, bottleneck, FPS per game ----
-    public sealed record FpsRowView(string Resolution, string Low, string Medium, string High, string Ultra, string LowKind, string MediumKind, string HighKind, string UltraKind, string Limiter);
+    public sealed record FpsRowView(string Resolution, string Low, string Medium, string High, string Ultra, string LowKind, string MediumKind, string HighKind, string UltraKind, string Limiter,
+        double LowBar = 0, double MediumBar = 0, double HighBar = 0, double UltraBar = 0); // bar lengths 0..1, against the table's highest FPS
     public sealed record BottleneckView(string Resolution, string Text, double Percent, string Kind);
     public Func<IEnumerable<(string Name, string? SteamId)>>? InstalledGames { get; set; }
     private IReadOnlyList<GameDemand> gameList = ScoreInsights.Games;
@@ -298,11 +308,97 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     private readonly List<GameDemand> searched = [];
     public string FpsSearchStatus { get; private set; } = "";
     private GameDemand? CurrentGame => gameIndex < gameList.Count ? gameList[gameIndex] : null;
+    public string FpsGameName => CurrentGame?.Name ?? "";
+    public string FpsMeasured { get; private set; } = "";
+    public string? FpsGameArt => CurrentGame?.SteamAppId is { Length: > 0 } id ? Catalog.CatalogText.Hero(id) : null; // Steam header art, when the game is on Steam
     public string FpsSource => CurrentGame?.Basis is { } basis ? Text.Format("ScoreFpsSourceSteam", basis) : Text["ScoreFpsSourceTable"];
     public string SourceALabel => CurrentGame?.Basis is null ? "pc-builds" : "Steam";
     public string SourceAUrl => CurrentGame is { Basis: not null, SteamAppId: { } id } ? $"https://store.steampowered.com/app/{id}/" : "https://pc-builds.com/pt/fps-calculator/";
     public string SourceBLabel => CurrentGame?.Basis is null ? "How Many FPS" : "pc-builds";
     public string SourceBUrl => CurrentGame?.Basis is null ? "https://howmanyfps.com/" : "https://pc-builds.com/pt/fps-calculator/";
+    // ---- Reference table: date, sources, weekly update and the games worked out from Steam requirements ----
+    public string ReferenceDate => ScoreInsights.Reference.Date.ToDateTime(TimeOnly.MinValue).ToString("d", Culture);
+    public IReadOnlyDictionary<string, FpsSource> ReferenceSources => ScoreInsights.Reference.Sources;
+    public Func<bool, Task<bool>>? CheckReference { get; set; }
+    // The player's own measurement of a game (average and 1% low), the most reliable number there is.
+    public Func<string, string?, (double Avg, double Low, DateTimeOffset? When)?>? Measured { get; set; }
+    // Calibration: the estimate for a measured game is scaled so its 1080p High matches what was measured (bounded, as the
+    // measurement may have used other settings or resolution).
+    private double Calibration(GameDemand g, int s, int m, int gpu)
+    {
+        if (Measured?.Invoke(g.Name, g.SteamAppId) is not { } me) return 1;
+        var est = ScoreInsights.Estimate(g, Resolution.P1080, Preset.High, s, m, gpu).Fps;
+        return est <= 0 ? 1 : Math.Clamp(me.Avg / est, 0.6, 1.4);
+    } // set by the app: true when a newer table is now in use
+    public string RequirementsCache { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "cache", "fps-requirements.json");
+    private sealed record CachedDemand(string Name, string? AppId, double Gpu, double Cpu, string? Basis, DateTimeOffset At);
+    private bool resolving;
+    // Games listed by name only (popular, no lab numbers): estimated from their Steam requirements, one at a time,
+    // kept 30 days so each is asked again only after that.
+    public async Task ResolvePendingAsync(CancellationToken token = default)
+    {
+        if (resolving || FindGame is null) return;
+        resolving = true;
+        try
+        {
+            var cache = new Dictionary<string, CachedDemand>();
+            try { if (File.Exists(RequirementsCache)) cache = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, CachedDemand>>(File.ReadAllText(RequirementsCache)) ?? cache; }
+            catch (Exception ex) when (ex is IOException or System.Text.Json.JsonException) { log(ex); }
+            var changed = false;
+            foreach (var p in ScoreInsights.Reference.Pending)
+            {
+                if (token.IsCancellationRequested) break;
+                if (cache.TryGetValue(p.Name, out var c) && DateTimeOffset.Now - c.At < FpsReference.RequirementsKeep)
+                { if (c.Gpu > 0) ScoreInsights.AddResolved(new(p.Name, c.Gpu, c.Cpu, p.Cap, c.AppId ?? p.SteamAppId, c.Basis, Confidence: "baixa", Store: p.Store) { SourceText = Text["ScorePickFromReq"] }); continue; }
+                try
+                {
+                    var found = await FindGame(p.Name, token);
+                    var d = found is { } f ? ScoreInsights.FromRequirements(p.Name, f.AppId, f.Requirements) : null;
+                    cache[p.Name] = new(p.Name, d?.SteamAppId ?? p.SteamAppId, d?.GpuFps ?? 0, d?.CpuFps ?? 0, d?.Basis, DateTimeOffset.Now); changed = true;
+                    if (d is not null) ScoreInsights.AddResolved(d with { Confidence = "baixa", Cap = p.Cap, Store = p.Store, SteamAppId = p.SteamAppId ?? d.SteamAppId, SourceText = Text["ScorePickFromReq"] });
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
+                await Task.Delay(350, token);
+            }
+            if (changed)
+                try { Directory.CreateDirectory(Path.GetDirectoryName(RequirementsCache)!); File.WriteAllText(RequirementsCache, System.Text.Json.JsonSerializer.Serialize(cache)); }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { log(ex); }
+            BuildInsights();
+        }
+        catch (OperationCanceledException) { }
+        finally { resolving = false; }
+    }
+
+    // The game picker (cards): every game in the list with its 1080p estimate per quality, filtered by the typed text.
+    public sealed record FpsPick(int Index, string Name, string? Cover, string Initials, string Low, string Medium, string High, string Ultra, string LowKind, string MediumKind, string HighKind, string UltraKind, bool Selected, string CapText = "", string Note = "")
+    {
+        public bool HasCap => CapText.Length > 0;
+    }
+    public IReadOnlyList<FpsPick> Picks(string filter)
+    {
+        filter = (filter ?? "").Trim();
+        var list = new List<FpsPick>();
+        static string Kind(int fps) => fps >= 60 ? "good" : fps >= 30 ? "mixed" : "bad";
+        for (var i = 0; i < gameList.Count; i++)
+        {
+            var g = gameList[i];
+            if (filter.Length > 0 && !g.Name.Contains(filter, StringComparison.CurrentCultureIgnoreCase)) continue;
+            string[] fps = ["—", "—", "—", "—"]; string[] kinds = ["none", "none", "none", "none"];
+            if (last is { Cpu1: { } s, CpuAll: { } m, Gpu: { } gpu })
+            {
+                var k = Calibration(g, s, m, gpu);
+                var cells = Enum.GetValues<Preset>().Select(p => ScoreInsights.Estimate(g, Resolution.P1080, p, s, m, gpu)).Select(c => c with { Fps = c.Limiter == Limiter.Cap ? c.Fps : (int)Math.Round(c.Fps * k) }).ToArray();
+                fps = [.. cells.Select(c => c.Fps.ToString(Culture))]; kinds = [.. cells.Select(c => Kind(c.Fps))];
+            }
+            var initials = string.Concat(g.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => char.ToUpperInvariant(w[0])));
+            // A game that caps its own frame rate shows the same number everywhere: say so instead of looking like an error.
+            var capped = g.Cap is { } cap && fps.All(f => f == cap.ToString(Culture)) ? Text.Format("ScorePickCap", cap) : "";
+            list.Add(new(i, g.Name, g.SteamAppId is { Length: > 0 } id ? Catalog.CatalogText.Portrait(id) : null, initials, fps[0], fps[1], fps[2], fps[3], kinds[0], kinds[1], kinds[2], kinds[3], i == gameIndex, capped,
+                Measured?.Invoke(g.Name, g.SteamAppId) is { } me ? Text.Format("ScoreMeasured", Math.Round(me.Avg), Math.Round(me.Low)) :
+                g.Basis is not null && g.Confidence == "" ? Text["ScoreConfSearched"] : g.Confidence switch { "alta" => Text["ScoreConfHigh"], "media" => Text["ScoreConfMid"], "baixa" => Text["ScoreConfLow"], _ => "" }));
+        }
+        return list;
+    }
     public async Task SearchGameAsync(string query)
     {
         query = (query ?? "").Trim();
@@ -366,13 +462,19 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         var game = gameList[gameIndex];
         foreach (var n in new[] { nameof(FpsSource), nameof(SourceALabel), nameof(SourceAUrl), nameof(SourceBLabel), nameof(SourceBUrl) }) OnPropertyChanged(n);
         static string Kind(int fps) => fps >= 60 ? "good" : fps >= 30 ? "mixed" : "bad";
-        foreach (var r in Enum.GetValues<Resolution>())
+        var k = Calibration(game, s, m, g);
+        var table = Enum.GetValues<Resolution>().Select(r => (r, Cells: Enum.GetValues<Preset>().Select(p => ScoreInsights.Estimate(game, r, p, s, m, g)).Select(c => c with { Fps = c.Limiter == Limiter.Cap ? c.Fps : (int)Math.Round(c.Fps * k) }).ToArray())).ToList();
+        FpsMeasured = Measured?.Invoke(game.Name, game.SteamAppId) is { } me ? Text.Format("ScoreMeasuredLine", Math.Round(me.Avg), Math.Round(me.Low)) : "";
+        OnPropertyChanged(nameof(FpsMeasured));
+        double top = Math.Max(60, table.SelectMany(x => x.Cells).Max(c => c.Fps));
+        foreach (var (r, cells) in table)
         {
-            var cells = Enum.GetValues<Preset>().Select(p => ScoreInsights.Estimate(game, r, p, s, m, g)).ToArray();
             var limiter = cells[2].Limiter switch { Limiter.Cpu => Text["ScoreLimitCpu"], Limiter.Gpu => Text["ScoreLimitGpu"], Limiter.Cap => Text["ScoreLimitCap"], _ => Text["ScoreLimitBalanced"] };
             FpsRows.Add(new(Text["ScoreRes" + r], cells[0].Fps.ToString(Culture), cells[1].Fps.ToString(Culture), cells[2].Fps.ToString(Culture), cells[3].Fps.ToString(Culture),
-                Kind(cells[0].Fps), Kind(cells[1].Fps), Kind(cells[2].Fps), Kind(cells[3].Fps), limiter));
+                Kind(cells[0].Fps), Kind(cells[1].Fps), Kind(cells[2].Fps), Kind(cells[3].Fps), limiter,
+                cells[0].Fps / top, cells[1].Fps / top, cells[2].Fps / top, cells[3].Fps / top));
         }
+        OnPropertyChanged(nameof(FpsGameName)); OnPropertyChanged(nameof(FpsGameArt));
     }
     private void Notify()
     {

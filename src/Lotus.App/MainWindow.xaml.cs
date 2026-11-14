@@ -127,6 +127,8 @@ public sealed partial class MainWindow : Window
         };
         driveTimer.Start();
         gameList = new Lotus.Core.Catalog.GameListViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game list"), games.InstalledGames);
+        gameList.StartOn(preferences.Current.GameListChart); // opens on the last list used (first time: Em alta)
+        gameList.ChartChanged = id => preferences.Update(preferences.Current with { GameListChart = id });
         gameDetails = new Lotus.Core.Catalog.GameDetailsViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game details"));
         // "Tempo para zerar" on every game page (Game list and Meus Jogos) and in the diary editor: one remembered lookup per game.
         pageLengths = new Lotus.Core.Diary.GameLengthLookup(diary, gameLengths, ex => Serilog.Log.Warning(ex, "Game length"));
@@ -137,6 +139,10 @@ public sealed partial class MainWindow : Window
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
         games.Heat = cpuHeat;
         WatchCpuHeat();
+        RecoverGpuTune(); // undo a GPU tune left unfinished by a crash
+        Lotus.Infrastructure.Integrations.LotusOverlayLayout.PulseCap = () => integrations.Rtss.GlobalCap();
+        RefreshGeneratedOverlays();
+        _ = Task.Run(() => { var mpo = Lotus.Infrastructure.Benchmark.MpoProbe.Query(); Serilog.Log.Information("Display MPO {Status}", mpo); DispatcherQueue.TryEnqueue(() => benchmark.Mpo = mpo); });
         SetUpPreparation();
         SetUpSaves();
         SetUpUpdates();
@@ -178,6 +184,22 @@ public sealed partial class MainWindow : Window
         tools.Storage = new Lotus.Core.Maintenance.StorageViewModel(new Lotus.Core.Maintenance.StorageScanner(places.Resolve), new Lotus.Infrastructure.Maintenance.ShellFileRecycler(),
             new Lotus.Infrastructure.Maintenance.ExplorerRevealer(), Lotus.Infrastructure.Maintenance.LocalDrives.Read, places.Resolve, text, tools.Journal, ex => Serilog.Log.Warning(ex, "Storage"));
         games.Rtss = integrations.Rtss;
+        // Perfil Jogo is for game sessions: applying it turns on the boost and the game priority; Diário turns both off.
+        powerProfiles.BoostState = () => (preferences.Current.GameBoost, preferences.Current.BoostPower, preferences.Current.BoostNotifications, preferences.Current.BoostRecording, preferences.Current.GamePriority);
+        powerProfiles.PlayingGame = () => lightGame?.Name;
+        powerProfiles.ProfileApplied = id =>
+        {
+            if (id == "game") preferences.Update(preferences.Current with { GameBoost = true, GamePriority = true });
+            else if (id == "daily") preferences.Update(preferences.Current with { GameBoost = false, GamePriority = false });
+        };
+        // FPS reference table: a saved newer copy first, then (weekly at most, if allowed) a quiet check in the background.
+        var fpsUpdater = new Lotus.Infrastructure.Catalog.FpsReferenceUpdater();
+        fpsUpdater.LoadSaved();
+        score.CheckReference = force => fpsUpdater.CheckAsync(preferences.Current.FpsDataUpdates || force, force);
+        _ = Task.Run(async () => { await Task.Delay(TimeSpan.FromSeconds(40)); await fpsUpdater.CheckAsync(preferences.Current.FpsDataUpdates, false); });
+        // Overlay style: never switched under a running game; a pending choice is applied when the game closes.
+        integrations.GameRunning = async () => await Task.Run(games.RunningGame) is not null;
+        sessionHub.Stopped += (_, _) => DispatcherQueue.TryEnqueue(async () => { try { await integrations.OnGameClosedAsync(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Overlay style after game"); } });
         games.AdaptiveSync = () => preferences.Current.AdaptiveSync;
         games.Display = new Lotus.Infrastructure.Games.WindowsDisplaySync();
         games.ScoreLine = (g, r, pc) =>
@@ -199,6 +221,12 @@ public sealed partial class MainWindow : Window
         // Lotus Score: sensors during the tests (3DMark-style) and the player's games for the FPS estimates.
         score.Sensors = () => { var s = monitoring.Snapshot; var g = s?.Gpu.Devices.FirstOrDefault(); return (s?.Cpu.TotalUtilizationPercent.Value, g?.Get(Lotus.Core.Telemetry.GpuSensor.Temperature)?.Value, g?.Get(Lotus.Core.Telemetry.GpuSensor.Power)?.Value); };
         score.FindGame = (q, t) => catalog.RequirementsAsync(q, t);
+        // "Medido no seu PC": the last measurement Lotus took of that game (Preparar e jogar / overlay), when there is one.
+        score.Measured = (name, steamId) =>
+        {
+            var entry = games.InstalledGames().FirstOrDefault(g => (steamId is not null && g.Store == Lotus.Core.Games.GameStores.Steam && g.Id == steamId) || string.Equals(g.Name, name, StringComparison.OrdinalIgnoreCase));
+            return entry is not null && games.LastReport(entry) is { AverageFps: > 0 } r ? (r.AverageFps, r.Low1Fps, r.When) : null;
+        };
         score.InstalledGames = () => games.InstalledGames().Select(g => (g.Name, g.Store == Lotus.Core.Games.GameStores.Steam ? (string?)g.Id : null));
         score.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(score.Busy)) DispatcherQueue.TryEnqueue(() => { UpdateMonitoringDemand(); UpdateLightMode(); }); };
         InitializeComponent();
@@ -216,7 +244,7 @@ public sealed partial class MainWindow : Window
         AppWindow.TitleBar.ButtonForegroundColor = Windows.UI.Color.FromArgb(255, 245, 239, 243);
         // Light / dark / system: the whole window and its dialogs follow the palette live.
         palette.Dispatcher = DispatcherQueue;
-        palette.Changed += (_, _) => ApplyElementTheme();
+        palette.Changed += (_, _) => { ApplyElementTheme(); RefreshGeneratedOverlays(); };
         ApplyElementTheme();
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 820));
         foreach (var section in ViewModel.Items.OrderBy(s => s.Id is "gamelist" or "saves" or "diary" ? 1 : 0)) // design order: Game list and the diary close the list; Settings sits at the bottom
@@ -229,7 +257,7 @@ public sealed partial class MainWindow : Window
             };
             AutomationProperties.SetName(item, section.Title);
             AutomationProperties.SetAutomationId(item, "nav-" + section.Id);
-            ToolTipService.SetToolTip(item, section.Title);
+            ToolTipService.SetToolTip(item, NavTip(section.Title));
             if (section.Id == "settings") Navigation.FooterMenuItems.Add(item); else Navigation.MenuItems.Add(item);
             if (section.Id == "diary") { diaryNav = item; item.InfoBadge = new InfoBadge { Value = diaryPage.Progress.Level }; AutomationProperties.SetHelpText(item, diaryPage.LevelText); }
         }
@@ -351,7 +379,7 @@ public sealed partial class MainWindow : Window
             var section = ViewModel.Items.Single(s => s.Id == (string)item.Tag);
             item.Content = NavLabel(section);
             AutomationProperties.SetName(item, section.Title);
-            ToolTipService.SetToolTip(item, section.Title);
+            ToolTipService.SetToolTip(item, NavTip(section.Title));
         }
         if (ShellRoot.IsLoaded) UpdateNavigationMode(ShellRoot.ActualWidth); // keep icon-only menu when narrow
         UpdatePaneChrome();
@@ -462,7 +490,8 @@ public sealed partial class MainWindow : Window
             if (child is Button { Name: "TogglePaneButton" } button)
             {
                 AutomationProperties.SetName(button, label);
-                ToolTipService.SetToolTip(button, label);
+                // Opens to the right: the button sits at the window's left edge, so a centered tooltip would be cut off.
+                ToolTipService.SetToolTip(button, new ToolTip { Content = label, Placement = Microsoft.UI.Xaml.Controls.Primitives.PlacementMode.Right });
                 return;
             }
             UpdateToggleAccessibility(child, label);
@@ -473,6 +502,10 @@ public sealed partial class MainWindow : Window
         PreferenceWarning.Message = message;
         PreferenceWarning.IsOpen = true;
     }
+    // Menu tooltips open to the right of the item: with the menu collapsed the icons sit at the window's left edge,
+    // and a tooltip centered above them was cut off.
+    private static ToolTip NavTip(string label) => new() { Content = label, Placement = Microsoft.UI.Xaml.Controls.Primitives.PlacementMode.Right };
+
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
         if (updatingNavigation || args.SelectedItem is not NavigationViewItem { Tag: string id } item) return;
@@ -503,7 +536,7 @@ public sealed partial class MainWindow : Window
         if (force || displayedSectionId != group)
         {
             ContentFrame.Navigate(typeof(SectionPage), new SectionViewModel(ViewModel.SelectedSection, text, preferencesViewModel,
-                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, Saves = saveLibrary, GameDetails = gameDetails, Diary = diaryPage, Backup = backup, Updates = updates }, new SuppressNavigationTransitionInfo());
+                !preferences.Current.ReduceMotion, monitoring, memoryAnalysis, ViewModel, experience, benchmark, optimizer, powerProfiles, hardware, games, integrations, score, tools) { Guided = guided, GameList = gameList, Saves = saveLibrary, GameDetails = gameDetails, Diary = diaryPage, Backup = backup, Updates = updates, GpuTune = GpuTune }, new SuppressNavigationTransitionInfo());
             ContentFrame.BackStack.Clear(); displayedSectionId = group;
             Motion.EnterPage(ContentFrame); // new section rises and fades in
         }
@@ -759,7 +792,7 @@ public sealed partial class MainWindow : Window
         if (!visible) experience.Interrupt();
         var demand = MonitoringDemand.For(ViewModel.CurrentRoute, visible, experience.IsAnalyzing);
         memoryAnalysis.SetActive(demand.Analyze);
-        monitoring.SetActive(demand.Collect || score.Busy); // the Score reads temperature/power while its tests run
+        monitoring.SetActive(demand.Collect || score.Busy || gpuTestRunning); // the Score and the GPU stability test read temperature/power while they run
     }
     public void PrepareForClose()
     {
