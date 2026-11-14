@@ -363,6 +363,22 @@ public static class LotusOverlayLayout
         File.WriteAllBytes(target, Resource(FileFor(variant)));
         return target;
     }
+    // A new Lotus version may ship a changed generated layout (Lotus-Lateral, built by tools\New-LotusLateralOverlay.ps1):
+    // its exported copy is renewed when it differs, so an active Lateral picks the change up at the next game. The
+    // player's own designs (Lotus.ovl, Lotus-Neon.ovl) are never rewritten here. True when the copy was renewed.
+    public static bool RefreshGenerated(string? dir = null)
+    {
+        var target = Path.Combine(dir ?? OverlaysDir, FileFor(Lateral));
+        try
+        {
+            if (!File.Exists(target)) return false; // never exported: nothing to renew
+            var shipped = Resource(FileFor(Lateral));
+            if (File.ReadAllBytes(target).AsSpan().SequenceEqual(shipped)) return false;
+            File.WriteAllBytes(target, shipped);
+            return true;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { Serilog.Log.Warning(ex, "Overlay layout refresh"); return false; }
+    }
     // Only a .ovl inside the Lotus overlays folder may be activated.
     public static void Activate(string layoutPath, string configPath, string backupDir, string overlaysDir)
     {

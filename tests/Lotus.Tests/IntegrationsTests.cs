@@ -215,6 +215,22 @@ public sealed class IntegrationsTests : IDisposable
         Assert.Equal(original, File.ReadAllBytes(config));
     }
 
+    [Fact] public void OnlyTheGeneratedLateralLayoutIsRenewed()
+    {
+        var overlays = Path.Combine(root, "Overlays");
+        Assert.False(LotusOverlayLayout.RefreshGenerated(overlays)); // never exported: nothing written
+        var lateral = LotusOverlayLayout.Export(overlays, LotusOverlayLayout.Lateral);
+        var neon = LotusOverlayLayout.Export(overlays, LotusOverlayLayout.Neon);
+        var main = LotusOverlayLayout.Export(overlays, LotusOverlayLayout.Main);
+        var shipped = File.ReadAllBytes(lateral);
+        Assert.False(LotusOverlayLayout.RefreshGenerated(overlays)); // same as shipped
+        File.WriteAllText(lateral, "old Lateral"); File.WriteAllText(neon, "player's Neon"); File.WriteAllText(main, "player's Top");
+        Assert.True(LotusOverlayLayout.RefreshGenerated(overlays));
+        Assert.Equal(shipped, File.ReadAllBytes(lateral));
+        Assert.Equal("player's Neon", File.ReadAllText(neon));
+        Assert.Equal("player's Top", File.ReadAllText(main));
+    }
+
     [Fact] public void HelperUsesOnlyAnExistingLotusDataFolder()
     {
         var data = Path.Combine(root, "Lotus"); Directory.CreateDirectory(data);

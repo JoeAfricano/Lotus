@@ -140,6 +140,7 @@ public sealed partial class MainWindow : Window
         games.Heat = cpuHeat;
         WatchCpuHeat();
         RecoverGpuTune(); // undo a GPU tune left unfinished by a crash
+        _ = Task.Run(() => { if (Lotus.Infrastructure.Integrations.LotusOverlayLayout.RefreshGenerated()) Serilog.Log.Information("Overlay: generated Lateral layout renewed"); });
         SetUpPreparation();
         SetUpSaves();
         SetUpUpdates();
