@@ -66,7 +66,7 @@ public sealed class GpuAutoTuner(IGpuControl control, IGpuLoadTest test, GpuTuni
             if (modes.HasFlag(AutoModes.Undervolt))
             {
                 onStatus?.Invoke("undervolt");
-                uv = await Undervolt(card.UndervoltMhz, card.UndervoltMv, 0, token);
+                uv = await Undervolt("undervolt", card.UndervoltMhz, card.UndervoltMv, 0, token);
             }
             if (modes.HasFlag(AutoModes.Overclock) || modes.HasFlag(AutoModes.Combined))
             {
@@ -77,7 +77,7 @@ public sealed class GpuAutoTuner(IGpuControl control, IGpuLoadTest test, GpuTuni
             {
                 // Keep the clock the overclock reached, with the lowest voltage that holds it.
                 onStatus?.Invoke("combined");
-                combo = await Undervolt((int)Math.Round(best.AvgCoreMhz / 15) * 15, 1000, best.Setting.MemOffsetMhz, token);
+                combo = await Undervolt("combined", (int)Math.Round(best.AvgCoreMhz / 15) * 15, 1000, best.Setting.MemOffsetMhz, token);
             }
             return new(baseline, uv, modes.HasFlag(AutoModes.Overclock) ? oc : null, combo, steps, false) { Current = current };
         }
@@ -102,12 +102,12 @@ public sealed class GpuAutoTuner(IGpuControl control, IGpuLoadTest test, GpuTuni
     }
 
     // Flat curve at mhz, starting at startMv and going 25 mV lower while it stays stable.
-    private async Task<AutoStep?> Undervolt(int mhz, int startMv, int memOffset, CancellationToken token)
+    private async Task<AutoStep?> Undervolt(string mode, int mhz, int startMv, int memOffset, CancellationToken token)
     {
         AutoStep? lastGood = null;
         for (var mv = startMv; mv >= FloorMv; mv -= UvStepMv)
         {
-            var s = await Step(memOffset == 0 ? "undervolt" : "combined", new(0, memOffset, mv, mhz), token);
+            var s = await Step(mode, new(0, memOffset, mv, mhz), token);
             if (s is not { Ok: true }) break;
             lastGood = s;
         }

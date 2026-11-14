@@ -57,6 +57,35 @@ Não usar o "bypass" que libera +3000 MHz de memória (banco de dados modificado
 Perfil 1 = padrão, Perfil 2 = ajuste; Afterburner > Configurações > Perfis: 2D = Perfil 1, 3D = Perfil 2
 (a troca automática depende do RivaTuner instalado). Nunca aplicar ao iniciar o Windows.
 
+## Resultado real no PC do José (14/11/2026) — RTX 5060 (MSI, 8 GB) + Ryzen 5 5500
+
+Ajuste automático do Lotus (aplicado pela memória de controle do Afterburner, 3 min de carga por passo, pontuação = carga de GPU do Lotus Score, sem limite de FPS):
+
+| Passo | Pontos | Temp. máx. | Consumo | Clock médio |
+|---|---|---|---|---|
+| Ajuste que ele já tinha (+184 núcleo / +200 mem, topo 2962 MHz) | 13 648 | 79 °C | 134 W | 2651 MHz |
+| Padrão de fábrica | 12 981 | 80 °C | 130 W | 2516 MHz |
+| Undervolt 950 / 925 / 900 mV @ 2700 MHz | 13 660 / 13 645 / 13 701 | 73 / 71 / 70 °C | 101 / 95 / 92 W | ~2660 MHz |
+| Memória +500 MHz | 12 971 (sem ganho: memória fica em 0) | 80 °C | 130 W | — |
+| Núcleo +100 … +450 MHz (todos estáveis) | 13 339 … 15 116 | 80–81 °C | 134 W | até 2876 MHz |
+| Overclock guardado a 70% (+315) | 14 595 | 80 °C | 134 W | 2776 MHz |
+| OC + undervolt 1000 / 975 / 950 / 925 / 900 mV @ 2775 MHz | 13 957 / 14 028 / 14 067 / 14 086 / 14 050 | 78 / 76 / 74 / 72 / 71 °C | 120 / 112 / 104 / 97 / 93 W | ~2730 MHz |
+
+875 mV foi recusado pela trava (exigiria deslocar os pontos baixos além de +450 MHz). Nenhum passo travou ou reiniciou o driver.
+
+Validação no Black Myth: Wukong Benchmark Tool (1080p Alto, DLSS, limitador 74,97 FPS do RivaTuner como ele joga; frametimes do RivaTuner por ~100 s, 2 passadas):
+
+| Candidato | FPS médio | 1% low | 0,1% low | Desvio do frametime | Consumo | Temp. máx. |
+|---|---|---|---|---|---|---|
+| Ajuste anterior dele | 75 | 63,3 / 62,3 | 56,3 / 58,4 | 0,63 / 1,00 ms | 69–70 W | 60–62 °C |
+| Undervolt 900 mV @ 2700 | 75 | 63,4 / 61,9 | 58,3 / 53,2 | 0,70 / 0,97 ms | 62 W | 59–61 °C |
+| **OC + undervolt 925 mV @ 2775** | 75 | 61,9 / 62,0 | 56,9 / 57,1 | 0,88 / 0,98 ms | **52 W** | **56 °C** |
+| Overclock +315 (1 passada) | 75 | 61,6 | 55,7 | 1,01 ms | 69 W | 61 °C |
+
+Com o limitador, todos ficam nos 75 FPS e as diferenças de frametime e 1% low estão dentro da variação entre passadas. Pelo critério dele (frametime reto > 1% low > temperatura/consumo > FPS), o desempate é temperatura/consumo: **OC + undervolt 925 mV @ 2775 MHz** — mesma fluidez com ~17 W e ~5 °C a menos que o ajuste anterior, e +3% de desempenho sem limite (14 086 vs 13 648 pontos) com 37 W a menos.
+
+Correções que o teste real mostrou: (1) o teste de carga lia o estado da janela fora da thread da interface (COMException 0x8001010E) — corrigido; (2) a frequência de cada ponto da curva na MACM é a de fábrica, sem o offset — a primeira versão subtraía o offset anterior e o clock subia a cada passo (925 mV @ 2700 rodou a ~2851 MHz); corrigido com `GpuCurve` (curva só a partir da frequência de fábrica + trava de segurança), com testes; (3) o PresentMon exige administrador neste PC; a validação usou o RivaTuner.
+
 ## Fontes
 - RTX 5060 OC: https://www.thefpsreview.com/2025/06/13/msi-geforce-rtx-5060-8g-gaming-oc-video-card-review/7 · https://hothardware.com/reviews/nvidia-geforce-rtx-5060-blackwell-gpu-preview?page=5 · https://techpowerup.com/review/msi-geforce-rtx-5060-gaming-oc
 - RTX 5060 Ti OC: https://www.pcgamer.com/hardware/graphics-cards/yes-you-can-overclock-8-gb-graphics-cards-to-bring-the-benchmark-performance-in-line-with-the-16-gb-versions-but-thats-not-quite-the-whole-story/ · https://www.thefpsreview.com/2026/01/12/pny-geforce-rtx-5060-ti-8gb-overclocked-dual-fan-video-card-review/3
