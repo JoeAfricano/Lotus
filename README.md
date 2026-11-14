@@ -35,7 +35,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 | | |
 |---|---|
 | 🎮 **Meus Jogos** | Steam, Epic, GOG e outras lojas num só lugar, com Jogar direto da capa, "Preparar e Jogar" e "Onde eu parei?". |
-| ⚡ **Otimizar sem medo** | Perfis Jogo, Diário e Personalizado que mostram cada mudança antes e podem ser desfeitos. Nada muda sem confirmação. |
+| ⚡ **Otimizar sem medo** | Perfil Jogo só durante o jogo, perfil Diário e o Ajuste da placa automático (undervolt/overclock pelo Afterburner). Tudo mostra cada mudança antes e pode ser desfeito. |
 | 📊 **Lotus Score** | Teste de CPU e GPU, FPS estimado por jogo com fontes e gargalo por resolução. Sem números inventados. |
 | 📔 **Meu diário** | Sessões automáticas, notas, estatísticas, "O que jogar agora?", conquistas e retrospectiva do ano. |
 | 🧰 **Ferramentas** | Check-up do PC num clique, Limpeza Inteligente, memória e processos, arquivos, monitor, "Por que meu jogo fechou?" e mais. Tudo só lendo até você confirmar. |
@@ -69,8 +69,10 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 ## Funções em detalhe
 
 ### Otimizar o PC
-- **Perfis Jogo, Diário e Personalizado.** Antes de aplicar, mostra cada mudança (plano de energia, Modo de Jogo, gravação em segundo plano, taxa do monitor). Depois, verifica o resultado e confirma com uma animação.
-- **Tudo pode ser desfeito.** Nada muda no Windows sem confirmação, e cada mudança fica registrada.
+Abas **Perfis · Desempenho · Ajuste da placa · Restaurar**.
+- **Perfis Jogo e Diário.** Antes de aplicar, mostra cada mudança. O **perfil Jogo vale só enquanto um jogo está aberto** (plano Alto desempenho, gravação em segundo plano desligada e, se quiser, notificações em silêncio) e desfaz tudo quando o jogo fecha; nenhum programa é fechado, os pesados só ficam com prioridade menor. A linha do tempo "O que acontece quando você joga" mostra cada passo ao vivo.
+- **Tudo pode ser desfeito.** Nada muda no Windows sem confirmação, e cada mudança fica registrada (aba Restaurar).
+- **Ajuste da placa (NVIDIA, com MSI Afterburner):** explica undervolt e overclock (para que serve, o que muda, para quem é, o custo) e tem o **ajuste automático**: o Lotus testa a placa como você deixou, o padrão, undervolts, memória e núcleo (3 minutos de carga por passo, para sozinho acima de 83 °C ou se o driver reiniciar), sempre volta a placa ao estado anterior no fim e mostra o resultado de cada passo. Você escolhe o que manter; o Lotus aplica esse ajuste **só enquanto um jogo está aberto** e volta ao padrão quando ele fecha. Também grava os perfis 1 (padrão) e 2 (ajuste) do Afterburner, com cópia e botão para voltar aos perfis de antes. Resultados reais em `docs/LOTUS_GPU_TUNING.md`.
 - **Inicialização.** Lista os programas que abrem com o Windows e permite desligar cada um, com confirmação.
 
 ### Meus Jogos
@@ -95,7 +97,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
   - **Sem:** logo abaixo da taxa **real** do monitor, que o Lotus lê do Windows (por exemplo 74,97 num monitor de 74,973 Hz), ou uma fração exata dela, com V-Sync no jogo e o limite do próprio jogo acima disso (ou desligado), para o RivaTuner mandar. Assim os quadros não fazem fila: a linha fica reta e o atraso cai.
   - **"Por que está travando?"** avisa quando o limite está acima da taxa real do monitor.
 - **FreeSync/G-Sync.** O Lotus pergunta uma vez. Numa placa NVIDIA, o driver responde sozinho. Na AMD e na Intel, a identificação do monitor (EDID) indica se ele suporta e recomenda ativar.
-- **Overlay de FPS** pelo RivaTuner (layout Lotus). O Lotus abre o RivaTuner antes do jogo quando precisa dele.
+- **Overlay de FPS** pelo RivaTuner, em quatro estilos com prévia: **Barra no topo**, **Cartão Neon**, **Lateral** e **Pulse** (gerado nas cores do seu tema, com 1% e 0,1% low em destaque e o gráfico de frametime com a linha do seu limite de FPS). Trocar de estilo reabre o RivaTuner sozinho, sem mexer nos seus limites e perfis; com um jogo aberto, a troca espera ele fechar. O Lotus abre o RivaTuner antes do jogo quando precisa dele.
 - **Geração de quadros:** na NVIDIA, Reflex como opção principal. Na AMD e na Intel, o Lotus indica o limite do jogo ou do driver.
 
 ### Análise em jogo (Ctrl + Shift + L)
@@ -106,15 +108,16 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 
 ### Lotus Score
 - **Teste de CPU e GPU** com notas separadas, estabilidade entre passadas e sensores durante o teste.
-- **FPS estimado** por jogo, resolução e predefinição. Busca qualquer jogo pelos requisitos da Steam e sempre mostra as fontes (pc-builds, How Many FPS, Steam).
+- **FPS estimado** por jogo, resolução e predefinição, num painel com busca e cartões com capa. Base própria de 138 jogos com fontes conferidas (TechSpot, GamersNexus e outras), atualizada toda semana pelo GitHub oficial; qualquer outro jogo pelos requisitos da Steam. Sempre mostra as fontes e a confiança.
+- **Medido no seu PC:** quando você mede um jogo, o FPS medido aparece no lugar da estimativa e calibra as outras.
 - **Gargalo** em cada resolução.
 
-### Desempenho
+### Desempenho (dentro de Otimizar)
 - CPU, RAM, GPU e VRAM ao vivo.
-- **Comparar:** mede o FPS real com PresentMon e compara sessões.
+- **Comparar:** mede o FPS real com PresentMon e compara sessões. Também mostra como os quadros chegaram à tela (**apresentação direta** ou **composta pelo Windows**, cerca de +1 quadro) e se a sua tela tem plano de vídeo extra (MPO).
 
 ### Game list
-- Listas da Steam (em alta, mais bem avaliados, mais vendidos, lançamentos, em breve), com até 250 jogos e rolagem contínua.
+- Listas da Steam (em alta, mais bem avaliados, mais vendidos, lançamentos, em breve) em abas com contagem, com um jogo em destaque no topo, até 250 jogos e rolagem contínua. Filtro de período (semana, mês, ano, sempre) e o Lotus abre na última lista usada.
 - **Tipo de jogo:** uma janela com os tipos mais escolhidos e, em "Avançado", mais de 100 gêneros e temas em grupos (ação, RPG, estratégia, simulação, temas, visual, jogar com amigos…). Escolha vários e veja jogos com qualquer um ou com todos eles.
 - **Preço:** todos, só gratuitos ou sem gratuitos. Também ordenar, nota mínima e esconder os que você já tem.
 - Os filtros valem para todas as listas (inclusive **Mais vendidos**: os mais vendidos de cada tipo) e completam a lista com até 300 jogos populares do tipo escolhido.

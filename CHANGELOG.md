@@ -2,6 +2,25 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.6.0-alpha "Lotus" (14/11/2026)
+
+### Novo
+- **Visual novo (3.0).** Início com destaque de ponta a ponta, biblioteca com capas em primeiro plano, Ferramentas em grupos com busca, kit de design único (tipografia, cantos, menus) e movimentos mais suaves. Cabeçalho da marca refeito.
+- **Prontidão para jogar premium.** O anel grande do Início mostra o número com efeitos nas cores do tema e uma pílula clara ("Pronto para jogar"), atualizando ao vivo com custo mínimo. Novo **Raio-X para jogar** e Check-up do PC direto do Início.
+- **Menu do perfil** (clique no seu nome, no canto inferior esquerdo) maior e centralizado.
+- **Game list:** jogo em destaque no topo, abas com contagem, filtro de período (semana, mês, ano, sempre), troca mais rápida (as listas são buscadas antes) e o Lotus abre na última lista usada.
+- **Lotus Score › FPS estimado** num painel com busca e cartões com capa. Base própria de **138 jogos** com fontes conferidas (TechSpot, GamersNexus e outras), **atualizada toda semana** pelo GitHub oficial, e **"Medido no seu PC"**: o FPS que você mediu aparece no lugar da estimativa e calibra as outras.
+- **Otimizar com abas:** Perfis · Desempenho · Ajuste da placa · Restaurar. O antigo menu Desempenho agora fica aqui.
+- **Perfil Jogo só durante o jogo.** Alto desempenho, gravação em segundo plano desligada e, se quiser, notificações em silêncio enquanto um jogo está aberto; tudo volta quando ele fecha. Nenhum programa é fechado. A linha do tempo "O que acontece quando você joga" mostra cada passo ao vivo. O perfil Personalizado saiu da tela.
+- **Ajuste da placa (NVIDIA + MSI Afterburner).** Undervolt e overclock explicados (para que serve, o que muda, para quem é, o custo), pontos de partida por família de placa (RTX 20 a 50, GTX 16; valores para Radeon no Adrenalin) e o **ajuste automático**: o Lotus testa a placa como você deixou, o padrão, undervolts, memória e núcleo, 3 minutos por passo, para sozinho acima de 83 °C ou se o driver reiniciar, e sempre devolve a placa como estava. Você escolhe o que manter, e o Lotus aplica **só com um jogo aberto**, voltando ao padrão quando ele fecha (sem administrador). Também grava os perfis 1 (padrão) e 2 (ajuste) do Afterburner, com cópia e botão para voltar. No teste real (RTX 5060, Black Myth: Wukong a 75 FPS), o undervolt com overclock deu a mesma fluidez com cerca de 17 W e 5 °C a menos. Detalhes em `docs/LOTUS_GPU_TUNING.md`.
+- **Overlay em quatro estilos com prévia:** Barra no topo, Cartão Neon, **Lateral** e **Pulse** (gerado nas cores do seu tema, com 1% e 0,1% low em destaque e o gráfico de frametime com a linha do seu limite de FPS). A troca reabre o RivaTuner sozinha e espera o jogo fechar se houver um aberto. Seus limites e perfis do RivaTuner continuam iguais.
+- **Comparar (Desempenho)** mostra como os quadros chegaram à tela (apresentação direta ou composta pelo Windows, cerca de +1 quadro) e se a sua tela tem plano de vídeo extra (MPO). Ideia do CapFrameX (MIT), escrita para o Lotus.
+
+### Corrigido
+- Capas que não apareciam em jogos fora da Steam e no painel de FPS (agora também pela Wikipédia).
+- Rótulo "Média" do overlay Lateral aparecia como "Mdia" (o RivaTuner não mostra acentos): agora "AVG".
+- Botões do destaque legíveis nos temas claros, cartões alinhados e textos mais simples em várias telas.
+
 ## 1.5.3-alpha "Lotus" (12/11/2026)
 
 ### Melhorado
