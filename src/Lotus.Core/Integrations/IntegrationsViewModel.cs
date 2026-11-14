@@ -68,7 +68,7 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             CanRestoreLayout = r.Installed && rtss.HasLayoutBackup();
             var active = r.Installed && rtss.LayoutActive();
             LayoutOn = active || (r.Installed && rtss.ActiveLayoutName() is { } name && name.StartsWith("Lotus", StringComparison.OrdinalIgnoreCase)); // incl. the player's own Lotus layouts
-            ActiveVariant = !active ? null : rtss.ActiveLayoutName() switch { "Lotus-Neon" => "neon", "Lotus-Lateral" => "lateral", _ => "top" };
+            ActiveVariant = !active ? null : rtss.ActiveLayoutName() switch { "Lotus-Neon" => "neon", "Lotus-Lateral" => "lateral", "Lotus-Pulse" => "pulse", _ => "top" };
             LayoutStatus = !r.Installed ? "" : active ? Text[rtss.ActiveLayoutName() == "Lotus-Neon" ? "IntLayoutActiveNeon" : "IntLayoutActive"] : rtss.ActiveLayoutName() is { } other ? Text.Format("IntLayoutOther", other) : Text["IntLayoutInactive"];
             var ab = tools.Afterburner(); AfterburnerStatus = ab.Installed ? Text.Format("IntAfterburnerOn", ab.Version ?? "?") : Text["IntNotInstalled"];
             var scs = tools.ScsKiller(); ScsStatus = scs.Installed ? Text.Format("IntScsOn", scs.Version ?? "?") : Text["IntScsOff"];

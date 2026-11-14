@@ -48,6 +48,12 @@ public sealed class BenchmarkViewModel : ObservableObject
     public string Average => Metric(SelectedSession?.Data?.Statistics?.AverageFps, " FPS");
     public string Low1 => Metric(SelectedSession?.Data?.Statistics?.Low1Fps, " FPS");
     public string P99 => Metric(SelectedSession?.Data?.Statistics?.P99Ms, " ms");
+    // How the frames reached the screen in the selected measurement, and whether this display can keep a game on its own
+    // plane under an overlay window (read once by the app).
+    public string PresentModeText => SelectedSession?.Data?.PresentMode is { Length: > 0 } mode
+        ? Text.Format("Pm" + PresentModes.Classify(mode), mode) : "";
+    public MpoStatus Mpo { get; set { field = value; OnPropertyChanged(nameof(MpoText)); } }
+    public string MpoText => Text["Mpo" + Mpo];
     public string Details => SelectedSession is not { } s ? "" : Text.Format("BenchDetails", s.Status, s.Data?.Statistics?.Count ?? s.Data?.Frames.Count ?? 0,
         s.Data?.Statistics?.DurationSeconds.ToString("F2", Culture) ?? "—", Metric(s.Data?.Statistics?.P95Ms, " ms"),
         s.Data?.Statistics?.SpikeCount.ToString(Culture) ?? "—", s.Data?.SwapChain ?? "—", s.Data?.OtherSwapChains ?? 0,
@@ -124,7 +130,7 @@ public sealed class BenchmarkViewModel : ObservableObject
     public void RefreshLanguage() => Notify();
     private void Notify()
     {
-        foreach (var property in new[] { nameof(CanEdit), nameof(Status), nameof(HasResult), nameof(Average), nameof(Low1), nameof(P99), nameof(Details), nameof(Comparison), nameof(HasTargets), nameof(TargetHint) }) OnPropertyChanged(property);
+        foreach (var property in new[] { nameof(CanEdit), nameof(Status), nameof(HasResult), nameof(Average), nameof(Low1), nameof(P99), nameof(Details), nameof(PresentModeText), nameof(MpoText), nameof(Comparison), nameof(HasTargets), nameof(TargetHint) }) OnPropertyChanged(property);
         RefreshCommand?.NotifyCanExecuteChanged(); StartCommand?.NotifyCanExecuteChanged(); StopCommand?.NotifyCanExecuteChanged();
     }
 }

@@ -3440,4 +3440,14 @@ Your games and Windows are not changed.</value></data>
   <data name="GtSaveLotus" xml:space="preserve"><value>Lotus applies the kept tune when a game opens and goes back to defaults when it closes (no administrator, with Lotus open or in the tray)</value></data>
   <data name="GtSaveLotusNone" xml:space="preserve"><value>Keep a result of the automatic tune first (Keep this button).</value></data>
   <data name="GtAutoKeepBodyAuto" xml:space="preserve"><value>Lotus applies it now through Afterburner: {0}. After that it applies it again whenever a game opens and goes back to defaults when it closes (option under Save, below). Afterburner&apos;s Reset button goes back to defaults.</value></data>
+  <data name="OsPulse" xml:space="preserve"><value>Pulse</value></data>
+  <data name="OsPulseShort" xml:space="preserve"><value>Big FPS, graph with reference lines, in your theme&apos;s colors.</value></data>
+  <data name="OsPulseWhat" xml:space="preserve"><value>Lotus&apos;s new style, generated in the colors of the theme you use: big FPS with 1% and 0.1% low highlighted, frametime graph with reference lines and your FPS limit (a flat line right on it is ideal), GPU and CPU with bars, VRAM, RAM and the average. If you change the theme or the limit, Pulse updates when RivaTuner opens again (or when you pick the style again).</value></data>
+  <data name="PmDirect" xml:space="preserve"><value>Direct presentation ✓ ({0}): the game went straight to the screen, no extra Windows frame.</value></data>
+  <data name="PmComposed" xml:space="preserve"><value>Composed by Windows ({0}): Windows merged the game into the desktop, about +1 frame of delay. Fullscreen, or borderless with nothing on top, usually fixes it.</value></data>
+  <data name="PmUnknown" xml:space="preserve"><value>Presentation mode: {0}.</value></data>
+  <data name="MpoSupported" xml:space="preserve"><value>This display has an extra video plane (MPO): a window on top of the game need not delay the picture.</value></data>
+  <data name="MpoNoOverlayPlane" xml:space="preserve"><value>This display has no extra video plane (MPO): any window on top of the game makes Windows compose the picture (+1 frame). RivaTuner overlays don&apos;t have this problem.</value></data>
+  <data name="MpoSwitchedOff" xml:space="preserve"><value>The extra video plane (MPO) is turned off in Windows: windows on top of the game make Windows compose the picture (+1 frame).</value></data>
+  <data name="MpoUnknown" xml:space="preserve"><value>Extra video plane (MPO): not verified.</value></data>
 </root>

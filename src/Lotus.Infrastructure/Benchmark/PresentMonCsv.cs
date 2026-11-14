@@ -20,7 +20,8 @@ public static class PresentMonCsv
         if (time < 0) time = Column("TimeInSeconds");
         var interval = Column("MsBetweenPresents");
         if (interval < 0) interval = Column("msBetweenPresents");
-        var type = Column("FrameType");
+        var type = Column("FrameType"); var modeColumn = Column("PresentMode");
+        var modes = new Dictionary<string, Dictionary<string, int>>(); // per swap chain: present mode → frames
         if (new[] { process, chain, time, interval }.Any(i => i < 0)) throw new InvalidDataException("Unsupported PresentMon CSV schema.");
         var streams = new Dictionary<string, List<FrameSample>>();
         var lossColumns = new[] { Column("EtwEventsLost"), Column("EtwBuffersLost"), Column("OverflowedPresents") };
@@ -40,6 +41,11 @@ public static class PresentMonCsv
             if (type >= 0) types.Add(row[type]);
             // FrameType is preserved as metadata. Frame-generated rows cannot be silently mixed.
             if (type >= 0 && row[type] != "Application") continue;
+            if (modeColumn >= 0 && row[modeColumn].Length > 0)
+            {
+                if (!modes.TryGetValue(row[chain], out var byMode)) modes[row[chain]] = byMode = [];
+                byMode[row[modeColumn]] = byMode.GetValueOrDefault(row[modeColumn]) + 1;
+            }
             if (!streams.TryGetValue(row[chain], out var frames))
             {
                 if (streams.Count >= 64) { truncated = true; break; }
@@ -58,6 +64,7 @@ public static class PresentMonCsv
         IReadOnlyList<FrameSample> samples = dominant.Value ?? [];
         return new(dominant.Key ?? "", Math.Max(0, streams.Count - 1), invalid, total, samples,
             invalid == 0 && !truncated && !losses.Any(v => v > 0) ? BenchmarkMath.Calculate(samples) : null,
-            types.Count == 0 ? "Unavailable" : string.Join(", ", types.Order()), truncated, losses[0], losses[1], losses[2]);
+            types.Count == 0 ? "Unavailable" : string.Join(", ", types.Order()), truncated, losses[0], losses[1], losses[2],
+            dominant.Key is { } key && modes.TryGetValue(key, out var found) ? found.OrderByDescending(m => m.Value).First().Key : null);
     }
 }

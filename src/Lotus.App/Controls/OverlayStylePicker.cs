@@ -18,7 +18,7 @@ public sealed class OverlayStylePicker : UserControl
     private IntegrationsViewModel? vm;
     private string selected = "top";
     private bool picked; // the player chose a tile; until then the selection follows the active layout
-    private readonly StackPanel tileRow = new() { Orientation = Orientation.Horizontal, Spacing = 14 };
+    private readonly Grid tileRow = new() { ColumnSpacing = 14 }; // one column per style: tiles share the width, also in a narrow window
     private readonly Grid stage = new() { Height = 300, CornerRadius = new CornerRadius(16) };
     private readonly TextBlock status = new() { FontSize = 12, FontWeight = FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center };
     private readonly TextBlock title = new() { FontSize = 20, FontWeight = FontWeights.SemiBold };
@@ -102,6 +102,9 @@ public sealed class OverlayStylePicker : UserControl
         tileRow.Children.Add(Tile("top", t["OsTop"], t["OsTopShort"], on == "top"));
         tileRow.Children.Add(Tile("neon", t["OsNeon"], t["OsNeonShort"], on == "neon"));
         tileRow.Children.Add(Tile("lateral", t["OsLateral"], t["OsLateralShort"], on == "lateral"));
+        tileRow.Children.Add(Tile("pulse", t["OsPulse"], t["OsPulseShort"], on == "pulse"));
+        tileRow.ColumnDefinitions.Clear();
+        for (var i = 0; i < tileRow.Children.Count; i++) { tileRow.ColumnDefinitions.Add(new ColumnDefinition()); Grid.SetColumn((FrameworkElement)tileRow.Children[i], i); }
 
         stage.Children.Clear();
         stage.Children.Add(GameScene());
@@ -124,8 +127,44 @@ public sealed class OverlayStylePicker : UserControl
         message.Visibility = message.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private static string Key(string variant) => variant switch { "neon" => "OsNeon", "lateral" => "OsLateral", _ => "OsTop" };
-    private FrameworkElement Drawing(string variant, double scale) => variant switch { "neon" => NeonCard(scale), "lateral" => LateralColumn(scale), _ => TopBar(scale) };
+    private static string Key(string variant) => variant switch { "neon" => "OsNeon", "lateral" => "OsLateral", "pulse" => "OsPulse", _ => "OsTop" };
+    private FrameworkElement Drawing(string variant, double scale) => variant switch { "neon" => NeonCard(scale), "lateral" => LateralColumn(scale), "pulse" => PulsePanel(scale), _ => TopBar(scale) };
+    // Lotus Pulse: big FPS with the lows as pills, the frametime graph with its reference lines, bars below (theme colors).
+    private FrameworkElement PulsePanel(double scale)
+    {
+        var panel = new Border { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(12 * scale), Width = 190 * scale, Padding = new Thickness(12 * scale, 10 * scale, 10 * scale, 10 * scale),
+            Background = new SolidColorBrush(Color.FromArgb(0xA6, 0x12, 0x0A, 0x12)), BorderBrush = new SolidColorBrush(rose), BorderThickness = new Thickness(Math.Max(1, 3 * scale), 0, 0, 0) };
+        var p = new StackPanel { Spacing = 5 * scale };
+        p.Children.Add(new TextBlock { Text = "LOTUS", FontSize = Math.Max(5, 10 * scale), FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(gold), CharacterSpacing = 120 });
+        var top = new Grid(); top.ColumnDefinitions.Add(new ColumnDefinition()); top.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        top.Children.Add(new TextBlock { Text = "75", FontSize = Math.Max(10, 36 * scale), FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Colors.White) });
+        var pills = new StackPanel { Spacing = 4 * scale, VerticalAlignment = VerticalAlignment.Center };
+        foreach (var (k, v, a) in new[] { ("1%", "71", (byte)0x59), ("0.1%", "60", (byte)0x33) })
+            pills.Children.Add(new Border { CornerRadius = new CornerRadius(6 * scale), Padding = new Thickness(6 * scale, 1, 6 * scale, 1), Background = new SolidColorBrush(Color.FromArgb(a, rose.R, rose.G, rose.B)),
+                Child = new TextBlock { Text = k + "  " + v, FontSize = Math.Max(5, 10 * scale), FontWeight = FontWeights.SemiBold, Foreground = new SolidColorBrush(Colors.White) } });
+        Grid.SetColumn(pills, 1); top.Children.Add(pills);
+        p.Children.Add(top);
+        p.Children.Add(new TextBlock { Text = "FPS   13.3 ms", FontSize = Math.Max(5, 10 * scale), FontWeight = FontWeights.SemiBold, Foreground = new SolidColorBrush(rose) });
+        // Graph: reference lines (33.3, 16.7 and the limit) and a nearly flat frametime line.
+        var graph = new Grid { Height = 44 * scale };
+        foreach (var (y, a) in new[] { (0.0, (byte)0x40), (0.5, (byte)0x40), (0.6, (byte)0x99) })
+            graph.Children.Add(new Rectangle { Height = 1, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, y * 44 * scale, 0, 0), Fill = new SolidColorBrush(a == 0x99 ? Color.FromArgb(a, rose.R, rose.G, rose.B) : Color.FromArgb(a, 0xBE, 0xB8, 0xC1)) });
+        var line = new Polyline { Stroke = new SolidColorBrush(rose), StrokeThickness = Math.Max(1, 1.5 * scale) };
+        var w = 160 * scale;
+        for (var i = 0; i <= 24; i++) line.Points.Add(new Windows.Foundation.Point(w * i / 24, 44 * scale * (0.6 + (i == 15 ? -0.18 : (i % 3 - 1) * 0.02))));
+        graph.Children.Add(line);
+        p.Children.Add(graph);
+        foreach (var (k, share) in new[] { ("GPU", 0.71), ("CPU", 0.38) })
+        {
+            p.Children.Add(new TextBlock { Text = k + "  " + (int)(share * 100) + "%  60\u00B0C", FontSize = Math.Max(5, 10 * scale), Foreground = new SolidColorBrush(Colors.White) });
+            var track = new Grid { Height = Math.Max(2, 4 * scale), Background = new SolidColorBrush(Color.FromArgb(0x26, 255, 255, 255)) };
+            track.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(share, GridUnitType.Star) }); track.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1 - share, GridUnitType.Star) });
+            track.Children.Add(new Rectangle { Fill = new SolidColorBrush(rose) });
+            p.Children.Add(track);
+        }
+        panel.Child = p;
+        return panel;
+    }
     // Lotus Lateral: a slim column in the top-left corner, everything stacked.
     private FrameworkElement LateralColumn(double scale)
     {
@@ -172,7 +211,7 @@ public sealed class OverlayStylePicker : UserControl
         var stack = new StackPanel { Spacing = 10 }; stack.Children.Add(mini); stack.Children.Add(info);
         var tile = new Button
         {
-            Width = 260, Padding = new Thickness(12), CornerRadius = new CornerRadius(14), HorizontalContentAlignment = HorizontalAlignment.Stretch, Content = stack,
+            HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Top, Padding = new Thickness(12), CornerRadius = new CornerRadius(14), HorizontalContentAlignment = HorizontalAlignment.Stretch, Content = stack,
             Background = (Brush)Application.Current.Resources[chosen ? "CardHoverBrush" : "CardBrush"],
             BorderThickness = new Thickness(chosen ? 2 : 1),
             BorderBrush = chosen ? HomeMotion.Gradient(new(0, 0), new(1, 1), (0, rose), (1, gold)) : (Brush)Application.Current.Resources["CardBorderBrush"],

@@ -65,6 +65,7 @@
      <Border Grid.Column="1" Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="4"><TextBlock Text="1% LOW" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding Low1}" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
      <Border Grid.Column="2" Style="{StaticResource CompactCardStyle}"><StackPanel Spacing="4"><TextBlock Text="P99 · FRAMETIME" Style="{StaticResource EyebrowStyle}"/><TextBlock Text="{Binding P99}" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
     </Grid>
+    <StackPanel Spacing="4" AutomationProperties.AutomationId="bench-present-mode"><TextBlock Text="{Binding PresentModeText}" Style="{StaticResource BodyStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap"/><TextBlock Text="{Binding MpoText}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
     <TextBlock Text="{Binding Text[BenchChart]}" Style="{StaticResource EyebrowStyle}"/>
     <local:FrametimeChart x:Name="Chart" Height="160"/>
     <ComboBox Header="{Binding Text[BenchBaseline]}" ItemsSource="{Binding Sessions}" SelectedItem="{Binding Baseline, Mode=TwoWay}" DisplayMemberPath="Label" HorizontalAlignment="Stretch"/>

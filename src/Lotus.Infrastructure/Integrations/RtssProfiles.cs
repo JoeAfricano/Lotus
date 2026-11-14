@@ -223,7 +223,7 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
     private string Overlays => overlaysDir ?? LotusOverlayLayout.OverlaysDir;
     public string ExportLayout(string variant = LotusOverlayLayout.Main) => LotusOverlayLayout.Export(Overlays, variant);
     // Active when OverlayEditor uses one of the Lotus layouts (main or Neon) from Lotus's folder.
-    public bool LayoutActive() => LotusOverlayLayout.ActiveLayout(OverlayConfig) is { } active && new[] { LotusOverlayLayout.Main, LotusOverlayLayout.Neon, LotusOverlayLayout.Lateral }
+    public bool LayoutActive() => LotusOverlayLayout.ActiveLayout(OverlayConfig) is { } active && LotusOverlayLayout.Variants
         .Any(v => string.Equals(Path.GetFullPath(active), Path.GetFullPath(Path.Combine(Overlays, LotusOverlayLayout.FileFor(v))), StringComparison.OrdinalIgnoreCase));
     public bool HasLayoutBackup() => File.Exists(Path.Combine(Backups, "OverlayEditor.cfg.original"));
     public string? ActiveLayoutName() => LotusOverlayLayout.ActiveLayout(OverlayConfig) is { Length: > 0 } p ? Path.GetFileNameWithoutExtension(p) : null;
@@ -350,34 +350,53 @@ public static class LotusOverlayLayout
     }
     // Two layouts by the player: "top" (main: "Lotus Top Sombra", a bar across the top) and "neon" (optional card).
     // Third: "lateral", a compact column in the top-left corner (tools\New-LotusLateralOverlay.ps1, Neon's sources).
-    public const string Main = "top", Neon = "neon", Lateral = "lateral";
-    public static string FileFor(string variant) => variant switch { Neon => "Lotus-Neon.ovl", Lateral => "Lotus-Lateral.ovl", _ => "Lotus.ovl" };
-    public static string VariantOf(string? layoutName) => layoutName switch { "Lotus-Neon" => Neon, "Lotus-Lateral" => Lateral, "Lotus" => Main, _ => "" };
-    public static string Text(string variant = Main) => System.Text.Encoding.Latin1.GetString(Resource(FileFor(variant)));
+    // Fourth: "pulse", generated here in the colors of the active theme with the FPS limit line (LotusPulseLayout).
+    public const string Main = "top", Neon = "neon", Lateral = "lateral", Pulse = "pulse";
+    public static string FileFor(string variant) => variant switch { Neon => "Lotus-Neon.ovl", Lateral => "Lotus-Lateral.ovl", Pulse => "Lotus-Pulse.ovl", _ => "Lotus.ovl" };
+    public static string VariantOf(string? layoutName) => layoutName switch { "Lotus-Neon" => Neon, "Lotus-Lateral" => Lateral, "Lotus-Pulse" => Pulse, "Lotus" => Main, _ => "" };
+    public static readonly string[] Variants = [Main, Neon, Lateral, Pulse];
+    // Set by the app: the active theme's colors and RivaTuner's global FPS limit, read when Pulse is (re)generated.
+    public static LotusPulseLayout.Colors PulseColors { get; set; } = LotusPulseLayout.Default;
+    public static Func<double?>? PulseCap { get; set; }
+    private static byte[] Bytes(string variant)
+    {
+        if (variant != Pulse) return Resource(FileFor(variant));
+        var neon = System.Text.Encoding.Latin1.GetString(Resource(FileFor(Neon)));
+        var sources = neon[neon.IndexOf("[Source0]", StringComparison.Ordinal)..neon.IndexOf("[Layer0]", StringComparison.Ordinal)];
+        double? cap = null;
+        try { cap = PulseCap?.Invoke(); } catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { Serilog.Log.Debug(ex, "Pulse: FPS limit"); }
+        return System.Text.Encoding.Latin1.GetBytes(LotusPulseLayout.Build(sources, PulseColors, cap));
+    }
+    public static string Text(string variant = Main) => System.Text.Encoding.Latin1.GetString(Bytes(variant));
     public static string Export(string? dir = null, string variant = Main)
     {
         var folder = dir ?? OverlaysDir;
         Directory.CreateDirectory(folder);
         File.WriteAllBytes(Path.Combine(folder, ArtFile), Resource(ArtFile)); // EmbeddedImage= expects it beside the layout
         var target = Path.Combine(folder, FileFor(variant));
-        File.WriteAllBytes(target, Resource(FileFor(variant)));
+        File.WriteAllBytes(target, Bytes(variant));
         return target;
     }
     // A new Lotus version may ship a changed generated layout (Lotus-Lateral, built by tools\New-LotusLateralOverlay.ps1):
-    // its exported copy is renewed when it differs, so an active Lateral picks the change up at the next game. The
+    // its exported copy is renewed when it differs; RivaTuner reads it the next time it starts. The
     // player's own designs (Lotus.ovl, Lotus-Neon.ovl) are never rewritten here. True when the copy was renewed.
     public static bool RefreshGenerated(string? dir = null)
     {
-        var target = Path.Combine(dir ?? OverlaysDir, FileFor(Lateral));
-        try
+        var renewed = false;
+        foreach (var variant in new[] { Lateral, Pulse }) // Pulse also follows the theme and the FPS limit
         {
-            if (!File.Exists(target)) return false; // never exported: nothing to renew
-            var shipped = Resource(FileFor(Lateral));
-            if (File.ReadAllBytes(target).AsSpan().SequenceEqual(shipped)) return false;
-            File.WriteAllBytes(target, shipped);
-            return true;
+            var target = Path.Combine(dir ?? OverlaysDir, FileFor(variant));
+            try
+            {
+                if (!File.Exists(target)) continue; // never exported: nothing to renew
+                var shipped = Bytes(variant);
+                if (File.ReadAllBytes(target).AsSpan().SequenceEqual(shipped)) continue;
+                File.WriteAllBytes(target, shipped);
+                renewed = true;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { Serilog.Log.Warning(ex, "Overlay layout refresh"); }
         }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { Serilog.Log.Warning(ex, "Overlay layout refresh"); return false; }
+        return renewed;
     }
     // Only a .ovl inside the Lotus overlays folder may be activated.
     public static void Activate(string layoutPath, string configPath, string backupDir, string overlaysDir)

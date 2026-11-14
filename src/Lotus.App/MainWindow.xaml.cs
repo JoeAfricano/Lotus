@@ -140,7 +140,9 @@ public sealed partial class MainWindow : Window
         games.Heat = cpuHeat;
         WatchCpuHeat();
         RecoverGpuTune(); // undo a GPU tune left unfinished by a crash
-        _ = Task.Run(() => { if (Lotus.Infrastructure.Integrations.LotusOverlayLayout.RefreshGenerated()) Serilog.Log.Information("Overlay: generated Lateral layout renewed"); });
+        Lotus.Infrastructure.Integrations.LotusOverlayLayout.PulseCap = () => integrations.Rtss.GlobalCap();
+        RefreshGeneratedOverlays();
+        _ = Task.Run(() => { var mpo = Lotus.Infrastructure.Benchmark.MpoProbe.Query(); Serilog.Log.Information("Display MPO {Status}", mpo); DispatcherQueue.TryEnqueue(() => benchmark.Mpo = mpo); });
         SetUpPreparation();
         SetUpSaves();
         SetUpUpdates();
@@ -242,7 +244,7 @@ public sealed partial class MainWindow : Window
         AppWindow.TitleBar.ButtonForegroundColor = Windows.UI.Color.FromArgb(255, 245, 239, 243);
         // Light / dark / system: the whole window and its dialogs follow the palette live.
         palette.Dispatcher = DispatcherQueue;
-        palette.Changed += (_, _) => ApplyElementTheme();
+        palette.Changed += (_, _) => { ApplyElementTheme(); RefreshGeneratedOverlays(); };
         ApplyElementTheme();
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 820));
         foreach (var section in ViewModel.Items.OrderBy(s => s.Id is "gamelist" or "saves" or "diary" ? 1 : 0)) // design order: Game list and the diary close the list; Settings sits at the bottom

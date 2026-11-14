@@ -3440,4 +3440,14 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GtSaveLotus" xml:space="preserve"><value>O Lotus aplica o ajuste mantido quando um jogo abre e volta ao padrão quando ele fecha (sem administrador, com o Lotus aberto ou na bandeja)</value></data>
   <data name="GtSaveLotusNone" xml:space="preserve"><value>Mantenha um resultado do ajuste automático primeiro (botão Manter este).</value></data>
   <data name="GtAutoKeepBodyAuto" xml:space="preserve"><value>O Lotus aplica agora pelo Afterburner: {0}. Depois, ele aplica de novo sempre que um jogo abrir e volta ao padrão quando fechar (opção em Salvar, logo abaixo). O botão Reset do Afterburner volta ao padrão.</value></data>
+  <data name="OsPulse" xml:space="preserve"><value>Pulse</value></data>
+  <data name="OsPulseShort" xml:space="preserve"><value>FPS grande, gráfico com linhas de referência, nas cores do seu tema.</value></data>
+  <data name="OsPulseWhat" xml:space="preserve"><value>O estilo novo do Lotus, gerado nas cores do tema que você usa: FPS grande com 1% e 0,1% low em destaque, gráfico de frametime com linhas de referência e do seu limite de FPS (a linha reta encostada nela é o ideal), GPU e CPU com barras, VRAM, RAM e a média. Se você trocar o tema ou o limite, o Pulse se atualiza quando o RivaTuner abrir de novo (ou ao escolher o estilo outra vez).</value></data>
+  <data name="PmDirect" xml:space="preserve"><value>Apresentação direta ✓ ({0}): o jogo foi direto para a tela, sem quadro extra do Windows.</value></data>
+  <data name="PmComposed" xml:space="preserve"><value>Composto pelo Windows ({0}): o Windows juntou o jogo à área de trabalho, cerca de +1 quadro de atraso. Tela cheia ou janela sem borda sem nada por cima costuma resolver.</value></data>
+  <data name="PmUnknown" xml:space="preserve"><value>Modo de apresentação: {0}.</value></data>
+  <data name="MpoSupported" xml:space="preserve"><value>Esta tela tem plano de vídeo extra (MPO): uma janela por cima do jogo não precisa atrasar a imagem.</value></data>
+  <data name="MpoNoOverlayPlane" xml:space="preserve"><value>Esta tela não tem plano de vídeo extra (MPO): qualquer janela por cima do jogo faz o Windows compor a imagem (+1 quadro). Overlays do RivaTuner não têm esse problema.</value></data>
+  <data name="MpoSwitchedOff" xml:space="preserve"><value>O plano de vídeo extra (MPO) está desligado no Windows: janelas por cima do jogo fazem o Windows compor a imagem (+1 quadro).</value></data>
+  <data name="MpoUnknown" xml:space="preserve"><value>Plano de vídeo extra (MPO): não verificado.</value></data>
 </root>

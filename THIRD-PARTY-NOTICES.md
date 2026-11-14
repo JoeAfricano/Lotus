@@ -8,6 +8,10 @@ O Lotus usa ou se inspira nos projetos abaixo. Cada um mantém a própria licen�
   Usado como referência técnica para descoberta de jogos, leitura de inicialização e recursos de jogos do Windows. O ResetExplode não é distribuído com o Lotus. Veja `docs/LOTUS_RESETEXPLODE_REFERENCE.md`.
   > Copyright (c) 2026 Gustavo (GustavoReset). Permission is hereby granted, free of charge, to any person obtaining a copy of this software ... (texto completo da licença MIT no link acima).
 
+- **CapFrameX**, por DevTechProfile (CXWorld), licença MIT: https://github.com/CXWorld/CapFrameX
+  Ideia da checagem de plano de vídeo extra (MPO) e da leitura do modo de apresentação do PresentMon, reescritas para o Lotus a partir da documentação do Windows (`MpoProbe`, `PresentModes`). O CapFrameX não é distribuído com o Lotus.
+  > Copyright (c) 2018-2026 DevTechProfile. Permission is hereby granted, free of charge, to any person obtaining a copy of this software ... (texto completo da licença MIT no link acima).
+
 ## Dependências (NuGet)
 
 - Microsoft.WindowsAppSDK e Microsoft.Windows.SDK.BuildTools: licença da Microsoft (MIT / Windows SDK).
