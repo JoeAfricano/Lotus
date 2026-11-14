@@ -13,6 +13,8 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 ![.NET](https://img.shields.io/badge/.NET-10%20%C2%B7%20WinUI%203-512bd4)
 [![License](https://img.shields.io/badge/licen%C3%A7a-MIT-3b8c5a)](LICENSE)
 
+**Imagens referentes a versão 1.5 - Versão 1.6 Ainda experimental, recomendamos a utilização da 1.5 por enquanto!**
+
 [**Baixar o Lotus**](../../releases/latest) · [Novidades](CHANGELOG.md) · [Privacidade](PRIVACY.md) · [Reportar um problema](../../issues/new/choose)
 
 <img src="docs/images/inicio-153.png" width="860" alt="Início do Lotus"/>
