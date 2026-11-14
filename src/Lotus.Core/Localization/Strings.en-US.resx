@@ -3425,4 +3425,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GtAutoKeep" xml:space="preserve"><value>Keep this</value></data>
   <data name="GtAutoKeepTitle" xml:space="preserve"><value>Keep this tune?</value></data>
   <data name="GtAutoKeepBody" xml:space="preserve"><value>Lotus applies it now through Afterburner: {0}. To use it only in games, save it to Afterburner&apos;s Profile 2 (see below). Afterburner&apos;s Reset button goes back to stock.</value></data>
+  <data name="GtAutoStatuscurrent" xml:space="preserve"><value>Measuring the card as you left it…</value></data>
+  <data name="GtAutoModecurrent" xml:space="preserve"><value>Your current tune</value></data>
+  <data name="GtAutoAsIs" xml:space="preserve"><value>as it was</value></data>
 </root>

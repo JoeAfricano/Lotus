@@ -36,6 +36,7 @@ public sealed class GpuAutoTunerTests
         Assert.Equal(750, r.Overclock!.Setting.MemOffsetMhz);     // +1000 was slower than +750
         Assert.Equal(175, r.Overclock.Setting.CoreOffsetMhz);     // last stable +250, kept at 70%
         Assert.NotNull(r.Combined);
+        Assert.NotNull(r.Current);                                  // the player's own state was measured first
         Assert.True(card.Restored);                               // the card goes back as it was
         Assert.Equal(GpuSetting.Stock, card.Applied);
     }

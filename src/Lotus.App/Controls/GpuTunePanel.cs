@@ -62,18 +62,18 @@ public sealed class GpuTunePanel : UserControl
         auto.Children.Add(autoActions);
         if (!vm.CanAuto && !vm.Testing) auto.Children.Add(Body(t["GtAutoNeeds"], true));
         if (vm.AutoStatus.Length > 0) auto.Children.Add(new TextBlock { Text = vm.AutoStatus, FontWeight = FontWeights.SemiBold, Foreground = Res("GoldBrush"), TextWrapping = TextWrapping.Wrap });
-        foreach (var s in vm.AutoSteps.TakeLast(12)) auto.Children.Add(Body($"{(s.Ok ? "✓" : "✕")}  {t["GtAutoMode" + s.Mode]} · {s.Setting} · {t.Format("GtAutoLine", Math.Round(s.Score), Math.Round(s.MaxTempC), Math.Round(s.AvgCoreMhz), Math.Round(s.AvgPowerW))}", !s.Ok));
+        foreach (var s in vm.AutoSteps.TakeLast(12)) auto.Children.Add(Body($"{(s.Ok ? "✓" : "✕")}  {t["GtAutoMode" + s.Mode]} · {(s.Mode == "current" ? t["GtAutoAsIs"] : s.Setting.ToString())} · {t.Format("GtAutoLine", Math.Round(s.Score), Math.Round(s.MaxTempC), Math.Round(s.AvgCoreMhz), Math.Round(s.AvgPowerW))}", !s.Ok));
         if (vm.Report is { Baseline: { } baseStep } rep)
         {
             auto.Children.Add(new TextBlock { Text = t["GtAutoResults"], FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 6, 0, 0) });
-            foreach (var (key, step) in new[] { ("baseline", (AutoStep?)baseStep), ("undervolt", rep.Undervolt), ("overclock", rep.Overclock), ("combined", rep.Combined) })
+            foreach (var (key, step) in new[] { ("current", rep.Current), ("baseline", (AutoStep?)baseStep), ("undervolt", rep.Undervolt), ("overclock", rep.Overclock), ("combined", rep.Combined) })
             {
                 if (step is null) { auto.Children.Add(Body(t["GtAutoMode" + key] + " · " + t["GtAutoNone"], true)); continue; }
                 var row = new Grid { ColumnSpacing = 12 };
                 row.ColumnDefinitions.Add(new ColumnDefinition()); row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 var gain = baseStep.Score > 0 ? (step.Score / baseStep.Score - 1) * 100 : 0;
-                row.Children.Add(Body($"{t["GtAutoMode" + key]} · {step.Setting} · {t.Format("GtAutoSummary", gain.ToString("+0.0;-0.0;0", System.Globalization.CultureInfo.GetCultureInfo(t.Language)), Math.Round(step.MaxTempC), Math.Round(step.AvgPowerW))}"));
-                if (key != "baseline" && vm.ApplySetting is { } apply)
+                row.Children.Add(Body($"{t["GtAutoMode" + key]} · {(key == "current" ? t["GtAutoAsIs"] : step.Setting.ToString())} · {t.Format("GtAutoSummary", gain.ToString("+0.0;-0.0;0", System.Globalization.CultureInfo.GetCultureInfo(t.Language)), Math.Round(step.MaxTempC), Math.Round(step.AvgPowerW))}"));
+                if (key is not ("baseline" or "current") && vm.ApplySetting is { } apply)
                 {
                     var keep = new Button { Content = t["GtAutoKeep"], Style = (Style)Application.Current.Resources["SoftButtonStyle"] };
                     var chosen = step.Setting;

@@ -36,7 +36,9 @@ public sealed partial class MainWindow
     private readonly Lotus.Infrastructure.Integrations.AfterburnerControl afterburner = new();
     private async Task<AutoTuneReport> AutoTuneAsync(AutoModes modes, IProgress<AutoStep> step, IProgress<string> status, CancellationToken token)
     {
-        var tuner = new GpuAutoTuner(afterburner, new LoadTest(this), GpuTuning.For(experience.GpuModel), s => step.Report(s), s => status.Report(s));
+        var tuner = new GpuAutoTuner(afterburner, new LoadTest(this), GpuTuning.For(experience.GpuModel),
+            s => { Serilog.Log.Information("GPU auto step {Mode} {Setting} {Verdict} score {Score:0.0} temp {Temp:0} clock {Clock:0} power {Power:0}", s.Mode, s.Setting.ToString(), s.Verdict, s.Score, s.MaxTempC, s.AvgCoreMhz, s.AvgPowerW); step.Report(s); },
+            s => status.Report(s));
         return await Task.Run(() => tuner.RunAsync(modes, token), token);
     }
     // At start: a tune that never finished (Lotus or the PC stopped mid-test) is undone as soon as Afterburner is open.

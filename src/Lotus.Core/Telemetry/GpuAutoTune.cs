@@ -34,7 +34,10 @@ public sealed record AutoStep(string Mode, GpuSetting Setting, TuneVerdict Verdi
     public bool Ok => Verdict is TuneVerdict.Stable or TuneVerdict.Throttled; // throttled = held back by power/heat, not unstable
 }
 
-public sealed record AutoTuneReport(AutoStep? Baseline, AutoStep? Undervolt, AutoStep? Overclock, AutoStep? Combined, IReadOnlyList<AutoStep> Steps, bool Cancelled, string? Stopped = null);
+public sealed record AutoTuneReport(AutoStep? Baseline, AutoStep? Undervolt, AutoStep? Overclock, AutoStep? Combined, IReadOnlyList<AutoStep> Steps, bool Cancelled, string? Stopped = null)
+{
+    public AutoStep? Current { get; init; } // the card as the player had it (measured before any change)
+}
 
 [Flags] public enum AutoModes { Undervolt = 1, Overclock = 2, Combined = 4, All = 7 }
 
@@ -50,9 +53,12 @@ public sealed class GpuAutoTuner(IGpuControl control, IGpuLoadTest test, GpuTuni
     {
         if (!control.Available) return new(null, null, null, null, [], false, "unavailable");
         if (!control.SaveOriginal()) return new(null, null, null, null, [], false, "journal");
-        AutoStep? baseline = null, uv = null, oc = null, combo = null;
+        AutoStep? baseline = null, uv = null, oc = null, combo = null, current = null;
         try
         {
+            // The player's own setting is a candidate too: measured first, before anything is applied.
+            onStatus?.Invoke("current");
+            current = await Measure("current", null, token);
             onStatus?.Invoke("baseline");
             baseline = await Step("baseline", GpuSetting.Stock, token);
             if (baseline is not { Ok: true }) return new(baseline, null, null, null, steps, false, "baseline");
@@ -73,16 +79,19 @@ public sealed class GpuAutoTuner(IGpuControl control, IGpuLoadTest test, GpuTuni
                 onStatus?.Invoke("combined");
                 combo = await Undervolt((int)Math.Round(best.AvgCoreMhz / 15) * 15, 1000, best.Setting.MemOffsetMhz, token);
             }
-            return new(baseline, uv, modes.HasFlag(AutoModes.Overclock) ? oc : null, combo, steps, false);
+            return new(baseline, uv, modes.HasFlag(AutoModes.Overclock) ? oc : null, combo, steps, false) { Current = current };
         }
-        catch (OperationCanceledException) { return new(baseline, uv, oc, combo, steps, true); }
+        catch (OperationCanceledException) { return new(baseline, uv, oc, combo, steps, true) { Current = current }; }
         finally { control.RestoreOriginal(); } // the card goes back as it was; the player chooses what to keep
     }
 
-    private async Task<AutoStep?> Step(string mode, GpuSetting setting, CancellationToken token)
+    private Task<AutoStep?> Step(string mode, GpuSetting setting, CancellationToken token) => Measure(mode, setting, token);
+    // setting null = measure the card as it is (no change).
+    private async Task<AutoStep?> Measure(string mode, GpuSetting? apply, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        if (!control.Apply(setting)) return null;
+        var setting = apply ?? new GpuSetting(0, 0);
+        if (apply is not null && !control.Apply(apply)) return null;
         await Task.Delay(Settle, token);
         var (samples, reset, score) = await test.RunAsync(StepLength, null, token);
         var r = GpuTuning.Judge(new(TuneGoal.Overclock, setting.CoreOffsetMhz, setting.MemOffsetMhz, setting.FlatMv ?? 0, 0), samples, reset, null, card);

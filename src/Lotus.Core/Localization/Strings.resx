@@ -3425,4 +3425,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GtAutoKeep" xml:space="preserve"><value>Manter este</value></data>
   <data name="GtAutoKeepTitle" xml:space="preserve"><value>Manter este ajuste?</value></data>
   <data name="GtAutoKeepBody" xml:space="preserve"><value>O Lotus aplica agora pelo Afterburner: {0}. Para valer só nos jogos, salve no Perfil 2 do Afterburner (veja abaixo). Botão Reset do Afterburner volta ao padrão.</value></data>
+  <data name="GtAutoStatuscurrent" xml:space="preserve"><value>Medindo a placa como você deixou…</value></data>
+  <data name="GtAutoModecurrent" xml:space="preserve"><value>Seu ajuste atual</value></data>
+  <data name="GtAutoAsIs" xml:space="preserve"><value>como estava</value></data>
 </root>
