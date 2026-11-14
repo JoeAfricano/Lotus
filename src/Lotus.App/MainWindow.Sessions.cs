@@ -27,6 +27,7 @@ public sealed partial class MainWindow
         if (sessions.Update(running, DateTimeOffset.Now) is { } done) OnSessionFinished(done);
         if (running is null) ShowPendingResumePrompt();
         await UpdateBoostAsync(running);
+        await UpdateGameTuneAsync(running);
         var wantPriority = preferences.Current.GamePriority && running is not null && !DevBesideInstalled();
         try
         {

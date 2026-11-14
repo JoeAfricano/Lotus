@@ -80,6 +80,57 @@ public sealed partial class GpuTuneViewModel(ITextCatalog text, Func<TuneReadine
     [ObservableProperty] private string autoStatus = "";
     [ObservableProperty] private AutoTuneReport? report;
     public bool CanAuto => AutoTune is not null && !Testing && Ready.Nvidia && (AutoAvailable?.Invoke() ?? false);
+
+    // ---- "Salvar para todos os jogos": the tune in use goes to Afterburner's Profile 2 (one UAC), or, without
+    // administrator, Lotus applies the kept tune itself while a game is open ----
+    public Func<Task<int>>? SaveToProfiles { get; init; }   // 0 ok, 1223 UAC declined, 6 rolled back, other = not possible
+    public Func<Task<int>>? RestoreProfiles { get; init; }
+    public Func<bool>? HasProfilesBackup { get; init; }
+    public Action<GpuSetting>? Kept { get; init; }          // remembered for the no-administrator option
+    public Func<GpuSetting?>? KeptSetting { get; init; }
+    public Func<bool>? GetOnGames { get; init; }
+    public Action<bool>? SetOnGames { get; init; }
+    [ObservableProperty] private string saveStatus = "";
+    [ObservableProperty] private bool saving;
+    public bool CanSave => SaveToProfiles is not null && !Testing && !Saving && (AutoAvailable?.Invoke() ?? false);
+    public bool CanRestoreProfiles => RestoreProfiles is not null && !Saving && (HasProfilesBackup?.Invoke() ?? false);
+    public bool HasKept => KeptSetting?.Invoke() is not null;
+    public bool TuneOnGames
+    {
+        get => GetOnGames?.Invoke() ?? false;
+        set { if (value != TuneOnGames && (!value || HasKept)) { SetOnGames?.Invoke(value); OnPropertyChanged(); } }
+    }
+    partial void OnSavingChanged(bool value) { OnPropertyChanged(nameof(CanSave)); OnPropertyChanged(nameof(CanRestoreProfiles)); }
+
+    public bool Keep(GpuSetting setting)
+    {
+        if (ApplySetting?.Invoke(setting) != true) return false;
+        Kept?.Invoke(setting); OnPropertyChanged(nameof(HasKept));
+        return true;
+    }
+
+    public async Task SaveAsync()
+    {
+        if (!CanSave || SaveToProfiles is null) return;
+        Saving = true; SaveStatus = Text["GtSaveSaving"];
+        try
+        {
+            var code = await SaveToProfiles();
+            SaveStatus = Text[code switch { 0 => "GtSaveOk", 1223 => "GtSaveDeclined", 6 => "GtSaveRolledBack", _ => "GtSaveFailed" }];
+            if (code == 0) Refresh();
+        }
+        catch (Exception ex) { log?.Invoke(ex); SaveStatus = Text["GtSaveFailed"]; }
+        finally { Saving = false; }
+    }
+
+    public async Task RestoreProfilesAsync()
+    {
+        if (!CanRestoreProfiles || RestoreProfiles is null) return;
+        Saving = true;
+        try { var code = await RestoreProfiles(); SaveStatus = Text[code switch { 0 => "GtSaveRestored", 1223 => "GtSaveDeclined", _ => "GtSaveFailed" }]; if (code == 0) Refresh(); }
+        catch (Exception ex) { log?.Invoke(ex); SaveStatus = Text["GtSaveFailed"]; }
+        finally { Saving = false; }
+    }
     partial void OnReadyChanged(TuneReadiness value) => OnPropertyChanged(nameof(CanAuto));
     public async Task AutoAsync(AutoModes modes)
     {

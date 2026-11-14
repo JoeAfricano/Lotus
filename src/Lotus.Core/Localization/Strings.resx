@@ -3428,4 +3428,18 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GtAutoStatuscurrent" xml:space="preserve"><value>Medindo a placa como você deixou…</value></data>
   <data name="GtAutoModecurrent" xml:space="preserve"><value>Seu ajuste atual</value></data>
   <data name="GtAutoAsIs" xml:space="preserve"><value>como estava</value></data>
+  <data name="GtSaveBodyAuto" xml:space="preserve"><value>O Lotus grava o ajuste que a placa está usando agora no Perfil 2 do Afterburner, deixa o Perfil 1 no padrão de fábrica e liga 3D = Perfil 2 e 2D = Perfil 1. Assim o ajuste entra sozinho quando um jogo abre, mesmo com o Lotus fechado. O Windows pede permissão uma vez (UAC); antes, o Lotus guarda uma cópia dos perfis e confere se o Afterburner carregou certo. Se não carregar, volta tudo como estava.</value></data>
+  <data name="GtSaveRun" xml:space="preserve"><value>Salvar para todos os jogos</value></data>
+  <data name="GtSaveConfirmTitle" xml:space="preserve"><value>Salvar o ajuste nos perfis do Afterburner?</value></data>
+  <data name="GtSaveConfirmBody" xml:space="preserve"><value>O Afterburner fecha e abre de novo por alguns segundos. Perfil 2 = o ajuste de agora, Perfil 1 = padrão de fábrica, 3D = Perfil 2 e 2D = Perfil 1. Seus perfis atuais ficam guardados para voltar quando quiser.</value></data>
+  <data name="GtSaveOk" xml:space="preserve"><value>Pronto: o ajuste está no Perfil 2 e entra sozinho nos jogos. Na área de trabalho, a placa fica no padrão.</value></data>
+  <data name="GtSaveDeclined" xml:space="preserve"><value>Nada mudou: a permissão do Windows foi recusada.</value></data>
+  <data name="GtSaveRolledBack" xml:space="preserve"><value>O Afterburner não carregou o ajuste como gravado, então o Lotus voltou seus perfis como estavam. Nada mudou.</value></data>
+  <data name="GtSaveFailed" xml:space="preserve"><value>Não deu para salvar agora (Afterburner aberto e com uma placa só?). Nada mudou.</value></data>
+  <data name="GtSaveRestore" xml:space="preserve"><value>Voltar aos perfis de antes</value></data>
+  <data name="GtSaveRestored" xml:space="preserve"><value>Seus perfis do Afterburner voltaram como eram antes do Lotus.</value></data>
+  <data name="GtSaveSaving" xml:space="preserve"><value>Salvando e conferindo no Afterburner…</value></data>
+  <data name="GtSaveLotus" xml:space="preserve"><value>Sem permissão de administrador: o Lotus aplica o ajuste mantido quando um jogo abre e volta ao padrão quando fecha (só com o Lotus aberto)</value></data>
+  <data name="GtSaveLotusNone" xml:space="preserve"><value>Mantenha um resultado do ajuste automático primeiro (botão Manter este).</value></data>
+  <data name="GtAutoKeepBodyAuto" xml:space="preserve"><value>O Lotus aplica agora pelo Afterburner: {0}. Para valer em todos os jogos, use Salvar para todos os jogos logo abaixo. O botão Reset do Afterburner volta ao padrão.</value></data>
 </root>

@@ -73,11 +73,11 @@ public sealed class GpuTunePanel : UserControl
                 row.ColumnDefinitions.Add(new ColumnDefinition()); row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 var gain = baseStep.Score > 0 ? (step.Score / baseStep.Score - 1) * 100 : 0;
                 row.Children.Add(Body($"{t["GtAutoMode" + key]} · {(key == "current" ? t["GtAutoAsIs"] : step.Setting.ToString())} · {t.Format("GtAutoSummary", gain.ToString("+0.0;-0.0;0", System.Globalization.CultureInfo.GetCultureInfo(t.Language)), Math.Round(step.MaxTempC), Math.Round(step.AvgPowerW))}"));
-                if (key is not ("baseline" or "current") && vm.ApplySetting is { } apply)
+                if (key is not ("baseline" or "current") && vm.ApplySetting is not null)
                 {
                     var keep = new Button { Content = t["GtAutoKeep"], Style = (Style)Application.Current.Resources["SoftButtonStyle"] };
                     var chosen = step.Setting;
-                    keep.Click += async (_, _) => { if (await Confirm(t["GtAutoKeepTitle"], t.Format("GtAutoKeepBody", chosen))) apply(chosen); };
+                    keep.Click += async (_, _) => { if (await Confirm(t["GtAutoKeepTitle"], t.Format("GtAutoKeepBodyAuto", chosen))) vm.Keep(chosen); };
                     Grid.SetColumn(keep, 1); row.Children.Add(keep);
                 }
                 auto.Children.Add(row);
@@ -184,7 +184,25 @@ public sealed class GpuTunePanel : UserControl
         // 5. Saving for games only, and 6. risks
         var save = new StackPanel { Spacing = 8 };
         save.Children.Add(Title(t["GtSaveTitle"]));
-        save.Children.Add(Body(t["GtSaveBody"]));
+        save.Children.Add(Body(t["GtSaveBodyAuto"]));
+        var saveActions = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        var saveGo = new Button { Style = (Style)Application.Current.Resources["PrimaryButtonStyle"], MinHeight = 44, IsEnabled = vm.CanSave, Content = t["GtSaveRun"] };
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(saveGo, "gpu-save-profiles");
+        saveGo.Click += async (_, _) => { if (await Confirm(t["GtSaveConfirmTitle"], t["GtSaveConfirmBody"])) await vm.SaveAsync(); };
+        saveActions.Children.Add(saveGo);
+        if (vm.CanRestoreProfiles)
+        {
+            var back = new Button { Content = t["GtSaveRestore"], Style = (Style)Application.Current.Resources["SoftButtonStyle"], MinHeight = 44 };
+            back.Click += async (_, _) => await vm.RestoreProfilesAsync();
+            saveActions.Children.Add(back);
+        }
+        save.Children.Add(saveActions);
+        if (vm.Saving) save.Children.Add(new ProgressBar { IsIndeterminate = true, Height = 6, CornerRadius = new CornerRadius(3) });
+        if (vm.SaveStatus.Length > 0) save.Children.Add(new TextBlock { Text = vm.SaveStatus, FontWeight = FontWeights.SemiBold, Foreground = Res("GoldBrush"), TextWrapping = TextWrapping.Wrap });
+        var onGames = new ToggleSwitch { IsOn = vm.TuneOnGames, IsEnabled = vm.HasKept || vm.TuneOnGames, OnContent = "", OffContent = "", Header = t["GtSaveLotus"] };
+        onGames.Toggled += (_, _) => vm.TuneOnGames = onGames.IsOn;
+        save.Children.Add(onGames);
+        if (!vm.HasKept) save.Children.Add(Body(t["GtSaveLotusNone"], true));
         root.Children.Add(Card(save));
         var risks = new StackPanel { Spacing = 8 };
         risks.Children.Add(Title(t["GtRisksTitle"]));

@@ -39,8 +39,12 @@ public sealed record InterfacePreferences
     public bool ResumePrompts { get; init; } = true; // after a game closes normally, offer to write "Onde eu parei?" (discreet in-app notice)
     public string DriveSchedule { get; init; } = "manual"; // Google Drive copy: manual (only on click), weekly or monthly
     public bool AutoUpdate { get; init; } // download and install new Lotus versions from GitHub without asking
-    public bool FpsDataUpdates { get; init; } = true;
-    public string GameListChart { get; init; } = "trending"; // the Game list opens on the last list used // weekly check for a newer FPS reference table in the official repository
+    public bool FpsDataUpdates { get; init; } = true; // weekly check for a newer FPS reference table in the official repository
+    public string GameListChart { get; init; } = "trending"; // the Game list opens on the last list used
+    // "Ajuste da placa" without administrator: the tune the player kept, applied by Lotus (Afterburner's control memory)
+    // while a game is open and undone when it closes. Off by default; saving to Afterburner's profiles needs no Lotus at all.
+    public bool GpuTuneOnGames { get; init; }
+    public Lotus.Core.Telemetry.GpuSetting? GpuTuneKept { get; init; }
     public bool DriverNotices { get; init; } = true; // a quiet weekly check for a newer graphics driver (Lotus never installs it)
     public DateTimeOffset? DriverCheckedAt { get; init; }
     public string? DriverNoticeKey { get; init; } // the last driver notice shown ("nvidia:581.57"), so each one is told once

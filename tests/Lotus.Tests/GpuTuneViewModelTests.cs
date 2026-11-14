@@ -8,6 +8,31 @@ public sealed class GpuTuneViewModelTests
 {
     private static TuneReadiness Ready => new(true, true, true, true, true);
 
+    [Theory]
+    [InlineData(0, "GtSaveOk")] [InlineData(1223, "GtSaveDeclined")] [InlineData(6, "GtSaveRolledBack")] [InlineData(5, "GtSaveFailed")]
+    public async Task Saving_to_profiles_says_what_happened(int code, string key)
+    {
+        var text = new TextCatalog();
+        var vm = new GpuTuneViewModel(text, () => Ready, () => "RTX 5060") { AutoAvailable = () => true, SaveToProfiles = () => Task.FromResult(code) };
+        Assert.True(vm.CanSave);
+        await vm.SaveAsync();
+        Assert.Equal(text[key], vm.SaveStatus);
+        Assert.False(vm.Saving);
+    }
+
+    [Fact] public void The_no_administrator_option_needs_a_kept_tune()
+    {
+        GpuSetting? kept = null; var on = false;
+        var vm = new GpuTuneViewModel(new TextCatalog(), () => Ready, () => "RTX 5060")
+        { ApplySetting = _ => true, Kept = s => kept = s, KeptSetting = () => kept, GetOnGames = () => on, SetOnGames = v => on = v };
+        vm.TuneOnGames = true;
+        Assert.False(on); // nothing kept yet
+        Assert.True(vm.Keep(new GpuSetting(0, 0, 925, 2775)));
+        vm.TuneOnGames = true;
+        Assert.True(on);
+        Assert.Equal(925, kept!.FlatMv);
+    }
+
     [Fact] public async Task A_stable_undervolt_moves_one_step_and_keeps_the_last_stable()
     {
         var samples = Enumerable.Range(0, 20).Select(_ => new TuneSample(70, 2700, 120)).ToList();

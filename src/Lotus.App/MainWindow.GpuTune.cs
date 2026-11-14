@@ -1,10 +1,10 @@
-using Lotus.Core.Telemetry;
+﻿using Lotus.Core.Telemetry;
 
 namespace Lotus.App;
 
 // "Ajuste da placa": the assistant's view model, its read-only readiness check and the stability test runner.
 // The test loads the GPU with the Lotus Score workload for the chosen time, reads temperature, clock and power from
-// the shared sensor loop every 2 s, stops above 83 °C and reports a graphics driver reset recorded by Windows meanwhile.
+// the shared sensor loop every 2 s, stops above 83 Â°C and reports a graphics driver reset recorded by Windows meanwhile.
 public sealed partial class MainWindow
 {
     private GpuTuneViewModel? gpuTune;
@@ -19,7 +19,41 @@ public sealed partial class MainWindow
         () => experience.GpuModel,
         RunGpuTestAsync,
         ex => Serilog.Log.Warning(ex, "GPU tune"))
-    { AutoTune = AutoTuneAsync, AutoAvailable = () => afterburner.Available, ApplySetting = s => afterburner.Apply(s) };
+    {
+        AutoTune = AutoTuneAsync, AutoAvailable = () => afterburner.Available, ApplySetting = s => afterburner.Apply(s),
+        SaveToProfiles = () => abProfiles.SaveCurrentAsync(), RestoreProfiles = () => abProfiles.RestoreAsync(), HasProfilesBackup = () => abProfiles.HasBackup,
+        Kept = s => preferences.Update(preferences.Current with { GpuTuneKept = s }), KeptSetting = () => preferences.Current.GpuTuneKept,
+        GetOnGames = () => preferences.Current.GpuTuneOnGames, SetOnGames = on => preferences.Update(preferences.Current with { GpuTuneOnGames = on }),
+    };
+    private Lotus.Infrastructure.Integrations.AfterburnerProfiles? abProfilesField;
+    private Lotus.Infrastructure.Integrations.AfterburnerProfiles abProfiles => abProfilesField ??= new(afterburner);
+
+    // No-administrator option: the kept tune is applied while a library game runs (journaled first, so a crash is undone
+    // at the next start) and the card goes back to how it was when the game closes. Skipped when Afterburner's own
+    // 3D profile already does it, or while a test is running.
+    private bool gameTuneActive;
+    private async Task UpdateGameTuneAsync(Lotus.Core.Games.GameEntry? running)
+    {
+        try
+        {
+            var want = running is not null && preferences.Current is { GpuTuneOnGames: true, GpuTuneKept: not null } && !gpuTestRunning && !DevBesideInstalled()
+                && !Lotus.Infrastructure.Integrations.AfterburnerSetup.AutoProfiles();
+            if (want && !gameTuneActive && afterburner.Available)
+            {
+                var setting = preferences.Current.GpuTuneKept!;
+                afterburner.MaxOffsetMhz = GpuTuning.For(experience.GpuModel).OcCoreMax;
+                gameTuneActive = await Task.Run(() => afterburner.SaveOriginal() && afterburner.Apply(setting));
+                Serilog.Log.Information("GPU tune for {Game}: {Setting} {Ok}", running!.Name, setting.ToString(), gameTuneActive);
+            }
+            else if (!want && gameTuneActive)
+            {
+                gameTuneActive = false;
+                var ok = await Task.Run(afterburner.RestoreOriginal);
+                Serilog.Log.Information("GPU tune after the game: restored {Ok}", ok);
+            }
+        }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "GPU tune for games"); }
+    }
 
     private async Task<(IReadOnlyList<TuneSample> Samples, bool DriverReset)> RunGpuTestAsync(TimeSpan length, IProgress<double> progress, CancellationToken token)
     {

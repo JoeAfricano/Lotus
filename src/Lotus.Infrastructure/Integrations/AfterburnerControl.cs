@@ -57,6 +57,8 @@ public sealed class AfterburnerControl(string? journalPath = null) : IGpuControl
     }
 
     public bool HasPendingOriginal => File.Exists(journal);
+    // The current state becomes the one to keep (saved in Afterburner's profiles): the journal is dropped, not replayed.
+    public void ForgetOriginal() { try { File.Delete(journal); } catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { Serilog.Log.Warning(ex, "GPU tune journal"); } }
     public int MaxOffsetMhz { get; set; } = 450; // the family ceiling: no curve point is ever shifted further
 
     public bool SaveOriginal()

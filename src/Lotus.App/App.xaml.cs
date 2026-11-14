@@ -39,6 +39,8 @@ public partial class App : Application
     {
         // Short-lived elevated helper for RivaTuner profile edits: no window, no services, fixed allow-list.
         if (Lotus.Infrastructure.Integrations.RtssElevatedHelper.TryRun(Environment.GetCommandLineArgs()) is { } helperExit) { Environment.Exit(helperExit); return; }
+        // Short-lived elevated helper that saves the GPU tune into MSI Afterburner's profiles (backup, check, roll back).
+        if (Lotus.Infrastructure.Integrations.AfterburnerElevatedHelper.TryRun(Environment.GetCommandLineArgs()) is { } abExit) { Environment.Exit(abExit); return; }
         // Short-lived elevated helper for the DNS switch (fixed provider list, backup in the user's Lotus folder).
         if (Lotus.Infrastructure.Tools.DnsElevatedHelper.TryRun(Environment.GetCommandLineArgs()) is { } dnsExit) { Environment.Exit(dnsExit); return; }
         // Uninstall from Windows' "Installed apps": asks first, keeps the player's data unless they choose otherwise.
