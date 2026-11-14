@@ -48,12 +48,15 @@ public sealed partial class MainWindow
         Serilog.Log.Information("GPU tune recovery {Ok}", ok);
     }
 
+    // Window state (AppWindow) may only be read on the UI thread: called from the tune worker, it is queued there.
+    private void RunOnUi(Action action) { if (DispatcherQueue.HasThreadAccess) action(); else DispatcherQueue.TryEnqueue(() => action()); }
+
     private async Task<(IReadOnlyList<TuneSample> Samples, bool DriverReset, double Score)> RunGpuLoadAsync(TimeSpan length, IProgress<double>? progress, CancellationToken token)
     {
         var samples = new List<TuneSample>();
         var scores = new List<double>();
         var started = DateTimeOffset.Now;
-        gpuTestRunning = true; UpdateMonitoringDemand();
+        gpuTestRunning = true; RunOnUi(UpdateMonitoringDemand); // the automatic tune runs this off the UI thread
         using var stop = CancellationTokenSource.CreateLinkedTokenSource(token);
         try
         {
@@ -78,7 +81,7 @@ public sealed partial class MainWindow
             try { await load; } catch (OperationCanceledException) { }
             token.ThrowIfCancellationRequested();
         }
-        finally { gpuTestRunning = false; UpdateMonitoringDemand(); }
+        finally { gpuTestRunning = false; RunOnUi(UpdateMonitoringDemand); }
         var since = DateTimeOffset.Now - started + TimeSpan.FromSeconds(10);
         var reset = new Lotus.Infrastructure.Maintenance.WindowsCrashLog().Signals(since).Any(s => s.Signal == Lotus.Core.Maintenance.SystemSignal.GpuReset);
         double score; lock (scores) score = scores.Count == 0 ? 0 : scores.Average();

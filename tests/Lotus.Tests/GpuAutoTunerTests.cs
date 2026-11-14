@@ -47,4 +47,19 @@ public sealed class GpuAutoTunerTests
         var r = await new GpuAutoTuner(card, card, GpuTuning.For("RTX 5060")) { StepLength = TimeSpan.Zero, Settle = TimeSpan.Zero }.RunAsync(AutoModes.All, cts.Token);
         Assert.True(r.Cancelled); Assert.True(card.Restored);
     }
+
+    // The first real run stopped when the load test threw (window state read off the UI thread): whatever the
+    // failure, the card must go back as it was.
+    private sealed class ThrowingTest : IGpuLoadTest
+    {
+        public Task<(IReadOnlyList<TuneSample> Samples, bool DriverReset, double Score)> RunAsync(TimeSpan length, IProgress<double>? progress, CancellationToken token) =>
+            throw new System.Runtime.InteropServices.COMException("wrong thread", unchecked((int)0x8001010E));
+    }
+    [Fact] public async Task A_failing_load_test_still_restores_the_card()
+    {
+        var card = new FakeCard();
+        var tuner = new GpuAutoTuner(card, new ThrowingTest(), GpuTuning.For("RTX 5060")) { StepLength = TimeSpan.Zero, Settle = TimeSpan.Zero };
+        await Assert.ThrowsAsync<System.Runtime.InteropServices.COMException>(() => tuner.RunAsync(AutoModes.All, CancellationToken.None));
+        Assert.True(card.Restored);
+    }
 }
