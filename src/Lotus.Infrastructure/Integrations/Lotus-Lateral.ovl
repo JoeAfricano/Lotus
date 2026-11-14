@@ -11,7 +11,7 @@ RefreshPeriod=250
 [General]
 Sources=16
 Tables=0
-Layers=19
+Layers=20
 [Source0]
 Name=CPU Load
 Units=
@@ -323,11 +323,22 @@ FixedAlignment=1
 Size=100
 TextColor=FFF5FA
 [Layer18]
-Name=Average
-Text=Média %FPS Avg Live%
+Name=Average label
+Text=AVG
 PositionX=24
 PositionY=318
-ExtentX=184
+ExtentX=44
+ExtentY=18
+ExtentOrigin=0
+FixedAlignment=1
+Size=85
+TextColor=EEC1A8
+[Layer19]
+Name=Average
+Text=%FPS Avg Live%
+PositionX=76
+PositionY=318
+ExtentX=132
 ExtentY=18
 ExtentOrigin=0
 FixedAlignment=1

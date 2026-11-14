@@ -11,6 +11,7 @@ $sourceCount = ([regex]::Matches($sources, '\[Source\d+\]')).Count
 
 $W = 212; $H = 352
 $rose = 'FF3480'; $text = 'FFF5FA'; $muted = 'BEB8C1'; $gold = 'EEC1A8'
+# RivaTuner's overlay font drops accented letters such as "é" (seen in game, 14/11/2026): labels stay ASCII.
 # Name, Text, X, Y, ExtentX, ExtentY, Size (% of the font), Color
 $layers = @(
     @('Panel', "<B=$W,$H>", 10, 10, $W, $H, 100, '99120A12'),
@@ -31,7 +32,8 @@ $layers = @(
     @('VRAM', '%VRAM Load%%', 76, 262, 132, 20, 100, $text),
     @('RAM label', 'RAM', 24, 288, 50, 20, 95, $gold),
     @('RAM', '%RAM Load%%', 76, 288, 132, 20, 100, $text),
-    @('Average', 'Média %FPS Avg Live%', 24, 318, 184, 18, 85, $muted)
+    @('Average label', 'AVG', 24, 318, 44, 18, 85, $gold),
+    @('Average', '%FPS Avg Live%', 76, 318, 132, 18, 85, $muted)
 )
 $sb = New-Object Text.StringBuilder
 [void]$sb.Append("[Master]`r`nImplementation=2`r`nFontFace=Segoe UI`r`nFontHeight=-16`r`nFontWeight=600`r`nZoomRatio=1`r`n")

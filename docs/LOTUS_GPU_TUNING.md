@@ -80,6 +80,10 @@ Perfil 1 = padrão, Perfil 2 = ajuste; Afterburner > Configurações > Perfis: 2
   (RTSS aberto e enganchado no jogo). O significado exato dessas chaves não está documentado; falta ver na tela de
   Configurações › Perfis do Afterburner o que ele mostra. Até lá, salvar nos perfis serve para `-Profile2`/atalhos, não
   para a troca sozinha.
+- **Pendente:** por isso o "Salvar para todos os jogos" grava só os perfis 1 e 2 e não mexe em `Profile2D`/`Profile3D`
+  (`WithAutoSwitch` fica guardado com teste, sem uso). A troca nos jogos é feita pela opção do Lotus, ligada por padrão
+  (age só depois de "Manter este"). Próximo passo: o José marca 3D = Perfil 2 / 2D = Perfil 1 no próprio Afterburner e
+  o Lotus lê o arquivo gravado para copiar o formato.
 - Voltar aos perfis de antes: os dois `.cfg` ficaram idênticos (hash) aos originais. ✓
 - Sem UAC (Lotus aplica no jogo): Wukong detectado → curva 925 mV @ 2775 aplicada na hora; reiniciar o Afterburner com o
   jogo aberto manteve o ajuste; ao fechar o jogo o Lotus voltou ao padrão (offsets 0) e apagou o journal. ✓

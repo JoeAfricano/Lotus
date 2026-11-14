@@ -117,8 +117,8 @@ public static class AfterburnerProfileFile
         return SetSection(SetSection(cardText, "Profile" + Stock, stock), "Profile" + Tune, tuned);
     }
 
-    // Profile2D / Profile3D hold the profile's index from 0 (-1 = none): written as 1 and 2, Afterburner switched nothing
-    // in a real game (14/11/2026), so Profile 1 is 0 and Profile 2 is 1.
+    // NOT used yet: neither 1/2 nor 0/1 made Afterburner switch in a real game (14/11/2026). Kept, with its test, for
+    // when the format is confirmed from Afterburner's own Settings › Profiles.
     public static string WithAutoSwitch(string mainText) =>
         SetKey(SetKey(mainText, "Settings", "Profile2D", (Stock - 1).ToString(CultureInfo.InvariantCulture)), "Settings", "Profile3D", (Tune - 1).ToString(CultureInfo.InvariantCulture));
 
@@ -215,7 +215,8 @@ public static class AfterburnerElevatedHelper
 
         Close(); // opened again below even if it was closed: the 2D/3D switch needs Afterburner running
         File.WriteAllText(card, newCard, new UTF8Encoding(false));
-        File.WriteAllText(main, AfterburnerProfileFile.WithAutoSwitch(File.ReadAllText(main)), new UTF8Encoding(false));
+        // Profile2D / Profile3D are left as the player has them: written by Lotus (1/2 and 0/1), Afterburner switched
+        // nothing in a real game (14/11/2026), so the format is still unknown. Lotus's own game option does the switching.
         Start();
         // Afterburner must load the tune exactly as written (profile 2) and stock as profile 1; otherwise everything goes back.
         var ok = Loads(AfterburnerProfileFile.Tune, tune.OffsetsKHz) && Loads(AfterburnerProfileFile.Stock, new int[tune.OffsetsKHz.Length]);

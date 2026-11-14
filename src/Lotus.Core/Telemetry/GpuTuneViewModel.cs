@@ -23,6 +23,7 @@ public sealed partial class GpuTuneViewModel(ITextCatalog text, Func<TuneReadine
     public bool IsRadeon => GpuTuning.IsRadeon(gpuName());
     public bool CanTest => runTest is not null && Ready.CanStart && !Testing && Goal != TuneGoal.Stock;
 
+    private void ReadReady() { try { Ready = readiness(); } catch (Exception ex) { log?.Invoke(ex); } }
     public void Refresh()
     {
         try { Ready = readiness(); } catch (Exception ex) { log?.Invoke(ex); }
@@ -98,14 +99,14 @@ public sealed partial class GpuTuneViewModel(ITextCatalog text, Func<TuneReadine
     public bool TuneOnGames
     {
         get => GetOnGames?.Invoke() ?? false;
-        set { if (value != TuneOnGames && (!value || HasKept)) { SetOnGames?.Invoke(value); OnPropertyChanged(); } }
+        set { if (value != TuneOnGames && (!value || HasKept)) { SetOnGames?.Invoke(value); OnPropertyChanged(); ReadReady(); } }
     }
     partial void OnSavingChanged(bool value) { OnPropertyChanged(nameof(CanSave)); OnPropertyChanged(nameof(CanRestoreProfiles)); }
 
     public bool Keep(GpuSetting setting)
     {
         if (ApplySetting?.Invoke(setting) != true) return false;
-        Kept?.Invoke(setting); OnPropertyChanged(nameof(HasKept));
+        Kept?.Invoke(setting); OnPropertyChanged(nameof(HasKept)); ReadReady();
         return true;
     }
 

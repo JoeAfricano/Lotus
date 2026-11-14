@@ -1,4 +1,4 @@
-﻿using Lotus.Core.Telemetry;
+using Lotus.Core.Telemetry;
 
 namespace Lotus.App;
 
@@ -15,7 +15,7 @@ public sealed partial class MainWindow
             Afterburner: Lotus.Infrastructure.Integrations.AfterburnerSetup.Installed,
             RivaTuner: integrations.Rtss.State().Installed,
             VoltageUnlocked: Lotus.Infrastructure.Integrations.AfterburnerSetup.VoltageUnlocked(),
-            AutoProfiles: Lotus.Infrastructure.Integrations.AfterburnerSetup.AutoProfiles()),
+            AutoProfiles: Lotus.Infrastructure.Integrations.AfterburnerSetup.AutoProfiles() || preferences.Current is { GpuTuneOnGames: true, GpuTuneKept: not null }),
         () => experience.GpuModel,
         RunGpuTestAsync,
         ex => Serilog.Log.Warning(ex, "GPU tune"))

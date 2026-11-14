@@ -42,8 +42,8 @@ public sealed record InterfacePreferences
     public bool FpsDataUpdates { get; init; } = true; // weekly check for a newer FPS reference table in the official repository
     public string GameListChart { get; init; } = "trending"; // the Game list opens on the last list used
     // "Ajuste da placa" without administrator: the tune the player kept, applied by Lotus (Afterburner's control memory)
-    // while a game is open and undone when it closes. Off by default; saving to Afterburner's profiles needs no Lotus at all.
-    public bool GpuTuneOnGames { get; init; }
+    // while a game is open and undone when it closes. On by default, but it acts only after the player kept a tune.
+    public bool GpuTuneOnGames { get; init; } = true;
     public Lotus.Core.Telemetry.GpuSetting? GpuTuneKept { get; init; }
     public bool DriverNotices { get; init; } = true; // a quiet weekly check for a newer graphics driver (Lotus never installs it)
     public DateTimeOffset? DriverCheckedAt { get; init; }

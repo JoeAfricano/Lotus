@@ -3320,8 +3320,8 @@ Your games and Windows are not changed.</value></data>
   <data name="GtFixRivaTuner" xml:space="preserve"><value>Afterburner needs RivaTuner to switch profiles by itself in games.</value></data>
   <data name="GtReadyVoltage" xml:space="preserve"><value>Voltage control unlocked in Afterburner</value></data>
   <data name="GtFixVoltage" xml:space="preserve"><value>In Afterburner: Settings › General › tick &quot;Unlock voltage control&quot;.</value></data>
-  <data name="GtReadyAuto" xml:space="preserve"><value>Automatic profile for games (3D)</value></data>
-  <data name="GtFixAuto" xml:space="preserve"><value>In Afterburner: Settings › Profiles › 3D = Profile 2 and 2D = Profile 1. The tune then applies only in games.</value></data>
+  <data name="GtReadyAuto" xml:space="preserve"><value>Tune turns on by itself in games</value></data>
+  <data name="GtFixAuto" xml:space="preserve"><value>Keep a result of the automatic tune (Keep this) and leave Lotus&apos;s option under Save, below, turned on.</value></data>
   <data name="GtOpenAfterburner" xml:space="preserve"><value>Open Afterburner</value></data>
   <data name="GtValuesTitle" xml:space="preserve"><value>Values to set in Afterburner</value></data>
   <data name="GtValuesUndervolt" xml:space="preserve"><value>Flat curve from {0} mV at {1} MHz</value></data>
@@ -3342,12 +3342,11 @@ Your games and Windows are not changed.</value></data>
   <data name="GtTooHot" xml:space="preserve"><value>It got too hot ({0} °C) and the test stopped. The values above are lighter; apply and test again.</value></data>
   <data name="GtThrottled" xml:space="preserve"><value>The clock swung {0} MHz: the card hit its power or heat limit. The values above are lighter.</value></data>
   <data name="GtNoData" xml:space="preserve"><value>No sensor readings during the test. Check that the card is NVIDIA and try again.</value></data>
-  <data name="GtSaveTitle" xml:space="preserve"><value>Save for games only</value></data>
-  <data name="GtSaveBody" xml:space="preserve"><value>In Afterburner, click the lock, then Save and slot 2 (Profile 2). Keep Profile 1 at stock. In Settings › Profiles, set 3D = Profile 2 and 2D = Profile 1. The tune then applies only when a game opens.</value></data>
+  <data name="GtSaveTitle" xml:space="preserve"><value>The tune in games</value></data>
   <data name="GtRisksTitle" xml:space="preserve"><value>Risks, in short</value></data>
   <data name="GtRiskCrash" xml:space="preserve"><value>A freeze or flicker? Go back one step. Within factory limits the card is not damaged.</value></data>
   <data name="GtRiskHeat" xml:space="preserve"><value>Above 80 °C? Lower the tune or improve airflow.</value></data>
-  <data name="GtRiskStartup" xml:space="preserve"><value>Nothing is applied when Windows starts: only in games, through the 3D profile.</value></data>
+  <data name="GtRiskStartup" xml:space="preserve"><value>Nothing is applied when Windows starts: only while a game is open.</value></data>
   <data name="GtRiskStock" xml:space="preserve"><value>Back to stock: Profile 1 or Afterburner&apos;s Reset button.</value></data>
   <data name="GtCardIntro" xml:space="preserve"><value>Lotus guides a tune for your {0}; MSI Afterburner applies the values, within factory limits. Lotus never changes clocks or voltage by itself.</value></data>
   <data name="PfPlanGameTitle" xml:space="preserve"><value>What happens when you play</value></data>
@@ -3424,22 +3423,21 @@ Your games and Windows are not changed.</value></data>
   <data name="GtAutoSummary" xml:space="preserve"><value>{0}% performance · {1} °C · {2} W</value></data>
   <data name="GtAutoKeep" xml:space="preserve"><value>Keep this</value></data>
   <data name="GtAutoKeepTitle" xml:space="preserve"><value>Keep this tune?</value></data>
-  <data name="GtAutoKeepBody" xml:space="preserve"><value>Lotus applies it now through Afterburner: {0}. To use it only in games, save it to Afterburner&apos;s Profile 2 (see below). Afterburner&apos;s Reset button goes back to stock.</value></data>
   <data name="GtAutoStatuscurrent" xml:space="preserve"><value>Measuring the card as you left it…</value></data>
   <data name="GtAutoModecurrent" xml:space="preserve"><value>Your current tune</value></data>
   <data name="GtAutoAsIs" xml:space="preserve"><value>as it was</value></data>
-  <data name="GtSaveBodyAuto" xml:space="preserve"><value>Lotus writes the tune the card is using now into Afterburner&apos;s Profile 2, keeps Profile 1 at factory defaults and sets 3D = Profile 2 and 2D = Profile 1. The tune then turns on by itself when a game opens, even with Lotus closed. Windows asks for permission once (UAC); first Lotus keeps a copy of the profiles and checks that Afterburner loaded them right. If not, everything goes back as it was.</value></data>
+  <data name="GtSaveBodyAuto" xml:space="preserve"><value>Lotus writes the tune the card is using now into Afterburner&apos;s Profile 2 and keeps Profile 1 at factory defaults. Windows asks for permission once (UAC); first Lotus keeps a copy of the profiles and checks that Afterburner loaded them right. If not, everything goes back as it was. For the tune to turn on by itself in games, keep the option below on.</value></data>
   <data name="GtSaveRun" xml:space="preserve"><value>Save for all games</value></data>
   <data name="GtSaveConfirmTitle" xml:space="preserve"><value>Save the tune in Afterburner&apos;s profiles?</value></data>
-  <data name="GtSaveConfirmBody" xml:space="preserve"><value>Afterburner closes and opens again for a few seconds. Profile 2 = the current tune, Profile 1 = factory defaults, 3D = Profile 2 and 2D = Profile 1. Your current profiles are kept so you can go back any time.</value></data>
-  <data name="GtSaveOk" xml:space="preserve"><value>Done: the tune is in Profile 2 and turns on by itself in games. On the desktop the card stays at defaults.</value></data>
+  <data name="GtSaveConfirmBody" xml:space="preserve"><value>Afterburner closes and opens again for a few seconds. Profile 2 = the current tune, Profile 1 = factory defaults. Your current profiles are kept so you can go back any time.</value></data>
+  <data name="GtSaveOk" xml:space="preserve"><value>Done: the tune is stored in Afterburner&apos;s Profile 2 and Profile 1 is at defaults.</value></data>
   <data name="GtSaveDeclined" xml:space="preserve"><value>Nothing changed: Windows permission was declined.</value></data>
   <data name="GtSaveRolledBack" xml:space="preserve"><value>Afterburner did not load the tune as written, so Lotus put your profiles back as they were. Nothing changed.</value></data>
   <data name="GtSaveFailed" xml:space="preserve"><value>Could not save now (is Afterburner open, with a single card?). Nothing changed.</value></data>
   <data name="GtSaveRestore" xml:space="preserve"><value>Go back to the previous profiles</value></data>
   <data name="GtSaveRestored" xml:space="preserve"><value>Your Afterburner profiles are back as they were before Lotus.</value></data>
   <data name="GtSaveSaving" xml:space="preserve"><value>Saving and checking in Afterburner…</value></data>
-  <data name="GtSaveLotus" xml:space="preserve"><value>Without administrator permission: Lotus applies the kept tune when a game opens and goes back to defaults when it closes (only with Lotus open)</value></data>
+  <data name="GtSaveLotus" xml:space="preserve"><value>Lotus applies the kept tune when a game opens and goes back to defaults when it closes (no administrator, with Lotus open or in the tray)</value></data>
   <data name="GtSaveLotusNone" xml:space="preserve"><value>Keep a result of the automatic tune first (Keep this button).</value></data>
-  <data name="GtAutoKeepBodyAuto" xml:space="preserve"><value>Lotus applies it now through Afterburner: {0}. To use it in every game, use Save for all games below. Afterburner&apos;s Reset button goes back to defaults.</value></data>
+  <data name="GtAutoKeepBodyAuto" xml:space="preserve"><value>Lotus applies it now through Afterburner: {0}. After that it applies it again whenever a game opens and goes back to defaults when it closes (option under Save, below). Afterburner&apos;s Reset button goes back to defaults.</value></data>
 </root>

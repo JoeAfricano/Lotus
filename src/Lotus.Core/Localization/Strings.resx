@@ -3320,8 +3320,8 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GtFixRivaTuner" xml:space="preserve"><value>O Afterburner precisa do RivaTuner para trocar de perfil sozinho nos jogos.</value></data>
   <data name="GtReadyVoltage" xml:space="preserve"><value>Controle de tensão liberado no Afterburner</value></data>
   <data name="GtFixVoltage" xml:space="preserve"><value>No Afterburner: Configurações › Geral › marque &quot;Desbloquear controle de tensão&quot;.</value></data>
-  <data name="GtReadyAuto" xml:space="preserve"><value>Perfil automático para jogos (3D)</value></data>
-  <data name="GtFixAuto" xml:space="preserve"><value>No Afterburner: Configurações › Perfis › 3D = Perfil 2 e 2D = Perfil 1. Assim o ajuste só vale nos jogos.</value></data>
+  <data name="GtReadyAuto" xml:space="preserve"><value>Ajuste entra sozinho nos jogos</value></data>
+  <data name="GtFixAuto" xml:space="preserve"><value>Mantenha um resultado do ajuste automático (Manter este) e deixe ligada a opção do Lotus em Salvar, logo abaixo.</value></data>
   <data name="GtOpenAfterburner" xml:space="preserve"><value>Abrir Afterburner</value></data>
   <data name="GtValuesTitle" xml:space="preserve"><value>Valores para colocar no Afterburner</value></data>
   <data name="GtValuesUndervolt" xml:space="preserve"><value>Curva reta a partir de {0} mV em {1} MHz</value></data>
@@ -3342,12 +3342,11 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GtTooHot" xml:space="preserve"><value>Ficou quente demais ({0} °C) e o teste parou. Os valores acima são mais leves; aplique e teste de novo.</value></data>
   <data name="GtThrottled" xml:space="preserve"><value>O clock oscilou {0} MHz: a placa bateu no limite de energia ou calor. Os valores acima são mais leves.</value></data>
   <data name="GtNoData" xml:space="preserve"><value>Sem leitura dos sensores durante o teste. Confira se a placa é NVIDIA e tente de novo.</value></data>
-  <data name="GtSaveTitle" xml:space="preserve"><value>Salvar só para os jogos</value></data>
-  <data name="GtSaveBody" xml:space="preserve"><value>No Afterburner, clique no cadeado, depois em Salvar e no número 2 (Perfil 2). Deixe o Perfil 1 com tudo no padrão. Em Configurações › Perfis, escolha 3D = Perfil 2 e 2D = Perfil 1. Assim o ajuste entra só quando um jogo abre.</value></data>
+  <data name="GtSaveTitle" xml:space="preserve"><value>O ajuste nos jogos</value></data>
   <data name="GtRisksTitle" xml:space="preserve"><value>Riscos, em poucas palavras</value></data>
   <data name="GtRiskCrash" xml:space="preserve"><value>Travou ou a tela piscou? Volte um passo. Dentro dos limites de fábrica a placa não estraga.</value></data>
   <data name="GtRiskHeat" xml:space="preserve"><value>Passou de 80 °C? Diminua o ajuste ou melhore a ventilação.</value></data>
-  <data name="GtRiskStartup" xml:space="preserve"><value>Nada é aplicado ao ligar o Windows: só no jogo, pelo perfil 3D.</value></data>
+  <data name="GtRiskStartup" xml:space="preserve"><value>Nada é aplicado ao ligar o Windows: só com um jogo aberto.</value></data>
   <data name="GtRiskStock" xml:space="preserve"><value>Voltar ao padrão: Perfil 1 ou o botão Reset do Afterburner.</value></data>
   <data name="GtCardIntro" xml:space="preserve"><value>O Lotus guia um ajuste para a sua {0}; quem aplica os valores é o MSI Afterburner, dentro dos limites de fábrica. O Lotus não muda clock nem tensão sozinho.</value></data>
   <data name="PfPlanGameTitle" xml:space="preserve"><value>O que acontece quando você joga</value></data>
@@ -3424,22 +3423,21 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GtAutoSummary" xml:space="preserve"><value>{0}% de desempenho · {1} °C · {2} W</value></data>
   <data name="GtAutoKeep" xml:space="preserve"><value>Manter este</value></data>
   <data name="GtAutoKeepTitle" xml:space="preserve"><value>Manter este ajuste?</value></data>
-  <data name="GtAutoKeepBody" xml:space="preserve"><value>O Lotus aplica agora pelo Afterburner: {0}. Para valer só nos jogos, salve no Perfil 2 do Afterburner (veja abaixo). Botão Reset do Afterburner volta ao padrão.</value></data>
   <data name="GtAutoStatuscurrent" xml:space="preserve"><value>Medindo a placa como você deixou…</value></data>
   <data name="GtAutoModecurrent" xml:space="preserve"><value>Seu ajuste atual</value></data>
   <data name="GtAutoAsIs" xml:space="preserve"><value>como estava</value></data>
-  <data name="GtSaveBodyAuto" xml:space="preserve"><value>O Lotus grava o ajuste que a placa está usando agora no Perfil 2 do Afterburner, deixa o Perfil 1 no padrão de fábrica e liga 3D = Perfil 2 e 2D = Perfil 1. Assim o ajuste entra sozinho quando um jogo abre, mesmo com o Lotus fechado. O Windows pede permissão uma vez (UAC); antes, o Lotus guarda uma cópia dos perfis e confere se o Afterburner carregou certo. Se não carregar, volta tudo como estava.</value></data>
+  <data name="GtSaveBodyAuto" xml:space="preserve"><value>O Lotus grava o ajuste que a placa está usando agora no Perfil 2 do Afterburner e deixa o Perfil 1 no padrão de fábrica. O Windows pede permissão uma vez (UAC); antes, o Lotus guarda uma cópia dos perfis e confere se o Afterburner carregou certo. Se não carregar, volta tudo como estava. Para o ajuste entrar sozinho nos jogos, deixe ligada a opção abaixo.</value></data>
   <data name="GtSaveRun" xml:space="preserve"><value>Salvar para todos os jogos</value></data>
   <data name="GtSaveConfirmTitle" xml:space="preserve"><value>Salvar o ajuste nos perfis do Afterburner?</value></data>
-  <data name="GtSaveConfirmBody" xml:space="preserve"><value>O Afterburner fecha e abre de novo por alguns segundos. Perfil 2 = o ajuste de agora, Perfil 1 = padrão de fábrica, 3D = Perfil 2 e 2D = Perfil 1. Seus perfis atuais ficam guardados para voltar quando quiser.</value></data>
-  <data name="GtSaveOk" xml:space="preserve"><value>Pronto: o ajuste está no Perfil 2 e entra sozinho nos jogos. Na área de trabalho, a placa fica no padrão.</value></data>
+  <data name="GtSaveConfirmBody" xml:space="preserve"><value>O Afterburner fecha e abre de novo por alguns segundos. Perfil 2 = o ajuste de agora, Perfil 1 = padrão de fábrica. Seus perfis atuais ficam guardados para voltar quando quiser.</value></data>
+  <data name="GtSaveOk" xml:space="preserve"><value>Pronto: o ajuste está guardado no Perfil 2 do Afterburner e o Perfil 1 está no padrão.</value></data>
   <data name="GtSaveDeclined" xml:space="preserve"><value>Nada mudou: a permissão do Windows foi recusada.</value></data>
   <data name="GtSaveRolledBack" xml:space="preserve"><value>O Afterburner não carregou o ajuste como gravado, então o Lotus voltou seus perfis como estavam. Nada mudou.</value></data>
   <data name="GtSaveFailed" xml:space="preserve"><value>Não deu para salvar agora (Afterburner aberto e com uma placa só?). Nada mudou.</value></data>
   <data name="GtSaveRestore" xml:space="preserve"><value>Voltar aos perfis de antes</value></data>
   <data name="GtSaveRestored" xml:space="preserve"><value>Seus perfis do Afterburner voltaram como eram antes do Lotus.</value></data>
   <data name="GtSaveSaving" xml:space="preserve"><value>Salvando e conferindo no Afterburner…</value></data>
-  <data name="GtSaveLotus" xml:space="preserve"><value>Sem permissão de administrador: o Lotus aplica o ajuste mantido quando um jogo abre e volta ao padrão quando fecha (só com o Lotus aberto)</value></data>
+  <data name="GtSaveLotus" xml:space="preserve"><value>O Lotus aplica o ajuste mantido quando um jogo abre e volta ao padrão quando ele fecha (sem administrador, com o Lotus aberto ou na bandeja)</value></data>
   <data name="GtSaveLotusNone" xml:space="preserve"><value>Mantenha um resultado do ajuste automático primeiro (botão Manter este).</value></data>
-  <data name="GtAutoKeepBodyAuto" xml:space="preserve"><value>O Lotus aplica agora pelo Afterburner: {0}. Para valer em todos os jogos, use Salvar para todos os jogos logo abaixo. O botão Reset do Afterburner volta ao padrão.</value></data>
+  <data name="GtAutoKeepBodyAuto" xml:space="preserve"><value>O Lotus aplica agora pelo Afterburner: {0}. Depois, ele aplica de novo sempre que um jogo abrir e volta ao padrão quando fechar (opção em Salvar, logo abaixo). O botão Reset do Afterburner volta ao padrão.</value></data>
 </root>
