@@ -57,6 +57,7 @@ public sealed class AfterburnerControl(string? journalPath = null) : IGpuControl
     }
 
     public bool HasPendingOriginal => File.Exists(journal);
+    public int MaxOffsetMhz { get; set; } = 450; // the family ceiling: no curve point is ever shifted further
 
     public bool SaveOriginal()
     {
@@ -85,23 +86,11 @@ public sealed class AfterburnerControl(string? journalPath = null) : IGpuControl
         using var v = map.CreateViewAccessor();
         if (v.ReadUInt32(0) != Signature) return false;
         var e = EntryStart; var points = Math.Min(256, v.ReadInt32(e + Vf + 8));
-        // The card's own curve without any offset: current frequency minus the offset already applied.
-        var uv = new int[points]; var baseKhz = new int[points];
-        for (var i = 0; i < points; i++)
-        {
-            var p = e + Vf + 12 + i * 12;
-            uv[i] = v.ReadInt32(p); baseKhz[i] = v.ReadInt32(p + 4) - v.ReadInt32(p + 8);
-        }
-        var offsets = new int[points];
-        if (setting.FlatMv is { } mv && setting.FlatMhz is { } mhz)
-        {
-            // Shift so the point at mv reaches mhz; every point above stays at mhz (flat top).
-            var at = Array.FindIndex(uv, x => x >= mv * 1000);
-            if (at < 0) return false;
-            var shift = mhz * 1000 - baseKhz[at];
-            for (var i = 0; i < points; i++) offsets[i] = i <= at ? shift : mhz * 1000 - baseKhz[i];
-        }
-        else for (var i = 0; i < points; i++) offsets[i] = setting.CoreOffsetMhz * 1000;
+        // dwFrequency is the factory frequency of each point (the offset is a separate field): the curve is computed from
+        // it alone, so earlier offsets never add up, and it is checked before being sent.
+        var uv = new int[points]; var factory = new int[points];
+        for (var i = 0; i < points; i++) { var p = e + Vf + 12 + i * 12; uv[i] = v.ReadInt32(p); factory[i] = v.ReadInt32(p + 4); }
+        if (GpuCurve.Offsets(uv, factory, setting) is not { } offsets || !GpuCurve.Safe(factory, offsets, setting, MaxOffsetMhz)) return false;
         var coreBoost = setting.FlatMv is null ? setting.CoreOffsetMhz * 1000 : 0;
         return Write(new(v.ReadInt32(e + PowerCur + 12), coreBoost, setting.MemOffsetMhz * 1000, offsets, 0)); // power limit: card default
     }

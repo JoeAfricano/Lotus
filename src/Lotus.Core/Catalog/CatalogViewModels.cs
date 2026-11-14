@@ -147,7 +147,9 @@ public sealed class GameListViewModel(IGameCatalog catalog, ITextCatalog text, A
     public int? ChartCount(string id) => id == chart && !Searching ? filtered.Count : charts.TryGetValue(id, out var c) ? c.Items.Count : null; // null until that list was loaded once
     public IReadOnlyList<ChartTab> Tabs =>[.. CatalogText.Charts.Select(c => new ChartTab(c, text["GlChart" + c]))];
     public BatchCollection<CatalogCard> Items { get; } = [];
-    public string Chart { get => chart; set { if (value is not null && SetProperty(ref chart, value)) _ = ShowAsync(); } }
+    public string Chart { get => chart; set { if (value is not null && SetProperty(ref chart, value)) { ChartChanged?.Invoke(value); _ = ShowAsync(); } } }
+    public Action<string>? ChartChanged { get; set; } // remembers the last list (preferences)
+    public void StartOn(string id) { if (CatalogText.Charts.Contains(id)) chart = id; }
     public bool Loading { get => loading; private set => SetProperty(ref loading, value); }
     public string Status { get => status; private set => SetProperty(ref status, value); }
 

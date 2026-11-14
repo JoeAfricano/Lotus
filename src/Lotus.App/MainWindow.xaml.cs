@@ -127,6 +127,8 @@ public sealed partial class MainWindow : Window
         };
         driveTimer.Start();
         gameList = new Lotus.Core.Catalog.GameListViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game list"), games.InstalledGames);
+        gameList.StartOn(preferences.Current.GameListChart); // opens on the last list used (first time: Em alta)
+        gameList.ChartChanged = id => preferences.Update(preferences.Current with { GameListChart = id });
         gameDetails = new Lotus.Core.Catalog.GameDetailsViewModel(catalog, text, ex => Serilog.Log.Warning(ex, "Game details"));
         // "Tempo para zerar" on every game page (Game list and Meus Jogos) and in the diary editor: one remembered lookup per game.
         pageLengths = new Lotus.Core.Diary.GameLengthLookup(diary, gameLengths, ex => Serilog.Log.Warning(ex, "Game length"));
