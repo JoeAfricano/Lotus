@@ -57,6 +57,33 @@ Não usar o "bypass" que libera +3000 MHz de memória (banco de dados modificado
 Perfil 1 = padrão, Perfil 2 = ajuste; Afterburner > Configurações > Perfis: 2D = Perfil 1, 3D = Perfil 2
 (a troca automática depende do RivaTuner instalado). Nunca aplicar ao iniciar o Windows.
 
+### "Salvar para todos os jogos" (automático, 1 UAC)
+- A memória de controle (MACM) aplica valores, mas não grava perfis; os arquivos ficam em
+  `C:\Program Files (x86)\MSI Afterburner\Profiles` (só administrador escreve) e o próprio Afterburner roda como
+  administrador (`requireAdministrator`), então nem cliques por automação de tela chegam a ele (UIPI).
+- Por isso o Lotus usa o auxiliar elevado de sempre (`Lotus.App.exe --ab-save <pedido>`, `AfterburnerProfiles.cs`):
+  copia os `.cfg` (cópia `original` uma vez + cópia datada em `%LOCALAPPDATA%\Lotus\AfterburnerBackups`), fecha o
+  Afterburner, grava `[Profile1]` = `[Defaults]` da placa e `[Profile2]` = ajuste lido agora pela MACM, e
+  `Profile2D=1` / `Profile3D=2` em `Profiles\MSIAfterburner.cfg`; reabre o Afterburner, carrega `-Profile2` e
+  `-Profile1` e confere a curva viva pela MACM (±1 MHz por ponto). Se não bater, devolve a cópia e abre de novo.
+  "Voltar aos perfis de antes" (`--ab-restore`) devolve a cópia `original`.
+- Formato `VFCurve` (arquivo da placa, hex): `uint 0x00020000`, `uint pontos` (127 na RTX 5060), `uint 0`, depois
+  `pontos × { float mV, float MHz de fábrica, float offset MHz }` e preenchimento com zeros (3224 bytes). O Lotus só troca
+  os floats de offset da curva `[Defaults]`; o resto fica byte a byte (testes com os arquivos reais em `tests/Lotus.Tests/Fixtures`).
+- Sem UAC: opção "o Lotus aplica o ajuste mantido quando um jogo abre e volta ao padrão quando fecha" (desligada por
+  padrão; só com o Lotus aberto; ignorada quando o perfil 3D do Afterburner já está ligado).
+
+### Teste real (14/11/2026, Afterburner 4.6.x, RTX 5060, Wukong Benchmark Tool)
+- Neste PC o UAC está configurado para elevar sem perguntar (`ConsentPromptBehaviorAdmin=0`): o auxiliar rodou sem diálogo.
+- Salvar: cópias feitas, Afterburner fechou/abriu, `-Profile2` carregou a curva do vencedor (±1 MHz) e `-Profile1` o padrão. ✓
+- **Troca 2D/3D automática do Afterburner: NÃO aconteceu** no Wukong, nem com `Profile2D=1/Profile3D=2` nem com `0/1`
+  (RTSS aberto e enganchado no jogo). O significado exato dessas chaves não está documentado; falta ver na tela de
+  Configurações › Perfis do Afterburner o que ele mostra. Até lá, salvar nos perfis serve para `-Profile2`/atalhos, não
+  para a troca sozinha.
+- Voltar aos perfis de antes: os dois `.cfg` ficaram idênticos (hash) aos originais. ✓
+- Sem UAC (Lotus aplica no jogo): Wukong detectado → curva 925 mV @ 2775 aplicada na hora; reiniciar o Afterburner com o
+  jogo aberto manteve o ajuste; ao fechar o jogo o Lotus voltou ao padrão (offsets 0) e apagou o journal. ✓
+
 ## Resultado real no PC do José (14/11/2026) — RTX 5060 (MSI, 8 GB) + Ryzen 5 5500
 
 Ajuste automático do Lotus (aplicado pela memória de controle do Afterburner, 3 min de carga por passo, pontuação = carga de GPU do Lotus Score, sem limite de FPS):

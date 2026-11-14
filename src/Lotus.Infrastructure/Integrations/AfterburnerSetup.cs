@@ -10,7 +10,7 @@ public static class AfterburnerSetup
 
     public static bool VoltageUnlocked(string? dir = null) => Value(Path.Combine(dir ?? Dir, "MSIAfterburner.cfg"), "UnlockVoltageControl") is { } v && v != "0";
     public static bool AutoProfiles(string? dir = null) =>
-        int.TryParse(Value(Path.Combine(dir ?? Dir, "Profiles", "MSIAfterburner.cfg"), "Profile3D"), out var p3) && p3 > 0;
+        int.TryParse(Value(Path.Combine(dir ?? Dir, "Profiles", "MSIAfterburner.cfg"), "Profile3D"), out var p3) && p3 >= 0; // index from 0, -1 = none
 
     // "Key = value" or "Key=value" (Afterburner uses both, with tabs).
     private static string? Value(string path, string key)

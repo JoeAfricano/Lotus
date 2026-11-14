@@ -65,8 +65,8 @@ public sealed class AfterburnerProfileFileTests
     {
         var main = Fixture("afterburner-main.cfg");
         var text = AfterburnerProfileFile.WithAutoSwitch(main);
-        Assert.Equal("1", AfterburnerProfileFile.Get(text, "Settings", "Profile2D"));
-        Assert.Equal("2", AfterburnerProfileFile.Get(text, "Settings", "Profile3D"));
+        Assert.Equal("0", AfterburnerProfileFile.Get(text, "Settings", "Profile2D")); // Profile 1
+        Assert.Equal("1", AfterburnerProfileFile.Get(text, "Settings", "Profile3D")); // Profile 2
         var changed = main.Split('\n').Zip(text.Split('\n')).Count(p => p.First != p.Second);
         Assert.Equal(2, changed);
         Assert.Equal(main.Split('\n').Length, text.Split('\n').Length);

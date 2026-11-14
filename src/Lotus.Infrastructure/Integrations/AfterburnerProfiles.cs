@@ -117,8 +117,10 @@ public static class AfterburnerProfileFile
         return SetSection(SetSection(cardText, "Profile" + Stock, stock), "Profile" + Tune, tuned);
     }
 
+    // Profile2D / Profile3D hold the profile's index from 0 (-1 = none): written as 1 and 2, Afterburner switched nothing
+    // in a real game (14/11/2026), so Profile 1 is 0 and Profile 2 is 1.
     public static string WithAutoSwitch(string mainText) =>
-        SetKey(SetKey(mainText, "Settings", "Profile2D", Stock.ToString(CultureInfo.InvariantCulture)), "Settings", "Profile3D", Tune.ToString(CultureInfo.InvariantCulture));
+        SetKey(SetKey(mainText, "Settings", "Profile2D", (Stock - 1).ToString(CultureInfo.InvariantCulture)), "Settings", "Profile3D", (Tune - 1).ToString(CultureInfo.InvariantCulture));
 
     // The card file whose default curve has as many points as the card exposes now (one card: one file).
     public static string? CardFile(string profilesDir, int points)

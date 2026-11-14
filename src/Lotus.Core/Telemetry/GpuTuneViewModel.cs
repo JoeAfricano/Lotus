@@ -115,6 +115,8 @@ public sealed partial class GpuTuneViewModel(ITextCatalog text, Func<TuneReadine
         Saving = true; SaveStatus = Text["GtSaveSaving"];
         try
         {
+            // After a save the desktop runs Profile 1 (stock): the kept tune is applied first so that one is what gets saved.
+            if (KeptSetting?.Invoke() is { } kept && ApplySetting is { } apply) await Task.Run(() => apply(kept));
             var code = await SaveToProfiles();
             SaveStatus = Text[code switch { 0 => "GtSaveOk", 1223 => "GtSaveDeclined", 6 => "GtSaveRolledBack", _ => "GtSaveFailed" }];
             if (code == 0) Refresh();
