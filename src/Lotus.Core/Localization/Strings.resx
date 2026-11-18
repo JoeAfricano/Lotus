@@ -3771,4 +3771,24 @@ Seus jogos e o Windows não são alterados.</value></data>
 <data name="VsSaturationHelp" xml:space="preserve"><value>Menos deixa as cores discretas; mais aumenta a intensidade. O padrão do driver é a base neutra, não uma calibração medida. Só disponível quando o driver expõe controle compatível.</value></data>
 <data name="VsUsingSaved" xml:space="preserve"><value>Seu ajuste salvo está carregado. Para começar com outra sugestão, escolha o uso e a iluminação abaixo.</value></data>
 <data name="VsDetecting" xml:space="preserve"><value>Lendo os recursos do monitor… Nenhum ajuste está sendo aplicado.</value></data>
+<data name="VsChipLocal" xml:space="preserve"><value>Prévia local primeiro</value></data>
+<data name="VsChipSafe" xml:space="preserve"><value>Backup e desfazer</value></data>
+<data name="VsChipTimer" xml:space="preserve"><value>Teste de 2 min com volta automática</value></data>
+<data name="VsMonitorTitle" xml:space="preserve"><value>Seu monitor</value></data>
+<data name="VsTileBrightness" xml:space="preserve"><value>Brilho</value></data>
+<data name="VsTileContrast" xml:space="preserve"><value>Contraste</value></data>
+<data name="VsTileCurve" xml:space="preserve"><value>Curva de cor</value></data>
+<data name="VsTileGamma" xml:space="preserve"><value>Gamma</value></data>
+<data name="VsTileIntensity" xml:space="preserve"><value>Intensidade</value></data>
+<data name="VsTileReady" xml:space="preserve"><value>Disponível</value></data>
+<data name="VsTileMissing" xml:space="preserve"><value>Indisponível</value></data>
+<data name="VsSuggestedTitle" xml:space="preserve"><value>Ponto de partida sugerido</value></data>
+<data name="VsStepOf" xml:space="preserve"><value>Etapa {0} de 4</value></data>
+<data name="VsCardEverydayHint" xml:space="preserve"><value>Mantém contraste e cores do driver</value></data>
+<data name="VsCardGamingHint" xml:space="preserve"><value>Sombras um pouco mais visíveis e cores mais vivas</value></data>
+<data name="VsCardEditingHint" xml:space="preserve"><value>Neutro: não mexe no brilho nem nas cores</value></data>
+<data name="VsCardMoviesHint" xml:space="preserve"><value>Contraste e cores naturais preservados</value></data>
+<data name="VsAmbientNormalHint" xml:space="preserve"><value>Mantém o brilho atual</value></data>
+<data name="VsAmbientDimHint" xml:space="preserve"><value>Quarto escuro: brilho 8 pontos menor</value></data>
+<data name="VsAmbientBrightHint" xml:space="preserve"><value>Muita luz: brilho 5 pontos maior</value></data>
 </root>
