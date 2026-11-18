@@ -58,10 +58,10 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 <tr><td><img src="docs/images/backup-de-saves-180.png" alt="Backup de saves"/><br/><sub><b>Backup de saves</b></sub></td><td><img src="docs/images/lotus-score-180.png" alt="Lotus Score"/><br/><sub><b>Lotus Score</b></sub></td></tr>
 <tr><td><img src="docs/images/diario-180.png" alt="Meu diário"/><br/><sub><b>Meu diário</b></sub></td><td><img src="docs/images/atualizacoes-180.png" alt="Atualizações"/><br/><sub><b>Atualizações com download animado</b></sub></td></tr>
 <tr><td><img src="docs/images/game-list-180.png" alt="Game list"/><br/><sub><b>Game list</b></sub></td><td><img src="docs/images/temas-180.png" alt="Temas"/><br/><sub><b>Galeria de temas</b></sub></td></tr>
-<tr><td><img src="docs/images/tipos-de-jogo-153.png" alt="Tipo de jogo"/><br/><sub><b>Tipo de jogo (Game list)</b></sub></td><td></td></tr>
+<tr><td><img src="docs/images/tipos-de-jogo-180.png" alt="Tipo de jogo"/><br/><sub><b>Tipo de jogo (Game list)</b></sub></td><td></td></tr>
 </table>
 
-<sub>Capturas da versão 1.8.0. A janela de tipos de jogo (Game list) é da 1.5.3.</sub>
+<sub>Capturas da versão 1.8.0.</sub>
 
 ## Instalar
 
