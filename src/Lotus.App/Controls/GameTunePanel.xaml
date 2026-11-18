@@ -24,10 +24,11 @@
     </StackPanel>
    </ScrollViewer>
    <!-- Fixed footer: actions -->
-   <Grid x:Name="Footer" Grid.Row="2" Padding="36,14,36,22" ColumnSpacing="12" MaxWidth="760" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource DividerBrush}" BorderThickness="0,1,0,0" Visibility="Collapsed">
-    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+   <Grid x:Name="Footer" Grid.Row="2" Padding="36,14,36,22" ColumnSpacing="10" MaxWidth="960" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource DividerBrush}" BorderThickness="0,1,0,0" Visibility="Collapsed">
+    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
     <Button x:Name="SecondaryAction" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48" FontSize="14" Visibility="Collapsed" Click="OnSecondary" AutomationProperties.AutomationId="tune-secondary"/>
-    <Button x:Name="PrimaryAction" Grid.Column="1" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48" FontSize="14" Visibility="Collapsed" Click="OnPrimary" AutomationProperties.AutomationId="tune-primary"/>
+    <Button x:Name="ShaderAction" Grid.Column="1" Style="{StaticResource SoftButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48" FontSize="14" Click="OnShaders" AutomationProperties.AutomationId="tune-shaders"/>
+    <Button x:Name="PrimaryAction" Grid.Column="2" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Stretch" MinHeight="48" FontSize="14" Visibility="Collapsed" Click="OnPrimary" AutomationProperties.AutomationId="tune-primary"/>
    </Grid>
   </Grid>
  </Grid>

@@ -28,6 +28,7 @@ public sealed partial class MainWindow
         if (running is null) ShowPendingResumePrompt();
         await UpdateBoostAsync(running);
         await UpdateGameTuneAsync(running);
+        await UpdateOverlayWindowAsync(running);
         var wantPriority = preferences.Current.GamePriority && running is not null && !DevBesideInstalled();
         try
         {

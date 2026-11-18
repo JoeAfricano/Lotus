@@ -136,7 +136,21 @@ public static class AfterburnerProfileFile
 
     // True when the live curve (control memory) matches the expected one within 1 MHz on every point.
     public static bool Matches(IReadOnlyList<int> liveKHz, IReadOnlyList<int> expectedKHz) =>
-        liveKHz.Count == expectedKHz.Count && liveKHz.Zip(expectedKHz).All(p => Math.Abs(p.First - p.Second) <= 1000);
+        liveKHz.Count == expectedKHz.Count && liveKHz.Zip(expectedKHz).All(p => Math.Abs((long)p.First - p.Second) <= 1000);
+
+    public static bool Matches(Values live, Values expected) => live.PowerLimit == expected.PowerLimit
+        && Math.Abs((long)live.CoreBoostKHz - expected.CoreBoostKHz) <= 1000
+        && Math.Abs((long)live.MemBoostKHz - expected.MemBoostKHz) <= 1000
+        && Matches(live.OffsetsKHz, expected.OffsetsKHz);
+
+    public static Values? ReadValues(string text, string section)
+    {
+        if (!int.TryParse(Get(text, section, "PowerLimit"), out var power)
+            || !int.TryParse(Get(text, section, "CoreClkBoost"), out var core)
+            || !int.TryParse(Get(text, section, "MemClkBoost"), out var mem)
+            || Get(text, section, "VFCurve") is not { } hex || Offsets(hex) is not { } offsets) return null;
+        return new(power, core, mem, offsets);
+    }
 }
 
 // Lotus's side (no administrator): asks for the one UAC, hands the tune read from the control memory to the helper.
@@ -207,6 +221,8 @@ public static class AfterburnerElevatedHelper
         if (!File.Exists(main)) return 5;
         var newCard = AfterburnerProfileFile.WithProfiles(File.ReadAllText(card), tune);
         if (newCard is null) return 5;
+        var stock = AfterburnerProfileFile.ReadValues(newCard, "Profile" + AfterburnerProfileFile.Stock);
+        if (stock is null) return 5;
         // The player's files before Lotus ever touched them stay in "original"; each save also keeps its own copy.
         var original = Path.Combine(backups, "original");
         if (!Directory.Exists(original)) Copy(ProfilesDir, original);
@@ -219,19 +235,19 @@ public static class AfterburnerElevatedHelper
         // nothing in a real game (14/11/2026), so the format is still unknown. Lotus's own game option does the switching.
         Start();
         // Afterburner must load the tune exactly as written (profile 2) and stock as profile 1; otherwise everything goes back.
-        var ok = Loads(AfterburnerProfileFile.Tune, tune.OffsetsKHz) && Loads(AfterburnerProfileFile.Stock, new int[tune.OffsetsKHz.Length]);
+        var ok = Loads(AfterburnerProfileFile.Tune, tune) && Loads(AfterburnerProfileFile.Stock, stock);
         if (!ok) { Restore(backups, before); return 6; }
         return 0;
     }
 
-    private static bool Loads(int profile, int[] expected)
+    private static bool Loads(int profile, AfterburnerProfileFile.Values expected)
     {
         Run("-Profile" + profile.ToString(CultureInfo.InvariantCulture));
         var control = new AfterburnerControl(Path.Combine(Path.GetTempPath(), "lotus-ab-check.json"));
         for (var i = 0; i < 40; i++)
         {
             Thread.Sleep(250);
-            if (control.Read() is { } s && AfterburnerProfileFile.Matches(s.Offsets, expected)) return true;
+            if (control.Read() is { } s && AfterburnerProfileFile.Matches(new(s.PowerLimit, s.CoreBoostKHz, s.MemBoostKHz, s.Offsets), expected)) return true;
         }
         return false;
     }

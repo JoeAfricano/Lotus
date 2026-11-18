@@ -45,6 +45,13 @@ public sealed record InterfacePreferences
     // while a game is open and undone when it closes. On by default, but it acts only after the player kept a tune.
     public bool GpuTuneOnGames { get; init; } = true;
     public Lotus.Core.Telemetry.GpuSetting? GpuTuneKept { get; init; }
+    public Lotus.Core.Telemetry.GpuTuneCalibration? GpuTuneCalibration { get; init; }
+    // "Janela Lotus" overlay (experimental): three profiles and the one in use (null = the ready-made ones).
+    public IReadOnlyList<Lotus.Core.Benchmark.OverlayWindowSettings>? OverlayProfiles { get; init; }
+    public int OverlayProfile { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore]
+    public Lotus.Core.Benchmark.OverlayWindowSettings OverlayWindow =>
+        ((OverlayProfiles is { Count: 3 } p ? p : Lotus.Core.Benchmark.OverlayWindowSettings.DefaultProfiles)[Math.Clamp(OverlayProfile, 0, 2)]).Normalized();
     public bool DriverNotices { get; init; } = true; // a quiet weekly check for a newer graphics driver (Lotus never installs it)
     public DateTimeOffset? DriverCheckedAt { get; init; }
     public string? DriverNoticeKey { get; init; } // the last driver notice shown ("nvidia:581.57"), so each one is told once

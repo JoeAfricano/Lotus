@@ -49,7 +49,7 @@ public sealed partial class GameDetailView : UserControl
             if (vm is not null) vm.PropertyChanged += OnVm;
             Render();
         };
-        Unloaded += (_, _) => { if (vm is not null) vm.PropertyChanged -= OnVm; };
+        Unloaded += (_, _) => { artTimer?.Stop(); if (vm is not null) vm.PropertyChanged -= OnVm; };
     }
 
     private void OnVm(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -98,7 +98,7 @@ public sealed partial class GameDetailView : UserControl
         if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) { if (next.Count > 0) ShowArt(next[0], next[1..]); else HeroArt.Source = null; return; }
         var want = shownArt; var done = false;
         void Next() { if (done || shownArt != want) return; done = true; artTimer?.Stop(); if (next.Count > 0) ShowArt(next[0], next[1..]); }
-        var bmp = new BitmapImage { UriSource = uri };
+        var bmp = new BitmapImage { DecodePixelWidth = 1600, UriSource = uri };
         bmp.ImageOpened += (_, _) => { if (done || shownArt != want) return; done = true; artTimer?.Stop(); Fade(HeroArt, 1, 600); Zoom(HeroArt); };
         bmp.ImageFailed += (_, _) => Next();
         HeroArt.Source = bmp;

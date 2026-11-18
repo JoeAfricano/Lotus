@@ -39,6 +39,7 @@ public sealed partial class MainWindow
         }
         else if (how == PutAway.Minimized && AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized } presenter)
         {
+            ResumePerformance();
             presenter.Restore();
             Activate();
             ComeForward();

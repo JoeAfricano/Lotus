@@ -6,7 +6,7 @@ namespace Lotus.Infrastructure;
 
 public sealed class JsonPreferencesStore(string path, ILogger logger) : IPreferencesStore
 {
-    private const int MaxBytes = 65_536;
+    private const int MaxBytes = 262_144;
     private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
     public PreferencesLoadResult Load()
     {
@@ -39,6 +39,7 @@ public sealed class JsonPreferencesStore(string path, ILogger logger) : IPrefere
             using (var stream = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None))
             {
                 JsonSerializer.Serialize(stream, preferences.Normalize(), Options);
+                if (stream.Length > MaxBytes) throw new IOException("Preferences exceed the supported size; previous file preserved.");
                 stream.Flush(flushToDisk: true);
             }
             // A failed replacement never truncates the last complete settings file.

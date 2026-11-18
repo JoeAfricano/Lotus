@@ -2,6 +2,50 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.8.0-alpha "Lotus" (16/11/2026)
+
+### Novo
+- **Estúdio visual do monitor (experimental).** Em Ferramentas › Bônus. Sugestões por uso (Dia a dia, Jogos, Edição, Filmes) e ambiente (normal, escuro, claro), com explicações curtas em cada controle.
+- **Prévia local Antes/Depois** de brilho, contraste, gamma, branco e intensidade das cores, com linha arrastável (também por teclado) e imagens de cenas medievais. Arrastar **não envia comandos ao monitor**.
+- **Testar no monitor inteiro** é uma ação separada, com confirmação, backup, tempo limite e reversão de segurança. Saturação global só quando o driver NVIDIA oferece controle compatível; HDR/Advanced Color ficam bloqueados.
+
+### Corrigido
+- Bloqueios da interface durante o ajuste, sessão interrompida ao minimizar e ícones sem contraste nos cartões selecionados.
+- A prévia usa imagens reduzidas, buffers reaproveitados e descarta passos intermediários; parada, não consome processamento.
+
+### Observação
+- O ajuste é experimental e não substitui calibração com instrumento. Aplicação física depende do monitor e do driver; se não for possível confirmar a escrita, o Lotus avisa e reverte.
+
+## 1.7.2-alpha "Lotus" (15/11/2026)
+
+### Novo
+- **Hz por jogo (opcional):** em Otimizar este jogo, escolha uma taxa suportada pelo monitor. Resolução mantida; a taxa anterior volta ao dar Alt+Tab ou fechar o jogo.
+- **RivaTuner por jogo** com modo automático (Front Edge Sync; Reflex externo em NVIDIA compatível) e opções manuais (Back Edge, Async).
+- Medição de frametime alinhada ao limitador, sem esconder travadas reais no gráfico.
+- Rodapé reorganizado: restaurar originais, preparar shaders e iniciar o jogo.
+
+### Corrigido
+- Correção da calibração do Lotus Score (CPU), preservando o histórico; repita o teste para atualizar resultados afetados.
+- Menos memória e retorno mais rápido do Lotus ao fechar jogos.
+
+## 1.7.1-alpha "Lotus" (15/11/2026)
+
+### Corrigido
+- Retenção de páginas e imagens dos banners; imagens sob demanda; interface oculta liberada mais cedo.
+- Fechamento do jogo detectado por evento, com prioridade normal restaurada antes de reconstruir a tela.
+- Medição de GPU separada da espera de apresentação; flor Lotus nos testes de CPU, GPU, ajuste e prévia; Lotus Score recalibrado com histórico antigo identificado.
+
+## 1.7.0-alpha "Lotus" (15/11/2026)
+
+### Novo
+- **Três overlays nativos do RivaTuner:** Equilíbrio (topo), Neon (canto direito) e Pulse (canto esquerdo), com arte transparente e framepacer rosa, sem CapFrameX nem renderizador auxiliar. Backup, verificação e rollback; o limite de FPS não é alterado.
+- **Janela Lotus (experimental):** overlay em janela própria, sem injeção no jogo, com atalhos.
+- **Ajuste da placa em etapas:** testar → comparar → aplicar pelo Afterburner → usar nos jogos, com profundidades Rápido, Equilibrado e Completo. Confere todos os pontos da curva e restaura se algo falhar.
+
+### Corrigido
+- Concorrência na fila de diagnóstico de RAM e no cancelamento do benchmark; painéis deixam de acumular eventos.
+- Removidas a compactação completa e a expulsão periódica de memória do processo.
+
 ## 1.6.0-alpha "Lotus" (14/11/2026)
 
 ### Novo

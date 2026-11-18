@@ -7,6 +7,25 @@ namespace Lotus.Tests;
 
 public sealed class PreferencesTests : IDisposable
 {
+    [Fact] public void Calibration_roundtrip_preserves_measurements_depth_and_hardware_identity()
+    {
+        var step=new Lotus.Core.Telemetry.AutoStep("baseline",Lotus.Core.Telemetry.GpuSetting.Stock,Lotus.Core.Telemetry.TuneVerdict.Stable,1000,65,2700,120);
+        var report=new Lotus.Core.Telemetry.AutoTuneReport(step,null,null,null,[step],false);
+        var calibration=new Lotus.Core.Telemetry.GpuTuneCalibration("hardware-id","RTX 5060",DateTimeOffset.UtcNow,report,Depth:Lotus.Core.Telemetry.GpuTestDepth.Quick);
+        Assert.True(CreateStore().TrySave(new InterfacePreferences { GpuTuneCalibration=calibration }));
+        var loaded=CreateStore().Load().Value.GpuTuneCalibration!;
+        Assert.Equal(calibration.GpuIdentity,loaded.GpuIdentity); Assert.Equal(calibration.Depth,loaded.Depth);
+        Assert.Equal(step,loaded.Report.Baseline); Assert.Single(loaded.Report.Steps);
+    }
+
+    [Fact] public void Oversized_save_preserves_the_last_valid_file()
+    {
+        Assert.True(CreateStore().TrySave(new InterfacePreferences()));
+        var previous=File.ReadAllBytes(FilePath);
+        var huge=new Lotus.Core.Telemetry.GpuTuneCalibration(new string('x',270_000),"GPU",DateTimeOffset.UtcNow,new(null,null,null,null,[],false));
+        Assert.False(CreateStore().TrySave(new InterfacePreferences { GpuTuneCalibration=huge }));
+        Assert.Equal(previous,File.ReadAllBytes(FilePath)); Assert.Empty(Directory.GetFiles(directory,"*.tmp"));
+    }
     private readonly string directory = Path.Combine(Path.GetTempPath(), "lotus-preferences-tests-" + Guid.NewGuid().ToString("N"));
     private string FilePath => Path.Combine(directory, "preferences.json");
     private JsonPreferencesStore CreateStore() => new(FilePath, new LoggerConfiguration().CreateLogger());
@@ -52,8 +71,8 @@ public sealed class PreferencesTests : IDisposable
     }
     [Fact] public void OversizedFileFallsBackWithoutOverwriting()
     {
-        Directory.CreateDirectory(directory); File.WriteAllText(FilePath, new string(' ', 70_000));
-        Assert.Equal("Oversized", CreateStore().Load().Status); Assert.Equal(70_000, new FileInfo(FilePath).Length);
+        Directory.CreateDirectory(directory); File.WriteAllText(FilePath, new string(' ', 270_000));
+        Assert.Equal("Oversized", CreateStore().Load().Status); Assert.Equal(270_000, new FileInfo(FilePath).Length);
     }
     [Fact] public void LockedDestinationPreservesLastCompleteFileAndCurrentState()
     {

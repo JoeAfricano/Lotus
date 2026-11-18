@@ -8,6 +8,10 @@ public sealed class GpuTuningTests
     private static List<TuneSample> Load(double temp, params double[] clocks) => [.. clocks.Select(c => new TuneSample(temp, c, 140))];
     private static List<TuneSample> Steady(double temp, double clock, int n = 30) => [.. Enumerable.Repeat(new TuneSample(temp, clock, 140), n)];
 
+    [Theory] [InlineData(0,0)] [InlineData(60,0)] [InlineData(0,2700)] [InlineData(double.NaN,2700)]
+    public void Missing_or_invalid_sensors_never_pass_stability(double temp, double clock) =>
+        Assert.Equal(TuneVerdict.NoData, GpuTuning.Judge(GpuTuning.Start(TuneGoal.Undervolt), Steady(temp,clock), false,null).Verdict);
+
     [Fact]
     public void Readiness_names_the_first_missing_piece()
     {

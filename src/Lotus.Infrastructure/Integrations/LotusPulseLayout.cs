@@ -84,6 +84,17 @@ public static class LotusPulseLayout
         return sb.ToString();
     }
 
+    // "Lotus (janela)": RivaTuner keeps hooking the game (frametime pipe, FPS limit, Reflex) but draws nothing, because
+    // the Lotus window shows the numbers. Same sources, no layers.
+    public static string Empty(string sourcesSection)
+    {
+        var sources = sourcesSection.TrimEnd() + "\r\n";
+        var count = System.Text.RegularExpressions.Regex.Matches(sources, @"\[Source\d+\]").Count;
+        return "[Master]\r\nImplementation=2\r\nFontFace=Segoe UI\r\nFontHeight=-16\r\nFontWeight=600\r\nZoomRatio=1\r\n"
+            + "[Settings]\r\nLockUserSettings=1\r\nName=Lotus Window\r\nRefreshPeriod=1000\r\n"
+            + string.Create(CultureInfo.InvariantCulture, $"[General]\r\nSources={count}\r\nTables=0\r\nLayers=0\r\n") + sources;
+    }
+
     // "#RRGGBB" (or "RRGGBB") → "RRGGBB"; anything else falls back.
     public static string Hex(string? color, string fallback)
     {

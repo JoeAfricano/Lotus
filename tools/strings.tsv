@@ -1,0 +1,23 @@
+
+PlatformNES	NES	NES
+PlatformGB	Game Boy	Game Boy
+PlatformGBC	Game Boy Color	Game Boy Color
+PlatformNDS	Nintendo DS	Nintendo DS
+PlatformN3DS	Nintendo 3DS	Nintendo 3DS
+PlatformVIRTUAL_BOY	Virtual Boy	Virtual Boy
+PlatformWII	Wii	Wii
+PlatformSWITCH	Nintendo Switch	Nintendo Switch
+PlatformPS3	PlayStation 3	PlayStation 3
+PlatformPS4	PlayStation 4	PlayStation 4
+PlatformPS5	PlayStation 5	PlayStation 5
+PlatformPSP	PSP	PSP
+PlatformXBOX	Xbox	Xbox
+PlatformGENESIS	Mega Drive	Genesis
+PlatformSEGA_32X	32X	32X
+PlatformGAME_GEAR	Game Gear	Game Gear
+PlatformSATURN	Saturn	Saturn
+PlatformDREAMCAST	Dreamcast	Dreamcast
+PlatformARCADE	Arcade	Arcade
+PlatformCDI	CD-i	CD-i
+PlatformAMIGA	Amiga	Amiga
+PlatformOTHER	Outra plataforma	Other platform

@@ -13,7 +13,7 @@
       <controls:ReadinessCard x:Name="ReadinessCard" Loaded="OnReadinessLoaded" NavigateRequested="OnGuidedNavigate" Visibility="{Binding Guided.ShowReady, Converter={StaticResource BooleanVisibility}}"/>
      </StackPanel>
     </Grid>
-    <!-- Your games on the left, Game list and Lotus Ports as two big tiles on the right -->
+    <!-- Your games and the full-width Game list shortcut. -->
     <StackPanel x:Name="HomeBelow" Spacing="24" Margin="0,-28,0,0">
      <StackPanel x:Name="HomeGamesBlock" Spacing="12">
     <!-- Your games: quick shortcuts; the cover opens My Games, Play starts the game -->
@@ -53,7 +53,7 @@
      <Grid x:Name="HomeTiles" ColumnSpacing="16" RowSpacing="14">
       <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
       <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-      <Button x:Name="HomeGameList" Click="OnHomeGameList" Style="{StaticResource CardButtonStyle}" AutomationProperties.AutomationId="home-gamelist" AutomationProperties.Name="{Binding Text[gamelistTitle]}">
+      <Button x:Name="HomeGameList" Grid.ColumnSpan="2" Click="OnHomeGameList" Style="{StaticResource CardButtonStyle}" AutomationProperties.AutomationId="home-gamelist" AutomationProperties.Name="{Binding Text[gamelistTitle]}">
        <Border CornerRadius="16" Padding="18,16" BorderThickness="1" BorderBrush="{ThemeResource GoldGradientBrush}" app:Motion.Hover="1.02" app:Motion.Sheen="True">
         <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#66C2185B" Offset="0"/><GradientStop Color="#40E7AE93" Offset="1"/></LinearGradientBrush></Border.Background>
         <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
@@ -67,7 +67,7 @@
        </Border>
       </Button>
       <!-- Lotus Ports (sibling app): a small invitation; the click explains it and installs only after the player confirms -->
-      <Button x:Name="HomePorts" Grid.Column="1" Click="OnHomePorts" Loaded="OnHomePortsLoaded" Style="{StaticResource CardButtonStyle}" AutomationProperties.AutomationId="home-ports" AutomationProperties.Name="Lotus Ports">
+      <Button x:Name="HomePorts" x:Load="False" Grid.Column="1" Click="OnHomePorts" Loaded="OnHomePortsLoaded" Style="{StaticResource CardButtonStyle}" AutomationProperties.AutomationId="home-ports" AutomationProperties.Name="Lotus Ports">
        <Border CornerRadius="16" Padding="16,14" BorderThickness="1" BorderBrush="{ThemeResource CardBorderBrush}" Background="{ThemeResource CardBrush}" app:Motion.Hover="1.02">
         <Grid ColumnSpacing="14"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
          <Image x:Name="HomePortsIcon" Width="44" Height="44" VerticalAlignment="Center"/>
@@ -95,9 +95,11 @@
 
    <StackPanel x:Name="OptimizeContent" x:Load="{x:Bind ShowOptimize}" Spacing="20">
     <!-- Otimizar meu PC: Perfis · Desempenho · Ajuste da placa · Restaurar (Desempenho is no longer a sidebar item) -->
-    <SelectorBar x:Name="OptimizeTabs" SelectionChanged="OnOptimizeTabChanged" AutomationProperties.Name="{Binding Text[UxOptimizeSections]}" AutomationProperties.AutomationId="optimize-tabs">
-     <SelectorBarItem Text="{Binding Text[OpTabProfiles]}"/><SelectorBarItem Text="{Binding Text[performanceTitle]}"/><SelectorBarItem Text="{Binding Text[OpTabGpu]}"/><SelectorBarItem Text="{Binding Text[UxRestoreTab]}"/>
-    </SelectorBar>
+    <Border Style="{StaticResource CardStyle}" Padding="10" CornerRadius="18">
+     <SelectorBar x:Name="OptimizeTabs" SelectionChanged="OnOptimizeTabChanged" AutomationProperties.Name="{Binding Text[UxOptimizeSections]}" AutomationProperties.AutomationId="optimize-tabs">
+      <SelectorBarItem Text="{Binding Text[OpTabProfiles]}" Padding="18,12"/><SelectorBarItem Text="{Binding Text[performanceTitle]}" Padding="18,12"/><SelectorBarItem Text="{Binding Text[OpTabGpu]}" Padding="18,12"/><SelectorBarItem Text="{Binding Text[UxRestoreTab]}" Padding="18,12"/>
+     </SelectorBar>
+    </Border>
     <StackPanel x:Name="ProfilesTab" x:Load="{x:Bind ShowDiagnosis}" Spacing="20">
     <controls:PowerProfilesPanel DataContext="{Binding PowerProfiles}" AdjustRequested="OnAdjustBoost"/>
     <!-- Ajustar o perfil Jogo: what happens only while a game is open, each step undone when it closes -->
@@ -174,7 +176,7 @@
      <StackPanel x:Name="OverlayArea" Spacing="16" Visibility="Collapsed">
       <!-- Pick the style by looking at it: the big preview follows the chosen tile; one button turns it on -->
       <controls:OverlayStylePicker DataContext="{Binding Integrations}"/>
-      <controls:RtssCard DataContext="{Binding Integrations}"/>
+      <Expander Header="{Binding Text[OsRtssAdvanced]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"><controls:RtssCard DataContext="{Binding Integrations}"/></Expander>
      </StackPanel>
      <controls:GamesPanel x:Name="GamesContent" DataContext="{Binding Games}" DetailsRequested="OnGameDetails"/>
      <!-- Visual 2.0: the Steam highlight comes after the player's own games -->
@@ -239,7 +241,7 @@
       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetPreparePlay]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetPreparePlayHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.PreparePlay, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetPreparePlay]}" AutomationProperties.AutomationId="settings-prepare-play"/>
      </Grid></Border>
-     <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <Border x:Name="PortsCaptureSetting" x:Load="False" Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <FontIcon Glyph="&#xE9D9;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetMeasurePorts]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetMeasurePortsHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
       <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.MeasurePortsSessions, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[SetMeasurePorts]}" AutomationProperties.AutomationId="settings-measure-ports"/>

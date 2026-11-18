@@ -39,15 +39,33 @@ public sealed record AutoTuneReport(AutoStep? Baseline, AutoStep? Undervolt, Aut
     public AutoStep? Current { get; init; } // the card as the player had it (measured before any change)
 }
 
+// Saved measurements are evidence for one GPU, not a command to change hardware on startup.
+public sealed record GpuTuneCalibration(string GpuIdentity, string GpuName, DateTimeOffset TestedAt, AutoTuneReport Report, int Schema = 1, GpuTestDepth Depth = GpuTestDepth.Complete);
+
+public enum GpuTestDepth { Quick, Balanced, Complete }
+public sealed record GpuTestBudget(int Seconds, int UndervoltSteps, int MemorySteps, int CoreSteps)
+{
+    public static GpuTestBudget For(GpuTestDepth depth) => depth switch
+    {
+        GpuTestDepth.Quick => new(45, 2, 1, 2),
+        GpuTestDepth.Balanced => new(75, 4, 2, 4),
+        _ => new(180, int.MaxValue, int.MaxValue, int.MaxValue)
+    };
+}
+
 [Flags] public enum AutoModes { Undervolt = 1, Overclock = 2, Combined = 4, All = 7 }
 
-public sealed class GpuAutoTuner(IGpuControl control, IGpuLoadTest test, GpuTuning.CardStart card, Action<AutoStep>? onStep = null, Action<string>? onStatus = null)
+public sealed class GpuAutoTuner(IGpuControl control, IGpuLoadTest test, GpuTuning.CardStart card, Action<AutoStep>? onStep = null, Action<string>? onStatus = null, Action<double>? onProgress = null)
 {
     public TimeSpan StepLength { get; init; } = TimeSpan.FromMinutes(3);
+    public int MaxUndervoltSteps { get; init; } = int.MaxValue;
+    public int MaxMemorySteps { get; init; } = int.MaxValue;
+    public int MaxCoreSteps { get; init; } = int.MaxValue;
     public TimeSpan Settle { get; init; } = TimeSpan.FromSeconds(1.5); // clocks settle after each change
     public const int FloorMv = 850, UvStepMv = 25, CoreStepMhz = 50;
     private static readonly int[] MemorySteps = [500, 750, 1000];
     private readonly List<AutoStep> steps = [];
+    private sealed class TestStopped(string reason) : Exception(reason);
 
     public async Task<AutoTuneReport> RunAsync(AutoModes modes, CancellationToken token)
     {
@@ -82,7 +100,12 @@ public sealed class GpuAutoTuner(IGpuControl control, IGpuLoadTest test, GpuTuni
             return new(baseline, uv, modes.HasFlag(AutoModes.Overclock) ? oc : null, combo, steps, false) { Current = current };
         }
         catch (OperationCanceledException) { return new(baseline, uv, oc, combo, steps, true) { Current = current }; }
-        finally { control.RestoreOriginal(); } // the card goes back as it was; the player chooses what to keep
+        catch (TestStopped stopped) { return new(baseline, uv, oc, combo, steps, false, stopped.Message) { Current = current }; }
+        finally
+        {
+            // Keep the recovery journal and report failure instead of claiming the card was restored.
+            if (!control.RestoreOriginal()) throw new InvalidOperationException("MSI Afterburner could not restore the original GPU settings; recovery journal retained.");
+        }
     }
 
     private Task<AutoStep?> Step(string mode, GpuSetting setting, CancellationToken token) => Measure(mode, setting, token);
@@ -93,10 +116,13 @@ public sealed class GpuAutoTuner(IGpuControl control, IGpuLoadTest test, GpuTuni
         var setting = apply ?? new GpuSetting(0, 0);
         if (apply is not null && !control.Apply(apply)) return null;
         await Task.Delay(Settle, token);
-        var (samples, reset, score) = await test.RunAsync(StepLength, null, token);
+        onProgress?.Invoke(0);
+        var (samples, reset, score) = await test.RunAsync(StepLength, new Progress<double>(p => onProgress?.Invoke(p)), token);
         var r = GpuTuning.Judge(new(TuneGoal.Overclock, setting.CoreOffsetMhz, setting.MemOffsetMhz, setting.FlatMv ?? 0, 0), samples, reset, null, card);
         var step = new AutoStep(mode, setting, r.Verdict, score, r.MaxTempC, r.AvgCoreMhz, samples.Count == 0 ? 0 : samples.Average(s => s.PowerW));
         steps.Add(step); onStep?.Invoke(step);
+        if (r.Verdict == TuneVerdict.TooHot) throw new TestStopped("hot");
+        if (r.Verdict == TuneVerdict.NoData || !double.IsFinite(score) || score <= 0) throw new TestStopped("sensors");
         if (reset) { control.Apply(GpuSetting.Stock); await Task.Delay(Settle * 2, token); } // after a driver reset: back to stock before the next try
         return step;
     }
@@ -105,7 +131,7 @@ public sealed class GpuAutoTuner(IGpuControl control, IGpuLoadTest test, GpuTuni
     private async Task<AutoStep?> Undervolt(string mode, int mhz, int startMv, int memOffset, CancellationToken token)
     {
         AutoStep? lastGood = null;
-        for (var mv = startMv; mv >= FloorMv; mv -= UvStepMv)
+        for (int mv = startMv, tried = 0; mv >= FloorMv && tried < MaxUndervoltSteps; mv -= UvStepMv, tried++)
         {
             var s = await Step(mode, new(0, memOffset, mv, mhz), token);
             if (s is not { Ok: true }) break;
@@ -119,14 +145,14 @@ public sealed class GpuAutoTuner(IGpuControl control, IGpuLoadTest test, GpuTuni
     private async Task<AutoStep?> Overclock(double baseScore, CancellationToken token)
     {
         int mem = 0; var score = baseScore;
-        foreach (var m in MemorySteps.Where(m => m <= Math.Min(card.OcMemMax, control.Limits.MemMaxMhz)))
+        foreach (var m in MemorySteps.Where(m => m <= Math.Min(card.OcMemMax, control.Limits.MemMaxMhz)).Take(MaxMemorySteps))
         {
             var s = await Step("memory", new(0, m), token);
             if (s is not { Ok: true } || s.Score < score * 1.003) break;
             mem = m; score = s.Score;
         }
         AutoStep? lastGood = null;
-        for (var core = 100; core <= Math.Min(card.OcCoreMax, control.Limits.CoreMaxMhz); core += CoreStepMhz)
+        for (int core = 100, tried = 0; core <= Math.Min(card.OcCoreMax, control.Limits.CoreMaxMhz) && tried < MaxCoreSteps; core += CoreStepMhz, tried++)
         {
             var s = await Step("core", new(core, mem), token);
             if (s is not { Ok: true }) break;

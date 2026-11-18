@@ -5,6 +5,7 @@ namespace Lotus.Core.Score;
 
 // LOTUS SCORE: short, repeatable CPU and GPU tests; nothing in Windows is changed.
 public interface ICpuBenchmark { double Run(int threads, TimeSpan duration, CancellationToken ct); } // work units per second
+public interface IScoreExecutionEnvironment { bool IsOptimized { get; } }
 // Runs 1 warm-up + `passes` measured passes in a visible scene window; null = no hardware GPU. onPass(i) fires as pass i starts (0 = warm-up).
 public interface IGpuBenchmark { string? Adapter(); IReadOnlyList<double>? Run(int passes, TimeSpan each, Action<int> onPass, CancellationToken ct); }
 // Live picture of what the CPU test is rendering (BGRA pixels), shown in the page while it runs.
@@ -15,24 +16,35 @@ public interface IScoreMachine { string Cpu(); string Gpu(); }
 // Null fields = test not run (the user chose a subset); Total only when the full set ran.
 // Peak GPU temperature/power and average CPU use while the tests ran (3DMark-style monitoring); null when unread.
 public sealed record ScoreRun(DateTime Date, int? Cpu1, int? CpuAll, int? Gpu, int? Total, double VariationPct, string CpuName, string GpuName,
-    double? PeakGpuTemp = null, double? PeakGpuPower = null, double? AvgCpuUse = null);
+    double? PeakGpuTemp = null, double? PeakGpuPower = null, double? AvgCpuUse = null, int WorkloadRevision = 1, ScoreEvidence? Evidence = null);
+public sealed record ScoreEvidence(Measured? Single, Measured? Multi, Measured? Graphics, string Calibration,
+    string Runtime, int LogicalProcessors, double PassSeconds);
 public sealed record ScoreReference(string Tier, string Example, int Cpu1, int CpuAll, int Gpu)
 {
     public int Total => LotusScale.Total(Cpu1, CpuAll, Gpu);
 }
-public sealed record Measured(double Median, double VariationPct);
+public sealed record Measured(double Median, double VariationPct, IReadOnlyList<double>? Samples = null);
 public sealed record CompareRow(string Label, string Detail, int Total, double Percent, bool IsYou, string TotalText = "");
 public sealed record HistoryRow(string Date, string Summary);
 public sealed record PartRow(string Name, string Kind, string Values, string VsYou, double Percent, bool IsYours);
 
 public static class LotusScale
 {
+    // Revision 2 used Debug calibration against a Release workload. Keep its history, never compare it.
+    public const int WorkloadRevision = 3;
+    public const string Calibration = "flower-release-x64-2026-11-14";
     // Raw-to-points factors. Calibrated once on the development PC (Ryzen 5 5500 + RTX 5060) so its
     // points match the reference row below; the other rows come from public relative-performance data. Estimates.
-    public const double Cpu1Factor = 1400 / 23450.0, CpuAllFactor = 10500 / 194700.0, GpuFactor = 11500 / 10380.0;
+    public const double Cpu1ReferenceRaw = 4902.246529357166, CpuAllReferenceRaw = 33326.154042430426, GpuReferenceRaw = 1187.155103196998;
+    public const double Cpu1Factor = 1400 / Cpu1ReferenceRaw, CpuAllFactor = 10500 / CpuAllReferenceRaw, GpuFactor = 11500 / GpuReferenceRaw;
     private const double RefCpu1 = 1500, RefCpuAll = 11000, RefGpu = 9000; // 10 000 points = mid-range gamer PC
 
-    public static int Points(double raw, double factor) => (int)Math.Round(raw * factor);
+    public static int Points(double raw, double factor)
+    {
+        if (!double.IsFinite(raw) || raw <= 0 || !double.IsFinite(factor) || factor <= 0 || raw * factor > int.MaxValue)
+            throw new ArgumentOutOfRangeException(nameof(raw), "Invalid benchmark measurement or scale.");
+        return checked((int)Math.Round(raw * factor));
+    }
     // Weighted geometric mean: GPU matters most for games, then multi-core, then single-core.
     public static int Total(int cpu1, int cpuAll, int? gpu)
     {
@@ -45,9 +57,10 @@ public static class LotusScale
     public static Measured Summarize(IReadOnlyList<double> passes)
     {
         if (passes.Count == 0) return new(0, 0);
+        if (passes.Any(p => !double.IsFinite(p) || p <= 0)) throw new ArgumentOutOfRangeException(nameof(passes), "Invalid benchmark pass.");
         var sorted = passes.Order().ToArray();
         var median = sorted.Length % 2 == 1 ? sorted[sorted.Length / 2] : (sorted[sorted.Length / 2 - 1] + sorted[sorted.Length / 2]) / 2;
-        return new(median, median > 0 ? (sorted[^1] - sorted[0]) / median * 100 : 0);
+        return new(median, (sorted[^1] - sorted[0]) / median * 100, passes.ToArray());
     }
 
     public static IReadOnlyList<ScoreReference> References { get; } =
@@ -103,6 +116,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     // A partial run (CPU or GPU only) says so instead of showing "— points".
     private string HistorySummary(ScoreRun h)
     {
+        if(h.WorkloadRevision != LotusScale.WorkloadRevision) return Text[h.WorkloadRevision == 2 ? "ScoreInvalidCalibration" : "ScoreLegacyScene"] + " · " + HistorySummary(h with {WorkloadRevision=LotusScale.WorkloadRevision});
         if (h.Total is not null) return Text.Format("ScoreHistoryLine", Points(h.Total), Points(h.Cpu1), Points(h.CpuAll), Points(h.Gpu));
         var parts = new List<string> { Text["ScoreHistoryPartial"] };
         if (h.Cpu1 is not null || h.CpuAll is not null) parts.Add($"CPU {Points(h.Cpu1)} / {Points(h.CpuAll)}");
@@ -115,7 +129,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         try
         {
             MachineText = Text.Format("ScoreMachine", machine.Cpu(), machine.Gpu());
-            last ??= history.Load().FirstOrDefault();
+            last ??= LoadLast();
             if (last?.Total is { } t && Verdict.Length == 0) Verdict = VerdictFor(t);
         }
         catch (Exception ex) { log(ex); }
@@ -127,6 +141,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     {
         if (Busy) { cts?.Cancel(); return; }
         if (!CanStart) return;
+        if (cpu is IScoreExecutionEnvironment { IsOptimized: false }) { Phase = Text["ScoreRequiresRelease"]; Notify(); return; }
         cts = new CancellationTokenSource(); var ct = cts.Token;
         var ui = SynchronizationContext.Current;
         bool doCpu1 = runCpu1, doCpuAll = runCpuAll, doGpu = runGpu && gpu.Adapter() is not null;
@@ -164,7 +179,8 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
             int? total = full ? LotusScale.Total(c1!.Value, ca!.Value, g) : null;
             var variation = new[] { single?.VariationPct ?? 0, multi?.VariationPct ?? 0, graphics?.VariationPct ?? 0 }.Max();
             sampling.Cancel(); var watched = await sampler;
-            last = new ScoreRun(DateTime.Now, c1, ca, g, total, Math.Round(variation, 1), machine.Cpu(), machine.Gpu(), watched.PeakTemp, watched.PeakPower, watched.AvgCpu);
+            last = new ScoreRun(DateTime.Now, c1, ca, g, total, Math.Round(variation, 1), machine.Cpu(), machine.Gpu(), watched.PeakTemp, watched.PeakPower, watched.AvgCpu, LotusScale.WorkloadRevision,
+                new(single, multi, graphics, LotusScale.Calibration, System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription, threads, PassLength.TotalSeconds));
             history.Save([last, .. history.Load().Take(19)]); global::Lotus.Core.Achievements.Activity.Record(global::Lotus.Core.Achievements.Activity.Score);
             Verdict = total is { } t ? VerdictFor(t) : Text["ScorePartial"];
             Reliability = Text.Format(variation < 3 ? "ScoreReliable" : "ScoreUnstable", variation);
@@ -446,7 +462,7 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     // in the benchmark table or was searched here. Null without a full test or for an unknown game.
     // Read from history on demand: other screens (a game's Otimizar) ask before the Score page was ever opened.
     public bool HasFullTest => (last ??= LoadLast()) is { Cpu1: not null, CpuAll: not null, Gpu: not null };
-    private ScoreRun? LoadLast() { try { return history.Load().FirstOrDefault(); } catch (Exception ex) { log(ex); return null; } }
+    private ScoreRun? LoadLast() { try { return history.Load().FirstOrDefault(r=>r.WorkloadRevision==LotusScale.WorkloadRevision); } catch (Exception ex) { log(ex); return null; } }
     public FpsCell? EstimateFor(string name, string? steamAppId, Resolution resolution, Preset preset)
     {
         if (last is not { Cpu1: { } s, CpuAll: { } m, Gpu: { } g }) return null;

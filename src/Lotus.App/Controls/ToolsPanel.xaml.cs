@@ -1,6 +1,7 @@
 using Lotus.Core.Tools;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 
 namespace Lotus.App.Controls;
@@ -31,12 +32,15 @@ public sealed partial class ToolsPanel : UserControl
     private readonly Dictionary<string, FrameworkElement> cards = [];
     private readonly List<(Button Tile, string Name, TextBlock Line, VariableSizedWrapGrid Wrap, FrameworkElement Group)> tiles = [];
     private readonly List<VariableSizedWrapGrid> wraps = [];
+    private readonly List<(ToggleButton Button, string? Category)> categoryButtons = [];
+    private string? selectedCategory;
     private static readonly (string Title, string[] Ids)[] Groups =
     [
         ("ToolGroupClean", ["clean", "temp", "store", "unin"]),
         ("ToolGroupSpeed", ["proc", "mem", "startup", "monitor", "features", "overlays"]),
         ("ToolGroupDiagnose", ["crash", "health", "disk", "drivers"]),
         ("ToolGroupSystem", ["windows", "net"]),
+        ("McBonusGroup", ["colors"]),
     ];
     private void BuildTiles(ToolsViewModel vm)
     {
@@ -44,33 +48,61 @@ public sealed partial class ToolsPanel : UserControl
         cards["mem"] = MemCard; cards["temp"] = TempCard; cards["clean"] = CleanCard; cards["proc"] = ProcCard; cards["store"] = StoreCard; cards["startup"] = StartCard; cards["health"] = HealthCard; cards["monitor"] = MonitorCard; cards["features"] = FeaturesCard; cards["crash"] = CrashCard; cards["windows"] = UpkeepCard; cards["checkup"] = CheckupCard; cards["unin"] = UninCard; cards["net"] = NetCard; cards["disk"] = DiskCard; cards["drivers"] = DriverCard; cards["overlays"] = OverlayCard;
         var defs = new Dictionary<string, (string Glyph, string Title, string Status)>
         {
+            ["colors"] = ("\uE790", "McTitle", "Text[McTileHint]"),
             ["clean"] = ("\uE74D", "ClTitle", "Clean.TileStatus"), ["proc"] = ("\uE964", "PrTitle", "Processes.TileStatus"), ["store"] = ("\uE8B7", "StTitle", "Storage.TileStatus"), ["startup"] = ("\uE7E8", "SuTitle", "Startup.TileStatus"),
             ["monitor"] = ("\uE7F4", "MnTitle", "Gaming.MonitorTile"), ["features"] = ("\uE7FC", "GfTitle", "Gaming.FeaturesTile"), ["crash"] = ("\uE9D9", "CrashTitle", "Crashes.TileStatus"), ["windows"] = ("\uE895", "WuTitle", "Upkeep.TileStatus"),
             ["mem"] = ("\uE964", "ToolMemTitle", "MemoryStatus"), ["temp"] = ("\uE74D", "ToolTempTitle", "TempStatus"), ["unin"] = ("\uE71D", "UninTitle", "Uninstall.Summary"), ["net"] = ("\uE701", "ToolNetTile", "NetTileStatus"),
             ["health"] = ("\uEDA2", "DkTitle", "DiskTool.TileStatus"), ["disk"] = ("\uEDA2", "ToolDiskTitle", "DiskTileStatus"), ["drivers"] = ("\uE7F8", "ToolDriverTitle", "DriverStatus"), ["overlays"] = ("\uE7F4", "OvTitle", "Overlays.Summary"),
         };
+        cards["colors"] = ColorCard;
+        foreach (var key in new string?[] { null }.Concat(Groups.Select(g => (string?)g.Title)))
+        {
+            var filter = new ToggleButton { Content = vm.Text[key ?? "ToolsAll"], IsChecked = key is null,
+                Padding = new Thickness(14, 8, 14, 8), CornerRadius = new(12) };
+            var category = key;
+            filter.Click += (_, _) =>
+            {
+                selectedCategory = category;
+                foreach (var item in categoryButtons) item.Button.IsChecked = item.Category == category;
+                FilterTiles();
+            };
+            CategoryFilters.Children.Add(filter); categoryButtons.Add((filter, key));
+        }
         foreach (var (groupTitle, ids) in Groups)
         {
-            var wrap = new VariableSizedWrapGrid { Orientation = Orientation.Horizontal, ItemWidth = 272, ItemHeight = 156, Margin = new Thickness(0, 0, -12, 0) }; // the last tile's 12 px gap hangs outside, so tiles end flush wraps.Add(wrap);
-            var group = new StackPanel { Spacing = 12 };
-            group.Children.Add(new TextBlock { Text = vm.Text[groupTitle], Style = (Style)Application.Current.Resources["SubtitleStyle"] });
+            var wrap = new VariableSizedWrapGrid { Orientation = Orientation.Horizontal, ItemWidth = 360, ItemHeight = 128, Margin = new Thickness(0, 0, -12, 0) };
+            wraps.Add(wrap);
+            var group = new StackPanel { Spacing = 12, Tag = groupTitle };
+            var groupHead = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
+            var groupGlyph = groupTitle switch { "ToolGroupClean" => "\uE74D", "ToolGroupSpeed" => "\uE945", "ToolGroupDiagnose" => "\uE9D9", "McBonusGroup" => "\uE734", _ => "\uE713" };
+            groupHead.Children.Add(new FontIcon { Glyph = groupGlyph, FontSize = 17, Foreground = (Brush)Application.Current.Resources[groupTitle == "McBonusGroup" ? "GoldBrush" : "RoseBrush"] });
+            groupHead.Children.Add(new TextBlock { Text = vm.Text[groupTitle], Style = (Style)Application.Current.Resources["SubtitleStyle"] });
+            group.Children.Add(groupHead);
             group.Children.Add(wrap);
             foreach (var id in ids)
             {
                 if (!Available(vm, id)) continue;
                 var (glyph, title, status) = defs[id];
                 var badge = new FontIcon { Glyph = glyph, FontSize = 20, Foreground = (Brush)Application.Current.Resources["RoseBrush"], HorizontalAlignment = HorizontalAlignment.Left };
-                var name = new TextBlock { Text = vm.Text[title], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 14, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis };
-                var line = new TextBlock { FontSize = 12, LineHeight = 16, Foreground = (Brush)Application.Current.Resources["MutedBrush"], TextWrapping = TextWrapping.Wrap, MaxLines = 3, TextTrimming = TextTrimming.CharacterEllipsis };
+                var name = new TextBlock { Text = vm.Text[title], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 16, TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis };
+                var line = new TextBlock { FontSize = 12, LineHeight = 16, Foreground = (Brush)Application.Current.Resources["MutedBrush"], TextWrapping = TextWrapping.Wrap, MaxLines = 2, TextTrimming = TextTrimming.CharacterEllipsis };
                 line.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath(status) });
-                var info = new StackPanel { Spacing = 8 }; info.Children.Add(badge); info.Children.Add(name); info.Children.Add(line);
+                var tileHead = new Grid { ColumnSpacing = 12 }; tileHead.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
+                tileHead.ColumnDefinitions.Add(new()); tileHead.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
+                tileHead.Children.Add(new Border { Width = 40, Height = 40, CornerRadius = new(12), Background = (Brush)Application.Current.Resources["BadgeBrush"],
+                    HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, Child = badge });
+                badge.HorizontalAlignment = HorizontalAlignment.Center;
+                var arrow = new FontIcon { Glyph = "\uE76C", FontSize = 12, Foreground = (Brush)Application.Current.Resources["MutedBrush"], VerticalAlignment = VerticalAlignment.Center };
+                Grid.SetColumn(arrow, 2); tileHead.Children.Add(arrow);
+                var info = new StackPanel { Spacing = 6, VerticalAlignment = VerticalAlignment.Center }; info.Children.Add(name); info.Children.Add(line);
+                Grid.SetColumn(info, 1); tileHead.Children.Add(info);
                 var tile = new Button
                 {
                     Margin = new Thickness(0, 0, 12, 12), Padding = new Thickness(16), CornerRadius = (CornerRadius)Application.Current.Resources["CardRadius"],
-                    HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Top,
-                    Background = (Brush)Application.Current.Resources["CardBrush"], BorderBrush = (Brush)Application.Current.Resources["CardBorderBrush"], BorderThickness = new Thickness(1), Content = info, Tag = id
+                    HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Center,
+                    Background = (Brush)Application.Current.Resources["CardBrush"], BorderBrush = (Brush)Application.Current.Resources["CardBorderBrush"], BorderThickness = new Thickness(1), Content = tileHead, Tag = id
                 };
-                Motion.SetHover(tile, 1.02); Motion.SetPress(tile, true);
+                Motion.SetPress(tile, true);
                 Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(tile, "tools-tile-" + id);
                 Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(tile, vm.Text[title]);
                 ToolTipService.SetToolTip(tile, vm.Text["ToolOpen"]);
@@ -87,7 +119,7 @@ public sealed partial class ToolsPanel : UserControl
     {
         if (width < 100) return;
         width += 12; // the wraps reach 12 px past the edge (their last gap)
-        var columns = Math.Max(1, (int)(width / 272)); // each cell holds the tile and its 12 px gap, so the row never overflows
+        var columns = Math.Clamp((int)(width / 360), 1, 3);
         var item = Math.Floor(width / columns);
         foreach (var wrap in wraps) wrap.ItemWidth = item;
     }
@@ -103,13 +135,16 @@ public sealed partial class ToolsPanel : UserControl
     };
     // Search: hides the tiles (and empty groups) whose name does not contain the typed text; accents and case ignored.
     private void OnToolSearch(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        => FilterTiles();
+    private void FilterTiles()
     {
         // Matches the name and the tile's own line (e.g. "disco" also finds Arquivos e Armazenamento).
         // Matching tiles are re-added in order, so the results start at the first column without gaps.
-        var query = Fold(sender.Text.Trim());
+        var query = Fold(ToolSearch.Text.Trim());
         foreach (var wrap in wraps) wrap.Children.Clear();
-        foreach (var (tile, name, line, wrap, _) in tiles)
-            if (query.Length == 0 || Fold(name).Contains(query) || Fold(line.Text ?? "").Contains(query)) wrap.Children.Add(tile);
+        foreach (var (tile, name, line, wrap, group) in tiles)
+            if ((selectedCategory is null || Equals(group.Tag, selectedCategory)) &&
+                (query.Length == 0 || Fold(name).Contains(query) || Fold(line.Text ?? "").Contains(query))) wrap.Children.Add(tile);
         foreach (var (_, _, _, wrap, group) in tiles) group.Visibility = wrap.Children.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         ToolSearchEmpty.Visibility = wraps.Any(w => w.Children.Count > 0) ? Visibility.Collapsed : Visibility.Visible;
     }
@@ -120,6 +155,7 @@ public sealed partial class ToolsPanel : UserControl
     }
     private void Open(string id)
     {
+        ColorCard.Content = id == "colors" ? ColorCard.Content ?? new MonitorColorsPanel { DataContext = DataContext } : null;
         Tiles.Visibility = Visibility.Collapsed; CheckupHero.Visibility = Visibility.Collapsed; BackButton.Visibility = Visibility.Visible;
         foreach (var (key, card) in cards) card.Visibility = key == id ? Visibility.Visible : Visibility.Collapsed;
         if (id == "store" && DataContext is ToolsViewModel { Storage: { } st }) st.Load(); // drive space only; reading, no scan
@@ -132,6 +168,7 @@ public sealed partial class ToolsPanel : UserControl
     }
     private void OnBack(object sender, RoutedEventArgs e)
     {
+        ColorCard.Content = null;
         foreach (var card in cards.Values) card.Visibility = Visibility.Collapsed;
         BackButton.Visibility = Visibility.Collapsed; Tiles.Visibility = Visibility.Visible; CheckupHero.Visibility = DataContext is ToolsViewModel { Checkup: not null } ? Visibility.Visible : Visibility.Collapsed; Motion.EnterPage(CheckupHero);
         Motion.EnterPage(Tiles);

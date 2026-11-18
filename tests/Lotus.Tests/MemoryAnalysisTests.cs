@@ -11,6 +11,33 @@ namespace Lotus.Tests;
 
 public sealed class MemoryAnalysisTests(ITestOutputHelper output)
 {
+    [Fact] public async Task Deactivation_stays_empty_while_language_notifications_arrive()
+    {
+        var dispatcher = new Dispatcher(); var text = new TextCatalog();
+        await using var service = new HardwareMonitoringService(new Provider(),TimeSpan.FromMilliseconds(20));
+        var monitoring = new MonitoringViewModel(service,text,dispatcher);
+        using var analysis = new MemoryAnalysisViewModel(monitoring,text);
+        analysis.SetActive(true); monitoring.SetActive(true);
+        await Until(()=>!dispatcher.Queue.IsEmpty); dispatcher.Drain();
+        Assert.NotNull(monitoring.Snapshot);
+        await Task.WhenAll(
+            Task.Run(()=> { for(var i=0;i<5000;i++){ analysis.SetActive(true); analysis.SetActive(false); } }),
+            Task.Run(()=> { for(var i=0;i<5000;i++) monitoring.RefreshLanguage(); }));
+        analysis.SetActive(false); Assert.Equal(MemoryAssessment.Empty,analysis.Assessment);
+        monitoring.SetActive(false); dispatcher.Drain();
+        Assert.Equal(MemoryAssessment.Empty,analysis.Assessment);
+    }
+    [Fact] public async Task Reset_and_final_sensor_updates_can_race_without_corrupting_the_window()
+    {
+        var rule = new MemoryAvailabilityAnalyzer();
+        using var start = new ManualResetEventSlim(false);
+        var add=Task.Run(()=> { start.Wait(); for(var i=0;i<5000;i++) rule.Add(Sample(i)); });
+        var reset=Task.Run(()=> { start.Wait(); for(var i=0;i<5000;i++) { rule.Reset(); _=rule.Current; _=rule.SampleCount; } });
+        start.Set(); await Task.WhenAll(add,reset);
+        Assert.InRange(rule.SampleCount,0,61);
+        rule.Reset(); Assert.Equal(MemoryAssessment.Empty,rule.Current);
+        Assert.Equal(MemoryFinding.Observing,rule.Add(Sample(0)).Finding);
+    }
     private static HardwareTelemetrySnapshot Sample(double second, ulong available = 4UL << 30, ulong total = 16UL << 30)
     {
         var snapshot = HardwareTelemetrySnapshot.Missing(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(second), TelemetryStatus.Unavailable);

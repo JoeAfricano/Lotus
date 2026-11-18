@@ -23,6 +23,7 @@ values = sorted(max(streams.values(), key=len))
 tail = math.ceil(len(values) / 100)
 reference = {
     "Count": len(values),
+    "DurationSeconds": math.fsum(values) / 1000,
     "AverageFps": 1000 / statistics.mean(values),
     "Low1Fps": 1000 / statistics.mean(values[-tail:]),
     "P95Ms": values[math.ceil(len(values) * .95) - 1],

@@ -86,6 +86,30 @@ public sealed class IntegrationsTests : IDisposable
         Assert.False(await rtss.EnableLimiterAsync("game.exe", 60, "turbo"));                    // unknown mode refused
     }
 
+    [Theory]
+    [InlineData("async", "0")]
+    [InlineData("fluid", "1")]
+    [InlineData("back", "2")]
+    [InlineData("responsive", "3")]
+    public async Task AllLimiterModesRoundTripAndOriginalLimiterIsRestored(string mode,string setting)
+    {
+        const string original="[Framerate]\r\nLimit=61\r\nSyncLimiter=0\r\n; keep original\r\n";
+        var path=Path.Combine(Profiles,"game.exe.cfg");File.WriteAllText(path,original);
+        var rtss=new WindowsRtssIntegration(Profiles,Backups,FakeElevated);
+        Assert.True(await rtss.EnableLimiterAsync("game.exe",59.93,mode));
+        Assert.Equal(mode,rtss.LimiterMode("game.exe"));Assert.Equal(59.93,rtss.LimiterCap("game.exe"));
+        Assert.Equal(setting,new IniText(File.ReadAllText(path)).Get("Framerate","SyncLimiter"));
+        Assert.Equal(mode=="fluid"?"1":"0",new IniText(File.ReadAllText(path)).Get("Statistics","FrametimeCalc"));
+        Assert.True(await rtss.DisableLowLatencyAsync("game.exe"));Assert.Equal(original,File.ReadAllText(path));
+        Assert.Equal(Global,File.ReadAllText(Path.Combine(Profiles,"Global")));
+    }
+    [Theory]
+    [InlineData("0",true)] [InlineData("1",true)] [InlineData("2",false)] [InlineData("FFFFFFFF",false)]
+    public void FrametimePointAllowListAcceptsOnlyDocumentedChoices(string value,bool allowed)
+    {
+        var request=new RtssRequest("game.exe",[new("Statistics","FrametimeCalc",value)]);
+        if(allowed) RtssProfiles.Validate(request);else Assert.Throws<InvalidOperationException>(()=>RtssProfiles.Validate(request));
+    }
     private sealed class FakeRtss(bool installed, bool? configured, bool backup) : IRtssIntegration
     {
         public ToolState State() => new(installed, installed ? "7.3.7" : null);
@@ -98,6 +122,9 @@ public sealed class IntegrationsTests : IDisposable
     private sealed class StyleRtss(bool running) : IRtssIntegration
     {
         public List<(string Variant, bool Restart)> Calls { get; } = [];
+        public int Starts { get; private set; }
+        public int Restores { get; private set; }
+        public Task<bool> StartAsync(){Starts++;return Task.FromResult(true);}
         public ToolState State() => new(true, "7.3.5");
         public bool? OverlayConfigured() => true; public bool HasBackup() => false;
         public Task<bool> ApplyLotusOverlayAsync() => Task.FromResult(true); public Task<bool> RestoreAsync() => Task.FromResult(true);
@@ -105,8 +132,25 @@ public sealed class IntegrationsTests : IDisposable
         public string? ActiveLayoutName() => Calls.Count == 0 ? null : Calls[^1].Variant switch { "neon" => "Lotus-Neon", "lateral" => "Lotus-Lateral", _ => "Lotus" };
         public bool HasLayoutBackup() => false;
         public Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false) { Calls.Add((variant, restart)); return Task.FromResult(true); }
-        public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
+        public Task<bool> RestoreLayoutAsync() { Restores++; return Task.FromResult(true); }
         public bool? Running() => running;
+    }
+
+    [Fact] public async Task OverlayStyle_is_busy_before_game_detection_and_rejects_duplicate_commands()
+    {
+        var rtss = new StyleRtss(false); var detection = new TaskCompletionSource<bool>();
+        var vm = new IntegrationsViewModel(rtss,new Tools(true,false),new TextCatalog(),_=>{}) { GameRunning=()=>detection.Task };
+        var first=vm.UseStyleAsync("neon"); Assert.True(vm.Busy);
+        await vm.UseStyleAsync("lateral"); Assert.Empty(rtss.Calls);
+        detection.SetResult(false); await first; Assert.False(vm.Busy); Assert.Equal([("neon",false)],rtss.Calls);
+    }
+
+    [Fact] public void Overlay_preview_uses_the_app_callback_for_the_Lotus_window_renderer()
+    {
+        var opened=0;
+        var vm = new IntegrationsViewModel(new StyleRtss(false),new Tools(true,false),new TextCatalog(),_=>{}) { OpenPreview=()=>{opened++;return true;} };
+        Assert.True(vm.CanPreview); vm.PreviewOverlay(); Assert.Equal(1,opened); Assert.Equal(vm.Text["IntPreviewOpened"],vm.Message);
+        vm.OpenPreview=()=>false; vm.PreviewOverlay(); Assert.Equal(vm.Text["IntPreviewFailed"],vm.Message);
     }
 
     [Fact] public async Task OverlayStyleNeverSwitchesUnderARunningGame()
@@ -124,6 +168,16 @@ public sealed class IntegrationsTests : IDisposable
         Assert.Equal("lateral", vm.ActiveVariant);
     }
 
+    [Fact] public async Task OverlayRestoreDoesNotRestartRtssUnderARunningGame()
+    {
+        var rtss = new StyleRtss(true);
+        var vm = new IntegrationsViewModel(rtss, new Tools(true,false), new TextCatalog(), _=>{}) { GameRunning=()=>Task.FromResult(true) };
+        await vm.RestoreLayoutAsync(); Assert.Equal(0,rtss.Restores);
+        Assert.Equal(vm.Text["OsRestoreCloseGame"],vm.Message);
+        vm.GameRunning=()=>Task.FromResult(false);
+        await vm.RestoreLayoutAsync(); Assert.Equal(1,rtss.Restores);
+    }
+
     [Fact] public async Task OverlayStyleOutsideAGameAppliesNowAndReopensOnlyWhenOpen()
     {
         var closed = new StyleRtss(running: false);
@@ -133,6 +187,11 @@ public sealed class IntegrationsTests : IDisposable
         Assert.Equal("neon", vm.ActiveVariant);
         await vm.OnGameClosedAsync();                    // nothing pending: nothing more happens
         Assert.Single(closed.Calls);
+    }
+    [Fact] public async Task PremiumStyleOpensRtssAsPartOfTheSameAction()
+    {
+        var rtss=new StyleRtss(false);var vm=new IntegrationsViewModel(rtss,new Tools(false,false),new TextCatalog(),_=>{});
+        await vm.UseStyleAsync("premium-neon");Assert.Equal([("premium-neon",false)],rtss.Calls);Assert.Equal(1,rtss.Starts);
     }
 
     private sealed class Tools(bool ab, bool scs) : IToolDetector

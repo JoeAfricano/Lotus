@@ -15,6 +15,7 @@ public sealed record GamePlayPrefs
     public bool CheckSystem { get; set; } = true; // memory and free space
     public bool OnlyRelevant { get; set; } = true; // no "all good" notice
     public bool UseFrameGen { get; set; }      // the player keeps frame generation on (more FPS on screen, some more delay)
+    public GamePresentationPrefs Presentation { get; set; } = new();
 }
 
 public sealed class GamePrefsData

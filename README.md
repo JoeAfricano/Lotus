@@ -13,11 +13,11 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 ![.NET](https://img.shields.io/badge/.NET-10%20%C2%B7%20WinUI%203-512bd4)
 [![License](https://img.shields.io/badge/licen%C3%A7a-MIT-3b8c5a)](LICENSE)
 
-**Imagens referentes a versão 1.5 - Versão 1.6 Ainda experimental, recomendamos a utilização da 1.5 por enquanto!**
+**Versão atual: 1.8.0-alpha** — Estúdio visual do monitor, fluidez por jogo (Hz e RivaTuner), novos overlays e Ajuste da placa em etapas. Veja o que mudou em [Novidades](CHANGELOG.md).
 
 [**Baixar o Lotus**](../../releases/latest) · [Novidades](CHANGELOG.md) · [Privacidade](PRIVACY.md) · [Reportar um problema](../../issues/new/choose)
 
-<img src="docs/images/inicio-153.png" width="860" alt="Início do Lotus"/>
+<img src="docs/images/inicio-180.png" width="860" alt="Início do Lotus"/>
 
 </div>
 
@@ -38,10 +38,11 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 |---|---|
 | 🎮 **Meus Jogos** | Steam, Epic, GOG e outras lojas num só lugar, com Jogar direto da capa, "Preparar e Jogar" e "Onde eu parei?". |
 | ⚡ **Otimizar sem medo** | Perfil Jogo só durante o jogo, perfil Diário e o Ajuste da placa automático (undervolt/overclock pelo Afterburner). Tudo mostra cada mudança antes e pode ser desfeito. |
+| 🎯 **Fluidez por jogo** | Hz temporário só com o jogo aberto e RivaTuner por jogo (Front Edge ou Reflex), sempre restaurando o que era antes. |
 | 📊 **Lotus Score** | Teste de CPU e GPU, FPS estimado por jogo com fontes e gargalo por resolução. Sem números inventados. |
 | 📔 **Meu diário** | Sessões automáticas, notas, estatísticas, "O que jogar agora?", conquistas e retrospectiva do ano. |
+| 🖥️ **Estúdio visual** | (Experimental) Ajuste brilho, contraste, gamma, branco e cores do monitor com prévia Antes/Depois, sugestões por uso e confirmação antes de mexer no monitor inteiro. |
 | 🧰 **Ferramentas** | Check-up do PC num clique, Limpeza Inteligente, memória e processos, arquivos, monitor, "Por que meu jogo fechou?" e mais. Tudo só lendo até você confirmar. |
-| 🌸 **Lotus Ports** | O app irmão de ports nativos de jogos clássicos, [já disponível](https://github.com/JoeAfricano/LotusPorts): instale pelo próprio Lotus (convite no Início), e os jogos dele aparecem em Meus Jogos com Jogar. |
 | 💾 **Backup de saves** | Cópias conferidas (SHA-256) depois de cada sessão, restauração segura com volta automática se algo falhar. |
 | ☁️ **Backup e Google Drive** | Tudo num arquivo `.lotusbackup` e, se quiser, no seu Drive: agora, toda semana ou todo mês. |
 | 🔄 **Atualizações** | Avisa quando há versão nova, baixa com animação, confere o instalador e atualiza sozinho. |
@@ -51,11 +52,16 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 ## Capturas de tela
 
 <table>
-<tr><td><img src="docs/images/meus-jogos-153.png" alt="Meus Jogos"/><br/><sub><b>Meus Jogos</b></sub></td><td><img src="docs/images/backup-de-saves-153.png" alt="Backup de saves"/><br/><sub><b>Backup de saves</b></sub></td></tr>
-<tr><td><img src="docs/images/diario-153.png" alt="Meu diário"/><br/><sub><b>Meu diário</b></sub></td><td><img src="docs/images/lotus-score-153.png" alt="Lotus Score"/><br/><sub><b>Lotus Score</b></sub></td></tr>
+<tr><td><img src="docs/images/meus-jogos-180.png" alt="Meus Jogos"/><br/><sub><b>Meus Jogos</b></sub></td><td><img src="docs/images/otimizar-este-jogo-180.png" alt="Otimizar este jogo"/><br/><sub><b>Otimizar este jogo (Hz e RivaTuner por jogo)</b></sub></td></tr>
+<tr><td><img src="docs/images/overlay-180.png" alt="Overlay"/><br/><sub><b>Overlay: estilos com prévia</b></sub></td><td><img src="docs/images/ajuste-da-placa-180.png" alt="Ajuste da placa"/><br/><sub><b>Ajuste da placa em etapas</b></sub></td></tr>
+<tr><td><img src="docs/images/estudio-visual-180.png" alt="Estúdio visual"/><br/><sub><b>Estúdio visual do monitor (experimental)</b></sub></td><td><img src="docs/images/ferramentas-180.png" alt="Ferramentas"/><br/><sub><b>Ferramentas</b></sub></td></tr>
+<tr><td><img src="docs/images/backup-de-saves-153.png" alt="Backup de saves"/><br/><sub><b>Backup de saves</b></sub></td><td><img src="docs/images/lotus-score-153.png" alt="Lotus Score"/><br/><sub><b>Lotus Score</b></sub></td></tr>
+<tr><td><img src="docs/images/diario-153.png" alt="Meu diário"/><br/><sub><b>Meu diário</b></sub></td><td><img src="docs/images/atualizacoes-153.png" alt="Atualizações"/><br/><sub><b>Atualizações com download animado</b></sub></td></tr>
 <tr><td><img src="docs/images/game-list-153.png" alt="Game list"/><br/><sub><b>Game list</b></sub></td><td><img src="docs/images/temas-153.png" alt="Temas"/><br/><sub><b>Galeria de temas</b></sub></td></tr>
-<tr><td><img src="docs/images/tipos-de-jogo-153.png" alt="Tipo de jogo"/><br/><sub><b>Tipo de jogo (Game list)</b></sub></td><td><img src="docs/images/atualizacoes-153.png" alt="Atualizações"/><br/><sub><b>Atualizações com download animado</b></sub></td></tr>
+<tr><td><img src="docs/images/tipos-de-jogo-153.png" alt="Tipo de jogo"/><br/><sub><b>Tipo de jogo (Game list)</b></sub></td><td></td></tr>
 </table>
+
+<sub>Capturas de Início, Meus Jogos, Otimizar este jogo, Overlay, Ajuste da placa, Estúdio visual e Ferramentas são da 1.8.0. As demais (Backup de saves, Lotus Score, Meu diário, Game list, Temas e Atualizações) são da 1.5.3 e serão atualizadas.</sub>
 
 ## Instalar
 
@@ -90,16 +96,19 @@ Abas **Perfis · Desempenho · Ajuste da placa · Restaurar**.
   - **FPS esperado,** a partir do seu Lotus Score.
   - **Ajustes dentro do jogo:** em ordem de impacto, com o nome exato das opções nos menus.
   - **Última análise em jogo,** aplicar ou restaurar configurações (quando o Lotus sabe editar o arquivo do jogo) e pré-carregar shaders.
+- **Taxa de atualização (Hz) por jogo (opcional, desligada por padrão):** em Otimizar este jogo, escolha uma taxa suportada pelo monitor (por exemplo 60 Hz num monitor de 75 Hz). O Lotus mantém a resolução e a profundidade de cor, troca só com o jogo em primeiro plano e **volta à taxa anterior ao dar Alt+Tab ou fechar o jogo**. Salvar apenas prepara; nada muda na área de trabalho. Não é garantia de ganho: depende do jogo e do PC.
 - **Fluidez e resposta**, pelo limitador do RivaTuner, num perfil só daquele jogo:
   - **Fluidez (estilo console):** ritmo de quadros cravado (front edge sync) e linha do framepacer reta. Funciona em qualquer placa.
   - **Resposta:** NVIDIA Reflex, com menos atraso, mesmo em jogos sem Reflex no menu.
+  - **Modo automático ou manual:** o automático usa Front Edge Sync e, em placas NVIDIA compatíveis, Reflex externo (principalmente com geração de quadros). Back Edge e Async ficam disponíveis manualmente. O Reflex do RivaTuner não equivale ao Reflex nativo do jogo, e o V-Sync não é ligado por você.
+  - **Rodapé:** restaurar originais, preparar shaders (com confirmação própria) e iniciar o jogo.
   - **Desativar e restaurar** devolve o perfil exatamente como era.
 - **Limite de FPS pelo seu monitor:**
   - **Com FreeSync/G-Sync:** 3 FPS abaixo da taxa do monitor.
   - **Sem:** logo abaixo da taxa **real** do monitor, que o Lotus lê do Windows (por exemplo 74,97 num monitor de 74,973 Hz), ou uma fração exata dela, com V-Sync no jogo e o limite do próprio jogo acima disso (ou desligado), para o RivaTuner mandar. Assim os quadros não fazem fila: a linha fica reta e o atraso cai.
   - **"Por que está travando?"** avisa quando o limite está acima da taxa real do monitor.
 - **FreeSync/G-Sync.** O Lotus pergunta uma vez. Numa placa NVIDIA, o driver responde sozinho. Na AMD e na Intel, a identificação do monitor (EDID) indica se ele suporta e recomenda ativar.
-- **Overlay de FPS** pelo RivaTuner, em quatro estilos com prévia: **Barra no topo**, **Cartão Neon**, **Lateral** e **Pulse** (gerado nas cores do seu tema, com 1% e 0,1% low em destaque e o gráfico de frametime com a linha do seu limite de FPS). Trocar de estilo reabre o RivaTuner sozinho, sem mexer nos seus limites e perfis; com um jogo aberto, a troca espera ele fechar. O Lotus abre o RivaTuner antes do jogo quando precisa dele.
+- **Overlay de FPS** pelo RivaTuner, em estilos com prévia: **Equilíbrio** (topo), **Neon** (canto direito) e **Pulse** (canto esquerdo) nativos do RivaTuner, mais **Lateral** e a **Janela Lotus** (experimental, uma janela própria do Lotus sem injetar nada no jogo; atalhos Ctrl+Alt+O e Ctrl+Alt+tecla). Os estilos antigos continuam disponíveis: **Barra no topo**, **Cartão Neon**, **Lateral** e **Pulse** (gerado nas cores do seu tema, com 1% e 0,1% low em destaque e o gráfico de frametime com a linha do seu limite de FPS). Trocar de estilo reabre o RivaTuner sozinho, sem mexer nos seus limites e perfis; com um jogo aberto, a troca espera ele fechar. O Lotus abre o RivaTuner antes do jogo quando precisa dele.
 - **Geração de quadros:** na NVIDIA, Reflex como opção principal. Na AMD e na Intel, o Lotus indica o limite do jogo ou do driver.
 
 ### Análise em jogo (Ctrl + Shift + L)
@@ -113,6 +122,11 @@ Abas **Perfis · Desempenho · Ajuste da placa · Restaurar**.
 - **FPS estimado** por jogo, resolução e predefinição, num painel com busca e cartões com capa. Base própria de 138 jogos com fontes conferidas (TechSpot, GamersNexus e outras), atualizada toda semana pelo GitHub oficial; qualquer outro jogo pelos requisitos da Steam. Sempre mostra as fontes e a confiança.
 - **Medido no seu PC:** quando você mede um jogo, o FPS medido aparece no lugar da estimativa e calibra as outras.
 - **Gargalo** em cada resolução.
+
+### Ajuste da placa (Otimizar, NVIDIA + MSI Afterburner) — experimental
+- Fluxo em etapas: **testar** (padrão, undervolt e overclock) → **comparar** os cartões com valores medidos → **aplicar** pelo Afterburner → **usar nos jogos**. Selecionar um cartão não escreve na placa.
+- Profundidade do teste: **Rápido** (cerca de 6 a 8 min, triagem), **Equilibrado** (15 a 20 min) e **Completo** (45 a 60+ min). Teste curto não é garantia de estabilidade prolongada.
+- Confere todos os pontos da curva, restaura sozinho se algo falhar e nunca inicia o teste com um jogo da biblioteca aberto. **Por sua conta e risco:** se não se sente confiante, não use.
 
 ### Desempenho (dentro de Otimizar)
 - CPU, RAM, GPU e VRAM ao vivo.
@@ -151,15 +165,8 @@ Tudo na aba Ferramentas, em cartões. Abrir ou analisar nunca muda nada; cada a�
 - **Driver de vídeo novo:** uma vez por semana confere no site da NVIDIA (AMD e Intel: driver com mais de seis meses) e avisa uma vez por versão. Nunca baixa nem instala drivers.
 - **Windows em dia:** reinício pendente, tempo ligado e ponto de restauração do Windows.
 - **Saúde do Disco, Drivers e Sistema:** dados do próprio Windows (o que não estiver disponível aparece assim), dispositivos com problema, erros recentes, chkdsk /scan, SFC e DISM com confirmação.
+- **Estúdio visual do monitor (experimental, em Bônus):** escolha o uso (Dia a dia, Jogos, Edição ou Filmes) e o ambiente; o Lotus sugere um ponto de partida e abre uma **prévia local** (imagens de cenas medievais) com linha **Antes/Depois**. Há etapas de Sombras, Luzes, Cores e Comparar. Arrastar **não envia nada ao monitor**. Só em **Testar no monitor inteiro**, com confirmação, backup e reversão automática em até 2 minutos. Saturação global só em NVIDIA com controle compatível; HDR bloqueado. Não substitui calibração com instrumento.
 - **Desinstalar programas** (busca e ordenação), **Internet e DNS** (com histórico) e **Overlays e travadas** (com RAM/CPU de cada item; RTSS, Afterburner e PresentMon aparecem como compatíveis).
-### Lotus Ports
-O **[Lotus Ports](https://github.com/JoeAfricano/LotusPorts)** é o app irmão do Lotus: um catálogo de ports nativos de jogos clássicos para PC. Os dois conversam por um canal local e seguro (só o seu usuário, só o programa registrado de cada lado).
-- **No Início:** um convite explica o que é e instala com a sua permissão (versão mais recente do GitHub oficial, arquivo conferido por SHA-256, instalador do próprio Lotus Ports). Com ele instalado, o mesmo cartão abre o Lotus Ports.
-- **Em Meus Jogos:** "Seus jogos do Lotus Ports" (instalados e favoritos) com **Jogar** e **Abrir no Lotus Ports**. Com o Lotus Ports fechado, um aviso oferece abri-lo.
-- **Para o Lotus Ports:** conferências do sistema no "Resolver" (driver de vídeo, Vulkan, memória e disco), dependências instaladas (Visual C++, Vulkan, DirectX antigo, .NET), mudanças recentes que o Lotus fez no PC, perfil de hardware e relatório da sessão (FPS só quando foi medido de verdade).
-- **Ao jogar pelo Lotus Ports:** o Lotus vai para a bandeja e volta quando o jogo fecha, e a sessão entra no seu diário.
-- **Medir FPS dos jogos do Lotus Ports** (Configurações, desligado por padrão): o Lotus mede os quadros por 60 segundos durante a partida. O Windows pede administrador a cada partida, a não ser que sua conta esteja no grupo "Usuários de log de desempenho" (passo a passo em [docs/LOTUS_PORTS_INTEGRATION.md](docs/LOTUS_PORTS_INTEGRATION.md)); com o grupo, nunca pede.
-- Nenhum pedido do Lotus Ports altera o PC.
 ### Temas
 - **Modos** Escuro, Claro (porcelana rosé), Sistema e Grafite, com 7 cores de destaque.
 - **Galeria com 12 temas prontos** (Lotus Rosé, Sakura, Synthwave, Cyberpunk, Aurora, Oceano, Floresta, Ouro Real, Monocromático, Vampiro, Gelo e Porcelana), cada um com cores e fundo animado próprios.
