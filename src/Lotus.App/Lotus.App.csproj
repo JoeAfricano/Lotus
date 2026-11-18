@@ -13,6 +13,17 @@
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>false</SelfContained>
   </PropertyGroup>
+  <!-- Isolated local UI review: avoids identifying a development window as the installed Lotus. -->
+  <PropertyGroup Condition="'$(LotusPreviewBuild)' == 'true'">
+    <AssemblyName>Lotus.Preview</AssemblyName>
+    <RootNamespace>Lotus.App</RootNamespace>
+    <Product>Lotus Preview</Product>
+    <OutputPath>$(MSBuildThisFileDirectory)..\..\artifacts\preview18\</OutputPath>
+  </PropertyGroup>
+  <!-- Distribution builds ignore ambient proof flags unless explicitly enabled here. -->
+  <PropertyGroup Condition="'$(LotusAmbientDiagnostics)' == 'true'">
+    <DefineConstants>$(DefineConstants);LOTUS_AMBIENT_DIAGNOSTICS</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <!-- Windows App SDK by component: only what Lotus uses (WinUI, text, windows, runtime). AI, ML, Widgets and Search
          are left out: Lotus calls none of them, and they were ~45 MB of the install folder. -->
@@ -25,6 +36,8 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705"/>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0"/>
     <Content Include="Assets\Lotus.ico" CopyToOutputDirectory="PreserveNewest"/>
+    <Content Include="Assets/ColorCalibration/*.png" CopyToOutputDirectory="PreserveNewest"/>
+    <Content Include="../../THIRD-PARTY-NOTICES.md" Link="THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="PreserveNewest"/>
     <ProjectReference Include="../Lotus.Core/Lotus.Core.csproj"/>
     <ProjectReference Include="../Lotus.Infrastructure/Lotus.Infrastructure.csproj"/>
   </ItemGroup>

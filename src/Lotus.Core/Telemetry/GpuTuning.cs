@@ -5,6 +5,9 @@ namespace Lotus.Core.Telemetry;
 // undocumented interfaces); Afterburner does it within the card's factory limits.
 public enum TuneGoal { Undervolt, Overclock, Stock }
 
+public enum TuneCheckState { Ready, Blocked, Information }
+public sealed record TuneReadinessItem(TuneCheckState State, string LabelKey, string? DetailKey);
+
 // What the assistant needs before it starts. Afterburner's automatic 2D/3D profiles depend on RivaTuner being installed.
 public sealed record TuneReadiness(bool Nvidia, bool Afterburner, bool RivaTuner, bool VoltageUnlocked, bool AutoProfiles)
 {
@@ -91,7 +94,8 @@ public static class GpuTuning
     public static TuneResult Judge(TuneStep tried, IReadOnlyList<TuneSample> samples, bool driverReset, TuneStep? lastStable, CardStart? card = null)
     {
         if (driverReset) return new(TuneVerdict.Crashed, Max(samples, s => s.TempC), Avg(samples), Spread(samples), Next(tried, TuneVerdict.Crashed, lastStable, card));
-        if (samples.Count < 5) return new(TuneVerdict.NoData, 0, 0, 0, null);
+        if (samples.Count < 5 || samples.Any(s => !double.IsFinite(s.TempC) || !double.IsFinite(s.CoreMhz) || s.TempC <= 0 || s.CoreMhz <= 0))
+            return new(TuneVerdict.NoData, 0, 0, 0, null);
         var maxTemp = Max(samples, s => s.TempC);
         if (maxTemp > StopTempC) return new(TuneVerdict.TooHot, maxTemp, Avg(samples), Spread(samples), Next(tried, TuneVerdict.TooHot, lastStable, card));
         var spread = Spread(samples);

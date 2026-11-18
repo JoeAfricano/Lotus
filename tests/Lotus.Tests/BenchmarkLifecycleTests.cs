@@ -35,7 +35,7 @@ public sealed class BenchmarkLifecycleTests
         public ValueTask<HardwareTelemetrySnapshot> ReadAsync(CancellationToken cancellationToken) => throw new InvalidOperationException("Benchmark must not activate hardware polling.");
     }
     private sealed class Dispatcher : IUiDispatcher { public bool Post(Action action) { action(); return true; } }
-    private static BenchmarkViewModel Create(Frames frames, HardwareMonitoringService monitoring, string language = "pt-BR")
+    private static BenchmarkViewModel Create(IFrameCaptureProvider frames, HardwareMonitoringService monitoring, string language = "pt-BR")
     {
         var text = new TextCatalog(language);
         return new(frames, new Repository(), new Targets(), new MonitoringViewModel(monitoring,text,new Dispatcher()),text)
@@ -61,5 +61,25 @@ public sealed class BenchmarkLifecycleTests
         await using var monitoring = new HardwareMonitoringService(new Hardware()); var provider = new Frames(); var vm = Create(provider,monitoring,"en-US");
         var run=vm.StartAsync(); await provider.Entered.Task; vm.StopCommand.Execute(null); await run;
         Assert.Equal("Capture cancelled.",vm.Status); vm.Text.SetLanguage("pt-BR"); vm.RefreshLanguage(); Assert.Equal("Captura cancelada.",vm.Status);
+    }
+
+    private sealed class InlineCancellationFrames : IFrameCaptureProvider
+    {
+        public Task<BenchmarkSession> CaptureAsync(CaptureRequest request, CancellationToken token)
+        {
+            var completion = new TaskCompletionSource<BenchmarkSession>();
+            token.Register(() => completion.TrySetCanceled(token));
+            return completion.Task;
+        }
+    }
+    [Fact] public async Task Synchronous_cancellation_completion_cannot_be_overwritten_by_stopping_status()
+    {
+        await Task.Run(async () =>
+        {
+            await using var monitoring = new HardwareMonitoringService(new Hardware());
+            var vm = Create(new InlineCancellationFrames(),monitoring,"en-US");
+            var run = vm.StartAsync(); vm.StopCommand.Execute(null); await run;
+            Assert.False(vm.Busy); Assert.Equal("Capture cancelled.",vm.Status);
+        });
     }
 }

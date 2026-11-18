@@ -1,4 +1,3 @@
-using System.Runtime;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -18,7 +17,10 @@ public sealed partial class MainWindow
     private Lotus.Core.Games.GameEntry? lightGame;
     private DateTimeOffset? hiddenSince;
     private bool pageReleased, efficiency, checkingGame;
-    private DateTimeOffset lastTrim = DateTimeOffset.MinValue;
+    private bool gameCheckPending;
+    private CancellationTokenSource? gameExitWatch;
+    private string? watchedGame;
+    private Microsoft.UI.Dispatching.DispatcherQueueTimer? releasePageTimer;
     public bool LightModeActive => efficiency || pageReleased;
     public string? LightModeGame => lightGame?.Name;
 
@@ -33,13 +35,56 @@ public sealed partial class MainWindow
 
     private async Task CheckGameAsync()
     {
-        if (checkingGame || !initialized) return;
+        if (!initialized) return;
+        if (checkingGame) { gameCheckPending = true; return; }
         checkingGame = true;
         try { lightGame = await Task.Run(games.RunningGame); }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Light mode: game check"); }
-        finally { checkingGame = false; }
-        await OnGameCheckAsync(lightGame);
-        UpdateLightMode();
+        // Keep the guard until all async side effects finish: a slow restore must not overlap the next tick.
+        try { WatchGameExit(lightGame); await OnGameCheckAsync(lightGame); UpdateLightMode(); }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Light mode: game update"); }
+        finally
+        {
+            checkingGame = false;
+            if (gameCheckPending) { gameCheckPending = false; DispatcherQueue.TryEnqueue(() => _ = CheckGameAsync()); }
+        }
+    }
+
+    private void WatchGameExit(Lotus.Core.Games.GameEntry? game)
+    {
+        if (watchedGame == game?.Key) return;
+        gameExitWatch?.Cancel(); gameExitWatch?.Dispose(); gameExitWatch = null;
+        watchedGame = game?.Key;
+        if (game is null) return;
+        var watch = gameExitWatch = new CancellationTokenSource();
+        var token = watch.Token;
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                var process = games.GameProcess(game);
+                if (process is null || !await Lotus.Infrastructure.Games.GameExitSignal.WaitAsync(process, token)) return;
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (!initialized || !ReferenceEquals(gameExitWatch, watch)) return;
+                    watchedGame = null; // reattach if this was a launcher handing off to the real game
+                    _ = CheckGameAsync();
+                });
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex) { Serilog.Log.Debug(ex,"Game exit notification; periodic discovery retained"); }
+        });
+    }
+
+    private void ResumePerformance()
+    {
+        if (efficiency) { efficiency = false; SetEfficiency(false); }
+    }
+
+    private void StopLightMode()
+    {
+        lightTimer?.Stop(); releasePageTimer?.Stop();
+        gameExitWatch?.Cancel(); gameExitWatch?.Dispose(); gameExitWatch = null;
     }
 
     private void UpdateLightMode()
@@ -51,43 +96,36 @@ public sealed partial class MainWindow
         var visible = AppWindow.IsVisible && AppWindow.Presenter is not OverlappedPresenter { State: OverlappedPresenterState.Minimized };
         hiddenSince = visible ? null : hiddenSince ?? DateTimeOffset.Now;
 
-        // Back in front: the page returns exactly where it was.
-        if (visible && pageReleased) { pageReleased = false; ShowRoute(force: true); }
-
         // Hidden or minimized always counts as "not in front" (releasing the page can raise a spurious activation).
         // Never while something is being measured: throttling Lotus would skew a Score test, a capture or the in-game check.
-        var measuring = analysing || score.Busy || benchmark.Busy || experience.IsAnalyzing;
+        var measuring = analysing || score.Busy || benchmark.Busy || experience.IsAnalyzing || gpuTestRunning || gpuTune?.Testing == true || gpuTune?.Saving == true || CalibrationKeepsPage;
         var wantEfficiency = !measuring && (!visible || (!windowActive && lightGame is not null));
         if (wantEfficiency != efficiency) { efficiency = wantEfficiency; SetEfficiency(efficiency); }
 
-        // Minimized or in the tray for 20 s: release the page (not while an analysis or a Score test runs on it).
-        if (!visible && !pageReleased && hiddenSince is { } since && DateTimeOffset.Now - since > TimeSpan.FromSeconds(20) && !measuring)
+        // Restore normal scheduling BEFORE rebuilding the page, rather than rebuilding under EcoQoS.
+        if (visible && pageReleased) { pageReleased = false; ShowRoute(force: true); }
+
+        releasePageTimer ??= DispatcherQueue.CreateTimer();
+        releasePageTimer.IsRepeating = false;
+        releasePageTimer.Interval = TimeSpan.FromSeconds(3);
+        releasePageTimer.Tick -= OnReleasePage;
+        releasePageTimer.Tick += OnReleasePage;
+        if (visible || measuring || pageReleased) releasePageTimer.Stop();
+        else if (!releasePageTimer.IsRunning) releasePageTimer.Start();
+
+        // Release hidden visuals after a short grace period; preserve active measurements and view models.
+        if (!visible && !pageReleased && hiddenSince is { } since && DateTimeOffset.Now - since >= TimeSpan.FromSeconds(3) && !measuring)
         {
             pageReleased = true;
             ContentFrame.Content = null; ContentFrame.BackStack.Clear(); displayedSectionId = null;
-            Trim(force: true);
+            Controls.HomeBanner.ReleaseCachedPhotos();
+            // One optional background collection of Lotus's unreachable wrappers, not a working-set purge or a
+            // periodic blocking/compacting GC. The runtime may skip it if a collection would not be worthwhile.
+            _ = Task.Run(() => GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized, blocking:false, compacting:false));
+            Serilog.Log.Information("Light mode: hidden page and banner cache released");
         }
-        else if (efficiency) Trim(force: false);
     }
-
-    // Gives unused memory back to Windows: a compacting collection, then the working set is trimmed (pages Lotus needs
-    // again are read back on demand, so nothing is lost). At most once a minute unless forced.
-    private void Trim(bool force)
-    {
-        if (!force && DateTimeOffset.Now - lastTrim < TimeSpan.FromMinutes(1)) return;
-        lastTrim = DateTimeOffset.Now;
-        _ = Task.Run(() =>
-        {
-            try
-            {
-                GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-                GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, blocking: true, compacting: true);
-                GC.WaitForPendingFinalizers();
-                K32EmptyWorkingSet(GetCurrentProcess());
-            }
-            catch (Exception ex) { Serilog.Log.Warning(ex, "Light mode: trim"); }
-        });
-    }
+    private void OnReleasePage(Microsoft.UI.Dispatching.DispatcherQueueTimer timer, object args) => UpdateLightMode();
 
     // Efficiency mode = EcoQoS (execution speed throttling) + below-normal priority; turned off as soon as Lotus is in front.
     private static void SetEfficiency(bool on)
@@ -104,7 +142,6 @@ public sealed partial class MainWindow
 
     [StructLayout(LayoutKind.Sequential)] private struct PowerThrottlingState { public uint Version, ControlMask, StateMask; }
     [DllImport("kernel32.dll")] private static extern IntPtr GetCurrentProcess();
-    [DllImport("kernel32.dll")] private static extern bool K32EmptyWorkingSet(IntPtr process);
     [DllImport("kernel32.dll")] private static extern bool SetPriorityClass(IntPtr process, uint priority);
     [DllImport("kernel32.dll")] private static extern bool SetProcessInformation(IntPtr process, int infoClass, ref PowerThrottlingState info, uint size);
 }

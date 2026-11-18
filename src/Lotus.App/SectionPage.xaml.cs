@@ -90,7 +90,8 @@ public sealed partial class SectionPage : Page
         // Built once per half hour: coming back to Meus Jogos shows the same slides instantly.
         if (bannerCache is { } cached && DateTime.UtcNow - bannerCache.Value.At < TimeSpan.FromMinutes(30)) { GamesBanner.SetSlides(cached.Slides); return; }
         var t = vm.Text;
-        GamesBanner.SetSlides([new(t["HbListEyebrow"], t["HbListTitle"], t["HbListBody"], null, 2, t["HbListAction"], () => shell?.NavigateCommand.Execute("gamelist"), "")]);
+        var navigation = shell; // cached actions must not capture this page and its images
+        GamesBanner.SetSlides([new(t["HbListEyebrow"], t["HbListTitle"], t["HbListBody"], null, 2, t["HbListAction"], () => navigation?.NavigateCommand.Execute("gamelist"), "")]);
         var mine = new List<Controls.HomeBanner.Slide>();
         if (vm.Games is { } games)
         {
@@ -105,7 +106,7 @@ public sealed partial class SectionPage : Page
                 var c = await Task.Run(() => list.ChartForBannerAsync(chart));
                 foreach (var item in (c?.Items ?? []).Where(i => !hot.Any(h => h.Title == i.Name)).Take(take))
                     hot.Add(new(t[eyebrow], item.Name, t["HbHotBody"], Lotus.Core.Catalog.CatalogText.Hero(item.AppId), hot.Count, t["GiDetails"],
-                        () => { list.PendingOpen = item; shell?.NavigateCommand.Execute("gamelist"); }, ""));
+                        () => { list.PendingOpen = item; navigation?.NavigateCommand.Execute("gamelist"); }, ""));
             }
         if (GamesBanner is null || hot.Count + mine.Count == 0) return;
         // Steam highlights lead, the player's games in between.
@@ -429,7 +430,7 @@ public sealed partial class SectionPage : Page
         var pad = e.NewSize.Width < 700 ? new Thickness(16, 20, 16, 32) : new Thickness(32, 24, 32, 32);
         PageContent.Padding = pad;
         // Home: the hero bleeds to the page edges; the readiness card floats on the art, or goes under it when narrow (~1000 px).
-        if (HomeTop is not null && HomeSide is not null && HomeTiles is not null && HomePorts is not null)
+        if (HomeTop is not null && HomeSide is not null && HomeTiles is not null)
         {
             HomeTop.Margin = new Thickness(-pad.Left, -pad.Top, -pad.Right, 0);
             var narrow = e.NewSize.Width < 1000;
@@ -439,8 +440,8 @@ public sealed partial class SectionPage : Page
             HomeSide.Margin = narrow ? new Thickness(pad.Left, 0, pad.Right, 24) : new Thickness(0, 28, pad.Right, 0); // narrow: room before "Seus jogos"
             ReadinessCard?.SetCompact(narrow);
             if (ContinueCard is not null) { ContinueCard.Height = narrow ? 430 : 540; ContinueCard.Tight = narrow; } // narrow: the readiness card goes under the art, so no tall empty band
-            // Game list and Lotus Ports: side by side, stacked when narrow.
-            Grid.SetColumn(HomePorts, narrow ? 0 : 1); Grid.SetRow(HomePorts, narrow ? 1 : 0); Grid.SetColumnSpan(HomeGameList, narrow ? 2 : 1); Grid.SetColumnSpan(HomePorts, narrow ? 2 : 1);
+            // The companion invitation is paused for 1.8; the remaining shortcut fills the row.
+            Grid.SetColumnSpan(HomeGameList, 2);
         }
     }
 }

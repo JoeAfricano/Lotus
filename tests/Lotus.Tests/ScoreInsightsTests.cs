@@ -46,6 +46,7 @@ public sealed class ScoreInsightsTests
         Assert.InRange(ScoreInsights.BeatsGpus(2400), 0, 5);
         Assert.True(ScoreInsights.BeatsCpus(2300, 42000) > ScoreInsights.BeatsCpus(1200, 5400));
         Assert.Equal(98.5, ScoreInsights.Stability(1.5)); Assert.True(ScoreInsights.StabilityPasses(1.5)); Assert.False(ScoreInsights.StabilityPasses(4));
+        Assert.False(ScoreInsights.StabilityPasses(3)); Assert.False(ScoreInsights.StabilityPasses(double.NaN));
     }
 
     [Fact] public void PlayersGamesComeFirst()

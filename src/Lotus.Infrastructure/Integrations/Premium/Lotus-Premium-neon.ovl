@@ -1,0 +1,303 @@
+[Master]
+Implementation=2
+FontFace=Segoe UI
+FontHeight=-64
+FontWeight=600
+ZoomRatio=1
+[Settings]
+Name=Lotus Premium neon
+LockUserSettings=1
+RefreshPeriod=250
+EmbeddedImage=Lotus-atlas-neon.png
+[General]
+Sources=16
+Tables=0
+Layers=16
+[Source0]
+Name=CPU Load
+Units=
+Format=%.0f
+Formula=
+Provider=HAL
+ID=CPU usage
+[Source1]
+Name=CPU Temp
+Units=
+Format=%.0f
+Formula=
+Provider=HAL
+ID=CPU temperature
+[Source2]
+Name=CPU Clock
+Units=
+Format=%.1f
+Formula=x/1000
+Provider=HAL
+ID=CPU clock
+[Source3]
+Name=GPU Load
+Units=
+Format=%.0f
+Formula=
+Provider=HAL
+ID=GPU1 usage
+[Source4]
+Name=GPU Temp
+Units=
+Format=%.0f
+Formula=
+Provider=HAL
+ID=GPU1 temperature
+[Source5]
+Name=GPU Clock
+Units=
+Format=%.0f
+Formula=
+Provider=HAL
+ID=GPU1 clock
+[Source6]
+Name=VRAM Load
+Units=
+Format=%.0f
+Formula=
+Provider=HAL
+ID=GPU1 memory usage percent
+[Source7]
+Name=VRAM Used
+Units=
+Format=%.1f
+Formula=x/1024
+Provider=HAL
+ID=GPU1 memory usage
+[Source8]
+Name=VRAM Total
+Units=
+Format=%.0f
+Formula=x/1024
+Provider=HAL
+ID=GPU1 total memory
+[Source9]
+Name=RAM Load
+Units=
+Format=%.0f
+Formula=
+Provider=HAL
+ID=RAM usage percent
+[Source10]
+Name=RAM Used
+Units=
+Format=%.1f
+Formula=x/1024
+Provider=HAL
+ID=RAM usage
+[Source11]
+Name=RAM Total
+Units=
+Format=%.0f
+Formula=x/1024
+Provider=HAL
+ID=Total RAM
+[Source12]
+Name=Lotus Pulse
+Units=
+Format=%.3f
+Formula=x/4000.0-int(x/4000.0)
+Provider=HAL
+ID=Timer
+[Source13]
+Name=FPS Avg Live
+Units=
+Format=%.0f
+Formula=1000/swavg(Frametime,0)
+Provider=HAL
+ID=Stub
+[Source14]
+Name=FPS Low1 Live
+Units=
+Format=%.0f
+Formula=1000/percentile(Frametime,99)
+Provider=HAL
+ID=Stub
+[Source15]
+Name=FPS Low01 Live
+Units=
+Format=%.0f
+Formula=1000/percentile(Frametime,99.9)
+Provider=HAL
+ID=Stub
+[Layer0]
+Name=Transparent origin
+Text=<B=1,1>
+PositionX=0
+PositionY=0
+ExtentX=1
+ExtentY=1
+ExtentOrigin=0
+FixedAlignment=1
+Size=100
+TextColor=00000000
+[Layer1]
+Name=Artwork
+Text=<I=300,304,0,0,600,608>
+PositionX=1602
+PositionY=18
+ExtentX=300
+ExtentY=304
+ExtentOrigin=0
+FixedAlignment=1
+Size=100
+TextColor=FFFFFF
+[Layer2]
+Name=FPS
+Text=<FR>
+PositionX=1627
+PositionY=38
+ExtentX=115
+ExtentY=83
+ExtentOrigin=0
+FixedAlignment=1
+Size=103
+TextColor=FFFFFF
+[Layer3]
+Name=Frametime
+Text=<FT>
+PositionX=1789
+PositionY=56
+ExtentX=75
+ExtentY=37
+ExtentOrigin=0
+FixedAlignment=1
+Size=45
+TextColor=FFFFFF
+[Layer4]
+Name=AVG
+Text=%FPS Avg Live%
+PositionX=1632
+PositionY=135
+ExtentX=60
+ExtentY=27
+ExtentOrigin=0
+FixedAlignment=1
+Size=33
+TextColor=FFFFFF
+[Layer5]
+Name=1 percent low
+Text=%FPS Low1 Live%
+PositionX=1730
+PositionY=135
+ExtentX=60
+ExtentY=27
+ExtentOrigin=0
+FixedAlignment=1
+Size=33
+TextColor=FFFFFF
+[Layer6]
+Name=0.1 percent low
+Text=%FPS Low01 Live%
+PositionX=1828
+PositionY=135
+ExtentX=60
+ExtentY=27
+ExtentOrigin=0
+FixedAlignment=1
+Size=33
+TextColor=FFFFFF
+[Layer7]
+Name=GPU
+Text=%GPU Load%%
+PositionX=1673
+PositionY=172
+ExtentX=56
+ExtentY=27
+ExtentOrigin=0
+FixedAlignment=1
+Size=33
+TextColor=FFFFFF
+[Layer8]
+Name=CPU
+Text=%CPU Load%%
+PositionX=1673
+PositionY=199
+ExtentX=56
+ExtentY=27
+ExtentOrigin=0
+FixedAlignment=1
+Size=33
+TextColor=FFFFFF
+[Layer9]
+Name=GPU temperature
+Text=%GPU Temp%
+PositionX=1845
+PositionY=174
+ExtentX=36
+ExtentY=23
+ExtentOrigin=0
+FixedAlignment=1
+Size=28
+TextColor=FFFFFF
+[Layer10]
+Name=CPU temperature
+Text=%CPU Temp%
+PositionX=1845
+PositionY=201
+ExtentX=36
+ExtentY=23
+ExtentOrigin=0
+FixedAlignment=1
+Size=28
+TextColor=FFFFFF
+[Layer11]
+Name=RAM
+Text=%RAM Used%
+PositionX=1668
+PositionY=227
+ExtentX=45
+ExtentY=23
+ExtentOrigin=0
+FixedAlignment=1
+Size=28
+TextColor=FFFFFF
+[Layer12]
+Name=VRAM
+Text=%VRAM Used%
+PositionX=1823
+PositionY=227
+ExtentX=45
+ExtentY=23
+ExtentOrigin=0
+FixedAlignment=1
+Size=28
+TextColor=FFFFFF
+[Layer13]
+Name=GPU usage bar
+Text=<G=GPU Load,95,2,0,0,100,9>
+PositionX=1731
+PositionY=187
+ExtentX=95
+ExtentY=2
+ExtentOrigin=0
+FixedAlignment=1
+Size=100
+TextColor=F078AA
+[Layer14]
+Name=CPU usage bar
+Text=<G=CPU Load,95,2,0,0,100,9>
+PositionX=1731
+PositionY=214
+ExtentX=95
+ExtentY=2
+ExtentOrigin=0
+FixedAlignment=1
+Size=100
+TextColor=F078AA
+[Layer15]
+Name=Framepacer
+Text=<G=Frametime,264,30,0,0,33.3,0>
+PositionX=1620
+PositionY=278
+ExtentX=264
+ExtentY=30
+ExtentOrigin=0
+FixedAlignment=1
+Size=100
+TextColor=F078AA

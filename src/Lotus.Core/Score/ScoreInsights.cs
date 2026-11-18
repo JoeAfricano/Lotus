@@ -6,7 +6,7 @@ namespace Lotus.Core.Score;
 // points — never a measurement of the game itself.
 
 // FPS a game reaches on the calibration PC (Ryzen 5 5500 + RTX 5060) at 1080p "High": GPU-limited FPS, the CPU-limited
-// ceiling, and an engine cap when the game has one. Approximate values from public benchmarks (±20%).
+// ceiling, and an engine cap when the game has one. Approximate values; no universally validated error bound.
 // Basis: for searched games, the recommended parts the numbers come from (else null = benchmark table).
 public sealed record GameDemand(string Name, double GpuFps, double CpuFps, int? Cap = null, string? SteamAppId = null, string? Basis = null,
     IReadOnlyList<double>? Lab = null, string Confidence = "", string? Store = null, IReadOnlyList<string>? SourceIds = null)
@@ -87,9 +87,10 @@ public static class ScoreInsights
         return all.Count == 0 || mine <= 0 ? 0 : (int)Math.Round(all.Count(v => v < mine) * 100.0 / all.Count);
     }
 
-    // Stability between measured passes (3DMark stress tests pass at 97% frame-rate stability).
+    // Lotus repeatability index = 100 - relative range. A heuristic, not a confidence level,
+    // hardware stability certification or the distinct 3DMark stress-test protocol.
     public static double Stability(double variationPct) => Math.Round(Math.Clamp(100 - variationPct, 0, 100), 1);
-    public static bool StabilityPasses(double variationPct) => Stability(variationPct) >= 97;
+    public static bool StabilityPasses(double variationPct) => double.IsFinite(variationPct) && variationPct >= 0 && variationPct < 3;
 
     // Any game, from its recommended PC requirements (Steam): those parts are taken to run it at about 60 FPS at
     // 1080p High, then scaled to this PC. Null when no graphics card in the text is known to the parts database.

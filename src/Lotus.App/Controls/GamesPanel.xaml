@@ -19,7 +19,7 @@
    <TextBlock Text="{Binding Status}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource RoseBrush}" AutomationProperties.LiveSetting="Polite" app:Motion.Settle="True" AutomationProperties.AutomationId="games-status"/>
   </StackPanel>
   <!-- Lotus Ports: its games, with Jogar (only when Lotus Ports is installed and answers) -->
-  <controls:PortsGamesStrip/>
+  <controls:PortsGamesStrip x:Name="PortsGamesPaused" x:Load="False"/>
   <!-- Shader pre-compilation in progress: game, stage, bar and time left -->
   <Border Style="{StaticResource CardStyle}" Visibility="{Binding ShaderCardVisible, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="games-shader-job">
    <Grid ColumnSpacing="16" RowSpacing="10">

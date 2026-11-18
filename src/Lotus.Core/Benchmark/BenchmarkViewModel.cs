@@ -84,7 +84,15 @@ public sealed class BenchmarkViewModel : ObservableObject
         this.provider = provider; this.repository = repository; this.targets = targets; this.monitoring = monitoring; Text = text; this.diagnostic = diagnostic;
         RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !Busy && !refreshing);
         StartCommand = new AsyncRelayCommand(StartAsync, () => !Busy && !refreshing && SelectedTarget is not null);
-        StopCommand = new RelayCommand(() => { stop?.Cancel(); statusKey = "BenchStopping"; Notify(); }, () => Busy && stop?.IsCancellationRequested == false);
+        StopCommand = new RelayCommand(() =>
+        {
+            var cancellation = stop;
+            if (cancellation is null) return;
+            // Cancellation may finish the provider synchronously. Publish the transitional state first, so it
+            // cannot overwrite the final "cancelled" state and leave the interface apparently stuck on stopping.
+            statusKey = "BenchStopping"; Notify();
+            try { cancellation.Cancel(); } catch (ObjectDisposedException) { } // completion won the race
+        }, () => Busy && stop?.IsCancellationRequested == false);
     }
     public async Task RefreshAsync()
     {

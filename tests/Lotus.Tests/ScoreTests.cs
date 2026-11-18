@@ -8,6 +8,80 @@ namespace Lotus.Tests;
 [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 public sealed class ScoreTests
 {
+    [Fact] public void Incorrect_revision_two_never_drives_comparisons_or_game_estimates()
+    {
+        var bad = new ScoreRun(DateTime.Now,23554,114849,11358,39386,1.9,"Ryzen 5 5500","RTX 5060",WorkloadRevision:2);
+        var history = new MemoryHistory(); history.Runs.Add(bad);
+        var vm = new LotusScoreViewModel(new FakeCpu(_=>1),new FakeGpu(1),history,new Machine(),new TextCatalog(),_=>{});
+        vm.Refresh(); Assert.False(vm.HasResult); Assert.False(vm.HasFullTest);
+        Assert.DoesNotContain(vm.Compare,r=>r.IsYou);
+        Assert.Null(vm.EstimateFor("Palworld",null,Resolution.P1080,Preset.High));
+        Assert.Contains(new TextCatalog()["ScoreInvalidCalibration"],Assert.Single(vm.History).Summary);
+        Assert.Same(bad,Assert.Single(history.Runs));
+        history.Runs.Add(bad with { Total=11111,WorkloadRevision=LotusScale.WorkloadRevision });
+        vm.Refresh(); Assert.Equal(11111,vm.TotalValue);
+    }
+
+    [Fact] public async Task Debug_execution_cannot_save_a_comparable_score()
+    {
+        var history = new MemoryHistory();
+        var vm = new LotusScoreViewModel(new UnoptimizedCpu(),new FakeGpu(1),history,new Machine(),new TextCatalog(),_=>{});
+        await vm.ToggleAsync(); Assert.Empty(history.Runs); Assert.False(vm.Busy);
+        Assert.Equal(new TextCatalog()["ScoreRequiresRelease"],vm.Phase);
+    }
+    private sealed class UnoptimizedCpu : ICpuBenchmark, IScoreExecutionEnvironment
+    {
+        public bool IsOptimized => false;
+        public double Run(int threads,TimeSpan duration,CancellationToken ct) => throw new Exception("Must not execute");
+    }
+
+    [Theory]
+    [InlineData(double.NaN)] [InlineData(double.PositiveInfinity)] [InlineData(-1)] [InlineData(0)]
+    public void Invalid_raw_measurements_are_rejected(double raw)
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(()=>LotusScale.Points(raw,1));
+        Assert.Throws<ArgumentOutOfRangeException>(()=>LotusScale.Summarize([100,raw,100]));
+    }
+
+    [Fact] public async Task Failed_measurement_does_not_replace_saved_history()
+    {
+        var history = new MemoryHistory();
+        var previous = new ScoreRun(DateTime.Now,1400,10500,11500,11000,1,"CPU","GPU",WorkloadRevision:LotusScale.WorkloadRevision);
+        history.Runs.Add(previous); var errors = new List<Exception>();
+        var vm = new LotusScoreViewModel(new FakeCpu(_=>double.NaN),new FakeGpu(1),history,new Machine(),new TextCatalog(),errors.Add);
+        await vm.ToggleAsync(); Assert.Same(previous,Assert.Single(history.Runs)); Assert.Single(errors);
+        Assert.Equal(new TextCatalog()["ScoreFailed"],vm.Phase);
+    }
+
+    [Fact] public void Legacy_history_is_preserved_but_not_used_for_the_new_workload()
+    {
+        var history=new MemoryHistory();
+        var old=new ScoreRun(DateTime.Now,1400,10500,11500,10000,1,"CPU","GPU");
+        history.Runs.Add(old);
+        var vm=new LotusScoreViewModel(new FakeCpu(_=>1),new FakeGpu(1),history,new Machine(),new TextCatalog(),_=>{});
+        vm.Refresh(); Assert.False(vm.HasResult); Assert.False(vm.HasFullTest); Assert.Single(vm.History);
+        Assert.Contains(new TextCatalog()["ScoreLegacyScene"],vm.History[0].Summary);
+        Assert.Same(old,Assert.Single(history.Runs));
+        var current=old with { Total=12345,WorkloadRevision=LotusScale.WorkloadRevision };
+        history.Runs.Add(current); vm.Refresh(); Assert.Equal(12345,vm.TotalValue); Assert.True(vm.HasFullTest);
+    }
+
+    [Fact] public void Old_json_without_a_revision_stays_legacy()
+    {
+        var run=System.Text.Json.JsonSerializer.Deserialize<ScoreRun>("{\"Date\":\"2026-10-25T00:00:00\",\"Cpu1\":1,\"CpuAll\":2,\"Gpu\":3,\"Total\":4,\"VariationPct\":1,\"CpuName\":\"CPU\",\"GpuName\":\"GPU\"}")!;
+        Assert.Equal(1,run.WorkloadRevision); Assert.NotEqual(LotusScale.WorkloadRevision,run.WorkloadRevision);
+    }
+
+    [Fact] public void Floral_cpu_scene_produces_finite_pixels_across_the_frame()
+    {
+        for(var y=0;y<180;y+=13)for(var x=0;x<320;x+=19)
+        {
+            var color=CpuRayBenchmark.Pixel(x,y,120);
+            Assert.True(float.IsFinite(color.X)&&float.IsFinite(color.Y)&&float.IsFinite(color.Z));
+            Assert.True(color.X>=0&&color.Y>=0&&color.Z>=0);
+        }
+        Assert.NotEqual(CpuRayBenchmark.Pixel(160,90),CpuRayBenchmark.Pixel(0,0));
+    }
     private sealed class FakeCpu(Func<int, double> value) : ICpuBenchmark
     {
         public int Calls;
@@ -43,13 +117,17 @@ public sealed class ScoreTests
 
     [Fact] public async Task RunMeasuresWarmupPlusThreePassesSavesHistoryAndCompares()
     {
-        var cpu = new FakeCpu(t => t == 1 ? 23450 : 194700); var history = new MemoryHistory();
-        var vm = new LotusScoreViewModel(cpu, new FakeGpu(10380), history, new Machine(), new TextCatalog(), ex => throw ex);
+        var cpu = new FakeCpu(t => t == 1 ? LotusScale.Cpu1ReferenceRaw : LotusScale.CpuAllReferenceRaw); var history = new MemoryHistory();
+        var vm = new LotusScoreViewModel(cpu, new FakeGpu(LotusScale.GpuReferenceRaw), history, new Machine(), new TextCatalog(), ex => throw ex);
         vm.Refresh(); Assert.True(vm.NoHistory); Assert.Equal("—", vm.Total);
         await vm.ToggleAsync();
         Assert.Equal(8, cpu.Calls); // 2 tests x (1 warm-up + 3)
         var run = Assert.Single(history.Runs);
         Assert.Equal(1400, run.Cpu1); Assert.Equal(10500, run.CpuAll); Assert.Equal(11500, run.Gpu);
+        Assert.Equal(LotusScale.Calibration,run.Evidence!.Calibration);
+        Assert.Equal(3,run.Evidence.Single!.Samples!.Count);
+        var restored=System.Text.Json.JsonSerializer.Deserialize<ScoreRun>(System.Text.Json.JsonSerializer.Serialize(run))!;
+        Assert.Equal(run.Evidence.Single.Samples,restored.Evidence!.Single!.Samples);
         Assert.Equal(LotusScale.Total(1400, 10500, 11500), run.Total); // calibration anchor (Ryzen 5 5500 + RTX 5060)
         Assert.False(vm.Busy); Assert.False(vm.NoHistory); Assert.Contains(vm.Compare, r => r.IsYou && r.Total == run.Total);
         Assert.Equal(100, vm.Compare.Max(r => r.Percent));
@@ -67,7 +145,7 @@ public sealed class ScoreTests
     }
     [Fact] public async Task ChosenSubsetRunsOnlyThoseTestsAndHasNoTotal()
     {
-        var cpu = new FakeCpu(_ => 23450); var gpu = new FakeGpu(10380); var history = new MemoryHistory();
+        var cpu = new FakeCpu(_ => LotusScale.Cpu1ReferenceRaw); var gpu = new FakeGpu(LotusScale.GpuReferenceRaw); var history = new MemoryHistory();
         var vm = new LotusScoreViewModel(cpu, gpu, history, new Machine(), new TextCatalog(), ex => throw ex) { RunCpuAll = false, RunGpu = false };
         Assert.True(vm.CanStart);
         await vm.ToggleAsync();

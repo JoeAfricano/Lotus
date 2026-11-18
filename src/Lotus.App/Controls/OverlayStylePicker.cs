@@ -16,9 +16,10 @@ namespace Lotus.App.Controls;
 public sealed class OverlayStylePicker : UserControl
 {
     private IntegrationsViewModel? vm;
+    private bool subscribed, renderQueued;
     private string selected = "top";
     private bool picked; // the player chose a tile; until then the selection follows the active layout
-    private readonly Grid tileRow = new() { ColumnSpacing = 14 }; // one column per style: tiles share the width, also in a narrow window
+    private readonly Grid tileRow = new() { ColumnSpacing = 14, RowSpacing = 14 };
     private readonly Grid stage = new() { Height = 300, CornerRadius = new CornerRadius(16) };
     private readonly TextBlock status = new() { FontSize = 12, FontWeight = FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center };
     private readonly TextBlock title = new() { FontSize = 20, FontWeight = FontWeights.SemiBold };
@@ -27,7 +28,12 @@ public sealed class OverlayStylePicker : UserControl
     private readonly Button use = new() { MinHeight = 44 };
     private readonly Button preview = new() { MinHeight = 44 };
     private readonly Button restore = new() { MinHeight = 44 };
+    private readonly ToggleSwitch previewDetail = new();
+    private readonly Dictionary<string,Task<Microsoft.UI.Xaml.Media.Imaging.BitmapImage>> previewImages = new();
+    private int windowPreviewVersion;
     private readonly TextBlock message = new() { FontSize = 12, TextWrapping = TextWrapping.Wrap };
+    private readonly StackPanel windowPanel = new() { Spacing = 14 };
+    private readonly Image windowPreview = new() { Stretch = Stretch.Uniform, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(14) };
     private readonly ProgressBar busy = new() { IsIndeterminate = true };
     private readonly Border statusPill = new() { CornerRadius = new CornerRadius(12), Padding = new Thickness(12, 4, 12, 4), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
     private static readonly Color Ok = Color.FromArgb(255, 0x7F, 0xD1, 0xA8);
@@ -64,26 +70,39 @@ public sealed class OverlayStylePicker : UserControl
         var body = new StackPanel { Spacing = 16 };
         body.Children.Add(head);
         body.Children.Add(tileRow);
+        body.Children.Add(previewDetail);
         body.Children.Add(stage);
         body.Children.Add(what);
+        body.Children.Add(windowPanel);
         body.Children.Add(actions);
         body.Children.Add(busy);
         body.Children.Add(message);
         Content = new Border { Style = (Style)res["CardStyle"], Child = body };
+        tileRow.SizeChanged += (_, _) => ArrangeTiles();
+        previewDetail.Toggled += (_, _) => Render();
+        stage.SizeChanged += (_, _) => SizePreview();
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, "overlay-style-picker");
         DataContextChanged += (_, _) => Attach(DataContext as IntegrationsViewModel);
-        Loaded += (_, _) => { vm?.Refresh(); Render(); };
-        Unloaded += (_, _) => { if (vm is not null) vm.PropertyChanged -= OnChanged; };
+        Loaded += (_, _) => { Subscribe(); vm?.Refresh(); QueueRender(); };
+        Unloaded += (_, _) => Unsubscribe();
     }
 
     private void Attach(IntegrationsViewModel? model)
     {
-        if (vm is not null) vm.PropertyChanged -= OnChanged;
+        Unsubscribe();
         vm = model;
-        if (vm is not null) vm.PropertyChanged += OnChanged;
-        Render();
+        if (IsLoaded) Subscribe();
+        QueueRender();
     }
-    private void OnChanged(object? sender, PropertyChangedEventArgs e) => DispatcherQueue.TryEnqueue(Render);
+    private void Subscribe() { if (vm is not null && !subscribed) { vm.PropertyChanged += OnChanged; subscribed = true; } }
+    private void Unsubscribe() { if (vm is not null && subscribed) { vm.PropertyChanged -= OnChanged; subscribed = false; } }
+    private void OnChanged(object? sender, PropertyChangedEventArgs e) => QueueRender();
+    private void QueueRender()
+    {
+        if (renderQueued || !IsLoaded) return;
+        renderQueued = true;
+        if (!DispatcherQueue.TryEnqueue(() => { renderQueued = false; if (IsLoaded) Render(); })) renderQueued = false;
+    }
 
     private void Render()
     {
@@ -99,21 +118,31 @@ public sealed class OverlayStylePicker : UserControl
         status.Foreground = new SolidColorBrush(c);
 
         tileRow.Children.Clear();
-        tileRow.Children.Add(Tile("top", t["OsTop"], t["OsTopShort"], on == "top"));
+        tileRow.Children.Add(Tile("premium-top", t["OsPremiumTop"], t["OsPremiumTopShort"], on == "premium-top"));
+        tileRow.Children.Add(Tile("premium-neon", t["OsPremiumNeon"], t["OsPremiumNeonShort"], on == "premium-neon"));
+        tileRow.Children.Add(Tile("premium-pulse", t["OsPremiumPulse"], t["OsPremiumPulseShort"], on == "premium-pulse"));
+        tileRow.Children.Add(Tile("window", t["OsWindow"], t["OsWindowShort"], on == "window"));
         tileRow.Children.Add(Tile("neon", t["OsNeon"], t["OsNeonShort"], on == "neon"));
         tileRow.Children.Add(Tile("lateral", t["OsLateral"], t["OsLateralShort"], on == "lateral"));
         tileRow.Children.Add(Tile("pulse", t["OsPulse"], t["OsPulseShort"], on == "pulse"));
-        tileRow.ColumnDefinitions.Clear();
-        for (var i = 0; i < tileRow.Children.Count; i++) { tileRow.ColumnDefinitions.Add(new ColumnDefinition()); Grid.SetColumn((FrameworkElement)tileRow.Children[i], i); }
+        ArrangeTiles();
 
         stage.Children.Clear();
         stage.Children.Add(GameScene());
-        stage.Children.Add(Drawing(selected, 1.0));
+        previewDetail.OnContent=t["OsPreviewDetail"];previewDetail.OffContent=t["OsPreviewScreen"];
+        previewDetail.Visibility=selected=="window"?Visibility.Collapsed:Visibility.Visible;
+        SizePreview(); stage.MinHeight = 300;
+        if (selected == "window") { stage.Children.Add(windowPreview); _ = RenderWindowPreviewAsync(); }
+        else stage.Children.Add(Drawing(selected, 1.0));
         stage.Children.Add(new Border { CornerRadius = new CornerRadius(8), Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(14), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, Background = new SolidColorBrush(Color.FromArgb(0xB3, 18, 9, 15)),
             Child = new TextBlock { Text = t["OsExample"], FontSize = 12, Foreground = new SolidColorBrush(Color.FromArgb(0xCC, 255, 255, 255)) } });
 
         what.Inlines.Clear();
         what.Text = t[Key(selected) + "What"];
+        // The window style depends on the display keeping the game on its own plane: say so when it cannot.
+        if (selected == "window" && vm.DisplayMpo is Lotus.Core.Benchmark.MpoStatus.NoOverlayPlane or Lotus.Core.Benchmark.MpoStatus.SwitchedOff)
+            what.Text += "\n\n" + t["Mpo" + vm.DisplayMpo] + " " + t["OsWindowPreferPulse"];
+        RenderWindowPanel(t);
         var isOn = on == selected;
         use.Content = Label(isOn ? "" : "", t.Format(isOn ? "OsInUse" : "OsUse", t[Key(selected)]));
         use.IsEnabled = !isOn && vm.RtssInstalled && !vm.Busy;
@@ -127,8 +156,78 @@ public sealed class OverlayStylePicker : UserControl
         message.Visibility = message.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private static string Key(string variant) => variant switch { "neon" => "OsNeon", "lateral" => "OsLateral", "pulse" => "OsPulse", _ => "OsTop" };
-    private FrameworkElement Drawing(string variant, double scale) => variant switch { "neon" => NeonCard(scale), "lateral" => LateralColumn(scale), "pulse" => PulsePanel(scale), _ => TopBar(scale) };
+    private void ArrangeTiles()
+    {
+        int columns = Math.Clamp((int)((tileRow.ActualWidth > 0 ? tileRow.ActualWidth : 1000) / 230), 1, 4);
+        int rows = (int)Math.Ceiling(tileRow.Children.Count / (double)columns);
+        if (tileRow.ColumnDefinitions.Count != columns || tileRow.RowDefinitions.Count != rows)
+        {
+            tileRow.ColumnDefinitions.Clear(); tileRow.RowDefinitions.Clear();
+            for (int i=0;i<columns;i++) tileRow.ColumnDefinitions.Add(new ColumnDefinition());
+            for (int i=0;i<rows;i++) tileRow.RowDefinitions.Add(new RowDefinition { Height=GridLength.Auto });
+        }
+        for (int i=0;i<tileRow.Children.Count;i++) { Grid.SetColumn((FrameworkElement)tileRow.Children[i],i%columns); Grid.SetRow((FrameworkElement)tileRow.Children[i],i/columns); }
+    }
+    private static string Key(string variant) => variant switch { "premium-top" => "OsPremiumTop", "premium-neon" => "OsPremiumNeon", "premium-pulse" => "OsPremiumPulse", "neon" => "OsNeon", "lateral" => "OsLateral", "pulse" => "OsPulse", "window" => "OsWindow", _ => "OsTop" };
+    private void SizePreview()
+    {
+        double height=selected=="window"?300:previewDetail.IsOn?360:Math.Clamp((stage.ActualWidth>0?stage.ActualWidth:960)*9/16,300,420);
+        if(double.IsNaN(stage.Height)||Math.Abs(stage.Height-height)>1)stage.Height=height;
+    }
+    private FrameworkElement Drawing(string variant, double scale) => variant=="window"
+        ? new Viewbox { Stretch = Stretch.Uniform, Margin = new Thickness(4), Child = WindowCard(1) }
+        : NativeLayoutPreview(variant,scale<1);
+    private FrameworkElement NativeLayoutPreview(string variant,bool mini)
+    {
+        var image=new Image { Stretch=Stretch.Uniform,IsHitTestVisible=false };
+        var view=new Viewbox { Stretch=Stretch.Uniform,StretchDirection=mini?StretchDirection.Both:StretchDirection.DownOnly,Margin=new Thickness(mini?4:16) };
+        Canvas? scene=null;
+        // Tiles show the complete overlay at a readable size; the large overview shows its true screen position.
+        if(!mini&&!previewDetail.IsOn)
+        {
+            scene=new Canvas { Width=1920,Height=1080 };
+            var backdrop=GameScene();backdrop.Width=1920;backdrop.Height=1080;
+            backdrop.Background=HomeMotion.Gradient(new(0,0),new(0,1),(0,Color.FromArgb(255,8,17,31)),(1,Color.FromArgb(255,22,32,47)));
+            scene.Children.Add(backdrop);
+            var screenLabel=new TextBlock { Text="1920 × 1080",FontSize=24,Foreground=new SolidColorBrush(Color.FromArgb(255,170,188,212)) };
+            Canvas.SetLeft(screenLabel,36);Canvas.SetTop(screenLabel,1014);scene.Children.Add(screenLabel);
+            scene.Children.Add(image);view.Child=scene;
+        }
+        else view.Child=image;
+        _=LoadLayoutPreviewAsync(variant,image,scene);
+        if(scene is null)return view;
+        return new Border { BorderThickness=new Thickness(2),BorderBrush=new SolidColorBrush(Color.FromArgb(255,0x84,0x91,0xAC)),CornerRadius=new CornerRadius(10),Padding=new Thickness(8),Margin=new Thickness(14),Background=new SolidColorBrush(Color.FromArgb(255,8,12,22)),Child=view };
+    }
+    private async Task LoadLayoutPreviewAsync(string variant,Image image,Canvas? scene)
+    {
+        try
+        {
+            var frame=await Task.Run(()=>Lotus.Infrastructure.Integrations.RtssLayoutPreview.Render(variant));
+            image.Width=frame.Width;image.Height=frame.Height;
+            if(scene is not null){Canvas.SetLeft(image,frame.X);Canvas.SetTop(image,frame.Y);}
+            if(!previewImages.TryGetValue(frame.Key,out var source))
+            {
+                if(previewImages.Count>32)previewImages.Clear();
+                source=LoadBitmapAsync(frame.Png);previewImages[frame.Key]=source;
+            }
+            image.Source=await source;
+        }
+        catch(Exception ex){Serilog.Log.Warning(ex,"Native overlay preview {Variant}",variant);image.Visibility=Visibility.Collapsed;}
+    }
+    private static async Task<Microsoft.UI.Xaml.Media.Imaging.BitmapImage> LoadBitmapAsync(byte[] bytes)
+    {
+        var bitmap=new Microsoft.UI.Xaml.Media.Imaging.BitmapImage();
+        using var stream=new MemoryStream(bytes);await bitmap.SetSourceAsync(stream.AsRandomAccessStream());return bitmap;
+    }
+    // Lotus (janela): the same numbers in a rounded card drawn by Lotus itself (real fonts, accents, gradient border).
+    private FrameworkElement WindowCard(double scale)
+    {
+        var card = (Border)PulsePanel(scale);
+        card.CornerRadius = new CornerRadius(14 * scale); card.BorderThickness = new Thickness(Math.Max(1, 1.5 * scale));
+        card.BorderBrush = HomeMotion.Gradient(new(0, 0), new(1, 1), (0, rose), (1, gold));
+        card.Background = new SolidColorBrush(Color.FromArgb(0xD9, 0x14, 0x0B, 0x14));
+        return card;
+    }
     // Lotus Pulse: big FPS with the lows as pills, the frametime graph with its reference lines, bars below (theme colors).
     private FrameworkElement PulsePanel(double scale)
     {
@@ -186,6 +285,132 @@ public sealed class OverlayStylePicker : UserControl
         col.Child = p;
         return col;
     }
+    // ---- Janela Lotus: profiles, items (on/off and order), corner, opacity and size; the preview is the real renderer ----
+    private void RenderWindowPanel(Lotus.Core.ITextCatalog t)
+    {
+        windowPanel.Children.Clear();
+        windowPanel.Visibility = selected == "window" && vm?.WindowSettings is not null ? Visibility.Visible : Visibility.Collapsed;
+        if (windowPanel.Visibility != Visibility.Visible) return;
+        var s = vm!.WindowSettings!();
+        void Change(Func<Lotus.Core.Benchmark.OverlayWindowSettings, Lotus.Core.Benchmark.OverlayWindowSettings> f, bool rebuild)
+        {
+            vm.ChangeWindowSettings?.Invoke(f);
+            if (rebuild) Render(); else _ = RenderWindowPreviewAsync();
+        }
+
+        // Profiles: three slots, each keeps its own choices.
+        var profiles = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        var current = vm.WindowProfile?.Invoke() ?? 0;
+        for (var i = 0; i < 3; i++)
+        {
+            var index = i;
+            var b = new Button { Content = t["OwProfile" + (i + 1)], Style = (Style)Application.Current.Resources[i == current ? "PrimaryButtonStyle" : "SoftButtonStyle"], MinHeight = 36 };
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(b, "ow-profile-" + (i + 1));
+            b.Click += (_, _) => { vm.UseWindowProfile?.Invoke(index); Render(); };
+            profiles.Children.Add(b);
+        }
+        windowPanel.Children.Add(Section(t["OwProfiles"], profiles));
+
+        // Corner, opacity and size.
+        var place = new Grid { ColumnSpacing = 16 };
+        for (var c = 0; c < 3; c++) place.ColumnDefinitions.Add(new ColumnDefinition());
+        var corner = new ComboBox { Header = t["OwPosition"], HorizontalAlignment = HorizontalAlignment.Stretch };
+        foreach (var p in Lotus.Core.Benchmark.OverlayWindowSettings.Positions) corner.Items.Add(new ComboBoxItem { Content = t["OwPos" + p.Replace("-", "")], Tag = p });
+        corner.SelectedIndex = Array.IndexOf(Lotus.Core.Benchmark.OverlayWindowSettings.Positions, s.Position);
+        corner.SelectionChanged += (_, _) => { if (corner.SelectedItem is ComboBoxItem { Tag: string p }) Change(x => x with { Position = p }, false); };
+        place.Children.Add(corner);
+        var opacity = new Slider { Header = t["OwOpacity"], Minimum = 40, Maximum = 100, StepFrequency = 5, Value = Math.Round(s.Opacity * 100) };
+        opacity.ValueChanged += (_, e) => Change(x => x with { Opacity = e.NewValue / 100 }, false);
+        Grid.SetColumn(opacity, 1); place.Children.Add(opacity);
+        var zoom = new Slider { Header = t["OwSize"], Minimum = 75, Maximum = 150, StepFrequency = 5, Value = Math.Round(s.Zoom * 100) };
+        zoom.ValueChanged += (_, e) => Change(x => x with { Zoom = e.NewValue / 100 }, false);
+        Grid.SetColumn(zoom, 2); place.Children.Add(zoom);
+        windowPanel.Children.Add(place);
+        var visibility = new StackPanel { Orientation=Orientation.Horizontal, Spacing=12 };
+        var show = new Button { Content=t[s.Visible ? "OwHide" : "OwShow"],Style=(Style)Application.Current.Resources["SoftButtonStyle"] };
+        show.Click += (_,_) => Change(x=>x with {Visible=!x.Visible},true);
+        visibility.Children.Add(show);
+        var shortcut = new ComboBox { Header=t["OwToggleShortcut"],MinWidth=180 };
+        foreach(var key in Lotus.Core.Benchmark.OverlayWindowSettings.ToggleKeys) shortcut.Items.Add(new ComboBoxItem {Content=key=="none"?t["OwNoShortcut"]:"Ctrl + Alt + "+key,Tag=key});
+        shortcut.SelectedIndex=Array.IndexOf(Lotus.Core.Benchmark.OverlayWindowSettings.ToggleKeys,s.ToggleKey);
+        shortcut.SelectionChanged+=(_,_)=>{if(shortcut.SelectedItem is ComboBoxItem {Tag:string key}) Change(x=>x with {ToggleKey=key},false);};
+        visibility.Children.Add(shortcut);windowPanel.Children.Add(visibility);
+
+        // Items: the shown ones in their order (with up/down), then the hidden ones.
+        var items = new StackPanel { Spacing = 4 };
+        var shown = s.Items.ToList();
+        foreach (var id in shown.Concat(Lotus.Core.Benchmark.OverlayWindowSettings.AllItems.Except(shown)))
+        {
+            var on = shown.Contains(id); var at = shown.IndexOf(id);
+            var row = new Grid { ColumnSpacing = 6 };
+            row.ColumnDefinitions.Add(new ColumnDefinition()); row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var check = new CheckBox { Content = t["OwItem" + id], IsChecked = on };
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(check, "ow-item-" + id);
+            check.Click += (_, _) => Change(x => x.Toggle(id), true);
+            row.Children.Add(check);
+            if (on)
+            {
+                var up = new Button { Content = new FontIcon { Glyph = "", FontSize = 12 }, IsEnabled = at > 0, Style = (Style)Application.Current.Resources["SoftButtonStyle"], Padding = new Thickness(10, 6, 10, 6) };
+                up.Click += (_, _) => Change(x => x.Move(id, -1), true);
+                Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(up, t.Format("OwMoveUp", t["OwItem" + id]));
+                var down = new Button { Content = new FontIcon { Glyph = "", FontSize = 12 }, IsEnabled = at < shown.Count - 1, Style = (Style)Application.Current.Resources["SoftButtonStyle"], Padding = new Thickness(10, 6, 10, 6) };
+                down.Click += (_, _) => Change(x => x.Move(id, 1), true);
+                Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(down, t.Format("OwMoveDown", t["OwItem" + id]));
+                Grid.SetColumn(up, 1); Grid.SetColumn(down, 2); row.Children.Add(up); row.Children.Add(down);
+            }
+            items.Children.Add(row);
+        }
+        windowPanel.Children.Add(Section(t["OwItems"], items));
+        windowPanel.Children.Add(new TextBlock { Text = t["OwHotkey"], FontSize = 12, TextWrapping = TextWrapping.Wrap, Foreground = (Brush)Application.Current.Resources["MutedBrush"] });
+    }
+
+    private static StackPanel Section(string title, UIElement content)
+    {
+        var p = new StackPanel { Spacing = 8 };
+        p.Children.Add(new TextBlock { Text = title, FontWeight = FontWeights.SemiBold });
+        p.Children.Add(content);
+        return p;
+    }
+
+    // Draws the overlay exactly as the game window would (example numbers) and shows it in the stage.
+    private async Task RenderWindowPreviewAsync()
+    {
+        var version = ++windowPreviewVersion;
+        await Task.Delay(60); // Coalesce slider changes; an older render must never overwrite the newest choice.
+        if (version != windowPreviewVersion || selected != "window" || !IsLoaded) return;
+        if (vm?.WindowSettings is not { } settings) return;
+        var s = settings();
+        var look = new Lotus.Infrastructure.Games.GameOverlayWindow.Look(System.Drawing.Color.FromArgb(255, rose.R, rose.G, rose.B), System.Drawing.Color.FromArgb(255, gold.R, gold.G, gold.B),
+            74.97, vm.Text["OwAverage"], "—", s, System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "Lotus.ico"));
+        var frames = new Lotus.Core.Benchmark.OverlayFrames();
+        var random = new Random(7);
+        for (var i = 0; i < 2000; i++) frames.Add(13.34 + (random.NextDouble() - 0.5) * 0.6 + (i % 240 == 0 ? 6 : 0));
+        var sensors = new Lotus.Infrastructure.Games.GameOverlayWindow.Sensors(71, 64, 38, null, 52, 61);
+        var bytes = await Task.Run(() =>
+        {
+            var h = Lotus.Infrastructure.Games.GameOverlayWindow.Measure(s);
+            var scale = s.Zoom;
+            using var bmp = new System.Drawing.Bitmap((int)Math.Ceiling(Lotus.Infrastructure.Games.GameOverlayWindow.Width * scale), (int)Math.Ceiling(h * scale), System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+            using (var g = System.Drawing.Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias; g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                g.ScaleTransform((float)scale, (float)scale);
+                using var logo = File.Exists(look.LogoPath) ? new System.Drawing.Icon(look.LogoPath!, 32, 32).ToBitmap() : null;
+                Lotus.Infrastructure.Games.GameOverlayWindow.Draw(g, frames.Summarize(), sensors, look, logo);
+            }
+            using var ms = new MemoryStream(); bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png); return ms.ToArray();
+        });
+        var image = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage();
+        using var stream = new MemoryStream(bytes);
+        await image.SetSourceAsync(stream.AsRandomAccessStream());
+        if (version != windowPreviewVersion || selected != "window" || !IsLoaded) return;
+        windowPreview.Width = Math.Min(300, Lotus.Infrastructure.Games.GameOverlayWindow.Width * s.Zoom);
+        windowPreview.MaxHeight = 268;
+        windowPreview.Source = image;
+        windowPreview.HorizontalAlignment = s.Position is "top-right" or "bottom-right" ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+        windowPreview.VerticalAlignment = s.Position is "bottom-left" or "bottom-right" ? VerticalAlignment.Bottom : VerticalAlignment.Top;
+    }
+
     private static StackPanel Label(string glyph, string text)
     {
         var p = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
@@ -204,6 +429,8 @@ public sealed class OverlayStylePicker : UserControl
         var info = new StackPanel { Spacing = 2 };
         var nameRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
         nameRow.Children.Add(new TextBlock { Text = name, FontWeight = FontWeights.SemiBold, FontSize = 14 });
+        if (id == "window") nameRow.Children.Add(new Border { CornerRadius = new CornerRadius(8), Padding = new Thickness(8, 1, 8, 1), Background = new SolidColorBrush(Color.FromArgb(0x2E, gold.R, gold.G, gold.B)), VerticalAlignment = VerticalAlignment.Center,
+            Child = new TextBlock { Text = vm!.Text["OsExperimental"], FontSize = 12, FontWeight = FontWeights.SemiBold, Foreground = new SolidColorBrush(gold) } });
         if (active) nameRow.Children.Add(new Border { CornerRadius = new CornerRadius(8), Padding = new Thickness(8, 1, 8, 1), Background = new SolidColorBrush(Color.FromArgb(0x2E, Ok.R, Ok.G, Ok.B)), VerticalAlignment = VerticalAlignment.Center,
             Child = new TextBlock { Text = vm!.Text["OsActiveBadge"], FontSize = 12, FontWeight = FontWeights.SemiBold, Foreground = new SolidColorBrush(Ok) } });
         info.Children.Add(nameRow);

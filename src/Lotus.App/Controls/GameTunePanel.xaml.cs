@@ -67,7 +67,7 @@ public sealed partial class GameTunePanel : UserControl
         var left = new StackPanel { Spacing = 24 }; var right = new StackPanel { Spacing = 24 };
         left.Children.Add(Section(vm.Text["TuneRecommended"], RecommendedTiles(tune)));
         left.Children.Add(Section(vm.Text["TuneTips"], TipList(tune)));
-        right.Children.Add(Section(vm.Text["LlTitle"], LowLatency(tune)));
+        right.Children.Add(Section(vm.Text["LlTitle"], await PresentationAsync(tune)));
         right.Children.Add(Section(vm.Text["TuneLast"], LastCheck(tune)));
         right.Children.Add(Links());
         Body.Children.Add(Columns(left, right));
@@ -129,6 +129,15 @@ public sealed partial class GameTunePanel : UserControl
         change.Click += async (_, _) => { if (XamlRoot is { } root && await AskAdaptiveSyncAsync(root, vm!)) await Reload(); };
         if (!noVrr) sync.Children.Add(change);
         hwPanel.Children.Add(sync);
+        if(t.Settings.Support is {CanApply:true})
+        {
+            var applySettings=new Button {Content=text[t.Settings.PendingStep is null?"TuneApplySettings":"GsStepApply"],
+                Style=(Style)Application.Current.Resources["PrimaryButtonStyle"],HorizontalAlignment=HorizontalAlignment.Stretch,IsEnabled=!t.Running};
+            AutomationProperties.SetAutomationId(applySettings,"tune-apply-settings");
+            applySettings.Click+=async (_,_)=> {applySettings.IsEnabled=false;await Run(t.Settings.PendingStep is null?Act.Apply:Act.Step);};
+            hwPanel.Children.Add(applySettings);
+            if(t.Running) hwPanel.Children.Add(Caption(text["GpCloseFirst"]));
+        }
         Grid.SetRow(hwPanel, 2); Grid.SetColumnSpan(hwPanel, 2); grid.Children.Add(hwPanel);
         return grid;
     }
@@ -324,40 +333,55 @@ public sealed partial class GameTunePanel : UserControl
         return row;
     }
 
-    private enum Act { None, Analyze, Apply, Step, Restore, Precompile }
+    private enum Act { None, Analyze, Apply, Step, Restore, Precompile, Launch }
     private Act primary, secondary;
     private void BuildFooter(GamesViewModel.GameTune t)
     {
         var text = vm!.Text;
-        var canApply = t.Settings.Support is { CanApply: true };
-        primary = t.Running && vm.CanMeasure ? Act.Analyze : canApply ? (t.Settings.PendingStep is not null ? Act.Step : Act.Apply) : card!.CanPrecompile ? Act.Precompile : Act.None;
-        secondary = t.Settings.HasOriginal ? Act.Restore : primary != Act.Precompile && card!.CanPrecompile ? Act.Precompile : Act.None;
+        primary = Act.Launch;
+        secondary = Act.Restore;
         Set(PrimaryAction, primary); Set(SecondaryAction, secondary);
-        Footer.Visibility = primary == Act.None && secondary == Act.None ? Visibility.Collapsed : Visibility.Visible;
-        Grid.SetColumnSpan(SecondaryAction, primary == Act.None ? 2 : 1); Grid.SetColumn(PrimaryAction, secondary == Act.None ? 0 : 1); Grid.SetColumnSpan(PrimaryAction, secondary == Act.None ? 2 : 1);
+        PrimaryAction.IsEnabled=!t.Running && card!.Game.CanLaunch;
+        SecondaryAction.IsEnabled=(t.Settings.HasOriginal || vm.PrefsFor(card!.Game).Presentation.Enabled) && !t.Running;
+        ShaderAction.Content=text["TunePrepareShaders"];
+        ShaderAction.IsEnabled=card!.CanPrecompile && !t.Running && !vm.ShaderJobActive;
+        ToolTipService.SetToolTip(ShaderAction,text["TunePrepareShadersHint"]);
+        Footer.Visibility = Visibility.Visible;
         void Set(Button b, Act a)
         {
             b.Visibility = a == Act.None ? Visibility.Collapsed : Visibility.Visible;
-            b.Content = a switch { Act.Analyze => text["TuneAnalyze"], Act.Apply => text["TuneApply"], Act.Step => text["GsStepApply"], Act.Restore => text["TuneRestore"], Act.Precompile => text["TunePrecompile"], _ => "" };
+            b.Content = a switch { Act.Launch => text["TuneLaunch"], Act.Analyze => text["TuneAnalyze"], Act.Apply => text["TuneApply"], Act.Step => text["GsStepApply"], Act.Restore => text["TuneRestore"], Act.Precompile => text["TunePrecompile"], _ => "" };
         }
     }
     private async void OnPrimary(object sender, RoutedEventArgs e) => await Run(primary);
     private async void OnSecondary(object sender, RoutedEventArgs e) => await Run(secondary);
+    private async void OnShaders(object sender, RoutedEventArgs e) => await Run(Act.Precompile);
     private async Task Run(Act a)
     {
         if (vm is null || card is null || tune is null) return;
+        string? resultMessage=null;
         switch (a)
         {
+            case Act.Launch: var game=card.Game;Close();vm.Play(game);return;
             case Act.Analyze: Close(); await actions!.Analyze(); return;
             case Act.Precompile: Close(); await actions!.Precompile(); return;
             case Act.Apply: await vm.ApplySettingsAsync(card.Game, tune.Settings.Recommendation); break;
             case Act.Step: await vm.ApplyStepAsync(card.Game); break;
-            case Act.Restore: await vm.RestoreSettingsAsync(card.Game); break;
+            case Act.Restore:
+                var presentation=vm.PrefsFor(card.Game).Presentation;
+                if(presentation.Enabled)
+                {
+                    var restored=await vm.SavePresentationAsync(card.Game,presentation with {Enabled=false},tune.LowLatency,tune.Settings.Recommendation.AdaptiveSync);
+                    resultMessage=vm.PresentationStatus;
+                    if(!restored) {await Reload();Body.Children.Insert(0,Caption(resultMessage));return;}
+                }
+                if(tune.Settings.HasOriginal) {await vm.RestoreSettingsAsync(card.Game);resultMessage=vm.Status;}
+                break;
             default: return;
         }
         UiSound.Play(UiSound.Cue.Done);
         await Reload();
-        if (vm.Status is { Length: > 0 } status) Body.Children.Insert(0, new TextBlock { Text = status, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("GoldBrush"), TextWrapping = TextWrapping.Wrap });
+        if ((resultMessage??vm.Status) is { Length: > 0 } status) Body.Children.Insert(0, new TextBlock { Text = status, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("GoldBrush"), TextWrapping = TextWrapping.Wrap });
     }
 
     private static Grid Columns(FrameworkElement left, FrameworkElement right)

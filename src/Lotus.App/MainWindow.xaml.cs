@@ -142,7 +142,7 @@ public sealed partial class MainWindow : Window
         RecoverGpuTune(); // undo a GPU tune left unfinished by a crash
         Lotus.Infrastructure.Integrations.LotusOverlayLayout.PulseCap = () => integrations.Rtss.GlobalCap();
         RefreshGeneratedOverlays();
-        _ = Task.Run(() => { var mpo = Lotus.Infrastructure.Benchmark.MpoProbe.Query(); Serilog.Log.Information("Display MPO {Status}", mpo); DispatcherQueue.TryEnqueue(() => benchmark.Mpo = mpo); });
+        _ = Task.Run(() => { var mpo = Lotus.Infrastructure.Benchmark.MpoProbe.Query(); Serilog.Log.Information("Display MPO {Status}", mpo); DispatcherQueue.TryEnqueue(() => { benchmark.Mpo = mpo; integrations.DisplayMpo = mpo; }); });
         SetUpPreparation();
         SetUpSaves();
         SetUpUpdates();
@@ -199,6 +199,11 @@ public sealed partial class MainWindow : Window
         _ = Task.Run(async () => { await Task.Delay(TimeSpan.FromSeconds(40)); await fpsUpdater.CheckAsync(preferences.Current.FpsDataUpdates, false); });
         // Overlay style: never switched under a running game; a pending choice is applied when the game closes.
         integrations.GameRunning = async () => await Task.Run(games.RunningGame) is not null;
+        integrations.WindowSettings = () => preferences.Current.OverlayWindow;
+        integrations.OpenPreview = OpenOverlayPreview;
+        integrations.ChangeWindowSettings = UpdateOverlaySettings; // the picker redraws itself
+        integrations.WindowProfile = () => Math.Clamp(preferences.Current.OverlayProfile, 0, 2);
+        integrations.UseWindowProfile = UseOverlayProfile;
         sessionHub.Stopped += (_, _) => DispatcherQueue.TryEnqueue(async () => { try { await integrations.OnGameClosedAsync(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Overlay style after game"); } });
         games.AdaptiveSync = () => preferences.Current.AdaptiveSync;
         games.Display = new Lotus.Infrastructure.Games.WindowsDisplaySync();
@@ -247,6 +252,23 @@ public sealed partial class MainWindow : Window
         palette.Changed += (_, _) => { ApplyElementTheme(); RefreshGeneratedOverlays(); };
         ApplyElementTheme();
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 820));
+        SetUpPresentation();
+        InitializeMonitorColors();
+        if (AppWindow.Presenter is OverlappedPresenter mainPresenter)
+        {
+            mainPresenter.IsMaximizable = true;
+            mainPresenter.IsResizable = true;
+            if (Environment.GetCommandLineArgs().Contains("--maximized")) mainPresenter.Maximize();
+        }
+        ShellRoot.KeyDown += (_, e) =>
+        {
+            if (e.Key == Windows.System.VirtualKey.F11)
+            {
+                AppWindow.SetPresenter(AppWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen
+                    ? AppWindowPresenterKind.Overlapped : AppWindowPresenterKind.FullScreen);
+                e.Handled = true;
+            }
+        };
         foreach (var section in ViewModel.Items.OrderBy(s => s.Id is "gamelist" or "saves" or "diary" ? 1 : 0)) // design order: Game list and the diary close the list; Settings sits at the bottom
         {
             var item = new NavigationViewItem
@@ -582,6 +604,7 @@ public sealed partial class MainWindow : Window
     public void BringBack() => ShowFromTray(); // another launch asked for the window
     private void ShowFromTray()
     {
+        ResumePerformance();
         AppWindow.Show();
         if (AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized } presenter) presenter.Restore();
         Activate();
@@ -792,11 +815,12 @@ public sealed partial class MainWindow : Window
         if (!visible) experience.Interrupt();
         var demand = MonitoringDemand.For(ViewModel.CurrentRoute, visible, experience.IsAnalyzing);
         memoryAnalysis.SetActive(demand.Analyze);
-        monitoring.SetActive(demand.Collect || score.Busy || gpuTestRunning); // the Score and the GPU stability test read temperature/power while they run
+        monitoring.SetActive(demand.Collect || score.Busy || gpuTestRunning || overlayWindow is not null); // the Score and the GPU stability test read temperature/power while they run
     }
     public void PrepareForClose()
     {
-        lightTimer?.Stop();
+        StopLightMode();
+        overlayWindow?.Dispose(); overlayWindow = null;
         initialized = false;
         experience.Interrupt();
         AmbientBackground.Dispose();

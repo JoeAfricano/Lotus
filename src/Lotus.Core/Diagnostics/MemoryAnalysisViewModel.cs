@@ -10,6 +10,7 @@ public sealed class MemoryAnalysisViewModel : ObservableObject, IDisposable
     private readonly MonitoringViewModel monitoring;
     private readonly ITextCatalog text;
     private readonly MemoryAvailabilityAnalyzer analyzer = new();
+    private readonly object gate = new();
     public MemoryAnalysisViewModel(MonitoringViewModel monitoring, ITextCatalog text)
     {
         this.monitoring = monitoring; this.text = text;
@@ -34,13 +35,20 @@ public sealed class MemoryAnalysisViewModel : ObservableObject, IDisposable
     public string LastUpdate => Assessment.CapturedAt is { } at ? text.Format("LastUpdate", at.ToLocalTime().ToString("T", Culture)) : text["WaitingSample"];
     public void SetActive(bool active)
     {
-        if (IsActive == active) return;
-        IsActive = active; analyzer.Reset(); OnPropertyChanged(string.Empty);
+        lock (gate)
+        {
+            if (IsActive == active) return;
+            IsActive = active; analyzer.Reset();
+        }
+        OnPropertyChanged(string.Empty);
     }
     private void OnUpdated(object? sender, EventArgs args)
     {
-        if (!IsActive) return;
-        if (monitoring.Snapshot is { } snapshot) analyzer.Add(snapshot); else analyzer.Reset();
+        lock (gate)
+        {
+            if (!IsActive) return;
+            if (monitoring.Snapshot is { } snapshot) analyzer.Add(snapshot); else analyzer.Reset();
+        }
         OnPropertyChanged(string.Empty);
     }
     private string Bytes(ulong? value) => value is { } bytes ? TelemetryMath.GiB(bytes).ToString("F2", Culture) + " GB" : "—"; // binary GB, the same unit Windows' Task Manager shows

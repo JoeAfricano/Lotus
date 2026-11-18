@@ -40,7 +40,6 @@ public sealed partial class HomeBanner : UserControl
     public void SetSlides(IEnumerable<Slide> list)
     {
         slides.Clear(); slides.AddRange(list);
-        foreach (var s in slides) if (s.Image is { } u) Photo(u); // start downloading every photo now
         Dots.Children.Clear();
         for (var i = 0; i < slides.Count; i++)
         {
@@ -81,16 +80,19 @@ public sealed partial class HomeBanner : UserControl
             }
     }
 
-    // One BitmapImage per URL for the whole session: decoded once, reused by every slide change and visit.
-    private static readonly Dictionary<string, BitmapImage> photos = [];
+    // Reuse live pictures without keeping decoded textures or old visual trees alive for the whole session.
+    private static readonly Dictionary<string, WeakReference<BitmapImage>> photos = [];
     private static readonly HashSet<string> failed = [];
+    public static void ReleaseCachedPhotos() => photos.Clear(); // UI thread, after the hidden page is unloaded
     private static BitmapImage? Photo(string url)
     {
-        if (photos.TryGetValue(url, out var b)) return b;
+        if (photos.TryGetValue(url, out var weak) && weak.TryGetTarget(out var b)) return b;
         if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return null;
+        if (photos.Count >= 16) photos.Remove(photos.Keys.First());
         var bmp = new BitmapImage(uri) { DecodePixelWidth = 1600 }; // banner width, not the full photo
-        bmp.ImageFailed += (_, _) => { failed.Add(url); photos.Remove(url); }; // remembered so later slides skip it
-        return photos[url] = bmp;
+        bmp.ImageFailed += (_, _) => { if(failed.Count>=64)failed.Clear(); failed.Add(url); photos.Remove(url); };
+        photos[url] = new(bmp);
+        return bmp;
     }
 
     // ---- Slide drawing ----
@@ -106,13 +108,22 @@ public sealed partial class HomeBanner : UserControl
             {
                 img.Source = b;
                 if (b.PixelWidth > 0) { img.Opacity = 1; KenBurns(img); return; }
-                b.ImageOpened += (_, _) => { if (ReferenceEquals(img.Source, b)) { Fade(img, 1, 500); KenBurns(img); } };
-                b.ImageFailed += (_, _) =>
+                RoutedEventHandler? opened = null, unloaded = null;
+                ExceptionRoutedEventHandler? error = null;
+                void Detach()
                 {
+                    b.ImageOpened -= opened; b.ImageFailed -= error; img.Unloaded -= unloaded;
+                }
+                opened = (_, _) => { Detach(); if (ReferenceEquals(img.Source, b)) { Fade(img, 1, 500); KenBurns(img); } };
+                error = (_, _) =>
+                {
+                    Detach();
                     if (!ReferenceEquals(img.Source, b)) return;
                     if (url != s.Fallback && s.Fallback is { } next && !failed.Contains(next) && Photo(next) is { } second) Attach(second, next);
                     else img.Visibility = Visibility.Collapsed; // the Lotus art underneath stays
                 };
+                unloaded = (_, _) => Detach();
+                b.ImageOpened += opened; b.ImageFailed += error; img.Unloaded += unloaded;
             }
             Attach(bmp, source);
             g.Children.Add(Art(s.Art)); // shows while the photo downloads (or if none exists)

@@ -61,6 +61,16 @@ public sealed class RtssFrametimeListener(string mapName = RtssSharedMemory.Defa
         finally { collectors.TryRemove(pid, out _); }
     }
 
+    // Live frames of one process (the Lotus overlay window): `onFrame` gets each frametime in ms on the pipe's thread,
+    // so it must only store it. Dispose the result to stop. One watcher per process.
+    private readonly ConcurrentDictionary<int, Action<double>> watchers = new();
+    public IDisposable? Watch(int pid, Action<double> onFrame)
+    {
+        if (!Listening || !watchers.TryAdd(pid, onFrame)) return null;
+        return new Unwatch(() => watchers.TryRemove(pid, out _));
+    }
+    private sealed class Unwatch(Action stop) : IDisposable { public void Dispose() => stop(); }
+
     private int OwnerOf(uint app)
     {
         var now = Environment.TickCount64;
@@ -98,10 +108,12 @@ public sealed class RtssFrametimeListener(string mapName = RtssSharedMemory.Defa
                         catch (OperationCanceledException) { return; }
                         catch (IOException) { break; } // the game closed
                         if (read == 0) break;
-                        if (read < 8 || collectors.IsEmpty) continue;
+                        if (read < 8 || (collectors.IsEmpty && watchers.IsEmpty)) continue;
                         var microseconds = BitConverter.ToUInt32(buffer, 4);
                         if (microseconds is 0 or > 5_000_000) continue;
-                        if (!collectors.TryGetValue(OwnerOf(BitConverter.ToUInt32(buffer, 0)), out var c)) continue;
+                        var owner = OwnerOf(BitConverter.ToUInt32(buffer, 0));
+                        if (watchers.TryGetValue(owner, out var w)) w(microseconds / 1000.0);
+                        if (!collectors.TryGetValue(owner, out var c)) continue;
                         lock (c.Frames) c.Frames.Add(microseconds / 1000.0);
                         c.First.TrySetResult();
                     }

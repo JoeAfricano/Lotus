@@ -11,16 +11,8 @@
     </StackPanel>
     <TextBlock Grid.Column="2" Text="{Binding LayoutStatus}" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" VerticalAlignment="Center" AutomationProperties.AutomationId="int-layout-status"/>
    </Grid>
-   <TextBlock app:Rich.Text="{Binding Text[IntLayoutWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
    <!-- Main choice first: the full Lotus overlay; the simple OSD stays as an alternative. -->
    <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{Binding RtssInstalled, Converter={StaticResource BooleanVisibility}}">
-    <Button Click="OnActivateLayout" Style="{StaticResource PrimaryButtonStyle}" AutomationProperties.AutomationId="int-layout-apply">
-     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE7F4;" FontSize="13"/><TextBlock Text="{Binding Text[IntLayoutApply]}"/></StackPanel>
-    </Button>
-    <Button Content="{Binding Text[IntLayoutRestore]}" Click="OnRestoreLayout" Style="{StaticResource SoftButtonStyle}" Visibility="{Binding CanRestoreLayout, Converter={StaticResource BooleanVisibility}}" AutomationProperties.AutomationId="int-layout-restore"/>
-    <Button Click="OnPreviewOverlay" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="int-overlay-preview">
-     <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE7B3;" FontSize="13"/><TextBlock Text="{Binding Text[IntPreview]}"/></StackPanel>
-    </Button>
     <Button Content="{Binding Text[IntLayoutExport]}" Click="OnExportLayout" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="int-layout-export"/>
    </StackPanel>
    <Expander Header="{Binding Text[IntSimpleOsd]}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Visibility="{Binding RtssInstalled, Converter={StaticResource BooleanVisibility}}">

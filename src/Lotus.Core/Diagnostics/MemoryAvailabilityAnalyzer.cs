@@ -11,7 +11,7 @@ public sealed record MemoryAssessment(MemoryFinding Finding, TimeSpan ObservedDu
 }
 
 // RAM-AVAIL-001 v1: product triage heuristics, not Windows limits or proof of gaming impact.
-// Serial caller; monotonic time, bounded window, invalid samples/gaps break continuity.
+// Monotonic time, bounded window, invalid samples/gaps break continuity. Reset may race a final queued update.
 public sealed class MemoryAvailabilityAnalyzer
 {
     public const string RuleVersion = "RAM-AVAIL-001 v1";
@@ -20,14 +20,24 @@ public sealed class MemoryAvailabilityAnalyzer
     private TimeSpan? last, lowSince, veryLowSince;
     private ulong? capacity;
     private string? source;
-    public MemoryAssessment Current { get; private set; } = MemoryAssessment.Empty;
-    public int SampleCount => window.Count;
+    private readonly object gate = new();
+    private MemoryAssessment current = MemoryAssessment.Empty;
+    public MemoryAssessment Current { get { lock (gate) return current; } private set => current = value; }
+    public int SampleCount { get { lock (gate) return window.Count; } }
     public void Reset()
+    {
+        lock (gate) ResetCore();
+    }
+    private void ResetCore()
     {
         window.Clear(); last = lowSince = veryLowSince = null; capacity = null; source = null;
         Current = MemoryAssessment.Empty;
     }
     public MemoryAssessment Add(HardwareTelemetrySnapshot snapshot)
+    {
+        lock (gate) return AddCore(snapshot);
+    }
+    private MemoryAssessment AddCore(HardwareTelemetrySnapshot snapshot)
     {
         var memory = snapshot.Memory;
         if (memory.TotalPhysicalBytes is not { Status: TelemetryStatus.Available, Value: > 0 } total ||

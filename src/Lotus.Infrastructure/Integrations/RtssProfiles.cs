@@ -16,7 +16,8 @@ public static partial class RtssProfiles
     {
         ["OSD"] = ["EnableOSD", "EnableBgnd", "EnableFill", "BaseColor", "BgndColor", "FillColor", "PositionX", "PositionY", "ZoomRatio",
                    "EnableFrametimeHistory", "FrametimeHistoryWidth", "FrametimeHistoryHeight", "FrametimeHistoryStyle", "RefreshPeriod", "IntegerFramerate"],
-        ["Framerate"] = ["Limit", "LimitDenominator", "ReflexSleep", "SyncLimiter", "SyncScanline0"]
+        ["Framerate"] = ["Limit", "LimitDenominator", "ReflexSleep", "SyncLimiter", "SyncScanline0"],
+        ["Statistics"] = ["FrametimeCalc"]
     };
     [GeneratedRegex(@"^(Global|[A-Za-z0-9 _.\-]{1,120}\.exe)$")] private static partial Regex ProfileName();
     [GeneratedRegex(@"^-?[0-9A-Fa-f]{1,10}$")] private static partial Regex SafeValue();
@@ -30,6 +31,8 @@ public static partial class RtssProfiles
         foreach (var c in request.Changes)
             if (!Allowed.TryGetValue(c.Section, out var keys) || !keys.Contains(c.Key) || !SafeValue().IsMatch(c.Value))
                 throw new InvalidOperationException($"Change not allowed: [{c.Section}] {c.Key}.");
+            else if(c.Section=="Statistics" && c.Value is not ("0" or "1"))
+                throw new InvalidOperationException("Invalid frametime calculation point.");
     }
 
     // Applies allowed changes, keeping the first original copy in backupDir. A new per-game profile holds only these keys:
@@ -156,11 +159,14 @@ public static class RtssElevatedHelper
         {
             if (args[i] == "--rtss-layout")
             {
-                LotusOverlayLayout.Activate(args[i + 1], LotusOverlayLayout.DefaultConfig, backups, Path.Combine(data, "Overlays"));
+                RtssOverlayPlugin.ActivateLayout(args[i + 1], LotusOverlayLayout.DefaultConfig, Path.Combine(RtssInstall.Dir, "Profiles", "Config"), backups, Path.Combine(data, "Overlays"), Path.Combine(RtssInstall.Dir,"Profiles","Global"));
                 if (args.Contains("--rtss-restart")) RtssRestart.Run(); // profiles and limiter live in files, untouched by a restart
             }
             else if (args[i] == "--rtss-layout-restore")
-            { if (!LotusOverlayLayout.Restore(LotusOverlayLayout.DefaultConfig, backups)) return 4; }
+            {
+                if (!RtssOverlayPlugin.RestoreLayout(LotusOverlayLayout.DefaultConfig, Path.Combine(RtssInstall.Dir, "Profiles", "Config"), backups, Path.Combine(RtssInstall.Dir,"Profiles","Global"))) return 4;
+                if(args.Contains("--rtss-restart"))RtssRestart.Run();
+            }
             else if (args[i] == "--rtss-apply")
             {
                 var requestPath = Path.GetFullPath(args[i + 1]);
@@ -230,7 +236,7 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
     // restart: RivaTuner is closed and opened again in the same approved step, so the new layout shows without the player doing it.
     public async Task<bool> ActivateLayoutAsync(string variant = LotusOverlayLayout.Main, bool restart = false) =>
         await RunElevated(restart ? ["--rtss-layout", ExportLayout(variant), "--rtss-restart"] : ["--rtss-layout", ExportLayout(variant)]) == 0 && LayoutActive();
-    public async Task<bool> RestoreLayoutAsync() => await RunElevated(["--rtss-layout-restore"]) == 0 && !HasLayoutBackup();
+    public async Task<bool> RestoreLayoutAsync() => await RunElevated(Running()==true?["--rtss-layout-restore","--rtss-restart"]:["--rtss-layout-restore"]) == 0 && !HasLayoutBackup();
 
     public static readonly IReadOnlyList<RtssChange> LotusOverlay =
     [
@@ -285,7 +291,7 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
         var ini = new IniText(raw);
         if (int.TryParse(ini.Get("Framerate", "SyncScanline0"), out var line) && line != 0) return "scanline";
         if (!int.TryParse(ini.Get("Framerate", "Limit"), out var limit) || limit <= 0) return null;
-        return ini.Get("Framerate", "SyncLimiter") switch { ReflexLimiter => "responsive", FrontEdgeLimiter => "fluid", _ => null };
+        return ini.Get("Framerate", "SyncLimiter") switch { ReflexLimiter => "responsive", FrontEdgeLimiter => "fluid", "2" => "back", "0" => "async", _ => null };
     }
     public double? LimiterCap(string exe)
     {
@@ -295,7 +301,7 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
     // The cap may be fractional (37.5 on 75 Hz): RTSS stores Limit / LimitDenominator.
     public async Task<bool> EnableLimiterAsync(string exe, double fpsCap, string mode)
     {
-        if (mode is not ("fluid" or "responsive" or "scanline") || (mode != "scanline" && fpsCap is < 20 or > 1000)) return false;
+        if (mode is not ("fluid" or "responsive" or "scanline" or "async" or "back") || !double.IsFinite(fpsCap) || (mode != "scanline" && fpsCap is < 20 or > 1000)) return false;
         RtssChange[] changes;
         if (mode == "scanline")
             changes = [new("Framerate", "Limit", "0"), new("Framerate", "LimitDenominator", "1"), new("Framerate", "SyncLimiter", "0"), new("Framerate", "SyncScanline0", DefaultScanline)];
@@ -304,16 +310,34 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
             var whole = Math.Abs(fpsCap - Math.Round(fpsCap)) < 0.001;
             var limit = whole ? (int)Math.Round(fpsCap) : (int)Math.Round(fpsCap * 100);
             changes = [new("Framerate", "Limit", limit.ToString(System.Globalization.CultureInfo.InvariantCulture)), new("Framerate", "LimitDenominator", whole ? "1" : "100"),
-                new("Framerate", "SyncLimiter", mode == "fluid" ? FrontEdgeLimiter : ReflexLimiter), new("Framerate", "SyncScanline0", "0")];
+                new("Framerate", "SyncLimiter", mode switch { "fluid" => FrontEdgeLimiter, "responsive" => ReflexLimiter, "back" => "2", _ => "0" }), new("Framerate", "SyncScanline0", "0")];
         }
+        // Match the diagnostic time point to the pacing strategy; never smooth or discard hitch samples.
+        // Front edge controls presentation; the other modes prioritize frame-start/return timing.
+        var framePoint=mode=="fluid"?"1":"0";
+        changes=[..changes,new("Statistics","FrametimeCalc",framePoint)];
         var dir = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(Backups))!, "Requests");
         Directory.CreateDirectory(dir);
         var request = Path.Combine(dir, "rtss-" + Guid.NewGuid().ToString("N") + ".json");
         await File.WriteAllTextAsync(request, JsonSerializer.Serialize(new RtssRequest(exe, changes)));
-        try { return await RunElevated(["--rtss-apply", request]) == 0 && LimiterMode(exe) == mode; }
+        try { return await RunElevated(["--rtss-apply", request]) == 0 && LimiterMode(exe) == mode
+            && (mode == "scanline" || (LimiterCap(exe) is { } read && Math.Abs(read-fpsCap)<0.011))
+            && RtssProfiles.Read(exe,Profiles) is {} applied && new IniText(applied).Get("Statistics","FrametimeCalc")==framePoint; }
         finally { File.Delete(request); }
     }
-    public async Task<bool> DisableLowLatencyAsync(string exe) => await RunElevated(["--rtss-restore", exe]) == 0 && LimiterMode(exe) is null;
+    public async Task<bool> DisableLowLatencyAsync(string exe)
+    {
+        RtssProfiles.Validate(new(exe, []));
+        var backup=Path.Combine(Backups,exe+".original");
+        if(!File.Exists(backup)) return false;
+        var expected=await File.ReadAllBytesAsync(backup);
+        if(await RunElevated(["--rtss-restore", exe])!=0) return false;
+        var target=Path.Combine(Profiles,RtssProfiles.FileName(exe));
+        if(expected.AsSpan().SequenceEqual("<absent>"u8)) return !File.Exists(target);
+        if(!File.Exists(target)) return false;
+        var actual=await File.ReadAllBytesAsync(target);
+        return expected.AsSpan().SequenceEqual(actual);
+    }
 
     // Relaunches Lotus elevated (UAC) only for this operation; the helper exits without opening a window.
     private Task<int> RunElevated(string[] args) => elevatedRunner?.Invoke(args) ?? Task.Run(() =>
@@ -348,21 +372,33 @@ public static class LotusOverlayLayout
         using var stream = typeof(LotusOverlayLayout).Assembly.GetManifestResourceStream(name) ?? throw new InvalidOperationException("Embedded overlay file missing: " + name);
         using var copy = new MemoryStream(); stream.CopyTo(copy); return copy.ToArray();
     }
+    internal static byte[] PreviewAsset(string name)
+    {
+        if(name!=ArtFile&&!Variants.Select(PremiumArt).Contains(name))throw new InvalidDataException("Unknown overlay artwork.");
+        return Resource(name);
+    }
     // Two layouts by the player: "top" (main: "Lotus Top Sombra", a bar across the top) and "neon" (optional card).
     // Third: "lateral", a compact column in the top-left corner (tools\New-LotusLateralOverlay.ps1, Neon's sources).
     // Fourth: "pulse", generated here in the colors of the active theme with the FPS limit line (LotusPulseLayout).
-    public const string Main = "top", Neon = "neon", Lateral = "lateral", Pulse = "pulse";
-    public static string FileFor(string variant) => variant switch { Neon => "Lotus-Neon.ovl", Lateral => "Lotus-Lateral.ovl", Pulse => "Lotus-Pulse.ovl", _ => "Lotus.ovl" };
-    public static string VariantOf(string? layoutName) => layoutName switch { "Lotus-Neon" => Neon, "Lotus-Lateral" => Lateral, "Lotus-Pulse" => Pulse, "Lotus" => Main, _ => "" };
-    public static readonly string[] Variants = [Main, Neon, Lateral, Pulse];
+    // Fifth: "window" (experimental), RivaTuner draws nothing and the Lotus overlay window shows the numbers.
+    public const string Main = "top", Neon = "neon", Lateral = "lateral", Pulse = "pulse", Window = "window";
+    public const string PremiumTop = "premium-top", PremiumNeon = "premium-neon", PremiumPulse = "premium-pulse";
+    public static string FileFor(string variant) => variant switch { PremiumTop => "Lotus-Premium-equilibrio.ovl", PremiumNeon => "Lotus-Premium-neon.ovl", PremiumPulse => "Lotus-Premium-pulse.ovl", Neon => "Lotus-Neon.ovl", Lateral => "Lotus-Lateral.ovl", Pulse => "Lotus-Pulse.ovl", Window => "Lotus-Window.ovl", _ => "Lotus.ovl" };
+    public static string VariantOf(string? layoutName) => layoutName switch { "Lotus-Premium-equilibrio" => PremiumTop, "Lotus-Premium-neon" => PremiumNeon, "Lotus-Premium-pulse" => PremiumPulse, "Lotus-Neon" => Neon, "Lotus-Lateral" => Lateral, "Lotus-Pulse" => Pulse, "Lotus-Window" => Window, "Lotus" => Main, _ => "" };
+    public static readonly string[] Variants = [Main, Neon, Lateral, Pulse, Window, PremiumTop, PremiumNeon, PremiumPulse];
+    public static string? PremiumArt(string variant) => variant switch { PremiumTop => "Lotus-atlas-equilibrio.png", PremiumNeon => "Lotus-atlas-neon.png", PremiumPulse => "Lotus-atlas-pulse.png", _ => null };
+    // True when RivaTuner's active layout is the "window" one (the Lotus overlay window should show during games).
+    public static bool WindowActive(string? configPath = null) =>
+        ActiveLayout(configPath ?? DefaultConfig) is { } p && Path.GetFileNameWithoutExtension(p).Equals("Lotus-Window", StringComparison.OrdinalIgnoreCase);
     // Set by the app: the active theme's colors and RivaTuner's global FPS limit, read when Pulse is (re)generated.
     public static LotusPulseLayout.Colors PulseColors { get; set; } = LotusPulseLayout.Default;
     public static Func<double?>? PulseCap { get; set; }
     private static byte[] Bytes(string variant)
     {
-        if (variant != Pulse) return Resource(FileFor(variant));
+        if (variant is not (Pulse or Window)) return Resource(FileFor(variant));
         var neon = System.Text.Encoding.Latin1.GetString(Resource(FileFor(Neon)));
         var sources = neon[neon.IndexOf("[Source0]", StringComparison.Ordinal)..neon.IndexOf("[Layer0]", StringComparison.Ordinal)];
+        if (variant == Window) return System.Text.Encoding.Latin1.GetBytes(LotusPulseLayout.Empty(sources));
         double? cap = null;
         try { cap = PulseCap?.Invoke(); } catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { Serilog.Log.Debug(ex, "Pulse: FPS limit"); }
         return System.Text.Encoding.Latin1.GetBytes(LotusPulseLayout.Build(sources, PulseColors, cap));
@@ -372,7 +408,8 @@ public static class LotusOverlayLayout
     {
         var folder = dir ?? OverlaysDir;
         Directory.CreateDirectory(folder);
-        File.WriteAllBytes(Path.Combine(folder, ArtFile), Resource(ArtFile)); // EmbeddedImage= expects it beside the layout
+        var art = PremiumArt(variant) ?? ArtFile;
+        File.WriteAllBytes(Path.Combine(folder, art), Resource(art)); // EmbeddedImage= expects it beside the layout
         var target = Path.Combine(folder, FileFor(variant));
         File.WriteAllBytes(target, Bytes(variant));
         return target;

@@ -9,26 +9,19 @@ using Vortice.DXGI;
 
 namespace Lotus.Infrastructure.Score;
 
-// CPU test: a small deterministic ray tracer (spheres, shadows, reflections). Each thread renders whole
+// CPU test: a deterministic floral ray tracer (petals, shadows, reflections). Each thread renders whole
 // rows of the same scene; the result is rendered pixels per second / 100.
-public sealed class CpuRayBenchmark : ICpuBenchmark, IFramePreview
+public sealed class CpuRayBenchmark : ICpuBenchmark, IFramePreview, IScoreExecutionEnvironment
 {
+    // Inspect the actual measured assembly, including mixed configurations and Optimize=false.
+    public bool IsOptimized => Attribute.GetCustomAttribute(typeof(CpuRayBenchmark).Assembly,
+        typeof(DebuggableAttribute)) is not DebuggableAttribute { IsJITOptimizerDisabled: true };
     private const int Width = 320, Height = 180;
     private int version;
     // Live picture for the page: each worker writes the pixels it renders (BGRA).
     public uint[] Pixels { get; } = new uint[Width * Height];
     int IFramePreview.Width => Width; int IFramePreview.Height => Height;
     public int Version => Volatile.Read(ref version);
-    private static readonly (Vector3 C, float R, Vector3 Color, float Mirror)[] Spheres =
-    [
-        (new(0, -1000, 0), 999f, new(0.75f, 0.7f, 0.72f), 0.1f),
-        (new(-1.6f, 0, 4), 1f, new(0.95f, 0.45f, 0.65f), 0.4f),
-        (new(0.6f, -0.3f, 3.2f), 0.7f, new(0.93f, 0.76f, 0.66f), 0.6f),
-        (new(2f, 0.2f, 5f), 1.2f, new(0.55f, 0.3f, 0.45f), 0.2f),
-        (new(-0.4f, -0.6f, 2.2f), 0.4f, new(0.9f, 0.9f, 0.95f), 0.8f),
-    ];
-    private static readonly Vector3 Light = Vector3.Normalize(new(-0.6f, 1f, -0.4f));
-
     public double Run(int threads, TimeSpan duration, CancellationToken ct)
     {
         threads = Math.Max(1, threads);
@@ -42,7 +35,7 @@ public sealed class CpuRayBenchmark : ICpuBenchmark, IFramePreview
             while (!Volatile.Read(ref stop))
             {
                 var index = Interlocked.Increment(ref nextRow);
-                int row = (int)(index % Height), frame = (int)(index / Height);
+                int row = (int)(index % Height), frame = (int)(sw.Elapsed.TotalSeconds * 30);
                 for (var x = 0; x < Width; x++) { var c = Pixel(x, row, frame); sink += c.X; Pixels[row * Width + x] = Pack(c); }
                 Interlocked.Increment(ref version);
                 local += Width;
@@ -63,80 +56,111 @@ public sealed class CpuRayBenchmark : ICpuBenchmark, IFramePreview
         return 0xFF000000u | (B(c.X) << 16) | (B(c.Y) << 8) | B(c.Z);
     }
 
-    // The camera sways slowly frame by frame so the preview moves; the work per frame stays about the same.
-    public static Vector3 Pixel(int x, int y, int frame = 0)
-    {
-        var eye = new Vector3(0.35f * MathF.Sin(frame * 0.2f), 0.3f, -1);
-        var color = Vector3.Zero;
-        for (var s = 0; s < 4; s++) // 2x2 supersampling
-        {
-            var u = (x + (s & 1) * 0.5f) / Width * 2 - 1; var v = 1 - (y + (s >> 1) * 0.5f) / Height * 2;
-            color += Trace(eye, Vector3.Normalize(new(u * 1.78f, v, 1.6f)), 0);
-        }
-        return color / 4;
-    }
+    public static Vector3 Pixel(int x, int y, int frame = 0) => LotusCpuScene.Pixel(x,y,frame);
 
-    private static Vector3 Trace(Vector3 origin, Vector3 dir, int depth)
-    {
-        var (hit, t) = Hit(origin, dir);
-        if (hit < 0) return Vector3.Lerp(new(0.2f, 0.12f, 0.18f), new(0.55f, 0.4f, 0.5f), Math.Max(0, dir.Y));
-        var s = Spheres[hit]; var p = origin + dir * t; var n = Vector3.Normalize(p - s.C);
-        var shadow = Hit(p + n * 1e-3f, Light).Index >= 0 ? 0.25f : 1f;
-        var diffuse = Math.Max(0, Vector3.Dot(n, Light)) * shadow;
-        var spec = MathF.Pow(Math.Max(0, Vector3.Dot(Vector3.Reflect(-Light, n), -dir)), 32) * shadow;
-        var local = s.Color * (0.15f + 0.85f * diffuse) + new Vector3(spec);
-        if (depth >= 3 || s.Mirror <= 0) return local;
-        return Vector3.Lerp(local, Trace(p + n * 1e-3f, Vector3.Reflect(dir, n), depth + 1), s.Mirror);
-    }
-
-    private static (int Index, float T) Hit(Vector3 o, Vector3 d)
-    {
-        var best = float.MaxValue; var index = -1;
-        for (var i = 0; i < Spheres.Length; i++)
-        {
-            var oc = o - Spheres[i].C; var b = Vector3.Dot(oc, d); var c = Vector3.Dot(oc, oc) - Spheres[i].R * Spheres[i].R;
-            var h = b * b - c; if (h < 0) continue;
-            var t = -b - MathF.Sqrt(h);
-            if (t > 1e-4f && t < best) { best = t; index = i; }
-        }
-        return (index, best);
-    }
 }
 
 // GPU test: renders a ray-marched scene at 1920x1080 with Direct3D 11 on the high-performance adapter, in a visible
-// window (shown at 1280x720; closing it cancels). No setting changes; result = frames per second x 10.
+// window (shown at 1280x720; closing it cancels). No setting changes. Result = completed renders / measured
+// wall time x 10, excluding Present. Includes CPU submission/synchronization; it is not isolated GPU time or game FPS.
 [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 public sealed class D3D11GpuBenchmark : IGpuBenchmark
 {
     private const int Width = 1920, Height = 1080;
-    private const string Shader = """
+    // One floral workload shared by Score, tuning and preview.
+    private const string TuningShader = """
         cbuffer Frame : register(b0) { float time; float3 pad; };
-        float4 VS(uint id : SV_VertexID) : SV_Position { float2 uv = float2((id << 1) & 2, id & 2); return float4(uv * float2(2, -2) + float2(-1, 1), 0, 1); }
-        float map(float3 p) {
-            float d = p.y + 1.0;
-            [unroll] for (int i = 0; i < 6; i++) {
-                float3 c = float3(sin(i * 1.7 + time) * 2.5, sin(i * 2.3) * 0.5, 6.0 + cos(i * 1.3 + time) * 2.0);
-                d = min(d, length(p - c) - (0.6 + 0.1 * i));
+        float4 VS(uint id : SV_VertexID) : SV_Position { float2 uv=float2((id<<1)&2,id&2); return float4(uv*float2(2,-2)+float2(-1,1),0,1); }
+        float octa(float3 p,float s) { p=abs(p); return (p.x+p.y+p.z-s)*0.57735; }
+        float ellipsoid(float3 p,float3 r) { float k0=length(p/r),k1=length(p/(r*r)); return k0*(k0-1)/max(k1,0.001); }
+        float petal(float3 p) { float3 r=float3(0.54,1.04,0.14); return max(ellipsoid(p+float3(0.22,0,0),r),ellipsoid(p-float3(0.22,0,0),r)); }
+        float2 turn(float2 p,float a) { float c=cos(a),s=sin(a); return float2(c*p.x-s*p.y,s*p.x+c*p.y); }
+        float layer(float3 p,float count,float radius,float level,float tilt,float phase) {
+            float a=atan2(p.z,p.x)+phase,sector=6.283185/count;
+            a-=floor(a/sector+0.5)*sector;
+            float3 q=float3(cos(a)*length(p.xz)-radius,p.y-level,sin(a)*length(p.xz));
+            q.xy=turn(q.xy,tilt); q.x+=0.13*q.y*q.y; q.z+=0.06*q.y*q.y;
+            return petal(q)*0.58;
+        }
+        float hash(float2 p) { return frac(sin(dot(p,float2(127.1,311.7)))*43758.5453); }
+        float noise(float2 p) { float2 i=floor(p),f=frac(p); f=f*f*(3-2*f); return lerp(lerp(hash(i),hash(i+float2(1,0)),f.x),lerp(hash(i+float2(0,1)),hash(i+1),f.x),f.y); }
+        float3 space(float3 rd) {
+            float2 sky=float2(atan2(rd.x,rd.z),rd.y)*float2(1.1,1.8);
+            float dust=noise(sky*3.5)*0.65+noise(sky*8)*0.25+noise(sky*17)*0.1;
+            float cloud=exp(-24*pow(sky.y+0.16+0.13*sin(sky.x*3),2))*smoothstep(0.26,0.8,dust);
+            float2 cells=sky*float2(220,140),f=frac(cells)-0.5;
+            float stars=step(0.989,hash(floor(cells)))*exp(-dot(f,f)*220);
+            return float3(0.002,0.003,0.008)+cloud*float3(0.065,0.018,0.087)+stars*float3(0.62,0.66,0.83);
+        }
+        float asteroids(float3 p) {
+            float d=100;
+            [unroll] for(int i=0;i<4;i++) {
+                float x=frac(time*0.009+i*0.25)*32-16;
+                float3 q=p-float3(x,3.0+sin(i*2.3)*0.9,13.0+i*2.1);
+                q.xy=turn(q.xy,time*0.13+i); q.yz=turn(q.yz,time*0.09+i*0.8);
+                q*=float3(0.78,1.18,1.04); // elongated fragments, rather than round stones
+                float size=0.40+0.13*sin(i*1.7);
+                float facets=max(octa(q,size*1.45),dot(q,normalize(float3(1,-0.6,0.4)))-size*0.62);
+                float rock=max(length(q)-size,facets);
+                rock+=0.018*sin(q.x*16+i)*sin(q.y*13)*sin(q.z*17);
+                d=min(d,rock*0.7);
             }
             return d;
         }
-        float3 normal(float3 p) { float2 e = float2(0.001, 0); return normalize(float3(map(p + e.xyy) - map(p - e.xyy), map(p + e.yxy) - map(p - e.yxy), map(p + e.yyx) - map(p - e.yyx))); }
-        float4 PS(float4 pos : SV_Position) : SV_Target {
-            float2 uv = (pos.xy / float2(1920, 1080)) * 2 - 1; uv.y = -uv.y; uv.x *= 1.78;
-            float3 ro = float3(0, 0.5, -1), rd = normalize(float3(uv, 1.5)), col = float3(0.2, 0.12, 0.18);
-            float t = 0; float3 att = 1;
-            for (int b = 0; b < 3; b++) {
-                bool hit = false;
-                for (int s = 0; s < 96; s++) { float d = map(ro + rd * t); if (d < 0.001) { hit = true; break; } t += d; if (t > 40) break; }
-                if (!hit) { col += att * lerp(float3(0.2, 0.12, 0.18), float3(0.55, 0.4, 0.5), saturate(rd.y)); break; }
-                float3 p = ro + rd * t, n = normal(p), l = normalize(float3(-0.6, 1, -0.4));
-                col += att * float3(0.95, 0.5, 0.7) * (0.15 + 0.85 * saturate(dot(n, l)));
-                att *= 0.4; ro = p + n * 0.01; rd = reflect(rd, n); t = 0;
+        float sculpture(float3 p) {
+            p-=float3(0,0.22,5.2); p.xz=turn(p.xz,time*0.045);
+            float d=layer(p,9,0.88,-0.12,1.04,0);
+            d=min(d,layer(p,7,0.43,0.22,0.45,0.32));
+            d=min(d,layer(p*1.5,5,0.12,0.62,0.12,0.12)/1.5);
+            float3 base=p-float3(0,-1.2,0);
+            float ring=length(float2(length(base.xz)-1.86,base.y))-0.022;
+            return min(d,ring);
+        }
+        float floorDistance(float3 p) { return p.y+1.18+0.045*sin(p.x*1.4+time*0.1)*cos(p.z*1.1); }
+        float map(float3 p) { return min(asteroids(p),min(floorDistance(p)*0.9,sculpture(p))); }
+        float3 normal(float3 p) { float2 e=float2(0.001,0); return normalize(float3(map(p+e.xyy)-map(p-e.xyy),map(p+e.yxy)-map(p-e.yxy),map(p+e.yyx)-map(p-e.yyx))); }
+        float4 PS(float4 pos:SV_Position):SV_Target {
+            float2 uv=pos.xy/float2(1920,1080)*2-1; uv.y=-uv.y; uv.x*=1.77778;
+            float3 ro=float3(0,1.85,-2.6),rd=normalize(float3(uv.x,uv.y-0.43,2.25));
+            float3 sun=float3(0,0.55,5.2);
+            float3 nearest=ro+rd*max(0,dot(sun-ro,rd));
+            float radius=length(nearest-sun),halo=exp(-radius*radius*0.68);
+            float corona=exp(-abs(radius-1.35)*5)*(0.75+0.25*cos(atan2(nearest.y-sun.y,nearest.x)*18));
+            float3 col=float3(0.19,0.066,0.014)*halo+float3(0.09,0.025,0.008)*corona,att=1;
+            [loop] for(int b=0;b<3;b++) {
+                float t=0; bool hit=false;
+                [loop] for(int s=0;s<128;s++) { float d=map(ro+rd*t); if(d<0.0015){hit=true;break;} t+=max(d,0.0005); if(t>35)break; }
+                if(!hit) { col+=att*space(rd); break; }
+                float3 p=ro+rd*t,n=normal(p),l=normalize(float3(-0.5,0.9,-0.6));
+                bool floorHit=floorDistance(p)<0.006;
+                bool rockHit=asteroids(p)<0.008;
+                float3 metal=lerp(float3(0.18,0.047,0.083),float3(0.82,0.50,0.33),saturate(n.y*0.6+0.35));
+                if(!floorHit&&!rockHit)metal=lerp(metal,float3(1.0,0.62,0.22),0.32);
+                float vein=pow(saturate(1-abs(sin(p.x*13+p.y*9+noise(p.zy*4)*3))*7),3);
+                if(rockHit)metal=lerp(float3(0.055,0.045,0.09),float3(0.33,0.15,0.24),noise(p.xy*12));
+                if(floorHit)metal=float3(0.002,0.004,0.012);
+                float diffuse=0.14+0.68*saturate(dot(n,l));
+                float spec=pow(saturate(dot(reflect(-l,n),-rd)),48)+0.8*pow(saturate(dot(reflect(normalize(float3(-0.8,-0.3,-0.2)),n),-rd)),72);
+                float edge=pow(1-saturate(dot(-rd,n)),3);
+                float ringGlow=exp(-24*abs(length(p.xz-float2(0,5.2))-1.86));
+                col+=att*(metal*diffuse+float3(0.85,0.74,0.68)*spec*0.6+float3(0.28,0.045,0.10)*edge*0.3);
+                if(!floorHit&&!rockHit)col+=att*(float3(0.12,0.043,0.01)+float3(0.20,0.07,0.018)*edge);
+                if(rockHit)col+=att*(vein*float3(0.62,0.26,0.065)+edge*float3(0.13,0.06,0.20));
+                if(floorHit) {
+                    float2 grid=abs(frac(p.xz*0.55)-0.5);
+                    float wire=1-smoothstep(0.006,0.022,min(grid.x,grid.y));
+                    float fade=exp(-0.055*length(p.xz-float2(0,5.2)));
+                    col+=att*(float3(0.19,0.018,0.065)*ringGlow+float3(0.012,0.028,0.065)*wire*fade);
+                    col=lerp(col,col+att*space(reflect(rd,n))*0.36,0.6);
+                    if(b==0)col=lerp(col,space(rd),saturate((t-16)/16));
+                }
+                att*=floorHit?0.32:0.24; ro=p+n*0.008; rd=reflect(rd,n);
             }
-            return float4(col, 1);
+            col=col/(1+col); col=pow(max(col,0),0.4545);
+            col*=1-0.22*smoothstep(0.3,2.1,length(uv));
+            return float4(col,1);
         }
         """;
-
     public string? Adapter()
     {
         try { using var a = PickAdapter(); return a?.Description1.Description; } catch { return null; }
@@ -162,10 +186,10 @@ public sealed class D3D11GpuBenchmark : IGpuBenchmark
         if (adapter is null) return false;
         D3D11.D3D11CreateDevice(adapter, DriverType.Unknown, DeviceCreationFlags.BgraSupport, [FeatureLevel.Level_11_0], out ID3D11Device? device, out ID3D11DeviceContext? context).CheckError();
         using var dev = device!; using var ctx = context!;
-        using var vs = dev.CreateVertexShader(Compiler.Compile(Shader, "VS", "lotus-score.hlsl", "vs_5_0").Span);
-        using var ps = dev.CreatePixelShader(Compiler.Compile(Shader, "PS", "lotus-score.hlsl", "ps_5_0").Span);
+        using var vs = dev.CreateVertexShader(Compiler.Compile(TuningShader, "VS", "lotus-preview.hlsl", "vs_5_0").Span);
+        using var ps = dev.CreatePixelShader(Compiler.Compile(TuningShader, "PS", "lotus-preview.hlsl", "ps_5_0").Span);
         using var cb = dev.CreateBuffer(new BufferDescription(16, BindFlags.ConstantBuffer));
-        var hwnd = SceneWindow.Create("Lotus · prévia do overlay (feche para sair)", 1280, 720);
+        var hwnd = SceneWindow.Create("Lotus · prévia do overlay · F11 tela cheia · Esc voltar", 1280, 720);
         try
         {
             using var factory = adapter.GetParent<IDXGIFactory2>();
@@ -177,11 +201,11 @@ public sealed class D3D11GpuBenchmark : IGpuBenchmark
             using var rtv = dev.CreateRenderTargetView(back);
             ctx.IASetPrimitiveTopology(PrimitiveTopology.TriangleList);
             ctx.VSSetShader(vs); ctx.PSSetShader(ps); ctx.PSSetConstantBuffer(0, cb);
-            var frame = 0;
+            var animation = Stopwatch.StartNew();
             while (SceneWindow.Pump(hwnd))
             {
                 ctx.OMSetRenderTargets(rtv); ctx.RSSetViewport(0, 0, Width, Height); // flip model unbinds after Present
-                ctx.UpdateSubresource(new Vector4(frame++ * 0.016f, 0, 0, 0), cb);
+                ctx.UpdateSubresource(new Vector4((float)animation.Elapsed.TotalSeconds, 0, 0, 0), cb);
                 ctx.Draw(3, 0);
                 swap.Present(1, PresentFlags.None); // vsync: light on the GPU, like a game menu
             }
@@ -197,8 +221,9 @@ public sealed class D3D11GpuBenchmark : IGpuBenchmark
         if (adapter is null) return null;
         D3D11.D3D11CreateDevice(adapter, DriverType.Unknown, DeviceCreationFlags.BgraSupport, [FeatureLevel.Level_11_0], out ID3D11Device? device, out ID3D11DeviceContext? context).CheckError();
         using var dev = device!; using var ctx = context!;
-        using var vs = dev.CreateVertexShader(Compiler.Compile(Shader, "VS", "lotus-score.hlsl", "vs_5_0").Span);
-        using var ps = dev.CreatePixelShader(Compiler.Compile(Shader, "PS", "lotus-score.hlsl", "ps_5_0").Span);
+        var shader = TuningShader;
+        using var vs = dev.CreateVertexShader(Compiler.Compile(shader, "VS", "lotus-score.hlsl", "vs_5_0").Span);
+        using var ps = dev.CreatePixelShader(Compiler.Compile(shader, "PS", "lotus-score.hlsl", "ps_5_0").Span);
         using var cb = dev.CreateBuffer(new BufferDescription(16, BindFlags.ConstantBuffer));
         var hwnd = SceneWindow.Create("Lotus Score · GPU", 1280, 720);
         try
@@ -217,36 +242,36 @@ public sealed class D3D11GpuBenchmark : IGpuBenchmark
             ctx.IASetPrimitiveTopology(PrimitiveTopology.TriangleList);
             ctx.VSSetShader(vs); ctx.PSSetShader(ps); ctx.PSSetConstantBuffer(0, cb);
             using var fence = dev.CreateQuery(new QueryDescription(QueryType.Event));
-            // Windows syncs every windowed Present to the monitor, so frames are rendered in timed batches (>= 20 ms each)
-            // and only the last frame of each batch is shown. The count is GPU throughput, not the monitor's refresh rate.
-            var results = new List<double>(); var frames = 0; var batch = 4;
+            // Measure submitted work through completion BEFORE Present. A player's RTSS cap or compositor wait must
+            // not become the measured GPU speed. Display FPS in the overlay remains real presented FPS.
+            var results = new List<double>(); var batch = 1;
+            var animation = Stopwatch.StartNew();
             for (var pass = 0; pass <= passes; pass++)
             {
                 onPass(pass);
-                var counted = 0; var sw = Stopwatch.StartNew(); var title = TimeSpan.Zero;
+                var counted = 0; var sw = Stopwatch.StartNew(); var title = TimeSpan.Zero; var workSeconds = 0.0;
                 while (sw.Elapsed < each)
                 {
                     ct.ThrowIfCancellationRequested();
                     if (!SceneWindow.Pump(hwnd)) throw new OperationCanceledException("Scene window closed."); // the user closed it
                     var started = sw.Elapsed;
                     ctx.OMSetRenderTargets(rtv); ctx.RSSetViewport(0, 0, Width, Height);
-                    for (var i = 0; i < batch; i++, counted++)
-                    {
-                        ctx.UpdateSubresource(new Vector4(frames++ * 0.016f, 0, 0, 0), cb);
-                        ctx.Draw(3, 0);
-                    }
-                    swap.Present(0, PresentFlags.None);
+                    ctx.UpdateSubresource(new Vector4((float)animation.Elapsed.TotalSeconds, 0, 0, 0), cb);
+                    for (var i = 0; i < batch; i++, counted++) ctx.Draw(3, 0);
                     ctx.End(fence); ctx.Flush();
                     var spin = new SpinWait();
-                    while (!ctx.IsDataAvailable(fence)) spin.SpinOnce();
-                    if ((sw.Elapsed - started).TotalMilliseconds < 20 && batch < 4096) batch *= 2;
+                    while (!ctx.IsDataAvailable(fence)) { ct.ThrowIfCancellationRequested(); spin.SpinOnce(); }
+                    var completed=sw.Elapsed-started; workSeconds+=completed.TotalSeconds;
+                    swap.Present(0, PresentFlags.None);
+                    if (completed.TotalMilliseconds < 8 && batch < 4096) batch *= 2;
+                    else if (completed.TotalMilliseconds > 25 && batch > 1) batch=Math.Max(1,batch/2);
                     if (sw.Elapsed - title > TimeSpan.FromMilliseconds(500))
                     {
                         title = sw.Elapsed;
                         SceneWindow.SetTitle(hwnd, $"Lotus Score · GPU · {(pass == 0 ? "warm-up" : $"{pass}/{passes}")} · {counted / sw.Elapsed.TotalSeconds:0} FPS");
                     }
                 }
-                if (pass > 0) results.Add(counted / sw.Elapsed.TotalSeconds * 10);
+                if (pass > 0) results.Add(workSeconds>0?counted/workSeconds*10:0);
             }
             return results;
         }
@@ -270,7 +295,10 @@ internal static class SceneWindow
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
     private struct Rect { public int left, top, right, bottom; }
     private const string ClassName = "LotusScoreScene";
-    private const uint Style = 0x00CA0000 | 0x10000000; // caption + system menu + minimize, visible
+    private const uint Style = 0x00CF0000 | 0x10000000; // resizable, maximize, minimize and caption
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<IntPtr, Rect> Fullscreen = new();
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    private struct MonitorInfo { public int size; public Rect monitor, work; public uint flags; }
     private static readonly WndProc Proc = (h, m, w, l) => DefWindowProcW(h, m, w, l); // kept alive for the process lifetime
     private static bool registered;
     private static readonly object Gate = new();
@@ -286,6 +314,11 @@ internal static class SceneWindow
     [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)] private static extern bool SetWindowTextW(IntPtr h, string text);
     [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool AdjustWindowRect(ref Rect r, uint style, bool menu);
     [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern IntPtr LoadCursorW(IntPtr inst, IntPtr id);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool GetWindowRect(IntPtr hwnd, out Rect rect);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint flags);
+    [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)] private static extern bool GetMonitorInfoW(IntPtr monitor, ref MonitorInfo info);
+    [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint="SetWindowLongPtrW")] private static extern IntPtr SetWindowLongPtrW(IntPtr hwnd, int index, IntPtr value);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool SetWindowPos(IntPtr hwnd, IntPtr after, int x, int y, int width, int height, uint flags);
     [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)] private static extern IntPtr GetModuleHandleW(string? name);
 
     public static IntPtr Create(string title, int width, int height)
@@ -311,11 +344,36 @@ internal static class SceneWindow
     // false once the user closed the window.
     public static bool Pump(IntPtr hwnd)
     {
-        while (PeekMessageW(out var m, IntPtr.Zero, 0, 0, 1)) { TranslateMessage(ref m); DispatchMessageW(ref m); }
+        while (PeekMessageW(out var m, IntPtr.Zero, 0, 0, 1))
+        {
+            if (m.hwnd == hwnd && m.message == 0x100 && (m.lParam.ToInt64() & (1L << 30)) == 0)
+            {
+                if (m.wParam.ToInt64() == 0x7A) { ToggleFullscreen(hwnd); continue; }
+                if (m.wParam.ToInt64() == 0x1B && Fullscreen.ContainsKey(hwnd)) { ToggleFullscreen(hwnd); continue; }
+            }
+            TranslateMessage(ref m); DispatchMessageW(ref m);
+        }
         return IsWindow(hwnd);
     }
+    private static void ToggleFullscreen(IntPtr hwnd)
+    {
+        if (Fullscreen.TryRemove(hwnd,out var previous))
+        {
+            SetWindowLongPtrW(hwnd,-16,new IntPtr(Style));
+            SetWindowPos(hwnd,IntPtr.Zero,previous.left,previous.top,previous.right-previous.left,previous.bottom-previous.top,0x34);
+        }
+        else
+        {
+            var monitor=new MonitorInfo { size=System.Runtime.InteropServices.Marshal.SizeOf<MonitorInfo>() };
+            if (!GetWindowRect(hwnd,out var bounds) || !GetMonitorInfoW(MonitorFromWindow(hwnd,2),ref monitor)) return;
+            Fullscreen[hwnd]=bounds;
+            SetWindowLongPtrW(hwnd,-16,new IntPtr(unchecked((int)0x90000000)));
+            var r=monitor.monitor;
+            SetWindowPos(hwnd,IntPtr.Zero,r.left,r.top,r.right-r.left,r.bottom-r.top,0x34);
+        }
+    }
     public static void SetTitle(IntPtr hwnd, string text) => SetWindowTextW(hwnd, text);
-    public static void Destroy(IntPtr hwnd) { if (IsWindow(hwnd)) DestroyWindow(hwnd); Pump(hwnd); }
+    public static void Destroy(IntPtr hwnd) { Fullscreen.TryRemove(hwnd,out _); if (IsWindow(hwnd)) DestroyWindow(hwnd); Pump(hwnd); }
 }
 
 public sealed class JsonScoreHistory(string path) : IScoreHistory

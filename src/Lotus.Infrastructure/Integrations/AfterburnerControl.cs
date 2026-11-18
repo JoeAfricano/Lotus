@@ -6,7 +6,7 @@ using Lotus.Core.Telemetry;
 namespace Lotus.Infrastructure.Integrations;
 
 // Applies GPU settings through MSI Afterburner's documented control memory ("MACMSharedMemory", SDK\Include\
-// MACMSharedMemory.h, v2.3): core/memory clock offsets and the voltage/frequency curve. No administrator rights, no
+// MACMSharedMemory.h, v2.3): core/memory clock offsets and the voltage/frequency curve. No direct driver access, no
 // Afterburner files touched; Afterburner applies the values within its own limits and reads them back. The state found
 // before the first change is journaled to disk, so a crash or power cut is undone at the next start.
 [SupportedOSPlatform("windows")]
@@ -25,13 +25,20 @@ public sealed class AfterburnerControl(string? journalPath = null) : IGpuControl
 
     private static MemoryMappedFile? Open() { try { return MemoryMappedFile.OpenExisting(MapName, MemoryMappedFileRights.ReadWrite); } catch (Exception ex) when (ex is FileNotFoundException or UnauthorizedAccessException or IOException) { return null; } }
 
+    // Never assume that GPU 0 is the intended card on a multi-GPU system or write an unknown SDK layout.
+    private static bool Valid(MemoryMappedViewAccessor v) => v.Capacity >= EntryStart + 3760
+        && v.ReadUInt32(0) == Signature && v.ReadUInt32(4) == 0x00020003
+        && v.ReadUInt32(8) == EntryStart && v.ReadUInt32(12) == 1 && v.ReadUInt32(20) == 0
+        && v.ReadUInt32(16) >= 3760 && v.ReadUInt32(16) <= v.Capacity - EntryStart
+        && v.ReadInt32(EntryStart + Vf + 8) is > 0 and <= 256;
+
     public bool Available
     {
         get
         {
             using var map = Open(); if (map is null) return false;
             using var v = map.CreateViewAccessor();
-            return v.ReadUInt32(0) == Signature && v.ReadUInt32(12) >= 1 && v.ReadUInt32(4) >= 0x00020003;
+            return Valid(v);
         }
     }
 
@@ -41,6 +48,7 @@ public sealed class AfterburnerControl(string? journalPath = null) : IGpuControl
         {
             using var map = Open(); if (map is null) return (0, 0);
             using var v = map.CreateViewAccessor();
+            if (!Valid(v)) return (0, 0);
             return (v.ReadInt32(EntryStart + CoreBoostMax) / 1000, v.ReadInt32(EntryStart + MemBoostMax) / 1000);
         }
     }
@@ -49,7 +57,7 @@ public sealed class AfterburnerControl(string? journalPath = null) : IGpuControl
     {
         using var map = Open(); if (map is null) return null;
         using var v = map.CreateViewAccessor();
-        if (v.ReadUInt32(0) != Signature) return null;
+        if (!Valid(v)) return null;
         var e = EntryStart; var points = Math.Min(256, v.ReadInt32(e + Vf + 8));
         var offsets = new int[points];
         for (var i = 0; i < points; i++) offsets[i] = v.ReadInt32(e + Vf + 12 + i * 12 + 8);
@@ -86,7 +94,7 @@ public sealed class AfterburnerControl(string? journalPath = null) : IGpuControl
     {
         using var map = Open(); if (map is null) return false;
         using var v = map.CreateViewAccessor();
-        if (v.ReadUInt32(0) != Signature) return false;
+        if (!Valid(v)) return false;
         var e = EntryStart; var points = Math.Min(256, v.ReadInt32(e + Vf + 8));
         // dwFrequency is the factory frequency of each point (the offset is a separate field): the curve is computed from
         // it alone, so earlier offsets never add up, and it is checked before being sent.
@@ -94,24 +102,42 @@ public sealed class AfterburnerControl(string? journalPath = null) : IGpuControl
         for (var i = 0; i < points; i++) { var p = e + Vf + 12 + i * 12; uv[i] = v.ReadInt32(p); factory[i] = v.ReadInt32(p + 4); }
         if (GpuCurve.Offsets(uv, factory, setting) is not { } offsets || !GpuCurve.Safe(factory, offsets, setting, MaxOffsetMhz)) return false;
         var coreBoost = setting.FlatMv is null ? setting.CoreOffsetMhz * 1000 : 0;
-        return Write(new(v.ReadInt32(e + PowerCur + 12), coreBoost, setting.MemOffsetMhz * 1000, offsets, 0)); // power limit: card default
+        return Write(new(v.ReadInt32(e + PowerCur + 12), coreBoost, setting.MemOffsetMhz * 1000, offsets, 0), setting.FlatMv is not null); // power limit: card default
     }
 
-    private bool Write(State s)
+    private bool Write(State s, bool curveControlsCore = false)
     {
         using var map = Open(); if (map is null) return false;
         using var v = map.CreateViewAccessor();
-        if (v.ReadUInt32(0) != Signature) return false;
-        var e = EntryStart; var points = Math.Min(Math.Min(256, v.ReadInt32(e + Vf + 8)), s.Offsets.Length);
-        int Clamp(int value, int curOffset) => Math.Clamp(value, v.ReadInt32(e + curOffset + 4), v.ReadInt32(e + curOffset + 8));
-        v.Write(e + PowerCur, Clamp(s.PowerLimit, PowerCur));
-        v.Write(e + CoreBoostCur, Clamp(s.CoreBoostKHz, CoreBoostCur));
-        v.Write(e + MemBoostCur, Clamp(s.MemBoostKHz, MemBoostCur));
-        for (var i = 0; i < points; i++) v.Write(e + Vf + 12 + i * 12 + 8, Math.Clamp(s.Offsets[i], v.ReadInt32(e + CoreBoostCur + 4), v.ReadInt32(e + CoreBoostCur + 8)));
-        v.Write(e + Vf + 12 + 256 * 12, s.LockIndex);
-        v.Write(CmdOffset, CommandFlush);
+        if (!Valid(v) || s.Offsets.Length != v.ReadInt32(EntryStart + Vf + 8)) return false;
+        using var mutex = new Mutex(false, @"Global\Access_MACMSharedMemory");
+        bool held;
+        try { held = mutex.WaitOne(TimeSpan.FromSeconds(2)); } catch (AbandonedMutexException) { held = true; }
+        if (!held) return false;
+        try
+        {
+            if (v.ReadUInt32(CmdOffset) != 0) return false;
+            var e = EntryStart; var points = Math.Min(Math.Min(256, v.ReadInt32(e + Vf + 8)), s.Offsets.Length);
+            int Clamp(int value, int curOffset) => Math.Clamp(value, v.ReadInt32(e + curOffset + 4), v.ReadInt32(e + curOffset + 8));
+            v.Write(e + PowerCur, Clamp(s.PowerLimit, PowerCur));
+            v.Write(e + CoreBoostCur, Clamp(s.CoreBoostKHz, CoreBoostCur));
+            v.Write(e + MemBoostCur, Clamp(s.MemBoostKHz, MemBoostCur));
+            for (var i = 0; i < points; i++) v.Write(e + Vf + 12 + i * 12 + 8, Math.Clamp(s.Offsets[i], v.ReadInt32(e + CoreBoostCur + 4), v.ReadInt32(e + CoreBoostCur + 8)));
+            v.Write(e + Vf + 12 + 256 * 12, s.LockIndex);
+            v.Write(CmdOffset, CommandFlush);
+        }
+        finally { mutex.ReleaseMutex(); }
         // Afterburner clears the command after applying on its next polling pass.
-        for (var i = 0; i < 40; i++) { Thread.Sleep(100); if (v.ReadUInt32(CmdOffset) == 0) return true; }
+        for (var i = 0; i < 50; i++)
+        {
+            Thread.Sleep(100);
+            if (v.ReadUInt32(CmdOffset) == 0)
+                return Read() is { } live && live.LockIndex == s.LockIndex
+                    && AfterburnerProfileFile.Matches(new AfterburnerProfileFile.Values(live.PowerLimit, live.CoreBoostKHz, live.MemBoostKHz, live.Offsets),
+                        // Afterburner may derive its single core-offset slider from a custom curve. The curve points,
+                        // not that derived slider, are authoritative for a flat-voltage candidate.
+                        new AfterburnerProfileFile.Values(s.PowerLimit, curveControlsCore ? live.CoreBoostKHz : s.CoreBoostKHz, s.MemBoostKHz, s.Offsets));
+        }
         return false;
     }
 }

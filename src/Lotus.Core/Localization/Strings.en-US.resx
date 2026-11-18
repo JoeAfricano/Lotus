@@ -854,10 +854,10 @@ Current conditions: {1}</value></data>
   <data name="ScoreNoGpu" xml:space="preserve"><value>No Direct3D 11 GPU found; the score uses the CPU only.</value></data>
   <data name="ScoreCancelled" xml:space="preserve"><value>Test cancelled.</value></data>
   <data name="ScoreFailed" xml:space="preserve"><value>The test could not finish. Details were written to the log.</value></data>
-  <data name="ScoreReliable" xml:space="preserve"><value>Reliable result: passes varied {0:0.0}%.</value></data>
-  <data name="ScoreUnstable" xml:space="preserve"><value>Passes varied {0:0.0}% (above 3%). Something interfered: background apps, temperature or power limit. Close other apps and repeat before comparing.</value></data>
-  <data name="ScoreVerdictLow" xml:space="preserve"><value>Your PC scored below the entry tier. Check Optimize for what may be holding it back.</value></data>
-  <data name="ScoreVerdict" xml:space="preserve"><value>Your PC is in the {0} tier: it beats {1} of {2} references.</value></data>
+  <data name="ScoreReliable" xml:space="preserve"><value>Good repeatability: {0:0.0}% pass range (maximum − minimum / median). This does not certify scale accuracy or predict actual game FPS.</value></data>
+  <data name="ScoreUnstable" xml:space="preserve"><value>Low repeatability: {0:0.0}% pass range (3% or more). Temperature, power or other apps may affect the result. Repeat in similar conditions before comparing.</value></data>
+  <data name="ScoreVerdictLow" xml:space="preserve"><value>In this test, your PC scored below the estimated entry reference. This does not identify a cause or prove a problem.</value></data>
+  <data name="ScoreVerdict" xml:space="preserve"><value>Estimated tier in this test: {0}. Above {1} of {2} theoretical references; these machines were not measured in Lotus.</value></data>
   <data name="ScoreYou" xml:space="preserve"><value>Your PC</value></data>
   <data name="ScoreHistoryLine" xml:space="preserve"><value>{0} points · CPU {1} / {2} · GPU {3}</value></data>
   <data name="ScoreHistoryPartial" xml:space="preserve"><value>Partial test</value></data>
@@ -871,8 +871,8 @@ Current conditions: {1}</value></data>
   <data name="ScoreCpu1Label" xml:space="preserve"><value>CPU · 1 core</value></data>
   <data name="ScoreCpuAllLabel" xml:space="preserve"><value>CPU · all cores</value></data>
   <data name="ScoreGpuLabel" xml:space="preserve"><value>GPU · 3D</value></data>
-  <data name="ScoreCompareTitle" xml:space="preserve"><value>Offline comparison</value></data>
-  <data name="ScoreEstimateNote" xml:space="preserve"><value>References are estimated from public relative-performance data and calibrated on one real PC (Ryzen 5 5500 + RTX 5060). Use them as guidance, not as exact measurements.</value></data>
+  <data name="ScoreCompareTitle" xml:space="preserve"><value>Estimated references · indicative comparison</value></data>
+  <data name="ScoreEstimateNote" xml:space="preserve"><value>Other machines are **estimated** references, not Lotus measurements of those machines. This proprietary scale is normalized on a Ryzen 5 5500 + RTX 5060 measured in Release. Compare the same revision only; it is not equivalent to Cinebench, 3DMark or guaranteed game performance.</value></data>
   <data name="ScoreOnlineTitle" xml:space="preserve"><value>Online comparison</value></data>
   <data name="ScoreOnlineNote" xml:space="preserve"><value>Opens public sites in your browser with your PC's parts. Lotus sends none of your data.</value></data>
   <data name="ScoreHistoryTitle" xml:space="preserve"><value>Your previous tests</value></data>
@@ -1802,17 +1802,17 @@ Could not measure right now. Try again in a few seconds.</value></data>
   <data name="ScoreDetailsHint" xml:space="preserve"><value>Separate graphics and CPU scores, rank in the parts database, stability between passes and sensors during the test.</value></data>
   <data name="ScoreGraphics" xml:space="preserve"><value>Graphics score</value></data>
   <data name="ScoreCpuScore" xml:space="preserve"><value>CPU score</value></data>
-  <data name="ScoreBeatsGpus" xml:space="preserve"><value>Beats {0}% of the graphics cards in the database</value></data>
-  <data name="ScoreBeatsCpus" xml:space="preserve"><value>Beats {0}% of the processors in the database</value></data>
+  <data name="ScoreBeatsGpus" xml:space="preserve"><value>Above {0}% of estimated GPU references in the database</value></data>
+  <data name="ScoreBeatsCpus" xml:space="preserve"><value>Above {0}% of estimated CPU references in the database</value></data>
   <data name="ScoreNoReading" xml:space="preserve"><value>— not read in this test</value></data>
-  <data name="ScoreStability" xml:space="preserve"><value>Stability</value></data>
-  <data name="ScoreStablePass" xml:space="preserve"><value>Passed: the passes were consistent (97% minimum).</value></data>
-  <data name="ScoreStableFail" xml:space="preserve"><value>Below 97%: something interfered (an open app, heat or power). Run again with the PC idle.</value></data>
+  <data name="ScoreStability" xml:space="preserve"><value>Repeatability index</value></data>
+  <data name="ScoreStablePass" xml:space="preserve"><value>Similar passes. Lotus index = 100 − relative range; not a confidence level or prolonged stability test.</value></data>
+  <data name="ScoreStableFail" xml:space="preserve"><value>Passes differed. Repeat under similar conditions; this index alone does not identify a cause.</value></data>
   <data name="ScoreSensors" xml:space="preserve"><value>During the test</value></data>
   <data name="ScoreSensorsLine" xml:space="preserve"><value>GPU up to {0} · {1} · CPU average {2}</value></data>
   <data name="ScoreFpsTitle" xml:space="preserve"><value>Estimated FPS in games</value></data>
-  <data name="ScoreFpsHint" xml:space="preserve"><value>Calculated from your result, like FPS calculators do. Your games come first.</value></data>
-  <data name="ScoreFpsNote" xml:space="preserve"><value>Estimate with a ±20% margin. High preset, no ray tracing or frame generation. Real FPS depends on the game, driver and scene.</value></data>
+  <data name="ScoreFpsHint" xml:space="preserve"><value>Model estimate, not measured game FPS. Scene, driver, resolution and settings can change actual performance.</value></data>
+  <data name="ScoreFpsNote" xml:space="preserve"><value>Indicative estimate, without a validated error margin. No ray tracing or frame generation. Capture the game itself to measure actual FPS.</value></data>
   <data name="ScoreFpsGame" xml:space="preserve"><value>Game</value></data>
   <data name="ScoreFpsRes" xml:space="preserve"><value>Resolution</value></data>
   <data name="ScorePresetLow" xml:space="preserve"><value>Low</value></data>
@@ -3307,7 +3307,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GtUndervolt" xml:space="preserve"><value>Cooler and steadier</value></data>
   <data name="GtUndervoltHint" xml:space="preserve"><value>Undervolt: same speed with less voltage. Less heat and noise, a flatter frametime.</value></data>
   <data name="GtOverclock" xml:space="preserve"><value>More FPS</value></data>
-  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: about 5 to 10% more FPS, with more heat and power. Start with Afterburner's OC Scanner.</value></data>
+  <data name="GtOverclockHint" xml:space="preserve"><value>Overclock: tests higher frequencies and compares performance. Gains vary by card and game; heat and power use may increase.</value></data>
   <data name="GtStock" xml:space="preserve"><value>Stock</value></data>
   <data name="GtStockHint" xml:space="preserve"><value>The card as it came from the factory. No tuning.</value></data>
   <data name="GtRecommended" xml:space="preserve"><value>Recommended</value></data>
@@ -3323,7 +3323,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GtReadyAuto" xml:space="preserve"><value>Tune turns on by itself in games</value></data>
   <data name="GtFixAuto" xml:space="preserve"><value>Keep a result of the automatic tune (Keep this) and leave Lotus&apos;s option under Save, below, turned on.</value></data>
   <data name="GtOpenAfterburner" xml:space="preserve"><value>Open Afterburner</value></data>
-  <data name="GtValuesTitle" xml:space="preserve"><value>Values to set in Afterburner</value></data>
+  <data name="GtValuesTitle" xml:space="preserve"><value>Settings found by the test</value></data>
   <data name="GtValuesUndervolt" xml:space="preserve"><value>Flat curve from {0} mV at {1} MHz</value></data>
   <data name="GtValuesOverclock" xml:space="preserve"><value>Core +{0} MHz · Memory +{1} MHz · Power limit at maximum</value></data>
   <data name="GtValuesStock" xml:space="preserve"><value>Everything at stock (Afterburner&apos;s Reset button)</value></data>
@@ -3342,13 +3342,13 @@ Your games and Windows are not changed.</value></data>
   <data name="GtTooHot" xml:space="preserve"><value>It got too hot ({0} °C) and the test stopped. The values above are lighter; apply and test again.</value></data>
   <data name="GtThrottled" xml:space="preserve"><value>The clock swung {0} MHz: the card hit its power or heat limit. The values above are lighter.</value></data>
   <data name="GtNoData" xml:space="preserve"><value>No sensor readings during the test. Check that the card is NVIDIA and try again.</value></data>
-  <data name="GtSaveTitle" xml:space="preserve"><value>The tune in games</value></data>
+  <data name="GtSaveTitle" xml:space="preserve"><value>Use the result in games</value></data>
   <data name="GtRisksTitle" xml:space="preserve"><value>Risks, in short</value></data>
   <data name="GtRiskCrash" xml:space="preserve"><value>A freeze or flicker? Go back one step. Within factory limits the card is not damaged.</value></data>
   <data name="GtRiskHeat" xml:space="preserve"><value>Above 80 °C? Lower the tune or improve airflow.</value></data>
   <data name="GtRiskStartup" xml:space="preserve"><value>Nothing is applied when Windows starts: only while a game is open.</value></data>
   <data name="GtRiskStock" xml:space="preserve"><value>Back to stock: Profile 1 or Afterburner&apos;s Reset button.</value></data>
-  <data name="GtCardIntro" xml:space="preserve"><value>Lotus guides a tune for your {0}; MSI Afterburner applies the values, within factory limits. Lotus never changes clocks or voltage by itself.</value></data>
+  <data name="GtCardIntro" xml:space="preserve"><value>Automatically tune {0} with MSI Afterburner. Lotus tests candidates, compares results and keeps only your choice.</value></data>
   <data name="PfPlanGameTitle" xml:space="preserve"><value>What happens when you play</value></data>
   <data name="PfPlanGameSubtitle" xml:space="preserve"><value>The Game profile acts only while a game from your library is open.</value></data>
   <data name="PfPlanDailyTitle" xml:space="preserve"><value>Normal use</value></data>
@@ -3386,7 +3386,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GtUvPurpose" xml:space="preserve"><value>Undervolt: make the card deliver the same performance using less power.</value></data>
   <data name="GtUvChanges" xml:space="preserve"><value>Voltage goes down, temperature and noise go down, and the clock stays steadier (less up and down), which flattens the frametime. FPS stays the same or a little higher.</value></data>
   <data name="GtUvSuits" xml:space="preserve"><value>You play with an FPS cap (like RivaTuner&apos;s 74.97), want a cool and quiet card or feel stutters from heat.</value></data>
-  <data name="GtUvCost" xml:space="preserve"><value>Go too low and the game closes or the screen flickers. Going back 25 mV fixes it. It does not damage the card.</value></data>
+  <data name="GtUvCost" xml:space="preserve"><value>An unstable value may close the game or reset the driver. Return to the last stable tune and verify restoration before continuing.</value></data>
   <data name="GtOcPurpose" xml:space="preserve"><value>Overclock: make the card run faster than it ships.</value></data>
   <data name="GtOcChanges" xml:space="preserve"><value>Core and memory clocks go up. A real gain of about 5 to 10% FPS when the card is the limit; more power and more heat.</value></data>
   <data name="GtOcSuits" xml:space="preserve"><value>You play without an FPS cap, the card sits at 95-100% usage and every extra frame matters.</value></data>
@@ -3397,11 +3397,11 @@ Your games and Windows are not changed.</value></data>
   <data name="GtStCost" xml:space="preserve"><value>None. You just do not get the cooler card of an undervolt or the FPS of an overclock.</value></data>
   <data name="GtWhichOne" xml:space="preserve"><value>If unsure: with an FPS cap, undervolt; no cap and the card maxed out, overclock. You can combine them: after finding the top clock, keep it at the lowest voltage possible.</value></data>
   <data name="GtAutoTitle" xml:space="preserve"><value>Tune automatically</value></data>
-  <data name="GtAutoHint" xml:space="preserve"><value>Lotus applies each step through MSI Afterburner (within its limits), tests the card for 3 minutes per step and measures performance: baseline, undervolt, overclock (memory and core) and overclock with undervolt. At the end the card goes back exactly as it was and you choose what to keep. Takes about 1 hour.</value></data>
+  <data name="GtAutoHint" xml:space="preserve"><value>Choose a goal. Each candidate is applied through MSI Afterburner and tested for 3 minutes. Lotus then attempts to restore the previous state. You may apply a passed result and enable it for games. Duration depends on the number of candidates.</value></data>
   <data name="GtAutoRun" xml:space="preserve"><value>Tune automatically</value></data>
   <data name="GtAutoNeeds" xml:space="preserve"><value>For the automatic mode, keep MSI Afterburner open (NVIDIA card).</value></data>
   <data name="GtAutoConfirmTitle" xml:space="preserve"><value>Tune the card automatically?</value></data>
-  <data name="GtAutoConfirmBody" xml:space="preserve"><value>About 1 hour with the card at full load: close games and heavy apps. The screen may flicker if a step is not stable; Windows recovers by itself and Lotus steps back. If something hangs, the original state is saved and comes back the next time Lotus opens. At the end, the card goes back as it was.</value></data>
+  <data name="GtAutoConfirmBody" xml:space="preserve"><value>Lotus will temporarily apply candidates through MSI Afterburner using the selected duration. Heat, power and noise may increase. It attempts to restore the previous state on completion or cancellation. Short tests are screening and require longer validation in games. Continue?</value></data>
   <data name="GtAutoStatusbaseline" xml:space="preserve"><value>Measuring the baseline (card as it is)…</value></data>
   <data name="GtAutoStatusundervolt" xml:space="preserve"><value>Testing undervolt…</value></data>
   <data name="GtAutoStatusoverclock" xml:space="preserve"><value>Testing overclock (memory, then core)…</value></data>
@@ -3410,7 +3410,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GtAutoStoppedunavailable" xml:space="preserve"><value>Afterburner is not open or does not accept control.</value></data>
   <data name="GtAutoStoppedjournal" xml:space="preserve"><value>Could not save the current state; nothing was changed.</value></data>
   <data name="GtAutoStoppedbaseline" xml:space="preserve"><value>The card was not stable even at stock; nothing else was tested.</value></data>
-  <data name="GtAutoStoppedfailed" xml:space="preserve"><value>Tuning stopped on an error; the card is back as it was.</value></data>
+  <data name="GtAutoStoppedfailed" xml:space="preserve"><value>The test encountered an error. Restoration may be pending: check MSI Afterburner before continuing. The recovery journal is retained when restoration fails.</value></data>
   <data name="GtAutoModebaseline" xml:space="preserve"><value>Baseline</value></data>
   <data name="GtAutoModeundervolt" xml:space="preserve"><value>Undervolt</value></data>
   <data name="GtAutoModememory" xml:space="preserve"><value>Memory</value></data>
@@ -3421,13 +3421,13 @@ Your games and Windows are not changed.</value></data>
   <data name="GtAutoResults" xml:space="preserve"><value>Results</value></data>
   <data name="GtAutoNone" xml:space="preserve"><value>no stable step</value></data>
   <data name="GtAutoSummary" xml:space="preserve"><value>{0}% performance · {1} °C · {2} W</value></data>
-  <data name="GtAutoKeep" xml:space="preserve"><value>Keep this</value></data>
+  <data name="GtAutoKeep" xml:space="preserve"><value>Apply this result</value></data>
   <data name="GtAutoKeepTitle" xml:space="preserve"><value>Keep this tune?</value></data>
   <data name="GtAutoStatuscurrent" xml:space="preserve"><value>Measuring the card as you left it…</value></data>
   <data name="GtAutoModecurrent" xml:space="preserve"><value>Your current tune</value></data>
   <data name="GtAutoAsIs" xml:space="preserve"><value>as it was</value></data>
-  <data name="GtSaveBodyAuto" xml:space="preserve"><value>Lotus writes the tune the card is using now into Afterburner&apos;s Profile 2 and keeps Profile 1 at factory defaults. Windows asks for permission once (UAC); first Lotus keeps a copy of the profiles and checks that Afterburner loaded them right. If not, everything goes back as it was. For the tune to turn on by itself in games, keep the option below on.</value></data>
-  <data name="GtSaveRun" xml:space="preserve"><value>Save for all games</value></data>
+  <data name="GtSaveBodyAuto" xml:space="preserve"><value>The option below applies the remembered result while a library game is open, with Lotus and MSI Afterburner running. It attempts to restore the previous state when the game closes. Optionally export to Afterburner Profile 2; this needs Windows permission and does not configure automatic profile switching in Afterburner.</value></data>
+  <data name="GtSaveRun" xml:space="preserve"><value>Export to Afterburner Profile 2</value></data>
   <data name="GtSaveConfirmTitle" xml:space="preserve"><value>Save the tune in Afterburner&apos;s profiles?</value></data>
   <data name="GtSaveConfirmBody" xml:space="preserve"><value>Afterburner closes and opens again for a few seconds. Profile 2 = the current tune, Profile 1 = factory defaults. Your current profiles are kept so you can go back any time.</value></data>
   <data name="GtSaveOk" xml:space="preserve"><value>Done: the tune is stored in Afterburner&apos;s Profile 2 and Profile 1 is at defaults.</value></data>
@@ -3437,17 +3437,338 @@ Your games and Windows are not changed.</value></data>
   <data name="GtSaveRestore" xml:space="preserve"><value>Go back to the previous profiles</value></data>
   <data name="GtSaveRestored" xml:space="preserve"><value>Your Afterburner profiles are back as they were before Lotus.</value></data>
   <data name="GtSaveSaving" xml:space="preserve"><value>Saving and checking in Afterburner…</value></data>
-  <data name="GtSaveLotus" xml:space="preserve"><value>Lotus applies the kept tune when a game opens and goes back to defaults when it closes (no administrator, with Lotus open or in the tray)</value></data>
+  <data name="GtSaveLotus" xml:space="preserve"><value>Apply the result in library games (Lotus and MSI Afterburner running)</value></data>
   <data name="GtSaveLotusNone" xml:space="preserve"><value>Keep a result of the automatic tune first (Keep this button).</value></data>
-  <data name="GtAutoKeepBodyAuto" xml:space="preserve"><value>Lotus applies it now through Afterburner: {0}. After that it applies it again whenever a game opens and goes back to defaults when it closes (option under Save, below). Afterburner&apos;s Reset button goes back to defaults.</value></data>
+  <data name="GtAutoKeepBodyAuto" xml:space="preserve"><value>Apply and verify in MSI Afterburner: {0}. Lotus will remember this result. Enable the option below to use it automatically in games. Afterburner profiles are written only if you choose to export.</value></data>
   <data name="OsPulse" xml:space="preserve"><value>Pulse</value></data>
   <data name="OsPulseShort" xml:space="preserve"><value>Big FPS, graph with reference lines, in your theme&apos;s colors.</value></data>
   <data name="OsPulseWhat" xml:space="preserve"><value>Lotus&apos;s new style, generated in the colors of the theme you use: big FPS with 1% and 0.1% low highlighted, frametime graph with reference lines and your FPS limit (a flat line right on it is ideal), GPU and CPU with bars, VRAM, RAM and the average. If you change the theme or the limit, Pulse updates when RivaTuner opens again (or when you pick the style again).</value></data>
-  <data name="PmDirect" xml:space="preserve"><value>Direct presentation ✓ ({0}): the game went straight to the screen, no extra Windows frame.</value></data>
-  <data name="PmComposed" xml:space="preserve"><value>Composed by Windows ({0}): Windows merged the game into the desktop, about +1 frame of delay. Fullscreen, or borderless with nothing on top, usually fixes it.</value></data>
+  <data name="PmDirect" xml:space="preserve"><value>Direct presentation ({0}). This path avoids normal desktop composition; this reading does not measure total latency.</value></data>
+  <data name="PmComposed" xml:space="preserve"><value>Composed by Windows ({0}). This does not prove blt or an extra frame of delay. Compare frametimes and presentation modes with and without overlays.</value></data>
   <data name="PmUnknown" xml:space="preserve"><value>Presentation mode: {0}.</value></data>
   <data name="MpoSupported" xml:space="preserve"><value>This display has an extra video plane (MPO): a window on top of the game need not delay the picture.</value></data>
-  <data name="MpoNoOverlayPlane" xml:space="preserve"><value>This display has no extra video plane (MPO): any window on top of the game makes Windows compose the picture (+1 frame). RivaTuner overlays don&apos;t have this problem.</value></data>
-  <data name="MpoSwitchedOff" xml:space="preserve"><value>The extra video plane (MPO) is turned off in Windows: windows on top of the game make Windows compose the picture (+1 frame).</value></data>
+  <data name="MpoNoOverlayPlane" xml:space="preserve"><value>This display did not report an extra overlay plane (MPO). A window over the game may change presentation behavior; that does not prove an extra frame of delay. Compare with and without the overlay.</value></data>
+  <data name="MpoSwitchedOff" xml:space="preserve"><value>MPO is disabled in Windows. This may affect window presentation but does not determine latency by itself.</value></data>
   <data name="MpoUnknown" xml:space="preserve"><value>Extra video plane (MPO): not verified.</value></data>
+  <data name="OsWindow" xml:space="preserve"><value>Lotus window</value></data>
+  <data name="OsWindowShort" xml:space="preserve"><value>Drawn by Lotus above the game: real fonts and rounded corners.</value></data>
+  <data name="OsWindowWhat" xml:space="preserve"><value>Experimental. Lotus draws the overlay in a window of its own above the game, without entering the game: real fonts, accents, rounded corners and your theme colors, with FPS, 1% and 0.1% low, frametime graph with your limit line, GPU, CPU, VRAM and RAM. RivaTuner keeps handling the FPS limit and the numbers but draws nothing. It shows only with the game in borderless window mode (hidden in exclusive fullscreen) and needs Lotus open. On displays without an extra video plane (see Desempenho) it may add 1 frame of delay; then prefer Pulse.</value></data>
+  <data name="OsExperimental" xml:space="preserve"><value>Experimental</value></data>
+  <data name="OwAverage" xml:space="preserve"><value>Avg {0}</value></data>
+  <data name="OsWindowPreferPulse" xml:space="preserve"><value>On this PC, prefer Pulse.</value></data>
+  <data name="OwProfiles" xml:space="preserve"><value>Profiles</value></data>
+  <data name="OwProfile1" xml:space="preserve"><value>Complete</value></data>
+  <data name="OwProfile2" xml:space="preserve"><value>Compact</value></data>
+  <data name="OwProfile3" xml:space="preserve"><value>Minimal</value></data>
+  <data name="OwPosition" xml:space="preserve"><value>Screen corner</value></data>
+  <data name="OwPostopleft" xml:space="preserve"><value>Top left</value></data>
+  <data name="OwPostopright" xml:space="preserve"><value>Top right</value></data>
+  <data name="OwPosbottomright" xml:space="preserve"><value>Bottom right</value></data>
+  <data name="OwPosbottomleft" xml:space="preserve"><value>Bottom left</value></data>
+  <data name="OwOpacity" xml:space="preserve"><value>Background opacity (%)</value></data>
+  <data name="OwSize" xml:space="preserve"><value>Size (%)</value></data>
+  <data name="OwItems" xml:space="preserve"><value>What to show (and in what order)</value></data>
+  <data name="OwItemfps" xml:space="preserve"><value>FPS</value></data>
+  <data name="OwItemlows" xml:space="preserve"><value>1% and 0.1% low</value></data>
+  <data name="OwItemframetime" xml:space="preserve"><value>Frametime (ms)</value></data>
+  <data name="OwItemgraph" xml:space="preserve"><value>Frametime graph</value></data>
+  <data name="OwItemgpu" xml:space="preserve"><value>Graphics card (use and temperature)</value></data>
+  <data name="OwItemcpu" xml:space="preserve"><value>Processor (use)</value></data>
+  <data name="OwItemmemory" xml:space="preserve"><value>VRAM and RAM</value></data>
+  <data name="OwItemaverage" xml:space="preserve"><value>Average FPS</value></data>
+  <data name="OwMoveUp" xml:space="preserve"><value>Move {0} up</value></data>
+  <data name="OwMoveDown" xml:space="preserve"><value>Move {0} down</value></data>
+  <data name="OwHotkey" xml:space="preserve"><value>Ctrl+Alt+O changes the corner. The shortcut above shows or hides the window. Choose another key if an application uses the same combination.</value></data>
+  <data name="OsPremiumNeon" xml:space="preserve"><value>Lotus Neon</value></data>
+  <data name="OsPremiumNeonShort" xml:space="preserve"><value>Right-side card, large FPS and graph at the bottom.</value></data>
+  <data name="OsPremiumNeonWhat" xml:space="preserve"><value>Compact card with white numbers, GPU and CPU rows, memory and FRAMEPACER at the bottom. Uses RivaTuner sensors only. Position designed for 1920 × 1080; unsupported readings may be unavailable.</value></data>
+  <data name="OsPremiumPulse" xml:space="preserve"><value>Lotus Pulse Premium</value></data>
+  <data name="OsPremiumPulseShort" xml:space="preserve"><value>Left column with a central graph.</value></data>
+  <data name="OsPremiumPulseWhat" xml:space="preserve"><value>Narrow column with large FPS, averages, central FRAMEPACER and compact sensors. Runs in RivaTuner without CapFrameX. Sensors depend on hardware; previews contain illustrative data.</value></data>
+  <data name="OsPremiumTop" xml:space="preserve"><value>Lotus Bar</value></data>
+  <data name="OsPremiumTopShort" xml:space="preserve"><value>Top-center panel with a pink framepacer.</value></data>
+  <data name="OsPremiumTopWhat" xml:space="preserve"><value>Horizontal bar with FPS, average, 1% and 0.1% lows, sensors and pink FRAMEPACER. Uses RivaTuner OverlayEditor only, without CapFrameX or a Lotus helper. Position designed for 1920 × 1080; sensor support depends on the hardware.</value></data>
+  <data name="OsPreparedRtssClosed" xml:space="preserve"><value>The layout is prepared, but RivaTuner did not start. Open RivaTuner and try again.</value></data>
+<data name="OsPreviewDetail" xml:space="preserve"><value>Overlay details</value></data>
+<data name="OsPreviewScreen" xml:space="preserve"><value>On screen · 1920 × 1080 proportions</value></data>
+<data name="OsRestoreCloseGame" xml:space="preserve"><value>Close the game before restoring the previous overlay.</value></data>
+  <data name="GtManualTitle" xml:space="preserve"><value>Manual tuning and advanced details</value></data>
+  <data name="GtApplying" xml:space="preserve"><value>Applying and verifying in MSI Afterburner…</value></data>
+  <data name="GtApplied" xml:space="preserve"><value>Settings verified in MSI Afterburner. You can enable automatic in-game use below.</value></data>
+  <data name="GtConnected" xml:space="preserve"><value>MSI Afterburner connected</value></data>
+  <data name="GtDisconnected" xml:space="preserve"><value>Open MSI Afterburner and verify the connection before testing.</value></data>
+  <data name="GtConnect" xml:space="preserve"><value>Open / check MSI Afterburner</value></data>
+  <data name="GtFlow" xml:space="preserve"><value>1. Test the GPU → 2. Compare profiles → 3. Apply your choice → 4. Play</value></data>
+  <data name="GtAutoChoose" xml:space="preserve"><value>What would you like to improve?</value></data>
+  <data name="GtModeUndervolt" xml:space="preserve"><value>Less heat · Undervolt</value></data>
+  <data name="GtModeOverclock" xml:space="preserve"><value>More performance · Overclock</value></data>
+  <data name="GtModeAll" xml:space="preserve"><value>Compare all options</value></data>
+  <data name="GtAutoCancelled" xml:space="preserve"><value>Test cancelled. Review completed results before applying a tune.</value></data>
+<data name="GtAutoStoppedhot" xml:space="preserve"><value>Test stopped because of high temperature. The previous state was restored.</value></data><data name="GtAutoStoppedsensors" xml:space="preserve"><value>Test stopped: valid readings or a score were missing. The previous state was restored.</value></data>
+<data name="GtAutoStoppedgame" xml:space="preserve"><value>Close the running game before starting automatic tuning.</value></data>
+<data name="GtTestHistory" xml:space="preserve"><value>View test steps and measurements</value></data>
+<data name="GtCheckTesting" xml:space="preserve"><value>Test in progress. Wait for the result or cancel before changing the goal.</value></data>
+<data name="GtCheckApplying" xml:space="preserve"><value>Applying through MSI Afterburner. Wait for confirmation.</value></data>
+<data name="GtCheckStock" xml:space="preserve"><value>Default selected. Selecting this card does not change the GPU or restore factory settings.</value></data>
+<data name="GtCheckConnectHint" xml:space="preserve"><value>Open MSI Afterburner and wait for a connection. Being installed does not mean it is ready to receive a tune.</value></data>
+<data name="GtCheckReadyUv" xml:space="preserve"><value>Ready to test a lower-power tune. Values are only approved after testing.</value></data>
+<data name="GtCheckReadyOc" xml:space="preserve"><value>Ready to test higher clocks. The test compares performance before recommending values.</value></data>
+<data name="GtCheckCurve" xml:space="preserve"><value>Undervolt: curve verification</value></data>
+<data name="GtCheckCurveHint" xml:space="preserve"><value>The test checks whether MSI Afterburner accepts and confirms the curve. Unlocking voltage alone does not guarantee support.</value></data>
+<data name="GtCheckOverlay" xml:space="preserve"><value>In-game overlay · optional</value></data>
+<data name="GtCheckOverlayReady" xml:space="preserve"><value>RivaTuner installed. You can view metrics in game; this does not confirm tune stability.</value></data>
+<data name="GtCheckOverlayOptional" xml:space="preserve"><value>RivaTuner not detected. It displays the overlay; its absence does not prevent this automatic test.</value></data>
+<data name="GtCheckGames" xml:space="preserve"><value>Automatic use in games · after testing</value></data>
+<data name="GtCheckGamesConfigured" xml:space="preserve"><value>In-game use configured. This does not indicate that a tune is currently applied.</value></data>
+<data name="GtCheckGamesLater" xml:space="preserve"><value>First test and apply a result. Then choose whether to use it automatically in games.</value></data>
+<data name="GtCheckRefresh" xml:space="preserve"><value>Check again</value></data>
+<data name="GtStageTest" xml:space="preserve"><value>1. Find settings for your GPU</value></data>
+<data name="GtCompareHint" xml:space="preserve"><value>Choose a duration. Lotus measures defaults and tests undervolt and overclock through MSI Afterburner, then attempts to restore the previous state. Compare and choose what to apply. Estimates vary by GPU.</value></data>
+<data name="GtCompareRun" xml:space="preserve"><value>Test and discover profiles</value></data>
+<data name="GtCompareAgain" xml:space="preserve"><value>Retest profiles</value></data>
+<data name="GtStageChoose" xml:space="preserve"><value>2. Compare and choose a profile</value></data>
+<data name="GtStageApply" xml:space="preserve"><value>3. Apply your choice</value></data>
+<data name="GtCardsBefore" xml:space="preserve"><value>Run the test first. Cards will become available with settings measured on this GPU.</value></data>
+<data name="GtCardsAfter" xml:space="preserve"><value>Choosing a card only selects its result. Review its settings and use the button below to change the GPU.</value></data>
+<data name="GtNeedsMeasurement" xml:space="preserve"><value>Waiting for automatic testing. No values recommended yet.</value></data>
+<data name="GtNoApprovedResult" xml:space="preserve"><value>No approved result from this test. Retest to unlock this option.</value></data>
+<data name="GtMeasuredStock" xml:space="preserve"><value>Default curve, offsets and power limit</value></data>
+<data name="GtMeasuredLimited" xml:space="preserve"><value>Clock limiting occurred under load. Review the test details.</value></data>
+<data name="GtLastApplied" xml:space="preserve"><value>Last result applied in this session</value></data>
+<data name="GtChangeProfile" xml:space="preserve"><value>Change profile in MSI Afterburner</value></data>
+<data name="GtReturnDefault" xml:space="preserve"><value>Return to default</value></data>
+<data name="GtResetConfirm" xml:space="preserve"><value>MSI Afterburner will receive the GPU default curve, offsets and power limit. Automatic tune use through Lotus will be switched off. Saved profiles and fan settings will not be deleted.</value></data>
+<data name="GtResetDone" xml:space="preserve"><value>Default settings confirmed by MSI Afterburner. Automatic tune use in Lotus switched off.</value></data>
+<data name="GtApplyChoiceHint" xml:space="preserve"><value>Apply the selected profile directly through MSI Afterburner. Lotus only confirms success after checking the applied values. Selecting another card does not change the GPU.</value></data>
+<data name="GtObservedMetrics" xml:space="preserve"><value>Measured in this test: up to {0} °C · average clock {1} MHz · average power {2} W</value></data>
+<data name="GtMeasuredScope" xml:space="preserve"><value>These are the selected profile settings and measurements. A short test does not guarantee stability in every game.</value></data>
+<data name="GtExportTitle" xml:space="preserve"><value>Afterburner profile files · advanced</value></data>
+<data name="GtExportHint" xml:space="preserve"><value>Optional: exports the applied tune to Profile 2 and creates a backup. Afterwards Afterburner loads default Profile 1; this differs from the main apply button. Afterburner automatic 2D/3D switching is not configured.</value></data>
+<data name="GtInspectProfile" xml:space="preserve"><value>View profile details</value></data>
+<data name="GtStageGames" xml:space="preserve"><value>4. Use in games</value></data>
+<data name="GtGamesHint" xml:space="preserve"><value>Optional. With Lotus and MSI Afterburner running, the saved result is applied when a library game opens. When the game closes, Lotus attempts to restore the state from before it.</value></data>
+<data name="GtHeroTitle" xml:space="preserve"><value>Performance under your control</value></data>
+<data name="GtFlowTest" xml:space="preserve"><value>Test the GPU</value></data>
+<data name="GtFlowCompare" xml:space="preserve"><value>Compare profiles</value></data>
+<data name="GtFlowApply" xml:space="preserve"><value>Apply your choice</value></data>
+<data name="GtFlowPlay" xml:space="preserve"><value>Use in games</value></data>
+<data name="GtFlowCurrent" xml:space="preserve"><value>CURRENT STEP</value></data>
+<data name="GtDepthTitle" xml:space="preserve"><value>Test duration</value></data>
+<data name="GtDepthQuick" xml:space="preserve"><value>Quick · about 6–8 minutes</value></data>
+<data name="GtDepthBalanced" xml:space="preserve"><value>Balanced · about 15–20 minutes</value></data>
+<data name="GtDepthComplete" xml:space="preserve"><value>Complete · about 45–60 minutes or more</value></data>
+<data name="GtDepthHintQuick" xml:space="preserve"><value>Initial screening: 45 seconds per candidate with a smaller search. Validate the profile longer in games before daily use.</value></data>
+<data name="GtDepthHintBalanced" xml:space="preserve"><value>75 seconds per candidate with more voltage and frequency choices. A balance between time and coverage.</value></data>
+<data name="GtDepthHintComplete" xml:space="preserve"><value>3 minutes per candidate and the full search available for your GPU. Duration depends on limits and failures. No test guarantees stability in every game.</value></data>
+<data name="GtMeasuredDepth" xml:space="preserve"><value>Result measured using: {0}.</value></data>
+<data name="GtSavedMeasurement" xml:space="preserve"><value>Saved test from {0}. Compare and apply results or repeat the test.</value></data>
+<data name="GtMeasurementSaveFailed" xml:space="preserve"><value>Test finished, but its report could not be saved. Check space and permissions before closing Lotus.</value></data>
+<data name="OwHide" xml:space="preserve"><value>Hide window</value></data>
+<data name="OwShow" xml:space="preserve"><value>Show window</value></data>
+<data name="OwToggleShortcut" xml:space="preserve"><value>Show or hide shortcut</value></data>
+<data name="OwNoShortcut" xml:space="preserve"><value>No shortcut</value></data>
+<data name="OsRtssAdvanced" xml:space="preserve"><value>RivaTuner · advanced tools and options</value></data>
+<data name="ScoreLegacyScene" xml:space="preserve"><value>Previous scene — historical result</value></data>
+  <data name="ScoreInvalidCalibration" xml:space="preserve"><value>Incorrect 1.7.1 calibration — rerun the test; score excluded from comparisons</value></data>
+  <data name="ScoreRequiresRelease" xml:space="preserve"><value>Use a Release build of Lotus for comparable scores. Debug builds are for diagnostics only.</value></data>
+  <data name="GpTitle" xml:space="preserve"><value>Per-game smoothness · optional</value></data>
+  <data name="GpIntro" xml:space="preserve"><value>Adjust Hz and RivaTuner for this game while preserving resolution.</value></data>
+  <data name="GpBeforeLaunch" xml:space="preserve"><value>Save before launching. Hz changes while the game is in the foreground and restores on Alt+Tab or exit. Keep Lotus running.</value></data>
+  <data name="GpEnable" xml:space="preserve"><value>Use custom Hz and RivaTuner settings for this game</value></data>
+  <data name="GpMonitor" xml:space="preserve"><value>Game monitor · resolution preserved</value></data>
+  <data name="GpHz" xml:space="preserve"><value>Refresh rate while playing</value></data>
+  <data name="GpHzAuto" xml:space="preserve"><value>Automatic · highest Hz available at this resolution</value></data>
+  <data name="GpResolution" xml:space="preserve"><value>The current monitor resolution is preserved. If Windows or the game changes resolution, Lotus skips the switch. Exclusive fullscreen games may control their own refresh rate.</value></data>
+  <data name="GpLimiter" xml:space="preserve"><value>Limiter mode · you can override the recommendation</value></data>
+  <data name="GpMode_auto" xml:space="preserve"><value>Automatic · pacing and response</value></data>
+  <data name="GpMode_fluid" xml:space="preserve"><value>Front Edge Sync · presentation pacing</value></data>
+  <data name="GpMode_back" xml:space="preserve"><value>Back Edge Sync · next frame start</value></data>
+  <data name="GpMode_async" xml:space="preserve"><value>Async · no catch-up after a delay</value></data>
+  <data name="GpMode_responsive" xml:space="preserve"><value>NVIDIA Reflex · RivaTuner limiter</value></data>
+  <data name="GpWhy_auto" xml:space="preserve"><value>Prioritizes regular pacing without ignoring responsiveness. Front Edge is the baseline; NVIDIA frame generation prefers Reflex.</value></data>
+  <data name="GpWhy_fluid" xml:space="preserve"><value>Prioritizes regular intervals between Present calls. This is not V-Sync and does not guarantee minimum latency.</value></data>
+  <data name="GpWhy_back" xml:space="preserve"><value>Synchronizes the end of Present and the next frame start. Compare pacing and responsiveness.</value></data>
+  <data name="GpWhy_async" xml:space="preserve"><value>Enforces a minimum frame interval without catching up after delays. May favor responsiveness.</value></data>
+  <data name="GpWhy_responsive" xml:space="preserve"><value>NVIDIA limiter for Direct3D 11/12. Does not replace native game Reflex; unsupported APIs may fall back to Async.</value></data>
+  <data name="GpNvidia" xml:space="preserve"><value>NVIDIA GPU detected. Reflex availability depends on the API; the other modes are also available.</value></data>
+  <data name="GpOtherGpu" xml:space="preserve"><value>On AMD and other GPUs use Front Edge, Back Edge or Async. The NVIDIA Reflex limiter is unavailable.</value></data>
+  <data name="GpApiUnknown" xml:space="preserve"><value>RivaTuner has not confirmed the API. Reflex requires NVIDIA and Direct3D 11/12; compatibility can only be confirmed when the game is detected.</value></data>
+  <data name="GpCapVrr" xml:space="preserve"><value>With FreeSync/G-Sync reported as enabled, the automatic cap is 3 FPS below the selected refresh rate. There is no universal ideal margin.</value></data>
+  <data name="GpCapFixed" xml:space="preserve"><value>Without VRR the automatic cap is slightly below the actual refresh rate. If the PC cannot sustain it, 60 Hz and a cap near 60 FPS may improve cadence. This does not increase performance.</value></data>
+  <data name="GpCapCustom" xml:space="preserve"><value>Custom FPS cap · 0 = automatic</value></data>
+  <data name="GpAdvanced" xml:space="preserve"><value>Details, V-Sync and FPS cap</value></data>
+  <data name="GpSave" xml:space="preserve"><value>Save smoothness for this game</value></data>
+  <data name="GpPrepared" xml:space="preserve"><value>Prepared: RivaTuner at {0} FPS; monitor at {1} Hz while the game is in the foreground. Saved does not mean active.</value></data>
+  <data name="GpSaved" xml:space="preserve"><value>Saved and RivaTuner profile verified. Launch the game to activate the temporary Hz switch. Desktop settings remain unchanged.</value></data>
+  <data name="GpDisabled" xml:space="preserve"><value>Temporary switching disabled. The previous RivaTuner profile was restored when Lotus had a saved adjustment.</value></data>
+  <data name="GpCloseFirst" xml:space="preserve"><value>Close this game before saving smoothness settings.</value></data>
+  <data name="GpSaveFailed" xml:space="preserve"><value>Could not save everything. Check RivaTuner and try again before playing.</value></data>
+  <data name="GpUnavailable" xml:space="preserve"><value>Monitor, game executable or RivaTuner unavailable. No Hz switch was prepared.</value></data>
+  <data name="GpUnsupported" xml:space="preserve"><value>This refresh rate, resolution or cap is unavailable. Update the monitor selection before saving.</value></data>
+  <data name="GpReflexUnavailable" xml:space="preserve"><value>NVIDIA Reflex requires an NVIDIA GPU and a compatible API. Choose Front Edge, Back Edge or Async.</value></data>
+  <data name="GpFrameGenConflict" xml:space="preserve"><value>With NVIDIA frame generation selected, use Automatic or NVIDIA Reflex. If you do not use frame generation, clear that option.</value></data>
+  <data name="GpRtssFailed" xml:space="preserve"><value>Could not confirm the RivaTuner profile. Hz switching will not activate. Check whether Windows permission was accepted.</value></data>
+  <data name="GpNoModes" xml:space="preserve"><value>Could not list refresh rates at the current resolution.</value></data>
+  <data name="GpActive" xml:space="preserve"><value>Active: monitor refresh rate and RivaTuner profile verified for this session.</value></data>
+  <data name="GpExisting" xml:space="preserve"><value>Existing RivaTuner profile · previous options</value></data>
+  <data name="GpSession_failed" xml:space="preserve"><value>Could not apply temporary Hz switching. Check the monitor and game smoothness settings.</value></data>
+  <data name="GpSession_restore-pending" xml:space="preserve"><value>Lotus has not confirmed monitor refresh restoration. Reconnect the monitor if necessary and open Lotus to complete restoration.</value></data>
+  <data name="GpSession_rtss-changed" xml:space="preserve"><value>RivaTuner is closed or its profile changed. Hz switching was skipped. Check and save smoothness again before playing.</value></data>
+  <data name="GpSession_api-unsupported" xml:space="preserve"><value>The detected API does not support the NVIDIA Reflex limiter. Choose a different mode before playing.</value></data>
+  <data name="GpSession_prepare-again" xml:space="preserve"><value>Monitor timings changed or the actual rate differs from the prepared rate. Save smoothness again before playing.</value></data>
+<data name="GpSyncHint" xml:space="preserve"><value>For tear-free output use V-Sync appropriate for your display. With VRR keep the cap below its upper boundary. This option does not enable driver or game V-Sync. Avoid another limiter below the chosen cap.</value></data>
+<data name="GpSession_api-unconfirmed" xml:space="preserve"><value>RivaTuner has not confirmed the game API for Reflex. Hz switching waits for confirmation.</value></data>
+<data name="TuneApplySettings" xml:space="preserve"><value>Apply graphics settings</value></data>
+<data name="TuneLaunch" xml:space="preserve"><value>Launch game</value></data>
+<data name="TunePrepareShaders" xml:space="preserve"><value>Prepare shaders</value></data>
+<data name="TunePrepareShadersHint" xml:space="preserve"><value>Prepares the cache through SCSKiller. Use before playing; you do not need to repeat it on every launch.</value></data>
+<data name="GpGraphNote" xml:space="preserve"><value>The graph follows the time point appropriate for the selected mode. Real hitches remain visible; a flat line alone does not measure latency.</value></data>
+<data name="GpUnsaved" xml:space="preserve"><value>Options changed. Save before launching the game.</value></data>
+<data name="McTitle" xml:space="preserve"><value>Monitor visual studio</value></data>
+<data name="McIntro" xml:space="preserve"><value>Choose natural colors or a more vivid look. Preview before keeping.</value></data>
+<data name="McMonitor" xml:space="preserve"><value>Monitor</value></data>
+<data name="McNatural" xml:space="preserve"><value>Natural</value></data>
+<data name="McVivid" xml:space="preserve"><value>Vivid · gaming</value></data>
+<data name="McNaturalHint" xml:space="preserve"><value>Uses the neutral intensity reported by NVIDIA. This is not a measured calibration.</value></data>
+<data name="McVividHint" xml:space="preserve"><value>A moderate increase in intensity. A visual preference for games.</value></data>
+<data name="McScope" xml:space="preserve"><value>Changes color intensity across the entire monitor, including games. Preserves brightness, contrast, gamma, resolution, Hz and ICC profiles.</value></data>
+<data name="McTest" xml:space="preserve"><value>Preview for 15 seconds</value></data>
+<data name="McKeep" xml:space="preserve"><value>Keep colors</value></data>
+<data name="McUndo" xml:space="preserve"><value>Undo preview</value></data>
+<data name="McRestore" xml:space="preserve"><value>Restore previous colors</value></data>
+<data name="McRestoreConfirm" xml:space="preserve"><value>Restore the color intensity this monitor used before Lotus adjustments?</value></data>
+<data name="McCancel" xml:space="preserve"><value>Cancel</value></data>
+<data name="McRefresh" xml:space="preserve"><value>Refresh monitors</value></data>
+<data name="McLimitsTitle" xml:space="preserve"><value>Accuracy and compatibility</value></data>
+<data name="McLimits" xml:space="preserve"><value>More intensity does not mean higher accuracy. Color accuracy depends on measurement and a profile suitable for the monitor. This feature controls NVIDIA Digital Vibrance through an undocumented API: some drivers, laptops and connections are unsupported. HDR, advanced color management or an unknown state blocks adjustments. It does not change the physical monitor menu or reapply colors in the background. If Lotus crashes during a preview, it will attempt recovery on the next launch.</value></data>
+<data name="McNoDisplay" xml:space="preserve"><value>Could not identify an active monitor. Check the connection and try again.</value></data>
+<data name="McAdvancedColor" xml:space="preserve"><value>HDR or advanced color management is active, or its state is unknown. Current colors will be preserved.</value></data>
+<data name="McCurrent" xml:space="preserve"><value>NVIDIA · current intensity: {0}% · neutral: {1}%</value></data>
+<data name="McUnsupported" xml:space="preserve"><value>NVIDIA color control is unavailable on this connection. Current colors will be preserved.</value></data>
+<data name="McCountdown" xml:space="preserve"><value>Like it? Confirm within {0} s. Otherwise, the preview is undone.</value></data>
+<data name="McConfirm" xml:space="preserve"><value>NVIDIA intensity will change from {0}% to {1}% on this monitor. Colors will revert after 15 seconds unless you choose Keep colors. Preview now?</value></data>
+<data name="McResultPreview" xml:space="preserve"><value>Preview applied and verified in the driver. Choose Keep colors or wait for restoration.</value></data>
+<data name="McResultKept" xml:space="preserve"><value>Colors kept. You can restore the previous values at any time.</value></data>
+<data name="McResultRestored" xml:space="preserve"><value>Previous intensity restored and verified.</value></data>
+<data name="McResultNoChange" xml:space="preserve"><value>The monitor already uses this intensity. No change needed.</value></data>
+<data name="McResultUnsupported" xml:space="preserve"><value>This monitor does not support the required control. Nothing was applied.</value></data>
+<data name="McResultAdvancedColor" xml:space="preserve"><value>Adjustment blocked by HDR, advanced color management or an unknown state. For pending recovery, turn that mode off and retry.</value></data>
+<data name="McResultConflict" xml:space="preserve"><value>Colors were changed outside Lotus. That change will not be overwritten. Check NVIDIA settings; the backup was preserved.</value></data>
+<data name="McResultStorageError" xml:space="preserve"><value>Could not save or read the color backup. Adjustment stopped; if a preview is pending, check colors and retry undo.</value></data>
+<data name="McResultDriverError" xml:space="preserve"><value>The driver did not confirm the change. Check colors; retry undo if restoration is pending.</value></data>
+<data name="McResultPending" xml:space="preserve"><value>Monitor disconnected or unidentified. Reconnect it and retry restoration; the backup was preserved.</value></data>
+<data name="McResultInvalid" xml:space="preserve"><value>Keep or undo the current preview before starting another adjustment.</value></data>
+<data name="McBonusGroup" xml:space="preserve"><value>Experimental bonuses</value></data>
+<data name="McBonusBadge" xml:space="preserve"><value>EXPERIMENTAL BONUS · NVIDIA</value></data>
+<data name="McTileHint" xml:space="preserve"><value>Experimental bonus · 4 stages with medieval scenes and full picture adjustments.</value></data>
+<data name="McCustom" xml:space="preserve"><value>Customize to my taste</value></data>
+<data name="McCustomHint" xml:space="preserve"><value>Adjust intensity and preview your choice. Moving this control does not change the monitor yet.</value></data>
+<data name="McCustomValue" xml:space="preserve"><value>Selected intensity: {0}%</value></data>
+<data name="McCustomTest" xml:space="preserve"><value>Preview my choice</value></data>
+<data name="McPatterns" xml:space="preserve"><value>Test patterns · colors and details</value></data>
+<data name="McPatternsHint" xml:space="preserve"><value>Look at illustrative skin tones, colors, gradients and shadow/highlight details. Choose the look you prefer without excessive intensity. Move Lotus to the selected monitor. These patterns help you compare; they do not measure color accuracy.</value></data>
+<data name="VsBadge" xml:space="preserve"><value>EXPERIMENTAL BONUS · YOUR IMAGE, YOUR STYLE</value></data>
+<data name="VsTitle" xml:space="preserve"><value>Lotus visual studio</value></data>
+<data name="VsIntro" xml:space="preserve"><value>Choose a suggestion, compare inside the image, then test on the whole monitor.</value></data>
+<data name="VsStep0" xml:space="preserve"><value>Shadows</value></data>
+<data name="VsStep1" xml:space="preserve"><value>Highlights</value></data>
+<data name="VsStep2" xml:space="preserve"><value>Colors</value></data>
+<data name="VsStep3" xml:space="preserve"><value>Compare</value></data>
+<data name="VsMission0" xml:space="preserve"><value>Reveal hidden detail</value></data>
+<data name="VsMission1" xml:space="preserve"><value>Keep light and texture</value></data>
+<data name="VsMission2" xml:space="preserve"><value>Balance white and color intensity</value></data>
+<data name="VsMission3" xml:space="preserve"><value>Choose your final image</value></data>
+<data name="VsHint0" xml:space="preserve"><value>Look at dark cloth and stone. Look for faint symbols without turning black gray.</value></data>
+<data name="VsHint1" xml:space="preserve"><value>Snow should retain texture. Compare light symbols and avoid losing delicate detail.</value></data>
+<data name="VsHint2" xml:space="preserve"><value>Look at linen, ceramics and skin. Avoid an overly blue, yellow or green cast.</value></data>
+<data name="VsHint3" xml:space="preserve"><value>Compare before and after in the scene. Your taste decides; these steps are not an accuracy measurement.</value></data>
+<data name="VsArtNote" xml:space="preserve"><value>AI-generated medieval scene for visual comparison. Test symbols are generated by code.</value></data>
+<data name="VsReview" xml:space="preserve"><value>Drag the divider to compare. When ready, choose Test on the entire monitor, then Save this look. Return to the steps above to refine.</value></data>
+<data name="VsStart" xml:space="preserve"><value>Open suggestion preview</value></data>
+<data name="VsKeep" xml:space="preserve"><value>Save this look</value></data>
+<data name="VsUndo" xml:space="preserve"><value>Undo and return to choices</value></data>
+<data name="VsCompare" xml:space="preserve"><value>Show before · whole-monitor comparison</value></data>
+<data name="VsRestore" xml:space="preserve"><value>Restore everything before Lotus</value></data>
+<data name="VsLegacyRestore" xml:space="preserve"><value>Restore intensity from the old test</value></data>
+<data name="VsLimits" xml:space="preserve"><value>Brightness and contrast use DDC/CI when supported. Gamma and white balance use the Windows SDR curve, preserving the previous curve as their base. This does not move NVIDIA Control Panel sliders. HDR and advanced color block previews. Windows, games or another calibrator can replace the curve, especially on refresh-rate or resolution changes. No ICC profile or accuracy measurement is created. Images are illustrative. Unconfirmed previews are undone; after a crash, recovery is attempted on the next launch.</value></data>
+<data name="VsCheck0" xml:space="preserve"><value>I checked shadows to my taste</value></data>
+<data name="VsCheck1" xml:space="preserve"><value>I checked highlight detail</value></data>
+<data name="VsCheck2" xml:space="preserve"><value>I checked whites and skin</value></data>
+<data name="VsCheck3" xml:space="preserve"><value>I compared the final result</value></data>
+<data name="VsPrevious" xml:space="preserve"><value>Back</value></data>
+<data name="VsNext" xml:space="preserve"><value>Complete step</value></data>
+<data name="VsBrightness" xml:space="preserve"><value>Monitor brightness (%)</value></data>
+<data name="VsDigitalBrightness" xml:space="preserve"><value>Digital brightness · correction</value></data>
+<data name="VsGamma" xml:space="preserve"><value>Gamma · midtone correction</value></data>
+<data name="VsContrast" xml:space="preserve"><value>Monitor contrast (%)</value></data>
+<data name="VsDigitalContrast" xml:space="preserve"><value>Digital contrast (%)</value></data>
+<data name="VsWarmth" xml:space="preserve"><value>Temperature · cool ↔ warm</value></data>
+<data name="VsTint" xml:space="preserve"><value>Tint · magenta ↔ green</value></data>
+<data name="VsUnavailable" xml:space="preserve"><value>Control unavailable on this connection. Its current value will be preserved.</value></data>
+<data name="VsCountdown" xml:space="preserve"><value>Preview active, even minimized · reverts in {0} s without changes. Save to keep it. Total limit: 10 min.</value></data>
+<data name="VsInactive" xml:space="preserve"><value>Open the preview to compare before applying to the monitor.</value></data>
+<data name="VsCapabilities" xml:space="preserve"><value>Physical brightness: {0}% · physical contrast: {1}% · {2}</value></data>
+<data name="VsGammaReady" xml:space="preserve"><value>SDR curve available</value></data>
+<data name="VsGammaUnavailable" xml:space="preserve"><value>SDR curve unavailable</value></data>
+<data name="VsUnsupported" xml:space="preserve"><value>No controls could be confirmed on this connection. Nothing will change.</value></data>
+<data name="VsContinue" xml:space="preserve"><value>Enable preview</value></data>
+<data name="VsConfirm" xml:space="preserve"><value>The draft will now be applied to the whole monitor, including color intensity where supported. Controls are locked during the physical test. Confirm to save or undo to return to the preview. Without confirmation it reverts after 2 minutes without changes (10-minute total limit). Test now?</value></data>
+<data name="VsRestoreConfirm" xml:space="preserve"><value>Restore brightness, contrast and the color curve saved before the first studio adjustment? Current external settings will be replaced after a fresh verification.</value></data>
+<data name="VsResultPreview" xml:space="preserve"><value>Live preview. Changes sent and verified; keep adjusting or confirm.</value></data>
+<data name="VsResultKept" xml:space="preserve"><value>Settings confirmed. The previous backup remains available for restoration.</value></data>
+<data name="VsResultRestored" xml:space="preserve"><value>Preview undone and previous values verified.</value></data>
+<data name="VsResultNoChange" xml:space="preserve"><value>No pending changes.</value></data>
+<data name="VsResultUnsupported" xml:space="preserve"><value>This adjustment is incompatible with the monitor controls that were confirmed.</value></data>
+<data name="VsResultAdvancedColor" xml:space="preserve"><value>Preview blocked by HDR or advanced color. Pending recovery data is preserved.</value></data>
+<data name="VsResultConflict" xml:space="preserve"><value>Settings changed outside Lotus. They were not overwritten; check and use Restore if desired.</value></data>
+<data name="VsResultStorageError" xml:space="preserve"><value>Backup failed. Adjustment stopped; check the monitor and retry undo.</value></data>
+<data name="VsResultDriverError" xml:space="preserve"><value>Monitor or driver did not confirm the result. Check the image; try Undo or Restore.</value></data>
+<data name="VsResultPending" xml:space="preserve"><value>Monitor not identified. Reconnect to retry restoration; backup preserved.</value></data>
+<data name="VsResultInvalid" xml:space="preserve"><value>Finish the current preview or check the selected values.</value></data>
+<data name="ToolsAll" xml:space="preserve"><value>All tools</value></data>
+<data name="VsSuggestTitle" xml:space="preserve"><value>Lotus prepares a starting point</value></data>
+<data name="VsSuggestIntro" xml:space="preserve"><value>1. Choose use and lighting → 2. Compare and fine-tune the image → 3. Test on monitor and confirm.</value></data>
+<data name="VsPurpose" xml:space="preserve"><value>What do you use the monitor for?</value></data>
+<data name="VsAmbient" xml:space="preserve"><value>Room lighting · choose manually</value></data>
+<data name="VsUseEveryday" xml:space="preserve"><value>Everyday · preserve colors</value></data>
+<data name="VsUseGaming" xml:space="preserve"><value>Gaming · lift shadow detail</value></data>
+<data name="VsUseEditing" xml:space="preserve"><value>Editing · preserve original calibration</value></data>
+<data name="VsUseMovies" xml:space="preserve"><value>Movies · natural image</value></data>
+<data name="VsAmbientNormal" xml:space="preserve"><value>Normal lighting</value></data>
+<data name="VsAmbientDim" xml:space="preserve"><value>Dim room</value></data>
+<data name="VsAmbientBright" xml:space="preserve"><value>Bright room</value></data>
+<data name="VsSuggestEditing" xml:space="preserve"><value>For editing, preserve the original curve and physical controls and use neutral driver intensity. Accuracy needs a monitor-specific ICC and color-managed app; Lotus cannot certify it without measurement.</value></data>
+<data name="VsSuggestPreference" xml:space="preserve"><value>Based on monitor readback. Contrast and white balance are preserved; brightness follows your room-lighting choice. Gaming offers a mild midtone and color boost. These are preferences, not measured targets.</value></data>
+<data name="VsSuggestValues" xml:space="preserve"><value>Brightness {0}% · Contrast {1}% · Relative gamma {2}× · Intensity {3}%</value></data>
+<data name="VsApplying" xml:space="preserve"><value>Applying to the monitor… You can keep adjusting; Lotus coalesces changes.</value></data>
+<data name="VsCardEveryday" xml:space="preserve"><value>Everyday</value></data>
+<data name="VsCardGaming" xml:space="preserve"><value>Gaming</value></data>
+<data name="VsCardEditing" xml:space="preserve"><value>Editing</value></data>
+<data name="VsCardMovies" xml:space="preserve"><value>Movies</value></data>
+<data name="VsRefineTitle" xml:space="preserve"><value>Build your look in the preview</value></data>
+<data name="VsRefineHint" xml:space="preserve"><value>Explore the scenes, move controls and drag the divider. Nothing is applied to the monitor until you test.</value></data>
+<data name="VsBeforeButton" xml:space="preserve"><value>Show original</value></data>
+<data name="VsAdjustedButton" xml:space="preserve"><value>Show adjusted</value></data>
+<data name="VsApplyingOriginal" xml:space="preserve"><value>Restoring the original image… Wait for confirmation below.</value></data>
+<data name="VsShowingOriginal" xml:space="preserve"><value>SHOWING ORIGINAL · Previous values verified. Choose Show adjusted to compare.</value></data>
+<data name="VsShowingAdjusted" xml:space="preserve"><value>SHOWING ADJUSTED · Values verified with the monitor/driver. Fine-tune or save this look.</value></data>
+<data name="VsShowingUnchanged" xml:space="preserve"><value>Your suggestion preserves the original values. You can fine-tune it using the scenes below.</value></data>
+<data name="VsSplitBefore" xml:space="preserve"><value>Before</value></data>
+<data name="VsSplitAfter" xml:space="preserve"><value>After · preview</value></data>
+<data name="VsSplitHelp" xml:space="preserve"><value>Drag the divider to compare before and after</value></data>
+<data name="VsLocalOnly" xml:space="preserve"><value>LOCAL PREVIEW · Only the image changes. Monitor settings stay as they are until you choose Test on monitor.</value></data>
+<data name="VsLocalLimits" xml:space="preserve"><value>Drag the divider to compare. Illustrative SDR preview: physical brightness and Digital Vibrance may differ on the real monitor. These scenes are not measured references.</value></data>
+<data name="VsTestMonitor" xml:space="preserve"><value>Test on the whole monitor</value></data>
+<data name="VsReturnDraft" xml:space="preserve"><value>Undo monitor test and return to preview</value></data>
+<data name="VsSaturation" xml:space="preserve"><value>Color intensity · Digital Vibrance</value></data>
+<data name="VsBrightnessHelp" xml:space="preserve"><value>Changes the light emitted by the screen. Higher values brighten the whole image; the preview only approximates this effect.</value></data>
+<data name="VsDigitalBrightnessHelp" xml:space="preserve"><value>Lightens or darkens pixels without controlling the physical backlight.</value></data>
+<data name="VsContrastHelp" xml:space="preserve"><value>Adjusts separation between light and dark tones. Excessive values can clip highlight detail.</value></data>
+<data name="VsDigitalContrastHelp" xml:space="preserve"><value>Expands or compresses tones around mid-gray. Too much can hide shadow and highlight detail.</value></data>
+<data name="VsGammaHelp" xml:space="preserve"><value>Lightens or darkens midtones. This is a relative correction; 1.00× preserves the original curve.</value></data>
+<data name="VsWarmthHelp" xml:space="preserve"><value>Right makes whites warmer; left makes them cooler. This does not set a measured kelvin temperature.</value></data>
+<data name="VsTintHelp" xml:space="preserve"><value>Adjusts green–magenta balance. Use sparingly to preserve natural skin tones.</value></data>
+<data name="VsSaturationHelp" xml:space="preserve"><value>Lower makes colors subdued; higher makes them more intense. The driver default is the neutral baseline, not measured calibration. Available only with a compatible driver control.</value></data>
+<data name="VsUsingSaved" xml:space="preserve"><value>Your saved adjustment is loaded. Choose a use and lighting below to start with another suggestion.</value></data>
+<data name="VsDetecting" xml:space="preserve"><value>Reading monitor capabilities… No settings are being applied.</value></data>
 </root>

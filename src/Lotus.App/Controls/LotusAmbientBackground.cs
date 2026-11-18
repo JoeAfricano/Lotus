@@ -20,11 +20,19 @@ public sealed class LotusAmbientBackground : FrameworkElement, IDisposable
     private ShapeVisual? petals;
     private bool windowActive, windowVisible, reduceMotion, running, failed, released;
     private string? lastPolicy;
+#if LOTUS_AMBIENT_DIAGNOSTICS
     private readonly bool proof = Environment.GetCommandLineArgs().Contains("--ambient-motion-proof");
+#else
+    private readonly bool proof = false;
+#endif
     private readonly bool disabled = Environment.GetCommandLineArgs().Contains("--ambient-motion-disabled");
 
     public LotusAmbientBackground()
     {
+#if !LOTUS_AMBIENT_DIAGNOSTICS
+        if (Environment.GetCommandLineArgs().Contains("--ambient-motion-proof"))
+            Serilog.Log.Information("Ambient proof request ignored: diagnostic build required");
+#endif
         IsHitTestVisible = false;
         AutomationProperties.SetAccessibilityView(this, AccessibilityView.Raw);
         Loaded += OnLoaded;
@@ -40,7 +48,12 @@ public sealed class LotusAmbientBackground : FrameworkElement, IDisposable
     private void OnUnloaded(object sender, RoutedEventArgs args) => Dispose();
     private void OnSizeChanged(object sender, SizeChangedEventArgs args)
     {
-        if (root is null) Refresh(); else Resize();
+        if (root is null) Refresh();
+        else
+        {
+            Resize();
+            Serilog.Log.Information("Ambient viewport resized {Width}x{Height}", ActualWidth, ActualHeight);
+        }
     }
     private T Own<T>(T value) where T : CompositionObject { owned.Add(value); return value; }
     private void Refresh()

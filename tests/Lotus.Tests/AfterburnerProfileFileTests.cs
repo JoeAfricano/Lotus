@@ -9,6 +9,28 @@ public sealed class AfterburnerProfileFileTests
     private static string Fixture(string name) => File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", name));
     private static string DefaultCurve => AfterburnerProfileFile.Get(Fixture("afterburner-card.cfg"), "Defaults", "VFCurve")!;
 
+    [Fact] public void Extreme_offset_values_are_refused_without_overflow() =>
+        Assert.False(AfterburnerProfileFile.Matches([int.MinValue],[int.MaxValue]));
+
+    [Fact] public void Profile_verification_checks_memory_core_and_power_not_only_the_curve()
+    {
+        var expected = new AfterburnerProfileFile.Values(100, 150_000, 500_000, [150_000, 0]);
+        Assert.True(AfterburnerProfileFile.Matches(expected, expected));
+        Assert.False(AfterburnerProfileFile.Matches(expected with { MemBoostKHz = 0 }, expected));
+        Assert.False(AfterburnerProfileFile.Matches(expected with { CoreBoostKHz = 0 }, expected));
+        Assert.False(AfterburnerProfileFile.Matches(expected with { PowerLimit = 80 }, expected));
+        Assert.False(AfterburnerProfileFile.Matches(expected with { OffsetsKHz = [0, 0] }, expected));
+    }
+
+    [Fact] public void Profile_readback_uses_the_real_default_values()
+    {
+        var tune = new AfterburnerProfileFile.Values(100, 150_000, 500_000, Enumerable.Repeat(150_000,127).ToArray());
+        var card = AfterburnerProfileFile.WithProfiles(Fixture("afterburner-card.cfg"), tune)!;
+        Assert.True(AfterburnerProfileFile.Matches(tune, AfterburnerProfileFile.ReadValues(card, "Profile2")!));
+        Assert.Equal(0, AfterburnerProfileFile.ReadValues(card, "Profile1")!.CoreBoostKHz);
+        Assert.Null(AfterburnerProfileFile.ReadValues("[Profile1]\nPowerLimit=100", "Profile1"));
+    }
+
     [Fact]
     public void Reads_the_real_default_curve()
     {

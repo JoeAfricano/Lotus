@@ -68,7 +68,7 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             CanRestoreLayout = r.Installed && rtss.HasLayoutBackup();
             var active = r.Installed && rtss.LayoutActive();
             LayoutOn = active || (r.Installed && rtss.ActiveLayoutName() is { } name && name.StartsWith("Lotus", StringComparison.OrdinalIgnoreCase)); // incl. the player's own Lotus layouts
-            ActiveVariant = !active ? null : rtss.ActiveLayoutName() switch { "Lotus-Neon" => "neon", "Lotus-Lateral" => "lateral", "Lotus-Pulse" => "pulse", _ => "top" };
+            ActiveVariant = !active ? null : rtss.ActiveLayoutName() switch { "Lotus-Premium-equilibrio" => "premium-top", "Lotus-Premium-neon" => "premium-neon", "Lotus-Premium-pulse" => "premium-pulse", "Lotus-Neon" => "neon", "Lotus-Lateral" => "lateral", "Lotus-Pulse" => "pulse", "Lotus-Window" => "window", _ => "top" };
             LayoutStatus = !r.Installed ? "" : active ? Text[rtss.ActiveLayoutName() == "Lotus-Neon" ? "IntLayoutActiveNeon" : "IntLayoutActive"] : rtss.ActiveLayoutName() is { } other ? Text.Format("IntLayoutOther", other) : Text["IntLayoutInactive"];
             var ab = tools.Afterburner(); AfterburnerStatus = ab.Installed ? Text.Format("IntAfterburnerOn", ab.Version ?? "?") : Text["IntNotInstalled"];
             var scs = tools.ScsKiller(); ScsStatus = scs.Installed ? Text.Format("IntScsOn", scs.Version ?? "?") : Text["IntScsOff"];
@@ -80,10 +80,11 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
     public Task ApplyOverlayAsync() => Run(async () => Message = Text[await rtss.ApplyLotusOverlayAsync() ? "IntOverlayApplied" : "IntOverlayFailed"]);
     public Task RestoreOverlayAsync() => Run(async () => Message = Text[await rtss.RestoreAsync() ? "IntOverlayRestored" : "IntOverlayFailed"]);
     // Opens the 3D preview window (separate process) so RivaTuner draws the overlay on it, like a benchmark.
-    public bool CanPreview => openOverlayPreview is not null;
+    public Func<bool>? OpenPreview { get; set; }
+    public bool CanPreview => OpenPreview is not null || openOverlayPreview is not null;
     public void PreviewOverlay()
     {
-        try { Message = Text[openOverlayPreview?.Invoke() == true ? "IntPreviewOpened" : "IntPreviewFailed"]; }
+        try { Message = Text[(OpenPreview ?? openOverlayPreview)?.Invoke() == true ? "IntPreviewOpened" : "IntPreviewFailed"]; }
         catch (Exception ex) { log(ex); Message = Text["IntPreviewFailed"]; }
         OnPropertyChanged(nameof(Message));
     }
@@ -92,23 +93,42 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
     // running it waits and is applied when the game closes (a running game is never disturbed).
     public Func<Task<bool>>? GameRunning { get; set; }
     public string? PendingVariant { get; private set; }
+    // The display's extra video plane (MPO), set by the app: without it the Lotus overlay window costs about one frame.
+    public Lotus.Core.Benchmark.MpoStatus DisplayMpo { get; set { field = value; OnPropertyChanged(); } }
+    // "Janela Lotus" settings (profiles live in the preferences; the app wires these).
+    public Func<Lotus.Core.Benchmark.OverlayWindowSettings>? WindowSettings { get; set; }
+    public Action<Func<Lotus.Core.Benchmark.OverlayWindowSettings, Lotus.Core.Benchmark.OverlayWindowSettings>>? ChangeWindowSettings { get; set; }
+    public Func<int>? WindowProfile { get; set; }
+    public Action<int>? UseWindowProfile { get; set; }
     public async Task UseStyleAsync(string variant)
     {
-        if (GameRunning is not null && await GameRunning())
+        await Run(async () =>
         {
-            PendingVariant = variant; Message = Text["OsPendingGame"]; OnPropertyChanged(nameof(Message)); OnPropertyChanged(nameof(PendingVariant));
-            return;
-        }
-        PendingVariant = null; OnPropertyChanged(nameof(PendingVariant));
-        var reopen = rtss.Running() == true;
-        await Run(async () => Message = Text[await rtss.ActivateLayoutAsync(variant, reopen) ? (reopen ? "OsAppliedReopened" : "IntLayoutApplied") : "OsFailed"]);
+            if (GameRunning is not null && await GameRunning())
+            {
+                PendingVariant = variant; Message = Text["OsPendingGame"]; OnPropertyChanged(nameof(PendingVariant));
+                return;
+            }
+            PendingVariant = null; OnPropertyChanged(nameof(PendingVariant));
+            var reopen = rtss.Running() == true;
+            if(!await rtss.ActivateLayoutAsync(variant,reopen)){Message=Text["OsFailed"];return;}
+            if(variant is "premium-top" or "premium-neon" or "premium-pulse")
+            {
+                if(!await rtss.StartAsync()){Message=Text["OsPreparedRtssClosed"];return;}
+            }
+            Message=Text[reopen?"OsAppliedReopened":"IntLayoutApplied"];
+        });
     }
     public async Task OnGameClosedAsync() { if (PendingVariant is { } v) await UseStyleAsync(v); }
-    public Task RestoreLayoutAsync() => Run(async () => Message = Text[await rtss.RestoreLayoutAsync() ? "IntLayoutRestored" : "IntOverlayFailed"]);
+    public async Task RestoreLayoutAsync()
+    {
+        if(GameRunning is not null&&await GameRunning()){Message=Text["OsRestoreCloseGame"];OnPropertyChanged(nameof(Message));return;}
+        await Run(async()=>Message=Text[await rtss.RestoreLayoutAsync()?"IntLayoutRestored":"IntOverlayFailed"]);
+    }
     // null when the file could not be written (locked, disk full); the message explains it.
     public string? ExportLayout()
     {
-        try { ExportedPath = rtss.ExportLayout(); Message = Text.Format("IntLayoutExported", ExportedPath); }
+        try { ExportedPath = rtss.ExportLayout(ActiveVariant is { } v && v != "window" ? v : "premium-top"); Message = Text.Format("IntLayoutExported", ExportedPath); }
         catch (Exception ex) { log(ex); ExportedPath = null; Message = Text["IntOverlayFailed"]; }
         OnPropertyChanged(nameof(Message));
         return ExportedPath;
