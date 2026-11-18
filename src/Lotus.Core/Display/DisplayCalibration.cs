@@ -248,3 +248,30 @@ public sealed class DisplayCalibrationController : IDisposable
     });
     public void Dispose() { lock (gate) { if (disposed) return; disposed = true; } CancelPreview(); lock (gate) StopTimer(); }
 }
+
+/// <summary>
+/// DDC/CI monitors often keep reporting the previous brightness/contrast for tens to hundreds of
+/// milliseconds after a write, and a single read can fail transiently. Poll a bounded number of
+/// times instead of treating the first stale read as a failed (and then rolled back) transaction.
+/// </summary>
+public static class DisplaySettle
+{
+    public static readonly TimeSpan WriteGap = TimeSpan.FromMilliseconds(60);
+    public static readonly TimeSpan ReadStep = TimeSpan.FromMilliseconds(150);
+    public static readonly TimeSpan VerifyBudget = TimeSpan.FromMilliseconds(1500);
+    public static readonly TimeSpan ExpectBudget = TimeSpan.FromMilliseconds(450);
+    /// <summary>Reads until <paramref name="accept"/> holds or the budget is spent; returns the last read.</summary>
+    public static CalibrationState? Until(Func<CalibrationState?> read, Func<CalibrationState, bool> accept, Action<TimeSpan> sleep, TimeSpan budget, TimeSpan step)
+    {
+        if (step <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(step));
+        var attempts = Math.Max(1, (int)Math.Ceiling(budget / step) + 1);
+        CalibrationState? last = null;
+        for (var i = 0; i < attempts; i++)
+        {
+            if (i > 0) sleep(step);
+            last = read();
+            if (last is not null && accept(last)) return last;
+        }
+        return last;
+    }
+}

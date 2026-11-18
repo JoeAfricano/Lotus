@@ -322,4 +322,25 @@ public sealed class DisplayCalibrationTests
         }
         finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }
     }
+    [Fact] public void SettleWaitsForDelayedDdcReadbackInsteadOfFailingOnTheFirstStaleRead()
+    {
+        // Monitor accepted 66/61 but keeps reporting 65/60 for two reads, then one read glitches (null).
+        var target = Original() with { Brightness = new(66, 0, 100), Contrast = new(61, 0, 100) };
+        var reads = new Queue<CalibrationState?>([Original(), Original(), null, target]);
+        var sleeps = new List<TimeSpan>();
+        var result = DisplaySettle.Until(() => reads.Dequeue(), s => s.Same(target, 256), sleeps.Add, TimeSpan.FromMilliseconds(1500), TimeSpan.FromMilliseconds(150));
+        Assert.True(result!.Same(target)); Assert.Equal(3, sleeps.Count); Assert.Empty(reads);
+    }
+    [Fact] public void SettleIsBoundedAndReturnsTheLastReadWhenTheMonitorNeverConfirms()
+    {
+        var target = Original() with { Brightness = new(66, 0, 100) }; var count = 0; var slept = TimeSpan.Zero;
+        var result = DisplaySettle.Until(() => { count++; return Original(); }, s => s.Same(target, 256), d => slept += d, TimeSpan.FromMilliseconds(1500), TimeSpan.FromMilliseconds(150));
+        Assert.False(result!.Same(target)); Assert.Equal(11, count); Assert.Equal(TimeSpan.FromMilliseconds(1500), slept);
+    }
+    [Fact] public void SettleReturnsImmediatelyWhenTheFirstReadAlreadyMatches()
+    {
+        var sleeps = 0; var result = DisplaySettle.Until(Original, s => s.Same(Original()), _ => sleeps++, DisplaySettle.ExpectBudget, DisplaySettle.ReadStep);
+        Assert.NotNull(result); Assert.Equal(0, sleeps);
+        Assert.Throws<ArgumentOutOfRangeException>(() => DisplaySettle.Until(Original, _ => true, _ => { }, TimeSpan.FromSeconds(1), TimeSpan.Zero));
+    }
 }
