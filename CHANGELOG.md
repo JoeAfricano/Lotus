@@ -2,6 +2,18 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.9.0-alpha "Lotus" (19/11/2026)
+
+### Novo
+- **Ajustes gráficos por jogo.** Em Meus Jogos › Otimizar, a qualidade, o upscaler e o limite de FPS agora mudam conforme o jogo e o seu PC (placa de vídeo, processador, memória, resolução e Hz). O Lotus mostra quantos FPS espera e de onde vem a estimativa; quando o PC não segura a taxa do monitor, baixa os gráficos primeiro.
+- **Base com os 1000 jogos mais jogados da Steam** (só nomes das peças e números, sem textos da loja). Jogo fora da base: o Lotus busca os requisitos na Steam na hora, e o "Medir e ajustar" ensina o valor real do seu PC.
+- **60 estilo console (opcional, por jogo).** Botão pequeno com ícone de controle no cartão Limite de FPS. Ligado, escolhe gráficos para 60 FPS e prepara o RivaTuner; sem FreeSync/G-Sync, o monitor passa para 60 Hz só enquanto o jogo está na frente. Desligar volta ao que estava.
+- **Minecraft Java**: o Lotus pode gravar o limite de FPS e as distâncias de visão e simulação no perfil jogado por último (Modrinth, Prism, CurseForge ou .minecraft), com cópia do original. Shaders, Sodium e Iris não são alterados.
+
+### Melhorado
+- O cartão de upscaling diz o motivo em cada jogo: o jogo não tem upscaler, o PC já segura o FPS sem ele, ou a placa tem folga.
+- Sem upscaler sugerido quando o jogo não tem nenhum; aviso quando a memória está abaixo do recomendado pelo jogo.
+
 ## 1.8.1-alpha "Lotus" (18/11/2026)
 
 ### Melhorado
