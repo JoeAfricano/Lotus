@@ -112,6 +112,19 @@ public sealed partial class GameTunePanel : UserControl
             s.Children.Add(new TextBlock { Text = tiles[i].Item1.ToUpperInvariant(), FontSize = 11.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, CharacterSpacing = 80, Foreground = Res("RoseBrush") });
             s.Children.Add(new TextBlock { Text = tiles[i].Item2, FontSize = 21, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
             tile.Child = s; Grid.SetColumn(tile, i % 2); Grid.SetRow(tile, i / 2); grid.Children.Add(tile);
+            // Optional extra (José, 19/11/2026): a small "60" toggle in the FPS limit card; the tooltip says what 60 gives here.
+            if (i == 3 && r.CanPrefer60 && card is { } c60)
+            {
+                var title = text[r.Why60 == "looks" ? "Gs60Choice" : "Gs60ChoicePlain"];
+                var hint = text[r.Why60 switch { "cant-hold" => "Gs60ChoiceHintCantHold", "lighter" => "Gs60ChoiceHintLighter", _ => r.AdaptiveSync ? "Gs60ChoiceHintVrr" : "Gs60ChoiceHint" }];
+                var lock60 = new Microsoft.UI.Xaml.Controls.Primitives.ToggleButton { Content = "60", IsChecked = r.Prefer60, FontSize = 11.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Padding = new Thickness(8, 2, 8, 2),
+                    MinWidth = 0, MinHeight = 0, CornerRadius = new CornerRadius(10), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, 10, 10, 0) };
+                AutomationProperties.SetAutomationId(lock60, "tune-prefer-60");
+                AutomationProperties.SetName(lock60, title);
+                ToolTipService.SetToolTip(lock60, new TextBlock { Text = title + "\n" + hint, TextWrapping = TextWrapping.Wrap, MaxWidth = 320 });
+                lock60.Click += async (_, _) => { lock60.IsEnabled = false; vm.SetPrefer60(c60.Game, lock60.IsChecked == true); await Reload(); };
+                Grid.SetColumn(lock60, i % 2); Grid.SetRow(lock60, i / 2); grid.Children.Add(lock60);
+            }
         }
         // Lotus Score: the expected FPS of this game on this PC (from the player's own test), or an invitation to run it.
         var score = new Border { Padding = new Thickness(14, 10, 14, 10), CornerRadius = new CornerRadius(12), BorderThickness = new Thickness(1), Background = Res("AccentSoftBrush"), BorderBrush = Res("RoseBrush") };
@@ -121,14 +134,6 @@ public sealed partial class GameTunePanel : UserControl
         Grid.SetColumn(scoreText, 1); line.Children.Add(scoreText);
         score.Child = line;
         var hwPanel = new StackPanel { Spacing = 8 }; hwPanel.Children.Add(score);
-        // The player's optional call in every game on a monitor faster than 60; the hint says what 60 gives in this one.
-        if (r.CanPrefer60 && card is { } c60)
-        {
-            var lock60 = new CheckBox { Content = text[r.Why60 == "looks" ? "Gs60Choice" : "Gs60ChoicePlain"], IsChecked = r.Prefer60 };
-            AutomationProperties.SetAutomationId(lock60, "tune-prefer-60");
-            lock60.Click += async (_, _) => { lock60.IsEnabled = false; vm.SetPrefer60(c60.Game, lock60.IsChecked == true); await Reload(); };
-            hwPanel.Children.Add(lock60); hwPanel.Children.Add(Caption(text[r.Why60 switch { "cant-hold" => "Gs60ChoiceHintCantHold", "lighter" => "Gs60ChoiceHintLighter", _ => r.AdaptiveSync ? "Gs60ChoiceHintVrr" : "Gs60ChoiceHint" }]));
-        }
         hwPanel.Children.Add(Caption(t.Settings.Hardware));
         // The FreeSync/G-Sync answer the settings are based on, with a way to change it.
         var sync = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
