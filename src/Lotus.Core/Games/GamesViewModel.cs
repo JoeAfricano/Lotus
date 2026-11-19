@@ -298,15 +298,26 @@ public sealed partial class GamesViewModel : ObservableObject
     // ---- Smart game settings ----
     public bool CanOptimizeSettings => profileSource is not null;
 
-    public async Task<GameSettingsAnalysis?> AnalyzeSettingsAsync(GameEntry game)
+    // The game's FPS curve on this PC (Lotus Score table, Steam requirements, the player's own measurement); set by the window.
+    public Func<GameEntry, SystemProfile, Task<GameFpsCurve?>>? Curve { get; set; }
+    private async Task<SettingsRecommendation> RecommendFor(GameEntry game, SystemProfile p, GameTech? tech = null)
+    {
+        GameFpsCurve? curve = null;
+        if (Curve is not null) try { curve = await Curve(game, p); } catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
+        return SettingsAdvisor.Recommend(p, Goal?.Invoke() ?? "balanced", AdaptiveSync?.Invoke() == "on", curve, tech, PrefsFor(game).Prefer60);
+    }
+    // "Cravar em 60 com gráficos melhores" (only offered when it really looks better and the game has no frame generation).
+    public bool SetPrefer60(GameEntry game, bool on) => PlayPrefs is { } book && book.Set(game.Key, PrefsFor(game) with { Prefer60 = on });
+
+    public async Task<GameSettingsAnalysis?> AnalyzeSettingsAsync(GameEntry game, GameTech? tech = null)
     {
         if (profileSource is null) return null;
         try
         {
+            var p = await Task.Run(profileSource.Read);
+            var r = await RecommendFor(game, p, tech);
             return await Task.Run(() =>
             {
-                var p = profileSource.Read();
-                var r = SettingsAdvisor.Recommend(p, Goal?.Invoke() ?? "balanced", AdaptiveSync?.Invoke() == "on");
                 var (recipe, support) = Recipe(game);
                 var lines = new List<string>
                 {
@@ -316,13 +327,20 @@ public sealed partial class GamesViewModel : ObservableObject
                     r.Upscaler == Upscaler.None ? Text["GsLineNoUpscale"] : Text.Format("GsLineUpscale", Text["GsUpscaler" + r.Upscaler], Text["GsMode" + r.Mode]),
                     Text.Format("GsLineCap", r.FpsCap)
                 };
+                // Per game: what these settings should give on this PC, and where the number comes from.
+                lines.Add(r.Game is { } g && r.EstimatedFps > 0 ? Text.Format("GsLineGameFps", r.EstimatedFps, Text["GsBasis" + Basis(g)]) : Text["GsLineGeneric"]);
+                // Uncertain estimate: Lotus finds out by itself the next time the game is measured on this PC.
+                if (r.Game is not { Basis: "measured" }) lines.Add(Text["GsLineMeasureToLearn"]);
                 lines.AddRange(r.ReasonKeys.Select(k => Text[k]));
                 var hardware = Text.Format("GsHardware", string.IsNullOrWhiteSpace(p.GpuName) ? "?" : p.GpuName, p.VramMb / 1024.0, p.Width, p.Height, p.RefreshHz);
+                if (!string.IsNullOrWhiteSpace(p.CpuName)) hardware += " · " + p.CpuName.Trim();
                 return new GameSettingsAnalysis(r, lines, hardware, support, settingsStore?.LoadOriginal(game.Key) is not null, pendingSteps.TryGetValue(game.Key, out var step) ? step : null);
             });
         }
         catch (Exception ex) { log(ex); status = Text["GsFailed"]; Notify(); return null; }
     }
+    // "Measured", "Lab", "LabLow" (table without a lab measurement) or "Requirements": the source line for the estimate.
+    public static string Basis(GameFpsCurve g) => g.Basis switch { "measured" => "Measured", "requirements" => "Requirements", _ => g.Confidence == "baixa" ? "LabLow" : "Lab" };
 
     private (IGameSettingsRecipe? Recipe, GameSettingsSupport? Support) Recipe(GameEntry game)
     {
@@ -389,11 +407,12 @@ public sealed partial class GamesViewModel : ObservableObject
             var canRaise = raw is not null && recipe!.StepQuality(raw, +1) is not null;
             var canLower = raw is not null && recipe!.StepQuality(raw, -1) is not null;
             var pc = profileSource!.Read();
-            var vrr = AdaptiveSync?.Invoke() == "on";
-            var target = SettingsAdvisor.Recommend(pc, Goal?.Invoke() ?? "balanced", vrr).TargetFps;
+            var target = (await RecommendFor(game, pc)).TargetFps;
             var decision = QualityTuner.Decide(s.AverageFps, s.Low1Fps, target, gpuBusy, canRaise, canLower);
             if (decision.Step != 0) pendingSteps[game.Key] = decision.Step; else pendingSteps.Remove(game.Key);
             var summary = Text.Format("GsMeasureSummary", s.AverageFps, s.Low1Fps, gpuBusy is { } g ? $"{g:0}%" : "?", target);
+            // Kept as this game's last measurement (findings of an earlier analysis stay): it calibrates the per-game estimate.
+            SaveReport(game.Key, new StutterReport(summary, LastReport(game)?.Findings ?? [], s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now, gpuBusy, latencyMs));
             status = summary; Notify();
             return new(summary, decision, Text[decision.ReasonKey], decision.Step != 0);
         }
@@ -472,12 +491,14 @@ public sealed partial class GamesViewModel : ObservableObject
 
     public async Task<GameTune?> TuneAsync(GameEntry game)
     {
-        if (await AnalyzeSettingsAsync(game) is not { } settings) return null;
+        GameTech tech;
+        try { tech = await Task.Run(() => TechScanner?.Scan(game) ?? GameTech.Unknown); }
+        catch (Exception ex) { log(ex); tech = GameTech.Unknown; }
+        if (await AnalyzeSettingsAsync(game, tech) is not { } settings) return null;
         try
         {
             return await Task.Run(() =>
             {
-                var tech = TechScanner?.Scan(game) ?? GameTech.Unknown;
                 var chips = new List<string>();
                 if (tech.Engine is { } engine) chips.Add(engine);
                 if (tech.Dlss) chips.Add("DLSS"); if (tech.FrameGen) chips.Add(Text["IgChipFrameGen"]); if (tech.Fsr) chips.Add("FSR"); if (tech.Xess) chips.Add("XeSS");
@@ -577,7 +598,7 @@ public sealed partial class GamesViewModel : ObservableObject
             var canLower = raw is not null && recipe!.StepQuality(raw, -1) is not null;
             var pc = profileSource!.Read();
             var vrr = AdaptiveSync?.Invoke() == "on";
-            var target = SettingsAdvisor.Recommend(pc, Goal?.Invoke() ?? "balanced", vrr).TargetFps;
+            var target = (await RecommendFor(game, pc)).TargetFps;
             var pending = GameProfile is null ? 0 : (await GameProfile.PreviewAsync()).Count(p => !p.AlreadyApplied);
             var (load, apps) = Memory is null ? (0d, (IReadOnlyList<string>)[]) : await Task.Run(() => Memory.Read(game), token);
             IReadOnlyList<string> overlays = Overlays is null ? [] : await Task.Run(() => (IReadOnlyList<string>)[.. Overlays.Scan().Where(o => o.Heavy).Select(o => o.Name)], token);

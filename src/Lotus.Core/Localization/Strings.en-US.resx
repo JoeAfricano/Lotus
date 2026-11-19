@@ -3803,4 +3803,21 @@ Your games and Windows are not changed.</value></data>
 <data name="VsBasisGaming" xml:space="preserve"><value>Reference: gamma 2.2 with slightly opened shadows (like a monitor's Black Equalizer) and livelier colors. A bright room opens shadows more, because glare hides dark detail.</value></data>
 <data name="VsBasisMovies" xml:space="preserve"><value>Reference: BT.1886 cinema standard. In a dark room, gamma near 2.4 and low brightness; with lights on, back to 2.2. D65 white and driver colors, no boost.</value></data>
 <data name="VsBasisEditing" xml:space="preserve"><value>Reference: photo and video editing with D65 white, gamma 2.2, neutral color and low brightness (about 80–120 nits). Real accuracy needs a colorimeter and the monitor's ICC profile; Lotus does not measure.</value></data>
+  <data name="GsReasonGameAware" xml:space="preserve"><value>Tuned for this game: Lotus used how heavy it is on your graphics card and processor, at your resolution and your monitor's refresh rate.</value></data>
+  <data name="GsReasonGameCap" xml:space="preserve"><value>This game has its own FPS limit: the target respects it. Without FreeSync/G-Sync, running the monitor at the same rate (Smoothness › Hz) avoids judder.</value></data>
+  <data name="GsReasonCpuGame" xml:space="preserve"><value>In this game the processor is the limit: lower graphics settings barely raise FPS. The FPS limit keeps the game steadier.</value></data>
+  <data name="GsLineGameFps" xml:space="preserve"><value>With these settings this game should run at about {0} FPS on your PC (estimate: {1}).</value></data>
+  <data name="GsLineGeneric" xml:space="preserve"><value>This game is not in the Lotus data yet: the suggestion uses only your hardware. Measure the game in Prepare and play to refine it.</value></data>
+  <data name="GsBasisMeasured" xml:space="preserve"><value>calibrated by measuring this game on your PC</value></data>
+  <data name="GsBasisLab" xml:space="preserve"><value>lab tests of this game</value></data>
+  <data name="GsBasisLabLow" xml:space="preserve"><value>Lotus table, no lab test</value></data>
+  <data name="GsBasisRequirements" xml:space="preserve"><value>Steam recommended requirements</value></data>
+  <data name="TuneGameLine" xml:space="preserve"><value>With these settings this game should run at about {0} FPS on your PC. Estimate: {1}.</value></data>
+  <data name="GsReasonTargetLower" xml:space="preserve"><value>Target below the monitor rate, at an exact fraction of it (or what the PC holds with FreeSync/G-Sync): a steady image instead of swings.</value></data>
+  <data name="GsReasonPrefer60" xml:space="preserve"><value>You chose to lock this game at 60 FPS with better graphics.</value></data>
+  <data name="Gs60Choice" xml:space="preserve"><value>Lock 60 FPS with better graphics</value></data>
+  <data name="Gs60ChoiceHint" xml:space="preserve"><value>By default Lotus lowers graphics to keep up with the monitor rate. At 60 the image looks better; without FreeSync/G-Sync a frame repeats now and then and motion may judder a little.</value></data>
+  <data name="Gs60ChoiceHintVrr" xml:space="preserve"><value>By default Lotus lowers graphics to keep up with the monitor rate. At 60 with FreeSync/G-Sync the image looks better and stays smooth.</value></data>
+  <data name="GsReasonRamGame" xml:space="preserve"><value>Your PC has less RAM than this game recommends: close the browser and other programs before playing.</value></data>
+  <data name="GsLineMeasureToLearn" xml:space="preserve"><value>Estimate still uncertain: with the game running, use &quot;Measure and adjust&quot; or &quot;Why is it stuttering?&quot;. Lotus learns how this game runs on your PC and adjusts the suggestion by itself.</value></data>
 </root>

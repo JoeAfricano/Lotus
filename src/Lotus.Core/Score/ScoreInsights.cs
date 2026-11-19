@@ -13,6 +13,8 @@ public sealed record GameDemand(string Name, double GpuFps, double CpuFps, int? 
 {
     // Lab numbers at 1080p per preset (Low → Ultra; 0 = not measured) from the reference table, when there are any.
     public string SourceText { get; init; } = "";
+    // Recommended system memory from the game's Steam requirements (GB), when stated.
+    public int? RamGb { get; init; }
 }
 
 public enum Resolution { P1080, P1440, P2160 }
@@ -41,16 +43,23 @@ public static class ScoreInsights
     public static FpsCell Estimate(GameDemand g, Resolution r, Preset p, int single, int multi, int gpu)
     {
         if (single <= 0 || multi <= 0 || gpu <= 0) return new(0, Limiter.Balanced);
-        // With lab numbers per preset they are used as measured (scaled to this GPU); otherwise the High value and fixed preset steps.
-        var basePreset = g.Lab is { Count: 4 } lab && lab[(int)p] > 0 ? lab[(int)p] : g.GpuFps * PresetGpu[(int)p];
-        var gpuFps = basePreset * (gpu / RefGpu) * ResolutionLoad[(int)r];
-        var cpuFps = g.CpuFps * Math.Pow(single / RefSingle, 0.6) * Math.Pow(multi / RefMulti, 0.4) * PresetCpu[(int)p];
+        var (gpuFps, cpuFps) = Limits(g, r, p, single, multi, gpu);
         const double k = 6;
         var fps = Math.Pow(Math.Pow(gpuFps, -k) + Math.Pow(cpuFps, -k), -1 / k);
         if (g.Cap is { } cap && fps >= cap) return new(cap, Limiter.Cap);
         var ratio = gpuFps / cpuFps;
         var limiter = ratio < 0.9 ? Limiter.Gpu : ratio > 1.1 ? Limiter.Cpu : Limiter.Balanced;
         return new((int)Math.Round(fps), limiter);
+    }
+
+    // The two limits of one cell: what the graphics card draws and what the processor feeds.
+    // With lab numbers per preset they are used as measured (scaled to this GPU); otherwise the High value and fixed preset steps.
+    public static (double Gpu, double Cpu) Limits(GameDemand g, Resolution r, Preset p, int single, int multi, int gpu)
+    {
+        var basePreset = g.Lab is { Count: 4 } lab && lab[(int)p] > 0 ? lab[(int)p] : g.GpuFps * PresetGpu[(int)p];
+        var gpuFps = basePreset * (gpu / RefGpu) * ResolutionLoad[(int)r];
+        var cpuFps = g.CpuFps * Math.Pow(single / RefSingle, 0.6) * Math.Pow(multi / RefMulti, 0.4) * PresetCpu[(int)p];
+        return (gpuFps, cpuFps);
     }
 
     // How much the slower part holds the faster one back on a typical game mix (pc-builds style), per resolution.
@@ -79,8 +88,8 @@ public static class ScoreInsights
         single <= 0 || multi <= 0 ? 0 : (int)Math.Round(10000 * Math.Exp(0.4 * Math.Log(single / 1500.0) + 0.6 * Math.Log(multi / 11000.0)));
 
     // Share of the parts in the database this result beats (GPU among GPUs, CPU among CPUs).
-    public static int BeatsGpus(int gpu) => Beats(ScoreParts.All.Where(p => p.Kind == PartKind.Gpu).Select(p => (double)p.Gpu), gpu);
-    public static int BeatsCpus(int single, int multi) => Beats(ScoreParts.All.Where(p => p.Kind == PartKind.Cpu).Select(p => (double)CpuScore(p.Single, p.Multi)), CpuScore(single, multi));
+    public static int BeatsGpus(int gpu) => Beats(ScoreParts.All.Where(p => p.Kind == PartKind.Gpu && !p.RequirementsOnly).Select(p => (double)p.Gpu), gpu);
+    public static int BeatsCpus(int single, int multi) => Beats(ScoreParts.All.Where(p => p.Kind == PartKind.Cpu && !p.RequirementsOnly).Select(p => (double)CpuScore(p.Single, p.Multi)), CpuScore(single, multi));
     private static int Beats(IEnumerable<double> values, double mine)
     {
         var all = values.ToList();
@@ -107,7 +116,16 @@ public static class ScoreInsights
         var gpuFps = 60 * RefGpu / gpus.Average(p => p.Gpu);
         var cpuFps = cpus.Count == 0 ? gpuFps * 1.4 : 75 * CpuScore((int)RefSingle, (int)RefMulti) / cpus.Average(p => (double)CpuScore(p.Single, p.Multi));
         var basis = string.Join(" · ", new[] { string.Join(" / ", gpus.Select(p => p.Name).Distinct()), string.Join(" / ", cpus.Select(p => p.Name).Distinct()) }.Where(s => s.Length > 0));
-        return new(name, Math.Round(gpuFps), Math.Round(cpuFps), SteamAppId: appId, Basis: basis);
+        return new(name, Math.Round(gpuFps), Math.Round(cpuFps), SteamAppId: appId, Basis: basis) { RamGb = RamGb(Line(lines, "Memória", "Memoria", "Memory")) };
+    }
+    // "16 GB RAM" / "8 GB de RAM" / "16384 MB RAM" on the memory line; null when absent or implausible.
+    public static int? RamGb(string? line)
+    {
+        if (line is null) return null;
+        var m = System.Text.RegularExpressions.Regex.Match(line, @"(\d+(?:[.,]\d+)?)\s*(GB|MB)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (!m.Success || !double.TryParse(m.Groups[1].Value.Replace(',', '.'), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var v)) return null;
+        var gb = m.Groups[2].Value.Equals("MB", StringComparison.OrdinalIgnoreCase) ? v / 1024 : v;
+        return gb is >= 1 and <= 128 ? (int)Math.Ceiling(gb) : null;
     }
     private static IEnumerable<string> Alternatives(string line) => line.Split(["/", " or ", " ou ", ",", "|"], StringSplitOptions.RemoveEmptyEntries);
 
@@ -120,4 +138,38 @@ public static class ScoreInsights
                 mine.Add(hit);
         return [.. mine, .. Games.Except(mine).OrderBy(g => g.Name, StringComparer.OrdinalIgnoreCase)];
     }
+}
+
+// The Steam base (data\steam-demand.json): the most owned Steam games with what their recommended PC means on the Lotus
+// scale, worked out by tools\BuildSteamBase.cs from the store's recommended requirements (part names and numbers only;
+// the requirement text itself is not kept). Low confidence by nature: the Lotus measurement of the game corrects it.
+public static class SteamDemandBase
+{
+    private static IReadOnlyList<GameDemand>? games;
+    public static IReadOnlyList<GameDemand> Games => games ??= Load();
+    private static IReadOnlyList<GameDemand> Load()
+    {
+        try
+        {
+            using var stream = typeof(SteamDemandBase).Assembly.GetManifestResourceStream("steam-demand.json");
+            return stream is null ? [] : Parse(new StreamReader(stream).ReadToEnd());
+        }
+        catch (Exception ex) when (ex is IOException or System.Text.Json.JsonException or InvalidOperationException) { return []; }
+    }
+    public static IReadOnlyList<GameDemand> Parse(string json)
+    {
+        if (System.Text.Json.Nodes.JsonNode.Parse(json) is not System.Text.Json.Nodes.JsonObject root || (int?)root["schema"] != 1 || root["games"] is not System.Text.Json.Nodes.JsonArray list) return [];
+        var result = new List<GameDemand>();
+        foreach (var g in list.OfType<System.Text.Json.Nodes.JsonObject>())
+        {
+            var name = ((string?)g["name"])?.Trim(); var id = (string?)g["appId"];
+            double gpu = (double?)g["gpu"] ?? 0, cpu = (double?)g["cpu"] ?? 0;
+            if (string.IsNullOrEmpty(name) || name.Length > 120 || id is null || !id.All(char.IsAsciiDigit) || gpu is <= 0 or > 2000 || cpu is <= 0 or > 2000) continue;
+            var ram = (int?)g["ramGb"];
+            result.Add(new(name, gpu, cpu, SteamAppId: id, Basis: (string?)g["basis"] ?? "", Confidence: "baixa", Store: "steam") { RamGb = ram is >= 1 and <= 128 ? ram : null });
+        }
+        return result;
+    }
+    public static GameDemand? Find(string name, string? steamAppId) =>
+        Games.FirstOrDefault(d => steamAppId is not null && d.SteamAppId == steamAppId) ?? Games.FirstOrDefault(d => string.Equals(d.Name, name, StringComparison.OrdinalIgnoreCase));
 }

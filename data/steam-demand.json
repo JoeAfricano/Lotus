@@ -1,0 +1,8007 @@
+{
+  "schema": 1,
+  "date": "2026-11-19",
+  "source": "Steam store recommended requirements (part names and Lotus-scale numbers only); list: SteamSpy most owned",
+  "games": [
+    {
+      "appId": "578080",
+      "name": "PUBG: BATTLEGROUNDS",
+      "gpu": 155,
+      "cpu": 217,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 3GB / AMD Radeon RX 580"
+    },
+    {
+      "appId": "1172470",
+      "name": "Apex Legends™",
+      "gpu": 177,
+      "cpu": 248,
+      "ramGb": 8,
+      "basis": "AMD Radeon R9 290 / NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "1623730",
+      "name": "Palworld",
+      "gpu": 58,
+      "cpu": 80,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 3060 Ti / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "2767030",
+      "name": "Marvel Rivals",
+      "gpu": 69,
+      "cpu": 78,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 5700 XT / Intel Arc A750 · Intel Core i5-10400 / AMD Ryzen 5 5600X"
+    },
+    {
+      "appId": "2358720",
+      "name": "Black Myth: Wukong",
+      "gpu": 69,
+      "cpu": 97,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 5700 XT / Intel Arc A750"
+    },
+    {
+      "appId": "252490",
+      "name": "Rust",
+      "gpu": 59,
+      "cpu": 82,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / Intel Arc B580"
+    },
+    {
+      "appId": "1599340",
+      "name": "Lost Ark",
+      "gpu": 98,
+      "cpu": 137,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 Super / AMD Radeon RX 6600"
+    },
+    {
+      "appId": "236390",
+      "name": "War Thunder",
+      "gpu": 168,
+      "cpu": 84,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 570 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "2246340",
+      "name": "Monster Hunter Wilds",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "553850",
+      "name": "HELLDIVERS™ 2",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "1245620",
+      "name": "ELDEN RING",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "1086940",
+      "name": "Baldur's Gate 3",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "1085660",
+      "name": "Destiny 2",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / NVIDIA GeForce GTX 1060 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "1091500",
+      "name": "Cyberpunk 2077",
+      "gpu": 76,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 Super / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "945360",
+      "name": "Among Us",
+      "gpu": 812,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 650"
+    },
+    {
+      "appId": "238960",
+      "name": "Path of Exile",
+      "gpu": 288,
+      "cpu": 402,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1050 Ti"
+    },
+    {
+      "appId": "242760",
+      "name": "The Forest",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "892970",
+      "name": "Valheim",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "899770",
+      "name": "Last Epoch",
+      "gpu": 81,
+      "cpu": 113,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6600"
+    },
+    {
+      "appId": "292030",
+      "name": "The Witcher 3: Wild Hunt — Remastered",
+      "gpu": 66,
+      "cpu": 85,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 Super / AMD Radeon RX 6600 / Intel Arc B580 · Intel Core i7-8700K / AMD Ryzen 5 3600X"
+    },
+    {
+      "appId": "4115450",
+      "name": "Phantom Blade Zero",
+      "gpu": 58,
+      "cpu": 80,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 Ti / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "227300",
+      "name": "Euro Truck Simulator 2",
+      "gpu": 134,
+      "cpu": 84,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 590 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "1174180",
+      "name": "Red Dead Redemption 2",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "739630",
+      "name": "Phasmophobia",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "444090",
+      "name": "Paladins®",
+      "gpu": 314,
+      "cpu": 439,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7950"
+    },
+    {
+      "appId": "2622380",
+      "name": "ELDEN RING NIGHTREIGN",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "1222670",
+      "name": "The Sims™ 4",
+      "gpu": 812,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 650"
+    },
+    {
+      "appId": "3164500",
+      "name": "Schedule I",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "1203220",
+      "name": "NARAKA: BLADEPOINT",
+      "gpu": 78,
+      "cpu": 109,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / Intel Arc A750"
+    },
+    {
+      "appId": "1240440",
+      "name": "Halo Infinite",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 5700 XT / NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "3241660",
+      "name": "R.E.P.O.",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "582010",
+      "name": "Monster Hunter: World",
+      "gpu": 165,
+      "cpu": 231,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / NVIDIA GeForce GTX 1650 / AMD Radeon RX 480 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "990080",
+      "name": "Hogwarts Legacy",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "552990",
+      "name": "World of Warships",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 770"
+    },
+    {
+      "appId": "1665460",
+      "name": "eFootball™",
+      "gpu": 142,
+      "cpu": 199,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 590"
+    },
+    {
+      "appId": "648800",
+      "name": "Raft",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "1517290",
+      "name": "Battlefield™ 2042",
+      "gpu": 81,
+      "cpu": 113,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6600 / NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "550650",
+      "name": "Black Squad",
+      "gpu": 294,
+      "cpu": 411,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon HD 7950"
+    },
+    {
+      "appId": "477160",
+      "name": "Human Fall Flat",
+      "gpu": 690,
+      "cpu": 966,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 460 / AMD Radeon HD 7770"
+    },
+    {
+      "appId": "250900",
+      "name": "The Binding of Isaac: Rebirth",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "Intel HD Graphics 4000"
+    },
+    {
+      "appId": "1326470",
+      "name": "Sons Of The Forest",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "239140",
+      "name": "Dying Light",
+      "gpu": 200,
+      "cpu": 178,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780 / AMD Radeon R9 290 · Intel Core i5-4670K / AMD FX-8350"
+    },
+    {
+      "appId": "261550",
+      "name": "Mount & Blade II: Bannerlord",
+      "gpu": 155,
+      "cpu": 217,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 3GB / AMD Radeon RX 580"
+    },
+    {
+      "appId": "767560",
+      "name": "War Robots",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "532210",
+      "name": "Life is Strange 2",
+      "gpu": 197,
+      "cpu": 195,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 280X · Intel Core i5-3470 / AMD FX-8350"
+    },
+    {
+      "appId": "1407200",
+      "name": "World of Tanks",
+      "gpu": 172,
+      "cpu": 241,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1650 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "814380",
+      "name": "Sekiro™: Shadows Die Twice - GOTY Edition",
+      "gpu": 168,
+      "cpu": 176,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 570 · Intel Core i5-2500K / AMD Ryzen 5 1400"
+    },
+    {
+      "appId": "72850",
+      "name": "The Elder Scrolls V: Skyrim",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 260"
+    },
+    {
+      "appId": "2050650",
+      "name": "Resident Evil 4",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "221100",
+      "name": "DayZ",
+      "gpu": 148,
+      "cpu": 148,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · Intel Core i5-6600K"
+    },
+    {
+      "appId": "218230",
+      "name": "PlanetSide 2",
+      "gpu": 238,
+      "cpu": 142,
+      "ramGb": 8,
+      "basis": "AMD Radeon R9 280X · Intel Core i5-6600K / AMD Ryzen 5 1600"
+    },
+    {
+      "appId": "255710",
+      "name": "Cities: Skylines",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 560"
+    },
+    {
+      "appId": "3240220",
+      "name": "Grand Theft Auto V Enhanced",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "8870",
+      "name": "BioShock Infinite",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "264710",
+      "name": "Subnautica",
+      "gpu": 920,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 550 Ti"
+    },
+    {
+      "appId": "1238810",
+      "name": "Battlefield™ V",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "594650",
+      "name": "Hunt: Showdown 1896",
+      "gpu": 78,
+      "cpu": 110,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce RTX 2060 Super"
+    },
+    {
+      "appId": "1426210",
+      "name": "It Takes Two",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "632360",
+      "name": "Risk of Rain 2",
+      "gpu": 256,
+      "cpu": 358,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 680 / AMD Radeon HD 7970"
+    },
+    {
+      "appId": "107410",
+      "name": "Arma 3",
+      "gpu": 148,
+      "cpu": 110,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · Intel Core i7-7700K / AMD Ryzen 3 3300X"
+    },
+    {
+      "appId": "700330",
+      "name": "SCP: Secret Laboratory",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "306130",
+      "name": "The Elder Scrolls® Online",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "1551360",
+      "name": "Forza Horizon 5",
+      "gpu": 86,
+      "cpu": 120,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX 590 / Intel Arc A750"
+    },
+    {
+      "appId": "1721470",
+      "name": "Poppy Playtime",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "766570",
+      "name": "Russian Fishing 4",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1049590",
+      "name": "Eternal Return",
+      "gpu": 148,
+      "cpu": 110,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · Intel Core i5-8400"
+    },
+    {
+      "appId": "883710",
+      "name": "Resident Evil 2",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "1144200",
+      "name": "Ready or Not",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1229490",
+      "name": "ULTRAKILL",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "1172620",
+      "name": "Sea of Thieves: 2026 Edition",
+      "gpu": 96,
+      "cpu": 134,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX Vega 64"
+    },
+    {
+      "appId": "2183900",
+      "name": "Warhammer 40,000: Space Marine 2",
+      "gpu": 42,
+      "cpu": 59,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6800 XT / NVIDIA GeForce RTX 3070"
+    },
+    {
+      "appId": "489830",
+      "name": "The Elder Scrolls V: Skyrim Special Edition",
+      "gpu": 200,
+      "cpu": 209,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780 / AMD Radeon R9 290 · Intel Core i5-2400 / AMD FX-8320"
+    },
+    {
+      "appId": "219640",
+      "name": "Chivalry: Medieval Warfare",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce 8800 GT"
+    },
+    {
+      "appId": "319630",
+      "name": "Life is Strange - Episode 1",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 260"
+    },
+    {
+      "appId": "844870",
+      "name": "KurtzPel",
+      "gpu": 212,
+      "cpu": 297,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 Ti / AMD Radeon RX 570"
+    },
+    {
+      "appId": "601150",
+      "name": "Devil May Cry 5",
+      "gpu": 152,
+      "cpu": 155,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480 · Intel Core i7-3770"
+    },
+    {
+      "appId": "588650",
+      "name": "Dead Cells",
+      "gpu": 493,
+      "cpu": 690,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 460 / AMD Radeon HD 7800"
+    },
+    {
+      "appId": "427520",
+      "name": "Factorio",
+      "gpu": 212,
+      "cpu": 297,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1050 Ti / AMD Radeon RX 570"
+    },
+    {
+      "appId": "552500",
+      "name": "Warhammer: Vermintide 2",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "1237970",
+      "name": "Titanfall® 2",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "1868140",
+      "name": "DAVE THE DIVER",
+      "gpu": 159,
+      "cpu": 222,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 3GB / AMD Radeon RX 480"
+    },
+    {
+      "appId": "1145350",
+      "name": "Hades II",
+      "gpu": 90,
+      "cpu": 126,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "435150",
+      "name": "Divinity: Original Sin 2 - Definitive Edition",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 770 / AMD Radeon R9 280"
+    },
+    {
+      "appId": "518790",
+      "name": "theHunter: Call of the Wild™",
+      "gpu": 314,
+      "cpu": 439,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon R9 270X"
+    },
+    {
+      "appId": "236850",
+      "name": "Europa Universalis IV",
+      "gpu": 552,
+      "cpu": 773,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 560 Ti"
+    },
+    {
+      "appId": "1903340",
+      "name": "Clair Obscur: Expedition 33",
+      "gpu": 45,
+      "cpu": 63,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 Ti / AMD Radeon RX 6800 XT"
+    },
+    {
+      "appId": "1222140",
+      "name": "Detroit: Become Human",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "286690",
+      "name": "METRO 2033 Redux",
+      "gpu": 134,
+      "cpu": 84,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 590 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "555570",
+      "name": "Infestation: The New Z",
+      "gpu": 337,
+      "cpu": 471,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 950"
+    },
+    {
+      "appId": "728880",
+      "name": "Overcooked! 2",
+      "gpu": 812,
+      "cpu": 1000,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 650"
+    },
+    {
+      "appId": "268500",
+      "name": "XCOM® 2",
+      "gpu": 251,
+      "cpu": 351,
+      "ramGb": 8,
+      "basis": "AMD Radeon HD 7970 / NVIDIA GeForce GTX 770"
+    },
+    {
+      "appId": "2709570",
+      "name": "Supermarket Together",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "1593500",
+      "name": "God of War",
+      "gpu": 155,
+      "cpu": 217,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "1332010",
+      "name": "Stray",
+      "gpu": 192,
+      "cpu": 268,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "534380",
+      "name": "Dying Light 2 Stay Human: Reloaded Edition",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "447040",
+      "name": "Watch_Dogs® 2",
+      "gpu": 200,
+      "cpu": 203,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780 / AMD Radeon R9 290 · Intel Core i5-3470"
+    },
+    {
+      "appId": "240720",
+      "name": "Getting Over It with Bennett Foddy",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "629760",
+      "name": "MORDHAU",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "206420",
+      "name": "Saints Row IV: Re-Elected",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "813780",
+      "name": "Age of Empires II: Definitive Edition",
+      "gpu": 812,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 650"
+    },
+    {
+      "appId": "508440",
+      "name": "Totally Accurate Battle Simulator",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "881020",
+      "name": "Granblue Fantasy: Relink",
+      "gpu": 55,
+      "cpu": 77,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "782330",
+      "name": "DOOM Eternal",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "1238840",
+      "name": "Battlefield™ 1",
+      "gpu": 157,
+      "cpu": 220,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 3GB"
+    },
+    {
+      "appId": "241930",
+      "name": "Middle-earth™: Shadow of Mordor™",
+      "gpu": 314,
+      "cpu": 170,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7950 · Intel Core i7-3770 / AMD FX-8350"
+    },
+    {
+      "appId": "1771300",
+      "name": "Kingdom Come: Deliverance II",
+      "gpu": 37,
+      "cpu": 52,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 4070 / AMD Radeon RX 7800 XT"
+    },
+    {
+      "appId": "2001120",
+      "name": "Split Fiction",
+      "gpu": 51,
+      "cpu": 72,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3070"
+    },
+    {
+      "appId": "2623190",
+      "name": "The Elder Scrolls IV: Oblivion Remastered",
+      "gpu": 63,
+      "cpu": 88,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 2080"
+    },
+    {
+      "appId": "294100",
+      "name": "RimWorld",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "Intel HD Graphics 4000"
+    },
+    {
+      "appId": "812140",
+      "name": "Assassin's Creed® Odyssey",
+      "gpu": 177,
+      "cpu": 248,
+      "ramGb": 8,
+      "basis": "AMD Radeon R9 290 / NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "1716740",
+      "name": "Starfield",
+      "gpu": 46,
+      "cpu": 82,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6800 XT / NVIDIA GeForce RTX 2080 · AMD Ryzen 5 3600X"
+    },
+    {
+      "appId": "744900",
+      "name": "Dead Frontier 2",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "613100",
+      "name": "House Flipper",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "208650",
+      "name": "Batman™: Arkham Knight",
+      "gpu": 294,
+      "cpu": 411,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon HD 7950"
+    },
+    {
+      "appId": "620980",
+      "name": "Beat Saber",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1304930",
+      "name": "The Outlast Trials",
+      "gpu": 118,
+      "cpu": 165,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "962130",
+      "name": "Grounded",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 470"
+    },
+    {
+      "appId": "1056640",
+      "name": "Phantasy Star Online 2 New Genesis",
+      "gpu": 69,
+      "cpu": 97,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 Super"
+    },
+    {
+      "appId": "225540",
+      "name": "Just Cause™ 3",
+      "gpu": 200,
+      "cpu": 170,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780 / AMD Radeon R9 290 · Intel Core i7-3770 / AMD FX-8350"
+    },
+    {
+      "appId": "1196590",
+      "name": "Resident Evil Village",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "740130",
+      "name": "Tales of ARISE",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "1222680",
+      "name": "Need for Speed™ Heat",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 480 / NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "281990",
+      "name": "Stellaris",
+      "gpu": 438,
+      "cpu": 613,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560 Ti / AMD Radeon R7 370"
+    },
+    {
+      "appId": "1817070",
+      "name": "Marvel’s Spider-Man Remastered",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "1604030",
+      "name": "V Rising",
+      "gpu": 123,
+      "cpu": 172,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX 590"
+    },
+    {
+      "appId": "1446780",
+      "name": "MONSTER HUNTER RISE",
+      "gpu": 155,
+      "cpu": 217,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "298110",
+      "name": "Far Cry® 4",
+      "gpu": 212,
+      "cpu": 188,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 680 / AMD Radeon R9 290X · AMD FX-8350"
+    },
+    {
+      "appId": "323190",
+      "name": "Frostpunk",
+      "gpu": 153,
+      "cpu": 215,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 580"
+    },
+    {
+      "appId": "246620",
+      "name": "Plague Inc: Evolved",
+      "gpu": 812,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 650"
+    },
+    {
+      "appId": "234140",
+      "name": "Mad Max",
+      "gpu": 271,
+      "cpu": 170,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon HD 7970 · Intel Core i7-3770 / AMD FX-8350"
+    },
+    {
+      "appId": "304430",
+      "name": "INSIDE",
+      "gpu": 354,
+      "cpu": 495,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon R9 270"
+    },
+    {
+      "appId": "504230",
+      "name": "Celeste",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "Intel HD 4000"
+    },
+    {
+      "appId": "1172380",
+      "name": "STAR WARS Jedi: Fallen Order™",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX Vega 56 / NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "880940",
+      "name": "Pummel Party",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 3,
+      "basis": "NVIDIA GeForce 8800 GT"
+    },
+    {
+      "appId": "205100",
+      "name": "Dishonored",
+      "gpu": 767,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 460"
+    },
+    {
+      "appId": "466560",
+      "name": "Northgard: Definitive Edition",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7800"
+    },
+    {
+      "appId": "1057090",
+      "name": "Ori and the Will of the Wisps",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "2881650",
+      "name": "Content Warning",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 470"
+    },
+    {
+      "appId": "1943950",
+      "name": "Escape the Backrooms",
+      "gpu": 88,
+      "cpu": 87,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 6600 · Intel Core i5-10400 / AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "594570",
+      "name": "Total War: WARHAMMER II",
+      "gpu": 209,
+      "cpu": 293,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 770 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "582160",
+      "name": "Assassin's Creed® Origins",
+      "gpu": 271,
+      "cpu": 379,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon R9 280X"
+    },
+    {
+      "appId": "270880",
+      "name": "American Truck Simulator",
+      "gpu": 134,
+      "cpu": 84,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 590 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "1203620",
+      "name": "Enshrouded",
+      "gpu": 61,
+      "cpu": 86,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 Super / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "238320",
+      "name": "Outlast",
+      "gpu": 767,
+      "cpu": 1000,
+      "ramGb": 3,
+      "basis": "NVIDIA GeForce GTX 460"
+    },
+    {
+      "appId": "552520",
+      "name": "Far Cry® 5",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "2322010",
+      "name": "God of War Ragnarök",
+      "gpu": 78,
+      "cpu": 110,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 Super"
+    },
+    {
+      "appId": "1832640",
+      "name": "Mirror 2: Project X",
+      "gpu": 197,
+      "cpu": 276,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1650"
+    },
+    {
+      "appId": "1167630",
+      "name": "Teardown",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1080"
+    },
+    {
+      "appId": "601510",
+      "name": "Yu-Gi-Oh! Duel Links",
+      "gpu": 197,
+      "cpu": 276,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1650"
+    },
+    {
+      "appId": "2399830",
+      "name": "ARK: Survival Ascended",
+      "gpu": 41,
+      "cpu": 82,
+      "ramGb": 32,
+      "basis": "AMD Radeon RX 6800 / NVIDIA GeForce RTX 3080 · AMD Ryzen 5 3600X"
+    },
+    {
+      "appId": "312660",
+      "name": "Sniper Elite 4",
+      "gpu": 164,
+      "cpu": 155,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 480 · Intel Core i7-3770"
+    },
+    {
+      "appId": "2186680",
+      "name": "Warhammer 40,000: Rogue Trader",
+      "gpu": 212,
+      "cpu": 190,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 570 / NVIDIA GeForce GTX 1050 Ti · Intel Core i5-6400"
+    },
+    {
+      "appId": "200210",
+      "name": "Realm of the Mad God Exalt",
+      "gpu": 148,
+      "cpu": 84,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "460930",
+      "name": "Tom Clancy's Ghost Recon® Wildlands",
+      "gpu": 157,
+      "cpu": 220,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "918570",
+      "name": "Century: Age of Ashes",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "289650",
+      "name": "Assassin's Creed® Unity",
+      "gpu": 192,
+      "cpu": 170,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780 / AMD Radeon R9 290X · Intel Core i7-3770 / AMD FX-8350"
+    },
+    {
+      "appId": "640820",
+      "name": "Pathfinder: Kingmaker — Enhanced Plus Edition",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "AMD Radeon HD 5770"
+    },
+    {
+      "appId": "1151340",
+      "name": "Fallout 76",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "1142710",
+      "name": "Total War: WARHAMMER III",
+      "gpu": 77,
+      "cpu": 108,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1660 Ti / AMD Radeon RX 5600 XT / Intel Arc A750"
+    },
+    {
+      "appId": "1259420",
+      "name": "Days Gone",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "39210",
+      "name": "FINAL FANTASY XIV Online",
+      "gpu": 90,
+      "cpu": 126,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "1260320",
+      "name": "Party Animals",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "617290",
+      "name": "Remnant: From the Ashes",
+      "gpu": 168,
+      "cpu": 174,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 · Intel Core i5-4590"
+    },
+    {
+      "appId": "3097560",
+      "name": "Liar's Bar",
+      "gpu": 153,
+      "cpu": 215,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 580"
+    },
+    {
+      "appId": "1222700",
+      "name": "A Way Out",
+      "gpu": 186,
+      "cpu": 261,
+      "ramGb": 16,
+      "basis": "AMD Radeon R9 290"
+    },
+    {
+      "appId": "282070",
+      "name": "This War of Mine",
+      "gpu": 314,
+      "cpu": 439,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7950"
+    },
+    {
+      "appId": "244850",
+      "name": "Space Engineers",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "440900",
+      "name": "Conan Exiles Enhanced",
+      "gpu": 63,
+      "cpu": 88,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / Intel Arc A750"
+    },
+    {
+      "appId": "24240",
+      "name": "PAYDAY™ The Heist",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 260"
+    },
+    {
+      "appId": "1363080",
+      "name": "Manor Lords",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "2054970",
+      "name": "Dragon's Dogma 2",
+      "gpu": 76,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 Super / AMD Radeon RX 6600"
+    },
+    {
+      "appId": "1371980",
+      "name": "No Rest for the Wicked",
+      "gpu": 82,
+      "cpu": 114,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "1845910",
+      "name": "Dragon Age™: The Veilguard",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "1158310",
+      "name": "Crusader Kings III",
+      "gpu": 164,
+      "cpu": 230,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "2567870",
+      "name": "Chained Together",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "33230",
+      "name": "Assassin's Creed 2",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce 8800 GT"
+    },
+    {
+      "appId": "307780",
+      "name": "Mortal Kombat X",
+      "gpu": 314,
+      "cpu": 170,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7950 · Intel Core i7-3770 / AMD FX-8350"
+    },
+    {
+      "appId": "646910",
+      "name": "The Crew™ 2",
+      "gpu": 163,
+      "cpu": 149,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / NVIDIA GeForce GTX 970 / AMD Radeon RX 470 · Intel Core i5-4690K / AMD Ryzen 5 1600"
+    },
+    {
+      "appId": "845070",
+      "name": "The Awesome Adventures of Captain Spirit",
+      "gpu": 197,
+      "cpu": 276,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 280X"
+    },
+    {
+      "appId": "678950",
+      "name": "DRAGON BALL FighterZ",
+      "gpu": 345,
+      "cpu": 483,
+      "ramGb": 8,
+      "basis": "AMD Radeon HD 7870 / NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "644930",
+      "name": "They Are Billions",
+      "gpu": 300,
+      "cpu": 420,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 670"
+    },
+    {
+      "appId": "235460",
+      "name": "METAL GEAR RISING: REVENGEANCE",
+      "gpu": 812,
+      "cpu": 155,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 650 · Intel Core i7-3770"
+    },
+    {
+      "appId": "221040",
+      "name": "Resident Evil 6",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "1274570",
+      "name": "DEVOUR",
+      "gpu": 177,
+      "cpu": 248,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290"
+    },
+    {
+      "appId": "645630",
+      "name": "Car Mechanic Simulator 2018",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "2344520",
+      "name": "Diablo® IV",
+      "gpu": 175,
+      "cpu": 245,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 470"
+    },
+    {
+      "appId": "4500",
+      "name": "S.T.A.L.K.E.R.: Shadow of Chernobyl",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce 8800 GT / AMD Radeon HD 2900 XT"
+    },
+    {
+      "appId": "287390",
+      "name": "METRO Last Light Redux",
+      "gpu": 134,
+      "cpu": 84,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 590 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "1254120",
+      "name": "Bless Unleashed",
+      "gpu": 155,
+      "cpu": 217,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 3GB / AMD Radeon RX 580"
+    },
+    {
+      "appId": "35450",
+      "name": "Red Orchestra 2: Heroes of Stalingrad with Rising Storm",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 3,
+      "basis": "NVIDIA GeForce GTX 260"
+    },
+    {
+      "appId": "1790600",
+      "name": "DRAGON BALL: Sparking! ZERO",
+      "gpu": 93,
+      "cpu": 131,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX Vega 64"
+    },
+    {
+      "appId": "2479810",
+      "name": "Gray Zone Warfare",
+      "gpu": 38,
+      "cpu": 53,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 2080 Ti / NVIDIA GeForce RTX 3080 / NVIDIA GeForce RTX 4070 / NVIDIA GeForce RTX 5070 / AMD Radeon RX 6800 XT / AMD Radeon RX 7800 XT"
+    },
+    {
+      "appId": "418460",
+      "name": "Rising Storm 2: Vietnam",
+      "gpu": 314,
+      "cpu": 439,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon R9 270X"
+    },
+    {
+      "appId": "703080",
+      "name": "Planet Zoo",
+      "gpu": 128,
+      "cpu": 179,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "480490",
+      "name": "Prey",
+      "gpu": 177,
+      "cpu": 248,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290"
+    },
+    {
+      "appId": "581320",
+      "name": "Insurgency: Sandstorm",
+      "gpu": 157,
+      "cpu": 220,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980 / AMD Radeon R9 390X"
+    },
+    {
+      "appId": "1237950",
+      "name": "STAR WARS™ Battlefront™ II",
+      "gpu": 157,
+      "cpu": 220,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 3GB"
+    },
+    {
+      "appId": "516750",
+      "name": "My Summer Car",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "414700",
+      "name": "Outlast 2",
+      "gpu": 373,
+      "cpu": 522,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7850"
+    },
+    {
+      "appId": "686810",
+      "name": "Hell Let Loose",
+      "gpu": 142,
+      "cpu": 199,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 590"
+    },
+    {
+      "appId": "203140",
+      "name": "Hitman: Absolution™",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 260 / AMD Radeon HD 5770"
+    },
+    {
+      "appId": "233130",
+      "name": "Shadow Warrior",
+      "gpu": 767,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 460"
+    },
+    {
+      "appId": "815370",
+      "name": "Green Hell",
+      "gpu": 153,
+      "cpu": 215,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 580"
+    },
+    {
+      "appId": "582660",
+      "name": "Black Desert",
+      "gpu": 115,
+      "cpu": 161,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 Super"
+    },
+    {
+      "appId": "418370",
+      "name": "Resident Evil 7 Biohazard",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "502500",
+      "name": "ACE COMBAT™ 7: SKIES UNKNOWN",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1092790",
+      "name": "Inscryption",
+      "gpu": 363,
+      "cpu": 203,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 · Intel Core i5-3470"
+    },
+    {
+      "appId": "678960",
+      "name": "CODE VEIN",
+      "gpu": 242,
+      "cpu": 339,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R9 380X"
+    },
+    {
+      "appId": "414340",
+      "name": "Hellblade: Senua's Sacrifice",
+      "gpu": 251,
+      "cpu": 187,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 770 / AMD Radeon R9 280X · Intel Core i5-3570K / AMD FX-8350"
+    },
+    {
+      "appId": "209000",
+      "name": "Batman™: Arkham Origins",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "949230",
+      "name": "Cities: Skylines II",
+      "gpu": 38,
+      "cpu": 53,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3080 / AMD Radeon RX 6800 XT"
+    },
+    {
+      "appId": "1466860",
+      "name": "Age of Empires IV: Anniversary Edition",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 570"
+    },
+    {
+      "appId": "976310",
+      "name": "Mortal Kombat\u00A011",
+      "gpu": 175,
+      "cpu": 241,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780 / NVIDIA GeForce GTX 1060 / AMD Radeon R9 290 / AMD Radeon RX 570 · AMD FX-6300"
+    },
+    {
+      "appId": "641990",
+      "name": "The Escapists 2",
+      "gpu": 431,
+      "cpu": 241,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750 / AMD Radeon R7 370 · AMD FX-6300"
+    },
+    {
+      "appId": "261640",
+      "name": "Borderlands: The Pre-Sequel",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "21690",
+      "name": "Resident Evil 5",
+      "gpu": 708,
+      "cpu": 991,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 650 / AMD Radeon HD 7770"
+    },
+    {
+      "appId": "1361210",
+      "name": "Warhammer 40,000: Darktide",
+      "gpu": 75,
+      "cpu": 106,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "1030840",
+      "name": "Mafia: Definitive Edition",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1080"
+    },
+    {
+      "appId": "8500",
+      "name": "EVE Online",
+      "gpu": 148,
+      "cpu": 118,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · Intel Core i7-7700 / AMD Ryzen 7 1700"
+    },
+    {
+      "appId": "1643320",
+      "name": "S.T.A.L.K.E.R. 2: Heart of Chornobyl",
+      "gpu": 41,
+      "cpu": 58,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 3070 / NVIDIA GeForce RTX 4070 / AMD Radeon RX 6800 XT · AMD Ryzen 7 5800X"
+    },
+    {
+      "appId": "495420",
+      "name": "State of Decay 2: Juggernaut Edition",
+      "gpu": 219,
+      "cpu": 307,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1650 / AMD Radeon R9 380"
+    },
+    {
+      "appId": "1184370",
+      "name": "Pathfinder: Wrath of the Righteous - Enhanced Edition",
+      "gpu": 288,
+      "cpu": 402,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 Ti"
+    },
+    {
+      "appId": "232090",
+      "name": "Killing Floor 2",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "2680010",
+      "name": "The First Berserker: Khazan",
+      "gpu": 62,
+      "cpu": 87,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 / Intel Arc A750"
+    },
+    {
+      "appId": "513710",
+      "name": "SCUM",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "236110",
+      "name": "Dungeon Defenders II",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 260"
+    },
+    {
+      "appId": "858820",
+      "name": "Tribes of Midgard",
+      "gpu": 186,
+      "cpu": 241,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780 Ti / AMD Radeon R9 290 · AMD FX-6300"
+    },
+    {
+      "appId": "952060",
+      "name": "Resident Evil 3",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "1313140",
+      "name": "Cult of the Lamb",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "254700",
+      "name": "Resident Evil 4 (2005)",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "200260",
+      "name": "Batman: Arkham City - Game of the Year Edition",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce 8800 GT"
+    },
+    {
+      "appId": "1888160",
+      "name": "ARMORED CORE™ VI FIRES OF RUBICON™",
+      "gpu": 91,
+      "cpu": 128,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 590 / Intel Arc A750"
+    },
+    {
+      "appId": "967050",
+      "name": "Pacify",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "204100",
+      "name": "Max Payne 3",
+      "gpu": 256,
+      "cpu": 358,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 680 / AMD Radeon HD 7970"
+    },
+    {
+      "appId": "2406770",
+      "name": "Bodycam",
+      "gpu": 81,
+      "cpu": 113,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6600 / NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "1217060",
+      "name": "Gunfire Reborn",
+      "gpu": 157,
+      "cpu": 220,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "287700",
+      "name": "METAL GEAR SOLID V: THE PHANTOM PAIN",
+      "gpu": 314,
+      "cpu": 131,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 · Intel Core i7-4790"
+    },
+    {
+      "appId": "635260",
+      "name": "CarX Drift Racing Online",
+      "gpu": 148,
+      "cpu": 106,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · AMD Ryzen 5 2600"
+    },
+    {
+      "appId": "823130",
+      "name": "Totally Accurate Battlegrounds",
+      "gpu": 189,
+      "cpu": 265,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1650 / AMD Radeon RX 470"
+    },
+    {
+      "appId": "779340",
+      "name": "Total War: THREE KINGDOMS",
+      "gpu": 153,
+      "cpu": 215,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 Fury"
+    },
+    {
+      "appId": "2215430",
+      "name": "Ghost of Tsushima DIRECTOR'S CUT",
+      "gpu": 90,
+      "cpu": 126,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "750920",
+      "name": "Shadow of the Tomb Raider: Definitive Edition",
+      "gpu": 152,
+      "cpu": 137,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480 · AMD Ryzen 5 1600"
+    },
+    {
+      "appId": "493340",
+      "name": "Planet Coaster",
+      "gpu": 186,
+      "cpu": 261,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 980 / AMD Radeon R9 380"
+    },
+    {
+      "appId": "454650",
+      "name": "DRAGON BALL XENOVERSE 2",
+      "gpu": 383,
+      "cpu": 537,
+      "ramGb": 4,
+      "basis": "AMD Radeon HD 7850"
+    },
+    {
+      "appId": "2051620",
+      "name": "Enlisted",
+      "gpu": 82,
+      "cpu": 114,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1080 / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "1248130",
+      "name": "Farming Simulator 22",
+      "gpu": 155,
+      "cpu": 217,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "1466640",
+      "name": "Road 96 \uD83D\uDEE3️",
+      "gpu": 78,
+      "cpu": 102,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 Super · Intel Core i5-8600K"
+    },
+    {
+      "appId": "570940",
+      "name": "DARK SOULS™: REMASTERED",
+      "gpu": 345,
+      "cpu": 483,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7870"
+    },
+    {
+      "appId": "736590",
+      "name": "Operation: Harsh Doorstop",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "1824220",
+      "name": "Chivalry 2",
+      "gpu": 110,
+      "cpu": 120,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX Vega 56 · Intel Core i7-6700"
+    },
+    {
+      "appId": "307690",
+      "name": "Sleeping Dogs: Definitive Edition",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 560 / Intel HD Graphics 4000"
+    },
+    {
+      "appId": "511470",
+      "name": "Glass Masquerade",
+      "gpu": 812,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 650"
+    },
+    {
+      "appId": "248570",
+      "name": "Toribash",
+      "gpu": 368,
+      "cpu": 110,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 950 / AMD Radeon RX 460 · Intel Core i5-8400"
+    },
+    {
+      "appId": "524220",
+      "name": "NieR:Automata™",
+      "gpu": 179,
+      "cpu": 251,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 980 / AMD Radeon R9 380X"
+    },
+    {
+      "appId": "2551020",
+      "name": "One-armed robber",
+      "gpu": 363,
+      "cpu": 163,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 · Intel Core i5-7400"
+    },
+    {
+      "appId": "1262350",
+      "name": "SIGNALIS",
+      "gpu": 321,
+      "cpu": 449,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon HD 7870"
+    },
+    {
+      "appId": "2021910",
+      "name": "FPS Chess",
+      "gpu": 226,
+      "cpu": 317,
+      "ramGb": 8,
+      "basis": "AMD Radeon R9 290 / NVIDIA GeForce GTX 1050 Ti"
+    },
+    {
+      "appId": "568220",
+      "name": "Lobotomy Corporation | Monster Management Simulation",
+      "gpu": 920,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 550 Ti"
+    },
+    {
+      "appId": "1659040",
+      "name": "HITMAN World of Assassination",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "527230",
+      "name": "For The King",
+      "gpu": 412,
+      "cpu": 577,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750 Ti / AMD Radeon HD 7850"
+    },
+    {
+      "appId": "2527500",
+      "name": "MiSide",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "606150",
+      "name": "Moonlighter",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "3070070",
+      "name": "TCG Card Shop Simulator",
+      "gpu": 110,
+      "cpu": 190,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070 · Intel Core i5-6400"
+    },
+    {
+      "appId": "648350",
+      "name": "Jurassic World Evolution",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "1282100",
+      "name": "REMNANT II®",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "243470",
+      "name": "Watch_Dogs™",
+      "gpu": 452,
+      "cpu": 170,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 560 Ti / AMD Radeon HD 7850 · Intel Core i7-3770 / AMD FX-8350"
+    },
+    {
+      "appId": "2300320",
+      "name": "Farming Simulator 25",
+      "gpu": 66,
+      "cpu": 92,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 5700 XT / Intel Arc A750"
+    },
+    {
+      "appId": "2515020",
+      "name": "FINAL FANTASY XVI",
+      "gpu": 59,
+      "cpu": 82,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6700 XT / NVIDIA GeForce RTX 2080"
+    },
+    {
+      "appId": "680420",
+      "name": "OUTRIDERS",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "485510",
+      "name": "Nioh: Complete Edition",
+      "gpu": 175,
+      "cpu": 245,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon R9 380X"
+    },
+    {
+      "appId": "488790",
+      "name": "South Park™: The Fractured But Whole™",
+      "gpu": 216,
+      "cpu": 302,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 670 / NVIDIA GeForce GTX 960 / NVIDIA GeForce GTX 1060 / AMD Radeon R9 280X / AMD Radeon R9 380 / AMD Radeon RX 470"
+    },
+    {
+      "appId": "1557740",
+      "name": "ROUNDS",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "554620",
+      "name": "Life is Strange: Before the Storm",
+      "gpu": 406,
+      "cpu": 568,
+      "ramGb": 6,
+      "basis": "AMD Radeon RX 460"
+    },
+    {
+      "appId": "629730",
+      "name": "Blade and Sorcery",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "239160",
+      "name": "Thief",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "1030830",
+      "name": "Mafia II: Definitive Edition",
+      "gpu": 192,
+      "cpu": 268,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "774361",
+      "name": "Blasphemous",
+      "gpu": 920,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 650 / AMD Radeon HD 5770"
+    },
+    {
+      "appId": "636480",
+      "name": "Ravenfield",
+      "gpu": 531,
+      "cpu": 743,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 750"
+    },
+    {
+      "appId": "1139900",
+      "name": "Ghostrunner",
+      "gpu": 168,
+      "cpu": 128,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 · Intel Core i7-6700K / AMD Ryzen 5 1500X"
+    },
+    {
+      "appId": "1850570",
+      "name": "DEATH STRANDING DIRECTOR'S CUT",
+      "gpu": 142,
+      "cpu": 199,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 590"
+    },
+    {
+      "appId": "1147560",
+      "name": "Skul: The Hero Slayer",
+      "gpu": 493,
+      "cpu": 690,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 460 / AMD Radeon HD 7800"
+    },
+    {
+      "appId": "1687950",
+      "name": "Persona 5 Royal",
+      "gpu": 321,
+      "cpu": 449,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon HD 7870"
+    },
+    {
+      "appId": "492720",
+      "name": "Tropico 6",
+      "gpu": 246,
+      "cpu": 345,
+      "ramGb": 16,
+      "basis": "AMD Radeon R9 380"
+    },
+    {
+      "appId": "753640",
+      "name": "Outer Wilds",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "870780",
+      "name": "CONTROL Ultimate Edition",
+      "gpu": 118,
+      "cpu": 166,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 580 / NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "704850",
+      "name": "Thief Simulator",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "324800",
+      "name": "Shadow Warrior 2",
+      "gpu": 193,
+      "cpu": 271,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 / AMD Radeon HD 7970"
+    },
+    {
+      "appId": "304240",
+      "name": "Resident Evil",
+      "gpu": 74,
+      "cpu": 99,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560 / NVIDIA GeForce RTX 2080 / AMD Radeon RX 6800 · AMD Ryzen 7 2700X"
+    },
+    {
+      "appId": "621060",
+      "name": "PC Building Simulator",
+      "gpu": 294,
+      "cpu": 199,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon R9 285 · Intel Core i5-2500K"
+    },
+    {
+      "appId": "612880",
+      "name": "Wolfenstein II: The New Colossus",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 470"
+    },
+    {
+      "appId": "1404210",
+      "name": "Red Dead Online",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "2141730",
+      "name": "Backrooms: Escape Together",
+      "gpu": 79,
+      "cpu": 111,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 6600"
+    },
+    {
+      "appId": "325610",
+      "name": "Total War: ATTILA",
+      "gpu": 552,
+      "cpu": 773,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560 Ti"
+    },
+    {
+      "appId": "1213210",
+      "name": "Command & Conquer™ Remastered Collection",
+      "gpu": 373,
+      "cpu": 522,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7850"
+    },
+    {
+      "appId": "1190000",
+      "name": "Car Mechanic Simulator 2021",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "509980",
+      "name": "BIGFOOT",
+      "gpu": 150,
+      "cpu": 210,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 980"
+    },
+    {
+      "appId": "1061910",
+      "name": "Metal: Hellsinger",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "860510",
+      "name": "Little Nightmares II",
+      "gpu": 321,
+      "cpu": 449,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon HD 7870"
+    },
+    {
+      "appId": "41700",
+      "name": "S.T.A.L.K.E.R.: Call of Pripyat",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce 8800 GT / AMD Radeon HD 2900 XT"
+    },
+    {
+      "appId": "311560",
+      "name": "Assassin’s Creed® Rogue",
+      "gpu": 690,
+      "cpu": 966,
+      "ramGb": null,
+      "basis": "AMD Radeon HD 6870"
+    },
+    {
+      "appId": "519860",
+      "name": "DUSK",
+      "gpu": 767,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 460"
+    },
+    {
+      "appId": "933110",
+      "name": "Age of Empires III: Definitive Edition",
+      "gpu": 145,
+      "cpu": 203,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980 / AMD Radeon R9 Fury"
+    },
+    {
+      "appId": "752590",
+      "name": "A Plague Tale: Innocence",
+      "gpu": 164,
+      "cpu": 230,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "719040",
+      "name": "Wasteland 3",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "851850",
+      "name": "DRAGON BALL Z: KAKAROT",
+      "gpu": 251,
+      "cpu": 351,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R9 280X"
+    },
+    {
+      "appId": "228380",
+      "name": "Wreckfest",
+      "gpu": 223,
+      "cpu": 312,
+      "ramGb": 8,
+      "basis": "AMD Radeon R9 380X"
+    },
+    {
+      "appId": "1325200",
+      "name": "Nioh 2 – The Complete Edition",
+      "gpu": 115,
+      "cpu": 161,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 Super"
+    },
+    {
+      "appId": "1809540",
+      "name": "Nine Sols",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "1462040",
+      "name": "FINAL FANTASY VII REMAKE INTERGRADE",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1080"
+    },
+    {
+      "appId": "1262580",
+      "name": "Need for Speed™ Payback",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 480 / NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "2280",
+      "name": "DOOM + DOOM II",
+      "gpu": 104,
+      "cpu": 142,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070 Ti / AMD Radeon RX Vega 56 · Intel Core i5-6600K / AMD Ryzen 5 1600"
+    },
+    {
+      "appId": "805550",
+      "name": "Assetto Corsa Competizione",
+      "gpu": 128,
+      "cpu": 179,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "1987080",
+      "name": "Inside the Backrooms",
+      "gpu": 321,
+      "cpu": 449,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 560 / NVIDIA GeForce GTX 1050 Ti"
+    },
+    {
+      "appId": "924970",
+      "name": "Back 4 Blood",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "460790",
+      "name": "Bayonetta",
+      "gpu": 314,
+      "cpu": 179,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 · Intel Core i5-4460"
+    },
+    {
+      "appId": "1774580",
+      "name": "STAR WARS Jedi: Survivor™",
+      "gpu": 55,
+      "cpu": 77,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "699130",
+      "name": "World War Z",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 16,
+      "basis": "AMD Radeon R9 280 / NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "1384160",
+      "name": "GUILTY GEAR -STRIVE-",
+      "gpu": 363,
+      "cpu": 155,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660 · Intel Core i7-3770"
+    },
+    {
+      "appId": "1562430",
+      "name": "DREDGE",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 6,
+      "basis": "AMD Radeon HD 5770"
+    },
+    {
+      "appId": "2456740",
+      "name": "inZOI",
+      "gpu": 42,
+      "cpu": 59,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3070 / AMD Radeon RX 6800 XT"
+    },
+    {
+      "appId": "602960",
+      "name": "Barotrauma",
+      "gpu": 337,
+      "cpu": 471,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 950"
+    },
+    {
+      "appId": "838350",
+      "name": "The Scroll of Taiwu : Beyond The Dome",
+      "gpu": 321,
+      "cpu": 449,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1050 Ti / AMD Radeon RX 560"
+    },
+    {
+      "appId": "1490890",
+      "name": "Demon Slayer -Kimetsu no Yaiba- The Hinokami Chronicles",
+      "gpu": 288,
+      "cpu": 402,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon R9 280"
+    },
+    {
+      "appId": "834910",
+      "name": "ATLAS",
+      "gpu": 294,
+      "cpu": 209,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 770 / AMD Radeon HD 7870 · Intel Core i5-2400 / AMD FX-8320"
+    },
+    {
+      "appId": "48190",
+      "name": "Assassin’s Creed® Brotherhood",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce 8800 GT"
+    },
+    {
+      "appId": "1888930",
+      "name": "The Last of Us™ Part I",
+      "gpu": 76,
+      "cpu": 106,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 5700 XT / AMD Radeon RX 6600 / NVIDIA GeForce RTX 2070 Super / NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "637650",
+      "name": "FINAL FANTASY XV WINDOWS EDITION",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "268050",
+      "name": "The Evil Within",
+      "gpu": 300,
+      "cpu": 420,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 670"
+    },
+    {
+      "appId": "552100",
+      "name": "Brick Rigs",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R9 280"
+    },
+    {
+      "appId": "322500",
+      "name": "SUPERHOT",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "1599600",
+      "name": "PlateUp!",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "668580",
+      "name": "Atomic Heart",
+      "gpu": 63,
+      "cpu": 89,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6700 XT / NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "573090",
+      "name": "Stormworks: Build and Rescue",
+      "gpu": 575,
+      "cpu": 805,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 550"
+    },
+    {
+      "appId": "780310",
+      "name": "The Riftbreaker",
+      "gpu": 63,
+      "cpu": 88,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce RTX 2080"
+    },
+    {
+      "appId": "2310",
+      "name": "Quake",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "1268750",
+      "name": "Starship Troopers: Extermination",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "794260",
+      "name": "Outward Definitive Edition",
+      "gpu": 265,
+      "cpu": 217,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 · Intel Core i5-2400"
+    },
+    {
+      "appId": "1252330",
+      "name": "DEATHLOOP",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "1621690",
+      "name": "Core Keeper",
+      "gpu": 260,
+      "cpu": 365,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 Ti / AMD Radeon R9 280X"
+    },
+    {
+      "appId": "979690",
+      "name": "The Ascent",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "560130",
+      "name": "Pillars of Eternity II: Deadfire",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "625960",
+      "name": "Stoneshard",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "1241100",
+      "name": "POLYGON",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "939960",
+      "name": "Far Cry® New Dawn",
+      "gpu": 170,
+      "cpu": 134,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290X · Intel Core i7-4790 / AMD Ryzen 5 1600"
+    },
+    {
+      "appId": "960990",
+      "name": "Beyond: Two Souls",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "823500",
+      "name": "BONEWORKS",
+      "gpu": 91,
+      "cpu": 110,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1080 · Intel Core i7-7700K"
+    },
+    {
+      "appId": "1040200",
+      "name": "Crime Scene Cleaner",
+      "gpu": 69,
+      "cpu": 97,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 Super"
+    },
+    {
+      "appId": "1335200",
+      "name": "Action Taimanin",
+      "gpu": 337,
+      "cpu": 471,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 950"
+    },
+    {
+      "appId": "237930",
+      "name": "Transistor",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "AMD Radeon HD 5450"
+    },
+    {
+      "appId": "287290",
+      "name": "Resident Evil Revelations 2",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "420290",
+      "name": "Blackwake",
+      "gpu": 177,
+      "cpu": 188,
+      "ramGb": 12,
+      "basis": "AMD Radeon R9 290 / NVIDIA GeForce GTX 970 · AMD FX-8350"
+    },
+    {
+      "appId": "1286680",
+      "name": "Tiny Tina's Wonderlands",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1549970",
+      "name": "Aliens: Fireteam Elite",
+      "gpu": 152,
+      "cpu": 163,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 480 / NVIDIA GeForce GTX 1060 · Intel Core i5-7400"
+    },
+    {
+      "appId": "585420",
+      "name": "Trailmakers",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1080"
+    },
+    {
+      "appId": "992300",
+      "name": "嗜血印 Bloody Spell",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "707010",
+      "name": "Will To Live Online",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "1971870",
+      "name": "Mortal Kombat 1",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "1672970",
+      "name": "Minecraft Dungeons",
+      "gpu": 345,
+      "cpu": 483,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7870"
+    },
+    {
+      "appId": "1686940",
+      "name": "Bopl Battle",
+      "gpu": 197,
+      "cpu": 276,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1650"
+    },
+    {
+      "appId": "1846380",
+      "name": "Need for Speed™ Unbound",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "1388770",
+      "name": "Cruelty Squad",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "1250410",
+      "name": "Microsoft Flight Simulator (2020) 40th Anniversary Edition",
+      "gpu": 153,
+      "cpu": 215,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 590"
+    },
+    {
+      "appId": "569480",
+      "name": "Kingdoms and Castles",
+      "gpu": 345,
+      "cpu": 220,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7870 · Intel Core i5-3470 / AMD FX-6300"
+    },
+    {
+      "appId": "527430",
+      "name": "Warhammer 40,000: Inquisitor - Martyr",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "1296830",
+      "name": "暖雪 Warm Snow",
+      "gpu": 337,
+      "cpu": 471,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 950"
+    },
+    {
+      "appId": "1017180",
+      "name": "The Long Drive",
+      "gpu": 288,
+      "cpu": 402,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 Ti"
+    },
+    {
+      "appId": "961200",
+      "name": "Predecessor",
+      "gpu": 100,
+      "cpu": 140,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1660 Ti / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "493520",
+      "name": "GTFO",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 5500 XT"
+    },
+    {
+      "appId": "1284410",
+      "name": "GWENT: The Witcher Card Game",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "690790",
+      "name": "DiRT Rally 2.0",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX Vega 56 / NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "1328670",
+      "name": "Mass Effect™ Legendary Edition",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "1435790",
+      "name": "Escape Simulator",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "920210",
+      "name": "LEGO® Star Wars™: The Skywalker Saga",
+      "gpu": 200,
+      "cpu": 280,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780 / AMD Radeon R9 290"
+    },
+    {
+      "appId": "1049410",
+      "name": "Superliminal",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "257510",
+      "name": "The Talos Principle",
+      "gpu": 164,
+      "cpu": 230,
+      "ramGb": 4,
+      "basis": "AMD Radeon RX 480 / NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "535930",
+      "name": "Two Point Hospital",
+      "gpu": 167,
+      "cpu": 234,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / NVIDIA GeForce GTX 780 / AMD Radeon RX 580 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "529340",
+      "name": "Victoria 3",
+      "gpu": 105,
+      "cpu": 148,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 5600 XT · Intel Core i5-6600K"
+    },
+    {
+      "appId": "955050",
+      "name": "Bright Memory",
+      "gpu": 157,
+      "cpu": 124,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon R9 390 · Intel Core i7-4790K"
+    },
+    {
+      "appId": "460920",
+      "name": "Steep™",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "669330",
+      "name": "Mechabellum",
+      "gpu": 59,
+      "cpu": 82,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2080 / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "1501750",
+      "name": "Lords of the Fallen",
+      "gpu": 63,
+      "cpu": 84,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2080 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "33930",
+      "name": "Arma 2: Operation Arrowhead",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 260 / AMD Radeon HD 5770"
+    },
+    {
+      "appId": "916440",
+      "name": "Anno 1800",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 480"
+    },
+    {
+      "appId": "1129580",
+      "name": "Medieval Dynasty",
+      "gpu": 75,
+      "cpu": 105,
+      "ramGb": 16,
+      "basis": "Intel Arc A750 / NVIDIA GeForce GTX 1660"
+    },
+    {
+      "appId": "448510",
+      "name": "Overcooked",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce 8800 GT"
+    },
+    {
+      "appId": "637090",
+      "name": "BATTLETECH",
+      "gpu": 271,
+      "cpu": 379,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 670 / AMD Radeon R9 285"
+    },
+    {
+      "appId": "1693980",
+      "name": "Dead Space",
+      "gpu": 63,
+      "cpu": 89,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6700 XT / NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "2208920",
+      "name": "Assassin's Creed Valhalla",
+      "gpu": 256,
+      "cpu": 358,
+      "ramGb": 8,
+      "basis": "AMD Radeon R9 380 / NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "474960",
+      "name": "Quantum Break",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "2138710",
+      "name": "Sifu",
+      "gpu": 166,
+      "cpu": 233,
+      "ramGb": 10,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 390X"
+    },
+    {
+      "appId": "1465360",
+      "name": "SnowRunner",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "633230",
+      "name": "NARUTO TO BORUTO: SHINOBI STRIKER",
+      "gpu": 337,
+      "cpu": 471,
+      "ramGb": 6,
+      "basis": "AMD Radeon R9 270X / NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "274940",
+      "name": "Depth",
+      "gpu": 333,
+      "cpu": 466,
+      "ramGb": 4,
+      "basis": "AMD Radeon R9 270 / NVIDIA GeForce GTX 660 Ti"
+    },
+    {
+      "appId": "1238860",
+      "name": "Battlefield 4™",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "774861",
+      "name": "Project Winter",
+      "gpu": 168,
+      "cpu": 158,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 · Intel Core i5-6600"
+    },
+    {
+      "appId": "298630",
+      "name": "The Escapists",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "Intel HD Graphics 4000"
+    },
+    {
+      "appId": "969990",
+      "name": "SpongeBob SquarePants: Battle for Bikini Bottom - Rehydrated",
+      "gpu": 288,
+      "cpu": 402,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 Ti"
+    },
+    {
+      "appId": "1272080",
+      "name": "PAYDAY 3",
+      "gpu": 99,
+      "cpu": 139,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1080 / AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "1113000",
+      "name": "Persona 4 Golden",
+      "gpu": 726,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 460 / AMD Radeon HD 6870"
+    },
+    {
+      "appId": "601430",
+      "name": "The Evil Within 2",
+      "gpu": 152,
+      "cpu": 137,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480 · Intel Core i7-4770"
+    },
+    {
+      "appId": "469600",
+      "name": "Legion TD 2 - Multiplayer Tower Defense",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "246900",
+      "name": "Viscera Cleanup Detail",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "934700",
+      "name": "Dead Island 2",
+      "gpu": 48,
+      "cpu": 67,
+      "ramGb": 10,
+      "basis": "AMD Radeon RX 6800 XT / NVIDIA GeForce RTX 2070 Super"
+    },
+    {
+      "appId": "1527950",
+      "name": "Wartales",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1080"
+    },
+    {
+      "appId": "729040",
+      "name": "Borderlands Game of the Year Enhanced",
+      "gpu": 345,
+      "cpu": 483,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon HD 7850"
+    },
+    {
+      "appId": "704270",
+      "name": "Generation Zero®",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R9 280"
+    },
+    {
+      "appId": "1062090",
+      "name": "Timberborn",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "1244460",
+      "name": "Jurassic World Evolution 2",
+      "gpu": 133,
+      "cpu": 186,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "311340",
+      "name": "METAL GEAR SOLID V: GROUND ZEROES",
+      "gpu": 314,
+      "cpu": 131,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 760 · Intel Core i7-4790"
+    },
+    {
+      "appId": "1659420",
+      "name": "UNCHARTED™: Legacy of Thieves Collection",
+      "gpu": 155,
+      "cpu": 142,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 570 · Intel Core i7-4770 / AMD Ryzen 5 1500X"
+    },
+    {
+      "appId": "2000950",
+      "name": "Call of Duty®: Modern Warfare®",
+      "gpu": 153,
+      "cpu": 215,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 970 / NVIDIA GeForce GTX 1660 / AMD Radeon R9 390 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "597170",
+      "name": "Clone Drone in the Danger Zone",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "AMD Radeon HD 5770"
+    },
+    {
+      "appId": "1718570",
+      "name": "ASTLIBRA Revision",
+      "gpu": 563,
+      "cpu": 789,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 460 / NVIDIA GeForce GTX 750 Ti"
+    },
+    {
+      "appId": "288470",
+      "name": "Fable Anniversary",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 260"
+    },
+    {
+      "appId": "960910",
+      "name": "Heavy Rain",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "285920",
+      "name": "TerraTech",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 260"
+    },
+    {
+      "appId": "235540",
+      "name": "Warhammer: End Times - Vermintide",
+      "gpu": 200,
+      "cpu": 124,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780 / AMD Radeon R9 290 · Intel Core i7-4790K"
+    },
+    {
+      "appId": "813630",
+      "name": "Supraland",
+      "gpu": 167,
+      "cpu": 234,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 1060 / NVIDIA GeForce GTX 780 / AMD Radeon RX 580 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "3117820",
+      "name": "Sultan's Game",
+      "gpu": 110,
+      "cpu": 110,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 1070 · Intel Core i7-7700K"
+    },
+    {
+      "appId": "882100",
+      "name": "XCOM®: Chimera Squad",
+      "gpu": 166,
+      "cpu": 233,
+      "ramGb": 4,
+      "basis": "AMD Radeon R9 290 / NVIDIA GeForce GTX 980"
+    },
+    {
+      "appId": "208580",
+      "name": "STAR WARS™ Knights of the Old Republic™ II - The Sith Lords™",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "AMD Radeon HD 5450"
+    },
+    {
+      "appId": "1627720",
+      "name": "Lies of P",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6500 XT / NVIDIA GeForce GTX 1660"
+    },
+    {
+      "appId": "1382330",
+      "name": "Persona® 5 Strikers",
+      "gpu": 256,
+      "cpu": 358,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 680 / AMD Radeon HD 7970"
+    },
+    {
+      "appId": "731490",
+      "name": "Crash Bandicoot™ N. Sane Trilogy",
+      "gpu": 373,
+      "cpu": 522,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7850"
+    },
+    {
+      "appId": "692850",
+      "name": "Bloodstained: Ritual of the Night",
+      "gpu": 226,
+      "cpu": 202,
+      "ramGb": 8,
+      "basis": "AMD Radeon R9 290 / NVIDIA GeForce GTX 1050 Ti · AMD FX-6300 / Intel Core i5-4590"
+    },
+    {
+      "appId": "2161700",
+      "name": "Persona 3 Reload",
+      "gpu": 184,
+      "cpu": 258,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1650 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "690830",
+      "name": "Foundation",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "1544020",
+      "name": "The Callisto Protocol™",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "994280",
+      "name": "Gujian3(古剑奇谭三)",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "2772750",
+      "name": "Age of History 3",
+      "gpu": 767,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 460"
+    },
+    {
+      "appId": "1954200",
+      "name": "Kena: Bridge of Spirits",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX Vega 56 / NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "1262540",
+      "name": "Need for Speed™",
+      "gpu": 177,
+      "cpu": 248,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290"
+    },
+    {
+      "appId": "2290180",
+      "name": "Riders Republic",
+      "gpu": 155,
+      "cpu": 217,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "1161580",
+      "name": "Hardspace: Shipbreaker",
+      "gpu": 116,
+      "cpu": 162,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980 Ti / AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "1066780",
+      "name": "Transport Fever 2",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "1128920",
+      "name": "EVERSPACE™ 2",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "553420",
+      "name": "TUNIC",
+      "gpu": 80,
+      "cpu": 112,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1080 Ti / AMD Radeon RX Vega 64"
+    },
+    {
+      "appId": "1089090",
+      "name": "ONE PIECE: PIRATE WARRIORS 4",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "690640",
+      "name": "Trine 4: The Nightmare Prince",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R9 280"
+    },
+    {
+      "appId": "1238000",
+      "name": "Mass Effect™: Andromeda Deluxe Edition",
+      "gpu": 159,
+      "cpu": 222,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 3GB / AMD Radeon RX 480"
+    },
+    {
+      "appId": "544920",
+      "name": "Darwin Project",
+      "gpu": 155,
+      "cpu": 217,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1449690",
+      "name": "The Walking Dead: The Telltale Definitive Series",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 3,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "996580",
+      "name": "Spyro™ Reignited Trilogy",
+      "gpu": 200,
+      "cpu": 280,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "962730",
+      "name": "Skater XL - The Ultimate Skateboarding Game",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "2651280",
+      "name": "Marvel's Spider-Man 2",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "20510",
+      "name": "S.T.A.L.K.E.R.: Clear Sky",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce 8800 GT / AMD Radeon HD 2900 XT"
+    },
+    {
+      "appId": "1062520",
+      "name": "Dinkum",
+      "gpu": 81,
+      "cpu": 57,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6600 · Intel Core i5-12600K / AMD Ryzen 5 5600X"
+    },
+    {
+      "appId": "1262560",
+      "name": "Need for Speed™ Most Wanted",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "1922560",
+      "name": "Plants vs. Zombies™ Garden Warfare 2: Deluxe Edition",
+      "gpu": 186,
+      "cpu": 158,
+      "ramGb": 16,
+      "basis": "AMD Radeon R9 290 · Intel Core i5-6600"
+    },
+    {
+      "appId": "274520",
+      "name": "Darkwood",
+      "gpu": 329,
+      "cpu": 259,
+      "ramGb": 8,
+      "basis": "AMD Radeon HD 7870 · Intel Core i5-2400 / AMD FX-4300"
+    },
+    {
+      "appId": "1044720",
+      "name": "Farthest Frontier",
+      "gpu": 145,
+      "cpu": 203,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980 / AMD Radeon RX 590"
+    },
+    {
+      "appId": "997010",
+      "name": "Police Simulator: Patrol Officers",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "2420110",
+      "name": "Horizon Forbidden West™ Complete Edition",
+      "gpu": 77,
+      "cpu": 84,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "1496790",
+      "name": "Gotham Knights",
+      "gpu": 74,
+      "cpu": 69,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 5700 XT · AMD Ryzen 5 5600X"
+    },
+    {
+      "appId": "1562700",
+      "name": "SANABI",
+      "gpu": 493,
+      "cpu": 690,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 460 / AMD Radeon HD 7800"
+    },
+    {
+      "appId": "847370",
+      "name": "Sunset Overdrive",
+      "gpu": 158,
+      "cpu": 221,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon R9 290X / AMD Radeon RX 480"
+    },
+    {
+      "appId": "2679460",
+      "name": "Metaphor: ReFantazio",
+      "gpu": 164,
+      "cpu": 230,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "867210",
+      "name": "Songs of Conquest",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "1934680",
+      "name": "Age of Mythology: Retold",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "1097840",
+      "name": "Gears 5",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 570 / NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "1171690",
+      "name": "Wayfinder",
+      "gpu": 51,
+      "cpu": 72,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3070"
+    },
+    {
+      "appId": "1985810",
+      "name": "Call of Duty®: Black Ops Cold War",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 970 / NVIDIA GeForce GTX 1660 Super / AMD Radeon R9 390 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "555160",
+      "name": "Pavlov",
+      "gpu": 63,
+      "cpu": 88,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2080"
+    },
+    {
+      "appId": "493490",
+      "name": "City Car Driving",
+      "gpu": 531,
+      "cpu": 743,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 750"
+    },
+    {
+      "appId": "1336490",
+      "name": "Against the Storm",
+      "gpu": 170,
+      "cpu": 200,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290X · Intel Core i5-2500K / AMD FX-8320"
+    },
+    {
+      "appId": "1169040",
+      "name": "Necesse",
+      "gpu": 812,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 650"
+    },
+    {
+      "appId": "1113120",
+      "name": "IXION",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "682990",
+      "name": "Drug Dealer Simulator",
+      "gpu": 493,
+      "cpu": 690,
+      "ramGb": 8,
+      "basis": "AMD Radeon R7 260X"
+    },
+    {
+      "appId": "2221490",
+      "name": "Tom Clancy’s The Division® 2",
+      "gpu": 164,
+      "cpu": 230,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 480 / NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "1222730",
+      "name": "STAR WARS™: Squadrons",
+      "gpu": 141,
+      "cpu": 197,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 480 / AMD Radeon RX 570 / NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "780290",
+      "name": "Gloomhaven",
+      "gpu": 102,
+      "cpu": 143,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX Vega 64"
+    },
+    {
+      "appId": "1681430",
+      "name": "RoboCop: Rogue City",
+      "gpu": 47,
+      "cpu": 65,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3070 / AMD Radeon RX 6800"
+    },
+    {
+      "appId": "1874880",
+      "name": "Arma Reforger",
+      "gpu": 90,
+      "cpu": 126,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "606880",
+      "name": "GreedFall",
+      "gpu": 145,
+      "cpu": 203,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980 / AMD Radeon RX 590"
+    },
+    {
+      "appId": "1096530",
+      "name": "Solasta: Crown of the Magister",
+      "gpu": 142,
+      "cpu": 199,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 590 / NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "557340",
+      "name": "My Friend Pedro",
+      "gpu": 314,
+      "cpu": 439,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 760"
+    },
+    {
+      "appId": "859580",
+      "name": "Imperator: Rome",
+      "gpu": 294,
+      "cpu": 411,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon R9 380"
+    },
+    {
+      "appId": "427410",
+      "name": "Abiotic Factor",
+      "gpu": 53,
+      "cpu": 74,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3070 / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "1448440",
+      "name": "Wo Long: Fallen Dynasty",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "611790",
+      "name": "House Party",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "2142790",
+      "name": "Fields of Mistria",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 480"
+    },
+    {
+      "appId": "278080",
+      "name": "DYNASTY WARRIORS 8: Xtreme Legends Complete Edition",
+      "gpu": 767,
+      "cpu": 1000,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 460"
+    },
+    {
+      "appId": "1105670",
+      "name": "The Last Spell",
+      "gpu": 345,
+      "cpu": 108,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7870 · Intel Core i5-8400 / AMD Ryzen 5 2600"
+    },
+    {
+      "appId": "1238820",
+      "name": "Battlefield 3™",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "1149620",
+      "name": "Gas Station Simulator",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "589290",
+      "name": "Holdfast: Nations At War",
+      "gpu": 148,
+      "cpu": 85,
+      "ramGb": 10,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · Intel Core i7-8700K / AMD Ryzen 5 3600X"
+    },
+    {
+      "appId": "1063660",
+      "name": "Bendy and the Dark Revival",
+      "gpu": 63,
+      "cpu": 88,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2080"
+    },
+    {
+      "appId": "1374490",
+      "name": "RuneScape: Dragonwilds",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "1302240",
+      "name": "Labyrinthine",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1451190",
+      "name": "Undisputed",
+      "gpu": 61,
+      "cpu": 85,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3070 / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "1657630",
+      "name": "Slime Rancher 2",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "1029780",
+      "name": "Going Medieval",
+      "gpu": 95,
+      "cpu": 134,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 Super / NVIDIA GeForce RTX 2060 / AMD Radeon RX 6600"
+    },
+    {
+      "appId": "1778820",
+      "name": "TEKKEN 8",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "609320",
+      "name": "FAR: Lone Sails",
+      "gpu": 256,
+      "cpu": 358,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 680 / AMD Radeon R9 280X"
+    },
+    {
+      "appId": "2103140",
+      "name": "Magicraft",
+      "gpu": 363,
+      "cpu": 203,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce GTX 1050 · Intel Core i5-3470"
+    },
+    {
+      "appId": "481510",
+      "name": "Night in the Woods",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "Intel HD 4000"
+    },
+    {
+      "appId": "2384580",
+      "name": "DYNASTY WARRIORS: ORIGINS",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "985890",
+      "name": "Streets of Rage 4",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "627270",
+      "name": "Injustice™ 2",
+      "gpu": 175,
+      "cpu": 245,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780 / NVIDIA GeForce GTX 1060 / AMD Radeon R9 290 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "1677280",
+      "name": "Company of Heroes 3",
+      "gpu": 128,
+      "cpu": 179,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660"
+    },
+    {
+      "appId": "1124300",
+      "name": "HUMANKIND™",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 5500 XT"
+    },
+    {
+      "appId": "1285670",
+      "name": "Post Void",
+      "gpu": 314,
+      "cpu": 439,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 760"
+    },
+    {
+      "appId": "1295660",
+      "name": "Sid Meier's Civilization VII",
+      "gpu": 72,
+      "cpu": 101,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 6600 / Intel Arc A750"
+    },
+    {
+      "appId": "521890",
+      "name": "Hello Neighbor",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1338770",
+      "name": "Sniper Ghost Warrior Contracts 2",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "631510",
+      "name": "Devil May Cry HD Collection",
+      "gpu": 265,
+      "cpu": 155,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 · Intel Core i7-3770"
+    },
+    {
+      "appId": "894020",
+      "name": "Death's Door",
+      "gpu": 363,
+      "cpu": 178,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 · Intel Core i5-4670K / AMD FX-8350"
+    },
+    {
+      "appId": "2231380",
+      "name": "Tom Clancy's Ghost Recon® Breakpoint",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 480 / NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1253920",
+      "name": "Rogue Legacy 2",
+      "gpu": 256,
+      "cpu": 358,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 680 / AMD Radeon R9 280X"
+    },
+    {
+      "appId": "895870",
+      "name": "Project Wingman",
+      "gpu": 99,
+      "cpu": 138,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070 Ti"
+    },
+    {
+      "appId": "1359090",
+      "name": "Zero Hour",
+      "gpu": 219,
+      "cpu": 307,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R9 290"
+    },
+    {
+      "appId": "760060",
+      "name": "Mutant Year Zero: Road to Eden",
+      "gpu": 164,
+      "cpu": 230,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "698670",
+      "name": "Scorn",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "626690",
+      "name": "Sword Art Online: Fatal Bullet",
+      "gpu": 219,
+      "cpu": 307,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R9 290"
+    },
+    {
+      "appId": "1288310",
+      "name": "Firework",
+      "gpu": 445,
+      "cpu": 623,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750 Ti"
+    },
+    {
+      "appId": "427290",
+      "name": "Vampyr",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / NVIDIA GeForce GTX 1060 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "1341290",
+      "name": "We Were Here Forever",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "567640",
+      "name": "Danganronpa V3: Killing Harmony",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "1088850",
+      "name": "Marvel's Guardians of the Galaxy",
+      "gpu": 127,
+      "cpu": 177,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 Super / AMD Radeon RX 590"
+    },
+    {
+      "appId": "1222690",
+      "name": "Dragon Age™ Inquisition",
+      "gpu": 345,
+      "cpu": 483,
+      "ramGb": 8,
+      "basis": "AMD Radeon HD 7870 / AMD Radeon R9 270 / NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "1262240",
+      "name": "Plants vs. Zombies: Battle for Neighborville™",
+      "gpu": 200,
+      "cpu": 280,
+      "ramGb": 8,
+      "basis": "AMD Radeon R9 285 / NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "1782120",
+      "name": "ZERO Sievert",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 260"
+    },
+    {
+      "appId": "1611600",
+      "name": "WARNO",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "1211020",
+      "name": "Wobbly Life",
+      "gpu": 197,
+      "cpu": 34,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1650 · Intel Core i7-13700K"
+    },
+    {
+      "appId": "1817190",
+      "name": "Marvel’s Spider-Man: Miles Morales",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "1182900",
+      "name": "A Plague Tale: Requiem",
+      "gpu": 42,
+      "cpu": 59,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3070 / AMD Radeon RX 6800 XT"
+    },
+    {
+      "appId": "629820",
+      "name": "Maneater",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "2198150",
+      "name": "Tiny Glade",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 4,
+      "basis": "AMD Radeon RX 580 / NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1150440",
+      "name": "Aliens: Dark Descent",
+      "gpu": 90,
+      "cpu": 126,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 5600 XT / NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "1084600",
+      "name": "My Time at Sandrock",
+      "gpu": 153,
+      "cpu": 91,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 580 · Intel Core i7-9700K / AMD Ryzen 7 2700X"
+    },
+    {
+      "appId": "1584090",
+      "name": "Touhou Mystia's Izakaya",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "2707900",
+      "name": "NIGHT-RUNNERS™ PROLOGUE",
+      "gpu": 123,
+      "cpu": 126,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 590 / NVIDIA GeForce GTX 1070 · AMD Ryzen 5 1500X / Intel Core i5-8400"
+    },
+    {
+      "appId": "265550",
+      "name": "Dead Rising 3 Apocalypse Edition",
+      "gpu": 300,
+      "cpu": 420,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 670"
+    },
+    {
+      "appId": "774801",
+      "name": "Crab Champions",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "Intel HD 4000"
+    },
+    {
+      "appId": "445220",
+      "name": "Avorion",
+      "gpu": 406,
+      "cpu": 568,
+      "ramGb": 6,
+      "basis": "AMD Radeon RX 460"
+    },
+    {
+      "appId": "2114740",
+      "name": "Blasphemous 2",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 6,
+      "basis": "Intel HD Graphics 530"
+    },
+    {
+      "appId": "903950",
+      "name": "Last Oasis",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "1876890",
+      "name": "Wandering Sword",
+      "gpu": 144,
+      "cpu": 190,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 · Intel Core i5-6400"
+    },
+    {
+      "appId": "861650",
+      "name": "Session: Skate Sim",
+      "gpu": 164,
+      "cpu": 117,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 480 · Intel Core i7-4790 / AMD Ryzen 5 2600"
+    },
+    {
+      "appId": "784150",
+      "name": "Workers & Resources: Soviet Republic",
+      "gpu": 321,
+      "cpu": 449,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon HD 7870"
+    },
+    {
+      "appId": "559650",
+      "name": "Witch It",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "320300",
+      "name": "Car Mechanic Simulator 2015",
+      "gpu": 300,
+      "cpu": 420,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 670"
+    },
+    {
+      "appId": "244160",
+      "name": "Homeworld Remastered Collection",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "1102190",
+      "name": "Monster Train",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "866800",
+      "name": "The Walking Dead: The Final Season",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 3,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "2909400",
+      "name": "FINAL FANTASY VII REBIRTH",
+      "gpu": 63,
+      "cpu": 89,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6700 XT / NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "2369390",
+      "name": "Far Cry® 6",
+      "gpu": 93,
+      "cpu": 131,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX Vega 64 / NVIDIA GeForce GTX 1080"
+    },
+    {
+      "appId": "236430",
+      "name": "DARK SOULS™ II",
+      "gpu": 600,
+      "cpu": 840,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750 / AMD Radeon HD 6870"
+    },
+    {
+      "appId": "775500",
+      "name": "SCARLET NEXUS",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "784080",
+      "name": "MechWarrior 5: Mercenaries",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "667970",
+      "name": "VTOL VR",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "824270",
+      "name": "KovaaK's",
+      "gpu": 314,
+      "cpu": 439,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7950"
+    },
+    {
+      "appId": "1164940",
+      "name": "Trepang2",
+      "gpu": 91,
+      "cpu": 128,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 590 / Intel Arc A750"
+    },
+    {
+      "appId": "921570",
+      "name": "OCTOPATH TRAVELER™",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "529180",
+      "name": "Dark and Light",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "3017860",
+      "name": "DOOM: The Dark Ages",
+      "gpu": 41,
+      "cpu": 58,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 3080 / AMD Radeon RX 6800"
+    },
+    {
+      "appId": "692890",
+      "name": "Roboquest",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "2531310",
+      "name": "The Last of Us™ Part II Remastered",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "641320",
+      "name": "Cooking Simulator",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "24010",
+      "name": "Train Simulator Classic",
+      "gpu": 164,
+      "cpu": 120,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 480 · AMD Ryzen 7 1700"
+    },
+    {
+      "appId": "756800",
+      "name": "Contraband Police",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "1948980",
+      "name": "Hero's Adventure: Road to Passion",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "2218750",
+      "name": "Halls of Torment",
+      "gpu": 133,
+      "cpu": 186,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "2532550",
+      "name": "LIZARDS MUST DIE",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "1466060",
+      "name": "Tainted Grail: The Fall of Avalon",
+      "gpu": 69,
+      "cpu": 97,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 Super"
+    },
+    {
+      "appId": "1233570",
+      "name": "Mirror's Edge™ Catalyst",
+      "gpu": 197,
+      "cpu": 276,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 280X"
+    },
+    {
+      "appId": "607080",
+      "name": "Psychonauts 2",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "746850",
+      "name": "Cloudpunk",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "2334730",
+      "name": "Death Must Die",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "738520",
+      "name": "Breathedge",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "451340",
+      "name": "Gold Mining Simulator",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "1016800",
+      "name": "Chernobylite Complete Edition",
+      "gpu": 114,
+      "cpu": 159,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / NVIDIA GeForce GTX 1060 / AMD Radeon RX 480 / AMD Radeon RX 570 / Intel Arc A750"
+    },
+    {
+      "appId": "45760",
+      "name": "Ultra Street Fighter® IV",
+      "gpu": 337,
+      "cpu": 471,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 950"
+    },
+    {
+      "appId": "1180660",
+      "name": "Tell Me Why",
+      "gpu": 160,
+      "cpu": 207,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / NVIDIA GeForce GTX 1060 / AMD Radeon R9 290X / AMD Radeon RX 480 · AMD Ryzen 3 1300X"
+    },
+    {
+      "appId": "233290",
+      "name": "Murdered: Soul Suspect",
+      "gpu": 354,
+      "cpu": 495,
+      "ramGb": 4,
+      "basis": "AMD Radeon R9 270 / NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "523660",
+      "name": "HYPERCHARGE: Unboxed",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "745920",
+      "name": "Temtem",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "895400",
+      "name": "Deadside",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "503940",
+      "name": "Railway Empire",
+      "gpu": 276,
+      "cpu": 386,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 680"
+    },
+    {
+      "appId": "1113560",
+      "name": "NieR Replicant™ ver.1.22474487139...",
+      "gpu": 128,
+      "cpu": 179,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660"
+    },
+    {
+      "appId": "1669000",
+      "name": "Age of Wonders 4",
+      "gpu": 85,
+      "cpu": 119,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 Ti / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "2071280",
+      "name": "Ravenswatch",
+      "gpu": 153,
+      "cpu": 215,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 Fury"
+    },
+    {
+      "appId": "2072450",
+      "name": "Like a Dragon: Infinite Wealth",
+      "gpu": 67,
+      "cpu": 94,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / Intel Arc A750"
+    },
+    {
+      "appId": "1240210",
+      "name": "There Is No Game: Wrong Dimension",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "Intel HD 4000"
+    },
+    {
+      "appId": "954740",
+      "name": "Terminator: Resistance",
+      "gpu": 123,
+      "cpu": 108,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX 590 · Intel Core i5-8400 / AMD Ryzen 5 2600"
+    },
+    {
+      "appId": "1401590",
+      "name": "Disney Dreamlight Valley",
+      "gpu": 256,
+      "cpu": 358,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R9 380"
+    },
+    {
+      "appId": "1235140",
+      "name": "Yakuza: Like a Dragon",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "463530",
+      "name": "Empires of the Undergrowth",
+      "gpu": 920,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 550 Ti"
+    },
+    {
+      "appId": "1543030",
+      "name": "Sword and Fairy 7",
+      "gpu": 78,
+      "cpu": 110,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 Super"
+    },
+    {
+      "appId": "505230",
+      "name": "Pathologic 2",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "1465460",
+      "name": "Infection Free Zone",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "973760",
+      "name": "Thronebreaker: The Witcher Tales",
+      "gpu": 363,
+      "cpu": 241,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 660 · AMD FX-6300"
+    },
+    {
+      "appId": "1115690",
+      "name": "Yes, Your Grace",
+      "gpu": 314,
+      "cpu": 439,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 760"
+    },
+    {
+      "appId": "610370",
+      "name": "Desperados III",
+      "gpu": 321,
+      "cpu": 449,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon HD 7870"
+    },
+    {
+      "appId": "1577120",
+      "name": "The Quarry",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "1895880",
+      "name": "Ratchet & Clank: Rift Apart",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "501590",
+      "name": "Bulletstorm: Full Clip Edition",
+      "gpu": 521,
+      "cpu": 729,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 750 Ti / AMD Radeon HD 7770"
+    },
+    {
+      "appId": "732690",
+      "name": "FIVE NIGHTS AT FREDDY'S: HELP WANTED",
+      "gpu": 123,
+      "cpu": 172,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX 590"
+    },
+    {
+      "appId": "1237320",
+      "name": "Sonic Frontiers",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX Vega 56"
+    },
+    {
+      "appId": "1371580",
+      "name": "Myth of Empires",
+      "gpu": 155,
+      "cpu": 217,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 3GB / AMD Radeon RX 580"
+    },
+    {
+      "appId": "2365810",
+      "name": "Pseudoregalia",
+      "gpu": 128,
+      "cpu": 179,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1660"
+    },
+    {
+      "appId": "681280",
+      "name": "Descenders",
+      "gpu": 314,
+      "cpu": 439,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760"
+    },
+    {
+      "appId": "1458140",
+      "name": "Pacific Drive",
+      "gpu": 63,
+      "cpu": 88,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2080"
+    },
+    {
+      "appId": "991780",
+      "name": "Notes of Soul",
+      "gpu": 307,
+      "cpu": 429,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R7 370"
+    },
+    {
+      "appId": "2475490",
+      "name": "Mouthwashing",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "601840",
+      "name": "Griftlands",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "494840",
+      "name": "UBOAT",
+      "gpu": 124,
+      "cpu": 148,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / NVIDIA GeForce GTX 1070 · Intel Core i7-3770K"
+    },
+    {
+      "appId": "415200",
+      "name": "Motorsport Manager",
+      "gpu": 345,
+      "cpu": 483,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7870"
+    },
+    {
+      "appId": "882790",
+      "name": "Fate Seeker",
+      "gpu": 294,
+      "cpu": 164,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon HD 7950 · Intel Core i5-4690K"
+    },
+    {
+      "appId": "1433140",
+      "name": "The Texas Chain Saw Massacre",
+      "gpu": 53,
+      "cpu": 74,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3070 / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "314650",
+      "name": "SpaceEngine",
+      "gpu": 152,
+      "cpu": 212,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "1817230",
+      "name": "Hi-Fi RUSH",
+      "gpu": 79,
+      "cpu": 111,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 6600"
+    },
+    {
+      "appId": "977880",
+      "name": "Eastward",
+      "gpu": 445,
+      "cpu": 623,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750 Ti"
+    },
+    {
+      "appId": "1190970",
+      "name": "House Flipper 2",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "990630",
+      "name": "The Last Campfire",
+      "gpu": 105,
+      "cpu": 147,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "986130",
+      "name": "Shadows of Doubt",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "515180",
+      "name": "Bus Simulator 18",
+      "gpu": 177,
+      "cpu": 248,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290"
+    },
+    {
+      "appId": "512790",
+      "name": "Quern - Undying Thoughts",
+      "gpu": 337,
+      "cpu": 148,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 950 · Intel Core i7-3770K"
+    },
+    {
+      "appId": "299740",
+      "name": "Miscreated",
+      "gpu": 170,
+      "cpu": 138,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290X · Intel Core i7-4790 / AMD Ryzen 5 1500X"
+    },
+    {
+      "appId": "874260",
+      "name": "The Forgotten City",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "850190",
+      "name": "Goat Simulator 3",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "914620",
+      "name": "Mist Survival",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "16900",
+      "name": "GROUND BRANCH",
+      "gpu": 37,
+      "cpu": 52,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 4070 / AMD Radeon RX 7800 XT"
+    },
+    {
+      "appId": "510840",
+      "name": "Evolvation",
+      "gpu": 627,
+      "cpu": 170,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560 / AMD Radeon HD 7770 · Intel Core i7-3770 / AMD FX-8350"
+    },
+    {
+      "appId": "2162800",
+      "name": "shapez 2 - Factory",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "2248760",
+      "name": "Car For Sale Simulator",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1928980",
+      "name": "Nightingale",
+      "gpu": 78,
+      "cpu": 110,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 Super"
+    },
+    {
+      "appId": "813230",
+      "name": "ANIMAL WELL",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "502520",
+      "name": "Ultimate General: Civil War",
+      "gpu": 246,
+      "cpu": 345,
+      "ramGb": 2,
+      "basis": "AMD Radeon R9 285"
+    },
+    {
+      "appId": "936790",
+      "name": "Life is Strange: True Colors",
+      "gpu": 142,
+      "cpu": 199,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 590 / NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1533420",
+      "name": "Neon White",
+      "gpu": 412,
+      "cpu": 577,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 750 Ti / AMD Radeon HD 7850"
+    },
+    {
+      "appId": "2646460",
+      "name": "Soulmask",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 24,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "518150",
+      "name": "Intruder",
+      "gpu": 531,
+      "cpu": 743,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 750"
+    },
+    {
+      "appId": "2005010",
+      "name": "Warhammer 40,000: Boltgun",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 580 / NVIDIA GeForce GTX 780 Ti"
+    },
+    {
+      "appId": "1084160",
+      "name": "Jagged Alliance 3",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "2080690",
+      "name": "Sunkenland",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "1761390",
+      "name": "Hatsune Miku: Project DIVA Mega Mix+",
+      "gpu": 541,
+      "cpu": 758,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750 Ti / AMD Radeon HD 6870"
+    },
+    {
+      "appId": "1372110",
+      "name": "JoJo's Bizarre Adventure: All-Star Battle R",
+      "gpu": 157,
+      "cpu": 220,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "1559390",
+      "name": "Fate Seeker II",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "673880",
+      "name": "Warhammer 40,000: Mechanicus",
+      "gpu": 256,
+      "cpu": 358,
+      "ramGb": 8,
+      "basis": "AMD Radeon R9 380 / NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "688420",
+      "name": "Bad North: Jotunn Edition",
+      "gpu": 383,
+      "cpu": 537,
+      "ramGb": 4,
+      "basis": "AMD Radeon HD 7850"
+    },
+    {
+      "appId": "1971650",
+      "name": "OCTOPATH TRAVELER II",
+      "gpu": 160,
+      "cpu": 190,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 470 / NVIDIA GeForce GTX 1060 · Intel Core i5-6400"
+    },
+    {
+      "appId": "858210",
+      "name": "Nova Drift",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "Intel HD Graphics 4000"
+    },
+    {
+      "appId": "530070",
+      "name": "Train Sim World® 2020",
+      "gpu": 164,
+      "cpu": 125,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 480 · Intel Core i7-4790 / AMD Ryzen 7 1700"
+    },
+    {
+      "appId": "2795000",
+      "name": "The WereCleaner",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1583230",
+      "name": "High On Life",
+      "gpu": 90,
+      "cpu": 126,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "835960",
+      "name": "The Talos Principle 2",
+      "gpu": 47,
+      "cpu": 66,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6800 / NVIDIA GeForce RTX 3070 / Intel Arc B580"
+    },
+    {
+      "appId": "1931770",
+      "name": "Chants of Sennaar",
+      "gpu": 767,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 460"
+    },
+    {
+      "appId": "520440",
+      "name": "GUILTY GEAR Xrd REV 2",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 560 / AMD Radeon HD 7770"
+    },
+    {
+      "appId": "292000",
+      "name": "No More Room in Hell 2",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "1102130",
+      "name": "Florence",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "1556790",
+      "name": "Isonzo",
+      "gpu": 128,
+      "cpu": 179,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "501080",
+      "name": "Fishing: Barents Sea",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "1677110",
+      "name": "Lightyear Frontier",
+      "gpu": 97,
+      "cpu": 136,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6600 / NVIDIA GeForce GTX 1660 Ti"
+    },
+    {
+      "appId": "517710",
+      "name": "Redout: Enhanced Edition",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "555220",
+      "name": "Detention",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 260 / AMD Radeon HD 5770"
+    },
+    {
+      "appId": "3259780",
+      "name": "FINAL FANTASY RESONANCE",
+      "gpu": 166,
+      "cpu": 233,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 5500 XT / NVIDIA GeForce GTX 1650"
+    },
+    {
+      "appId": "450540",
+      "name": "Hot Dogs, Horseshoes & Hand Grenades",
+      "gpu": 91,
+      "cpu": 158,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1080 · Intel Core i5-6600"
+    },
+    {
+      "appId": "2075070",
+      "name": "KinitoPET",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "1999360",
+      "name": "Placid Plastic Duck Simulator",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "526160",
+      "name": "The Wild Eight",
+      "gpu": 300,
+      "cpu": 229,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 670 · Intel Core i5-2400 / AMD FX-6300"
+    },
+    {
+      "appId": "1583320",
+      "name": "Pro Soccer Online",
+      "gpu": 38,
+      "cpu": 53,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3080 / AMD Radeon RX 6800 XT"
+    },
+    {
+      "appId": "1887840",
+      "name": "Another Crab's Treasure",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "495890",
+      "name": "Montaro",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": null,
+      "basis": "Intel HD Graphics 4000"
+    },
+    {
+      "appId": "536270",
+      "name": "Ancestors: The Humankind Odyssey",
+      "gpu": 155,
+      "cpu": 217,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 980 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "1082430",
+      "name": "Before Your Eyes",
+      "gpu": 164,
+      "cpu": 230,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 480 / NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "530890",
+      "name": "Haydee",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 4,
+      "basis": "AMD Radeon RX 480"
+    },
+    {
+      "appId": "1177980",
+      "name": "Little Kitty, Big City",
+      "gpu": 812,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 650"
+    },
+    {
+      "appId": "1211600",
+      "name": "ZED ZONE",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "4693550",
+      "name": "Дорога Жизни",
+      "gpu": 39,
+      "cpu": 55,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 4070"
+    },
+    {
+      "appId": "926990",
+      "name": "WolfQuest: Anniversary Edition",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "1353230",
+      "name": "Bomb Rush Cyberfunk",
+      "gpu": 767,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 460"
+    },
+    {
+      "appId": "530630",
+      "name": "Empires Apart",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "521150",
+      "name": "Another Brick in The Mall",
+      "gpu": 531,
+      "cpu": 743,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750"
+    },
+    {
+      "appId": "2113850",
+      "name": "Spirit City: Lofi Sessions",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "518060",
+      "name": "Chess Ultra",
+      "gpu": 216,
+      "cpu": 302,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 780"
+    },
+    {
+      "appId": "1548850",
+      "name": "Six Days in Fallujah",
+      "gpu": 47,
+      "cpu": 65,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce RTX 3070 / AMD Radeon RX 6800"
+    },
+    {
+      "appId": "505170",
+      "name": "Carmageddon: Max Damage",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "AMD Radeon HD 7800"
+    },
+    {
+      "appId": "518580",
+      "name": "Accounting (Legacy)",
+      "gpu": 177,
+      "cpu": 174,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i5-4590"
+    },
+    {
+      "appId": "2407270",
+      "name": "AI LIMIT",
+      "gpu": 75,
+      "cpu": 106,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "507490",
+      "name": "Ashes of the Singularity: Escalation",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "1494420",
+      "name": "Silica",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce GTX 1080"
+    },
+    {
+      "appId": "520720",
+      "name": "Dear Esther: Landmark Edition",
+      "gpu": 552,
+      "cpu": 773,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560 Ti"
+    },
+    {
+      "appId": "3218230",
+      "name": "ArcheAge Chronicles",
+      "gpu": 45,
+      "cpu": 63,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 4060 Ti / AMD Radeon RX 7700 XT"
+    },
+    {
+      "appId": "1799840",
+      "name": "Queen's Domain",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "503770",
+      "name": "Elven Assassin",
+      "gpu": 177,
+      "cpu": 181,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "2124120",
+      "name": "SULFUR",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1080"
+    },
+    {
+      "appId": "4312190",
+      "name": "CRACK",
+      "gpu": 97,
+      "cpu": 136,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 Super / NVIDIA GeForce RTX 2060 / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "532790",
+      "name": "Vampire: The Masquerade® - Bloodlines™ 2",
+      "gpu": 58,
+      "cpu": 80,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 Ti / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "514460",
+      "name": "Cyberline Racing",
+      "gpu": 531,
+      "cpu": 743,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750"
+    },
+    {
+      "appId": "1737870",
+      "name": "REKA",
+      "gpu": 74,
+      "cpu": 82,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 5700 XT · AMD Ryzen 5 3600X"
+    },
+    {
+      "appId": "520940",
+      "name": "MX vs ATV All Out",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 770"
+    },
+    {
+      "appId": "525480",
+      "name": ".hack//G.U. Last Recode",
+      "gpu": 321,
+      "cpu": 449,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 660 Ti"
+    },
+    {
+      "appId": "524580",
+      "name": "Fairy Fencer F Advent Dark Force",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "502800",
+      "name": "SENRAN KAGURA ESTIVAL VERSUS",
+      "gpu": 337,
+      "cpu": 190,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 950 · Intel Core i5-6400"
+    },
+    {
+      "appId": "533340",
+      "name": "Captivity",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "511680",
+      "name": "Fate/EXTELLA",
+      "gpu": 337,
+      "cpu": 190,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 950 · Intel Core i5-6400"
+    },
+    {
+      "appId": "529660",
+      "name": "Mages of Mystralia",
+      "gpu": 314,
+      "cpu": 439,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760"
+    },
+    {
+      "appId": "2513280",
+      "name": "SONIC X SHADOW GENERATIONS",
+      "gpu": 197,
+      "cpu": 276,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce GTX 780 / AMD Radeon RX 470"
+    },
+    {
+      "appId": "534370",
+      "name": "Pure Farming 2018",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "2615540",
+      "name": "VOID/BREAKER",
+      "gpu": 74,
+      "cpu": 108,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 5700 XT · Intel Core i5-8400 / AMD Ryzen 5 2600"
+    },
+    {
+      "appId": "503580",
+      "name": "Duck Season",
+      "gpu": 147,
+      "cpu": 120,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980 / NVIDIA GeForce GTX 1060 · Intel Core i7-6700"
+    },
+    {
+      "appId": "522230",
+      "name": "The Fishing Club 3D: Co-op Sport Angling",
+      "gpu": 288,
+      "cpu": 402,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon R9 280"
+    },
+    {
+      "appId": "1546080",
+      "name": "Every Day We Fight",
+      "gpu": 128,
+      "cpu": 179,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660"
+    },
+    {
+      "appId": "1798230",
+      "name": "ATMOSFAR",
+      "gpu": 37,
+      "cpu": 52,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 4070 / AMD Radeon RX 7800 XT"
+    },
+    {
+      "appId": "2826790",
+      "name": "Stormforge",
+      "gpu": 81,
+      "cpu": 113,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6600"
+    },
+    {
+      "appId": "3247750",
+      "name": "Mycopunk",
+      "gpu": 62,
+      "cpu": 87,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce RTX 2080 / AMD Radeon RX 5700 XT / Intel Arc A750"
+    },
+    {
+      "appId": "528820",
+      "name": "Eisenwald: Blood of November",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "3645890",
+      "name": "GONE Fishing",
+      "gpu": 64,
+      "cpu": 69,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6700 XT · AMD Ryzen 5 5600X"
+    },
+    {
+      "appId": "512270",
+      "name": "Home - A VR Spacewalk",
+      "gpu": 177,
+      "cpu": 181,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "528160",
+      "name": "Solstice Chronicles: MIA",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "3024130",
+      "name": "PAO PAO",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "515260",
+      "name": "Virtual Rides 3 - Funfair Simulator",
+      "gpu": 168,
+      "cpu": 148,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 · Intel Core i5-6600K"
+    },
+    {
+      "appId": "503620",
+      "name": "Fictorum",
+      "gpu": 314,
+      "cpu": 439,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760"
+    },
+    {
+      "appId": "525920",
+      "name": "Pro Cycling Manager 2017",
+      "gpu": 476,
+      "cpu": 666,
+      "ramGb": 8,
+      "basis": "AMD Radeon HD 7850 / NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "2223980",
+      "name": "Nomad Drive",
+      "gpu": 58,
+      "cpu": 80,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 Ti / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "526290",
+      "name": "MY FIGHT",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "515960",
+      "name": "Martha Is Dead",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "517130",
+      "name": "Soundboxing",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "508980",
+      "name": "Crashday Redline Edition",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 1,
+      "basis": "NVIDIA GeForce 8800 GT"
+    },
+    {
+      "appId": "522570",
+      "name": "The Last Hope",
+      "gpu": 300,
+      "cpu": 179,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 670 · Intel Core i5-4460"
+    },
+    {
+      "appId": "530950",
+      "name": "Tower 57",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "4459590",
+      "name": "Slotbound",
+      "gpu": 148,
+      "cpu": 108,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · Intel Core i5-8400 / AMD Ryzen 5 2600"
+    },
+    {
+      "appId": "533970",
+      "name": "Blocks by Google",
+      "gpu": 177,
+      "cpu": 181,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "505330",
+      "name": "Apocalipsis",
+      "gpu": 920,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 550 Ti"
+    },
+    {
+      "appId": "514920",
+      "name": "Crash Wheels",
+      "gpu": 321,
+      "cpu": 188,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon HD 7870 · AMD FX-8350"
+    },
+    {
+      "appId": "514990",
+      "name": "Outbreak",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 2,
+      "basis": "AMD Radeon R7 370"
+    },
+    {
+      "appId": "511740",
+      "name": "Gal*Gun: Double Peace",
+      "gpu": 531,
+      "cpu": 179,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 750 · Intel Core i5-4460"
+    },
+    {
+      "appId": "526180",
+      "name": "Deus Ex: Mankind Divided™ - VR Experience",
+      "gpu": 177,
+      "cpu": 181,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "528550",
+      "name": "Drunkn Bar Fight",
+      "gpu": 150,
+      "cpu": 210,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 980"
+    },
+    {
+      "appId": "520010",
+      "name": "Climbey",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "512410",
+      "name": "69 Ways to Kill a Zombie",
+      "gpu": 177,
+      "cpu": 181,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "518920",
+      "name": "Surgeon Simulator: Experience Reality",
+      "gpu": 168,
+      "cpu": 174,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 · Intel Core i5-4590"
+    },
+    {
+      "appId": "513320",
+      "name": "ALICE VR",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "524010",
+      "name": "Siege of Centauri",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "524640",
+      "name": "Asura: Vengeance Edition",
+      "gpu": 445,
+      "cpu": 623,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 750 Ti"
+    },
+    {
+      "appId": "513290",
+      "name": "Lucius III",
+      "gpu": 123,
+      "cpu": 172,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980 Ti"
+    },
+    {
+      "appId": "510490",
+      "name": "The Fall Part 2: Unbound",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "3758950",
+      "name": "Death at Fleming Manor",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "Intel HD Graphics 530"
+    },
+    {
+      "appId": "531660",
+      "name": "Exoplanet: First Contact",
+      "gpu": 192,
+      "cpu": 268,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 780 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "500500",
+      "name": "Simple VR Video Player",
+      "gpu": 150,
+      "cpu": 155,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980 · Intel Core i7-3770"
+    },
+    {
+      "appId": "5380340",
+      "name": "Karon: Overclock",
+      "gpu": 39,
+      "cpu": 55,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce RTX 4070"
+    },
+    {
+      "appId": "502400",
+      "name": "Redactem",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 1,
+      "basis": "Intel HD 4000"
+    },
+    {
+      "appId": "506900",
+      "name": "Downward: Enhanced Edition",
+      "gpu": 256,
+      "cpu": 358,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R9 380"
+    },
+    {
+      "appId": "525040",
+      "name": "The Disney Afternoon Collection",
+      "gpu": 314,
+      "cpu": 179,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 · Intel Core i5-4460"
+    },
+    {
+      "appId": "2562390",
+      "name": "Benny's Backrooms",
+      "gpu": 78,
+      "cpu": 110,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 Super"
+    },
+    {
+      "appId": "530120",
+      "name": "VR The Diner Duo",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "3091340",
+      "name": "Metal Thunder",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "4429430",
+      "name": "Origins Trading Card Game",
+      "gpu": 148,
+      "cpu": 108,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · Intel Core i5-8400 / AMD Ryzen 5 2600"
+    },
+    {
+      "appId": "500360",
+      "name": "VRMultigames",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "529490",
+      "name": "Rogue Trooper Redux",
+      "gpu": 164,
+      "cpu": 230,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 480"
+    },
+    {
+      "appId": "529760",
+      "name": "TAIKU MANSION",
+      "gpu": 168,
+      "cpu": 164,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 · Intel Core i5-4690K"
+    },
+    {
+      "appId": "4096830",
+      "name": "S.O.N.A.R. - Submarine Operators Not Actually Ready",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "4659660",
+      "name": "Graveyard Cabin",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 / AMD Radeon RX 560"
+    },
+    {
+      "appId": "509580",
+      "name": "The Lord of the Rings: Adventure Card Game - Definitive Edition",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce 8800 GT"
+    },
+    {
+      "appId": "4678210",
+      "name": "Little Elementals",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "525700",
+      "name": "Birthdays the Beginning",
+      "gpu": 337,
+      "cpu": 471,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 950"
+    },
+    {
+      "appId": "5475960",
+      "name": "Incremental Traffic",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 / AMD Radeon RX 560"
+    },
+    {
+      "appId": "5451020",
+      "name": "Gotching",
+      "gpu": 445,
+      "cpu": 623,
+      "ramGb": 4,
+      "basis": "AMD Radeon RX 550 / NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "2581410",
+      "name": "Stygian: Outer Gods",
+      "gpu": 38,
+      "cpu": 53,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 3080 / AMD Radeon RX 6800 XT"
+    },
+    {
+      "appId": "535260",
+      "name": "Save Home",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "525680",
+      "name": "Deisim",
+      "gpu": 150,
+      "cpu": 210,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 980"
+    },
+    {
+      "appId": "527700",
+      "name": "Containment Initiative",
+      "gpu": 177,
+      "cpu": 181,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "4493130",
+      "name": "Ski-E-O! Ski Resort Tycoon",
+      "gpu": 81,
+      "cpu": 113,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6600"
+    },
+    {
+      "appId": "512560",
+      "name": "HoCWar",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce 8800 GT"
+    },
+    {
+      "appId": "509310",
+      "name": "ThrounnelVR",
+      "gpu": 168,
+      "cpu": 236,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "4475480",
+      "name": "Shattered Void Online",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "529520",
+      "name": "Mutant Football League",
+      "gpu": 110,
+      "cpu": 174,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070 · Intel Core i5-4590"
+    },
+    {
+      "appId": "2920220",
+      "name": "Terrible Lizards",
+      "gpu": 63,
+      "cpu": 88,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce RTX 2080"
+    },
+    {
+      "appId": "2794590",
+      "name": "Scam Line",
+      "gpu": 383,
+      "cpu": 537,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 / AMD Radeon RX 460"
+    },
+    {
+      "appId": "4521650",
+      "name": "Farm & Feast",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "5405460",
+      "name": "Beholder: The Landlord's Handbook - Digital Comic",
+      "gpu": 265,
+      "cpu": 137,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 960 · AMD Ryzen 5 1600"
+    },
+    {
+      "appId": "3204330",
+      "name": "County of Fortune",
+      "gpu": 172,
+      "cpu": 241,
+      "ramGb": 4,
+      "basis": "AMD Radeon R9 390"
+    },
+    {
+      "appId": "4424740",
+      "name": "Agent of Strange: Arrival",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "529150",
+      "name": "Lazerbait",
+      "gpu": 168,
+      "cpu": 174,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 970 · Intel Core i5-4590"
+    },
+    {
+      "appId": "505740",
+      "name": "Eximius: Seize the Frontline",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "514310",
+      "name": "SENRAN KAGURA Bon Appétit! - Full Course",
+      "gpu": 337,
+      "cpu": 471,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 950"
+    },
+    {
+      "appId": "514240",
+      "name": "ALONE?",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "524380",
+      "name": "Yore VR",
+      "gpu": 134,
+      "cpu": 188,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon R9 390"
+    },
+    {
+      "appId": "506840",
+      "name": "The Dungeons of Castle Madness",
+      "gpu": 314,
+      "cpu": 131,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 760 · Intel Core i7-4790"
+    },
+    {
+      "appId": "2679790",
+      "name": "Baron",
+      "gpu": 61,
+      "cpu": 86,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1080 Ti / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "3884860",
+      "name": "The Wolf Among Us Remastered",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 Ti / AMD Radeon RX 6400"
+    },
+    {
+      "appId": "530860",
+      "name": "The Wanderer",
+      "gpu": 445,
+      "cpu": 623,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750 Ti"
+    },
+    {
+      "appId": "501020",
+      "name": "Super Pixel Racers",
+      "gpu": 812,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 650"
+    },
+    {
+      "appId": "503180",
+      "name": "MiniLAW: Ministry of Law",
+      "gpu": 314,
+      "cpu": 439,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 760"
+    },
+    {
+      "appId": "503900",
+      "name": "Candy Smash VR",
+      "gpu": 177,
+      "cpu": 181,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "529670",
+      "name": "The Bellows",
+      "gpu": 168,
+      "cpu": 174,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 · Intel Core i5-4590"
+    },
+    {
+      "appId": "3583270",
+      "name": "Shipwreck Discovery",
+      "gpu": 64,
+      "cpu": 65,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6700 XT · Intel Core i5-12400 / AMD Ryzen 5 5600X"
+    },
+    {
+      "appId": "503160",
+      "name": "Angels & Demigods - SciFi VR Visual Novel",
+      "gpu": 177,
+      "cpu": 181,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "2774040",
+      "name": "The Boss Gangster: Criminal Empire",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "512300",
+      "name": "Unbox: Newbie's Adventure",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "531990",
+      "name": "Egg Time",
+      "gpu": 123,
+      "cpu": 172,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon R9 Fury"
+    },
+    {
+      "appId": "3129420",
+      "name": "ASPIS",
+      "gpu": 88,
+      "cpu": 123,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 6600"
+    },
+    {
+      "appId": "513490",
+      "name": "1943 Berlin Blitz",
+      "gpu": 177,
+      "cpu": 181,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "5404010",
+      "name": "Cinderwake",
+      "gpu": 128,
+      "cpu": 179,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660"
+    },
+    {
+      "appId": "4487060",
+      "name": "Northgard Battlegrounds",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "523640",
+      "name": "The Works of Mercy",
+      "gpu": 219,
+      "cpu": 170,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 770 / AMD Radeon R9 290 · Intel Core i7-3770 / AMD FX-8350"
+    },
+    {
+      "appId": "529910",
+      "name": "ARK Park",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1080"
+    },
+    {
+      "appId": "5465060",
+      "name": "Bio-Shooter",
+      "gpu": 63,
+      "cpu": 89,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "2508440",
+      "name": "Angel Guardian",
+      "gpu": 81,
+      "cpu": 69,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6600 · AMD Ryzen 5 5600X"
+    },
+    {
+      "appId": "503630",
+      "name": "INVASION!",
+      "gpu": 177,
+      "cpu": 174,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i5-4590"
+    },
+    {
+      "appId": "513760",
+      "name": "3dSunshine",
+      "gpu": 186,
+      "cpu": 181,
+      "ramGb": 4,
+      "basis": "AMD Radeon R9 290 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "3279600",
+      "name": "The Thrill of the Fight 2 Spectator",
+      "gpu": 168,
+      "cpu": 181,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 970 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "3815750",
+      "name": "SEVERANCE",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "501860",
+      "name": "Slayer Shock",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": null,
+      "basis": "Intel HD 4000"
+    },
+    {
+      "appId": "3905010",
+      "name": "ONE PIECE: Grand Gourmet",
+      "gpu": 94,
+      "cpu": 131,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070 Ti / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "502240",
+      "name": "You Deserve",
+      "gpu": 337,
+      "cpu": 471,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 950"
+    },
+    {
+      "appId": "530830",
+      "name": "Sophie's Guardian",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "3273420",
+      "name": "F-Drones Simulator",
+      "gpu": 307,
+      "cpu": 241,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R7 370 · AMD FX-6300"
+    },
+    {
+      "appId": "4559930",
+      "name": "Oboro no Ichi",
+      "gpu": 373,
+      "cpu": 241,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon HD 7850 · AMD FX-6300"
+    },
+    {
+      "appId": "4588650",
+      "name": "Castle of the Zephyr",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "530040",
+      "name": "reconquest",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "4207990",
+      "name": "GemCraft - Legacy Collection",
+      "gpu": 412,
+      "cpu": 577,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750 Ti / AMD Radeon HD 7850"
+    },
+    {
+      "appId": "4661070",
+      "name": "HANDS OVER",
+      "gpu": 265,
+      "cpu": 183,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R9 280 · Intel Core i5-4460 / AMD FX-8350"
+    },
+    {
+      "appId": "512890",
+      "name": "Elsinore",
+      "gpu": 337,
+      "cpu": 471,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 950"
+    },
+    {
+      "appId": "4618670",
+      "name": "Cultivation Legend",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 / AMD Radeon RX 560"
+    },
+    {
+      "appId": "520600",
+      "name": "Purrfect Date - Visual Novel/Dating Simulator",
+      "gpu": 1000,
+      "cpu": 241,
+      "ramGb": 8,
+      "basis": "Intel HD Graphics 4000 · AMD FX-6300"
+    },
+    {
+      "appId": "4289490",
+      "name": "NoWay",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "4604010",
+      "name": "BEAST",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "Intel HD 4000"
+    },
+    {
+      "appId": "508710",
+      "name": "Project Lounge",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 960"
+    },
+    {
+      "appId": "520270",
+      "name": "Thrills & Chills - Roller Coasters",
+      "gpu": 150,
+      "cpu": 210,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 980"
+    },
+    {
+      "appId": "3419560",
+      "name": "LATE 2 ESCAPE : Chapter One",
+      "gpu": 251,
+      "cpu": 206,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R9 280X · Intel Core i5-3470 / AMD Ryzen 3 1200"
+    },
+    {
+      "appId": "4683860",
+      "name": "Calmaria: Wild Growth",
+      "gpu": 64,
+      "cpu": 90,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "509820",
+      "name": "Super Grav",
+      "gpu": 383,
+      "cpu": 537,
+      "ramGb": 4,
+      "basis": "AMD Radeon HD 7850"
+    },
+    {
+      "appId": "527160",
+      "name": "Cmoar VR Cinema",
+      "gpu": 150,
+      "cpu": 155,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 980 · Intel Core i7-3770"
+    },
+    {
+      "appId": "529500",
+      "name": "ALONE? - VR",
+      "gpu": 168,
+      "cpu": 174,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 · Intel Core i5-4590"
+    },
+    {
+      "appId": "5415410",
+      "name": "VOLTGATE",
+      "gpu": 368,
+      "cpu": 515,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 950 / AMD Radeon RX 460"
+    },
+    {
+      "appId": "3581230",
+      "name": "Cozy Game Restoration",
+      "gpu": 230,
+      "cpu": 322,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "4642040",
+      "name": "Youth Center Simulator",
+      "gpu": 182,
+      "cpu": 254,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 1650 / AMD Radeon RX 570"
+    },
+    {
+      "appId": "5419790",
+      "name": "Bunny Hopper VR",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "4528040",
+      "name": "Sol One",
+      "gpu": 51,
+      "cpu": 72,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3070"
+    },
+    {
+      "appId": "4665590",
+      "name": "Apotheosis Engine",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "Intel HD 4000"
+    },
+    {
+      "appId": "518620",
+      "name": "Ballistick",
+      "gpu": 445,
+      "cpu": 623,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750 Ti"
+    },
+    {
+      "appId": "5365920",
+      "name": "Sidechain",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "3996350",
+      "name": "Sawad | سواد",
+      "gpu": 81,
+      "cpu": 84,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6600 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "4589000",
+      "name": "Void Step",
+      "gpu": 148,
+      "cpu": 108,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · Intel Core i5-8400 / AMD Ryzen 5 2600"
+    },
+    {
+      "appId": "4607460",
+      "name": "Gauchesca",
+      "gpu": 552,
+      "cpu": 773,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 750 / AMD Radeon RX 550"
+    },
+    {
+      "appId": "4703560",
+      "name": "Soviet Backrooms",
+      "gpu": 1000,
+      "cpu": 155,
+      "ramGb": 8,
+      "basis": "Intel UHD Graphics 630 · Intel Core i3-8100"
+    },
+    {
+      "appId": "4907900",
+      "name": "The City Of Akhetaten",
+      "gpu": 139,
+      "cpu": 84,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 580 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "5455560",
+      "name": "Command Base Assault",
+      "gpu": 128,
+      "cpu": 179,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660"
+    },
+    {
+      "appId": "3018190",
+      "name": "Light Devourer",
+      "gpu": 197,
+      "cpu": 276,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1650"
+    },
+    {
+      "appId": "3051060",
+      "name": "天启异境",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce RTX 2070"
+    },
+    {
+      "appId": "3282980",
+      "name": "Urbex Murder",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "3486530",
+      "name": "Stupid Never Dies",
+      "gpu": 81,
+      "cpu": 113,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6600"
+    },
+    {
+      "appId": "4430260",
+      "name": "Beat For Speed",
+      "gpu": 74,
+      "cpu": 102,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 5700 XT · Intel Core i5-9600K"
+    },
+    {
+      "appId": "4574330",
+      "name": "Borrowed Faces",
+      "gpu": 445,
+      "cpu": 241,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 750 Ti · AMD FX-6300"
+    },
+    {
+      "appId": "5455340",
+      "name": "Punch The Walls",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "5466620",
+      "name": "가문의 영광",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "2670430",
+      "name": "Dashoot: ABYA's Adventure",
+      "gpu": 440,
+      "cpu": 617,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 760 / AMD Radeon R7 260X / Intel Iris Xe Graphics"
+    },
+    {
+      "appId": "4179280",
+      "name": "Moonshiner Simulator",
+      "gpu": 77,
+      "cpu": 90,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce RTX 3060 · AMD Ryzen 7 3700X / Intel Core i7-6700K"
+    },
+    {
+      "appId": "4553800",
+      "name": "Bloody Lens",
+      "gpu": 64,
+      "cpu": 78,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6700 XT · Intel Core i7-9700K / AMD Ryzen 7 3700X"
+    },
+    {
+      "appId": "4612650",
+      "name": "Metro Anomaly",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "500680",
+      "name": "Jockey Rush",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": null,
+      "basis": "AMD Radeon HD 5770"
+    },
+    {
+      "appId": "503340",
+      "name": "Dig 4 Destruction",
+      "gpu": 186,
+      "cpu": 174,
+      "ramGb": 8,
+      "basis": "AMD Radeon R9 290 · Intel Core i5-4590"
+    },
+    {
+      "appId": "3041640",
+      "name": "Shadey's Quest",
+      "gpu": 265,
+      "cpu": 191,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 960 · Intel Core i5-4590 / AMD Ryzen 3 1200"
+    },
+    {
+      "appId": "4017880",
+      "name": "ANOMALITH",
+      "gpu": 82,
+      "cpu": 114,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "4444800",
+      "name": "Obey Me! Sinner's Choice: Lucifer",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GT 1030"
+    },
+    {
+      "appId": "4453700",
+      "name": "The Beckoning",
+      "gpu": 88,
+      "cpu": 87,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 6600 · Intel Core i5-10400 / AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "4476270",
+      "name": "Crown & Coin: The Hundred Years",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "Intel HD 4000"
+    },
+    {
+      "appId": "4691400",
+      "name": "Performance Review: Survivor",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "5127020",
+      "name": "Visions of War",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "517720",
+      "name": "Epic Tavern",
+      "gpu": 150,
+      "cpu": 210,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980"
+    },
+    {
+      "appId": "528720",
+      "name": "Shu",
+      "gpu": 531,
+      "cpu": 743,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750"
+    },
+    {
+      "appId": "529970",
+      "name": "PositronX",
+      "gpu": 223,
+      "cpu": 312,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 Ti / AMD Radeon RX 470"
+    },
+    {
+      "appId": "534000",
+      "name": "Fast Action Hero",
+      "gpu": 150,
+      "cpu": 210,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980"
+    },
+    {
+      "appId": "5377530",
+      "name": "GRAVE SHIFT",
+      "gpu": 139,
+      "cpu": 195,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "5382620",
+      "name": "FLICK PONG",
+      "gpu": 148,
+      "cpu": 108,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · Intel Core i5-8400 / AMD Ryzen 5 2600"
+    },
+    {
+      "appId": "5433620",
+      "name": "Sort Them Dogs",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "2287150",
+      "name": "Revenge of the Mage",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "3469910",
+      "name": "Star Trek: Outposts Unknown",
+      "gpu": 75,
+      "cpu": 106,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "4298400",
+      "name": "Dystopian Pet Simulator",
+      "gpu": 77,
+      "cpu": 71,
+      "ramGb": 12,
+      "basis": "NVIDIA GeForce RTX 3060 · AMD Ryzen 5 5600"
+    },
+    {
+      "appId": "4423270",
+      "name": "Takeover 2",
+      "gpu": 88,
+      "cpu": 123,
+      "ramGb": 8,
+      "basis": "AMD Radeon RX 6600 / NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "4426410",
+      "name": "Potted Pets",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 1080"
+    },
+    {
+      "appId": "4601080",
+      "name": "The Last Zeppelin",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "4611550",
+      "name": "Artificial Ambition",
+      "gpu": 139,
+      "cpu": 87,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 580 · Intel Core i5-10400 / AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "525910",
+      "name": "Cockroach VR",
+      "gpu": 150,
+      "cpu": 210,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980"
+    },
+    {
+      "appId": "1167820",
+      "name": "Airport Contraband",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "1761910",
+      "name": "Athanasia",
+      "gpu": 531,
+      "cpu": 743,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 750"
+    },
+    {
+      "appId": "3154800",
+      "name": "Football Pitch Simulator",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "3484110",
+      "name": "Gourmet Zombie",
+      "gpu": 493,
+      "cpu": 690,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 460 / AMD Radeon HD 7800"
+    },
+    {
+      "appId": "3826790",
+      "name": "Ashen",
+      "gpu": 160,
+      "cpu": 225,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "4516970",
+      "name": "Ego Lifting Simulator",
+      "gpu": 105,
+      "cpu": 147,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "4617500",
+      "name": "Revenant Survivors",
+      "gpu": 148,
+      "cpu": 87,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · AMD Ryzen 5 3600 / Intel Core i5-10400"
+    },
+    {
+      "appId": "4627220",
+      "name": "Untold Memories: Grandma's House",
+      "gpu": 53,
+      "cpu": 74,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3070 / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "4656560",
+      "name": "Not My Son",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "4699020",
+      "name": "INTUS",
+      "gpu": 105,
+      "cpu": 147,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "501110",
+      "name": "Mount Wingsuit",
+      "gpu": 186,
+      "cpu": 181,
+      "ramGb": 4,
+      "basis": "AMD Radeon R9 290 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "503010",
+      "name": "Azulgar: Star Commanders",
+      "gpu": 145,
+      "cpu": 137,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 980 / AMD Radeon R9 Fury · AMD Ryzen 5 1600"
+    },
+    {
+      "appId": "504100",
+      "name": "Russian VR Coasters",
+      "gpu": 168,
+      "cpu": 174,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 · Intel Core i5-4590"
+    },
+    {
+      "appId": "5365410",
+      "name": "ASTERIS",
+      "gpu": 81,
+      "cpu": 72,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6600 · Intel Core i5-11400 / AMD Ryzen 5 5600"
+    },
+    {
+      "appId": "2948130",
+      "name": "Life of a Thug",
+      "gpu": 177,
+      "cpu": 248,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290"
+    },
+    {
+      "appId": "3536520",
+      "name": "Warding Witches",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "4024600",
+      "name": "Pyramidion",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "4536940",
+      "name": "Relicta In Memoriam",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "4543610",
+      "name": "Priority One",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "4599880",
+      "name": "Grandma Left Me A Building",
+      "gpu": 321,
+      "cpu": 449,
+      "ramGb": 2,
+      "basis": "NVIDIA GeForce GTX 1050 Ti / AMD Radeon RX 560"
+    },
+    {
+      "appId": "4648890",
+      "name": "Intergalactic Puzzle Touchdown",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "501090",
+      "name": "Design it, Drive it : Speedboats",
+      "gpu": 249,
+      "cpu": 349,
+      "ramGb": 4,
+      "basis": "AMD Radeon HD 7970 / AMD Radeon R9 280X / NVIDIA GeForce GTX 680"
+    },
+    {
+      "appId": "529020",
+      "name": "Virtual-O",
+      "gpu": 219,
+      "cpu": 307,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 770 / AMD Radeon R9 290"
+    },
+    {
+      "appId": "534680",
+      "name": "Dolphin Up",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "Intel HD 4000"
+    },
+    {
+      "appId": "5380210",
+      "name": "Biathlon Manager",
+      "gpu": 58,
+      "cpu": 87,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 Ti / AMD Radeon RX 6700 XT · Intel Core i5-10400 / AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "5481550",
+      "name": "Circuits: VLSI",
+      "gpu": 39,
+      "cpu": 55,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 4070"
+    },
+    {
+      "appId": "1249890",
+      "name": "Survival Denied",
+      "gpu": 39,
+      "cpu": 55,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3080"
+    },
+    {
+      "appId": "1564060",
+      "name": "Lighthouse of Madness",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "2899240",
+      "name": "BUZZ or DIE",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "2939510",
+      "name": "Under Canopies",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "3116230",
+      "name": "Abashed",
+      "gpu": 90,
+      "cpu": 126,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "3218570",
+      "name": "TANUKI: Pon's Summer",
+      "gpu": 279,
+      "cpu": 390,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 950 / AMD Radeon HD 7970"
+    },
+    {
+      "appId": "3308220",
+      "name": "Galatico",
+      "gpu": 767,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 460"
+    },
+    {
+      "appId": "4025270",
+      "name": "Sancta",
+      "gpu": 81,
+      "cpu": 84,
+      "ramGb": 32,
+      "basis": "AMD Radeon RX 6600 / NVIDIA GeForce RTX 3060 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "4438940",
+      "name": "Beat Bots",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "4463520",
+      "name": "Moomin: Midsummer Madness",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "4514880",
+      "name": "Hyperlane Highway",
+      "gpu": 74,
+      "cpu": 78,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2070 / AMD Radeon RX 5700 XT · Intel Core i7-9700K / AMD Ryzen 7 3700X"
+    },
+    {
+      "appId": "4563590",
+      "name": "Pig King",
+      "gpu": 152,
+      "cpu": 114,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480 · Intel Core i7-6700K"
+    },
+    {
+      "appId": "4626680",
+      "name": "STEEL GULLET",
+      "gpu": 139,
+      "cpu": 195,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "4657320",
+      "name": "The Lifeline",
+      "gpu": 90,
+      "cpu": 87,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 5600 XT · Intel Core i5-10400 / AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "4658450",
+      "name": "House Of Trauma",
+      "gpu": 81,
+      "cpu": 66,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6600 · Intel Core i5-12400 / AMD Ryzen 5 5600"
+    },
+    {
+      "appId": "4673230",
+      "name": "Breeze Of Adventure",
+      "gpu": 197,
+      "cpu": 84,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1650 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "4699990",
+      "name": "Inertia 2: Definitive Edition",
+      "gpu": 72,
+      "cpu": 100,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1080 Ti / AMD Radeon RX 5700 XT"
+    },
+    {
+      "appId": "516940",
+      "name": "MineSweeper VR",
+      "gpu": 177,
+      "cpu": 181,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i5-4590 / AMD FX-8350"
+    },
+    {
+      "appId": "5406170",
+      "name": "HUNTED",
+      "gpu": 72,
+      "cpu": 82,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1080 Ti / AMD Radeon RX 5700 XT · AMD Ryzen 5 3600X"
+    },
+    {
+      "appId": "5416430",
+      "name": "The Hero's Legacy",
+      "gpu": 212,
+      "cpu": 110,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 Ti / AMD Radeon RX 570 · Intel Core i5-8400"
+    },
+    {
+      "appId": "5431590",
+      "name": "TrenchFin",
+      "gpu": 115,
+      "cpu": 161,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1660 Super"
+    },
+    {
+      "appId": "5432220",
+      "name": "Rice & Ink: Family Chronicle",
+      "gpu": 216,
+      "cpu": 302,
+      "ramGb": 8,
+      "basis": "AMD Radeon 780M (integrada) / NVIDIA GeForce GTX 1650"
+    },
+    {
+      "appId": "5452110",
+      "name": "Strategy Core",
+      "gpu": 329,
+      "cpu": 187,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 670 / NVIDIA GeForce GTX 1050 / AMD Radeon HD 7870 · Intel Core i5-3570K"
+    },
+    {
+      "appId": "5452650",
+      "name": "Draemony",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "1103140",
+      "name": "Reverie",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "2427790",
+      "name": "Goldilock One: The Mists of Jakaira",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "2482760",
+      "name": "Hunting Simulator 3",
+      "gpu": 47,
+      "cpu": 65,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 4060 / AMD Radeon RX 6800 XT"
+    },
+    {
+      "appId": "2781470",
+      "name": "The Killing Stone",
+      "gpu": 93,
+      "cpu": 130,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 / Intel Arc A750"
+    },
+    {
+      "appId": "2831000",
+      "name": "Faraway",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660 / AMD Radeon RX 560"
+    },
+    {
+      "appId": "2847780",
+      "name": "Nocturnal 2",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050"
+    },
+    {
+      "appId": "2948120",
+      "name": "Cursed Profit",
+      "gpu": 81,
+      "cpu": 113,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6600"
+    },
+    {
+      "appId": "2950410",
+      "name": "Gear Up Einstein!",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 1050 / AMD Radeon RX 560"
+    },
+    {
+      "appId": "3194080",
+      "name": "Calvar - The Darkest Gate",
+      "gpu": 38,
+      "cpu": 53,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 3080 / AMD Radeon RX 6800 XT"
+    },
+    {
+      "appId": "3712150",
+      "name": "TCG Card Collection: Tidy Up",
+      "gpu": 128,
+      "cpu": 110,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 · Intel Core i5-8400"
+    },
+    {
+      "appId": "4139580",
+      "name": "Where the Seeds Fall",
+      "gpu": 55,
+      "cpu": 77,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "4244190",
+      "name": "Guinea Pig Runaway Together",
+      "gpu": 164,
+      "cpu": 108,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1650 / AMD Radeon RX 590 · Intel Core i5-8400 / AMD Ryzen 5 2600"
+    },
+    {
+      "appId": "4442840",
+      "name": "Crime Podcast: Welcome to the Neighborhood",
+      "gpu": 66,
+      "cpu": 92,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce RTX 4060"
+    },
+    {
+      "appId": "4450900",
+      "name": "The Things Left Behind",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 4,
+      "basis": "Intel HD 4000"
+    },
+    {
+      "appId": "4468540",
+      "name": "It's About Pirates",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "4509300",
+      "name": "Prinny Party: Going Overboard!",
+      "gpu": 78,
+      "cpu": 110,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 Super"
+    },
+    {
+      "appId": "4535560",
+      "name": "Warehouse Chaos Simulator\uD83D\uDCE6",
+      "gpu": 144,
+      "cpu": 201,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060"
+    },
+    {
+      "appId": "4594300",
+      "name": "RACAR - Shooter FPS",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "4595460",
+      "name": "Make the World Great Again",
+      "gpu": 58,
+      "cpu": 80,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 6700 XT / NVIDIA GeForce RTX 3060 Ti"
+    },
+    {
+      "appId": "4597820",
+      "name": "DRENCHED",
+      "gpu": 148,
+      "cpu": 108,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · Intel Core i5-8400 / AMD Ryzen 5 2600"
+    },
+    {
+      "appId": "4607590",
+      "name": "GummyGom Delivery",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GT 1030"
+    },
+    {
+      "appId": "4621940",
+      "name": "Leviticus",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GT 1030"
+    },
+    {
+      "appId": "4631560",
+      "name": "Ball Guys: Merge Party",
+      "gpu": 88,
+      "cpu": 84,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 6600 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "4637470",
+      "name": "Thunder Training Ground",
+      "gpu": 445,
+      "cpu": 623,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 750 Ti"
+    },
+    {
+      "appId": "4663730",
+      "name": "How Empires Work",
+      "gpu": 321,
+      "cpu": 229,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 670 / AMD Radeon R9 270 · Intel Core i5-2400 / AMD FX-6300"
+    },
+    {
+      "appId": "5091000",
+      "name": "Unhallowed Survivors",
+      "gpu": 383,
+      "cpu": 537,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 / AMD Radeon RX 460"
+    },
+    {
+      "appId": "520300",
+      "name": "Underworld Dungeon",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 8,
+      "basis": "Intel HD Graphics 4000"
+    },
+    {
+      "appId": "523610",
+      "name": "Beyond Enemy Lines",
+      "gpu": 177,
+      "cpu": 124,
+      "ramGb": 6,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290 · Intel Core i7-4790K"
+    },
+    {
+      "appId": "5377440",
+      "name": "Fly With Me",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 32,
+      "basis": "NVIDIA GeForce GTX 1080"
+    },
+    {
+      "appId": "5382160",
+      "name": "Cutteridge Estate",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "5387220",
+      "name": "Derelict Division, LLC",
+      "gpu": 47,
+      "cpu": 65,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3070 / AMD Radeon RX 6800"
+    },
+    {
+      "appId": "5389390",
+      "name": "GayTeA VI",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "5392300",
+      "name": "Specimen Zero",
+      "gpu": 212,
+      "cpu": 297,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 Ti / AMD Radeon RX 570"
+    },
+    {
+      "appId": "5406040",
+      "name": "BANDA SHAFT DUEL",
+      "gpu": 212,
+      "cpu": 297,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 Ti / AMD Radeon RX 570"
+    },
+    {
+      "appId": "5429690",
+      "name": "Chess Online: Grandmaster's Table",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "Intel UHD Graphics 620"
+    },
+    {
+      "appId": "1287150",
+      "name": "Pulseball",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "1730790",
+      "name": "A Sister's Journey",
+      "gpu": 110,
+      "cpu": 153,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070"
+    },
+    {
+      "appId": "1871260",
+      "name": "Lyara",
+      "gpu": 1000,
+      "cpu": 1000,
+      "ramGb": 2,
+      "basis": "Intel HD 4000"
+    },
+    {
+      "appId": "2445780",
+      "name": "Grifford Academy",
+      "gpu": 412,
+      "cpu": 577,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 750 Ti / AMD Radeon HD 7850"
+    },
+    {
+      "appId": "2451700",
+      "name": "Atrion Project",
+      "gpu": 148,
+      "cpu": 84,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "2540670",
+      "name": "Terralysia",
+      "gpu": 48,
+      "cpu": 67,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1080 Ti / AMD Radeon RX 6800 XT"
+    },
+    {
+      "appId": "2876130",
+      "name": "Fuel Station Simulator",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "2930330",
+      "name": "Vikings: Valhalla Saga",
+      "gpu": 130,
+      "cpu": 149,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1070 / AMD Radeon RX 480 · Intel Core i5-7400 / AMD Ryzen 5 1600"
+    },
+    {
+      "appId": "3088790",
+      "name": "Market master Simulator",
+      "gpu": 105,
+      "cpu": 147,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 / AMD Radeon RX 5600 XT"
+    },
+    {
+      "appId": "3156910",
+      "name": "Sepulchron",
+      "gpu": 152,
+      "cpu": 161,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 480 / NVIDIA GeForce GTX 1060 · AMD Ryzen 3 1300X / Intel Core i7-4790"
+    },
+    {
+      "appId": "3162390",
+      "name": "CoffeeShop Simulator",
+      "gpu": 53,
+      "cpu": 74,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3070 / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "3166920",
+      "name": "Tears Apart",
+      "gpu": 212,
+      "cpu": 137,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 Ti / AMD Radeon RX 570 · AMD Ryzen 5 1600"
+    },
+    {
+      "appId": "3206660",
+      "name": "Storage Anomaly",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "3228900",
+      "name": "The Kharzov Effect",
+      "gpu": 64,
+      "cpu": 90,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060 / AMD Radeon RX 6700 XT"
+    },
+    {
+      "appId": "3305190",
+      "name": "One More Plate!",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 660"
+    },
+    {
+      "appId": "3310570",
+      "name": "Night Plane",
+      "gpu": 170,
+      "cpu": 239,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 970 / AMD Radeon R9 290X"
+    },
+    {
+      "appId": "3407360",
+      "name": "Pardon My French Toast",
+      "gpu": 183,
+      "cpu": 110,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 Ti / NVIDIA GeForce GTX 1060 / AMD Radeon RX 570 · Intel Core i5-8400"
+    },
+    {
+      "appId": "3460820",
+      "name": "Tropic Industry",
+      "gpu": 63,
+      "cpu": 88,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2080"
+    },
+    {
+      "appId": "3465710",
+      "name": "The Cat in the Hat: Rainy Day Mayhem",
+      "gpu": 157,
+      "cpu": 220,
+      "ramGb": null,
+      "basis": "AMD Radeon R9 390X / NVIDIA GeForce GTX 980"
+    },
+    {
+      "appId": "3667660",
+      "name": "Bug Off",
+      "gpu": 363,
+      "cpu": 142,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 1050 · Intel Core i5-6600K / AMD Ryzen 5 1600"
+    },
+    {
+      "appId": "3827330",
+      "name": "Midnight Launch: A Gameshop Sim",
+      "gpu": 152,
+      "cpu": 139,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 480 · Intel Core i5-7600K"
+    },
+    {
+      "appId": "3895080",
+      "name": "Motorcycle Ride: Infinity",
+      "gpu": 91,
+      "cpu": 127,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060"
+    },
+    {
+      "appId": "3938260",
+      "name": "Bumper Bout",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 960 / AMD Radeon R9 280"
+    },
+    {
+      "appId": "3951810",
+      "name": "Cheater's Table",
+      "gpu": 242,
+      "cpu": 339,
+      "ramGb": null,
+      "basis": "NVIDIA GeForce GTX 770 / AMD Radeon R9 380X"
+    },
+    {
+      "appId": "3957780",
+      "name": "Teddy Horses",
+      "gpu": 265,
+      "cpu": 372,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 770"
+    },
+    {
+      "appId": "4114470",
+      "name": "Moonlit Horizons",
+      "gpu": 531,
+      "cpu": 743,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 750"
+    },
+    {
+      "appId": "4132960",
+      "name": "Little Ghosties",
+      "gpu": 175,
+      "cpu": 245,
+      "ramGb": null,
+      "basis": "AMD Radeon RX 470 / NVIDIA GeForce GTX 970"
+    },
+    {
+      "appId": "4252600",
+      "name": "Keystroke Pursuit",
+      "gpu": 363,
+      "cpu": 508,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 / AMD Radeon RX 560"
+    },
+    {
+      "appId": "4376910",
+      "name": "Shiftomino",
+      "gpu": 115,
+      "cpu": 161,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1660 Super"
+    },
+    {
+      "appId": "4424420",
+      "name": "Alterum",
+      "gpu": 153,
+      "cpu": 215,
+      "ramGb": 16,
+      "basis": "AMD Radeon RX 580"
+    },
+    {
+      "appId": "4429690",
+      "name": "Dreams Of A Visionary",
+      "gpu": 90,
+      "cpu": 84,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 2060 / AMD Radeon RX 5600 XT · AMD Ryzen 5 3600"
+    },
+    {
+      "appId": "4430560",
+      "name": "Survivor Joe Lost Island",
+      "gpu": 445,
+      "cpu": 623,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 750 Ti"
+    },
+    {
+      "appId": "4452620",
+      "name": "Thieves and Gold",
+      "gpu": 148,
+      "cpu": 208,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580"
+    },
+    {
+      "appId": "4454110",
+      "name": "Softboiled",
+      "gpu": 148,
+      "cpu": 108,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1060 / AMD Radeon RX 580 · Intel Core i5-8400 / AMD Ryzen 5 2600"
+    },
+    {
+      "appId": "4486370",
+      "name": "Banana Life Sim",
+      "gpu": 627,
+      "cpu": 878,
+      "ramGb": 4,
+      "basis": "NVIDIA GeForce GTX 560"
+    },
+    {
+      "appId": "4492040",
+      "name": "Restless Rites - Prologue",
+      "gpu": 113,
+      "cpu": 158,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce GTX 1660 Ti"
+    },
+    {
+      "appId": "4500000",
+      "name": "Spell Code SlingerZ",
+      "gpu": 363,
+      "cpu": 193,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce GTX 1050 / AMD Radeon RX 560 · Intel Core i5-4460 / AMD Ryzen 3 1200"
+    },
+    {
+      "appId": "4500020",
+      "name": "Tie Down",
+      "gpu": 77,
+      "cpu": 107,
+      "ramGb": 16,
+      "basis": "NVIDIA GeForce RTX 3060"
+    },
+    {
+      "appId": "4508450",
+      "name": "Death Dealer",
+      "gpu": 74,
+      "cpu": 104,
+      "ramGb": 8,
+      "basis": "NVIDIA GeForce RTX 2070"
+    }
+  ]
+}
