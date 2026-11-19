@@ -45,6 +45,18 @@ public sealed record CalibrationProfile(double? Brightness = null, double? Contr
         double.IsFinite(DigitalContrast) && DigitalContrast is >= .8 and <= 1.2 && double.IsFinite(Warmth) && Warmth is >= -20 and <= 20 &&
         double.IsFinite(Tint) && Tint is >= -10 and <= 10 &&
         (Saturation is null || double.IsFinite(Saturation.Value) && Saturation is >= 0 and <= 100);
+    // White tone as R, G, B gains that only ever attenuate, so the brightest channel never clips. Warm +20 takes
+    // blue down ~22% (about 6500 K toward 5000 K, like Night light); cool −20 takes red down ~18%. Tint trades green
+    // against magenta. Shared by the hardware ramp and the image preview so both show the same change.
+    public static double[] WhiteGains(double warmth, double tint)
+    {
+        double r = 1, g = 1, b = 1;
+        if (warmth > 0) { g -= warmth * .0035; b -= warmth * .011; }
+        else if (warmth < 0) { r -= -warmth * .009; g -= -warmth * .003; }
+        if (tint > 0) { r *= 1 - tint * .006; b *= 1 - tint * .006; }
+        else if (tint < 0) g *= 1 + tint * .006;
+        return [r, g, b];
+    }
     public CalibrationState Build(CalibrationState baseline)
     {
         if (!Valid || !baseline.CanAdjust) throw new ArgumentException("Unsupported display calibration profile.");
@@ -56,7 +68,7 @@ public sealed record CalibrationProfile(double? Brightness = null, double? Contr
         ushort[]? ramp = baseline.Ramp?.ToArray();
         if (ramp is not null)
         {
-            double[] gains = [1 + Warmth * .003, 1 + Tint * .004, 1 - Warmth * .003];
+            var gains = WhiteGains(Warmth, Tint);
             for (var channel = 0; channel < 3; channel++)
             for (var i = 0; i < 256; i++)
             {
@@ -102,6 +114,8 @@ public sealed class DisplayCalibrationController : IDisposable
     private bool healthy = true, disposed;
     private DateTimeOffset sessionEnd;
     public DateTimeOffset? PreviewUntil { get; private set; }
+    // How long an applied look waits for "Keep" before reverting by itself (each change restarts it).
+    public TimeSpan PreviewWindow { get; init; } = TimeSpan.FromMinutes(2);
     public MonitorColorResult LastResult { get; private set; } = MonitorColorResult.NoChange;
     public event EventHandler? Changed;
     public bool HasPreview => Volatile.Read(ref publishedEntries).Any(e => e.Preview);
@@ -163,7 +177,7 @@ public sealed class DisplayCalibrationController : IDisposable
     private void Arm()
     {
         timer?.Dispose(); var revision = ++timerRevision;
-        PreviewUntil = now().AddMinutes(2);
+        PreviewUntil = now() + PreviewWindow;
         if (PreviewUntil > sessionEnd) PreviewUntil = sessionEnd;
         var delay = PreviewUntil.Value - now();
         timer = schedule(delay > TimeSpan.Zero ? delay : TimeSpan.Zero, () =>
@@ -177,11 +191,16 @@ public sealed class DisplayCalibrationController : IDisposable
         if (!current!.Same(expected)) return MonitorColorResult.Conflict;
         var prior = entries.SingleOrDefault(e => e.Original.Identity == expected.Identity);
         if (prior is not null) prior = UpgradeLegacy(prior, current);
-        if (prior is not null && !current.Same(prior.Applied, 256)) return MonitorColorResult.Conflict;
+        // A kept profile the monitor no longer shows was changed outside Lotus (monitor menu, driver reset or a
+        // write that never landed). The player just confirmed this fresh snapshot, so test from it: cancelling
+        // returns to it, while the first original stays available for "Restore original".
+        var drifted = prior is not null && !current.Same(prior.Applied, 256);
         if (entries.Count >= 8 && prior is null) return MonitorColorResult.Invalid;
         var original = prior is not null ? prior.Original with { Device = current.Device } : current;
         CalibrationState target; try { target = profile.Build(original); } catch (ArgumentException) { return MonitorColorResult.Unsupported; }
-        var next = new CalibrationBackup(original, target, current, prior?.Applied, profile, prior?.Profile, true);
+        var next = drifted
+            ? new CalibrationBackup(original, target, current, current, profile, new(current.Brightness?.Percent, current.Contrast?.Percent), true)
+            : new CalibrationBackup(original, target, current, prior?.Applied, profile, prior?.Profile, true);
         Save(entries.Where(e => e.Original.Identity != expected.Identity).Append(next).ToList());
         sessionEnd = now().AddMinutes(10); Arm();
         if (!current.Same(target) && !driver.TryApply(current, target))
@@ -247,4 +266,31 @@ public sealed class DisplayCalibrationController : IDisposable
         Save(entries.Where(e => e != entry).ToList()); StopTimer(); return MonitorColorResult.Restored;
     });
     public void Dispose() { lock (gate) { if (disposed) return; disposed = true; } CancelPreview(); lock (gate) StopTimer(); }
+}
+
+/// <summary>
+/// DDC/CI monitors often keep reporting the previous brightness/contrast for tens to hundreds of
+/// milliseconds after a write, and a single read can fail transiently. Poll a bounded number of
+/// times instead of treating the first stale read as a failed (and then rolled back) transaction.
+/// </summary>
+public static class DisplaySettle
+{
+    public static readonly TimeSpan WriteGap = TimeSpan.FromMilliseconds(60);
+    public static readonly TimeSpan ReadStep = TimeSpan.FromMilliseconds(150);
+    public static readonly TimeSpan VerifyBudget = TimeSpan.FromMilliseconds(1500);
+    public static readonly TimeSpan ExpectBudget = TimeSpan.FromMilliseconds(450);
+    /// <summary>Reads until <paramref name="accept"/> holds or the budget is spent; returns the last read.</summary>
+    public static CalibrationState? Until(Func<CalibrationState?> read, Func<CalibrationState, bool> accept, Action<TimeSpan> sleep, TimeSpan budget, TimeSpan step)
+    {
+        if (step <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(step));
+        var attempts = Math.Max(1, (int)Math.Ceiling(budget / step) + 1);
+        CalibrationState? last = null;
+        for (var i = 0; i < attempts; i++)
+        {
+            if (i > 0) sleep(step);
+            last = read();
+            if (last is not null && accept(last)) return last;
+        }
+        return last;
+    }
 }

@@ -21,7 +21,7 @@ public sealed partial class MainWindow
         MonitorColors = new(ColorDriver, new JsonMonitorColorStore(path), ex => Serilog.Log.Warning(ex, "Monitor colors recovery"));
         // Only unfinished previews are rolled back. Never impose a saved preference or poll while gaming.
         Calibration = new(CalibrationDriver, new JsonCalibrationStore(Path.Combine(Path.GetDirectoryName(path)!, "monitor-calibration.json")),
-            ex => Serilog.Log.Warning(ex, "Display calibration recovery"));
+            ex => Serilog.Log.Warning(ex, "Display calibration recovery")) { PreviewWindow = TimeSpan.FromSeconds(15) };
         MonitorColorsReady = Task.Run(() =>
         {
             if (MonitorColors.HasPreview) MonitorColors.CancelPreview();

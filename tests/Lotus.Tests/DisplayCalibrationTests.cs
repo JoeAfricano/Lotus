@@ -85,7 +85,7 @@ public sealed class DisplayCalibrationTests
         var original = Original() with { Vibrance = new(60, 0, 100, 50) };
         foreach (var use in new[] { DisplayUse.Everyday, DisplayUse.Editing, DisplayUse.Movies })
             Assert.Equal(50, DisplayRecommendations.Suggest(original, use, DisplayAmbient.Normal).Saturation);
-        Assert.Equal(55, DisplayRecommendations.Suggest(original, DisplayUse.Gaming, DisplayAmbient.Normal).Saturation);
+        Assert.Equal(58, DisplayRecommendations.Suggest(original, DisplayUse.Gaming, DisplayAmbient.Normal).Saturation);
     }
     [Fact]
     public async Task UiStatusReadsNeverWaitForSlowHardwareTransaction()
@@ -107,31 +107,36 @@ public sealed class DisplayCalibrationTests
         Assert.Equal(MonitorColorResult.Preview, controller.LastResult);
     }
     [Theory]
-    [InlineData(DisplayUse.Everyday, DisplayAmbient.Normal, 65, 1)]
-    [InlineData(DisplayUse.Everyday, DisplayAmbient.Dim, 57, 1)]
-    [InlineData(DisplayUse.Gaming, DisplayAmbient.Bright, 70, 1.04)]
-    [InlineData(DisplayUse.Editing, DisplayAmbient.Dim, 65, 1)]
-    [InlineData(DisplayUse.Movies, DisplayAmbient.Dim, 57, 1)]
-    public void RecommendationsRespectUseAmbientAndPreserveContrastAndWhite(DisplayUse use, DisplayAmbient ambient, double brightness, double gamma)
+    [InlineData(DisplayUse.Everyday, DisplayAmbient.Normal, 65, 1, 0)]
+    [InlineData(DisplayUse.Everyday, DisplayAmbient.Dim, 45, 1, 8)]
+    [InlineData(DisplayUse.Gaming, DisplayAmbient.Normal, 65, 1.06, 0)]
+    [InlineData(DisplayUse.Gaming, DisplayAmbient.Bright, 80, 1.1, 0)]
+    [InlineData(DisplayUse.Editing, DisplayAmbient.Dim, 40, 1, 0)]
+    [InlineData(DisplayUse.Movies, DisplayAmbient.Dim, 40, .92, 0)]
+    [InlineData(DisplayUse.Movies, DisplayAmbient.Bright, 70, 1, 0)]
+    public void RecommendationsFollowUseAndRoomWhilePreservingContrast(DisplayUse use, DisplayAmbient ambient, double brightness, double gamma, double warmth)
     {
         var original = Original(); var suggested = DisplayRecommendations.Suggest(original, use, ambient);
         Assert.Equal(brightness, suggested.Brightness); Assert.Equal(60, suggested.Contrast);
-        Assert.Equal(gamma, suggested.Gamma); Assert.Equal(0, suggested.Warmth); Assert.Equal(0, suggested.Tint);
+        Assert.Equal(gamma, suggested.Gamma); Assert.Equal(warmth, suggested.Warmth); Assert.Equal(0, suggested.Tint);
         Assert.True(suggested.Build(original).Valid);
     }
     [Fact] public void RecommendationsDoNotInventUnavailableControlsOrOverrideHdr()
     {
         var original = Original() with { Brightness = null, Ramp = null };
         var suggested = DisplayRecommendations.Suggest(original, DisplayUse.Gaming, DisplayAmbient.Dim);
-        Assert.Null(suggested.Brightness); Assert.Equal(1, suggested.Gamma); Assert.True(suggested.Build(original).Valid);
+        Assert.Null(suggested.Brightness); Assert.Equal(1, suggested.Gamma); Assert.Equal(0, suggested.Warmth); Assert.True(suggested.Build(original).Valid);
         Assert.Throws<ArgumentException>(() => DisplayRecommendations.Suggest(original with { AdvancedColor = true }, DisplayUse.Gaming, DisplayAmbient.Normal));
     }
-    [Fact] public void RecommendationBrightnessIsBoundedAndNotCumulative()
+    [Fact] public void RecommendationBrightnessMovesOnlyToTheNearestEdgeOfTheRoomBand()
     {
         var original = Original() with { Brightness = new(3, 0, 100) };
-        Assert.Equal(0, DisplayRecommendations.Suggest(original, DisplayUse.Everyday, DisplayAmbient.Dim).Brightness);
+        Assert.Equal(30, DisplayRecommendations.Suggest(original, DisplayUse.Everyday, DisplayAmbient.Dim).Brightness);
         original = original with { Brightness = new(99, 0, 100) };
-        Assert.Equal(100, DisplayRecommendations.Suggest(original, DisplayUse.Everyday, DisplayAmbient.Bright).Brightness);
+        Assert.Equal(99, DisplayRecommendations.Suggest(original, DisplayUse.Everyday, DisplayAmbient.Bright).Brightness);
+        Assert.Equal(45, DisplayRecommendations.Suggest(original, DisplayUse.Everyday, DisplayAmbient.Dim).Brightness);
+        foreach (var use in Enum.GetValues<DisplayUse>()) foreach (var ambient in Enum.GetValues<DisplayAmbient>())
+            Assert.True(DisplayRecommendations.Suggest(Original(), use, ambient).Valid);
     }
     [Fact] public void NeutralProfilePreservesEveryOriginalGammaEntry()
     {
@@ -152,8 +157,11 @@ public sealed class DisplayCalibrationTests
     }
     [Fact] public void WhiteBalanceChangesChannelsWithoutSaturationMatrix()
     {
-        var target = (Profile() with { Warmth = 20, Tint = 10 }).Build(Original());
-        Assert.True(target.Ramp![128] > Original().Ramp![128]); Assert.True(target.Ramp[640] < Original().Ramp![640]); Assert.True(target.Valid);
+        var target = (Profile() with { Warmth = 20 }).Build(Original());
+        // Warm keeps red at full scale (no clipping) and lowers blue clearly; never above the original ramp.
+        Assert.Equal(Original().Ramp![255], target.Ramp![255]); Assert.True(target.Ramp[640] < Original().Ramp![640] * .85); Assert.True(target.Valid);
+        var cool = (Profile() with { Warmth = -20, Tint = -10 }).Build(Original());
+        Assert.True(cool.Ramp![255] < Original().Ramp![255]); Assert.True(cool.Ramp[256 + 200] < Original().Ramp![256 + 200]); Assert.Equal(Original().Ramp![767], cool.Ramp[767]);
     }
     [Theory] [InlineData(.75, -.1, .8, -20, -10)] [InlineData(1.3, .1, 1.2, 20, 10)]
     public void ControlBoundsProduceReadableMonotonicRamps(double gamma, double brightness, double contrast, double warmth, double tint)
@@ -284,6 +292,16 @@ public sealed class DisplayCalibrationTests
         Assert.Equal(MonitorColorResult.Conflict, controller.Begin(Original() with { Brightness = new(10, 0, 100) }, Profile()));
         controller.Begin(driver.State!, Profile()); Assert.Equal(MonitorColorResult.Invalid, controller.Begin(driver.State!, Profile()));
     }
+    [Fact] public void KeptProfileChangedOutsideLotusDoesNotBlockANewTestAndKeepsTheFirstOriginal()
+    {
+        var driver = new Driver(); using var controller = Controller(driver, new());
+        controller.Begin(driver.State!, Profile(1.1)); controller.Keep();
+        driver.State = driver.State! with { Contrast = new(75, 0, 100) }; var drifted = driver.State;
+        Assert.Equal(MonitorColorResult.Preview, controller.Begin(drifted, Profile(1.04) with { Contrast = 75 }));
+        Assert.Equal(MonitorColorResult.Restored, controller.CancelPreview()); Assert.True(driver.State.Same(drifted, 256));
+        Assert.True(controller.HasBackup("stable-monitor"));
+        Assert.Equal(MonitorColorResult.Restored, controller.Restore(driver.State)); Assert.True(driver.State.Same(Original()));
+    }
     [Fact] public void ExplicitRestoreStillRequiresAFreshSnapshot()
     {
         var driver = new Driver(); using var controller = Controller(driver, new()); controller.Begin(driver.State!, Profile(1.1)); controller.Keep();
@@ -321,5 +339,26 @@ public sealed class DisplayCalibrationTests
             Assert.Single(Directory.GetFiles(directory));
         }
         finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }
+    }
+    [Fact] public void SettleWaitsForDelayedDdcReadbackInsteadOfFailingOnTheFirstStaleRead()
+    {
+        // Monitor accepted 66/61 but keeps reporting 65/60 for two reads, then one read glitches (null).
+        var target = Original() with { Brightness = new(66, 0, 100), Contrast = new(61, 0, 100) };
+        var reads = new Queue<CalibrationState?>([Original(), Original(), null, target]);
+        var sleeps = new List<TimeSpan>();
+        var result = DisplaySettle.Until(() => reads.Dequeue(), s => s.Same(target, 256), sleeps.Add, TimeSpan.FromMilliseconds(1500), TimeSpan.FromMilliseconds(150));
+        Assert.True(result!.Same(target)); Assert.Equal(3, sleeps.Count); Assert.Empty(reads);
+    }
+    [Fact] public void SettleIsBoundedAndReturnsTheLastReadWhenTheMonitorNeverConfirms()
+    {
+        var target = Original() with { Brightness = new(66, 0, 100) }; var count = 0; var slept = TimeSpan.Zero;
+        var result = DisplaySettle.Until(() => { count++; return Original(); }, s => s.Same(target, 256), d => slept += d, TimeSpan.FromMilliseconds(1500), TimeSpan.FromMilliseconds(150));
+        Assert.False(result!.Same(target)); Assert.Equal(11, count); Assert.Equal(TimeSpan.FromMilliseconds(1500), slept);
+    }
+    [Fact] public void SettleReturnsImmediatelyWhenTheFirstReadAlreadyMatches()
+    {
+        var sleeps = 0; var result = DisplaySettle.Until(Original, s => s.Same(Original()), _ => sleeps++, DisplaySettle.ExpectBudget, DisplaySettle.ReadStep);
+        Assert.NotNull(result); Assert.Equal(0, sleeps);
+        Assert.Throws<ArgumentOutOfRangeException>(() => DisplaySettle.Until(Original, _ => true, _ => { }, TimeSpan.FromSeconds(1), TimeSpan.Zero));
     }
 }

@@ -49,36 +49,63 @@ public sealed class WindowsDisplayCalibration : IDisplayCalibration
     { var value = new MonitorLevel((int)current, (int)min, (int)max); return value.Valid ? value : null; }
     public bool TryApply(CalibrationState expected, CalibrationState target)
     {
-        var current = Read(expected.Identity);
-        if (current is not { CanAdjust: true } || !current.Same(expected) || !target.CanAdjust ||
+        // A single DDC/CI read can glitch; allow a short settle before refusing as a conflict.
+        var current = DisplaySettle.Until(() => Read(expected.Identity), s => s.Same(expected), Sleep, DisplaySettle.ExpectBudget, DisplaySettle.ReadStep);
+        if (current is not { CanAdjust: true } || !current.Same(expected)) return Fail("expected-state", expected, current);
+        if (!target.CanAdjust ||
             target.Identity != current.Identity || target.Device != current.Device || target.AdvancedColor != false ||
             (current.Brightness is null) != (target.Brightness is null) || (current.Contrast is null) != (target.Contrast is null) ||
             (current.Ramp is null) != (target.Ramp is null) ||
             (current.Vibrance is null) != (target.Vibrance is null) ||
             current.Vibrance is { } vc && target.Vibrance is { } vt && (vc.Minimum != vt.Minimum || vc.Maximum != vt.Maximum || vc.Default != vt.Default) ||
             current.Brightness is { } bounds && target.Brightness is { } brTarget && (bounds.Minimum != brTarget.Minimum || bounds.Maximum != brTarget.Maximum) ||
-            current.Contrast is { } coBounds && target.Contrast is { } coTarget && (coBounds.Minimum != coTarget.Minimum || coBounds.Maximum != coTarget.Maximum)) return false;
+            current.Contrast is { } coBounds && target.Contrast is { } coTarget && (coBounds.Minimum != coTarget.Minimum || coBounds.Maximum != coTarget.Maximum))
+            return Fail("target-shape", target, current);
+        var wroteDdc = false;
         if (current.Brightness != target.Brightness || current.Contrast != target.Contrast)
         {
-            using var monitor = Physical.Open(current.Device); if (monitor is null) return false;
+            using var monitor = Physical.Open(current.Device); if (monitor is null) return Fail("ddc-open", target, current);
             if (current.Brightness != target.Brightness && target.Brightness is { } br &&
-                (!br.Valid || !SetMonitorBrightness(monitor.Handle, (uint)br.Current))) return false;
-            if (current.Contrast != target.Contrast && target.Contrast is { } co &&
-                (!co.Valid || !SetMonitorContrast(monitor.Handle, (uint)co.Current))) return false;
+                (!br.Valid || !Write(() => SetMonitorBrightness(monitor.Handle, (uint)br.Current)))) return Fail("ddc-brightness", target, current);
+            if (current.Brightness != target.Brightness) wroteDdc = true;
+            if (current.Contrast != target.Contrast && target.Contrast is { } co)
+            {
+                // DDC/CI requires a pause between commands; back-to-back writes are dropped by many monitors.
+                if (wroteDdc) Sleep(DisplaySettle.WriteGap);
+                if (!co.Valid || !Write(() => SetMonitorContrast(monitor.Handle, (uint)co.Current))) return Fail("ddc-contrast", target, current);
+                wroteDdc = true;
+            }
         }
         if (!CalibrationState.RampEqual(current.Ramp, target.Ramp))
         {
-            var dc = CreateDC("DISPLAY", current.Device, null, IntPtr.Zero); if (dc == IntPtr.Zero) return false;
-            try { if (!SetDeviceGammaRamp(dc, target.Ramp!)) return false; }
+            var dc = CreateDC("DISPLAY", current.Device, null, IntPtr.Zero); if (dc == IntPtr.Zero) return Fail("gamma-dc", target, current);
+            try { if (!SetDeviceGammaRamp(dc, target.Ramp!)) return Fail("gamma-set", target, current); }
             finally { DeleteDC(dc); }
         }
         if (current.Vibrance != target.Vibrance && target.Vibrance is { } saturation)
         {
             using var nv = WindowsMonitorColors.Nvidia.Open();
-            if (nv is null || !nv.Set(current.Device, saturation.Current)) return false;
+            if (nv is null || !nv.Set(current.Device, saturation.Current)) return Fail("nvidia-vibrance", target, current);
         }
-        // The Windows gamma API can return success while ignoring the ramp. Never trust BOOL alone.
-        return Read(expected.Identity) is { } verified && verified.Same(target, 256);
+        // The Windows gamma API can return success while ignoring the ramp, and DDC/CI monitors report
+        // new values with a delay. Never trust BOOL alone, but give the monitor time to settle.
+        if (wroteDdc) Sleep(DisplaySettle.WriteGap);
+        var verified = DisplaySettle.Until(() => Read(expected.Identity), s => s.Same(target, 256), Sleep, DisplaySettle.VerifyBudget, DisplaySettle.ReadStep);
+        return verified is not null && verified.Same(target, 256) || Fail("verify", target, verified);
+    }
+    private static void Sleep(TimeSpan delay) => Thread.Sleep(delay);
+    private static bool Write(Func<bool> write)
+    {
+        if (write()) return true;
+        Sleep(TimeSpan.FromMilliseconds(100)); return write(); // one retry for a transient DDC/CI NAK
+    }
+    private static bool Fail(string stage, CalibrationState wanted, CalibrationState? seen)
+    {
+        Serilog.Log.Warning("Display calibration step {Stage} failed: wanted brightness {WB} contrast {WC} vibrance {WV} ramp {WR}; read brightness {SB} contrast {SC} vibrance {SV} ramp {SR} advanced {SA}",
+            stage, wanted.Brightness?.Current, wanted.Contrast?.Current, wanted.Vibrance?.Current, wanted.Ramp is not null,
+            seen?.Brightness?.Current, seen?.Contrast?.Current, seen?.Vibrance?.Current,
+            seen is null ? "none" : CalibrationState.RampEqual(seen.Ramp, wanted.Ramp, 256) ? "match" : seen.Ramp is null ? "missing" : "differs", seen?.AdvancedColor);
+        return false;
     }
     private sealed class Physical(IntPtr handle) : IDisposable
     {
