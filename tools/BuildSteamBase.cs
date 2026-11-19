@@ -46,6 +46,7 @@ Console.WriteLine($"{list.Count} jogos na lista; meta: {count} com requisitos re
 
 var games = new JsonArray();
 int seen = 0, skipped = 0;
+var unmatched = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase); // graphics lines no part matched: what to add to ScoreParts next
 foreach (var (id, spyName) in list)
 {
     if (games.Count >= count) break;
@@ -58,7 +59,13 @@ foreach (var (id, spyName) in list)
     var html = req is JsonObject o ? ((string?)o["recommended"] ?? (string?)o["minimum"]) : null;
     if (html is null) { skipped++; continue; }
     var text = System.Net.WebUtility.HtmlDecode(Regex.Replace(html.Replace("<br>", "\n").Replace("<li>", "\n"), "<[^>]+>", " "));
-    if (ScoreInsights.FromRequirements(name, id, text) is not { } d) { skipped++; continue; }
+    if (ScoreInsights.FromRequirements(name, id, text) is not { } d)
+    {
+        skipped++;
+        var line = text.Split('\n').FirstOrDefault(l => Regex.IsMatch(l, "Graphics|Video", RegexOptions.IgnoreCase))?.Trim();
+        if (line is { Length: > 0 }) { line = Regex.Replace(line, @"\s+", " "); unmatched[line] = unmatched.GetValueOrDefault(line) + 1; }
+        continue;
+    }
     games.Add(new JsonObject { ["appId"] = id, ["name"] = name, ["gpu"] = d.GpuFps, ["cpu"] = d.CpuFps, ["ramGb"] = d.RamGb, ["basis"] = d.Basis });
     if (games.Count % 50 == 0) Console.WriteLine($"  {games.Count} prontos ({seen} vistos, {skipped} sem dados úteis)");
 }
@@ -71,4 +78,8 @@ var doc = new JsonObject
     ["games"] = games,
 };
 await File.WriteAllTextAsync(outPath, doc.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }) + "\n");
+var report = Path.Combine(root, "artifacts", "steam-base-unmatched.txt");
+Directory.CreateDirectory(Path.GetDirectoryName(report)!);
+await File.WriteAllLinesAsync(report, unmatched.OrderByDescending(kv => kv.Value).Select(kv => $"{kv.Value}\t{kv.Key}"));
+Console.WriteLine($"Placas não reconhecidas: {unmatched.Count} linhas em {report}");
 Console.WriteLine($"Pronto: {games.Count} jogos em {outPath} ({seen} vistos, {skipped} sem requisitos reconhecidos ou não são jogos).");
