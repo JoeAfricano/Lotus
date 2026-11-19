@@ -239,6 +239,8 @@ public sealed class WindowsGameProcessCheck : IGameProcessCheck
 
     public bool IsRunning(GameEntry game)
     {
+        // Minecraft Java runs inside the launcher's own javaw.exe, outside the game folder: any open Java window counts (safe side).
+        if (MinecraftJavaRecipe.IsMinecraft(game) && Process.GetProcessesByName("javaw") is { Length: > 0 } java) { foreach (var j in java) j.Dispose(); return true; }
         var dir = game.InstallDir is { Length: > 0 } d ? Path.GetFullPath(d).TrimEnd('\\') + "\\" : null;
         if (dir is null) return false;
         foreach (var p in Process.GetProcesses())
@@ -301,4 +303,91 @@ public sealed class NoRestForTheWickedRecipe(string registryPath = @"Software\Mo
         if (qualityPreset is { } q) json["QualityPreset"] = Math.Clamp(q, 0, MaxPreset);
         return json.ToJsonString();
     }
+}
+
+// Minecraft Java: options.txt ("key:value" per line) of the launcher profile played most recently (Modrinth, Prism, CurseForge
+// or the official .minecraft). Only maxFps, renderDistance and simulationDistance change. The first apply never raises the
+// view distance (it only trims it to the tier's ceiling); the measurement loop steps it 2 chunks at a time.
+// Shaders, Sodium/Iris files and every other line stay untouched, because their format changes with each mod version.
+public sealed class MinecraftJavaRecipe(string? appData = null, string? userProfile = null) : IGameSettingsRecipe
+{
+    public string Id => "minecraft.java.options.v1";
+    public const int MinDistance = 4, MaxDistance = 32, Unlimited = 260;
+    private string AppData => appData ?? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+    private string UserProfile => userProfile ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+    public static bool IsMinecraft(GameEntry game) =>
+        game.Name.Contains("Minecraft", StringComparison.OrdinalIgnoreCase) && !game.Name.Contains("Dungeons", StringComparison.OrdinalIgnoreCase)
+        && !game.Name.Contains("Legends", StringComparison.OrdinalIgnoreCase);
+
+    private IEnumerable<string> Candidates(GameEntry game)
+    {
+        if (game.InstallDir is { } dir) { yield return Path.Combine(dir, "options.txt"); yield return Path.Combine(dir, ".minecraft", "options.txt"); }
+        yield return Path.Combine(AppData, ".minecraft", "options.txt");
+        foreach (var (root, inner) in new[] { (Path.Combine(AppData, "ModrinthApp", "profiles"), ""), (Path.Combine(AppData, "PrismLauncher", "instances"), ".minecraft"),
+                     (Path.Combine(UserProfile, "curseforge", "minecraft", "Instances"), "") })
+        {
+            if (!Directory.Exists(root)) continue;
+            string[] profiles; try { profiles = Directory.GetDirectories(root); } catch (IOException) { continue; } catch (UnauthorizedAccessException) { continue; }
+            foreach (var p in profiles) yield return Path.Combine(p, inner, "options.txt");
+        }
+    }
+    // The profile folder the game was last played from: options.txt is rewritten whenever the game closes.
+    private string? Find(GameEntry game) =>
+        Candidates(game).Where(File.Exists).OrderByDescending(File.GetLastWriteTimeUtc).FirstOrDefault();
+
+    public GameSettingsSupport? Probe(GameEntry game)
+    {
+        if (!IsMinecraft(game)) return null;
+        return Find(game) is { } path ? new(Id, "Minecraft Java", true, path) : new(Id, "Minecraft Java", false, "GsRunOnce");
+    }
+    public string? ReadRaw(GameEntry game) => Find(game) is { } p ? File.ReadAllText(p) : null;
+    public void WriteRaw(GameEntry game, string raw)
+    {
+        var path = Find(game) ?? throw new FileNotFoundException("options.txt not found.");
+        var temp = path + ".lotus.tmp"; File.WriteAllText(temp, raw, new UTF8Encoding(false)); File.Move(temp, path, overwrite: true);
+    }
+    public static int Ceiling(QualityTier tier) => tier switch { QualityTier.Low => 8, QualityTier.Medium => 12, QualityTier.High => 16, _ => MaxDistance };
+
+    public string Transform(string raw, SettingsRecommendation r)
+    {
+        var o = new ColonOptions(raw);
+        o.Set("maxFps", Math.Clamp(r.FpsCap, 10, Unlimited).ToString());
+        var render = Math.Clamp(o.Int("renderDistance") ?? 12, MinDistance, MaxDistance);
+        Distances(o, Math.Min(render, Ceiling(r.Tier)));
+        return o.ToString();
+    }
+    public string? StepQuality(string raw, int step)
+    {
+        var o = new ColonOptions(raw);
+        var current = Math.Clamp(o.Int("renderDistance") ?? 12, MinDistance, MaxDistance);
+        var next = Math.Clamp(current + 2 * Math.Sign(step), MinDistance, MaxDistance);
+        if (next == current) return null;
+        Distances(o, next);
+        return o.ToString();
+    }
+    // Simulation distance (CPU work) never exceeds the view distance.
+    private static void Distances(ColonOptions o, int render)
+    {
+        o.Set("renderDistance", render.ToString());
+        if (o.Int("simulationDistance") is { } sim && sim > render) o.Set("simulationDistance", Math.Max(5, render).ToString());
+    }
+}
+
+// "key:value" lines (Minecraft options.txt): changes a key in place or appends it; keeps the file's own line ending.
+public sealed class ColonOptions(string text)
+{
+    private readonly string newline = text.Contains("\r\n") ? "\r\n" : "\n";
+    private readonly List<string> lines = text.Replace("\r\n", "\n").Split('\n').ToList();
+    private int IndexOf(string key) => lines.FindIndex(l => l.StartsWith(key + ":", StringComparison.Ordinal));
+    public string? Get(string key) => IndexOf(key) is var i and >= 0 ? lines[i][(key.Length + 1)..].Trim() : null;
+    public int? Int(string key) => int.TryParse(Get(key), out var v) ? v : null;
+    public void Set(string key, string value)
+    {
+        var i = IndexOf(key);
+        if (i >= 0) { lines[i] = $"{key}:{value}"; return; }
+        var insert = lines.Count; while (insert > 0 && lines[insert - 1].Length == 0) insert--;
+        lines.Insert(insert, $"{key}:{value}");
+    }
+    public override string ToString() => string.Join(newline, lines);
 }
