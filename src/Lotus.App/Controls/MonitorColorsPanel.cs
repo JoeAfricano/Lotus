@@ -21,7 +21,7 @@ public sealed class MonitorColorsPanel : UserControl
     private readonly Grid workspace = new() { ColumnSpacing = 20, RowSpacing = 16 };
     private readonly StackPanel mission = new() { Spacing = 12 };
     private readonly StackPanel scene = new() { Spacing = 10 };
-    private readonly StackPanel missionNav = new() { Orientation = Orientation.Horizontal, Spacing = 8 };
+    private readonly Grid missionNav = new() { ColumnSpacing = 8, Margin = new(0, 6, 0, 0) };
     private readonly DisplayComparisonPreview image = new() { HorizontalAlignment = HorizontalAlignment.Stretch };
     private readonly TextBlock objective = new() { TextWrapping = TextWrapping.Wrap, FontSize = 20, FontWeight = FontWeights.SemiBold };
     private readonly TextBlock detail = new() { TextWrapping = TextWrapping.Wrap };
@@ -29,7 +29,6 @@ public sealed class MonitorColorsPanel : UserControl
     private readonly InfoBar status = new() { IsClosable = false };
     private readonly Button start = new(), keep = new(), undo = new(), restore = new(), refresh = new(), next = new(), previous = new();
     private readonly ToggleButton beforeButton = new(), adjustedButton = new();
-    private readonly CheckBox checkedByPlayer = new();
     private readonly StackPanel chooser = new() { Spacing = 16 }, adjustment = new() { Spacing = 14 };
     private readonly Grid purposeCards = new() { ColumnSpacing = 10, RowSpacing = 10 }, ambientCards = new() { ColumnSpacing = 10, RowSpacing = 10 };
     private readonly List<ToggleButton> purposes = [], ambients = [];
@@ -102,9 +101,8 @@ public sealed class MonitorColorsPanel : UserControl
         restore.Click += async (_, _) => await RestoreAsync();
         refresh.Click += async (_, _) => await ReloadAsync();
         previous.Click += (_, _) => { if (step > 0) { --step; RenderMission(); } };
-        next.Click += (_, _) => { completed[step] = checkedByPlayer.IsChecked == true; if (step < 3) ++step; RenderMission(); };
-        checkedByPlayer.Checked += (_, _) => next.IsEnabled = step < 3;
-        checkedByPlayer.Unchecked += (_, _) => next.IsEnabled = false;
+        // Finishing a step is the confirmation itself; the stepper above stays free to jump around.
+        next.Click += (_, _) => { completed[step] = true; if (step < 3) ++step; RenderMission(); };
         ticker.Tick += (_, _) => UpdateStatus();
     }
     private async void OnLoaded(object sender, RoutedEventArgs e)
@@ -293,11 +291,12 @@ public sealed class MonitorColorsPanel : UserControl
         adjustment.Children.Add(progress);
         image.SetLabels(Text["VsSplitBefore"], Text["VsSplitAfter"], Text["VsSplitHelp"]);
         scene.Children.Clear(); scene.Children.Add(image);
-        var limits = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        var limits = new Grid { ColumnSpacing = 8 };
+        limits.ColumnDefinitions.Add(new() { Width = GridLength.Auto }); limits.ColumnDefinitions.Add(new());
         limits.Children.Add(new FontIcon { Glyph = "\uE946", FontSize = 13, Foreground = Brush("MutedBrush"), VerticalAlignment = VerticalAlignment.Top, Margin = new(0, 2, 0, 0) });
-        var limitsText = Caption(Text["VsLocalLimits"]); limitsText.MaxWidth = 900; limits.Children.Add(limitsText);
+        var limitsText = Caption(Text["VsLocalLimits"]); Grid.SetColumn(limitsText, 1); limits.Children.Add(limitsText);
         scene.Children.Add(limits);
-        sceneHost.Style = StyleOf("CardStyle"); sceneHost.Padding = new(14); sceneHost.Child = scene;
+        sceneHost.Style = StyleOf("CardStyle"); sceneHost.Padding = new(14); sceneHost.VerticalAlignment = VerticalAlignment.Top; sceneHost.Child = scene;
         missionHost.Style = StyleOf("CardStyle"); missionHost.Child = mission;
         workspace.Children.Clear(); workspace.ColumnDefinitions.Clear(); workspace.RowDefinitions.Clear();
         workspace.ColumnDefinitions.Add(new() { Width = new GridLength(1.6, GridUnitType.Star) }); workspace.ColumnDefinitions.Add(new());
@@ -498,10 +497,13 @@ public sealed class MonitorColorsPanel : UserControl
                     Selected?.Vibrance is not null, value => profile = profile with { Saturation = value });
             }
             else mission.Children.Add(Caption(Text["VsReview"]));
-            checkedByPlayer.Content = Text["VsCheck" + step]; checkedByPlayer.IsChecked = completed[step];
-            mission.Children.Add(checkedByPlayer);
-            previous.Content = Text["VsPrevious"]; next.Content = Text["VsNext"]; previous.IsEnabled = step > 0; next.IsEnabled = step < 3 && checkedByPlayer.IsChecked == true;
+            previous.Content = Text["VsPrevious"]; next.Content = Text["VsNext"]; previous.IsEnabled = step > 0; next.IsEnabled = step < 3;
             next.Visibility = step < 3 ? Visibility.Visible : Visibility.Collapsed;
+            if (missionNav.ColumnDefinitions.Count == 0) { missionNav.ColumnDefinitions.Add(new()); missionNav.ColumnDefinitions.Add(new()); }
+            previous.HorizontalAlignment = next.HorizontalAlignment = HorizontalAlignment.Stretch;
+            previous.Style = StyleOf("SoftButtonStyle"); next.Style = StyleOf("PrimaryButtonStyle");
+            // On the last step only "Voltar" remains, spanning the row.
+            Grid.SetColumn(next, 1); Grid.SetColumnSpan(previous, step < 3 ? 1 : 2);
             missionNav.Children.Add(previous); missionNav.Children.Add(next); mission.Children.Add(missionNav);
             UpdateClues();
         }
@@ -525,7 +527,7 @@ public sealed class MonitorColorsPanel : UserControl
         {
             if (rendering) return;
             label.Text = e.NewValue.ToString(format, System.Globalization.CultureInfo.CurrentCulture);
-            changed(e.NewValue); DescribeSuggestion(); completed[step] = false; checkedByPlayer.IsChecked = false;
+            changed(e.NewValue); DescribeSuggestion(); completed[step] = false;
             RequestLocalPreview();
         };
         mission.Children.Add(labelRow); mission.Children.Add(slider);
