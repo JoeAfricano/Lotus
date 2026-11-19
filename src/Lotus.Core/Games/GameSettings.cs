@@ -8,7 +8,8 @@ public enum UpscaleMode { Off, Quality, Balanced, Performance }
 
 // What the PC can do: GPU class/VRAM, CPU threads, RAM and the display the game runs on.
 // ExactRefreshHz: the refresh rate as the display really runs it (74.973 on a "75 Hz" HDMI monitor), 0 when unknown.
-public sealed record SystemProfile(string GpuName, long VramMb, int CpuThreads, long RamMb, int Width, int Height, int RefreshHz, double ExactRefreshHz = 0);
+// CpuName: the processor as Windows names it ("AMD Ryzen 5 5500"), "" when unknown; used to look it up in the parts table.
+public sealed record SystemProfile(string GpuName, long VramMb, int CpuThreads, long RamMb, int Width, int Height, int RefreshHz, double ExactRefreshHz = 0, string CpuName = "");
 
 // Frame limiter cap for a monitor without FreeSync/G-Sync, with V-Sync on. Measured on the Wukong benchmark (RTX 5060,
 // HDMI monitor at 74.973 Hz, 12/11/2026): a cap of 75 (above the real rate) let frames queue behind V-Sync (more delay,
@@ -24,8 +25,30 @@ public static class FramePacing
 }
 
 // PacedCap: exact cap for a frame limiter (can be fractional, e.g. 37.5 on 75 Hz); AdaptiveSync: computed for a VRR monitor.
+// EstimatedFps: what this game should reach with these settings on this PC (0 = no estimate for the game; never shown as measured).
 public sealed record SettingsRecommendation(QualityTier Tier, QualityTier TextureTier, Upscaler Upscaler, UpscaleMode Mode, int FpsCap, int TargetFps,
-    int GpuScore, IReadOnlyList<string> ReasonKeys, double PacedCap = 0, bool AdaptiveSync = false);
+    int GpuScore, IReadOnlyList<string> ReasonKeys, double PacedCap = 0, bool AdaptiveSync = false, double EstimatedFps = 0, GameFpsCurve? Game = null);
+
+// How one game runs on this PC at the display's resolution, per quality tier (Low → Ultra), without upscaling:
+// GpuFps = what the graphics card can draw, CpuFps = what the processor can feed (lighter graphics barely raise it),
+// Cap = the game's own frame limit. Basis: "measured" (calibrated by a Lotus measurement of this game on this PC),
+// "lab" (benchmark table), "requirements" (Steam recommended parts). Always an estimate unless Basis is "measured".
+public sealed record GameFpsCurve(IReadOnlyList<double> GpuFps, IReadOnlyList<double> CpuFps, int? Cap, string Basis, string Confidence = "")
+{
+    public bool Valid => GpuFps.Count == 4 && CpuFps.Count == 4 && GpuFps.All(f => f > 0 && double.IsFinite(f)) && CpuFps.All(f => f > 0 && double.IsFinite(f));
+    // Upscaling draws fewer pixels: a coarse, documented gain on the GPU side only (the processor's work does not shrink).
+    public static double UpscaleGain(UpscaleMode m) => m switch { UpscaleMode.Quality => 1.3, UpscaleMode.Balanced => 1.5, UpscaleMode.Performance => 1.8, _ => 1.0 };
+    // The slower of the two limits wins (soft minimum, as real frames overlap a little), then the game's own cap.
+    public double Fps(QualityTier tier, UpscaleMode mode)
+    {
+        double g = GpuFps[(int)tier] * UpscaleGain(mode), c = CpuFps[(int)tier];
+        const double k = 6;
+        var fps = Math.Pow(Math.Pow(g, -k) + Math.Pow(c, -k), -1 / k);
+        return Cap is { } cap && fps > cap ? cap : fps;
+    }
+    // Lighter graphics cannot lift the frame rate above what the processor feeds.
+    public double CpuLimit => CpuFps.Max();
+}
 
 // Relative GPU performance (≈100 = RTX 3060 class). A coarse, documented heuristic; the measurement loop corrects it on the real PC.
 public static partial class GpuScore
@@ -72,6 +95,8 @@ public static partial class GpuScore
 }
 
 // Starting point from hardware + display. Demand grows with pixels and target FPS; upscalers add headroom before the tier is chosen.
+// With a game's own FPS curve (see GameFpsCurve) the choice follows that game: the best-looking settings that still hold
+// the target on this PC, the processor's ceiling in that game and its own frame cap. Without one, the generic rule.
 public static class SettingsAdvisor
 {
     // goal (player profile): "balanced" = steady FPS at the monitor rate; "fps" = one quality level lower, higher cap;
@@ -81,27 +106,86 @@ public static class SettingsAdvisor
     {
         var reasons = new List<string>();
         var score = GpuScore.Estimate(p.GpuName, p.VramMb);
-        // The real refresh rate of the player's monitor (60 when Windows does not report it); 165, 240 Hz and up are kept.
-        var refresh = Math.Clamp(p.RefreshHz <= 0 ? 60 : p.RefreshHz, 50, 500);
+        var refresh = Refresh(p);
         double Capability(int fps) => score / Math.Max(0.5, Math.Max(1, p.Width) * Math.Max(1, p.Height) / (1920.0 * 1080.0) * (fps / 60.0));
         // Weak PCs aim for a steady 60 instead of chasing a high-refresh monitor they cannot feed.
         var target = refresh > 60 && Capability(refresh) < 70 ? 60 : refresh;
         var native = Capability(target);
 
-        var nvidiaRtx = p.GpuName.Contains("RTX", StringComparison.OrdinalIgnoreCase);
-        var intelArc = p.GpuName.Contains("Arc", StringComparison.OrdinalIgnoreCase);
         var mode = native >= 160 ? UpscaleMode.Off : native >= 110 ? UpscaleMode.Quality : native >= 70 ? UpscaleMode.Balanced : UpscaleMode.Performance;
         if (mode == UpscaleMode.Performance && p.Height <= 1080) mode = UpscaleMode.Balanced; // Performance mode is too blurry at 1080p and below
-        var upscaler = mode == UpscaleMode.Off ? Upscaler.None : nvidiaRtx ? Upscaler.Dlss : intelArc ? Upscaler.Xess : Upscaler.Fsr;
+        var upscaler = mode == UpscaleMode.Off ? Upscaler.None : PickUpscaler(p.GpuName, null);
         if (upscaler != Upscaler.None) reasons.Add(upscaler == Upscaler.Dlss ? "GsReasonDlss" : "GsReasonFsr");
-        var effective = native * mode switch { UpscaleMode.Quality => 1.3, UpscaleMode.Balanced => 1.5, UpscaleMode.Performance => 1.8, _ => 1.0 };
+        var effective = native * GameFpsCurve.UpscaleGain(mode);
         var tier = effective >= 160 ? QualityTier.Ultra : effective >= 110 ? QualityTier.High : effective >= 70 ? QualityTier.Medium : QualityTier.Low;
+        if (target < refresh) reasons.Add("GsReasonTarget60");
+        if (native < 40) reasons.Add("GsReasonLowEnd");
+        return Finish(p, goal, adaptiveSync, reasons, score, refresh, target, tier, upscaler, mode, null);
+    }
 
+    // Per game: every quality/upscaling pair is ranked by how it looks; the first one whose estimate holds the target
+    // (with 8% to spare for the heavy moments) wins. No curve, or an invalid one: the generic rule above.
+    public static SettingsRecommendation Recommend(SystemProfile p, string goal, bool adaptiveSync, GameFpsCurve? game, GameTech? tech = null)
+    {
+        if (game is not { Valid: true }) return Recommend(p, goal, adaptiveSync);
+        var reasons = new List<string> { "GsReasonGameAware" };
+        var score = GpuScore.Estimate(p.GpuName, p.VramMb);
+        var refresh = Refresh(p);
+        var upscaler = PickUpscaler(p.GpuName, tech);
+        UpscaleMode[] modes = upscaler == Upscaler.None ? [UpscaleMode.Off] : p.Height > 1080 ? [UpscaleMode.Off, UpscaleMode.Quality, UpscaleMode.Balanced, UpscaleMode.Performance] : [UpscaleMode.Off, UpscaleMode.Quality, UpscaleMode.Balanced];
+        // Look: two points per quality level, one lost per upscaling step; a tie keeps the native image.
+        var combos = (from t in Enum.GetValues<QualityTier>() from m in modes select (Tier: t, Mode: m, Look: (int)t * 2 - (int)m))
+            .OrderByDescending(c => c.Look).ThenBy(c => c.Mode).ToList();
+        double Best(QualityTier floor) => combos.Where(c => c.Tier >= floor).Max(c => game.Fps(c.Tier, c.Mode));
+
+        // Target: the monitor rate (or the game's own cap, when lower). Balanced players keep at least Medium for it when
+        // that still gives a playable rate. Below it: with FreeSync/G-Sync, what the PC holds; without, an exact fraction
+        // of the refresh rate (every frame on screen for the same time).
+        var top = game.Cap is { } cap && cap < refresh ? cap : refresh;
+        var floor = goal == "balanced" ? QualityTier.Medium : QualityTier.Low;
+        // What the PC holds with 8% to spare for heavy moments; a game that reaches its own cap holds the cap itself.
+        double Reach(QualityTier f) => game.Cap is { } c && Best(f) >= c - 0.5 ? c : Best(f) / 1.08;
+        double reachFloor = Reach(floor), reachAny = Reach(QualityTier.Low);
+        var reach = reachFloor >= Math.Min(top, 57) ? reachFloor : reachAny;
+        var target = top;
+        if (reach < top * 0.97)
+        {
+            if (adaptiveSync) target = Math.Clamp((int)Math.Floor(reach), 30, top);
+            else { var n = 1; while (refresh / (double)n > reach && refresh / (double)(n + 1) >= 30) n++; target = (int)Math.Floor(refresh / (double)n); }
+            reasons.Add(target == 60 ? "GsReasonTarget60" : "GsReasonTargetLower");
+            if (reachAny < 40) reasons.Add("GsReasonLowEnd");
+        }
+        if (game.Cap is { } own && own <= refresh) reasons.Add("GsReasonGameCap");
+        // The processor feeds less than the target in this game: lighter graphics will not fix it.
+        if (game.CpuLimit < top * 0.97) reasons.Add("GsReasonCpuGame");
+
+        var need = Math.Min(target * 1.08, game.Cap is { } limit ? limit - 0.5 : double.MaxValue);
+        var holds = combos.FindIndex(c => game.Fps(c.Tier, c.Mode) >= need);
+        var pick = holds >= 0 ? combos[holds] : combos.OrderByDescending(c => game.Fps(c.Tier, c.Mode)).ThenByDescending(c => c.Look).First();
+        var mode = pick.Mode;
+        var chosenUpscaler = mode == UpscaleMode.Off ? Upscaler.None : upscaler;
+        if (chosenUpscaler != Upscaler.None) reasons.Add(chosenUpscaler == Upscaler.Dlss ? "GsReasonDlss" : "GsReasonFsr");
+        return Finish(p, goal, adaptiveSync, reasons, score, refresh, target, pick.Tier, chosenUpscaler, mode, game);
+    }
+
+    // The real refresh rate of the player's monitor (60 when Windows does not report it); 165, 240 Hz and up are kept.
+    private static int Refresh(SystemProfile p) => Math.Clamp(p.RefreshHz <= 0 ? 60 : p.RefreshHz, 50, 500);
+
+    // Upscaler: the one the game ships that fits the card; with nothing detected (FSR is often built in), the card's own.
+    private static Upscaler PickUpscaler(string gpuName, GameTech? tech)
+    {
+        var rtx = gpuName.Contains("RTX", StringComparison.OrdinalIgnoreCase);
+        var arc = gpuName.Contains("Arc", StringComparison.OrdinalIgnoreCase);
+        if (tech is not { AnyUpscaler: true } t) return rtx ? Upscaler.Dlss : arc ? Upscaler.Xess : Upscaler.Fsr;
+        return t.Dlss && rtx ? Upscaler.Dlss : t.Xess && arc ? Upscaler.Xess : t.Fsr ? Upscaler.Fsr : t.Xess ? Upscaler.Xess : Upscaler.None;
+    }
+
+    private static SettingsRecommendation Finish(SystemProfile p, string goal, bool adaptiveSync, List<string> reasons, int score, int refresh, int target,
+        QualityTier tier, Upscaler upscaler, UpscaleMode mode, GameFpsCurve? game)
+    {
         // Textures cost VRAM, not GPU time: cap them by memory, independently of the general tier.
         var textures = p.VramMb switch { >= 10_000 => QualityTier.Ultra, >= 7_500 => QualityTier.High, >= 5_500 => QualityTier.Medium, > 0 => QualityTier.Low, _ => tier };
         if (textures < tier) reasons.Add("GsReasonVram");
-        if (target < refresh) reasons.Add("GsReasonTarget60");
-        if (native < 40) reasons.Add("GsReasonLowEnd");
         if (p.CpuThreads is > 0 and <= 4) reasons.Add("GsReasonCpu");
         if (p.RamMb is > 0 and < 12_000) reasons.Add("GsReasonRam");
         // FPS cap follows the monitor. With FreeSync/G-Sync: 3 below the refresh rate (VRR stays engaged, no V-Sync lag,
@@ -118,6 +202,8 @@ public static class SettingsAdvisor
             cap = (int)Math.Floor(refresh / (double)n);
             paced = p.ExactRefreshHz > 0 && p.RefreshHz == refresh ? FramePacing.FixedCap(FramePacing.RealRefresh(refresh, p.ExactRefreshHz), n) : refresh / (double)n;
         }
+        // A game with its own lower limit (60 on a 75 Hz monitor): that limit is the cap, not a fraction of the refresh rate.
+        if (game?.Cap is { } own && own < refresh && target >= own) { cap = own; paced = own; }
         if (goal is "fps" or "competitive")
         {
             var drop = goal == "fps" ? 1 : 2;
@@ -127,7 +213,8 @@ public static class SettingsAdvisor
         }
         else reasons.Add("GsReasonCap");
         reasons.Add(adaptiveSync ? "GsReasonMonitorCap" : cap < refresh ? "GsReasonHalfRate" : "GsReasonFixedCap");
-        return new(tier, textures, upscaler, mode, cap, target, score, reasons, paced, adaptiveSync);
+        var estimate = game is null ? 0 : Math.Round(game.Fps(tier, mode));
+        return new(tier, textures, upscaler, mode, cap, target, score, reasons, paced, adaptiveSync, estimate, game);
     }
 }
 

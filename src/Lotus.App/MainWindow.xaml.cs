@@ -207,8 +207,12 @@ public sealed partial class MainWindow : Window
         sessionHub.Stopped += (_, _) => DispatcherQueue.TryEnqueue(async () => { try { await integrations.OnGameClosedAsync(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Overlay style after game"); } });
         games.AdaptiveSync = () => preferences.Current.AdaptiveSync;
         games.Display = new Lotus.Infrastructure.Games.WindowsDisplaySync();
+        // Per-game settings: the game's FPS curve from the Lotus Score (table, Steam requirements, own measurement).
+        games.Curve = (g, pc) => score.CurveForAsync(g.Name, g.Store == Lotus.Core.Games.GameStores.Steam ? g.Id : null, pc.Height, pc.GpuName, pc.CpuName);
         games.ScoreLine = (g, r, pc) =>
         {
+            if (r.Game is { } curve && r.EstimatedFps > 0)
+                return text.Format("TuneGameLine", r.EstimatedFps, text["GsBasis" + Lotus.Core.Games.GamesViewModel.Basis(curve)]);
             var res = pc.Height >= 2000 ? Lotus.Core.Score.Resolution.P2160 : pc.Height >= 1400 ? Lotus.Core.Score.Resolution.P1440 : Lotus.Core.Score.Resolution.P1080;
             var preset = (Lotus.Core.Score.Preset)(int)r.Tier;
             return score.EstimateFor(g.Name, g.Store == Lotus.Core.Games.GameStores.Steam ? g.Id : null, res, preset) is { Fps: > 0 } cell

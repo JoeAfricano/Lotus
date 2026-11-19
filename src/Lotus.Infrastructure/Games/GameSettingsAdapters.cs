@@ -17,7 +17,13 @@ public sealed class WindowsSystemProfile(IDisplayModes display) : ISystemProfile
         var (gpu, vram) = Adapters().OrderByDescending(a => a.Vram).FirstOrDefault();
         var d = display.Primary();
         var ramMb = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes / (1024 * 1024);
-        return new(gpu ?? "", vram, Environment.ProcessorCount, ramMb, d?.Width ?? 1920, d?.Height ?? 1080, d?.CurrentHz ?? 60, ExactPrimaryRefresh());
+        return new(gpu ?? "", vram, Environment.ProcessorCount, ramMb, d?.Width ?? 1920, d?.Height ?? 1080, d?.CurrentHz ?? 60, ExactPrimaryRefresh(), CpuName());
+    }
+    // The processor's marketing name (read-only), used to find it in the Lotus Score parts table.
+    private static string CpuName()
+    {
+        try { using var k = Registry.LocalMachine.OpenSubKey(@"HARDWARE\DESCRIPTION\System\CentralProcessor\0"); return (k?.GetValue("ProcessorNameString") as string)?.Trim() ?? ""; }
+        catch (Exception ex) when (ex is System.Security.SecurityException or UnauthorizedAccessException or IOException) { return ""; }
     }
 
     // The primary display's real refresh rate (numerator/denominator from QueryDisplayConfig, e.g. 74973/1000), where

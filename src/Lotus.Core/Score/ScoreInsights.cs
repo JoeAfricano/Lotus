@@ -41,16 +41,23 @@ public static class ScoreInsights
     public static FpsCell Estimate(GameDemand g, Resolution r, Preset p, int single, int multi, int gpu)
     {
         if (single <= 0 || multi <= 0 || gpu <= 0) return new(0, Limiter.Balanced);
-        // With lab numbers per preset they are used as measured (scaled to this GPU); otherwise the High value and fixed preset steps.
-        var basePreset = g.Lab is { Count: 4 } lab && lab[(int)p] > 0 ? lab[(int)p] : g.GpuFps * PresetGpu[(int)p];
-        var gpuFps = basePreset * (gpu / RefGpu) * ResolutionLoad[(int)r];
-        var cpuFps = g.CpuFps * Math.Pow(single / RefSingle, 0.6) * Math.Pow(multi / RefMulti, 0.4) * PresetCpu[(int)p];
+        var (gpuFps, cpuFps) = Limits(g, r, p, single, multi, gpu);
         const double k = 6;
         var fps = Math.Pow(Math.Pow(gpuFps, -k) + Math.Pow(cpuFps, -k), -1 / k);
         if (g.Cap is { } cap && fps >= cap) return new(cap, Limiter.Cap);
         var ratio = gpuFps / cpuFps;
         var limiter = ratio < 0.9 ? Limiter.Gpu : ratio > 1.1 ? Limiter.Cpu : Limiter.Balanced;
         return new((int)Math.Round(fps), limiter);
+    }
+
+    // The two limits of one cell: what the graphics card draws and what the processor feeds.
+    // With lab numbers per preset they are used as measured (scaled to this GPU); otherwise the High value and fixed preset steps.
+    public static (double Gpu, double Cpu) Limits(GameDemand g, Resolution r, Preset p, int single, int multi, int gpu)
+    {
+        var basePreset = g.Lab is { Count: 4 } lab && lab[(int)p] > 0 ? lab[(int)p] : g.GpuFps * PresetGpu[(int)p];
+        var gpuFps = basePreset * (gpu / RefGpu) * ResolutionLoad[(int)r];
+        var cpuFps = g.CpuFps * Math.Pow(single / RefSingle, 0.6) * Math.Pow(multi / RefMulti, 0.4) * PresetCpu[(int)p];
+        return (gpuFps, cpuFps);
     }
 
     // How much the slower part holds the faster one back on a typical game mix (pc-builds style), per resolution.

@@ -471,6 +471,41 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         return demand is null ? null : ScoreInsights.Estimate(demand, resolution, preset, s, m, g);
     }
 
+    // The FPS curve of one game on this PC, for the per-game settings (Meus Jogos › Otimizar). Points come from the
+    // player's full Lotus Score test or, without one, from the parts table for the PC's processor and graphics card.
+    // A game outside the table is looked up once on Steam (recommended requirements) and kept for this session.
+    // Null when the game or the parts are unknown: the settings then fall back to the generic hardware rule.
+    public async Task<Lotus.Core.Games.GameFpsCurve?> CurveForAsync(string name, string? steamAppId, int height, string gpuName, string cpuName, CancellationToken token = default)
+    {
+        int s, m, g;
+        if ((last ??= LoadLast()) is { Cpu1: { } a, CpuAll: { } b, Gpu: { } c }) (s, m, g) = (a, b, c);
+        else if (ScoreParts.Find(gpuName, PartKind.Gpu) is { } gp && ScoreParts.Find(cpuName, PartKind.Cpu) is { } cp) (s, m, g) = (cp.Single, cp.Multi, gp.Gpu);
+        else return null;
+        var demand = FindDemand(name, steamAppId);
+        if (demand is null && FindGame is not null && tuneMisses.TryAdd(name, 0))
+            try
+            {
+                var found = await FindGame(name, token);
+                // Only the same game: the Steam id when there is one, else the same name (letters and digits).
+                if (found is { } f && (steamAppId is not null ? f.AppId == steamAppId : Plain(f.Name) == Plain(name))
+                    && ScoreInsights.FromRequirements(name, f.AppId, f.Requirements) is { } d)
+                    demand = tuneDemands[name] = d with { Confidence = "baixa" };
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
+        if (demand is null) return null;
+        var res = height >= 2000 ? Resolution.P2160 : height >= 1400 ? Resolution.P1440 : Resolution.P1080;
+        var k = Calibration(demand, s, m, g);
+        var limits = Enum.GetValues<Preset>().Select(p => ScoreInsights.Limits(demand, res, p, s, m, g)).ToArray();
+        var basis = Measured?.Invoke(demand.Name, demand.SteamAppId) is not null ? "measured" : demand.Basis is not null ? "requirements" : "lab";
+        return new([.. limits.Select(l => l.Gpu * k)], [.. limits.Select(l => l.Cpu * k)], demand.Cap, basis, demand.Confidence);
+    }
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, GameDemand> tuneDemands = new(StringComparer.OrdinalIgnoreCase);
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> tuneMisses = new(StringComparer.OrdinalIgnoreCase); // asked Steam once this session
+    private GameDemand? FindDemand(string name, string? steamAppId) =>
+        tuneDemands.TryGetValue(name, out var known) ? known
+        : ScoreInsights.Games.FirstOrDefault(d => (steamAppId is not null && d.SteamAppId == steamAppId) || string.Equals(d.Name, name, StringComparison.OrdinalIgnoreCase));
+    private static string Plain(string s) => new([.. s.Where(char.IsLetterOrDigit).Select(char.ToLowerInvariant)]);
+
     private void BuildFps()
     {
         FpsRows.Clear();
