@@ -121,4 +121,27 @@ public sealed class GameAwareSettingsTests
         // Not scanned at all: the card's own upscaler, as before.
         Assert.Equal(Upscaler.Dlss, SettingsAdvisor.Recommend(Pc, "balanced", false, null, GameTech.Unknown).Upscaler);
     }
+
+    [Theory]
+    [InlineData("Memory: 16 GB RAM", 16)]
+    [InlineData("Memória: 8 GB de RAM", 8)]
+    [InlineData("Memory: 16384 MB RAM", 16)]
+    [InlineData("Memory: 6.5 GB RAM", 7)]
+    [InlineData("Memory: lots", null)]
+    public void RecommendedRamIsRead(string line, int? gb) => Assert.Equal(gb, ScoreInsights.RamGb(line));
+
+    [Fact] public void SteamBaseParsesAndRejectsBadRows()
+    {
+        var games = SteamDemandBase.Parse("""{"schema":1,"date":"2026-11-19","games":[{"appId":"1","name":"Ok","gpu":80,"cpu":90,"ramGb":16,"basis":"RTX 3060"},{"appId":"x","name":"Bad id","gpu":80,"cpu":90},{"appId":"2","name":"Bad gpu","gpu":0,"cpu":90}]}""");
+        var g = Assert.Single(games);
+        Assert.Equal(("Ok", 16, "baixa"), (g.Name, g.RamGb!.Value, g.Confidence));
+        Assert.Empty(SteamDemandBase.Parse("""{"schema":2,"games":[]}"""));
+    }
+
+    [Fact] public void LessRamThanTheGameRecommendsIsCalledOut()
+    {
+        var curve = Curve("Counter-Strike 2") with { RamGb = 16 };
+        Assert.Contains("GsReasonRamGame", SettingsAdvisor.Recommend(Pc with { RamMb = 8_000 }, "balanced", false, curve).ReasonKeys);
+        Assert.DoesNotContain("GsReasonRamGame", SettingsAdvisor.Recommend(Pc with { RamMb = 16_300 }, "balanced", false, curve).ReasonKeys);
+    }
 }

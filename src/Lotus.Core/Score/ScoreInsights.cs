@@ -13,6 +13,8 @@ public sealed record GameDemand(string Name, double GpuFps, double CpuFps, int? 
 {
     // Lab numbers at 1080p per preset (Low → Ultra; 0 = not measured) from the reference table, when there are any.
     public string SourceText { get; init; } = "";
+    // Recommended system memory from the game's Steam requirements (GB), when stated.
+    public int? RamGb { get; init; }
 }
 
 public enum Resolution { P1080, P1440, P2160 }
@@ -114,7 +116,16 @@ public static class ScoreInsights
         var gpuFps = 60 * RefGpu / gpus.Average(p => p.Gpu);
         var cpuFps = cpus.Count == 0 ? gpuFps * 1.4 : 75 * CpuScore((int)RefSingle, (int)RefMulti) / cpus.Average(p => (double)CpuScore(p.Single, p.Multi));
         var basis = string.Join(" · ", new[] { string.Join(" / ", gpus.Select(p => p.Name).Distinct()), string.Join(" / ", cpus.Select(p => p.Name).Distinct()) }.Where(s => s.Length > 0));
-        return new(name, Math.Round(gpuFps), Math.Round(cpuFps), SteamAppId: appId, Basis: basis);
+        return new(name, Math.Round(gpuFps), Math.Round(cpuFps), SteamAppId: appId, Basis: basis) { RamGb = RamGb(Line(lines, "Memória", "Memoria", "Memory")) };
+    }
+    // "16 GB RAM" / "8 GB de RAM" / "16384 MB RAM" on the memory line; null when absent or implausible.
+    public static int? RamGb(string? line)
+    {
+        if (line is null) return null;
+        var m = System.Text.RegularExpressions.Regex.Match(line, @"(\d+(?:[.,]\d+)?)\s*(GB|MB)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (!m.Success || !double.TryParse(m.Groups[1].Value.Replace(',', '.'), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var v)) return null;
+        var gb = m.Groups[2].Value.Equals("MB", StringComparison.OrdinalIgnoreCase) ? v / 1024 : v;
+        return gb is >= 1 and <= 128 ? (int)Math.Ceiling(gb) : null;
     }
     private static IEnumerable<string> Alternatives(string line) => line.Split(["/", " or ", " ou ", ",", "|"], StringSplitOptions.RemoveEmptyEntries);
 
@@ -127,4 +138,38 @@ public static class ScoreInsights
                 mine.Add(hit);
         return [.. mine, .. Games.Except(mine).OrderBy(g => g.Name, StringComparer.OrdinalIgnoreCase)];
     }
+}
+
+// The Steam base (data\steam-demand.json): the most owned Steam games with what their recommended PC means on the Lotus
+// scale, worked out by tools\BuildSteamBase.cs from the store's recommended requirements (part names and numbers only;
+// the requirement text itself is not kept). Low confidence by nature: the Lotus measurement of the game corrects it.
+public static class SteamDemandBase
+{
+    private static IReadOnlyList<GameDemand>? games;
+    public static IReadOnlyList<GameDemand> Games => games ??= Load();
+    private static IReadOnlyList<GameDemand> Load()
+    {
+        try
+        {
+            using var stream = typeof(SteamDemandBase).Assembly.GetManifestResourceStream("steam-demand.json");
+            return stream is null ? [] : Parse(new StreamReader(stream).ReadToEnd());
+        }
+        catch (Exception ex) when (ex is IOException or System.Text.Json.JsonException or InvalidOperationException) { return []; }
+    }
+    public static IReadOnlyList<GameDemand> Parse(string json)
+    {
+        if (System.Text.Json.Nodes.JsonNode.Parse(json) is not System.Text.Json.Nodes.JsonObject root || (int?)root["schema"] != 1 || root["games"] is not System.Text.Json.Nodes.JsonArray list) return [];
+        var result = new List<GameDemand>();
+        foreach (var g in list.OfType<System.Text.Json.Nodes.JsonObject>())
+        {
+            var name = ((string?)g["name"])?.Trim(); var id = (string?)g["appId"];
+            double gpu = (double?)g["gpu"] ?? 0, cpu = (double?)g["cpu"] ?? 0;
+            if (string.IsNullOrEmpty(name) || name.Length > 120 || id is null || !id.All(char.IsAsciiDigit) || gpu is <= 0 or > 2000 || cpu is <= 0 or > 2000) continue;
+            var ram = (int?)g["ramGb"];
+            result.Add(new(name, gpu, cpu, SteamAppId: id, Basis: (string?)g["basis"] ?? "", Confidence: "baixa", Store: "steam") { RamGb = ram is >= 1 and <= 128 ? ram : null });
+        }
+        return result;
+    }
+    public static GameDemand? Find(string name, string? steamAppId) =>
+        Games.FirstOrDefault(d => steamAppId is not null && d.SteamAppId == steamAppId) ?? Games.FirstOrDefault(d => string.Equals(d.Name, name, StringComparison.OrdinalIgnoreCase));
 }

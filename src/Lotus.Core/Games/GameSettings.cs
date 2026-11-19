@@ -34,7 +34,8 @@ public sealed record SettingsRecommendation(QualityTier Tier, QualityTier Textur
 // GpuFps = what the graphics card can draw, CpuFps = what the processor can feed (lighter graphics barely raise it),
 // Cap = the game's own frame limit. Basis: "measured" (calibrated by a Lotus measurement of this game on this PC),
 // "lab" (benchmark table), "requirements" (Steam recommended parts). Always an estimate unless Basis is "measured".
-public sealed record GameFpsCurve(IReadOnlyList<double> GpuFps, IReadOnlyList<double> CpuFps, int? Cap, string Basis, string Confidence = "")
+// RamGb: the game's recommended memory (Steam), when known.
+public sealed record GameFpsCurve(IReadOnlyList<double> GpuFps, IReadOnlyList<double> CpuFps, int? Cap, string Basis, string Confidence = "", int? RamGb = null)
 {
     public bool Valid => GpuFps.Count == 4 && CpuFps.Count == 4 && GpuFps.All(f => f > 0 && double.IsFinite(f)) && CpuFps.All(f => f > 0 && double.IsFinite(f));
     // Upscaling draws fewer pixels: a coarse, documented gain on the GPU side only (the processor's work does not shrink).
@@ -167,6 +168,8 @@ public static class SettingsAdvisor
         if (game.Cap is { } own && own <= refresh) reasons.Add("GsReasonGameCap");
         // The processor feeds less than the target in this game: lighter graphics will not fix it.
         if (game.CpuLimit < top * 0.97) reasons.Add("GsReasonCpuGame");
+        // Less memory than the game recommends (Windows reports a little under the installed amount: 0.5 GB of slack).
+        if (game.RamGb is { } ram && p.RamMb > 0 && p.RamMb / 1024.0 + 0.5 < ram) reasons.Add("GsReasonRamGame");
 
         (QualityTier Tier, UpscaleMode Mode, int Look) PickFor(int fps)
         {

@@ -3818,4 +3818,6 @@ Your games and Windows are not changed.</value></data>
   <data name="Gs60Choice" xml:space="preserve"><value>Lock 60 FPS with better graphics</value></data>
   <data name="Gs60ChoiceHint" xml:space="preserve"><value>By default Lotus lowers graphics to keep up with the monitor rate. At 60 the image looks better; without FreeSync/G-Sync a frame repeats now and then and motion may judder a little.</value></data>
   <data name="Gs60ChoiceHintVrr" xml:space="preserve"><value>By default Lotus lowers graphics to keep up with the monitor rate. At 60 with FreeSync/G-Sync the image looks better and stays smooth.</value></data>
+  <data name="GsReasonRamGame" xml:space="preserve"><value>Your PC has less RAM than this game recommends: close the browser and other programs before playing.</value></data>
+  <data name="GsLineMeasureToLearn" xml:space="preserve"><value>Estimate still uncertain: with the game running, use &quot;Measure and adjust&quot; or &quot;Why is it stuttering?&quot;. Lotus learns how this game runs on your PC and adjusts the suggestion by itself.</value></data>
 </root>

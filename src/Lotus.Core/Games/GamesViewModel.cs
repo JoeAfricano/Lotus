@@ -329,6 +329,8 @@ public sealed partial class GamesViewModel : ObservableObject
                 };
                 // Per game: what these settings should give on this PC, and where the number comes from.
                 lines.Add(r.Game is { } g && r.EstimatedFps > 0 ? Text.Format("GsLineGameFps", r.EstimatedFps, Text["GsBasis" + Basis(g)]) : Text["GsLineGeneric"]);
+                // Uncertain estimate: Lotus finds out by itself the next time the game is measured on this PC.
+                if (r.Game is not { Basis: "measured" }) lines.Add(Text["GsLineMeasureToLearn"]);
                 lines.AddRange(r.ReasonKeys.Select(k => Text[k]));
                 var hardware = Text.Format("GsHardware", string.IsNullOrWhiteSpace(p.GpuName) ? "?" : p.GpuName, p.VramMb / 1024.0, p.Width, p.Height, p.RefreshHz);
                 if (!string.IsNullOrWhiteSpace(p.CpuName)) hardware += " · " + p.CpuName.Trim();
@@ -409,6 +411,8 @@ public sealed partial class GamesViewModel : ObservableObject
             var decision = QualityTuner.Decide(s.AverageFps, s.Low1Fps, target, gpuBusy, canRaise, canLower);
             if (decision.Step != 0) pendingSteps[game.Key] = decision.Step; else pendingSteps.Remove(game.Key);
             var summary = Text.Format("GsMeasureSummary", s.AverageFps, s.Low1Fps, gpuBusy is { } g ? $"{g:0}%" : "?", target);
+            // Kept as this game's last measurement (findings of an earlier analysis stay): it calibrates the per-game estimate.
+            SaveReport(game.Key, new StutterReport(summary, LastReport(game)?.Findings ?? [], s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now, gpuBusy, latencyMs));
             status = summary; Notify();
             return new(summary, decision, Text[decision.ReasonKey], decision.Step != 0);
         }

@@ -497,14 +497,14 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
         var k = Calibration(demand, s, m, g);
         var limits = Enum.GetValues<Preset>().Select(p => ScoreInsights.Limits(demand, res, p, s, m, g)).ToArray();
         var basis = Measured?.Invoke(demand.Name, demand.SteamAppId) is not null ? "measured" : demand.Basis is not null ? "requirements" : "lab";
-        return new([.. limits.Select(l => l.Gpu * k)], [.. limits.Select(l => l.Cpu * k)], demand.Cap, basis, demand.Confidence);
+        return new([.. limits.Select(l => l.Gpu * k)], [.. limits.Select(l => l.Cpu * k)], demand.Cap, basis, demand.Confidence, demand.RamGb);
     }
     private readonly System.Collections.Concurrent.ConcurrentDictionary<string, GameDemand> tuneDemands = new(StringComparer.OrdinalIgnoreCase);
     private readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> tuneMisses = new(StringComparer.OrdinalIgnoreCase); // asked Steam once this session
     private GameDemand? FindDemand(string name, string? steamAppId) =>
         tuneDemands.TryGetValue(name, out var known) ? known
         : ScoreInsights.Games.FirstOrDefault(d => (steamAppId is not null && d.SteamAppId == steamAppId) || string.Equals(d.Name, name, StringComparison.OrdinalIgnoreCase))
-        ?? Related(name);
+        ?? Related(name) ?? SteamDemandBase.Find(name, steamAppId);
     // A companion of a known game ("Black Myth: Wukong Benchmark Tool", "… Demo") uses that game's numbers: the longest
     // table name that starts the library name and is followed only by such a word.
     private static readonly string[] CompanionWords = ["benchmarktool", "benchmark", "demo", "playtest", "prologue"];
