@@ -3712,7 +3712,7 @@ Your games and Windows are not changed.</value></data>
 <data name="VsGammaUnavailable" xml:space="preserve"><value>SDR curve unavailable</value></data>
 <data name="VsUnsupported" xml:space="preserve"><value>No controls could be confirmed on this connection. Nothing will change.</value></data>
 <data name="VsContinue" xml:space="preserve"><value>Enable preview</value></data>
-<data name="VsConfirm" xml:space="preserve"><value>The draft will now be applied to the whole monitor, including color intensity where supported. Controls are locked during the physical test. Confirm to save or undo to return to the preview. Without confirmation it reverts after 2 minutes without changes (10-minute total limit). Test now?</value></data>
+<data name="VsConfirm" xml:space="preserve"><value>The colors will be applied to the whole monitor. Unless you choose Keep these colors, they revert by themselves in 15 s.</value></data>
 <data name="VsRestoreConfirm" xml:space="preserve"><value>Restore brightness, contrast and the color curve saved before the first studio adjustment? Current external settings will be replaced after a fresh verification.</value></data>
 <data name="VsResultPreview" xml:space="preserve"><value>Colors applied and verified. Confirm with Keep these colors.</value></data>
 <data name="VsResultKept" xml:space="preserve"><value>Settings confirmed. The previous backup remains available for restoration.</value></data>
@@ -3740,7 +3740,7 @@ Your games and Windows are not changed.</value></data>
 <data name="VsSuggestEditing" xml:space="preserve"><value>For editing, preserve the original curve and physical controls and use neutral driver intensity. Accuracy needs a monitor-specific ICC and color-managed app; Lotus cannot certify it without measurement.</value></data>
 <data name="VsSuggestPreference" xml:space="preserve"><value>Based on monitor readback. Contrast and white balance are preserved; brightness follows your room-lighting choice. Gaming offers a mild midtone and color boost. These are preferences, not measured targets.</value></data>
 <data name="VsSuggestValues" xml:space="preserve"><value>Brightness {0}% · Contrast {1}% · Relative gamma {2}× · Intensity {3}%</value></data>
-<data name="VsApplying" xml:space="preserve"><value>Applying to the monitor… You can keep adjusting; Lotus coalesces changes.</value></data>
+<data name="VsApplying" xml:space="preserve"><value>Applying to the monitor… Wait for the confirmation below.</value></data>
 <data name="VsCardEveryday" xml:space="preserve"><value>Everyday</value></data>
 <data name="VsCardGaming" xml:space="preserve"><value>Gaming</value></data>
 <data name="VsCardEditing" xml:space="preserve"><value>Editing</value></data>

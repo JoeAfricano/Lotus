@@ -3712,7 +3712,7 @@ Seus jogos e o Windows não são alterados.</value></data>
 <data name="VsGammaUnavailable" xml:space="preserve"><value>curva SDR indisponível</value></data>
 <data name="VsUnsupported" xml:space="preserve"><value>Não foi possível confirmar controles nesta conexão. Nada será alterado.</value></data>
 <data name="VsContinue" xml:space="preserve"><value>Ativar prévia</value></data>
-<data name="VsConfirm" xml:space="preserve"><value>Agora a prévia será aplicada ao monitor inteiro, incluindo intensidade das cores quando compatível. Os controles ficam bloqueados durante o teste físico. Confirme para salvar ou desfaça para voltar à prévia. Sem confirmação, reverte após 2 minutos sem alterações (limite total de 10 minutos). Testar agora?</value></data>
+<data name="VsConfirm" xml:space="preserve"><value>As cores serão aplicadas ao monitor inteiro. Se não clicar em Manter estas cores, voltam sozinhas em 15 s.</value></data>
 <data name="VsRestoreConfirm" xml:space="preserve"><value>Restaurar brilho, contraste e curva de cor guardados antes do primeiro ajuste deste estúdio? As configurações externas atuais serão substituídas após uma nova conferência.</value></data>
 <data name="VsResultPreview" xml:space="preserve"><value>Cores aplicadas e conferidas. Confirme em Manter estas cores.</value></data>
 <data name="VsResultKept" xml:space="preserve"><value>Ajuste confirmado. O backup anterior continua disponível para restaurar.</value></data>
@@ -3740,7 +3740,7 @@ Seus jogos e o Windows não são alterados.</value></data>
 <data name="VsSuggestEditing" xml:space="preserve"><value>Para edição, preserve a curva e os controles físicos originais e use intensidade neutra do driver. Fidelidade exige ICC do seu monitor e aplicativo com gestão de cores; sem medição, o Lotus não certifica precisão.</value></data>
 <data name="VsSuggestPreference" xml:space="preserve"><value>Base: valores lidos no monitor. Contraste e branco são preservados; brilho varia apenas com o ambiente escolhido. Jogos sugere um realce leve de meios-tons e cores. São preferências, não valores medidos.</value></data>
 <data name="VsSuggestValues" xml:space="preserve"><value>Brilho {0}% · Contraste {1}% · Gamma relativo {2}× · Intensidade {3}%</value></data>
-<data name="VsApplying" xml:space="preserve"><value>Aplicando no monitor… Você pode continuar ajustando; o Lotus reúne as alterações.</value></data>
+<data name="VsApplying" xml:space="preserve"><value>Aplicando no monitor… Aguarde a confirmação abaixo.</value></data>
 <data name="VsCardEveryday" xml:space="preserve"><value>Dia a dia</value></data>
 <data name="VsCardGaming" xml:space="preserve"><value>Jogos</value></data>
 <data name="VsCardEditing" xml:space="preserve"><value>Edição</value></data>

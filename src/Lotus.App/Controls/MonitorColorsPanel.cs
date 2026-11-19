@@ -590,7 +590,8 @@ public sealed class MonitorColorsPanel : UserControl
         // After the physical test starts, the last step's button saves instead of testing again.
         finish.Content = Text[active ? "VsKeep" : "VsFinish"]; AutomationProperties.SetName(finish, (string)finish.Content);
         undo.IsEnabled = !busy && (drafting || active);
-        beforeButton.Visibility = adjustedButton.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
+        // Comparing happens in the image preview; flipping the whole monitor over DDC/CI only eats the 15 s window.
+        beforeButton.Visibility = adjustedButton.Visibility = Visibility.Collapsed;
         beforeButton.IsEnabled = adjustedButton.IsEnabled = active && !busy;
         beforeButton.IsChecked = requestedBefore; adjustedButton.IsChecked = !requestedBefore;
         foreach (var button in purposes.Concat(ambients)) button.IsEnabled = !busy;
