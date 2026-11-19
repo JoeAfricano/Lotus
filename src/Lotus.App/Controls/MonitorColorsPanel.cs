@@ -16,7 +16,7 @@ namespace Lotus.App.Controls;
 // Local illustrative draft first; physical DDC, SDR ramp and compatible driver intensity only on explicit test.
 public sealed class MonitorColorsPanel : UserControl
 {
-    private readonly StackPanel root = new() { Spacing = 18 };
+    private readonly StackPanel root = new() { Spacing = 14 };
     private readonly ComboBox monitors = new() { HorizontalAlignment = HorizontalAlignment.Stretch, DisplayMemberPath = nameof(CalibrationState.Label) };
     private readonly Grid workspace = new() { ColumnSpacing = 20, RowSpacing = 16 };
     private readonly StackPanel mission = new() { Spacing = 12 };
@@ -142,7 +142,7 @@ public sealed class MonitorColorsPanel : UserControl
     {
         var row = new Grid { ColumnSpacing = 14 };
         row.ColumnDefinitions.Add(new() { Width = GridLength.Auto }); row.ColumnDefinitions.Add(new());
-        row.Children.Add(Badge(glyph, 40, "RoseBrush", out _));
+        row.Children.Add(Badge(glyph, 34, "RoseBrush", out _));
         var text = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
         text.Children.Add(new TextBlock { Text = title, Style = StyleOf("SubtitleStyle") });
         if (caption is not null) text.Children.Add(Caption(caption));
@@ -152,9 +152,9 @@ public sealed class MonitorColorsPanel : UserControl
     {
         var content = new StackPanel { Spacing = 2 };
         content.Children.Add(new TextBlock { Text = name.ToUpperInvariant(), Style = StyleOf("EyebrowStyle"), Foreground = Brush("MutedBrush"), FontSize = 11, TextTrimming = TextTrimming.CharacterEllipsis });
-        value.FontSize = 24; value.FontWeight = FontWeights.SemiBold; content.Children.Add(value);
+        value.FontSize = 20; value.FontWeight = FontWeights.SemiBold; content.Children.Add(value);
         if (state is not null) { state.Style = StyleOf("CaptionStyle"); content.Children.Add(state); }
-        tile = new Border { Background = Brush("SubtleBrush"), BorderBrush = Brush("CardBorderBrush"), BorderThickness = new(1), CornerRadius = new(12), Padding = new(14, 12, 14, 12), Child = content };
+        tile = new Border { Background = Brush("SubtleBrush"), BorderBrush = Brush("CardBorderBrush"), BorderThickness = new(1), CornerRadius = new(12), Padding = new(12, 10, 12, 10), Child = content };
         return tile;
     }
     private Grid TileRow(IEnumerable<FrameworkElement> tiles)
@@ -174,17 +174,17 @@ public sealed class MonitorColorsPanel : UserControl
             chips.Children.Add(new Border { Style = StyleOf("ChipStyle"), CornerRadius = new(14), Padding = new(12, 6, 12, 6),
                 Background = new SolidColorBrush(Color.FromArgb(110, 20, 8, 14)), BorderBrush = new SolidColorBrush(Color.FromArgb(70, 238, 193, 168)), BorderThickness = new(1), Child = chip });
         }
-        var text = new StackPanel { Spacing = 10, VerticalAlignment = VerticalAlignment.Bottom, MaxWidth = 640, HorizontalAlignment = HorizontalAlignment.Left, Padding = new(28, 28, 28, 26) };
+        var text = new StackPanel { Spacing = 6, VerticalAlignment = VerticalAlignment.Center, MaxWidth = 680, HorizontalAlignment = HorizontalAlignment.Left, Padding = new(22, 16, 22, 16) };
         text.Children.Add(new Border { Background = Brush("AccentGradientBrush"), CornerRadius = new(10), Padding = new(10, 4, 10, 4), HorizontalAlignment = HorizontalAlignment.Left,
             Child = new TextBlock { Text = Text["VsBadge"], Foreground = OnArt, FontSize = 11, FontWeight = FontWeights.SemiBold, CharacterSpacing = 60, TextWrapping = TextWrapping.Wrap } });
-        text.Children.Add(new TextBlock { Text = Text["VsTitle"], FontSize = 34, FontWeight = FontWeights.Bold, TextWrapping = TextWrapping.Wrap, Foreground = OnArt });
-        text.Children.Add(new TextBlock { Text = Text["VsIntro"], FontSize = 14, TextWrapping = TextWrapping.Wrap, Foreground = OnArtMuted });
-        text.Children.Add(new ScrollViewer { Content = chips, HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden, VerticalScrollBarVisibility = ScrollBarVisibility.Disabled, HorizontalScrollMode = ScrollMode.Enabled, VerticalScrollMode = ScrollMode.Disabled, Margin = new(0, 6, 0, 0) });
+        text.Children.Add(new TextBlock { Text = Text["VsTitle"], FontSize = 24, FontWeight = FontWeights.Bold, TextWrapping = TextWrapping.Wrap, Foreground = OnArt });
+        text.Children.Add(new TextBlock { Text = Text["VsIntro"], FontSize = 13, TextWrapping = TextWrapping.Wrap, Foreground = OnArtMuted });
+        text.Children.Add(new ScrollViewer { Content = chips, HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden, VerticalScrollBarVisibility = ScrollBarVisibility.Disabled, HorizontalScrollMode = ScrollMode.Enabled, VerticalScrollMode = ScrollMode.Disabled, Margin = new(0, 4, 0, 0) });
         var shade = new LinearGradientBrush { StartPoint = new(0, 0), EndPoint = new(1, 0.4) };
         shade.GradientStops.Add(new GradientStop { Color = Color.FromArgb(242, 18, 7, 13), Offset = 0 });
         shade.GradientStops.Add(new GradientStop { Color = Color.FromArgb(190, 40, 10, 26), Offset = 0.5 });
         shade.GradientStops.Add(new GradientStop { Color = Color.FromArgb(40, 60, 12, 36), Offset = 1 });
-        var art = new Grid { MinHeight = 236, Background = new SolidColorBrush(Color.FromArgb(255, 26, 12, 20)) };
+        var art = new Grid { Height = 172, Background = new SolidColorBrush(Color.FromArgb(255, 26, 12, 20)) };
         art.Children.Add(heroArt); art.Children.Add(new Border { Background = shade }); art.Children.Add(text);
         return new Border { CornerRadius = new(20), BorderBrush = Brush("CardBorderBrush"), BorderThickness = new(1), Child = art };
     }
@@ -259,7 +259,7 @@ public sealed class MonitorColorsPanel : UserControl
         recommendations.Children.Add(new Border { Background = Brush("HeroBrush"), BorderBrush = Brush("CardBorderBrush"), BorderThickness = new(1), CornerRadius = new(16), Padding = new(16), Margin = new(0, 6, 0, 0), Child = suggested });
 
         start.Content = IconLabel(new FontIcon { Glyph = "\uE768", FontSize = 16 }, new TextBlock { Text = Text["VsStart"], TextWrapping = TextWrapping.Wrap, FontWeight = FontWeights.SemiBold });
-        start.Style = StyleOf("PrimaryButtonStyle"); start.MinHeight = 48;
+        start.Style = StyleOf("PrimaryButtonStyle"); start.MinHeight = 44;
         AutomationProperties.SetName(start, Text["VsStart"]);
         start.HorizontalAlignment = HorizontalAlignment.Stretch; recommendations.Children.Add(start);
         chooser.Children.Add(new Border { Style = StyleOf("CardStyle"), Child = recommendations });
@@ -305,7 +305,7 @@ public sealed class MonitorColorsPanel : UserControl
         keep.Content = IconLabel(keepIcon, keepLabel); undo.Content = IconLabel(undoIcon, undoLabel);
         keepLabel.FontWeight = FontWeights.SemiBold;
         keep.Style = StyleOf("PrimaryButtonStyle");
-        foreach (var button in new[] { keep, undo }) { button.HorizontalAlignment = HorizontalAlignment.Stretch; button.MinHeight = 48; actions.Children.Add(button); }
+        foreach (var button in new[] { keep, undo }) { button.HorizontalAlignment = HorizontalAlignment.Stretch; button.MinHeight = 44; actions.Children.Add(button); }
         Grid.SetColumn(undo, 1); adjustment.Children.Add(actions);
         var safety = new StackPanel { Spacing = 10 };
         restore.Content = IconLabel(new FontIcon { Glyph = "\uE777", FontSize = 14 }, new TextBlock { Text = Text["VsRestore"] });
@@ -339,12 +339,12 @@ public sealed class MonitorColorsPanel : UserControl
         {
             var index = i;
             var content = new StackPanel { Spacing = 8, HorizontalAlignment = HorizontalAlignment.Left };
-            var badge = Badge(glyphs[i], use ? 44 : 36, use ? "RoseBrush" : "GoldBrush", out var icon);
+            var badge = Badge(glyphs[i], use ? 38 : 32, use ? "RoseBrush" : "GoldBrush", out var icon);
             content.Children.Add(badge);
             var title = new TextBlock { Text = Text[keys[i]], TextWrapping = TextWrapping.Wrap, FontWeight = FontWeights.SemiBold, FontSize = use ? 15 : 14 };
             var hint = new TextBlock { Text = Text[keys[i] + "Hint"], TextWrapping = TextWrapping.Wrap, FontSize = 12, LineHeight = 16 };
             content.Children.Add(title); content.Children.Add(hint);
-            var button = new ToggleButton { Content = content, MinHeight = use ? 132 : 104, Padding = new Thickness(16, 14, 16, 14), CornerRadius = new(16),
+            var button = new ToggleButton { Content = content, MinHeight = use ? 112 : 88, Padding = new Thickness(16, 14, 16, 14), CornerRadius = new(16),
                 HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Top };
             AutomationProperties.SetName(button, Text[keys[i]]);
