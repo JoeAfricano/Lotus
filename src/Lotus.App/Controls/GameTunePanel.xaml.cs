@@ -121,13 +121,13 @@ public sealed partial class GameTunePanel : UserControl
         Grid.SetColumn(scoreText, 1); line.Children.Add(scoreText);
         score.Child = line;
         var hwPanel = new StackPanel { Spacing = 8 }; hwPanel.Children.Add(score);
-        // The player's optional call: lock 60 FPS when the PC cannot hold the monitor rate, or with better graphics when holding it costs looks.
+        // The player's optional call in every game on a monitor faster than 60; the hint says what 60 gives in this one.
         if (r.CanPrefer60 && card is { } c60)
         {
-            var lock60 = new CheckBox { Content = text["Gs60Choice"], IsChecked = r.Prefer60 };
+            var lock60 = new CheckBox { Content = text[r.Why60 == "looks" ? "Gs60Choice" : "Gs60ChoicePlain"], IsChecked = r.Prefer60 };
             AutomationProperties.SetAutomationId(lock60, "tune-prefer-60");
             lock60.Click += async (_, _) => { lock60.IsEnabled = false; vm.SetPrefer60(c60.Game, lock60.IsChecked == true); await Reload(); };
-            hwPanel.Children.Add(lock60); hwPanel.Children.Add(Caption(text[r.ReasonKeys.Contains("GsReasonTargetLower") ? "Gs60ChoiceHintCantHold" : r.AdaptiveSync ? "Gs60ChoiceHintVrr" : "Gs60ChoiceHint"]));
+            hwPanel.Children.Add(lock60); hwPanel.Children.Add(Caption(text[r.Why60 switch { "cant-hold" => "Gs60ChoiceHintCantHold", "lighter" => "Gs60ChoiceHintLighter", _ => r.AdaptiveSync ? "Gs60ChoiceHintVrr" : "Gs60ChoiceHint" }]));
         }
         hwPanel.Children.Add(Caption(t.Settings.Hardware));
         // The FreeSync/G-Sync answer the settings are based on, with a way to change it.

@@ -3821,6 +3821,8 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="Gs60ChoiceHint" xml:space="preserve"><value>Por padrão o Lotus baixa os gráficos para acompanhar a taxa do monitor. Em 60 a imagem fica mais bonita; sem FreeSync/G-Sync, um quadro se repete de vez em quando e o movimento pode tremer um pouco.</value></data>
   <data name="Gs60ChoiceHintVrr" xml:space="preserve"><value>Por padrão o Lotus baixa os gráficos para acompanhar a taxa do monitor. Em 60, com FreeSync/G-Sync, a imagem fica mais bonita e continua fluida.</value></data>
   <data name="Gs60ChoiceHintCantHold" xml:space="preserve"><value>Seu PC não alcança a taxa do monitor neste jogo, então por padrão o Lotus trava numa fração exata dela, para a imagem ficar estável. Em 60 o jogo fica mais fluido; sem FreeSync/G-Sync, um quadro se repete de vez em quando.</value></data>
+  <data name="Gs60ChoicePlain" xml:space="preserve"><value>Cravar em 60 FPS</value></data>
+  <data name="Gs60ChoiceHintLighter" xml:space="preserve"><value>Seu PC já segura a taxa do monitor neste jogo. Em 60 a imagem fica igual e o jogo pesa menos (menos calor e consumo); sem FreeSync/G-Sync, um quadro se repete de vez em quando.</value></data>
   <data name="GsReasonRamGame" xml:space="preserve"><value>Seu PC tem menos memória RAM do que este jogo recomenda: feche navegador e outros programas antes de jogar.</value></data>
   <data name="GsLineMeasureToLearn" xml:space="preserve"><value>Estimativa ainda incerta: com o jogo aberto, use &quot;Medir e ajustar&quot; ou &quot;Por que está travando?&quot;. O Lotus aprende quanto este jogo rende no seu PC e ajusta a sugestão sozinho.</value></data>
 </root>
