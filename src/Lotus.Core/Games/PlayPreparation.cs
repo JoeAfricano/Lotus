@@ -16,6 +16,7 @@ public sealed record GamePlayPrefs
     public bool OnlyRelevant { get; set; } = true; // no "all good" notice
     public bool UseFrameGen { get; set; }      // the player keeps frame generation on (more FPS on screen, some more delay)
     public bool Prefer60 { get; set; }         // Otimizar: lock 60 FPS with better graphics instead of lowering them to hold the monitor rate
+    public GamePresentationPrefs? Before60 { get; set; } // per-game Hz/RivaTuner plan in place before "60 estilo console", restored when it is turned off
     public GamePresentationPrefs Presentation { get; set; } = new();
 }
 

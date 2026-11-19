@@ -123,7 +123,7 @@ public sealed partial class GameTunePanel : UserControl
                 AutomationProperties.SetAutomationId(lock60, "tune-prefer-60");
                 AutomationProperties.SetName(lock60, title);
                 ToolTipService.SetToolTip(lock60, new TextBlock { Text = title + "\n" + hint, TextWrapping = TextWrapping.Wrap, MaxWidth = 320 });
-                lock60.Click += async (_, _) => { lock60.IsEnabled = false; vm.SetPrefer60(c60.Game, lock60.IsChecked == true); await Reload(); };
+                lock60.Click += async (_, _) => { lock60.IsEnabled = false; await vm.SetConsole60Async(c60.Game, lock60.IsChecked == true, t.LowLatency, r.AdaptiveSync); await Reload(); };
                 Grid.SetColumn(lock60, i % 2); Grid.SetRow(lock60, i / 2); grid.Children.Add(lock60);
             }
         }
@@ -135,6 +135,7 @@ public sealed partial class GameTunePanel : UserControl
         Grid.SetColumn(scoreText, 1); line.Children.Add(scoreText);
         score.Child = line;
         var hwPanel = new StackPanel { Spacing = 8 }; hwPanel.Children.Add(score);
+        if (vm.Console60Status is { Length: > 0 } partial) hwPanel.Children.Add(Caption(text.Format("Gs60Partial", partial)));
         hwPanel.Children.Add(Caption(t.Settings.Hardware));
         // The FreeSync/G-Sync answer the settings are based on, with a way to change it.
         var sync = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
