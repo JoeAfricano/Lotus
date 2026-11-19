@@ -46,4 +46,40 @@ public sealed partial class GamesViewModel
         }
         return Finish(true,"GpSaved");
     }
+
+    // "60 estilo console" (José, 19/11/2026): the graphics for 60 FPS plus everything that keeps 60 steady. Without
+    // FreeSync/G-Sync the monitor runs at 60 Hz while the game is in front (when the output offers 60 Hz at this
+    // resolution) and RivaTuner caps just under the real 60 Hz; with FreeSync/G-Sync the rate stays and RivaTuner caps 60.
+    // Turning it off brings back the per-game plan that was there before. The graphics choice is kept even when the
+    // RivaTuner/Hz part cannot be prepared (RivaTuner missing, game open): the status says why.
+    public string Console60Status { get; private set; } = "";
+    public async Task<bool> SetConsole60Async(GameEntry game,bool on,LowLatencyInfo? info,bool adaptiveSync)
+    {
+        Console60Status="";
+        if(PlayPrefs is null) return false;
+        var prefs=PrefsFor(game);
+        if(!on)
+        {
+            var before=prefs.Before60;
+            if(!PlayPrefs.Set(game.Key,prefs with {Prefer60=false,Before60=null})) return false;
+            if(before is null) return true;
+            var restored=before.Enabled
+                ? await SavePresentationAsync(game,before with {Cap=before.RequestedCap},info,adaptiveSync)
+                : !prefs.Presentation.Enabled || await SavePresentationAsync(game,prefs.Presentation with {Enabled=false},info,adaptiveSync);
+            if(!restored) Console60Status=PresentationStatus;
+            return true;
+        }
+        if(!PlayPrefs.Set(game.Key,prefs with {Prefer60=true,Before60=prefs.Before60??prefs.Presentation})) return false;
+        if(DisplayControl is null || profileSource is null) return true;
+        var pc=await Task.Run(profileSource.Read); int width=pc.Width,height=pc.Height;
+        var modes=await DisplayModesAsync();
+        GameDisplayMode? output=null;
+        foreach(var device in modes.Select(m=>m.Device).Distinct())
+            if(await Task.Run(()=>DisplayControl.Current(device)) is {} c && c.Width==width && c.Height==height) {output=c;break;}
+        if(output is null) {Console60Status=Text["GpUnsupported"];return true;}
+        var has60=modes.Any(m=>m.SameOutput(output) && m.Hz==60);
+        var plan=new GamePresentationPrefs(true,output.Device,output.Width,output.Height,!adaptiveSync && has60 ? 60 : 0,"auto",adaptiveSync || !has60 ? 60 : 0);
+        if(!await SavePresentationAsync(game,plan,info,adaptiveSync)) Console60Status=PresentationStatus;
+        return true;
+    }
 }

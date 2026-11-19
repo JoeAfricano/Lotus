@@ -98,9 +98,10 @@ public sealed class GameAwareSettingsTests
         Assert.Equal((60, 60, true), (sixty.TargetFps, sixty.FpsCap, sixty.Prefer60));
         Assert.True(sixty.Tier > rate.Tier || sixty.Mode < rate.Mode);
         Assert.Contains("GsReasonPrefer60", sixty.ReasonKeys);
-        // A game with frame generation: the generator is the better way, so 60 is not offered.
+        Assert.Equal("looks", rate.Why60);
+        // Frame generation does not hide it: still the player's choice (José, 19/11/2026).
         var fg = new GameTech(Dlss: true, FrameGen: true, Fsr: false, Xess: false, Engine: null);
-        Assert.False(SettingsAdvisor.Recommend(pc, "balanced", false, curve, fg, prefer60: true).Prefer60);
+        Assert.True(SettingsAdvisor.Recommend(pc, "balanced", false, curve, fg, prefer60: true).Prefer60);
     }
 
     [Fact] public void SixtyIsOfferedWhenThePcFallsBelowTheMonitorRate()
@@ -117,8 +118,30 @@ public sealed class GameAwareSettingsTests
         Assert.Contains("GsReasonTargetLower", sixty.ReasonKeys);
         // Below 60 even on Low: nothing to offer.
         Assert.False(SettingsAdvisor.Recommend(Pc, "balanced", false, new GameFpsCurve([55, 45, 38, 30], [200, 200, 200, 200], null, "measured"), none).CanPrefer60);
-        // Without data for the game (generic guess, e.g. Minecraft), never offered.
-        Assert.False(SettingsAdvisor.Recommend(Pc, "balanced", false, null, none).CanPrefer60);
+        Assert.Equal("cant-hold", half.Why60);
+        // Without data for the game (generic guess, e.g. Minecraft): still optional, off by default.
+        var generic = SettingsAdvisor.Recommend(Pc, "balanced", false, null, none);
+        Assert.True(generic.CanPrefer60);
+        Assert.False(generic.Prefer60);
+        Assert.Equal(75, generic.FpsCap);
+        var generic60 = SettingsAdvisor.Recommend(Pc, "balanced", false, null, none, prefer60: true);
+        Assert.Equal((60, 60, true), (generic60.TargetFps, generic60.FpsCap, generic60.Prefer60));
+        // A light game the PC already runs at the monitor rate on top settings: 60 only makes it lighter.
+        var light = SettingsAdvisor.Recommend(Pc, "balanced", false, new GameFpsCurve([300, 260, 220, 180], [250, 250, 240, 230], null, "measured"), none);
+        Assert.True(light.CanPrefer60);
+        Assert.Equal("lighter", light.Why60);
+    }
+
+    [Fact] public void NoUpscalerSaysWhyForEachGame()
+    {
+        var none = new GameTech(Dlss: false, FrameGen: false, Fsr: false, Xess: false, Engine: null);
+        var dlss = new GameTech(Dlss: true, FrameGen: false, Fsr: false, Xess: false, Engine: null);
+        var light = new GameFpsCurve([300, 260, 220, 180], [250, 250, 240, 230], null, "measured");
+        Assert.Equal("GsUpscaleNoneInGame", SettingsAdvisor.NoUpscaleKey(SettingsAdvisor.Recommend(Pc, "balanced", false, null, none)));
+        var holds = SettingsAdvisor.Recommend(Pc, "balanced", false, light, dlss);
+        Assert.Equal(Upscaler.None, holds.Upscaler);
+        Assert.Equal("GsUpscaleNotNeeded", SettingsAdvisor.NoUpscaleKey(holds));
+        Assert.Equal("GsLineNoUpscale", SettingsAdvisor.NoUpscaleKey(SettingsAdvisor.Recommend(Pc with { Width = 1280, Height = 720 }, "balanced", false)));
     }
 
     [Fact] public void HeavyGameOnMidCardLowersGraphicsBeforeHalvingTheRate()

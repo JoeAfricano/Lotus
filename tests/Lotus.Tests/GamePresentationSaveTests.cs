@@ -31,6 +31,7 @@ public sealed class GamePresentationSaveTests : IDisposable
         public GameDisplayMode? Current(string device)=>new("display","Monitor",1920,1080,75,74.973);
         public bool SetHz(GameDisplayMode mode,int hz)=>throw new InvalidOperationException("Saving must not change the monitor");
     }
+    private sealed class Pc : ISystemProfileSource {public SystemProfile Read()=>new("NVIDIA GeForce RTX 5060",8192,12,16_000,1920,1080,75,74.973,"AMD Ryzen 5 5500");}
     public GamePresentationSaveTests()=>Directory.CreateDirectory(Profiles);
     public void Dispose() {if(Directory.Exists(root))Directory.Delete(root,true);}
     private Task<int> Elevated(string[] args)
@@ -48,6 +49,24 @@ public sealed class GamePresentationSaveTests : IDisposable
         Assert.Equal("fluid",saved.AppliedLimiter);Assert.Equal(59.93,saved.Cap);Assert.Equal(59.94,saved.PreparedRate);
         Assert.Equal(0,saved.RequestedCap);Assert.Equal("game.exe",saved.Exe);
         Assert.Equal("fluid",vm.Rtss!.LimiterMode("game.exe"));
+    }
+    [Fact] public async Task ConsoleSixtySwitchesTo60HzWithRtssAndRestoresWhenOff()
+    {
+        var store=new Store();
+        var vm=new GamesViewModel(new Library(),new Manual(),new Launcher(),new TextCatalog(),_=>{},profileSource:new Pc(),processCheck:new Processes())
+            {PlayPrefs=new(store,_=>{}),DisplayControl=new Display(),Rtss=new WindowsRtssIntegration(Profiles,Backups,Elevated)};
+        Assert.True(await vm.SetConsole60Async(Game,true,Info,false));
+        var on=store.Data.Games[Game.Key];
+        Assert.True(on.Prefer60);Assert.Equal("",vm.Console60Status);
+        Assert.Equal((true,60,59.93),(on.Presentation.Enabled,on.Presentation.Hz,on.Presentation.Cap));
+        Assert.False(on.Before60!.Enabled);
+        Assert.True(await vm.SetConsole60Async(Game,false,Info,false));
+        var off=store.Data.Games[Game.Key];
+        Assert.False(off.Prefer60);Assert.False(off.Presentation.Enabled);Assert.Null(off.Before60);
+        Assert.Empty(Directory.GetFiles(Profiles));
+        // Without RivaTuner the graphics part still works and the status says why.
+        Assert.True(await vm.SetConsole60Async(Game,true,Info with {State="noRtss"},false));
+        Assert.True(store.Data.Games[Game.Key].Prefer60);Assert.NotEqual("",vm.Console60Status);
     }
     [Fact] public async Task RunningGamePreventsProfileOrPreferenceWrites()
     {
