@@ -61,8 +61,11 @@ public sealed class GameAwareSettingsTests
     [Fact] public void UpscalerFollowsWhatTheGameShips()
     {
         var onlyFsr = new GameTech(Dlss: false, FrameGen: false, Fsr: true, Xess: false, Engine: null);
-        var r = SettingsAdvisor.Recommend(Pc, "balanced", false, Curve("Black Myth: Wukong"), onlyFsr);
+        // At 1440p the game's FSR is used (never DLSS it does not ship); at 1080p native Medium beats FSR's blur.
+        var r = SettingsAdvisor.Recommend(Pc with { Width = 2560, Height = 1440 }, "balanced", false, Curve("Black Myth: Wukong", Resolution.P1440), onlyFsr);
         Assert.Equal(Upscaler.Fsr, r.Upscaler);
+        var at1080 = SettingsAdvisor.Recommend(Pc, "balanced", false, Curve("Black Myth: Wukong"), onlyFsr);
+        Assert.Equal((QualityTier.Medium, Upscaler.None), (at1080.Tier, at1080.Upscaler));
     }
 
     [Fact] public void NoCurveKeepsTheGenericRule()
