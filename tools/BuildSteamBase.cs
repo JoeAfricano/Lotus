@@ -21,7 +21,9 @@ http.DefaultRequestHeaders.UserAgent.ParseAdd("Lotus-base-builder/1.0");
 async Task<JsonNode?> Get(string url, string file, bool polite)
 {
     var path = Path.Combine(cache, file);
-    if (File.Exists(path)) return JsonNode.Parse(await File.ReadAllTextAsync(path));
+    if (File.Exists(path))
+        try { return JsonNode.Parse(await File.ReadAllTextAsync(path)); }
+        catch (JsonException) { File.Delete(path); } // a cached error page: ask again
     for (var attempt = 0; attempt < 4; attempt++)
     {
         if (polite) await Task.Delay(1600);
@@ -29,15 +31,17 @@ async Task<JsonNode?> Get(string url, string file, bool polite)
         if ((int)res.StatusCode is 429 or 403) { Console.WriteLine($"  limite da Steam ({(int)res.StatusCode}), aguardando 60 s"); await Task.Delay(60_000); continue; }
         if (!res.IsSuccessStatusCode) return null;
         var text = await res.Content.ReadAsStringAsync();
-        await File.WriteAllTextAsync(path, text);
-        return JsonNode.Parse(text);
+        JsonNode? node;
+        try { node = JsonNode.Parse(text); } catch (JsonException) { Console.WriteLine($"  resposta inválida de {url}"); return null; }
+        await File.WriteAllTextAsync(path, text); // only valid answers are cached
+        return node;
     }
     return null;
 }
 
 // Most owned first (SteamSpy pages hold 1,000 games each).
 var list = new List<(string Id, string Name)>();
-for (var page = 0; list.Count < count * 5 && page < 6; page++)
+for (var page = 0; list.Count < count * 5 && page < 5; page++)
 {
     if (await Get($"https://steamspy.com/api.php?request=all&page={page}", $"spy-all-{page}.json", false) is not JsonObject all) break;
     list.AddRange(all.Select(kv => (kv.Key, (string?)kv.Value?["name"] ?? kv.Key)).Where(x => x.Item1.All(char.IsAsciiDigit)));
