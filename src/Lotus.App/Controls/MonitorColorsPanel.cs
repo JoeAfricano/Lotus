@@ -512,8 +512,8 @@ public sealed class MonitorColorsPanel : UserControl
             next.Visibility = step < 3 ? Visibility.Visible : Visibility.Collapsed;
             // Last step: "Concluir" runs the same action as the main button below (test, then save).
             finish.Visibility = step == 3 ? Visibility.Visible : Visibility.Collapsed;
-            finish.Content = Text["VsFinish"]; finish.Style = StyleOf("PrimaryButtonStyle"); finish.HorizontalAlignment = HorizontalAlignment.Stretch;
-            finish.IsEnabled = keep.IsEnabled; AutomationProperties.SetName(finish, Text["VsFinish"]);
+            finish.Content = Text[controller?.HasPreview == true ? "VsKeep" : "VsFinish"]; finish.Style = StyleOf("PrimaryButtonStyle"); finish.HorizontalAlignment = HorizontalAlignment.Stretch;
+            finish.IsEnabled = keep.IsEnabled; AutomationProperties.SetName(finish, (string)finish.Content);
             skipToEnd.Content = Text["VsSkipToEnd"]; skipToEnd.Visibility = step < 3 ? Visibility.Visible : Visibility.Collapsed;
             if (missionNav.ColumnDefinitions.Count == 0) { missionNav.ColumnDefinitions.Add(new()); missionNav.ColumnDefinitions.Add(new()); }
             previous.HorizontalAlignment = next.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -587,6 +587,8 @@ public sealed class MonitorColorsPanel : UserControl
         undoLabel.Text = Text[active ? "VsReturnDraft" : "VsUndo"]; undoIcon.Glyph = active ? "\uE7A7" : "\uE711";
         AutomationProperties.SetName(keep, keepLabel.Text); AutomationProperties.SetName(undo, undoLabel.Text);
         keep.IsEnabled = finish.IsEnabled = !busy && !updating && (drafting || active);
+        // After the physical test starts, the last step's button saves instead of testing again.
+        finish.Content = Text[active ? "VsKeep" : "VsFinish"]; AutomationProperties.SetName(finish, (string)finish.Content);
         undo.IsEnabled = !busy && (drafting || active);
         beforeButton.Visibility = adjustedButton.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
         beforeButton.IsEnabled = adjustedButton.IsEnabled = active && !busy;
@@ -660,7 +662,7 @@ public sealed class MonitorColorsPanel : UserControl
     private async Task<bool> Confirm(string title, string message)
     {
         var dialog = new ContentDialog { XamlRoot = XamlRoot, Title = title, Content = message, PrimaryButtonText = Text["VsContinue"],
-            CloseButtonText = Text["McCancel"], DefaultButton = ContentDialogButton.Close };
+            CloseButtonText = Text["McCancel"], DefaultButton = ContentDialogButton.Primary };
         return await dialog.ShowAsync() == ContentDialogResult.Primary;
     }
     private Task StartAsync()

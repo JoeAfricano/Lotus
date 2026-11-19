@@ -289,6 +289,16 @@ public sealed class DisplayCalibrationTests
         Assert.Equal(MonitorColorResult.Conflict, controller.Begin(Original() with { Brightness = new(10, 0, 100) }, Profile()));
         controller.Begin(driver.State!, Profile()); Assert.Equal(MonitorColorResult.Invalid, controller.Begin(driver.State!, Profile()));
     }
+    [Fact] public void KeptProfileChangedOutsideLotusDoesNotBlockANewTestAndKeepsTheFirstOriginal()
+    {
+        var driver = new Driver(); using var controller = Controller(driver, new());
+        controller.Begin(driver.State!, Profile(1.1)); controller.Keep();
+        driver.State = driver.State! with { Contrast = new(75, 0, 100) }; var drifted = driver.State;
+        Assert.Equal(MonitorColorResult.Preview, controller.Begin(drifted, Profile(1.04) with { Contrast = 75 }));
+        Assert.Equal(MonitorColorResult.Restored, controller.CancelPreview()); Assert.True(driver.State.Same(drifted, 256));
+        Assert.True(controller.HasBackup("stable-monitor"));
+        Assert.Equal(MonitorColorResult.Restored, controller.Restore(driver.State)); Assert.True(driver.State.Same(Original()));
+    }
     [Fact] public void ExplicitRestoreStillRequiresAFreshSnapshot()
     {
         var driver = new Driver(); using var controller = Controller(driver, new()); controller.Begin(driver.State!, Profile(1.1)); controller.Keep();

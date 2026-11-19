@@ -177,11 +177,16 @@ public sealed class DisplayCalibrationController : IDisposable
         if (!current!.Same(expected)) return MonitorColorResult.Conflict;
         var prior = entries.SingleOrDefault(e => e.Original.Identity == expected.Identity);
         if (prior is not null) prior = UpgradeLegacy(prior, current);
-        if (prior is not null && !current.Same(prior.Applied, 256)) return MonitorColorResult.Conflict;
+        // A kept profile the monitor no longer shows was changed outside Lotus (monitor menu, driver reset or a
+        // write that never landed). The player just confirmed this fresh snapshot, so test from it: cancelling
+        // returns to it, while the first original stays available for "Restore original".
+        var drifted = prior is not null && !current.Same(prior.Applied, 256);
         if (entries.Count >= 8 && prior is null) return MonitorColorResult.Invalid;
         var original = prior is not null ? prior.Original with { Device = current.Device } : current;
         CalibrationState target; try { target = profile.Build(original); } catch (ArgumentException) { return MonitorColorResult.Unsupported; }
-        var next = new CalibrationBackup(original, target, current, prior?.Applied, profile, prior?.Profile, true);
+        var next = drifted
+            ? new CalibrationBackup(original, target, current, current, profile, new(current.Brightness?.Percent, current.Contrast?.Percent), true)
+            : new CalibrationBackup(original, target, current, prior?.Applied, profile, prior?.Profile, true);
         Save(entries.Where(e => e.Original.Identity != expected.Identity).Append(next).ToList());
         sessionEnd = now().AddMinutes(10); Arm();
         if (!current.Same(target) && !driver.TryApply(current, target))
