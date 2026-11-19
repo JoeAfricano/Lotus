@@ -3785,14 +3785,22 @@ Seus jogos e o Windows não são alterados.</value></data>
 <data name="VsTileMissing" xml:space="preserve"><value>Indisponível</value></data>
 <data name="VsSuggestedTitle" xml:space="preserve"><value>Ponto de partida sugerido</value></data>
 <data name="VsStepOf" xml:space="preserve"><value>Etapa {0} de 4</value></data>
-<data name="VsCardEverydayHint" xml:space="preserve"><value>Mantém contraste e cores do driver</value></data>
-<data name="VsCardGamingHint" xml:space="preserve"><value>Sombras um pouco mais visíveis e cores mais vivas</value></data>
-<data name="VsCardEditingHint" xml:space="preserve"><value>Neutro: não mexe no brilho nem nas cores</value></data>
-<data name="VsCardMoviesHint" xml:space="preserve"><value>Contraste e cores naturais preservados</value></data>
-<data name="VsAmbientNormalHint" xml:space="preserve"><value>Mantém o brilho atual</value></data>
-<data name="VsAmbientDimHint" xml:space="preserve"><value>Quarto escuro: brilho 8 pontos menor</value></data>
-<data name="VsAmbientBrightHint" xml:space="preserve"><value>Muita luz: brilho 5 pontos maior</value></data>
+<data name="VsCardEverydayHint" xml:space="preserve"><value>Padrão sRGB, cores neutras</value></data>
+<data name="VsCardGamingHint" xml:space="preserve"><value>Sombras mais abertas e cores mais vivas</value></data>
+<data name="VsCardEditingHint" xml:space="preserve"><value>Neutro e brilho baixo, sem realce</value></data>
+<data name="VsCardMoviesHint" xml:space="preserve"><value>Gama de cinema no escuro</value></data>
+<data name="VsAmbientNormalHint" xml:space="preserve"><value>Brilho de escritório</value></data>
+<data name="VsAmbientDimHint" xml:space="preserve"><value>Menos brilho para a sala escura</value></data>
+<data name="VsAmbientBrightHint" xml:space="preserve"><value>Mais brilho e meios-tons mais claros</value></data>
 <data name="VsFinish" xml:space="preserve"><value>Concluir</value></data>
 <data name="VsSkipToEnd" xml:space="preserve"><value>Ir para o final</value></data>
 <data name="VsScreenError" xml:space="preserve"><value>Não foi possível atualizar esta tela. Nada foi aplicado ao monitor; use Verificar monitores.</value></data>
+<data name="VsTileWhite" xml:space="preserve"><value>Tom do branco</value></data>
+<data name="VsWhiteNeutral" xml:space="preserve"><value>Neutro</value></data>
+<data name="VsWhiteWarm" xml:space="preserve"><value>Quente +{0}</value></data>
+<data name="VsWhiteCool" xml:space="preserve"><value>Frio −{0}</value></data>
+<data name="VsBasisEveryday" xml:space="preserve"><value>Referência: padrão sRGB do Windows (gama 2,2, branco D65). O brilho vai para a faixa do ambiente; no escuro, o branco fica um pouco mais quente para descansar a vista.</value></data>
+<data name="VsBasisGaming" xml:space="preserve"><value>Referência: gama 2,2 com sombras um pouco mais abertas (como o Black Equalizer dos monitores) e cores mais vivas. Em sala clara as sombras abrem mais, porque o reflexo esconde detalhes escuros.</value></data>
+<data name="VsBasisMovies" xml:space="preserve"><value>Referência: padrão de cinema BT.1886. No escuro, gama perto de 2,4 e brilho baixo; com luz, volta para 2,2. Branco D65 e cores do driver, sem realce.</value></data>
+<data name="VsBasisEditing" xml:space="preserve"><value>Referência: edição de foto e vídeo, com branco D65, gama 2,2, cores neutras e brilho baixo (por volta de 80–120 nits). Fidelidade de verdade exige um colorímetro e o perfil ICC do monitor; o Lotus não mede.</value></data>
 </root>

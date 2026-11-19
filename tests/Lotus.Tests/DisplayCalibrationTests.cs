@@ -85,7 +85,7 @@ public sealed class DisplayCalibrationTests
         var original = Original() with { Vibrance = new(60, 0, 100, 50) };
         foreach (var use in new[] { DisplayUse.Everyday, DisplayUse.Editing, DisplayUse.Movies })
             Assert.Equal(50, DisplayRecommendations.Suggest(original, use, DisplayAmbient.Normal).Saturation);
-        Assert.Equal(55, DisplayRecommendations.Suggest(original, DisplayUse.Gaming, DisplayAmbient.Normal).Saturation);
+        Assert.Equal(58, DisplayRecommendations.Suggest(original, DisplayUse.Gaming, DisplayAmbient.Normal).Saturation);
     }
     [Fact]
     public async Task UiStatusReadsNeverWaitForSlowHardwareTransaction()
@@ -107,31 +107,36 @@ public sealed class DisplayCalibrationTests
         Assert.Equal(MonitorColorResult.Preview, controller.LastResult);
     }
     [Theory]
-    [InlineData(DisplayUse.Everyday, DisplayAmbient.Normal, 65, 1)]
-    [InlineData(DisplayUse.Everyday, DisplayAmbient.Dim, 57, 1)]
-    [InlineData(DisplayUse.Gaming, DisplayAmbient.Bright, 70, 1.04)]
-    [InlineData(DisplayUse.Editing, DisplayAmbient.Dim, 65, 1)]
-    [InlineData(DisplayUse.Movies, DisplayAmbient.Dim, 57, 1)]
-    public void RecommendationsRespectUseAmbientAndPreserveContrastAndWhite(DisplayUse use, DisplayAmbient ambient, double brightness, double gamma)
+    [InlineData(DisplayUse.Everyday, DisplayAmbient.Normal, 65, 1, 0)]
+    [InlineData(DisplayUse.Everyday, DisplayAmbient.Dim, 45, 1, 6)]
+    [InlineData(DisplayUse.Gaming, DisplayAmbient.Normal, 65, 1.06, 0)]
+    [InlineData(DisplayUse.Gaming, DisplayAmbient.Bright, 80, 1.1, 0)]
+    [InlineData(DisplayUse.Editing, DisplayAmbient.Dim, 40, 1, 0)]
+    [InlineData(DisplayUse.Movies, DisplayAmbient.Dim, 40, .92, 0)]
+    [InlineData(DisplayUse.Movies, DisplayAmbient.Bright, 70, 1, 0)]
+    public void RecommendationsFollowUseAndRoomWhilePreservingContrast(DisplayUse use, DisplayAmbient ambient, double brightness, double gamma, double warmth)
     {
         var original = Original(); var suggested = DisplayRecommendations.Suggest(original, use, ambient);
         Assert.Equal(brightness, suggested.Brightness); Assert.Equal(60, suggested.Contrast);
-        Assert.Equal(gamma, suggested.Gamma); Assert.Equal(0, suggested.Warmth); Assert.Equal(0, suggested.Tint);
+        Assert.Equal(gamma, suggested.Gamma); Assert.Equal(warmth, suggested.Warmth); Assert.Equal(0, suggested.Tint);
         Assert.True(suggested.Build(original).Valid);
     }
     [Fact] public void RecommendationsDoNotInventUnavailableControlsOrOverrideHdr()
     {
         var original = Original() with { Brightness = null, Ramp = null };
         var suggested = DisplayRecommendations.Suggest(original, DisplayUse.Gaming, DisplayAmbient.Dim);
-        Assert.Null(suggested.Brightness); Assert.Equal(1, suggested.Gamma); Assert.True(suggested.Build(original).Valid);
+        Assert.Null(suggested.Brightness); Assert.Equal(1, suggested.Gamma); Assert.Equal(0, suggested.Warmth); Assert.True(suggested.Build(original).Valid);
         Assert.Throws<ArgumentException>(() => DisplayRecommendations.Suggest(original with { AdvancedColor = true }, DisplayUse.Gaming, DisplayAmbient.Normal));
     }
-    [Fact] public void RecommendationBrightnessIsBoundedAndNotCumulative()
+    [Fact] public void RecommendationBrightnessMovesOnlyToTheNearestEdgeOfTheRoomBand()
     {
         var original = Original() with { Brightness = new(3, 0, 100) };
-        Assert.Equal(0, DisplayRecommendations.Suggest(original, DisplayUse.Everyday, DisplayAmbient.Dim).Brightness);
+        Assert.Equal(30, DisplayRecommendations.Suggest(original, DisplayUse.Everyday, DisplayAmbient.Dim).Brightness);
         original = original with { Brightness = new(99, 0, 100) };
-        Assert.Equal(100, DisplayRecommendations.Suggest(original, DisplayUse.Everyday, DisplayAmbient.Bright).Brightness);
+        Assert.Equal(99, DisplayRecommendations.Suggest(original, DisplayUse.Everyday, DisplayAmbient.Bright).Brightness);
+        Assert.Equal(45, DisplayRecommendations.Suggest(original, DisplayUse.Everyday, DisplayAmbient.Dim).Brightness);
+        foreach (var use in Enum.GetValues<DisplayUse>()) foreach (var ambient in Enum.GetValues<DisplayAmbient>())
+            Assert.True(DisplayRecommendations.Suggest(Original(), use, ambient).Valid);
     }
     [Fact] public void NeutralProfilePreservesEveryOriginalGammaEntry()
     {

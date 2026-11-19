@@ -3785,14 +3785,22 @@ Your games and Windows are not changed.</value></data>
 <data name="VsTileMissing" xml:space="preserve"><value>Unavailable</value></data>
 <data name="VsSuggestedTitle" xml:space="preserve"><value>Suggested starting point</value></data>
 <data name="VsStepOf" xml:space="preserve"><value>Step {0} of 4</value></data>
-<data name="VsCardEverydayHint" xml:space="preserve"><value>Keeps contrast and driver colors</value></data>
-<data name="VsCardGamingHint" xml:space="preserve"><value>Slightly more visible shadows, livelier colors</value></data>
-<data name="VsCardEditingHint" xml:space="preserve"><value>Neutral: leaves brightness and colors alone</value></data>
-<data name="VsCardMoviesHint" xml:space="preserve"><value>Natural contrast and colors preserved</value></data>
-<data name="VsAmbientNormalHint" xml:space="preserve"><value>Keeps current brightness</value></data>
-<data name="VsAmbientDimHint" xml:space="preserve"><value>Dark room: brightness 8 points lower</value></data>
-<data name="VsAmbientBrightHint" xml:space="preserve"><value>Bright room: brightness 5 points higher</value></data>
+<data name="VsCardEverydayHint" xml:space="preserve"><value>sRGB standard, neutral colors</value></data>
+<data name="VsCardGamingHint" xml:space="preserve"><value>Opened shadows, livelier colors</value></data>
+<data name="VsCardEditingHint" xml:space="preserve"><value>Neutral, low brightness, no boost</value></data>
+<data name="VsCardMoviesHint" xml:space="preserve"><value>Cinema gamma in the dark</value></data>
+<data name="VsAmbientNormalHint" xml:space="preserve"><value>Office brightness</value></data>
+<data name="VsAmbientDimHint" xml:space="preserve"><value>Less brightness for a dark room</value></data>
+<data name="VsAmbientBrightHint" xml:space="preserve"><value>More brightness, lighter midtones</value></data>
 <data name="VsFinish" xml:space="preserve"><value>Finish</value></data>
 <data name="VsSkipToEnd" xml:space="preserve"><value>Skip to the end</value></data>
 <data name="VsScreenError" xml:space="preserve"><value>This screen could not be refreshed. Nothing was applied to the monitor; use Refresh monitors.</value></data>
+<data name="VsTileWhite" xml:space="preserve"><value>White tone</value></data>
+<data name="VsWhiteNeutral" xml:space="preserve"><value>Neutral</value></data>
+<data name="VsWhiteWarm" xml:space="preserve"><value>Warm +{0}</value></data>
+<data name="VsWhiteCool" xml:space="preserve"><value>Cool −{0}</value></data>
+<data name="VsBasisEveryday" xml:space="preserve"><value>Reference: Windows sRGB (gamma 2.2, D65 white). Brightness moves into the room's band; in a dark room the white turns slightly warmer for comfort.</value></data>
+<data name="VsBasisGaming" xml:space="preserve"><value>Reference: gamma 2.2 with slightly opened shadows (like a monitor's Black Equalizer) and livelier colors. A bright room opens shadows more, because glare hides dark detail.</value></data>
+<data name="VsBasisMovies" xml:space="preserve"><value>Reference: BT.1886 cinema standard. In a dark room, gamma near 2.4 and low brightness; with lights on, back to 2.2. D65 white and driver colors, no boost.</value></data>
+<data name="VsBasisEditing" xml:space="preserve"><value>Reference: photo and video editing with D65 white, gamma 2.2, neutral color and low brightness (about 80–120 nits). Real accuracy needs a colorimeter and the monitor's ICC profile; Lotus does not measure.</value></data>
 </root>

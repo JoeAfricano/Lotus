@@ -259,7 +259,7 @@ public sealed class MonitorColorsPanel : UserControl
         suggestedHead.Children.Add(new TextBlock { Text = Text["VsSuggestedTitle"], Style = StyleOf("BodyStrongStyle"), VerticalAlignment = VerticalAlignment.Center });
         suggested.Children.Add(suggestedHead);
         suggestion.Style = StyleOf("CaptionStyle"); suggested.Children.Add(suggestion);
-        string[] valueKeys = ["VsTileBrightness", "VsTileContrast", "VsTileGamma", "VsTileIntensity"];
+        string[] valueKeys = ["VsTileBrightness", "VsTileWhite", "VsTileGamma", "VsTileIntensity"];
         var valueTiles = new List<FrameworkElement>();
         for (var i = 0; i < 4; i++)
         {
@@ -442,12 +442,14 @@ public sealed class MonitorColorsPanel : UserControl
     private void DescribeSuggestion()
     {
         var saturation = profile.Saturation ?? (Selected?.Vibrance is { } range ? range.Percent(range.Current) : (double?)null);
-        suggestion.Text = Text[usingSavedProfile ? "VsUsingSaved" : purposeIndex == (int)DisplayUse.Editing ? "VsSuggestEditing" : "VsSuggestPreference"];
-        string[] values = [profile.Brightness is { } br ? br.ToString("0") + "%" : "—", profile.Contrast is { } co ? co.ToString("0") + "%" : "—",
+        suggestion.Text = Text[usingSavedProfile ? "VsUsingSaved" : "VsBasis" + (DisplayUse)purposeIndex];
+        string White(double warmth) => warmth == 0 ? Text["VsWhiteNeutral"] :
+            Text.Format(warmth > 0 ? "VsWhiteWarm" : "VsWhiteCool", Math.Abs(warmth).ToString("0"));
+        string[] values = [profile.Brightness is { } br ? br.ToString("0") + "%" : "—", Selected?.Ramp is null ? "—" : White(profile.Warmth),
             profile.Gamma.ToString("0.00", System.Globalization.CultureInfo.CurrentCulture) + "×", saturation is { } sat ? sat.ToString("0") + "%" : "—"];
         // Each tile compares the suggestion with what the monitor shows now, so the two rows never read as duplicates.
         var state = Selected;
-        string[] now = [state?.Brightness is { } nb ? nb.Percent.ToString("0") + "%" : "—", state?.Contrast is { } nc ? nc.Percent.ToString("0") + "%" : "—",
+        string[] now = [state?.Brightness is { } nb ? nb.Percent.ToString("0") + "%" : "—", White(0),
             (1d).ToString("0.00", System.Globalization.CultureInfo.CurrentCulture) + "×", state?.Vibrance is { } nv ? nv.Percent(nv.Current).ToString("0") + "%" : "—"];
         for (var i = 0; i < suggestedValues.Length; i++)
         {
