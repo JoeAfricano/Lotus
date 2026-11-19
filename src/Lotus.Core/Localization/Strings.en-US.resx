@@ -3780,7 +3780,8 @@ Your games and Windows are not changed.</value></data>
 <data name="VsTileCurve" xml:space="preserve"><value>Color curve</value></data>
 <data name="VsTileGamma" xml:space="preserve"><value>Gamma</value></data>
 <data name="VsTileIntensity" xml:space="preserve"><value>Intensity</value></data>
-<data name="VsTileReady" xml:space="preserve"><value>Available</value></data>
+<data name="VsTileSame" xml:space="preserve"><value>Same as now</value></data>
+<data name="VsTileNow" xml:space="preserve"><value>Now: {0}</value></data>
 <data name="VsTileMissing" xml:space="preserve"><value>Unavailable</value></data>
 <data name="VsSuggestedTitle" xml:space="preserve"><value>Suggested starting point</value></data>
 <data name="VsStepOf" xml:space="preserve"><value>Step {0} of 4</value></data>

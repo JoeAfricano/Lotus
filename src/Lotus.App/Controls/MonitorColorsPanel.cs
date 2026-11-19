@@ -42,7 +42,7 @@ public sealed class MonitorColorsPanel : UserControl
     // Premium chrome: hero art, capability/suggestion tiles, step header and icon labels. Visual only.
     private readonly Image heroArt = new() { Stretch = Stretch.UniformToFill, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
     private readonly Border sceneHost = new(), missionHost = new(), clockChip = new();
-    private readonly TextBlock[] capabilityValues = new TextBlock[4], capabilityStates = new TextBlock[4], suggestedValues = new TextBlock[4];
+    private readonly TextBlock[] capabilityValues = new TextBlock[4], capabilityStates = new TextBlock[4], suggestedValues = new TextBlock[4], suggestedDeltas = new TextBlock[4];
     private readonly Border[] capabilityTiles = new Border[4];
     private readonly Dictionary<ToggleButton, (Border Badge, FontIcon Icon, TextBlock Title, TextBlock Hint)> choiceParts = [];
     private readonly FontIcon missionIcon = new() { FontSize = 20 }, keepIcon = new() { FontSize = 16 }, undoIcon = new() { FontSize = 16 };
@@ -222,7 +222,7 @@ public sealed class MonitorColorsPanel : UserControl
         // Monitor card: which screen, and what Lotus can actually control on it.
         var monitorCard = new StackPanel { Spacing = 14 };
         monitorCard.Children.Add(SectionHeader("\uE7F4", Text["VsMonitorTitle"], null));
-        monitors.Header = Text["McMonitor"]; monitorCard.Children.Add(monitors);
+        AutomationProperties.SetName(monitors, Text["McMonitor"]); monitorCard.Children.Add(monitors);
         string[] tileKeys = ["VsTileBrightness", "VsTileContrast", "VsTileCurve", "VsTileIntensity"];
         var tiles = new List<FrameworkElement>();
         for (var i = 0; i < 4; i++)
@@ -254,7 +254,11 @@ public sealed class MonitorColorsPanel : UserControl
         suggestion.Style = StyleOf("CaptionStyle"); suggested.Children.Add(suggestion);
         string[] valueKeys = ["VsTileBrightness", "VsTileContrast", "VsTileGamma", "VsTileIntensity"];
         var valueTiles = new List<FrameworkElement>();
-        for (var i = 0; i < 4; i++) { suggestedValues[i] = new TextBlock { Text = "—", Foreground = Brush("RoseBrush") }; valueTiles.Add(Tile(Text[valueKeys[i]], suggestedValues[i], null, out _)); }
+        for (var i = 0; i < 4; i++)
+        {
+            suggestedValues[i] = new TextBlock { Text = "—", Foreground = Brush("RoseBrush") }; suggestedDeltas[i] = new TextBlock();
+            valueTiles.Add(Tile(Text[valueKeys[i]], suggestedValues[i], suggestedDeltas[i], out _));
+        }
         suggested.Children.Add(TileRow(valueTiles));
         recommendations.Children.Add(new Border { Background = Brush("HeroBrush"), BorderBrush = Brush("CardBorderBrush"), BorderThickness = new(1), CornerRadius = new(16), Padding = new(16), Margin = new(0, 6, 0, 0), Child = suggested });
 
@@ -433,7 +437,16 @@ public sealed class MonitorColorsPanel : UserControl
         suggestion.Text = Text[usingSavedProfile ? "VsUsingSaved" : purposeIndex == (int)DisplayUse.Editing ? "VsSuggestEditing" : "VsSuggestPreference"];
         string[] values = [profile.Brightness is { } br ? br.ToString("0") + "%" : "—", profile.Contrast is { } co ? co.ToString("0") + "%" : "—",
             profile.Gamma.ToString("0.00", System.Globalization.CultureInfo.CurrentCulture) + "×", saturation is { } sat ? sat.ToString("0") + "%" : "—"];
-        for (var i = 0; i < suggestedValues.Length; i++) if (suggestedValues[i] is { } tile) tile.Text = values[i];
+        // Each tile compares the suggestion with what the monitor shows now, so the two rows never read as duplicates.
+        var state = Selected;
+        string[] now = [state?.Brightness is { } nb ? nb.Percent.ToString("0") + "%" : "—", state?.Contrast is { } nc ? nc.Percent.ToString("0") + "%" : "—",
+            (1d).ToString("0.00", System.Globalization.CultureInfo.CurrentCulture) + "×", state?.Vibrance is { } nv ? nv.Percent(nv.Current).ToString("0") + "%" : "—"];
+        for (var i = 0; i < suggestedValues.Length; i++)
+        {
+            if (suggestedValues[i] is not { } tile || suggestedDeltas[i] is not { } delta) continue;
+            tile.Text = values[i];
+            delta.Text = values[i] == "—" ? Text["VsTileMissing"] : values[i] == now[i] ? Text["VsTileSame"] : Text.Format("VsTileNow", now[i]);
+        }
         AutomationProperties.SetHelpText(suggestion, Text.Format("VsSuggestValues", profile.Brightness?.ToString("0") ?? "—", profile.Contrast?.ToString("0") ?? "—", profile.Gamma.ToString("0.00"), saturation?.ToString("0") ?? "—"));
     }
     private void RenderMission()
@@ -568,13 +581,14 @@ public sealed class MonitorColorsPanel : UserControl
         clockChip.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
         image.SetPhysicalPreview(active || physicalOperation);
         UpdateClues();
+        // The capability tiles already show brightness/contrast/curve; the caption only explains blocked monitors.
         detail.Text = Selected switch
         {
             { AdvancedColor: not false } => Text["McAdvancedColor"],
-            { CanAdjust: true } state => Text.Format("VsCapabilities", state.Brightness is null ? "—" : state.Brightness.Percent.ToString("0"),
-                state.Contrast is null ? "—" : state.Contrast.Percent.ToString("0"), Text[state.Ramp is null ? "VsGammaUnavailable" : "VsGammaReady"]),
+            { CanAdjust: true } => "",
             _ => Text["VsUnsupported"]
         };
+        detail.Visibility = string.IsNullOrEmpty(detail.Text) ? Visibility.Collapsed : Visibility.Visible;
         UpdateCapabilities();
         if (active) ticker.Start(); else ticker.Stop();
     }
@@ -593,8 +607,9 @@ public sealed class MonitorColorsPanel : UserControl
         {
             capabilityValues[i].Text = tiles[i].Value;
             capabilityValues[i].Foreground = Brush(tiles[i].Ready ? "MainTextBrush" : "MutedBrush");
-            capabilityStates[i].Text = Text[tiles[i].Ready ? "VsTileReady" : "VsTileMissing"];
-            capabilityStates[i].Foreground = Brush(tiles[i].Ready ? "SuccessBrush" : "MutedBrush");
+            // The value already says it is available; only call out what this monitor cannot do.
+            capabilityStates[i].Text = Text["VsTileMissing"];
+            capabilityStates[i].Visibility = tiles[i].Ready ? Visibility.Collapsed : Visibility.Visible;
             capabilityTiles[i].Opacity = tiles[i].Ready ? 1 : .7;
         }
     }
