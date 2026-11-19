@@ -9,7 +9,9 @@ public sealed class MinecraftRecipeTests : IDisposable
 {
     private readonly string root = Path.Combine(Path.GetTempPath(), "LotusMinecraft-" + Guid.NewGuid());
     private const string Options = "version:3955\r\nautoJump:false\r\nrenderDistance:14\r\nsimulationDistance:14\r\nentityDistanceScaling:1.0\r\nmaxFps:260\r\nenableVsync:true\r\nresourcePacks:[\"vanilla\",\"fabric\"]\r\nkey_key.attack:key.mouse.left\r\n";
-    private static SettingsRecommendation Rec(QualityTier tier, int cap) => new(tier, tier, Upscaler.None, UpscaleMode.Off, cap, cap, 145, []);
+    private static readonly GameFpsCurve Curve = new([300, 260, 220, 180], [200, 200, 190, 180], null, "measured");
+    private static SettingsRecommendation Rec(QualityTier tier, int cap, bool gameAware = true) =>
+        new(tier, tier, Upscaler.None, UpscaleMode.Off, cap, cap, 145, [], Game: gameAware ? Curve : null);
     private static readonly GameEntry Game = new("manual", "mc", "Minecraft");
 
     private string Profile(string name, string text, DateTime? when = null)
@@ -35,6 +37,10 @@ public sealed class MinecraftRecipeTests : IDisposable
         Assert.Contains("resourcePacks:[\"vanilla\",\"fabric\"]\r\n", medium);
         Assert.Contains("key_key.attack:key.mouse.left", medium);
         Assert.Equal(Options.Split("\r\n").Length, medium.Split("\r\n").Length);
+        // Generic guess (no curve for this game): only the FPS limit changes.
+        var generic = new ColonOptions(recipe.Transform(Options, Rec(QualityTier.Medium, 75, gameAware: false)));
+        Assert.Equal("14", generic.Get("renderDistance"));
+        Assert.Equal("75", generic.Get("maxFps"));
     }
 
     [Fact] public void StepMovesTwoChunksWithinLimits()

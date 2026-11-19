@@ -307,7 +307,8 @@ public sealed class NoRestForTheWickedRecipe(string registryPath = @"Software\Mo
 
 // Minecraft Java: options.txt ("key:value" per line) of the launcher profile played most recently (Modrinth, Prism, CurseForge
 // or the official .minecraft). Only maxFps, renderDistance and simulationDistance change. The first apply never raises the
-// view distance (it only trims it to the tier's ceiling); the measurement loop steps it 2 chunks at a time.
+// view distance (it only trims it to the tier's ceiling, and only with a game-aware recommendation); the measurement loop
+// steps it 2 chunks at a time.
 // Shaders, Sodium/Iris files and every other line stay untouched, because their format changes with each mod version.
 public sealed class MinecraftJavaRecipe(string? appData = null, string? userProfile = null) : IGameSettingsRecipe
 {
@@ -353,8 +354,13 @@ public sealed class MinecraftJavaRecipe(string? appData = null, string? userProf
     {
         var o = new ColonOptions(raw);
         o.Set("maxFps", Math.Clamp(r.FpsCap, 10, Unlimited).ToString());
-        var render = Math.Clamp(o.Int("renderDistance") ?? 12, MinDistance, MaxDistance);
-        Distances(o, Math.Min(render, Ceiling(r.Tier)));
+        // Without a measured curve the tier is a generic guess (Minecraft is light but CPU-bound), so the view distance only
+        // drops when the recommendation is game-aware; otherwise the measurement loop decides.
+        if (r.Game is not null)
+        {
+            var render = Math.Clamp(o.Int("renderDistance") ?? 12, MinDistance, MaxDistance);
+            Distances(o, Math.Min(render, Ceiling(r.Tier)));
+        }
         return o.ToString();
     }
     public string? StepQuality(string raw, int step)
