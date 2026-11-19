@@ -1170,6 +1170,9 @@ Condições atuais: {1}</value></data>
   <data name="SetStartWithWindowsHint" xml:space="preserve"><value>O Lotus abre minimizado perto do relógio quando você liga o PC.</value></data>
   <data name="SetCloseToTray" xml:space="preserve"><value>Ao fechar, deixar em segundo plano</value></data>
   <data name="SetCloseToTrayHint" xml:space="preserve"><value>O Lotus fica no ícone perto do relógio e o atalho **Ctrl + Shift + L** continua funcionando nos jogos. Para sair de vez, clique com o botão direito no ícone e escolha Sair.</value></data>
+  <data name="SetPlayIntro" xml:space="preserve"><value>Animação de abertura</value></data>
+  <data name="SetPlayIntroHint" xml:space="preserve"><value>A intro completa toca na primeira vez e depois de cada atualização; nas outras vezes, só um trecho curto. Clique ou Esc para pular.</value></data>
+  <data name="IntroSkip" xml:space="preserve"><value>Clique ou Esc para pular</value></data>
   <data name="SetUiSounds" xml:space="preserve"><value>Sons da interface</value></data>
   <data name="SetUiSoundsHint" xml:space="preserve"><value>Sons curtos e suaves ao concluir tarefas e navegar.</value></data>
   <data name="TrayOpen" xml:space="preserve"><value>Abrir o Lotus</value></data>

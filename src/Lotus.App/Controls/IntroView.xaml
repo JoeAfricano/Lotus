@@ -1,0 +1,8 @@
+<UserControl x:Class="Lotus.App.Controls.IntroView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Visibility="Collapsed" IsTabStop="True" AutomationProperties.AutomationId="opening-intro">
+ <!-- Opening intro: pre-rendered video (no WebView), letterboxed on the same plum it fades to. Click or Esc skips. -->
+ <Grid x:Name="Root" Background="#100D15" Tapped="OnSkip">
+  <MediaPlayerElement x:Name="Player" Stretch="Uniform" AreTransportControlsEnabled="False" AutoPlay="False" IsHitTestVisible="False"/>
+  <TextBlock x:Name="SkipHint" Opacity="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,28,22" FontSize="12" Foreground="#99F4C9D6" CharacterSpacing="40"/>
+ </Grid>
+</UserControl>

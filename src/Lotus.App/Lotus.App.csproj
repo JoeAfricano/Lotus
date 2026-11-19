@@ -37,6 +37,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0"/>
     <Content Include="Assets\Lotus.ico" CopyToOutputDirectory="PreserveNewest"/>
     <Content Include="Assets/ColorCalibration/*.png" CopyToOutputDirectory="PreserveNewest"/>
+    <Content Include="Assets/Intro/*.mp4" CopyToOutputDirectory="PreserveNewest"/>
     <Content Include="../../THIRD-PARTY-NOTICES.md" Link="THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="PreserveNewest"/>
     <ProjectReference Include="../Lotus.Core/Lotus.Core.csproj"/>
     <ProjectReference Include="../Lotus.Infrastructure/Lotus.Infrastructure.csproj"/>

@@ -1170,6 +1170,9 @@ Current conditions: {1}</value></data>
   <data name="SetStartWithWindowsHint" xml:space="preserve"><value>Lotus opens minimized next to the clock when you turn on the PC.</value></data>
   <data name="SetCloseToTray" xml:space="preserve"><value>Keep running when closed</value></data>
   <data name="SetCloseToTrayHint" xml:space="preserve"><value>Lotus stays as an icon next to the clock and the **Ctrl + Shift + L** shortcut keeps working in games. To quit for good, right-click the icon and choose Exit.</value></data>
+  <data name="SetPlayIntro" xml:space="preserve"><value>Opening animation</value></data>
+  <data name="SetPlayIntroHint" xml:space="preserve"><value>The full intro plays the first time and after each update; other times only a short cut. Click or press Esc to skip.</value></data>
+  <data name="IntroSkip" xml:space="preserve"><value>Click or press Esc to skip</value></data>
   <data name="SetUiSounds" xml:space="preserve"><value>Interface sounds</value></data>
   <data name="SetUiSoundsHint" xml:space="preserve"><value>Short, soft sounds when tasks finish and while navigating.</value></data>
   <data name="TrayOpen" xml:space="preserve"><value>Open Lotus</value></data>

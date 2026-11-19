@@ -201,11 +201,32 @@ public partial class App : Application
         };
         Log.Information("Application started {Version}", (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false).FirstOrDefault() as System.Reflection.AssemblyInformationalVersionAttribute)?.InformationalVersion.Split('+')[0] ?? "?");
         window.Activate();
+        StartIntro((MainWindow)window, preferences);
         StartPortsIntegration(window);
         var main = (MainWindow)window;
         new Thread(() => { while (showSignal.WaitOne()) main.DispatcherQueue.TryEnqueue(main.BringBack); }) { IsBackground = true, Name = "Lotus single instance" }.Start();
         // Started with Windows: go straight to the tray (the hotkey and background features keep working).
         if (Environment.GetCommandLineArgs().Contains(Lotus.Infrastructure.Setup.WindowsStartup.MinimizedArgument)) (window as MainWindow)?.HideToTray(firstTime: false);
+    }
+
+    // Opening intro (full on first run and after updates, short otherwise). Marked as seen when the full one starts,
+    // so a crash during it never makes it play again on every launch.
+    private static void StartIntro(MainWindow main, PreferencesService preferences)
+    {
+        try
+        {
+            var args = Environment.GetCommandLineArgs();
+            var version = (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false).FirstOrDefault() as System.Reflection.AssemblyInformationalVersionAttribute)?.InformationalVersion.Split('+')[0] ?? "";
+            var current = preferences.Current;
+            var kind = Lotus.Core.Brand.IntroPlan.Decide(current.PlayIntro, current.ReduceMotion, current.IntroSeenVersion, version,
+                args.Contains(Lotus.Infrastructure.Setup.WindowsStartup.MinimizedArgument), args.Contains("--restarted"), args.Contains("--dev-instance"),
+                args.Contains(Lotus.Core.Brand.IntroPlan.SkipArgument), args.Contains(Lotus.Core.Brand.IntroPlan.ForceArgument));
+            if (kind == Lotus.Core.Brand.IntroKind.None) return;
+            if (kind == Lotus.Core.Brand.IntroKind.Full) preferences.Update(current with { IntroSeenVersion = version });
+            var volume = current.UiSounds ? current.UiSoundVolume / 100.0 * 0.8 : 0;
+            main.Intro.Play(kind, Text["IntroSkip"], volume);
+        }
+        catch (Exception ex) { Log.Warning(ex, "Intro not started"); }
     }
 
     // Lotus Ports (sibling app): Lotus answers its questions on a local pipe (system checks, runtimes, recent changes,
