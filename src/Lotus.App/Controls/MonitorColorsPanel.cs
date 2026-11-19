@@ -22,6 +22,8 @@ public sealed class MonitorColorsPanel : UserControl
     private readonly StackPanel mission = new() { Spacing = 12 };
     private readonly StackPanel scene = new() { Spacing = 10 };
     private readonly Grid missionNav = new() { ColumnSpacing = 8, Margin = new(0, 6, 0, 0) };
+    private readonly Button finish = new();
+    private readonly HyperlinkButton skipToEnd = new() { HorizontalAlignment = HorizontalAlignment.Center };
     private readonly DisplayComparisonPreview image = new() { HorizontalAlignment = HorizontalAlignment.Stretch };
     private readonly TextBlock objective = new() { TextWrapping = TextWrapping.Wrap, FontSize = 20, FontWeight = FontWeights.SemiBold };
     private readonly TextBlock detail = new() { TextWrapping = TextWrapping.Wrap };
@@ -85,17 +87,24 @@ public sealed class MonitorColorsPanel : UserControl
             else { drafting = false; if (MainWindow.Shell is { } shell) shell.CalibrationDraftOpen = false; }
             UpdateStatus();
         };
-        keep.Click += async (_, _) =>
-        {
-            if (controller?.HasPreview != true) { await TestMonitorAsync(); return; }
-            requestedBefore = false;
-            if (showingOriginal || verifiedProfile != profile) await QueueImmediateAsync();
-            else { ++revision; await pending; }
-            if (controller?.HasPreview != true || controller.LastResult != MonitorColorResult.Preview) return;
-            await Act(() => controller!.Keep());
-            if (controller.LastResult == MonitorColorResult.Kept) { drafting = false; if (MainWindow.Shell is { } shell) shell.CalibrationDraftOpen = false; }
-            await ReloadAsync();
-        };
+        keep.Click += async (_, _) => await FinishAsync();
+        finish.Click += async (_, _) => await FinishAsync();
+        skipToEnd.Click += (_, _) => { completed[step] = true; step = 3; RenderMission(); };
+        WireControls();
+    }
+    private async Task FinishAsync()
+    {
+        if (controller?.HasPreview != true) { await TestMonitorAsync(); return; }
+        requestedBefore = false;
+        if (showingOriginal || verifiedProfile != profile) await QueueImmediateAsync();
+        else { ++revision; await pending; }
+        if (controller?.HasPreview != true || controller.LastResult != MonitorColorResult.Preview) return;
+        await Act(() => controller!.Keep());
+        if (controller.LastResult == MonitorColorResult.Kept) { drafting = false; if (MainWindow.Shell is { } shell) shell.CalibrationDraftOpen = false; }
+        await ReloadAsync();
+    }
+    private void WireControls()
+    {
         beforeButton.Click += (_, _) => RequestComparison(true);
         adjustedButton.Click += (_, _) => RequestComparison(false);
         restore.Click += async (_, _) => await RestoreAsync();
@@ -499,12 +508,18 @@ public sealed class MonitorColorsPanel : UserControl
             else mission.Children.Add(Caption(Text["VsReview"]));
             previous.Content = Text["VsPrevious"]; next.Content = Text["VsNext"]; previous.IsEnabled = step > 0; next.IsEnabled = step < 3;
             next.Visibility = step < 3 ? Visibility.Visible : Visibility.Collapsed;
+            // Last step: "Concluir" runs the same action as the main button below (test, then save).
+            finish.Visibility = step == 3 ? Visibility.Visible : Visibility.Collapsed;
+            finish.Content = Text["VsFinish"]; finish.Style = StyleOf("PrimaryButtonStyle"); finish.HorizontalAlignment = HorizontalAlignment.Stretch;
+            finish.IsEnabled = keep.IsEnabled; AutomationProperties.SetName(finish, Text["VsFinish"]);
+            skipToEnd.Content = Text["VsSkipToEnd"]; skipToEnd.Visibility = step < 3 ? Visibility.Visible : Visibility.Collapsed;
             if (missionNav.ColumnDefinitions.Count == 0) { missionNav.ColumnDefinitions.Add(new()); missionNav.ColumnDefinitions.Add(new()); }
             previous.HorizontalAlignment = next.HorizontalAlignment = HorizontalAlignment.Stretch;
             previous.Style = StyleOf("SoftButtonStyle"); next.Style = StyleOf("PrimaryButtonStyle");
             // On the last step only "Voltar" remains, spanning the row.
-            Grid.SetColumn(next, 1); Grid.SetColumnSpan(previous, step < 3 ? 1 : 2);
-            missionNav.Children.Add(previous); missionNav.Children.Add(next); mission.Children.Add(missionNav);
+            Grid.SetColumn(next, 1); Grid.SetColumn(finish, 1);
+            missionNav.Children.Add(previous); missionNav.Children.Add(next); missionNav.Children.Add(finish); mission.Children.Add(missionNav);
+            mission.Children.Add(skipToEnd);
             UpdateClues();
         }
         finally { rendering = false; }
@@ -569,7 +584,7 @@ public sealed class MonitorColorsPanel : UserControl
         keepLabel.Text = Text[active ? "VsKeep" : "VsTestMonitor"]; keepIcon.Glyph = active ? "\uE74E" : "\uE7F4";
         undoLabel.Text = Text[active ? "VsReturnDraft" : "VsUndo"]; undoIcon.Glyph = active ? "\uE7A7" : "\uE711";
         AutomationProperties.SetName(keep, keepLabel.Text); AutomationProperties.SetName(undo, undoLabel.Text);
-        keep.IsEnabled = !busy && !updating && (drafting || active);
+        keep.IsEnabled = finish.IsEnabled = !busy && !updating && (drafting || active);
         undo.IsEnabled = !busy && (drafting || active);
         beforeButton.Visibility = adjustedButton.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
         beforeButton.IsEnabled = adjustedButton.IsEnabled = active && !busy;

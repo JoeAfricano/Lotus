@@ -3792,4 +3792,6 @@ Your games and Windows are not changed.</value></data>
 <data name="VsAmbientNormalHint" xml:space="preserve"><value>Keeps current brightness</value></data>
 <data name="VsAmbientDimHint" xml:space="preserve"><value>Dark room: brightness 8 points lower</value></data>
 <data name="VsAmbientBrightHint" xml:space="preserve"><value>Bright room: brightness 5 points higher</value></data>
+<data name="VsFinish" xml:space="preserve"><value>Finish</value></data>
+<data name="VsSkipToEnd" xml:space="preserve"><value>Skip to the end</value></data>
 </root>

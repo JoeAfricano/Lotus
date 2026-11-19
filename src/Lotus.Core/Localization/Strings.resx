@@ -3792,4 +3792,6 @@ Seus jogos e o Windows não são alterados.</value></data>
 <data name="VsAmbientNormalHint" xml:space="preserve"><value>Mantém o brilho atual</value></data>
 <data name="VsAmbientDimHint" xml:space="preserve"><value>Quarto escuro: brilho 8 pontos menor</value></data>
 <data name="VsAmbientBrightHint" xml:space="preserve"><value>Muita luz: brilho 5 pontos maior</value></data>
+<data name="VsFinish" xml:space="preserve"><value>Concluir</value></data>
+<data name="VsSkipToEnd" xml:space="preserve"><value>Ir para o final</value></data>
 </root>
