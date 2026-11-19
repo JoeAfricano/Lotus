@@ -70,7 +70,9 @@ foreach (var (id, spyName) in list)
         if (line is { Length: > 0 }) { line = Regex.Replace(line, @"\s+", " "); unmatched[line] = unmatched.GetValueOrDefault(line) + 1; }
         continue;
     }
-    games.Add(new JsonObject { ["appId"] = id, ["name"] = name, ["gpu"] = d.GpuFps, ["cpu"] = d.CpuFps, ["ramGb"] = d.RamGb, ["basis"] = d.Basis });
+    // Very old recommended parts give huge numbers (thousands of FPS on a modern PC); past 1,000 they only mean "very
+    // light", and the game's own limit or the monitor decides anyway.
+    games.Add(new JsonObject { ["appId"] = id, ["name"] = name, ["gpu"] = Math.Min(d.GpuFps, 1000), ["cpu"] = Math.Min(d.CpuFps, 1000), ["ramGb"] = d.RamGb, ["basis"] = d.Basis });
     if (games.Count % 50 == 0) Console.WriteLine($"  {games.Count} prontos ({seen} vistos, {skipped} sem dados úteis)");
 }
 
