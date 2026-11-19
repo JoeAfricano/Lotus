@@ -579,6 +579,8 @@ public sealed class MonitorColorsPanel : UserControl
     private void UpdateStatus()
     {
         var active = controller?.HasPreview == true;
+        // The "local preview" notice belongs to the draft/preview only; leaving it must not leave the notice behind.
+        if (!drafting && !active && status.Message == Text["VsLocalOnly"]) status.IsOpen = false;
         monitors.IsEnabled = refresh.IsEnabled = !busy && !active && !drafting;
         start.IsEnabled = !busy && !active && Selected?.CanAdjust == true;
         chooser.Visibility = drafting || active ? Visibility.Collapsed : Visibility.Visible;
