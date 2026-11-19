@@ -111,4 +111,14 @@ public sealed class GameAwareSettingsTests
         Assert.True(r.Tier < QualityTier.Ultra);
         Assert.NotEqual(Upscaler.Dlss, r.Upscaler);
     }
+
+    [Fact] public void NoUpscalerSuggestedWhenTheScanFoundNone()
+    {
+        // Minecraft Java: scanned, no DLSS/FSR/XeSS files, not in the table → generic rule without an upscaler.
+        var none = new GameTech(Dlss: false, FrameGen: false, Fsr: false, Xess: false, Engine: null, MainExe: "javaw.exe");
+        var r = SettingsAdvisor.Recommend(Pc, "balanced", false, null, none);
+        Assert.Equal((Upscaler.None, UpscaleMode.Off), (r.Upscaler, r.Mode));
+        // Not scanned at all: the card's own upscaler, as before.
+        Assert.Equal(Upscaler.Dlss, SettingsAdvisor.Recommend(Pc, "balanced", false, null, GameTech.Unknown).Upscaler);
+    }
 }

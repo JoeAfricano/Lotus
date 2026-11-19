@@ -503,7 +503,17 @@ public sealed class LotusScoreViewModel(ICpuBenchmark cpu, IGpuBenchmark gpu, IS
     private readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> tuneMisses = new(StringComparer.OrdinalIgnoreCase); // asked Steam once this session
     private GameDemand? FindDemand(string name, string? steamAppId) =>
         tuneDemands.TryGetValue(name, out var known) ? known
-        : ScoreInsights.Games.FirstOrDefault(d => (steamAppId is not null && d.SteamAppId == steamAppId) || string.Equals(d.Name, name, StringComparison.OrdinalIgnoreCase));
+        : ScoreInsights.Games.FirstOrDefault(d => (steamAppId is not null && d.SteamAppId == steamAppId) || string.Equals(d.Name, name, StringComparison.OrdinalIgnoreCase))
+        ?? Related(name);
+    // A companion of a known game ("Black Myth: Wukong Benchmark Tool", "… Demo") uses that game's numbers: the longest
+    // table name that starts the library name and is followed only by such a word.
+    private static readonly string[] CompanionWords = ["benchmarktool", "benchmark", "demo", "playtest", "prologue"];
+    private static GameDemand? Related(string name)
+    {
+        var plain = Plain(name);
+        return ScoreInsights.Games.Where(d => Plain(d.Name) is { Length: >= 6 } p && plain.StartsWith(p, StringComparison.Ordinal) && CompanionWords.Contains(plain[p.Length..]))
+            .OrderByDescending(d => d.Name.Length).FirstOrDefault();
+    }
     private static string Plain(string s) => new([.. s.Where(char.IsLetterOrDigit).Select(char.ToLowerInvariant)]);
 
     private void BuildFps()

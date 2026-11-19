@@ -103,7 +103,11 @@ public static class SettingsAdvisor
     // goal (player profile): "balanced" = steady FPS at the monitor rate; "fps" = one quality level lower, higher cap;
     // "competitive" = two levels lower and the highest cap, for latency.
     // adaptiveSync: the player said FreeSync/G-Sync is on (asked before the analysis).
-    public static SettingsRecommendation Recommend(SystemProfile p, string goal = "balanced", bool adaptiveSync = false)
+    public static SettingsRecommendation Recommend(SystemProfile p, string goal = "balanced", bool adaptiveSync = false) => Generic(p, goal, adaptiveSync, null);
+
+    // tech: what a scan of the game's folder found. When it found no upscaler at all, none is suggested (Minecraft Java
+    // has no DLSS); GameTech.Unknown (nothing scanned) keeps the card's own upscaler, as before.
+    private static SettingsRecommendation Generic(SystemProfile p, string goal, bool adaptiveSync, GameTech? tech)
     {
         var reasons = new List<string>();
         var score = GpuScore.Estimate(p.GpuName, p.VramMb);
@@ -115,7 +119,8 @@ public static class SettingsAdvisor
 
         var mode = native >= 160 ? UpscaleMode.Off : native >= 110 ? UpscaleMode.Quality : native >= 70 ? UpscaleMode.Balanced : UpscaleMode.Performance;
         if (mode == UpscaleMode.Performance && p.Height <= 1080) mode = UpscaleMode.Balanced; // Performance mode is too blurry at 1080p and below
-        var upscaler = mode == UpscaleMode.Off ? Upscaler.None : PickUpscaler(p.GpuName, null);
+        if (PickUpscaler(p.GpuName, tech) == Upscaler.None) mode = UpscaleMode.Off;
+        var upscaler = mode == UpscaleMode.Off ? Upscaler.None : PickUpscaler(p.GpuName, tech);
         if (upscaler != Upscaler.None) reasons.Add(upscaler == Upscaler.Dlss ? "GsReasonDlss" : "GsReasonFsr");
         var effective = native * GameFpsCurve.UpscaleGain(mode);
         var tier = effective >= 160 ? QualityTier.Ultra : effective >= 110 ? QualityTier.High : effective >= 70 ? QualityTier.Medium : QualityTier.Low;
@@ -130,7 +135,7 @@ public static class SettingsAdvisor
     // looks and the game has no frame generation, the player may instead lock 60 FPS with better graphics (prefer60).
     public static SettingsRecommendation Recommend(SystemProfile p, string goal, bool adaptiveSync, GameFpsCurve? game, GameTech? tech = null, bool prefer60 = false)
     {
-        if (game is not { Valid: true }) return Recommend(p, goal, adaptiveSync);
+        if (game is not { Valid: true }) return Generic(p, goal, adaptiveSync, tech);
         var reasons = new List<string> { "GsReasonGameAware" };
         var score = GpuScore.Estimate(p.GpuName, p.VramMb);
         var refresh = Refresh(p);
@@ -185,12 +190,13 @@ public static class SettingsAdvisor
     // The real refresh rate of the player's monitor (60 when Windows does not report it); 165, 240 Hz and up are kept.
     private static int Refresh(SystemProfile p) => Math.Clamp(p.RefreshHz <= 0 ? 60 : p.RefreshHz, 50, 500);
 
-    // Upscaler: the one the game ships that fits the card; with nothing detected (FSR is often built in), the card's own.
+    // Upscaler: the one the game ships that fits the card; none when a scan found none; the card's own when not scanned.
     private static Upscaler PickUpscaler(string gpuName, GameTech? tech)
     {
         var rtx = gpuName.Contains("RTX", StringComparison.OrdinalIgnoreCase);
         var arc = gpuName.Contains("Arc", StringComparison.OrdinalIgnoreCase);
-        if (tech is not { AnyUpscaler: true } t) return rtx ? Upscaler.Dlss : arc ? Upscaler.Xess : Upscaler.Fsr;
+        if (tech is null || ReferenceEquals(tech, GameTech.Unknown)) return rtx ? Upscaler.Dlss : arc ? Upscaler.Xess : Upscaler.Fsr;
+        var t = tech;
         return t.Dlss && rtx ? Upscaler.Dlss : t.Xess && arc ? Upscaler.Xess : t.Fsr ? Upscaler.Fsr : t.Xess ? Upscaler.Xess : Upscaler.None;
     }
 
