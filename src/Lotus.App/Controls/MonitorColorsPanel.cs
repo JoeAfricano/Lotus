@@ -684,7 +684,9 @@ public sealed class MonitorColorsPanel : UserControl
     }
     private async Task TestMonitorAsync()
     {
-        if (controller is null || Selected is not { } state || !await Confirm(Text["VsTestMonitor"], Text["VsConfirm"])) return;
+        // No dialog: like a Windows resolution change, the look is applied at once and asks "Keep?" with a short
+        // automatic revert, so an unreadable result fixes itself.
+        if (controller is null || Selected is not { } state) return;
         var chosen = profile;
         // One explicit physical transaction after the local draft, never while dragging a slider.
         await Act(() =>

@@ -114,6 +114,8 @@ public sealed class DisplayCalibrationController : IDisposable
     private bool healthy = true, disposed;
     private DateTimeOffset sessionEnd;
     public DateTimeOffset? PreviewUntil { get; private set; }
+    // How long an applied look waits for "Keep" before reverting by itself (each change restarts it).
+    public TimeSpan PreviewWindow { get; init; } = TimeSpan.FromMinutes(2);
     public MonitorColorResult LastResult { get; private set; } = MonitorColorResult.NoChange;
     public event EventHandler? Changed;
     public bool HasPreview => Volatile.Read(ref publishedEntries).Any(e => e.Preview);
@@ -175,7 +177,7 @@ public sealed class DisplayCalibrationController : IDisposable
     private void Arm()
     {
         timer?.Dispose(); var revision = ++timerRevision;
-        PreviewUntil = now().AddMinutes(2);
+        PreviewUntil = now() + PreviewWindow;
         if (PreviewUntil > sessionEnd) PreviewUntil = sessionEnd;
         var delay = PreviewUntil.Value - now();
         timer = schedule(delay > TimeSpan.Zero ? delay : TimeSpan.Zero, () =>

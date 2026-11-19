@@ -3669,7 +3669,7 @@ Seus jogos e o Windows não são alterados.</value></data>
 <data name="McPatternsHint" xml:space="preserve"><value>Observe os tons de pele ilustrativos, as cores, os degradês e os detalhes nas sombras e luzes. Escolha o visual que preferir sem exagerar na intensidade. Arraste o Lotus para o monitor selecionado. Estes padrões ajudam a comparar; não medem a precisão de cor.</value></data>
 <data name="VsBadge" xml:space="preserve"><value>BÔNUS EXPERIMENTAL · SUA IMAGEM, SEU ESTILO</value></data>
 <data name="VsTitle" xml:space="preserve"><value>Estúdio visual Lotus</value></data>
-<data name="VsIntro" xml:space="preserve"><value>Escolha uma sugestão, compare na imagem e só depois teste no monitor inteiro.</value></data>
+<data name="VsIntro" xml:space="preserve"><value>Escolha uma sugestão, compare na imagem e aplique no monitor quando estiver pronto.</value></data>
 <data name="VsStep0" xml:space="preserve"><value>Sombras</value></data>
 <data name="VsStep1" xml:space="preserve"><value>Luzes</value></data>
 <data name="VsStep2" xml:space="preserve"><value>Cores</value></data>
@@ -3683,9 +3683,9 @@ Seus jogos e o Windows não são alterados.</value></data>
 <data name="VsHint2" xml:space="preserve"><value>Observe o linho, a cerâmica e a pele. Evite uma imagem azulada, amarelada ou esverdeada demais.</value></data>
 <data name="VsHint3" xml:space="preserve"><value>Compare o antes e o depois na cena. Seu gosto decide; as etapas não são uma medição de precisão.</value></data>
 <data name="VsArtNote" xml:space="preserve"><value>Cena medieval gerada por IA para comparação visual. Os símbolos de teste são gerados por código.</value></data>
-<data name="VsReview" xml:space="preserve"><value>Arraste a linha para comparar. Se gostar, clique em Testar no monitor inteiro; depois confirme em Salvar este visual. Para refinar, volte às etapas acima.</value></data>
+<data name="VsReview" xml:space="preserve"><value>Arraste a linha para comparar. Se gostar, clique em Concluir: as cores vão para o monitor e você confirma em Manter estas cores. Para refinar, volte às etapas acima.</value></data>
 <data name="VsStart" xml:space="preserve"><value>Abrir prévia da sugestão</value></data>
-<data name="VsKeep" xml:space="preserve"><value>Salvar este visual</value></data>
+<data name="VsKeep" xml:space="preserve"><value>Manter estas cores</value></data>
 <data name="VsUndo" xml:space="preserve"><value>Desfazer e voltar à escolha</value></data>
 <data name="VsCompare" xml:space="preserve"><value>Ver antes · comparação no monitor inteiro</value></data>
 <data name="VsRestore" xml:space="preserve"><value>Restaurar tudo antes do Lotus</value></data>
@@ -3705,7 +3705,7 @@ Seus jogos e o Windows não são alterados.</value></data>
 <data name="VsWarmth" xml:space="preserve"><value>Temperatura · frio ↔ quente</value></data>
 <data name="VsTint" xml:space="preserve"><value>Matiz · magenta ↔ verde</value></data>
 <data name="VsUnavailable" xml:space="preserve"><value>Controle indisponível nesta conexão. O valor atual será preservado.</value></data>
-<data name="VsCountdown" xml:space="preserve"><value>Teste ativo, mesmo minimizado · reversão em {0} s sem alterações. Salve para manter. Limite total: 10 min.</value></data>
+<data name="VsCountdown" xml:space="preserve"><value>Manter estas cores? Volta sozinho em {0} s.</value></data>
 <data name="VsInactive" xml:space="preserve"><value>Abra a prévia para comparar antes de aplicar no monitor.</value></data>
 <data name="VsCapabilities" xml:space="preserve"><value>Brilho físico: {0}% · contraste físico: {1}% · {2}</value></data>
 <data name="VsGammaReady" xml:space="preserve"><value>curva SDR disponível</value></data>
@@ -3714,9 +3714,9 @@ Seus jogos e o Windows não são alterados.</value></data>
 <data name="VsContinue" xml:space="preserve"><value>Ativar prévia</value></data>
 <data name="VsConfirm" xml:space="preserve"><value>Agora a prévia será aplicada ao monitor inteiro, incluindo intensidade das cores quando compatível. Os controles ficam bloqueados durante o teste físico. Confirme para salvar ou desfaça para voltar à prévia. Sem confirmação, reverte após 2 minutos sem alterações (limite total de 10 minutos). Testar agora?</value></data>
 <data name="VsRestoreConfirm" xml:space="preserve"><value>Restaurar brilho, contraste e curva de cor guardados antes do primeiro ajuste deste estúdio? As configurações externas atuais serão substituídas após uma nova conferência.</value></data>
-<data name="VsResultPreview" xml:space="preserve"><value>Prévia ativa. Alterações enviadas e conferidas; continue ajustando ou confirme.</value></data>
+<data name="VsResultPreview" xml:space="preserve"><value>Cores aplicadas e conferidas. Confirme em Manter estas cores.</value></data>
 <data name="VsResultKept" xml:space="preserve"><value>Ajuste confirmado. O backup anterior continua disponível para restaurar.</value></data>
-<data name="VsResultRestored" xml:space="preserve"><value>Teste desfeito e valores anteriores conferidos.</value></data>
+<data name="VsResultRestored" xml:space="preserve"><value>Desfeito. Valores anteriores conferidos.</value></data>
 <data name="VsResultNoChange" xml:space="preserve"><value>Nenhuma alteração pendente.</value></data>
 <data name="VsResultUnsupported" xml:space="preserve"><value>Este ajuste não é compatível com os controles confirmados do monitor.</value></data>
 <data name="VsResultAdvancedColor" xml:space="preserve"><value>Prévia suspensa por HDR ou gerenciamento avançado. Um backup pendente será preservado.</value></data>
@@ -3746,20 +3746,20 @@ Seus jogos e o Windows não são alterados.</value></data>
 <data name="VsCardEditing" xml:space="preserve"><value>Edição</value></data>
 <data name="VsCardMovies" xml:space="preserve"><value>Filmes</value></data>
 <data name="VsRefineTitle" xml:space="preserve"><value>Monte seu visual na prévia</value></data>
-<data name="VsRefineHint" xml:space="preserve"><value>Passe pelas cenas, mova os controles e arraste a divisória. Nada é aplicado ao monitor até você testar.</value></data>
+<data name="VsRefineHint" xml:space="preserve"><value>Passe pelas cenas, mova os controles e arraste a divisória. Nada é aplicado ao monitor até você concluir.</value></data>
 <data name="VsBeforeButton" xml:space="preserve"><value>Ver original</value></data>
 <data name="VsAdjustedButton" xml:space="preserve"><value>Ver com ajuste</value></data>
 <data name="VsApplyingOriginal" xml:space="preserve"><value>Preparando a imagem original… Aguarde a confirmação abaixo.</value></data>
 <data name="VsShowingOriginal" xml:space="preserve"><value>ORIGINAL EM EXIBIÇÃO · Valores anteriores conferidos. Clique em Ver com ajuste para comparar.</value></data>
-<data name="VsShowingAdjusted" xml:space="preserve"><value>AJUSTE EM EXIBIÇÃO · Valores conferidos no monitor/driver. Refine ou salve este visual.</value></data>
+<data name="VsShowingAdjusted" xml:space="preserve"><value>Cores aplicadas ao monitor inteiro. Se gostou, clique em Manter estas cores; se não, Desfazer ou espere a volta automática.</value></data>
 <data name="VsShowingUnchanged" xml:space="preserve"><value>Sua sugestão preserva os valores originais. Você pode refiná-la nas cenas abaixo.</value></data>
 <data name="VsSplitBefore" xml:space="preserve"><value>Antes</value></data>
 <data name="VsSplitAfter" xml:space="preserve"><value>Depois · prévia</value></data>
 <data name="VsSplitHelp" xml:space="preserve"><value>Arraste a linha para comparar antes e depois</value></data>
-<data name="VsLocalOnly" xml:space="preserve"><value>PRÉVIA LOCAL · Só a imagem muda. O monitor permanece como está até você clicar em Testar no monitor.</value></data>
+<data name="VsLocalOnly" xml:space="preserve"><value>PRÉVIA LOCAL · Só a imagem muda. O monitor fica como está até você clicar em Aplicar no monitor.</value></data>
 <data name="VsLocalLimits" xml:space="preserve"><value>Arraste a linha para comparar. Simulação visual SDR: brilho físico e Digital Vibrance podem diferir no monitor real. As cenas são ilustrativas, não referências medidas.</value></data>
-<data name="VsTestMonitor" xml:space="preserve"><value>Testar no monitor inteiro</value></data>
-<data name="VsReturnDraft" xml:space="preserve"><value>Desfazer teste e voltar à prévia</value></data>
+<data name="VsTestMonitor" xml:space="preserve"><value>Aplicar no monitor</value></data>
+<data name="VsReturnDraft" xml:space="preserve"><value>Desfazer</value></data>
 <data name="VsSaturation" xml:space="preserve"><value>Intensidade das cores · Digital Vibrance</value></data>
 <data name="VsBrightnessHelp" xml:space="preserve"><value>Muda a luz emitida pela tela. Mais alto ilumina a imagem inteira; a prévia só aproxima esse efeito.</value></data>
 <data name="VsDigitalBrightnessHelp" xml:space="preserve"><value>Clareia ou escurece os pixels, sem controlar a iluminação física do monitor.</value></data>
@@ -3773,7 +3773,7 @@ Seus jogos e o Windows não são alterados.</value></data>
 <data name="VsDetecting" xml:space="preserve"><value>Lendo os recursos do monitor… Nenhum ajuste está sendo aplicado.</value></data>
 <data name="VsChipLocal" xml:space="preserve"><value>Prévia local primeiro</value></data>
 <data name="VsChipSafe" xml:space="preserve"><value>Backup e desfazer</value></data>
-<data name="VsChipTimer" xml:space="preserve"><value>Teste de 2 min com volta automática</value></data>
+<data name="VsChipTimer" xml:space="preserve"><value>Volta sozinho em 15 s</value></data>
 <data name="VsMonitorTitle" xml:space="preserve"><value>Seu monitor</value></data>
 <data name="VsTileBrightness" xml:space="preserve"><value>Brilho</value></data>
 <data name="VsTileContrast" xml:space="preserve"><value>Contraste</value></data>
