@@ -3794,4 +3794,5 @@ Seus jogos e o Windows não são alterados.</value></data>
 <data name="VsAmbientBrightHint" xml:space="preserve"><value>Muita luz: brilho 5 pontos maior</value></data>
 <data name="VsFinish" xml:space="preserve"><value>Concluir</value></data>
 <data name="VsSkipToEnd" xml:space="preserve"><value>Ir para o final</value></data>
+<data name="VsScreenError" xml:space="preserve"><value>Não foi possível atualizar esta tela. Nada foi aplicado ao monitor; use Verificar monitores.</value></data>
 </root>

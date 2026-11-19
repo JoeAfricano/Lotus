@@ -46,8 +46,8 @@ public sealed class MonitorColorsPanel : UserControl
     private readonly TextBlock[] capabilityValues = new TextBlock[4], capabilityStates = new TextBlock[4], suggestedValues = new TextBlock[4], suggestedDeltas = new TextBlock[4];
     private readonly Border[] capabilityTiles = new Border[4];
     private readonly Dictionary<ToggleButton, (Border Badge, FontIcon Icon, TextBlock Title, TextBlock Hint)> choiceParts = [];
-    private readonly FontIcon missionIcon = new() { FontSize = 20 }, keepIcon = new() { FontSize = 16 }, undoIcon = new() { FontSize = 16 };
-    private readonly TextBlock missionEyebrow = new(), keepLabel = new() { TextWrapping = TextWrapping.Wrap }, undoLabel = new() { TextWrapping = TextWrapping.Wrap };
+    private readonly FontIcon keepIcon = new() { FontSize = 16 }, undoIcon = new() { FontSize = 16 };
+    private readonly TextBlock keepLabel = new() { TextWrapping = TextWrapping.Wrap }, undoLabel = new() { TextWrapping = TextWrapping.Wrap };
     private int heroLoad;
     private readonly List<Grid> tileRows = [];
     private readonly bool[] completed = new bool[4];
@@ -128,7 +128,7 @@ public sealed class MonitorColorsPanel : UserControl
             await ReloadAsync();
             if (controller.LastResult != MonitorColorResult.NoChange) Show(controller.LastResult);
         }
-        catch (Exception ex) { Serilog.Log.Warning(ex, "Display studio load"); Show(MonitorColorResult.DriverError); }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Display studio load"); ShowScreenError(); }
     }
     private static Style StyleOf(string key) => (Style)Application.Current.Resources[key];
     private readonly Brush OnArt = new SolidColorBrush(Color.FromArgb(255, 248, 240, 243));
@@ -410,7 +410,7 @@ public sealed class MonitorColorsPanel : UserControl
             monitors.SelectedItem = values.FirstOrDefault(s => s.Identity == id) ?? values.FirstOrDefault(s => s.CanAdjust) ?? values.FirstOrDefault();
             rendering = false; LoadSelection();
         }
-        catch (Exception ex) { Serilog.Log.Warning(ex, "Display studio refresh"); Show(MonitorColorResult.DriverError); }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Display studio refresh"); ShowScreenError(); }
         finally { rendering = false; busy = false; UpdateStatus(); }
     }
     private void LoadSelection()
@@ -647,17 +647,12 @@ public sealed class MonitorColorsPanel : UserControl
     }
     private FrameworkElement MissionHeader()
     {
-        missionIcon.Glyph = step switch { 0 => "\uE708", 1 => "\uE706", 2 => "\uE790", _ => "\uE73E" };
-        missionIcon.Foreground = Brush("RoseBrush");
-        missionIcon.HorizontalAlignment = HorizontalAlignment.Center; missionIcon.VerticalAlignment = VerticalAlignment.Center;
-        missionEyebrow.Text = Text.Format("VsStepOf", step + 1).ToUpperInvariant(); missionEyebrow.Style = StyleOf("EyebrowStyle");
-        missionEyebrow.VerticalAlignment = VerticalAlignment.Center;
-        // Reused elements must leave their previous parent before joining the new header row.
-        if (missionIcon.Parent is Border previousBadge) previousBadge.Child = null;
-        if (missionEyebrow.Parent is Panel previousRow) previousRow.Children.Remove(missionEyebrow);
+        // Fresh elements every render: re-parenting a cached icon throws "Value does not fall within the expected range".
+        var icon = new FontIcon { FontSize = 20, Foreground = Brush("RoseBrush"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center,
+            Glyph = step switch { 0 => "\uE708", 1 => "\uE706", 2 => "\uE790", _ => "\uE73E" } };
         var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12 };
-        row.Children.Add(new Border { Width = 40, Height = 40, CornerRadius = new(20), Background = Brush("AccentSoftBrush"), Child = missionIcon });
-        row.Children.Add(missionEyebrow);
+        row.Children.Add(new Border { Width = 40, Height = 40, CornerRadius = new(20), Background = Brush("AccentSoftBrush"), Child = icon });
+        row.Children.Add(new TextBlock { Text = Text.Format("VsStepOf", step + 1).ToUpperInvariant(), Style = StyleOf("EyebrowStyle"), VerticalAlignment = VerticalAlignment.Center });
         return row;
     }
     private async Task<bool> Confirm(string title, string message)
@@ -747,6 +742,11 @@ public sealed class MonitorColorsPanel : UserControl
         var current = await Task.Run(() => MainWindow.Shell!.CalibrationDriver.Read(selected.Identity));
         if (current is not null) await Act(() => controller.Restore(current));
         await ReloadAsync(); RenderMission();
+    }
+    // Loading and refreshing only read the monitor; a failure there must not claim the monitor rejected a change.
+    private void ShowScreenError()
+    {
+        status.IsOpen = true; status.Severity = InfoBarSeverity.Warning; status.Message = Text["VsScreenError"];
     }
     private void Show(MonitorColorResult result)
     {

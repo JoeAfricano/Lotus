@@ -3794,4 +3794,5 @@ Your games and Windows are not changed.</value></data>
 <data name="VsAmbientBrightHint" xml:space="preserve"><value>Bright room: brightness 5 points higher</value></data>
 <data name="VsFinish" xml:space="preserve"><value>Finish</value></data>
 <data name="VsSkipToEnd" xml:space="preserve"><value>Skip to the end</value></data>
+<data name="VsScreenError" xml:space="preserve"><value>This screen could not be refreshed. Nothing was applied to the monitor; use Refresh monitors.</value></data>
 </root>
