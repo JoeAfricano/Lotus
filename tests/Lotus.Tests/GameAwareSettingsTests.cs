@@ -82,4 +82,30 @@ public sealed class GameAwareSettingsTests
         var competitive = SettingsAdvisor.Recommend(Pc, "competitive", false, Curve("Counter-Strike 2"));
         Assert.Equal(balanced.Tier - 2, competitive.Tier);
     }
+
+    [Fact] public void HoldingTheRateLowersGraphicsAndSixtyIsTheOptionalChoice()
+    {
+        var pc = Pc with { Width = 2560, Height = 1440, ExactRefreshHz = 0 };
+        var curve = Curve("Cyberpunk 2077", Resolution.P1440);
+        var rate = SettingsAdvisor.Recommend(pc, "balanced", false, curve);
+        Assert.Equal(75, rate.TargetFps);
+        Assert.True(rate.CanPrefer60);
+        Assert.False(rate.Prefer60);
+        var sixty = SettingsAdvisor.Recommend(pc, "balanced", false, curve, prefer60: true);
+        Assert.Equal((60, 60, true), (sixty.TargetFps, sixty.FpsCap, sixty.Prefer60));
+        Assert.True(sixty.Tier > rate.Tier || sixty.Mode < rate.Mode);
+        Assert.Contains("GsReasonPrefer60", sixty.ReasonKeys);
+        // A game with frame generation: the generator is the better way, so 60 is not offered.
+        var fg = new GameTech(Dlss: true, FrameGen: true, Fsr: false, Xess: false, Engine: null);
+        Assert.False(SettingsAdvisor.Recommend(pc, "balanced", false, curve, fg, prefer60: true).Prefer60);
+    }
+
+    [Fact] public void HeavyGameOnMidCardLowersGraphicsBeforeHalvingTheRate()
+    {
+        // GTX 1660 Super class in Cyberpunk at 1080p 75 Hz: Low/Medium reach 75, so no 37.5 lock.
+        var r = SettingsAdvisor.Recommend(Pc with { GpuName = "NVIDIA GeForce GTX 1660 Super", VramMb = 6144 }, "balanced", false, Curve("Cyberpunk 2077", gpu: 6000));
+        Assert.Equal(75, r.TargetFps);
+        Assert.True(r.Tier < QualityTier.Ultra);
+        Assert.NotEqual(Upscaler.Dlss, r.Upscaler);
+    }
 }

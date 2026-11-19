@@ -3814,4 +3814,8 @@ Your games and Windows are not changed.</value></data>
   <data name="GsBasisRequirements" xml:space="preserve"><value>Steam recommended requirements</value></data>
   <data name="TuneGameLine" xml:space="preserve"><value>With these settings this game should run at about {0} FPS on your PC. Estimate: {1}.</value></data>
   <data name="GsReasonTargetLower" xml:space="preserve"><value>Target below the monitor rate, at an exact fraction of it (or what the PC holds with FreeSync/G-Sync): a steady image instead of swings.</value></data>
+  <data name="GsReasonPrefer60" xml:space="preserve"><value>You chose to lock this game at 60 FPS with better graphics.</value></data>
+  <data name="Gs60Choice" xml:space="preserve"><value>Lock 60 FPS with better graphics</value></data>
+  <data name="Gs60ChoiceHint" xml:space="preserve"><value>By default Lotus lowers graphics to keep up with the monitor rate. At 60 the image looks better; without FreeSync/G-Sync a frame repeats now and then and motion may judder a little.</value></data>
+  <data name="Gs60ChoiceHintVrr" xml:space="preserve"><value>By default Lotus lowers graphics to keep up with the monitor rate. At 60 with FreeSync/G-Sync the image looks better and stays smooth.</value></data>
 </root>

@@ -304,8 +304,10 @@ public sealed partial class GamesViewModel : ObservableObject
     {
         GameFpsCurve? curve = null;
         if (Curve is not null) try { curve = await Curve(game, p); } catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
-        return SettingsAdvisor.Recommend(p, Goal?.Invoke() ?? "balanced", AdaptiveSync?.Invoke() == "on", curve, tech);
+        return SettingsAdvisor.Recommend(p, Goal?.Invoke() ?? "balanced", AdaptiveSync?.Invoke() == "on", curve, tech, PrefsFor(game).Prefer60);
     }
+    // "Cravar em 60 com gráficos melhores" (only offered when it really looks better and the game has no frame generation).
+    public bool SetPrefer60(GameEntry game, bool on) => PlayPrefs is { } book && book.Set(game.Key, PrefsFor(game) with { Prefer60 = on });
 
     public async Task<GameSettingsAnalysis?> AnalyzeSettingsAsync(GameEntry game, GameTech? tech = null)
     {

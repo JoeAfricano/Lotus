@@ -120,7 +120,16 @@ public sealed partial class GameTunePanel : UserControl
         var scoreText = new TextBlock { Text = t.ScoreLine ?? t.ScoreHint ?? text["TuneScoreHint"], FontSize = 13.5, FontWeight = t.ScoreLine is null ? Microsoft.UI.Text.FontWeights.Normal : Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap };
         Grid.SetColumn(scoreText, 1); line.Children.Add(scoreText);
         score.Child = line;
-        var hwPanel = new StackPanel { Spacing = 8 }; hwPanel.Children.Add(score); hwPanel.Children.Add(Caption(t.Settings.Hardware));
+        var hwPanel = new StackPanel { Spacing = 8 }; hwPanel.Children.Add(score);
+        // The player's call when holding the monitor rate costs looks: lock 60 FPS with better graphics instead.
+        if (r.CanPrefer60 && card is { } c60)
+        {
+            var lock60 = new CheckBox { Content = text["Gs60Choice"], IsChecked = r.Prefer60 };
+            AutomationProperties.SetAutomationId(lock60, "tune-prefer-60");
+            lock60.Click += async (_, _) => { lock60.IsEnabled = false; vm.SetPrefer60(c60.Game, lock60.IsChecked == true); await Reload(); };
+            hwPanel.Children.Add(lock60); hwPanel.Children.Add(Caption(text[r.AdaptiveSync ? "Gs60ChoiceHintVrr" : "Gs60ChoiceHint"]));
+        }
+        hwPanel.Children.Add(Caption(t.Settings.Hardware));
         // The FreeSync/G-Sync answer the settings are based on, with a way to change it.
         var sync = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
         var noVrr = vm!.MonitorSync() is { Source: "nvapi", VrrPossible: false };

@@ -3814,4 +3814,8 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GsBasisRequirements" xml:space="preserve"><value>requisitos recomendados da Steam</value></data>
   <data name="TuneGameLine" xml:space="preserve"><value>Com estes ajustes, este jogo deve rodar a cerca de {0} FPS no seu PC. Estimativa: {1}.</value></data>
   <data name="GsReasonTargetLower" xml:space="preserve"><value>Meta abaixo da taxa do monitor, numa fração exata dela (ou no que o PC sustenta com FreeSync/G-Sync): imagem estável em vez de oscilar.</value></data>
+  <data name="GsReasonPrefer60" xml:space="preserve"><value>Você escolheu cravar em 60 FPS com gráficos melhores neste jogo.</value></data>
+  <data name="Gs60Choice" xml:space="preserve"><value>Cravar em 60 FPS com gráficos melhores</value></data>
+  <data name="Gs60ChoiceHint" xml:space="preserve"><value>Por padrão o Lotus baixa os gráficos para acompanhar a taxa do monitor. Em 60 a imagem fica mais bonita; sem FreeSync/G-Sync, um quadro se repete de vez em quando e o movimento pode tremer um pouco.</value></data>
+  <data name="Gs60ChoiceHintVrr" xml:space="preserve"><value>Por padrão o Lotus baixa os gráficos para acompanhar a taxa do monitor. Em 60, com FreeSync/G-Sync, a imagem fica mais bonita e continua fluida.</value></data>
 </root>
