@@ -2,6 +2,17 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 1.8.1-alpha "Lotus" (18/11/2026)
+
+### Melhorado
+- **Estúdio visual do monitor redesenhado.** Cabeçalho com imagem, cartões do monitor, sugestões por uso e iluminação com brilho, tom do branco, gama e intensidade.
+- **Prévia da imagem mais realista.**
+- **Botão Concluir** e **"Aplicar no monitor"** com confirmação "Manter?" de 15 segundos: se você não confirmar, o monitor volta sozinho ao que estava.
+
+### Corrigido
+- Erro de driver (DriverError) ao aplicar ajustes: agora há espera entre as escritas e novas tentativas.
+- Removido o teste de 2 minutos no monitor inteiro.
+
 ## 1.8.0-alpha "Lotus" (16/11/2026)
 
 ### Novo
