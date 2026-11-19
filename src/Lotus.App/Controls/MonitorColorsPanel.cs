@@ -730,7 +730,13 @@ public sealed class MonitorColorsPanel : UserControl
     {
         var shell = MainWindow.Shell; shell?.BeginCalibrationWork();
         await operations.WaitAsync(); busy = physicalOperation = true; UpdateStatus();
-        try { Show(await Task.Run(action)); RevealStatus(); }
+        try
+        {
+            var result = await Task.Run(action);
+            // Every physical step leaves a trace, so a refused test can be explained from the log.
+            Serilog.Log.Information("Display studio physical step result {Result}", result);
+            Show(result); RevealStatus();
+        }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Display calibration action"); Show(MonitorColorResult.DriverError); }
         finally { busy = physicalOperation = false; operations.Release(); shell?.EndCalibrationWork(); if (IsLoaded) UpdateStatus(); }
     }
