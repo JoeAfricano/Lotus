@@ -108,7 +108,7 @@ public sealed class DisplayCalibrationTests
     }
     [Theory]
     [InlineData(DisplayUse.Everyday, DisplayAmbient.Normal, 65, 1, 0)]
-    [InlineData(DisplayUse.Everyday, DisplayAmbient.Dim, 45, 1, 6)]
+    [InlineData(DisplayUse.Everyday, DisplayAmbient.Dim, 45, 1, 8)]
     [InlineData(DisplayUse.Gaming, DisplayAmbient.Normal, 65, 1.06, 0)]
     [InlineData(DisplayUse.Gaming, DisplayAmbient.Bright, 80, 1.1, 0)]
     [InlineData(DisplayUse.Editing, DisplayAmbient.Dim, 40, 1, 0)]
@@ -157,8 +157,11 @@ public sealed class DisplayCalibrationTests
     }
     [Fact] public void WhiteBalanceChangesChannelsWithoutSaturationMatrix()
     {
-        var target = (Profile() with { Warmth = 20, Tint = 10 }).Build(Original());
-        Assert.True(target.Ramp![128] > Original().Ramp![128]); Assert.True(target.Ramp[640] < Original().Ramp![640]); Assert.True(target.Valid);
+        var target = (Profile() with { Warmth = 20 }).Build(Original());
+        // Warm keeps red at full scale (no clipping) and lowers blue clearly; never above the original ramp.
+        Assert.Equal(Original().Ramp![255], target.Ramp![255]); Assert.True(target.Ramp[640] < Original().Ramp![640] * .85); Assert.True(target.Valid);
+        var cool = (Profile() with { Warmth = -20, Tint = -10 }).Build(Original());
+        Assert.True(cool.Ramp![255] < Original().Ramp![255]); Assert.True(cool.Ramp[256 + 200] < Original().Ramp![256 + 200]); Assert.Equal(Original().Ramp![767], cool.Ramp[767]);
     }
     [Theory] [InlineData(.75, -.1, .8, -20, -10)] [InlineData(1.3, .1, 1.2, 20, 10)]
     public void ControlBoundsProduceReadableMonotonicRamps(double gamma, double brightness, double contrast, double warmth, double tint)

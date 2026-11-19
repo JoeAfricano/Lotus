@@ -35,6 +35,17 @@ public sealed class DisplayImagePreviewTests
         byte[] source = [128, 128, 128, 255]; var output = DisplayImagePreview.Render(source, new(Warmth: 10), Baseline());
         Assert.True(output[2] > output[0]); Assert.Equal((byte)255, output[3]);
     }
+    [Fact] public void PreviewStepsAreLargeEnoughToSeeForTypicalSuggestions()
+    {
+        byte[] source = [128, 128, 128, 255];
+        var dimmer = DisplayImagePreview.Render(source, new(Brightness: 45), Baseline());
+        Assert.True(source[0] - dimmer[0] >= 15);
+        var warm = DisplayImagePreview.Render(source, new(Warmth: 8), Baseline());
+        Assert.True(warm[2] - warm[0] >= 6);
+        byte[] color = [40, 90, 200, 255];
+        var vivid = DisplayImagePreview.Render(color, new(Saturation: 75), Baseline());
+        Assert.True(vivid[2] - vivid[0] > color[2] - color[0]);
+    }
     [Fact] public void MalformedBuffersAndProfilesAreRejected()
     {
         Assert.Throws<ArgumentException>(() => DisplayImagePreview.Render([1, 2, 3], new(), Baseline()));

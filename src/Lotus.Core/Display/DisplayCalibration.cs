@@ -45,6 +45,18 @@ public sealed record CalibrationProfile(double? Brightness = null, double? Contr
         double.IsFinite(DigitalContrast) && DigitalContrast is >= .8 and <= 1.2 && double.IsFinite(Warmth) && Warmth is >= -20 and <= 20 &&
         double.IsFinite(Tint) && Tint is >= -10 and <= 10 &&
         (Saturation is null || double.IsFinite(Saturation.Value) && Saturation is >= 0 and <= 100);
+    // White tone as R, G, B gains that only ever attenuate, so the brightest channel never clips. Warm +20 takes
+    // blue down ~22% (about 6500 K toward 5000 K, like Night light); cool −20 takes red down ~18%. Tint trades green
+    // against magenta. Shared by the hardware ramp and the image preview so both show the same change.
+    public static double[] WhiteGains(double warmth, double tint)
+    {
+        double r = 1, g = 1, b = 1;
+        if (warmth > 0) { g -= warmth * .0035; b -= warmth * .011; }
+        else if (warmth < 0) { r -= -warmth * .009; g -= -warmth * .003; }
+        if (tint > 0) { r *= 1 - tint * .006; b *= 1 - tint * .006; }
+        else if (tint < 0) g *= 1 + tint * .006;
+        return [r, g, b];
+    }
     public CalibrationState Build(CalibrationState baseline)
     {
         if (!Valid || !baseline.CanAdjust) throw new ArgumentException("Unsupported display calibration profile.");
@@ -56,7 +68,7 @@ public sealed record CalibrationProfile(double? Brightness = null, double? Contr
         ushort[]? ramp = baseline.Ramp?.ToArray();
         if (ramp is not null)
         {
-            double[] gains = [1 + Warmth * .003, 1 + Tint * .004, 1 - Warmth * .003];
+            var gains = WhiteGains(Warmth, Tint);
             for (var channel = 0; channel < 3; channel++)
             for (var i = 0; i < 256; i++)
             {

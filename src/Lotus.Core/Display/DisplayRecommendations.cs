@@ -15,7 +15,7 @@ public static class DisplayRecommendations
     public static DisplayPlan Plan(DisplayUse use, DisplayAmbient ambient) => (use, ambient) switch
     {
         (DisplayUse.Everyday, DisplayAmbient.Normal) => new(45, 70, 1, 0, 0),
-        (DisplayUse.Everyday, DisplayAmbient.Dim) => new(30, 45, 1, 6, 0),       // comfort at night, not accuracy
+        (DisplayUse.Everyday, DisplayAmbient.Dim) => new(30, 45, 1, 8, 0),       // comfort at night, not accuracy
         (DisplayUse.Everyday, DisplayAmbient.Bright) => new(75, 100, 1.04, 0, 0),
         (DisplayUse.Gaming, DisplayAmbient.Normal) => new(50, 75, 1.06, 0, .15),
         (DisplayUse.Gaming, DisplayAmbient.Dim) => new(35, 50, 1.04, 0, .1),

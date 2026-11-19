@@ -20,10 +20,11 @@ public static class DisplayImagePreview
         alreadyApplied ??= new();
         var gamma = profile.Gamma / alreadyApplied.Gamma;
         var digitalBrightness = profile.DigitalBrightness - alreadyApplied.DigitalBrightness;
-        var brightness = profile.Brightness is double br && baseline.Brightness is { } levelBr ? Math.Pow(2, (br - levelBr.Percent) / 100) : 1;
+        // Backlight output is close to linear in the control on typical LCDs; the small offset keeps 0% from turning black.
+        var brightness = profile.Brightness is double br && baseline.Brightness is { } levelBr ? (br + 10) / (levelBr.Percent + 10) : 1;
         var contrast = profile.DigitalContrast / alreadyApplied.DigitalContrast * (profile.Contrast is double co && baseline.Contrast is { } levelCo ? Math.Pow(2, (co - levelCo.Percent) / 100) : 1);
-        double[] gains = [(1 - profile.Warmth * .003) / (1 - alreadyApplied.Warmth * .003),
-            (1 + profile.Tint * .004) / (1 + alreadyApplied.Tint * .004), (1 + profile.Warmth * .003) / (1 + alreadyApplied.Warmth * .003)]; // BGRA
+        var want = CalibrationProfile.WhiteGains(profile.Warmth, profile.Tint); var have = CalibrationProfile.WhiteGains(alreadyApplied.Warmth, alreadyApplied.Tint);
+        double[] gains = [want[2] / have[2], want[1] / have[1], want[0] / have[0]]; // BGRA
         var lut = new double[3, 256];
         for (var channel = 0; channel < 3; channel++)
         for (var i = 0; i < 256; i++)
@@ -31,8 +32,14 @@ public static class DisplayImagePreview
             var v = Math.Clamp(((Math.Pow(i / 255d, 1 / gamma) - .5) * contrast + .5 + digitalBrightness) * gains[channel], 0, 1);
             lut[channel, i] = (v <= .04045 ? v / 12.92 : Math.Pow((v + .055) / 1.055, 2.4)) * brightness;
         }
+        // Driver intensity: the default is neutral, the maximum roughly doubles chroma and the minimum is near gray.
         var saturation = profile.Saturation is double sat && baseline.Vibrance is { } range
-            ? Math.Clamp(sat / Math.Max(1, range.Percent(range.Current)), 0, 3) : 1;
+            ? Math.Clamp(Chroma(sat, range) / Math.Max(.05, Chroma(range.Percent(range.Current), range)), 0, 3) : 1;
+        static double Chroma(double percent, ColorRange range)
+        {
+            double neutral = range.Percent(range.Default);
+            return percent >= neutral ? 1 + (percent - neutral) / Math.Max(1, 100 - neutral) : percent / Math.Max(1, neutral);
+        }
         static byte ToByte(double linear) => Encode[(int)Math.Clamp(Math.Round(linear * 8192), 0, 8192)];
         for (var i = 0; i < bgra.Length; i += 4)
         {
