@@ -43,9 +43,15 @@ Não existe hoje uma base aberta (licença compatível com MIT) com FPS por jogo
 
 ## Aplicar de forma reversível (já existe e como crescer)
 
-Já existe: receitas `IGameSettingsRecipe` (Unreal Engine genérica via `GameUserSettings.ini`; No Rest for the Wicked via registro). Regras: só com o jogo fechado, guarda o original uma vez, grava só as chaves conhecidas, relê para conferir, botão "Restaurar originais". Medir → um passo de qualidade por vez.
+Já existe: receitas `IGameSettingsRecipe` (Unreal Engine genérica via `GameUserSettings.ini`; No Rest for the Wicked via registro; Minecraft Java via `options.txt` do perfil jogado por último em Modrinth/Prism/CurseForge/.minecraft, só `maxFps`, `renderDistance` e `simulationDistance`, sem mexer em shaders/Sodium/Iris; sem curva do jogo só o limite de FPS muda, e `javaw.exe` aberto conta como jogo aberto). Regras: só com o jogo fechado, guarda o original uma vez, grava só as chaves conhecidas, relê para conferir, botão "Restaurar originais". Medir → um passo de qualidade por vez.
 
 Próximos passos propostos (cada um com teste e confirmação do jogador):
 1. PCGamingWiki por jogo: confirmar DLSS/FSR/XeSS e o limite próprio, e achar o arquivo de configuração para novas receitas.
 2. Novas receitas por motor, começando pelos jogos instalados no PC do José: Unity (PlayerPrefs no registro), Source 2 (`cs2_video.txt`), RE Engine (`config.ini`), Frostbite (`PROFSAVE_profile`), Decima/IW (`*.cfg`/`*.json`). Cada receita: transformação pura testada com arquivos reais copiados, backup e restauração.
 3. Ciclo de medição: depois de aplicar, "Medir" confirma a meta e sobe/baixa um nível; o resultado calibra a curva daquele jogo.
+
+## Levantamento no PC do José (19/11/2026)
+
+- Final Fantasy Rebirth Simulator (UE5), Queen's Domain (UE4) e Palworld (UE5): cobertos pela receita Unreal.
+- Black Myth: Wukong Benchmark Tool: formato próprio (`UISettingData` em `[/Script/GSGameSettings.GSGameUserSettings]`), códigos sem documentação e diferentes dos `sg.*`. Sem receita por decisão do José até calibrar no menu do jogo.
+- Yakuza: Like a Dragon: sem arquivo de texto de gráficos; só sugestões.
