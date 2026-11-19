@@ -28,7 +28,7 @@ public static class FramePacing
 // EstimatedFps: what this game should reach with these settings on this PC (0 = no estimate for the game; never shown as measured).
 public sealed record SettingsRecommendation(QualityTier Tier, QualityTier TextureTier, Upscaler Upscaler, UpscaleMode Mode, int FpsCap, int TargetFps,
     int GpuScore, IReadOnlyList<string> ReasonKeys, double PacedCap = 0, bool AdaptiveSync = false, double EstimatedFps = 0, GameFpsCurve? Game = null,
-    bool CanPrefer60 = false, bool Prefer60 = false);
+    bool CanPrefer60 = false, bool Prefer60 = false, Upscaler Available = Upscaler.None);
 
 // How one game runs on this PC at the display's resolution, per quality tier (Low → Ultra), without upscaling:
 // GpuFps = what the graphics card can draw, CpuFps = what the processor can feed (lighter graphics barely raise it),
@@ -127,7 +127,7 @@ public static class SettingsAdvisor
         var tier = effective >= 160 ? QualityTier.Ultra : effective >= 110 ? QualityTier.High : effective >= 70 ? QualityTier.Medium : QualityTier.Low;
         if (target < refresh) reasons.Add("GsReasonTarget60");
         if (native < 40) reasons.Add("GsReasonLowEnd");
-        return Finish(p, goal, adaptiveSync, reasons, score, refresh, target, tier, upscaler, mode, null);
+        return Finish(p, goal, adaptiveSync, reasons, score, refresh, target, tier, upscaler, mode, null) with { Available = PickUpscaler(p.GpuName, tech) };
     }
 
     // Per game: every quality/upscaling pair is ranked by how it looks; the first one whose estimate holds the target
@@ -190,10 +190,15 @@ public static class SettingsAdvisor
         var mode = pick.Mode;
         var chosenUpscaler = mode == UpscaleMode.Off ? Upscaler.None : upscaler;
         if (chosenUpscaler != Upscaler.None) reasons.Add(chosenUpscaler == Upscaler.Dlss ? "GsReasonDlss" : "GsReasonFsr");
-        return Finish(p, goal, adaptiveSync, reasons, score, refresh, target, pick.Tier, chosenUpscaler, mode, game) with { CanPrefer60 = canPrefer60, Prefer60 = use60 };
+        return Finish(p, goal, adaptiveSync, reasons, score, refresh, target, pick.Tier, chosenUpscaler, mode, game) with { CanPrefer60 = canPrefer60, Prefer60 = use60, Available = upscaler };
     }
 
     // The real refresh rate of the player's monitor (60 when Windows does not report it); 165, 240 Hz and up are kept.
+    // Why no upscaler, per game: the game ships none, this PC already holds the target without it here, or (no data for
+    // the game) the card has room at this resolution.
+    public static string NoUpscaleKey(SettingsRecommendation r) =>
+        r.Available == Upscaler.None ? "GsUpscaleNoneInGame" : r.Game is not null ? "GsUpscaleNotNeeded" : "GsLineNoUpscale";
+
     private static int Refresh(SystemProfile p) => Math.Clamp(p.RefreshHz <= 0 ? 60 : p.RefreshHz, 50, 500);
 
     // Upscaler: the one the game ships that fits the card; none when a scan found none; the card's own when not scanned.

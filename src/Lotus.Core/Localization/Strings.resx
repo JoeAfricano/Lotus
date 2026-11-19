@@ -737,7 +737,9 @@ Condições atuais: {1}</value></data>
   <data name="GsLinePreset" xml:space="preserve"><value>Qualidade gráfica geral: {0}.</value></data>
   <data name="GsLineTextures" xml:space="preserve"><value>Texturas: {0} (limitadas pela memória de vídeo).</value></data>
   <data name="GsLineUpscale" xml:space="preserve"><value>Ative {0} no modo {1}: mais FPS com pouca perda de nitidez.</value></data>
-  <data name="GsLineNoUpscale" xml:space="preserve"><value>Upscaler opcional: sua placa tem folga nesta resolução.</value></data>
+  <data name="GsLineNoUpscale" xml:space="preserve"><value>Desligado: sua placa tem folga nesta resolução.</value></data>
+  <data name="GsUpscaleNoneInGame" xml:space="preserve"><value>Desligado: este jogo não tem DLSS, FSR nem XeSS.</value></data>
+  <data name="GsUpscaleNotNeeded" xml:space="preserve"><value>Desligado: neste jogo seu PC já segura {0} FPS sem ele, com a imagem mais nítida.</value></data>
   <data name="GsLineCap" xml:space="preserve"><value>Limite de FPS em {0}: frametime mais estável, menos calor e ruído.</value></data>
   <data name="GsTierLow" xml:space="preserve"><value>Baixa</value></data>
   <data name="GsTierMedium" xml:space="preserve"><value>Média</value></data>

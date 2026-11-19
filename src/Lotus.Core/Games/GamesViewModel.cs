@@ -324,7 +324,7 @@ public sealed partial class GamesViewModel : ObservableObject
                     Text.Format("GsLineTarget", r.TargetFps),
                     Text.Format("GsLinePreset", Text["GsTier" + r.Tier]),
                     Text.Format("GsLineTextures", Text["GsTier" + r.TextureTier]),
-                    r.Upscaler == Upscaler.None ? Text["GsLineNoUpscale"] : Text.Format("GsLineUpscale", Text["GsUpscaler" + r.Upscaler], Text["GsMode" + r.Mode]),
+                    r.Upscaler == Upscaler.None ? Text.Format(SettingsAdvisor.NoUpscaleKey(r), r.TargetFps) : Text.Format("GsLineUpscale", Text["GsUpscaler" + r.Upscaler], Text["GsMode" + r.Mode]),
                     Text.Format("GsLineCap", r.FpsCap)
                 };
                 // Per game: what these settings should give on this PC, and where the number comes from.

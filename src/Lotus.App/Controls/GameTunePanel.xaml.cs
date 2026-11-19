@@ -103,7 +103,7 @@ public sealed partial class GameTunePanel : UserControl
         var grid = new Grid { ColumnSpacing = 10, RowSpacing = 10 };
         grid.ColumnDefinitions.Add(new ColumnDefinition()); grid.ColumnDefinitions.Add(new ColumnDefinition());
         grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        var upscale = r.Upscaler == Upscaler.None ? text["GsLineNoUpscale"] : $"{text["GsUpscaler" + r.Upscaler]} · {text["GsMode" + r.Mode]}";
+        var upscale = r.Upscaler == Upscaler.None ? text.Format(SettingsAdvisor.NoUpscaleKey(r), r.TargetFps) : $"{text["GsUpscaler" + r.Upscaler]} · {text["GsMode" + r.Mode]}";
         var tiles = new[] { (text["TuneQuality"], text["GsTier" + r.Tier]), (text["TuneTextures"], text["GsTier" + r.TextureTier]), (text["TuneUpscaler"], upscale), (text["TuneCap"], CapTile(t)) };
         for (var i = 0; i < tiles.Length; i++)
         {

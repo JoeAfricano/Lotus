@@ -737,7 +737,9 @@ Current conditions: {1}</value></data>
   <data name="GsLinePreset" xml:space="preserve"><value>Overall graphics quality: {0}.</value></data>
   <data name="GsLineTextures" xml:space="preserve"><value>Textures: {0} (limited by video memory).</value></data>
   <data name="GsLineUpscale" xml:space="preserve"><value>Turn on {0} in {1} mode: more FPS with little loss of sharpness.</value></data>
-  <data name="GsLineNoUpscale" xml:space="preserve"><value>Upscaler optional: your GPU has headroom at this resolution.</value></data>
+  <data name="GsLineNoUpscale" xml:space="preserve"><value>Off: your card has room at this resolution.</value></data>
+  <data name="GsUpscaleNoneInGame" xml:space="preserve"><value>Off: this game has no DLSS, FSR or XeSS.</value></data>
+  <data name="GsUpscaleNotNeeded" xml:space="preserve"><value>Off: in this game your PC already holds {0} FPS without it, with a sharper image.</value></data>
   <data name="GsLineCap" xml:space="preserve"><value>Cap FPS at {0}: steadier frametime, less heat and noise.</value></data>
   <data name="GsTierLow" xml:space="preserve"><value>Low</value></data>
   <data name="GsTierMedium" xml:space="preserve"><value>Medium</value></data>

@@ -121,6 +121,18 @@ public sealed class GameAwareSettingsTests
         Assert.False(SettingsAdvisor.Recommend(Pc, "balanced", false, null, none).CanPrefer60);
     }
 
+    [Fact] public void NoUpscalerSaysWhyForEachGame()
+    {
+        var none = new GameTech(Dlss: false, FrameGen: false, Fsr: false, Xess: false, Engine: null);
+        var dlss = new GameTech(Dlss: true, FrameGen: false, Fsr: false, Xess: false, Engine: null);
+        var light = new GameFpsCurve([300, 260, 220, 180], [250, 250, 240, 230], null, "measured");
+        Assert.Equal("GsUpscaleNoneInGame", SettingsAdvisor.NoUpscaleKey(SettingsAdvisor.Recommend(Pc, "balanced", false, null, none)));
+        var holds = SettingsAdvisor.Recommend(Pc, "balanced", false, light, dlss);
+        Assert.Equal(Upscaler.None, holds.Upscaler);
+        Assert.Equal("GsUpscaleNotNeeded", SettingsAdvisor.NoUpscaleKey(holds));
+        Assert.Equal("GsLineNoUpscale", SettingsAdvisor.NoUpscaleKey(SettingsAdvisor.Recommend(Pc with { Width = 1280, Height = 720 }, "balanced", false)));
+    }
+
     [Fact] public void HeavyGameOnMidCardLowersGraphicsBeforeHalvingTheRate()
     {
         // GTX 1660 Super class in Cyberpunk at 1080p 75 Hz: Low/Medium reach 75, so no 37.5 lock.
