@@ -88,8 +88,8 @@ public static class ScoreInsights
         single <= 0 || multi <= 0 ? 0 : (int)Math.Round(10000 * Math.Exp(0.4 * Math.Log(single / 1500.0) + 0.6 * Math.Log(multi / 11000.0)));
 
     // Share of the parts in the database this result beats (GPU among GPUs, CPU among CPUs).
-    public static int BeatsGpus(int gpu) => Beats(ScoreParts.All.Where(p => p.Kind == PartKind.Gpu).Select(p => (double)p.Gpu), gpu);
-    public static int BeatsCpus(int single, int multi) => Beats(ScoreParts.All.Where(p => p.Kind == PartKind.Cpu).Select(p => (double)CpuScore(p.Single, p.Multi)), CpuScore(single, multi));
+    public static int BeatsGpus(int gpu) => Beats(ScoreParts.All.Where(p => p.Kind == PartKind.Gpu && !p.RequirementsOnly).Select(p => (double)p.Gpu), gpu);
+    public static int BeatsCpus(int single, int multi) => Beats(ScoreParts.All.Where(p => p.Kind == PartKind.Cpu && !p.RequirementsOnly).Select(p => (double)CpuScore(p.Single, p.Multi)), CpuScore(single, multi));
     private static int Beats(IEnumerable<double> values, double mine)
     {
         var all = values.ToList();

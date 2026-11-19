@@ -37,7 +37,7 @@ async Task<JsonNode?> Get(string url, string file, bool polite)
 
 // Most owned first (SteamSpy pages hold 1,000 games each).
 var list = new List<(string Id, string Name)>();
-for (var page = 0; list.Count < count * 2 && page < 4; page++)
+for (var page = 0; list.Count < count * 5 && page < 6; page++)
 {
     if (await Get($"https://steamspy.com/api.php?request=all&page={page}", $"spy-all-{page}.json", false) is not JsonObject all) break;
     list.AddRange(all.Select(kv => (kv.Key, (string?)kv.Value?["name"] ?? kv.Key)).Where(x => x.Item1.All(char.IsAsciiDigit)));
