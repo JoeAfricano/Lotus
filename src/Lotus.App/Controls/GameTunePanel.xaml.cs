@@ -117,7 +117,8 @@ public sealed partial class GameTunePanel : UserControl
             {
                 var title = text[r.Why60 == "looks" ? "Gs60Choice" : "Gs60ChoicePlain"];
                 var hint = text[r.Why60 switch { "cant-hold" => "Gs60ChoiceHintCantHold", "lighter" => "Gs60ChoiceHintLighter", _ => r.AdaptiveSync ? "Gs60ChoiceHintVrr" : "Gs60ChoiceHint" }];
-                var lock60 = new Microsoft.UI.Xaml.Controls.Primitives.ToggleButton { Content = "60", IsChecked = r.Prefer60, FontSize = 11.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Padding = new Thickness(8, 2, 8, 2),
+                var lock60 = new Microsoft.UI.Xaml.Controls.Primitives.ToggleButton { Content = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 5,
+                    Children = { new FontIcon { Glyph = "\uE7FC", FontSize = 12 }, new TextBlock { Text = "60" } } }, IsChecked = r.Prefer60, FontSize = 11.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Padding = new Thickness(8, 2, 8, 2),
                     MinWidth = 0, MinHeight = 0, CornerRadius = new CornerRadius(10), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, 10, 10, 0) };
                 AutomationProperties.SetAutomationId(lock60, "tune-prefer-60");
                 AutomationProperties.SetName(lock60, title);
