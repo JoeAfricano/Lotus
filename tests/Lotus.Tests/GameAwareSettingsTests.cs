@@ -103,6 +103,24 @@ public sealed class GameAwareSettingsTests
         Assert.False(SettingsAdvisor.Recommend(pc, "balanced", false, curve, fg, prefer60: true).Prefer60);
     }
 
+    [Fact] public void SixtyIsOfferedWhenThePcFallsBelowTheMonitorRate()
+    {
+        // Reaches ~65 FPS even on Low at 75 Hz without FreeSync: by default Lotus locks half the rate (37);
+        // the player may instead lock 60, which this PC holds.
+        var curve = new GameFpsCurve([70, 58, 48, 38], [200, 200, 200, 200], null, "measured");
+        var none = new GameTech(Dlss: false, FrameGen: false, Fsr: false, Xess: false, Engine: null);
+        var half = SettingsAdvisor.Recommend(Pc, "balanced", false, curve, none);
+        Assert.Equal(37, half.TargetFps);
+        Assert.True(half.CanPrefer60);
+        var sixty = SettingsAdvisor.Recommend(Pc, "balanced", false, curve, none, prefer60: true);
+        Assert.Equal((60, 60, true), (sixty.TargetFps, sixty.FpsCap, sixty.Prefer60));
+        Assert.Contains("GsReasonTargetLower", sixty.ReasonKeys);
+        // Below 60 even on Low: nothing to offer.
+        Assert.False(SettingsAdvisor.Recommend(Pc, "balanced", false, new GameFpsCurve([55, 45, 38, 30], [200, 200, 200, 200], null, "measured"), none).CanPrefer60);
+        // Without data for the game (generic guess, e.g. Minecraft), never offered.
+        Assert.False(SettingsAdvisor.Recommend(Pc, "balanced", false, null, none).CanPrefer60);
+    }
+
     [Fact] public void HeavyGameOnMidCardLowersGraphicsBeforeHalvingTheRate()
     {
         // GTX 1660 Super class in Cyberpunk at 1080p 75 Hz: Low/Medium reach 75, so no 37.5 lock.

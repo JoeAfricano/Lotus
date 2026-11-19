@@ -178,10 +178,13 @@ public static class SettingsAdvisor
             return holds >= 0 ? combos[holds] : combos.OrderByDescending(c => game.Fps(c.Tier, c.Mode)).ThenByDescending(c => c.Look).First();
         }
         var pick = PickFor(target);
-        // Locking 60 is offered only when it really looks better, the monitor runs faster than 60 and the game has no
-        // frame generation (with it, the generator is the better way to keep both).
+        // Locking 60 is an opt-in per game, offered only for a game Lotus knows (curve), on a monitor faster than 60, when the
+        // game has no frame generation (with it, the generator is the better way to keep both) and the PC holds 60:
+        // - the PC cannot hold the monitor rate and fell to a fraction below 60: 60 is smoother than that fraction;
+        // - the PC holds the monitor rate only with lower graphics: 60 looks better.
         var at60 = PickFor(60);
-        var canPrefer60 = target > 60 && top > 60 && tech?.FrameGen != true && Reach(QualityTier.Low) >= 60 && at60.Look > pick.Look;
+        var canPrefer60 = top > 60 && tech?.FrameGen != true && Reach(QualityTier.Low) >= 60
+            && (target < 60 || (target > 60 && at60.Look > pick.Look));
         var use60 = canPrefer60 && prefer60;
         if (use60) { pick = at60; target = 60; reasons.Add("GsReasonPrefer60"); }
         var mode = pick.Mode;
