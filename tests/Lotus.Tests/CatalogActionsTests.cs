@@ -60,9 +60,9 @@ public sealed class CatalogActionsTests : IDisposable
         var mouse = new FakeMouse([6, 10, 1]);
         var engine = new OptimizationEngine(Journal, new MouseAccelerationAction(mouse));
         var applied = await engine.ApplyAsync((await engine.AnalyzeAsync()).Id, true);
-        Assert.Equal([6, 10, 0], mouse.Values);
+        Assert.Equal([6, 10, 0], mouse.Values!);
         Assert.Equal(OperationStage.Reverted, (await engine.RevertAsync(applied.Id, true)).Stage);
-        Assert.Equal([6, 10, 1], mouse.Values);
+        Assert.Equal([6, 10, 1], mouse.Values!);
         Assert.Equal(OperationStage.NoChange, (await new OptimizationEngine(Journal, new MouseAccelerationAction(new FakeMouse([0, 0, 0]))).AnalyzeAsync()).Stage);
         Assert.Null(MouseAccelerationAction.Parse("1,2"));
     }
@@ -106,10 +106,10 @@ public sealed class CatalogActionsTests : IDisposable
         var changes = await vm.PreviewProfileAsync();
         Assert.DoesNotContain(changes, c => c.Plan.ActionId is MouseAccelerationAction.ActionId or AccessibilityHotkeysAction.ActionId);
         await vm.ApplyFeatureAsync(CatalogFeatures.MouseAcceleration, confirmed: true); // one by one still works
-        Assert.Equal([6, 10, 0], mouse.Values);
+        Assert.Equal([6, 10, 0], mouse.Values!);
         Assert.True(vm.IsFeatureApplied(CatalogFeatures.MouseAcceleration));
         await vm.UndoFeatureAsync(CatalogFeatures.MouseAcceleration, confirmed: true);
-        Assert.Equal([6, 10, 1], mouse.Values);
+        Assert.Equal([6, 10, 1], mouse.Values!);
     }
 
     private sealed class SinglePower : IPowerSchemeService
