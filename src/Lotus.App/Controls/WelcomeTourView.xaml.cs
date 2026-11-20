@@ -29,6 +29,17 @@ public sealed partial class WelcomeTourView : UserControl
     public bool IsOpen => Visibility == Visibility.Visible && !closing;
     public event EventHandler? Closed;
     public event EventHandler<string>? TryRequested; // route of the feature the player wants to try
+    public event EventHandler<string>? LanguageRequested; // "pt-BR" | "en-US": the whole app switches, then Retext
+
+    // The language changed while the guide is open: same page, new texts.
+    public void Retext(WelcomeTourViewModel model)
+    {
+        var index = vm?.Index ?? 0;
+        vm = model; vm.Index = index; lastIndex = index;
+        RailKicker.Text = vm.Text["WtKicker"]; CloseButton.Content = vm.Text["WtClose"]; BackButton.Content = vm.Text["WtBack"];
+        SceneTag.Text = vm.Text["WtScExample"].ToUpperInvariant();
+        BuildRail(); Render(animate: false);
+    }
 
     public WelcomeTourView()
     {
@@ -159,6 +170,7 @@ public sealed partial class WelcomeTourView : UserControl
         if (page.Id == WelcomeTourViewModel.ThemeId) { BuildTheme(); return; }
         Details.Children.Add(new TextBlock { Text = vm.Text["WtHow"].ToUpperInvariant(), Style = (Style)Application.Current.Resources["EyebrowStyle"], Margin = new Thickness(0, 4, 0, 2) });
         foreach (var point in page.Points) Details.Children.Add(PointRow("", point));
+        if (page.Id == "welcome") AddLanguagePicker();
         if (page.Id == "saves") AddDriveCard();
         if (page.Route is not null) Details.Children.Add(new TextBlock { Text = vm.Text["WtTryHint"], Style = (Style)Application.Current.Resources["CaptionStyle"], Margin = new Thickness(0, 6, 0, 0) });
     }
@@ -193,6 +205,23 @@ public sealed partial class WelcomeTourView : UserControl
             Background = (Brush)Application.Current.Resources["BadgeBrush"], BorderBrush = (Brush)Application.Current.Resources["CardBorderBrush"],
         });
         static FontIcon PlacedIcon() { var done = new FontIcon { Glyph = "", FontSize = 16, Foreground = (Brush)Application.Current.Resources["SuccessBrush"], VerticalAlignment = VerticalAlignment.Center }; Grid.SetColumn(done, 2); return done; }
+    }
+
+    // Welcome page: Português (main) or English, for the whole app.
+    private void AddLanguagePicker()
+    {
+        if (vm is null) return;
+        Details.Children.Add(Heading(vm.Text["WtLanguage"]));
+        var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        foreach (var (code, label) in new[] { ("pt-BR", "Português"), ("en-US", "English") })
+        {
+            var selected = vm.Text.Language == code;
+            var b = Pill(label, selected, swatch: Solid(code == "pt-BR" ? "#2E9E5B" : "#3C5BC4"));
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(b, "wt-lang-" + code);
+            b.Click += (_, _) => { if (vm?.Text.Language != code) { UiSound.Play(UiSound.Cue.Toggle); LanguageRequested?.Invoke(this, code); } };
+            row.Children.Add(b);
+        }
+        Details.Children.Add(row);
     }
 
     private void BuildNotes()

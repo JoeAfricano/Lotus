@@ -1266,6 +1266,7 @@ Condições atuais: {1}</value></data>
   <data name="WtSavesDriveTitle" xml:space="preserve"><value>Quer guardar também no Google Drive?</value></data>
   <data name="WtSavesDriveHint" xml:space="preserve"><value>Conecte sua conta e suas cópias ficam seguras na nuvem, na pasta Lotus/Backups. O Lotus só enxerga os arquivos que ele mesmo cria.</value></data>
   <data name="WtSavesDriveDone" xml:space="preserve"><value>Tudo certo! Escolha em Backup de saves se o envio é na hora, toda semana ou todo mês.</value></data>
+  <data name="WtLanguage" xml:space="preserve"><value>Idioma · Language</value></data>
   <data name="WtScConfirm" xml:space="preserve"><value>Você no controle</value></data>
   <data name="WtScUndo" xml:space="preserve"><value>Desfazer</value></data>
   <data name="WtScHonest" xml:space="preserve"><value>Sem chute</value></data>

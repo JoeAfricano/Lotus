@@ -15,6 +15,12 @@ public sealed partial class MainWindow
             args.Contains(Lotus.Infrastructure.Setup.WindowsStartup.MinimizedArgument), args.Contains("--dev-instance"),
             args.Contains(WelcomePlan.TourArgument), args.Contains(WelcomePlan.WhatsNewArgument));
         Tour.TryRequested += (_, route) => ViewModel.NavigateCommand.Execute(route);
+        // Language chosen in the guide: the whole app switches (same as Settings), then the guide is redrawn.
+        Tour.LanguageRequested += (_, language) =>
+        {
+            preferencesViewModel.LanguageIndex = language == "en-US" ? 1 : 0;
+            DispatcherQueue.TryEnqueue(() => { if (Tour.IsOpen) Tour.Retext(NewTourModel(tourFirstRun)); });
+        };
         Tour.Closed += (_, _) =>
         {
             MarkWelcomeSeen();
@@ -27,9 +33,18 @@ public sealed partial class MainWindow
     }
 
     // firstRun: the guide also asks for the account and the look (saved when it closes, like the old profile setup).
+    private bool tourFirstRun;
     public void OpenTour(WelcomeOpening opening, bool firstRun = false)
     {
         if (Tour.IsOpen) return;
+        tourFirstRun = firstRun;
+        Tour.MotionEnabled = !preferences.Current.ReduceMotion;
+        Tour.Backup = backup;
+        Tour.Open(NewTourModel(firstRun), opening == WelcomeOpening.None ? WelcomeOpening.Tour : opening, firstRun ? onboarding : null);
+    }
+
+    private WelcomeTourViewModel NewTourModel(bool firstRun)
+    {
         WhatsNewNotes? notes = null;
         try
         {
@@ -37,9 +52,7 @@ public sealed partial class MainWindow
             if (File.Exists(path)) notes = WhatsNewReader.Read(File.ReadAllText(path), AppVersionText());
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "What's new notes not read"); }
-        Tour.MotionEnabled = !preferences.Current.ReduceMotion;
-        Tour.Backup = backup;
-        Tour.Open(new WelcomeTourViewModel(text, notes, includeSetup: firstRun), opening == WelcomeOpening.None ? WelcomeOpening.Tour : opening, firstRun ? onboarding : null);
+        return new WelcomeTourViewModel(text, notes, includeSetup: firstRun);
     }
 
     // A development instance shares the player's data: it never marks the guide as seen for the installed Lotus.
