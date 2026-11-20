@@ -4,7 +4,7 @@ Pedido do José (20/11/2026): boas-vindas no estilo do PowerToys (uma página po
 
 ## Fluxo
 
-1. **Intro em vídeo** (`Controls/IntroView`): completa (7,4 s) na primeira abertura e depois de cada atualização; corte curto (2,4 s) nas outras. Clique ou Esc pula. Configurações › "Animação de abertura" desliga.
+1. **Abertura animada** (`Controls/IntroView`, desenhada com formas, sem vídeo): flor de lótus que se abre e a marca; completa (~3 s) na primeira abertura e depois de cada atualização; versão curta (~1,4 s) nas outras. Clique ou Esc pula. Configurações › "Animação de abertura" desliga.
 2. **Primeira vez:** só o guia **Conheça o Lotus** (`Controls/WelcomeTourView`): Bem-vindo, **Seu perfil** (conta Steam ou nome e foto próprios), **Seu visual** (modo, temas prontos e cor de destaque, com prévia ao vivo), Otimizar meu PC, Meus Jogos, Lotus Score, Ferramentas, Backup de saves, Meu diário e Novidades. Perfil e visual são salvos ao fechar o guia. A tela antiga de perfil (`OnboardingView`) ficou só para Configurações › Editar perfil; objetivo e programas recomendados não são perguntados na primeira vez (objetivo fica "Equilibrado").
 3. Configurações › "Rever boas-vindas" abre o guia com perfil e visual; "Conheça o Lotus" abre o guia sem eles.
 4. **Depois de uma atualização:** abre direto na página **Novidades**, com a seção da versão atual do `CHANGELOG.md` (vai junto com o app; sem internet).

@@ -1,8 +1,24 @@
 <UserControl x:Class="Lotus.App.Controls.IntroView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Visibility="Collapsed" IsTabStop="True" AutomationProperties.AutomationId="opening-intro">
- <!-- Opening intro: pre-rendered video (no WebView), letterboxed on the same plum it fades to. Click or Esc skips. -->
+ <!-- Opening intro drawn in code (no video): the lotus blooms petal by petal, a gold halo pulses, sparks rise and the
+      name appears. Shapes are built in IntroView.xaml.cs; nothing runs once it has closed. Click or Esc skips. -->
  <Grid x:Name="Root" Background="#100D15" Tapped="OnSkip">
-  <MediaPlayerElement x:Name="Player" Stretch="Uniform" AreTransportControlsEnabled="False" AutoPlay="False" IsHitTestVisible="False"/>
+  <Ellipse x:Name="Glow" Width="980" Height="980" Opacity="0" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
+   <Ellipse.Fill><RadialGradientBrush><GradientStop Color="#55AD245E" Offset="0"/><GradientStop Color="#22471430" Offset="0.45"/><GradientStop Color="#00100D15" Offset="1"/></RadialGradientBrush></Ellipse.Fill>
+   <Ellipse.RenderTransform><CompositeTransform x:Name="GlowTransform"/></Ellipse.RenderTransform>
+  </Ellipse>
+  <Canvas x:Name="Sparks" IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="0" Height="0"/>
+  <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6" IsHitTestVisible="False">
+   <Grid Width="340" Height="340">
+    <Canvas x:Name="Flower" Width="0" Height="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+     <Canvas.RenderTransform><CompositeTransform x:Name="FlowerTransform"/></Canvas.RenderTransform>
+    </Canvas>
+   </Grid>
+   <TextBlock x:Name="Title" Text="Lotus" FontFamily="Georgia" FontSize="64" FontWeight="Bold" HorizontalAlignment="Center" Opacity="0">
+    <TextBlock.RenderTransform><TranslateTransform x:Name="TitleShift" Y="18"/></TextBlock.RenderTransform>
+   </TextBlock>
+   <TextBlock x:Name="Tagline" Text="PLAY BETTER." FontSize="13" FontWeight="SemiBold" CharacterSpacing="420" Foreground="#F07A9C" HorizontalAlignment="Center" Opacity="0"/>
+  </StackPanel>
   <TextBlock x:Name="SkipHint" Opacity="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,28,22" FontSize="12" Foreground="#99F4C9D6" CharacterSpacing="40"/>
  </Grid>
 </UserControl>
