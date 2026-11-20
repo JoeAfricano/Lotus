@@ -125,7 +125,7 @@ Também foi corrigido o seguinte: a entrada "Iniciar com o Windows" do Lotus pod
 |---|---|
 | **Check-up do PC** | Cartão em destaque no topo da aba. Um clique roda todas as análises de leitura (monitor, falhas de jogos, sistema, discos, Windows, processos, overlays, inicialização, limpeza). O resultado fica em ordem: pede atenção → dica → em ordem, com contadores e "Abrir ferramenta" em cada linha. Não há nota inventada. |
 | **Monitor na taxa certa** | Mostra a taxa atual e a máxima do monitor em números grandes. "Usar X Hz" e "Desfazer" usam a mesma ação com registro do Otimizar (`DisplayRefreshAction`). |
-| **Recursos do Windows para jogos** | Modo de Jogo, gravação em segundo plano, otimizações em janela e agendamento de GPU, com estado e conselho. Ajustar e desfazer são do Otimizar; também há atalho para a página das Configurações. |
+| **Recursos do Windows para jogos** | Modo de Jogo, gravação em segundo plano, otimizações em janela e agendamento de GPU, com estado e conselho. Ajustar e desfazer são do Otimizar; também há atalho para a página das Configurações. Inclui o **catálogo de ajustes** (veja abaixo). |
 | **Por que meu jogo fechou?** | Lê os registros 1000/1002 do Windows (por posição de campo, funciona em qualquer idioma) só dos jogos e cruza com o que aconteceu no mesmo minuto: reinício do driver de vídeo, falta de memória, erro de hardware ou de disco. Depois explica a causa provável e mostra o código técnico. |
 | **Windows em dia** | Reinício pendente (Windows Update e componentes), arquivos esperando reinício, tempo ligado e aviso de Inicialização Rápida. O ponto de restauração usa o `Checkpoint-Computer` do Windows, com UAC, e só é dado como criado se a lista do Windows cresceu. |
 
@@ -146,3 +146,19 @@ Também foi corrigido o seguinte: a entrada "Iniciar com o Windows" do Lotus pod
 - Início com a nota no fim.
 
 **Não executados:** nenhuma mudança de taxa, ajuste de recurso nem ponto de restauração foi feito no PC.
+
+## Catálogo de ajustes (winutil)
+
+Itens escolhidos da lista de ajustes do [winutil](https://github.com/ChrisTitusTech/winutil) (MIT, commit `70c23c8`, `config/tweaks.json`) e reescritos no motor do Lotus (`src/Lotus.Core/Optimization/CatalogActions.cs`). Critérios: efeito que o jogador percebe e que dá para explicar sem prometer FPS; só o usuário atual (HKCU / SystemParametersInfo), sem administrador; estado lido antes, gravado no journal e desfeito exatamente.
+
+| Item | Mecanismo | Padrão do Windows | Sugestão para jogos | Desfazer |
+| --- | --- | --- | --- | --- |
+| Atalhos das Teclas de Aderência | `SPI_SET{STICKY,FILTER,TOGGLE}KEYS`: tira só o bit `*_HOTKEYACTIVE` (0x4) | atalhos ligados | desligar | flags anteriores exatas; quem usa o recurso continua com ele |
+| Aceleração do mouse | `SPI_SETMOUSE`: só o terceiro valor (aceleração) vai a 0; limites ficam | ligada | desligar | os três valores anteriores |
+| "Finalizar tarefa" na barra | HKCU `...\Explorer\Advanced\TaskbarDeveloperSettings\TaskbarEndTask` = 1 | ausente (desligado) | ligar | volta a ausente; só Windows 11 build 22631+ |
+
+Ficam **fora** do "Aplicar perfil" (`CatalogFeatures.IsCatalog`): mudam como o PC se comporta fora dos jogos, então o jogador aplica um por um em Ferramentas.
+
+Ficaram de fora do winutil, de propósito: tudo que exige administrador (telemetria, serviços, HKLM), remoção de apps (Edge, OneDrive), desativar IPv6/Teredo, hibernação, efeitos visuais (sem ganho medido), notificações (o Lotus já silencia durante a sessão de jogo) e "Ultimate Performance" (o plano de energia já é tratado pelos perfis).
+
+Não verificado ainda: "Finalizar tarefa" aparecer na hora sem reiniciar o Explorer (o PC de testes usa Windows 22H2, onde o item fica indisponível).

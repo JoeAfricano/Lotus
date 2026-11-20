@@ -17,6 +17,10 @@ public static class GameFeatureRules
         ("windowed-optimizations", "game") => FeatureState.On,
         ("gamemode", "daily") => FeatureState.On,
         ("display-refresh", "game" or "daily") => FeatureState.On,
+        // Catalog items: shown as a recommendation for games, applied only one by one (never by "Apply profile").
+        (CatalogFeatures.AccessibilityHotkeys, "game") => FeatureState.Off,
+        (CatalogFeatures.MouseAcceleration, "game") => FeatureState.Off,
+        (CatalogFeatures.TaskbarEndTask, "game") => FeatureState.On,
         _ => null
     };
     // SystemDefault counts as aligned only where the documented Windows default matches the desired state.
@@ -27,11 +31,13 @@ public static class GameFeatureRules
         var effective = feature.State == FeatureState.SystemDefault ? DefaultOf(feature.Id) : feature.State;
         return effective is not null && effective != desired;
     }
-    // Game Mode is on by default; background recording is off by default. Others vary by Windows build/driver.
+    // Game Mode, the accessibility shortcuts and mouse acceleration are on by default; background recording and End task are off. Others vary by Windows build/driver.
     public static FeatureState? DefaultOf(string featureId) => featureId switch
     {
         "gamemode" => FeatureState.On,
         "background-recording" => FeatureState.Off,
+        CatalogFeatures.AccessibilityHotkeys or CatalogFeatures.MouseAcceleration => FeatureState.On,
+        CatalogFeatures.TaskbarEndTask => FeatureState.Off,
         _ => null
     };
 }

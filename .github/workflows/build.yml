@@ -1,0 +1,143 @@
+# Lotus build on GitHub-hosted Windows runners.
+# - Pull requests: build + tests (no installer, no signing).
+# - Manual run (Actions › Build › Run workflow): tests, installer and, when "sign" is checked and SignPath is set up,
+#   signed app files and a signed installer through the SignPath Foundation (free code signing for open source).
+#   SignPath setup and the signing policy: docs/LOTUS_CODE_SIGNING.md and CODE_SIGNING_POLICY.md.
+name: Build
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      sign:
+        description: Sign with SignPath (needs SignPath set up)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Tests
+        run: dotnet test tests/Lotus.Tests -c Debug -p:Platform=x64 --logger "console;verbosity=minimal"
+
+      - name: Publish app
+        if: github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        run: ./tools/Publish-Lotus.ps1
+
+      - name: Upload unsigned app
+        if: github.event_name == 'workflow_dispatch' && inputs.sign
+        id: upload-app
+        uses: actions/upload-artifact@v4
+        with:
+          name: lotus-app-unsigned
+          path: artifacts/dist/Lotus/
+
+      # Signs Lotus.App.exe and Lotus.*.dll inside the app folder (SignPath artifact configuration "app").
+      - name: Sign app files
+        if: github.event_name == 'workflow_dispatch' && inputs.sign
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG || 'Lotus' }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG || 'release-signing' }}
+          artifact-configuration-slug: app
+          github-artifact-id: ${{ steps.upload-app.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: artifacts/dist/Lotus-signed
+
+      - name: Use signed app files
+        if: github.event_name == 'workflow_dispatch' && inputs.sign
+        shell: pwsh
+        run: |
+          Remove-Item artifacts/dist/Lotus -Recurse -Force
+          Move-Item artifacts/dist/Lotus-signed artifacts/dist/Lotus
+
+      # The Google Drive client is optional: without the secret the installer offers file backups only.
+      - name: Google Drive client
+        if: github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        env:
+          GOOGLE_OAUTH_JSON: ${{ secrets.GOOGLE_OAUTH_JSON }}
+        run: |
+          if ($env:GOOGLE_OAUTH_JSON) { New-Item -ItemType Directory -Force secrets | Out-Null; Set-Content secrets/google-oauth.json $env:GOOGLE_OAUTH_JSON -Encoding utf8NoBOM }
+
+      - name: Installer
+        if: github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup -y --no-progress }
+          ./tools/Build-Installer.ps1 -SkipPublish
+          New-Item -ItemType Directory -Force artifacts/installer | Out-Null
+          Move-Item artifacts/dist/Lotus-Setup-*.exe artifacts/installer/
+          Remove-Item artifacts/installer/*.sha256 -ErrorAction SilentlyContinue
+
+      - name: Upload unsigned installer
+        if: github.event_name == 'workflow_dispatch' && inputs.sign
+        id: upload-installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: lotus-installer-unsigned
+          path: artifacts/installer/
+
+      # Signs Lotus-Setup-<version>.exe (SignPath artifact configuration "installer").
+      - name: Sign installer
+        if: github.event_name == 'workflow_dispatch' && inputs.sign
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG || 'Lotus' }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG || 'release-signing' }}
+          artifact-configuration-slug: installer
+          github-artifact-id: ${{ steps.upload-installer.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: artifacts/installer-signed
+
+      - name: Use signed installer
+        if: github.event_name == 'workflow_dispatch' && inputs.sign
+        shell: pwsh
+        run: |
+          Remove-Item artifacts/installer -Recurse -Force
+          Move-Item artifacts/installer-signed artifacts/installer
+
+      # The SHA-256 is written last, after signing: the app's updater checks the file it downloads against it.
+      - name: Checksum
+        if: github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        run: |
+          $setup = Get-ChildItem artifacts/installer/Lotus-Setup-*.exe | Select-Object -First 1
+          $sig = Get-AuthenticodeSignature $setup.FullName
+          Write-Output "Signature: $($sig.Status) $($sig.SignerCertificate.Subject)"
+          $hash = (Get-FileHash $setup.FullName -Algorithm SHA256).Hash
+          Set-Content -Path "$($setup.FullName).sha256" -Value "$hash  $($setup.Name)" -Encoding ascii
+          Write-Output "SHA256: $hash"
+
+      - name: Upload installer
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.sign && 'Lotus-Setup-signed' || 'Lotus-Setup-unsigned' }}
+          path: artifacts/installer/

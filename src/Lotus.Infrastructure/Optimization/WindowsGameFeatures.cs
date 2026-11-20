@@ -6,15 +6,23 @@ namespace Lotus.Infrastructure.Optimization;
 
 // Read-only registry queries for per-user gaming settings exposed in Windows Settings > Gaming / Display > Graphics.
 [SupportedOSPlatform("windows")]
-public sealed class WindowsGameFeatures(IDisplayModes? display = null) : IGameFeatureInventory
+public sealed class WindowsGameFeatures(IDisplayModes? display = null, IAccessibilityKeys? keys = null, IMouseSettings? mouse = null) : IGameFeatureInventory
 {
+    private readonly IAccessibilityKeys keys = keys ?? new WindowsAccessibilityKeys();
+    private readonly IMouseSettings mouse = mouse ?? new WindowsMouseSettings();
+
     public IReadOnlyList<GameFeature> Read() =>
     [
         new("gamemode", Dword(Registry.CurrentUser, @"Software\Microsoft\GameBar", "AutoGameModeEnabled", on: 1), "ms-settings:gaming-gamemode"),
         new("background-recording", Dword(Registry.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\GameDVR", "HistoricalCaptureEnabled", on: 1), "ms-settings:gaming-gamedvr"),
         new("windowed-optimizations", WindowedOptimizations(), "ms-settings:display-advancedgraphics"),
         new("hags", Dword(Registry.LocalMachine, @"SYSTEM\CurrentControlSet\Control\GraphicsDrivers", "HwSchMode", on: 2), "ms-settings:display-advancedgraphics"),
-        new("display-refresh", Refresh(), "ms-settings:display-advanced")
+        new("display-refresh", Refresh(), "ms-settings:display-advanced"),
+        // Optimization catalog (optional, one by one): same readers as the actions, so state and action always agree.
+        new(CatalogFeatures.AccessibilityHotkeys, keys.Read() is { } f ? AccessibilityHotkeysAction.AnyShortcutOn(f) ? FeatureState.On : FeatureState.Off : FeatureState.Unavailable, "ms-settings:easeofaccess-keyboard"),
+        new(CatalogFeatures.MouseAcceleration, mouse.Read() is { Length: 3 } m ? m[2] != 0 ? FeatureState.On : FeatureState.Off : FeatureState.Unavailable, "ms-settings:mousetouchpad"),
+        new(CatalogFeatures.TaskbarEndTask, WindowsBuild.AtLeast(RegistryDwordAction.EndTaskMinBuild)
+            ? Dword(Registry.CurrentUser, RegistryDwordAction.EndTaskPath, "TaskbarEndTask", on: 1) : FeatureState.Unavailable, "ms-settings:developers")
     ];
 
     // "On" means the primary display already runs at the highest rate available at its resolution.

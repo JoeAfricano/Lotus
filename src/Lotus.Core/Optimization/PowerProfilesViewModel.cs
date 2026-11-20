@@ -255,7 +255,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
         PreviewFailed = error.Length > 0;
         return changes;
     }
-    private bool ProfileWants(string featureId) => GameFeatureRules.Desired(featureId, profileId) is not null;
+    private bool ProfileWants(string featureId) => !CatalogFeatures.IsCatalog(featureId) && GameFeatureRules.Desired(featureId, profileId) is not null;
     // Human labels for stored values: windowed uses its pair string, display shows Hz, DWORD switches show On/Off.
     private string FeatureLabel(string featureId, string? raw) =>
         raw is null or "<absent>" ? Text["FeatStateSystemDefault"]

@@ -30,7 +30,12 @@ public partial class App : Application
         {
             ["background-recording"] = new(journal, Lotus.Core.Optimization.RegistryDwordAction.BackgroundRecording(registry)),
             ["gamemode"] = new(journal, Lotus.Core.Optimization.RegistryDwordAction.GameMode(registry)),
-            [Lotus.Core.Optimization.DisplayRefreshAction.FeatureId] = new(journal, new Lotus.Core.Optimization.DisplayRefreshAction(new Lotus.Infrastructure.Optimization.WindowsDisplayModes()))
+            [Lotus.Core.Optimization.DisplayRefreshAction.FeatureId] = new(journal, new Lotus.Core.Optimization.DisplayRefreshAction(new Lotus.Infrastructure.Optimization.WindowsDisplayModes())),
+            // Optimization catalog (optional items, applied one by one from Ferramentas).
+            [Lotus.Core.Optimization.CatalogFeatures.AccessibilityHotkeys] = new(journal, new Lotus.Core.Optimization.AccessibilityHotkeysAction(new Lotus.Infrastructure.Optimization.WindowsAccessibilityKeys())),
+            [Lotus.Core.Optimization.CatalogFeatures.MouseAcceleration] = new(journal, new Lotus.Core.Optimization.MouseAccelerationAction(new Lotus.Infrastructure.Optimization.WindowsMouseSettings())),
+            [Lotus.Core.Optimization.CatalogFeatures.TaskbarEndTask] = new(journal, Lotus.Core.Optimization.RegistryDwordAction.TaskbarEndTask(registry,
+                () => Lotus.Infrastructure.Optimization.WindowsBuild.AtLeast(Lotus.Core.Optimization.RegistryDwordAction.EndTaskMinBuild)))
         };
     }
     private Mutex? single;          // held for the life of the main instance

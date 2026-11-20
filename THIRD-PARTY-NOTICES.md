@@ -40,6 +40,10 @@ SOFTWARE.
   Ideia da checagem de plano de vídeo extra (MPO) e da leitura do modo de apresentação do PresentMon, reescritas para o Lotus a partir da documentação do Windows (`MpoProbe`, `PresentModes`). O CapFrameX não é distribuído com o Lotus.
   > Copyright (c) 2018-2026 DevTechProfile. Permission is hereby granted, free of charge, to any person obtaining a copy of this software ... (texto completo da licença MIT no link acima).
 
+- **winutil**, por Chris Titus Tech (CT Tech Group LLC), licença MIT: https://github.com/ChrisTitusTech/winutil (commit `70c23c80641d7370532af2f619b2842658600842`)
+  A lista de ajustes (`config/tweaks.json`) foi usada para escolher os itens do catálogo de otimizações (atalhos das Teclas de Aderência, aceleração do mouse, "Finalizar tarefa" na barra de tarefas). O Lotus reescreve cada item no próprio motor (só HKCU/usuário atual, detectar, registrar, desfazer); nenhum script do winutil é executado ou distribuído.
+  > Copyright (c) 2022 CT Tech Group LLC. Permission is hereby granted, free of charge, to any person obtaining a copy of this software ... (texto completo da licença MIT no link acima).
+
 ## Dependências (NuGet)
 
 - Microsoft.WindowsAppSDK e Microsoft.Windows.SDK.BuildTools: licença da Microsoft (MIT / Windows SDK).

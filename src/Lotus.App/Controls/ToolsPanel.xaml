@@ -323,6 +323,7 @@
       </Grid>
      </DataTemplate></ItemsControl.ItemTemplate>
     </ItemsControl>
+    <TextBlock Text="{Binding Text[CatalogCredit]}" Style="{StaticResource CaptionStyle}" Opacity="0.75" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-features-credit"/>
    </StackPanel>
   </Border>
   <!-- Why did my game close? Windows' crash records matched with what happened at the same moment -->

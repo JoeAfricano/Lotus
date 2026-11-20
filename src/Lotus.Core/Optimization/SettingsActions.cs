@@ -7,12 +7,12 @@ public interface IUserRegistry
     void WriteDword(string path, string name, int? value); // null deletes the value
 }
 
-public sealed class RegistryDwordAction(IUserRegistry registry, string actionId, string featureId, string path, string name, int desired, int absentMeans) : IOptimizationAction
+public sealed class RegistryDwordAction(IUserRegistry registry, string actionId, string featureId, string path, string name, int desired, int absentMeans, Func<bool>? supported = null) : IOptimizationAction
 {
     private const string Absent = "<absent>";
     public string FeatureId => featureId;
     public ActionDefinition Definition => new(actionId, "FeatAdvice" + featureId, ActionRisk.Low, @"HKCU\" + path, true);
-    public Eligibility Eligibility => Eligibility.Eligible;
+    public Eligibility Eligibility => supported is null || supported() ? Eligibility.Eligible : Eligibility.Unsupported;
     public bool CanAttributeRecovery => false; // The registry has no writer token; an interrupted write stays uncertain.
     public ConfigurationState Detect() => new(registry.ReadDword(path, name)?.ToString() ?? Absent, 0, null);
     // Already effective (including the Windows default when the value is absent) means no change and no write.
@@ -32,6 +32,12 @@ public sealed class RegistryDwordAction(IUserRegistry registry, string actionId,
     // Settings › Gaming › Game Mode. Default on.
     public static RegistryDwordAction GameMode(IUserRegistry r) =>
         new(r, "windows.gamebar.game-mode.v1", "gamemode", @"Software\Microsoft\GameBar", "AutoGameModeEnabled", desired: 1, absentMeans: 1);
+    // Windows 11 23H2+ › Settings › System › For developers › "End task": adds "End task" to the taskbar right-click menu,
+    // so a frozen game can be closed without Task Manager. Default off. (Catalog item from winutil "EndTaskOnTaskbar".)
+    public const string EndTaskPath = @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings";
+    public const int EndTaskMinBuild = 22631;
+    public static RegistryDwordAction TaskbarEndTask(IUserRegistry r, Func<bool> supported) =>
+        new(r, "windows.taskbar.end-task.v1", CatalogFeatures.TaskbarEndTask, EndTaskPath, "TaskbarEndTask", desired: 1, absentMeans: 0, supported);
 }
 
 // Primary display refresh rate: switches to the highest rate the driver offers at the current resolution.

@@ -613,6 +613,13 @@ Current conditions: {1}</value></data>
   <data name="FeatAdvicebackground-recording" xml:space="preserve"><value>Continuously records the last minutes of gameplay, using GPU and disk while you play.</value></data>
   <data name="FeatAdvicewindowed-optimizations" xml:space="preserve"><value>Reduces latency for DirectX 10/11 games in windowed or borderless mode.</value></data>
   <data name="FeatAdvicehags" xml:space="preserve"><value>The effect depends on GPU and driver; compare using the Lotus benchmark. Requires a restart.</value></data>
+  <data name="FeatNameaccessibility-hotkeys" xml:space="preserve"><value>Sticky Keys shortcuts</value></data>
+  <data name="FeatAdviceaccessibility-hotkeys" xml:space="preserve"><value>Pressing Shift 5 times (or holding Shift or Num Lock) opens a Windows prompt that pulls you out of the game. Turns off only the shortcuts; anyone using the accessibility features keeps them.</value></data>
+  <data name="FeatNamemouse-acceleration" xml:space="preserve"><value>Mouse acceleration (Enhance pointer precision)</value></data>
+  <data name="FeatAdvicemouse-acceleration" xml:space="preserve"><value>When off, the same hand movement always moves your aim the same distance. Applies to the desktop and to games that use the Windows cursor; games with raw input already ignore this option.</value></data>
+  <data name="FeatNametaskbar-end-task" xml:space="preserve"><value>"End task" in the taskbar</value></data>
+  <data name="FeatAdvicetaskbar-end-task" xml:space="preserve"><value>Right-click a frozen game on the taskbar and close it without opening Task Manager. Windows 11 23H2 or newer.</value></data>
+  <data name="CatalogCredit" xml:space="preserve"><value>Catalog adjustments based on the winutil list (Chris Titus Tech, MIT license), rewritten in Lotus: your user only, no admin, with Undo.</value></data>
   <data name="HwCardTitle" xml:space="preserve"><value>Hardware check</value></data>
   <data name="HwIntro" xml:space="preserve"><value>Looks for settings that hold your hardware back: monitor refresh, memory, CPU and GPU limits. Read-only.</value></data>
   <data name="HwCheck" xml:space="preserve"><value>Check hardware</value></data>
