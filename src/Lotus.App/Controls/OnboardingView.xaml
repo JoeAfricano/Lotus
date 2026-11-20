@@ -97,9 +97,6 @@
       </StackPanel>
       <TextBlock Text="{Binding Text[ObStageAppsLine]}" FontSize="12" Foreground="#E6D6DE" TextWrapping="Wrap"/>
      </StackPanel>
-      </Border>
-      <TextBlock Text="{Binding Text[ObStageTourNote]}" FontSize="12" Foreground="#B8A5B0" TextWrapping="Wrap"/>
-     </StackPanel>
     </Grid>
    </Grid>
    <!-- Header: step counter, progress and skip -->
