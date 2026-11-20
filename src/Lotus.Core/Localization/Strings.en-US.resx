@@ -619,6 +619,7 @@ Current conditions: {1}</value></data>
   <data name="FeatAdvicemouse-acceleration" xml:space="preserve"><value>When off, the same hand movement always moves your aim the same distance. Applies to the desktop and to games that use the Windows cursor; games with raw input already ignore this option.</value></data>
   <data name="FeatNametaskbar-end-task" xml:space="preserve"><value>"End task" in the taskbar</value></data>
   <data name="FeatAdvicetaskbar-end-task" xml:space="preserve"><value>Right-click a frozen game on the taskbar and close it without opening Task Manager. Windows 11 23H2 or newer.</value></data>
+  <data name="FeatUnavailableEndTask" xml:space="preserve"><value>Requires Windows 11 23H2 or newer. This PC does not have it.</value></data>
   <data name="CatalogCredit" xml:space="preserve"><value>Catalog adjustments based on the winutil list (Chris Titus Tech, MIT license), rewritten in Lotus: your user only, no admin, with Undo.</value></data>
   <data name="HwCardTitle" xml:space="preserve"><value>Hardware check</value></data>
   <data name="HwIntro" xml:space="preserve"><value>Looks for settings that hold your hardware back: monitor refresh, memory, CPU and GPU limits. Read-only.</value></data>

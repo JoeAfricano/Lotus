@@ -351,7 +351,7 @@ public sealed class PowerProfilesViewModel : ObservableObject
         foreach (var f in features)
         {
             var desired = GameFeatureRules.Desired(f.Id, profileId);
-            var advice = f.State == FeatureState.Unavailable ? Text["FeatUnavailableAdvice"]
+            var advice = f.State == FeatureState.Unavailable ? Text[GameFeatureRules.UnavailableKey(f.Id)]
                 : desired is null ? Text["FeatAdvice" + f.Id] : Text[desired == FeatureState.On ? "FeatRecommendOn" : "FeatRecommendOff"] + " " + Text["FeatAdvice" + f.Id];
             var attention = GameFeatureRules.NeedsAttention(f, profileId);
             var actionable = featureEngines.ContainsKey(f.Id);

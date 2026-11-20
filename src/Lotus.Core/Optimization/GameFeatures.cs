@@ -31,6 +31,8 @@ public static class GameFeatureRules
         var effective = feature.State == FeatureState.SystemDefault ? DefaultOf(feature.Id) : feature.State;
         return effective is not null && effective != desired;
     }
+    // "End task" exists only on Windows 11 23H2+: say so instead of "could not read".
+    public static string UnavailableKey(string featureId) => featureId == CatalogFeatures.TaskbarEndTask ? "FeatUnavailableEndTask" : "FeatUnavailableAdvice";
     // Game Mode, the accessibility shortcuts and mouse acceleration are on by default; background recording and End task are off. Others vary by Windows build/driver.
     public static FeatureState? DefaultOf(string featureId) => featureId switch
     {

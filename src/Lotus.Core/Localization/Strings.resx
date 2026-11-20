@@ -619,6 +619,7 @@ Condições atuais: {1}</value></data>
   <data name="FeatAdvicemouse-acceleration" xml:space="preserve"><value>Desligada, o mesmo movimento da mão sempre leva a mira à mesma distância. Vale para a área de trabalho e para jogos que usam o cursor do Windows; jogos com entrada direta (raw input) já ignoram essa opção.</value></data>
   <data name="FeatNametaskbar-end-task" xml:space="preserve"><value>"Finalizar tarefa" na barra de tarefas</value></data>
   <data name="FeatAdvicetaskbar-end-task" xml:space="preserve"><value>Clique com o botão direito no jogo travado na barra de tarefas e feche sem abrir o Gerenciador de Tarefas. Windows 11 23H2 ou mais novo.</value></data>
+  <data name="FeatUnavailableEndTask" xml:space="preserve"><value>Exige Windows 11 23H2 ou mais novo. Neste PC o item não existe.</value></data>
   <data name="CatalogCredit" xml:space="preserve"><value>Ajustes do catálogo baseados na lista do winutil (Chris Titus Tech, licença MIT), reescritos no Lotus: só no seu usuário, sem administrador, com Desfazer.</value></data>
   <data name="HwCardTitle" xml:space="preserve"><value>Verificação de hardware</value></data>
   <data name="HwIntro" xml:space="preserve"><value>Procura configurações que limitam o seu hardware: taxa do monitor, memória, limites de CPU e GPU. Somente leitura.</value></data>

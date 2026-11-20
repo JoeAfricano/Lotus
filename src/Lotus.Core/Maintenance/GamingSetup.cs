@@ -74,7 +74,7 @@ public sealed partial class GamingSetupViewModel(IGameFeatureInventory features,
         foreach (var f in list.Where(f => f.Id != DisplayRefreshAction.FeatureId))
         {
             var desired = GameFeatureRules.Desired(f.Id, Profile);
-            var advice = f.State == FeatureState.Unavailable ? Text["FeatUnavailableAdvice"]
+            var advice = f.State == FeatureState.Unavailable ? Text[GameFeatureRules.UnavailableKey(f.Id)]
                 : desired is null ? Text["FeatAdvice" + f.Id] : Text[desired == FeatureState.On ? "FeatRecommendOn" : "FeatRecommendOff"] + " " + Text["FeatAdvice" + f.Id];
             var attention = GameFeatureRules.NeedsAttention(f, Profile);
             var has = actions?.HasAction(f.Id) == true; var applied = actions?.IsApplied(f.Id) == true;
