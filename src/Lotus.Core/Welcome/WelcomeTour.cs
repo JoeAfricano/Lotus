@@ -37,6 +37,10 @@ public sealed record WhatsNewNotes(string Version, string Name, string Date, IRe
 // Reads the current version's section of the CHANGELOG shipped with the app (no internet).
 public static class WhatsNewReader
 {
+    // Changelog files to try for a language, best first (CHANGELOG.en-US.md for English, then CHANGELOG.md).
+    public static IReadOnlyList<string> Files(string? language) =>
+        language is { } l && l.StartsWith("en", StringComparison.OrdinalIgnoreCase) ? ["CHANGELOG.en-US.md", "CHANGELOG.md"] : ["CHANGELOG.md"];
+
     public static WhatsNewNotes? Read(string? markdown, string version)
     {
         if (string.IsNullOrWhiteSpace(markdown) || string.IsNullOrWhiteSpace(version)) return null;

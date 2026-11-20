@@ -48,8 +48,13 @@ public sealed partial class MainWindow
         WhatsNewNotes? notes = null;
         try
         {
-            var path = System.IO.Path.Combine(AppContext.BaseDirectory, "CHANGELOG.md");
-            if (File.Exists(path)) notes = WhatsNewReader.Read(File.ReadAllText(path), AppVersionText());
+            // Notes in the app's language: English has its own file (from the beta on); Portuguese, or no English
+            // notes for this version, falls back to the main CHANGELOG.
+            foreach (var file in WhatsNewReader.Files(text.Language))
+            {
+                var path = System.IO.Path.Combine(AppContext.BaseDirectory, file);
+                if (File.Exists(path) && WhatsNewReader.Read(File.ReadAllText(path), AppVersionText()) is { } found) { notes = found; break; }
+            }
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "What's new notes not read"); }
         return new WelcomeTourViewModel(text, notes, includeSetup: firstRun);

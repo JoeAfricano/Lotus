@@ -7,7 +7,7 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 ### Anúncio importante
 - **O Lotus saiu da alpha: esta é a Lotus 1.0 Beta.** Tudo o que foi construído nas alphas (otimização reversível, Meus Jogos, ajustes gráficos por jogo, Lotus Score, Ferramentas, Backup de saves e o diário) agora está maduro para o dia a dia. Obrigado a todo mundo que testou!
 - **Atualizações mais espaçadas.** A partir de agora as versões saem com mais tempo entre uma e outra: cada uma mais completa e mais testada. Correções importantes continuam saindo logo que precisar.
-- **Seu Lotus atualiza sozinho para a beta.** Por dentro, o número desta versão é 2.0.0, para que quem está na alpha receba o aviso normalmente. Na tela, nas notas e no GitHub ela aparece como "1.0 Beta".
+- **Seu Lotus atualiza sozinho para a beta**, como nas outras versões: seus jogos, diário, conquistas e configurações continuam como estão.
 
 ### Novo
 - **Abertura animada.** Uma flor de lótus desenhada no próprio app se abre pétala por pétala, com brilho dourado e a marca. Completa (cerca de 3 s) na primeira vez e depois de cada atualização, curta (cerca de 1,4 s) nas outras. Clique ou Esc pula; Configurações › "Animação de abertura" desliga.
