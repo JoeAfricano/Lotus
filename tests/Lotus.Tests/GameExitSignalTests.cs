@@ -28,10 +28,10 @@ public sealed class GameExitSignalTests
     [Fact] public async Task Real_process_exit_requests_a_rescan_without_waiting_for_the_periodic_poll()
     {
         if(!OperatingSystem.IsWindows())return;
-        var info=new ProcessStartInfo(Path.Combine(Environment.SystemDirectory,@"WindowsPowerShell\v1.0\powershell.exe"))
+        // cmd + ping (~1 s) instead of PowerShell: a cold PowerShell start took 14 s on GitHub's runners.
+        var info=new ProcessStartInfo(Path.Combine(Environment.SystemDirectory,"cmd.exe"))
         { UseShellExecute=false,CreateNoWindow=true };
-        info.ArgumentList.Add("-NoProfile");info.ArgumentList.Add("-NonInteractive");info.ArgumentList.Add("-Command");
-        info.ArgumentList.Add("Start-Sleep -Milliseconds 600");
+        info.ArgumentList.Add("/c");info.ArgumentList.Add("ping -n 2 127.0.0.1 >nul");
         using var process=Process.Start(info)!;
         using var stop=new CancellationTokenSource(TimeSpan.FromSeconds(10));
         var exited=await GameExitSignal.WaitAsync(Identity(process),stop.Token);
