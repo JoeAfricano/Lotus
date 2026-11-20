@@ -299,7 +299,8 @@ public sealed partial class WelcomeTourView : UserControl
         SceneTag.Visibility = page.Id is "welcome" or WelcomeTourViewModel.WhatsNewId || page.IsSetup ? Visibility.Collapsed : Visibility.Visible;
         if (!MotionEnabled) return;
         Keys(sb, root, "Opacity", (0, 0), (0.35, 1), (Cycle - 0.45, 1), (Cycle, 0));
-        loop = sb; sb.Begin();
+        try { sb.Begin(); loop = sb; }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Welcome scene {Page} not animated", page.Id); root.Opacity = 1; } // the scene still shows, just still
     }
 
     private bool artLoaded;
@@ -375,7 +376,10 @@ public sealed partial class WelcomeTourView : UserControl
             HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 0, 10),
             Child = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6, Children = { Icon("", 11, "#FFFFFF"), Label(Text("WtScPlay"), 12, "#FFFFFF", bold: true) } },
         };
-        first!.Children.Add(play); Pop(sb, play, 1.9);
+        // One animation per property: the scale keys below already pop the button in (Pop would animate ScaleX/Y twice,
+        // which makes the storyboard fail when the page opens).
+        first!.Children.Add(play);
+        Keys(sb, play, "Opacity", (0, 0), (1.9, 0), (2.15, 1));
         var tf = Tf(play);
         Keys(sb, tf, "ScaleX", (0, 0.6), (1.9, 0.6), (2.25, 1), (2.9, 1), (3.15, 1.1), (3.45, 1));
         Keys(sb, tf, "ScaleY", (0, 0.6), (1.9, 0.6), (2.25, 1), (2.9, 1), (3.15, 1.1), (3.45, 1));
