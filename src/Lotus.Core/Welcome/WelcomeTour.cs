@@ -109,7 +109,7 @@ public sealed class WelcomeTourViewModel : ObservableObject
     public bool IsLast => index == Pages.Count - 1;
     public string NextLabel => Text[IsLast ? "WtFinish" : index == 0 ? "WtStart" : "WtNext"];
     public string StepText => Text.Format("ObStepOf", index + 1, Pages.Count);
-    public string NotesTitle => Notes is null ? Text["WtNewsNone"] : Text.Format("WtNewsVersion", Notes.Version, Notes.Name.Length > 0 ? Notes.Name : "Lotus");
+    public string NotesTitle => Notes is null ? Text["WtNewsNone"] : Text.Format("WtNewsVersion", Notes.Name.Length > 0 && Notes.Name != "Lotus" ? Notes.Name : "Lotus " + Lotus.Core.Updates.UpdateVersions.Display(Notes.Version));
 
     public void Open(WelcomeOpening opening) { index = opening == WelcomeOpening.WhatsNew ? Pages.Count - 1 : 0; Notify(); }
     public void Next() { if (!IsLast) Index = index + 1; }

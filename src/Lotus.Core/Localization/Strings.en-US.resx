@@ -1181,7 +1181,7 @@ Current conditions: {1}</value></data>
   <data name="WtFinish" xml:space="preserve"><value>Time to play!</value></data>
   <data name="WtClose" xml:space="preserve"><value>Close</value></data>
   <data name="WtTryHint" xml:space="preserve"><value>The guide closes and you land right on that screen.</value></data>
-  <data name="WtNewsVersion" xml:space="preserve"><value>Version {0} "{1}"</value></data>
+  <data name="WtNewsVersion" xml:space="preserve"><value>What's new in {0}</value></data>
   <data name="WtNewsNone" xml:space="preserve"><value>The notes for this version were not found on this PC.</value></data>
   <data name="WtNewsAll" xml:space="preserve"><value>See all versions</value></data>
   <data name="WtWelcome" xml:space="preserve"><value>Welcome to Lotus</value></data>

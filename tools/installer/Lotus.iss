@@ -5,6 +5,9 @@
 #ifndef AppVersion
   #define AppVersion "0.1.0-alpha"
 #endif
+#ifndef DisplayVersion
+  #define DisplayVersion AppVersion
+#endif
 #ifndef SourceDir
   #define SourceDir "..\..\artifacts\dist\Lotus"
 #endif
@@ -22,7 +25,7 @@
 AppId={{7B3E2C1A-5D4F-4E8B-9A6C-1F0D2E3B4A5C}
 AppName=Lotus
 AppVersion={#AppVersion}
-AppVerName=Lotus {#AppVersion}
+AppVerName=Lotus {#DisplayVersion}
 AppPublisher=Joeafricano
 AppCopyright=Lotus · código aberto · feito por Joeafricano com o Claude
 AppComments=Seu PC pronto para jogar: otimização reversível, Meus Jogos, Game list, Lotus Score e ferramentas.
@@ -86,8 +89,8 @@ pt.FinishedLabel=O Lotus está instalado. Seus dados de jogador ficam guardados 
 en.FinishedLabel=Lotus is installed. Your player data stays on your PC and nothing in Windows changes without your confirmation.
 pt.FinishedLabelNoIcons=O Lotus está instalado. Seus dados de jogador ficam guardados no seu PC e nada no Windows muda sem você confirmar.
 en.FinishedLabelNoIcons=Lotus is installed. Your player data stays on your PC and nothing in Windows changes without your confirmation.
-pt.WelcomeLabel2=Este assistente vai instalar o [name/ver] neste PC.%n%nSeu PC pronto para jogar. Nada no Windows muda sem você confirmar, e tudo que o Lotus mexe pode ser desfeito.%n%nVersão alpha: obrigado por testar!
-en.WelcomeLabel2=This will install [name/ver] on this PC.%n%nYour PC ready to play. Nothing in Windows changes without your confirmation, and everything Lotus changes can be undone.%n%nAlpha version: thanks for testing!
+pt.WelcomeLabel2=Este assistente vai instalar o [name/ver] neste PC.%n%nSeu PC pronto para jogar. Nada no Windows muda sem você confirmar, e tudo que o Lotus mexe pode ser desfeito.%n%nVersão beta: obrigado por jogar com o Lotus!
+en.WelcomeLabel2=This will install [name/ver] on this PC.%n%nYour PC ready to play. Nothing in Windows changes without your confirmation, and everything Lotus changes can be undone.%n%nBeta version: thanks for playing with Lotus!
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:DesktopIcon}"; Flags: checkedonce
@@ -181,7 +184,7 @@ begin
   if IsUpdate() then
   begin
     Text := CustomMessage('UpdateWelcome');
-    StringChangeEx(Text, '[ver]', '{#AppVersion}', True);
+    StringChangeEx(Text, '[ver]', '{#DisplayVersion}', True);
     WizardForm.WelcomeLabel2.Caption := Text;
   end;
 end;

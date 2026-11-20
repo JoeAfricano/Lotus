@@ -21,7 +21,7 @@ public enum UpdateState { Idle, Checking, UpToDate, Available, Downloading, Veri
 
 public static class UpdateVersions
 {
-    // "v0.7.0-alpha", "0.7.0", "v1.2" → 0.7.0 / 1.2.0 (suffixes such as -alpha are ignored: every build so far is alpha).
+    // "v0.7.0-alpha", "0.7.0", "v1.2" → 0.7.0 / 1.2.0 (suffixes such as -alpha or -beta are ignored).
     public static Version? Parse(string? tag)
     {
         if (string.IsNullOrWhiteSpace(tag)) return null;
@@ -30,6 +30,29 @@ public static class UpdateVersions
         return new Version(v.Major, v.Minor, Math.Max(0, v.Build));
     }
     public static bool IsNewer(Version candidate, Version current) => candidate > new Version(current.Major, current.Minor, Math.Max(0, current.Build));
+
+    // Name and number are separate: the number (Directory.Build.props <Version>) only has to keep growing for the updater;
+    // the name players see is <LotusDisplayVersion> (AppEdition.Name) and the GitHub release title. This rule is only the
+    // fallback when no name is given. Alphas were 0.x and 1.x; the beta started at 2.0.0 inside (so alpha installs still
+    // update) and is shown one major lower: 2.0.0 → "1.0 Beta", 2.1.0 → "1.1 Beta", 2.1.2 → "1.1.2 Beta".
+    public static string Display(Version v)
+    {
+        var patch = Math.Max(0, v.Build);
+        return v.Major >= 2
+            ? $"{v.Major - 1}.{v.Minor}{(patch > 0 ? "." + patch : "")} Beta"
+            : $"{v.Major}.{v.Minor}.{patch} alpha";
+    }
+    public static string Display(string? tag) => Parse(tag) is { } v ? Display(v) : tag?.Split('+')[0] ?? "";
+}
+
+// The running app's version: Number for comparisons, Name for people ("1.0 Beta").
+public static class AppEdition
+{
+    private static System.Reflection.Assembly? App => System.Reflection.Assembly.GetEntryAssembly();
+    public static string Number => (App?.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false).FirstOrDefault() as System.Reflection.AssemblyInformationalVersionAttribute)?.InformationalVersion.Split('+')[0] ?? "";
+    public static string Name => NameFrom(App?.GetCustomAttributes(typeof(System.Reflection.AssemblyMetadataAttribute), false).OfType<System.Reflection.AssemblyMetadataAttribute>(), Number);
+    public static string NameFrom(IEnumerable<System.Reflection.AssemblyMetadataAttribute>? metadata, string number) =>
+        metadata?.FirstOrDefault(m => m.Key == "LotusDisplayVersion")?.Value is { Length: > 0 } name ? name : UpdateVersions.Display(number);
 }
 
 // Settings › Atualizações. Checks GitHub on request (and quietly at start), downloads with progress, checks the
@@ -44,7 +67,8 @@ public sealed partial class UpdateViewModel(IUpdateSource source, IUpdateInstall
 
     public ITextCatalog Text { get; } = text;
     public Version Current { get; } = current;
-    public string CurrentText => Text.Format("UpCurrent", $"{Current.Major}.{Current.Minor}.{Math.Max(0, Current.Build)}-alpha");
+    public string? CurrentName { get; init; } // the installed version's name ("1.0 Beta"); null → derived from Current
+    public string CurrentText => Text.Format("UpCurrent", CurrentName ?? UpdateVersions.Display(Current));
     [ObservableProperty, NotifyPropertyChangedFor(nameof(Busy), nameof(IsDownloading), nameof(HasUpdate), nameof(CanInstall), nameof(CanCheck), nameof(IsReady))] private UpdateState state;
     [ObservableProperty, NotifyPropertyChangedFor(nameof(HasUpdate), nameof(LatestTitle), nameof(LatestDate), nameof(LatestNotes), nameof(LatestSize))] private UpdateRelease? latest;
     [ObservableProperty] private double progress;       // 0..1
@@ -63,7 +87,7 @@ public sealed partial class UpdateViewModel(IUpdateSource source, IUpdateInstall
     public bool IsReady => State == UpdateState.Ready;
     public bool HasUpdate => Latest is not null && UpdateVersions.IsNewer(Latest.Version, Current);
     public bool CanInstall => HasUpdate && State is UpdateState.Available or UpdateState.Ready or UpdateState.Failed;
-    public string LatestTitle => Latest is { } l ? Text.Format("UpNewVersion", l.Tag.TrimStart('v')) : "";
+    public string LatestTitle => Latest is { } l ? (l.Title.StartsWith("Lotus ", StringComparison.OrdinalIgnoreCase) ? l.Title : Text.Format("UpNewVersion", UpdateVersions.Display(l.Version))) : "";
     public string LatestDate => Latest is { } l ? Text.Format("UpPublished", l.Published.ToLocalTime().ToString("d", Culture)) : "";
     public string LatestNotes => Latest?.Notes ?? "";
     public string LatestSize => Latest is { Size: > 0 } l ? Size(l.Size) : "";

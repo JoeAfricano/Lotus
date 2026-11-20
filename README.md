@@ -13,7 +13,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 ![.NET](https://img.shields.io/badge/.NET-10%20%C2%B7%20WinUI%203-512bd4)
 [![License](https://img.shields.io/badge/licen%C3%A7a-MIT-3b8c5a)](LICENSE)
 
-**Versão atual: 1.10.0-alpha** — abertura animada, guia "Conheça o Lotus" com idioma, conta, tema e Google Drive na primeira abertura, e página de Novidades após cada atualização. Veja o que mudou em [Novidades](CHANGELOG.md).
+**Versão atual: Lotus 1.0 Beta** — o Lotus saiu da alpha! Chegam a abertura animada, o guia "Conheça o Lotus" (idioma, conta, tema e Google Drive na primeira abertura) e a página de Novidades após cada atualização. A partir de agora as atualizações saem mais espaçadas, cada uma mais completa e testada. Veja o que mudou em [Novidades](CHANGELOG.md).
 
 [**Baixar o Lotus**](../../releases/latest) · [Novidades](CHANGELOG.md) · [Privacidade](PRIVACY.md) · [Reportar um problema](../../issues/new/choose)
 
@@ -73,7 +73,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 - Seus dados ficam em `%LOCALAPPDATA%\Lotus` e nunca são apagados pelo instalador.
 - Requer Windows 10 2004 (19041) ou mais novo, x64.
 
-> O Lotus está em **alpha**: as funções estão prontas para uso diário, mas ainda podem mudar. Sugestões e problemas são muito bem-vindos em [Issues](../../issues).
+> O Lotus está em **beta** (Lotus 1.0 Beta): as funções estão prontas para uso diário e as atualizações saem mais espaçadas, cada uma mais completa e testada. Sugestões e problemas são muito bem-vindos em [Issues](../../issues).
 ## Funções em detalhe
 
 ### Otimizar o PC

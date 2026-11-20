@@ -13,12 +13,16 @@ else { Remove-Item (Join-Path $out 'google-oauth.json') -ErrorAction SilentlyCon
 $version = (Get-Item (Join-Path $out 'Lotus.App.exe')).VersionInfo.ProductVersion -replace '\+.*$', ''
 $numeric = (Get-Item (Join-Path $out 'Lotus.App.exe')).VersionInfo.FileVersion
 $setupName = ($Name -replace '\s+', '-') + '-Setup'
+# Name players see ("1.0 Beta"), separate from the number the updater compares (see Directory.Build.props).
+$display = ([xml](Get-Content (Join-Path $root 'Directory.Build.props') -Raw)).Project.PropertyGroup.LotusDisplayVersion | Where-Object { $_ } | Select-Object -First 1
+if (-not $display) { $display = $version }
 $iscc = @("$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe", "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe", "$env:ProgramFiles\Inno Setup 6\ISCC.exe") | Where-Object { Test-Path $_ } | Select-Object -First 1
 if (-not $iscc) { throw "Inno Setup 6 not found. Install it with: winget install JRSoftware.InnoSetup" }
-& $iscc "/DAppVersion=$version" "/DNumericVersion=$numeric" "/DSourceDir=$out" "/DSetupName=$setupName" "/DOutputDir=$(Join-Path $root 'artifacts\dist')" (Join-Path $PSScriptRoot 'installer\Lotus.iss')
+& $iscc "/DAppVersion=$version" "/DDisplayVersion=$display" "/DNumericVersion=$numeric" "/DSourceDir=$out" "/DSetupName=$setupName" "/DOutputDir=$(Join-Path $root 'artifacts\dist')" (Join-Path $PSScriptRoot 'installer\Lotus.iss')
 if ($LASTEXITCODE -ne 0) { throw "ISCC failed ($LASTEXITCODE)" }
 $setup = Join-Path $root "artifacts\dist\$setupName-$version.exe"
 $hash = (Get-FileHash $setup -Algorithm SHA256).Hash
 Set-Content -Path "$setup.sha256" -Value "$hash  $(Split-Path $setup -Leaf)" -Encoding ascii
+Write-Output "Version:   Lotus $display ($version)"
 Write-Output "Installer: $setup ($([math]::Round((Get-Item $setup).Length / 1MB)) MB)"
 Write-Output "SHA256:    $hash"

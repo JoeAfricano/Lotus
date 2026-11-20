@@ -32,8 +32,8 @@ public sealed class SectionViewModel
     public string Glyph => Section.Glyph;
     public string NextStep => Section.NextStep;
     public string LogLocation => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Logs");
-    // "Lotus · 0.1.0 alpha" from the informational version (0.1.0-alpha).
-    public string AppVersion => "Lotus · " + ((System.Reflection.Assembly.GetEntryAssembly()?.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false).FirstOrDefault() as System.Reflection.AssemblyInformationalVersionAttribute)?.InformationalVersion.Split('+')[0].Replace("-", " ") ?? "—");
+    // "Lotus · 1.0 Beta": the name from Directory.Build.props, not the internal number (2.0.0-beta).
+    public string AppVersion => "Lotus · " + (Lotus.Core.Updates.AppEdition.Name is { Length: > 0 } name ? name : "—");
     public string Planned => Text["Planned"];
     public bool MotionEnabled { get; }
     public IReadOnlyList<MetricPlaceholder> Metrics { get; }

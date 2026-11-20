@@ -39,6 +39,27 @@ public sealed class UpdateTests : IDisposable
         Assert.Null(UpdateVersions.Parse("nightly"));
     }
 
+    // Name and number are separate: the beta is 2.0.0 inside (newer than every alpha) and "1.0 Beta" on screen.
+    [Theory]
+    [InlineData("2.0.0-beta", "1.0 Beta")] [InlineData("v2.1.0-beta", "1.1 Beta")] [InlineData("2.1.2", "1.1.2 Beta")] [InlineData("1.9.0-alpha", "1.9.0 alpha")]
+    public void NumbersHaveFriendlyNames(string tag, string expected) => Assert.Equal(expected, UpdateVersions.Display(tag));
+
+    [Fact] public void BetaReachesAlphaInstalls() => Assert.True(UpdateVersions.IsNewer(UpdateVersions.Parse("v2.0.0-beta")!, UpdateVersions.Parse("1.10.0")!));
+
+    [Fact] public void ConfiguredNameWinsOverTheNumber()
+    {
+        Assert.Equal("1.0 Beta", AppEdition.NameFrom([new System.Reflection.AssemblyMetadataAttribute("LotusDisplayVersion", "1.0 Beta")], "2.0.0-beta"));
+        Assert.Equal("1.0 Beta", AppEdition.NameFrom([], "2.0.0-beta"));
+    }
+
+    [Fact] public void ShippedBuildHasADisplayName()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "Directory.Build.props"))) dir = dir.Parent;
+        Assert.NotNull(dir);
+        Assert.Matches("<LotusDisplayVersion>[^<]+</LotusDisplayVersion>", File.ReadAllText(Path.Combine(dir!.FullName, "Directory.Build.props")));
+    }
+
     [Fact] public async Task NewVersionIsFoundDownloadedCheckedAndHandedToTheInstaller()
     {
         var payload = Encoding.UTF8.GetBytes(new string('x', 5000));
