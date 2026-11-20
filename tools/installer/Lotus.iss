@@ -24,7 +24,7 @@
 [Setup]
 AppId={{7B3E2C1A-5D4F-4E8B-9A6C-1F0D2E3B4A5C}
 AppName=Lotus
-AppVersion={#AppVersion}
+AppVersion={#DisplayVersion}
 AppVerName=Lotus {#DisplayVersion}
 AppPublisher=Joeafricano
 AppCopyright=Lotus · código aberto · feito por Joeafricano com o Claude

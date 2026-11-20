@@ -45,7 +45,7 @@ public sealed class LotusSetup(string? installDir = null, string? startMenuDir =
         using (var k = Registry.CurrentUser.CreateSubKey(uninstallKey))
         {
             k.SetValue("DisplayName", "Lotus"); k.SetValue("Publisher", "Lotus");
-            k.SetValue("DisplayVersion", typeof(LotusSetup).Assembly.GetName().Version?.ToString(3) ?? "1.0.0");
+            k.SetValue("DisplayVersion", Lotus.Core.Updates.AppEdition.Name is { Length: > 0 } name ? name : typeof(LotusSetup).Assembly.GetName().Version?.ToString(3) ?? "1.0.0"); // "1.0 Beta" in Installed apps
             k.SetValue("DisplayIcon", exe); k.SetValue("InstallLocation", InstallDir);
             k.SetValue("UninstallString", $"\"{exe}\" {UninstallArgument}");
             k.SetValue("InstallDate", DateTime.Now.ToString("yyyyMMdd"));
