@@ -5,8 +5,8 @@ Pedido do José (20/11/2026): boas-vindas no estilo do PowerToys (uma página po
 ## Fluxo
 
 1. **Intro em vídeo** (`Controls/IntroView`): completa (7,4 s) na primeira abertura e depois de cada atualização; corte curto (2,4 s) nas outras. Clique ou Esc pula. Configurações › "Animação de abertura" desliga.
-2. **Primeira vez:** perfil do jogador (`OnboardingView`: boas-vindas, perfil, objetivo, cores, programas). O antigo passo "tour" saiu dele.
-3. **Conheça o Lotus** (`Controls/WelcomeTourView`): abre logo depois do perfil, na primeira vez. Páginas: Bem-vindo, Otimizar meu PC, Meus Jogos, Lotus Score, Ferramentas, Backup de saves, Meu diário, Novidades.
+2. **Primeira vez:** só o guia **Conheça o Lotus** (`Controls/WelcomeTourView`): Bem-vindo, **Seu perfil** (conta Steam ou nome e foto próprios), **Seu visual** (modo, temas prontos e cor de destaque, com prévia ao vivo), Otimizar meu PC, Meus Jogos, Lotus Score, Ferramentas, Backup de saves, Meu diário e Novidades. Perfil e visual são salvos ao fechar o guia. A tela antiga de perfil (`OnboardingView`) ficou só para Configurações › Editar perfil; objetivo e programas recomendados não são perguntados na primeira vez (objetivo fica "Equilibrado").
+3. Configurações › "Rever boas-vindas" abre o guia com perfil e visual; "Conheça o Lotus" abre o guia sem eles.
 4. **Depois de uma atualização:** abre direto na página **Novidades**, com a seção da versão atual do `CHANGELOG.md` (vai junto com o app; sem internet).
 5. Nada abre por baixo da intro: o guia espera a intro terminar (`MainWindow.AfterIntro`).
 
@@ -31,7 +31,7 @@ Configurações › Aparência › "Conheça o Lotus" tem os botões **Ver o gui
 
 | Situação | Abre |
 |---|---|
-| Primeira vez (perfil ainda não feito) | guia completo, depois do perfil |
+| Primeira vez (perfil ainda não feito) | guia completo, com conta e visual |
 | Versão diferente da última vista (inclui quem atualiza de 1.9.0) | Novidades |
 | Mesma versão | nada |
 | Início minimizado na bandeja | nada |

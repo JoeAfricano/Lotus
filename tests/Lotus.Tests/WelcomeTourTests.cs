@@ -74,9 +74,10 @@ public sealed class WelcomeTourTests
     [Theory, InlineData("pt-BR"), InlineData("en-US")]
     public void EveryPageHasItsTextsAndFeaturePagesOpenAScreen(string language)
     {
-        var vm = new WelcomeTourViewModel(new TextCatalog(language), null);
-        Assert.Equal(8, vm.Pages.Count);
-        Assert.All(vm.Pages, p => { Assert.False(string.IsNullOrWhiteSpace(p.Title)); Assert.Equal(3, p.Points.Count); });
+        Assert.Equal(8, new WelcomeTourViewModel(new TextCatalog(language), null).Pages.Count);
+        var vm = new WelcomeTourViewModel(new TextCatalog(language), null, includeSetup: true);
+        Assert.Equal(["welcome", "profile", "theme"], vm.Pages.Take(3).Select(p => p.Id));
+        Assert.All(vm.Pages, p => { Assert.False(string.IsNullOrWhiteSpace(p.Title)); Assert.False(string.IsNullOrWhiteSpace(p.Headline)); Assert.False(string.IsNullOrWhiteSpace(p.Points[0])); });
         Assert.All(vm.Pages.Where(p => p.Id is not ("welcome" or "news")), p => Assert.NotNull(AppRoutes.Resolve(p.Route)));
     }
 

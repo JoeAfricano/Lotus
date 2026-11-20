@@ -11,6 +11,7 @@ public static class WelcomePlan
 {
     public const string TourArgument = "--welcome";      // opens the tour (also in a development instance, to test)
     public const string WhatsNewArgument = "--whats-new"; // opens straight on Novidades
+    public const string FirstRunArgument = "--first-run"; // test: the first-run guide with account and look pages
 
     // First run: the tour after the profile setup. After an update: Novidades. Seen version is the last one shown.
     public static WelcomeOpening Decide(bool onboarded, string? seenVersion, string currentVersion, bool minimized, bool devInstance, bool tourArgument, bool whatsNewArgument)
@@ -25,7 +26,10 @@ public static class WelcomePlan
 }
 
 // One page of the tour. Scene names the animated illustration the view draws; Route is where "Experimentar" goes.
-public sealed record WelcomePage(string Id, string Glyph, string Title, string Lead, IReadOnlyList<string> Points, string TryLabel, string? Route);
+public sealed record WelcomePage(string Id, string Glyph, string Title, string Headline, string Lead, IReadOnlyList<string> Points, string TryLabel, string? Route)
+{
+    public bool IsSetup => Id is WelcomeTourViewModel.ProfileId or WelcomeTourViewModel.ThemeId; // interactive first-run choices
+}
 
 public sealed record WhatsNewGroup(string Title, IReadOnlyList<string> Items);
 public sealed record WhatsNewNotes(string Version, string Name, string Date, IReadOnlyList<WhatsNewGroup> Groups);
@@ -76,18 +80,19 @@ public static class WhatsNewReader
 
 public sealed class WelcomeTourViewModel : ObservableObject
 {
-    public const string WhatsNewId = "news";
+    public const string WhatsNewId = "news", ProfileId = "profile", ThemeId = "theme";
+    // First run: account and look come right after the welcome (they used to be the separate profile setup).
     private static readonly (string Id, string Glyph, string? Route)[] Definitions =
     [
-        ("welcome", "", null), ("optimize", "", "optimize"), ("games", "", "games"), ("score", "", "lotusscore"),
+        ("welcome", "", null), (ProfileId, "\uE77B", null), (ThemeId, "\uE790", null), ("optimize", "", "optimize"), ("games", "", "games"), ("score", "", "lotusscore"),
         ("tools", "", "tools"), ("saves", "", "saves"), ("diary", "", "diary"), (WhatsNewId, "", null),
     ];
     private int index;
 
-    public WelcomeTourViewModel(ITextCatalog text, WhatsNewNotes? notes)
+    public WelcomeTourViewModel(ITextCatalog text, WhatsNewNotes? notes, bool includeSetup = false)
     {
         Text = text; Notes = notes;
-        Pages = [.. Definitions.Select(d => new WelcomePage(d.Id, d.Glyph, text["Wt" + Key(d.Id)], text["Wt" + Key(d.Id) + "Lead"],
+        Pages = [.. Definitions.Where(d => includeSetup || d.Id is not (ProfileId or ThemeId)).Select(d => new WelcomePage(d.Id, d.Glyph, text["Wt" + Key(d.Id)], text["Wt" + Key(d.Id) + "Headline"], text["Wt" + Key(d.Id) + "Lead"],
             [text["Wt" + Key(d.Id) + "P1"], text["Wt" + Key(d.Id) + "P2"], text["Wt" + Key(d.Id) + "P3"]], text["Wt" + Key(d.Id) + "Try"], d.Route))];
     }
 
