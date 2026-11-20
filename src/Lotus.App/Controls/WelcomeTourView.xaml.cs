@@ -507,10 +507,13 @@ public sealed partial class WelcomeTourView : UserControl
         }
         var center = new StackPanel { Spacing = 6, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
         center.Children.Add(Label((vm?.Text["WtNews"] ?? "").ToUpperInvariant(), 12, "#F07A9C", bold: true, spacing: 160, center: true));
-        var version = Label(vm?.Notes?.Version ?? "Lotus", 40, "#FFFFFF", bold: true, center: true);
+        // The name players know ("1.0 Beta"), never the internal number (2.0.0-beta) the updater compares.
+        var shown = vm?.Notes is { } n ? Lotus.Core.Updates.UpdateVersions.Display(n.Version) : "Lotus";
+        var version = Label(shown, 40, "#FFFFFF", bold: true, center: true);
         version.Foreground = (Brush)Application.Current.Resources["BrandGoldGradientBrush"];
         center.Children.Add(version); Pop(sb, version, 0.35);
-        if (vm?.Notes is { Name.Length: > 0 } notes) { var name = Label("“" + notes.Name + "”", 14, "#E6D6DE", center: true); center.Children.Add(name); Appear(sb, name, 0.9); }
+        if (vm?.Notes is { Name.Length: > 0 } notes && notes.Name != "Lotus" && !notes.Name.EndsWith(shown, StringComparison.OrdinalIgnoreCase))
+        { var name = Label("“" + notes.Name + "”", 14, "#E6D6DE", center: true); center.Children.Add(name); Appear(sb, name, 0.9); }
         grid.Children.Add(center);
         return grid;
     }
