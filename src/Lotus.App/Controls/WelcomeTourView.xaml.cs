@@ -25,6 +25,7 @@ public sealed partial class WelcomeTourView : UserControl
     private readonly List<Button> railItems = [];
 
     public bool MotionEnabled { get; set; } = true;
+    public Lotus.Core.Backup.BackupViewModel? Backup { get; set; } // lets the saves page connect Google Drive right there
     public bool IsOpen => Visibility == Visibility.Visible && !closing;
     public event EventHandler? Closed;
     public event EventHandler<string>? TryRequested; // route of the feature the player wants to try
@@ -158,7 +159,40 @@ public sealed partial class WelcomeTourView : UserControl
         if (page.Id == WelcomeTourViewModel.ThemeId) { BuildTheme(); return; }
         Details.Children.Add(new TextBlock { Text = vm.Text["WtHow"].ToUpperInvariant(), Style = (Style)Application.Current.Resources["EyebrowStyle"], Margin = new Thickness(0, 4, 0, 2) });
         foreach (var point in page.Points) Details.Children.Add(PointRow("", point));
+        if (page.Id == "saves") AddDriveCard();
         if (page.Route is not null) Details.Children.Add(new TextBlock { Text = vm.Text["WtTryHint"], Style = (Style)Application.Current.Resources["CaptionStyle"], Margin = new Thickness(0, 6, 0, 0) });
+    }
+
+    // Saves page: connect Google Drive without leaving the guide (same sign-in as Backup de saves; drive.file only).
+    private void AddDriveCard()
+    {
+        if (vm is null || Backup is not { CloudConfigured: true } backup) return;
+        var row = new Grid { ColumnSpacing = 14 };
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); row.ColumnDefinitions.Add(new ColumnDefinition()); row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        row.Children.Add(new FontIcon { Glyph = "", FontSize = 22, Foreground = (Brush)Application.Current.Resources["RoseBrush"], VerticalAlignment = VerticalAlignment.Center });
+        var text = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
+        text.Children.Add(new TextBlock { Text = backup.CloudConnected ? backup.CloudAccountText : vm.Text["WtSavesDriveTitle"], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
+        text.Children.Add(new TextBlock { Text = vm.Text[backup.CloudConnected ? "WtSavesDriveDone" : "WtSavesDriveHint"], Style = (Style)Application.Current.Resources["CaptionStyle"], TextWrapping = TextWrapping.Wrap });
+        Grid.SetColumn(text, 1); row.Children.Add(text);
+        if (backup.CloudCanConnect)
+        {
+            var connect = new Button { Content = vm.Text["WtSavesDrive"], Style = (Style)Application.Current.Resources["PrimaryButtonStyle"], MinHeight = 36, VerticalAlignment = VerticalAlignment.Center };
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(connect, "wt-drive-connect");
+            connect.Click += async (_, _) =>
+            {
+                connect.IsEnabled = false;
+                try { await backup.ConnectAsync(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Drive from welcome guide"); }
+                if (IsOpen && vm?.Current.Id == "saves") BuildDetails(vm.Current);
+            };
+            Grid.SetColumn(connect, 2); row.Children.Add(connect);
+        }
+        else row.Children.Add(PlacedIcon());
+        Details.Children.Add(new Border
+        {
+            Child = row, Padding = new Thickness(14, 12, 14, 12), CornerRadius = new CornerRadius(12), BorderThickness = new Thickness(1), Margin = new Thickness(0, 6, 0, 0),
+            Background = (Brush)Application.Current.Resources["BadgeBrush"], BorderBrush = (Brush)Application.Current.Resources["CardBorderBrush"],
+        });
+        static FontIcon PlacedIcon() { var done = new FontIcon { Glyph = "", FontSize = 16, Foreground = (Brush)Application.Current.Resources["SuccessBrush"], VerticalAlignment = VerticalAlignment.Center }; Grid.SetColumn(done, 2); return done; }
     }
 
     private void BuildNotes()

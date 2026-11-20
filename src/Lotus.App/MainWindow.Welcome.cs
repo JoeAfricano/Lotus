@@ -38,6 +38,7 @@ public sealed partial class MainWindow
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "What's new notes not read"); }
         Tour.MotionEnabled = !preferences.Current.ReduceMotion;
+        Tour.Backup = backup;
         Tour.Open(new WelcomeTourViewModel(text, notes, includeSetup: firstRun), opening == WelcomeOpening.None ? WelcomeOpening.Tour : opening, firstRun ? onboarding : null);
     }
 

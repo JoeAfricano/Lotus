@@ -1262,6 +1262,10 @@ Current conditions: {1}</value></data>
   <data name="WtThemeMode" xml:space="preserve"><value>Mode</value></data>
   <data name="WtThemeReady" xml:space="preserve"><value>Ready-made themes</value></data>
   <data name="WtThemeAccent" xml:space="preserve"><value>Accent color</value></data>
+  <data name="WtSavesDrive" xml:space="preserve"><value>Connect</value></data>
+  <data name="WtSavesDriveTitle" xml:space="preserve"><value>Want to keep them on Google Drive too?</value></data>
+  <data name="WtSavesDriveHint" xml:space="preserve"><value>Connect your account and your copies stay safe in the cloud, in the Lotus/Backups folder. Lotus only sees the files it creates.</value></data>
+  <data name="WtSavesDriveDone" xml:space="preserve"><value>All set! In Save backup, choose whether uploads go now, weekly or monthly.</value></data>
   <data name="WtScConfirm" xml:space="preserve"><value>You're in control</value></data>
   <data name="WtScUndo" xml:space="preserve"><value>Undo</value></data>
   <data name="WtScHonest" xml:space="preserve"><value>No guessing</value></data>
