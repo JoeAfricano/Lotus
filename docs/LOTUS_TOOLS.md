@@ -154,10 +154,10 @@ Itens escolhidos da lista de ajustes do [winutil](https://github.com/ChrisTitusT
 | Item | Mecanismo | Padrão do Windows | Sugestão para jogos | Desfazer |
 | --- | --- | --- | --- | --- |
 | Atalhos das Teclas de Aderência | `SPI_SET{STICKY,FILTER,TOGGLE}KEYS`: tira só o bit `*_HOTKEYACTIVE` (0x4) | atalhos ligados | desligar | flags anteriores exatas; quem usa o recurso continua com ele |
-| Aceleração do mouse | `SPI_SETMOUSE`: só o terceiro valor (aceleração) vai a 0; limites ficam | ligada | desligar | os três valores anteriores |
+| Aceleração do mouse | `SPI_SETMOUSE`: desligar grava 0,0,0 (como a página de Mouse do Windows); ligar grava 6,10,1 quando não havia limites | ligada | desligar | os três valores anteriores |
 | "Finalizar tarefa" na barra | HKCU `...\Explorer\Advanced\TaskbarDeveloperSettings\TaskbarEndTask` = 1 | ausente (desligado) | ligar | volta a ausente; só Windows 11 build 22631+ |
 
-Ficam **fora** do "Aplicar perfil" (`CatalogFeatures.IsCatalog`): mudam como o PC se comporta fora dos jogos, então o jogador aplica um por um em Ferramentas.
+Cada linha com ação tem um botão **Ligar/Desligar** no próprio Lotus (também Modo de Jogo, gravação em segundo plano e otimizações em janela), com confirmação e registro no journal; "Abrir no Windows" continua como atalho. Ficam **fora** do "Aplicar perfil" (`CatalogFeatures.IsCatalog`): mudam como o PC se comporta fora dos jogos, então o jogador aplica um por um em Ferramentas.
 
 Ficaram de fora do winutil, de propósito: tudo que exige administrador (telemetria, serviços, HKLM), remoção de apps (Edge, OneDrive), desativar IPv6/Teredo, hibernação, efeitos visuais (sem ganho medido), notificações (o Lotus já silencia durante a sessão de jogo) e "Ultimate Performance" (o plano de energia já é tratado pelos perfis).
 

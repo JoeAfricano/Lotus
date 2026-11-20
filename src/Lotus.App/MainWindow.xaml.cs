@@ -171,7 +171,8 @@ public sealed partial class MainWindow : Window
         tools.Gaming = new Lotus.Core.Maintenance.GamingSetupViewModel(new Lotus.Infrastructure.Optimization.WindowsGameFeatures(new Lotus.Infrastructure.Optimization.WindowsDisplayModes()),
             new Lotus.Infrastructure.Optimization.WindowsDisplayModes(),
             new Lotus.Core.Maintenance.FeatureActions(id => powerProfiles.ApplyFeatureAsync(id, confirmed: true), id => powerProfiles.UndoFeatureAsync(id, confirmed: true),
-                powerProfiles.HasFeatureAction, powerProfiles.IsFeatureApplied, powerProfiles.RefreshFeaturesAsync, () => powerProfiles.FeatureMessage),
+                powerProfiles.HasFeatureAction, powerProfiles.IsFeatureApplied, powerProfiles.RefreshFeaturesAsync, () => powerProfiles.FeatureMessage,
+                (id, on) => powerProfiles.SetFeatureAsync(id, on, confirmed: true), powerProfiles.CanSetFeature),
             text, tools.Journal, ex => Serilog.Log.Warning(ex, "Gaming setup"));
         tools.Upkeep = new Lotus.Core.Maintenance.WindowsUpkeepViewModel(new Lotus.Infrastructure.Maintenance.WindowsUpkeepService(), text, tools.Journal, ex => Serilog.Log.Warning(ex, "Windows upkeep"));
         tools.Crashes = new Lotus.Core.Maintenance.GameCrashViewModel(new Lotus.Infrastructure.Maintenance.WindowsCrashLog(), text, ex => Serilog.Log.Warning(ex, "Game crashes"))

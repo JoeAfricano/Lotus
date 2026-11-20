@@ -316,6 +316,7 @@
         <TextBlock Text="{Binding Advice}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/>
        </StackPanel>
        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+        <Button Content="{Binding ToggleLabel}" Tag="{Binding Id}" Click="OnFeatureToggle" Visibility="{Binding CanToggle, Converter={StaticResource BooleanVisibility}}" Style="{StaticResource PrimaryButtonStyle}" MinWidth="96" AutomationProperties.Name="{Binding ToggleLabel}"/>
         <Button Content="{Binding DataContext.Text[GfApply], ElementName=FeaturesCard}" Tag="{Binding Id}" Click="OnFeatureApply" Visibility="{Binding CanApply, Converter={StaticResource BooleanVisibility}}" Style="{StaticResource PrimaryButtonStyle}"/>
         <Button Content="{Binding DataContext.Text[MnUndo], ElementName=FeaturesCard}" Tag="{Binding Id}" Click="OnFeatureUndo" Visibility="{Binding CanUndo, Converter={StaticResource BooleanVisibility}}" Style="{StaticResource SoftButtonStyle}"/>
         <Button Content="{Binding DataContext.Text[GfOpen], ElementName=FeaturesCard}" Tag="{Binding SettingsUri}" Click="OnFeatureSettings" Style="{StaticResource SoftButtonStyle}"/>

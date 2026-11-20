@@ -2975,6 +2975,13 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GfWhat" xml:space="preserve"><value>Modo de Jogo, gravação em segundo plano, otimizações para jogos em janela e agendamento de GPU **num só lugar**, com o estado atual e um conselho para cada um. Os ajustes são os mesmos do Otimizar e podem ser desfeitos.</value></data>
   <data name="GfTileHint" xml:space="preserve"><value>Modo de Jogo, gravação e mais, num só lugar.</value></data>
   <data name="GfApply" xml:space="preserve"><value>Ajustar</value></data>
+  <data name="GfTurnOn" xml:space="preserve"><value>Ligar</value></data>
+  <data name="GfTurnOff" xml:space="preserve"><value>Desligar</value></data>
+  <data name="FeatTurnedOn" xml:space="preserve"><value>{0}: ligado e verificado.</value></data>
+  <data name="FeatTurnedOff" xml:space="preserve"><value>{0}: desligado e verificado.</value></data>
+  <data name="FeatConfirmOnTitle" xml:space="preserve"><value>Ligar: {0}?</value></data>
+  <data name="FeatConfirmOffTitle" xml:space="preserve"><value>Desligar: {0}?</value></data>
+  <data name="FeatConfirmToggleBody" xml:space="preserve"><value>O Lotus vai mudar só esta opção, a mesma das Configurações do Windows, sem pedir administrador. O valor anterior fica registrado e você pode mudar de volta aqui mesmo a qualquer hora.</value></data>
   <data name="GfOpen" xml:space="preserve"><value>Abrir no Windows</value></data>
   <data name="WuTitle" xml:space="preserve"><value>Windows em dia</value></data>
   <data name="WuWhat" xml:space="preserve"><value>Mostra se o Windows está **esperando um reinício** (que costuma pesar nas partidas) e há quanto tempo o PC não reinicia. Também cria um **ponto de restauração** antes de mudanças maiores.</value></data>

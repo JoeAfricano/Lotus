@@ -2975,6 +2975,13 @@ Your games and Windows are not changed.</value></data>
   <data name="GfWhat" xml:space="preserve"><value>Game Mode, background recording, windowed game optimizations and GPU scheduling **in one place**, with the current state and one piece of advice for each. The changes are the same as in Optimize and can be undone.</value></data>
   <data name="GfTileHint" xml:space="preserve"><value>Game Mode, recording and more, in one place.</value></data>
   <data name="GfApply" xml:space="preserve"><value>Adjust</value></data>
+  <data name="GfTurnOn" xml:space="preserve"><value>Turn on</value></data>
+  <data name="GfTurnOff" xml:space="preserve"><value>Turn off</value></data>
+  <data name="FeatTurnedOn" xml:space="preserve"><value>{0}: turned on and verified.</value></data>
+  <data name="FeatTurnedOff" xml:space="preserve"><value>{0}: turned off and verified.</value></data>
+  <data name="FeatConfirmOnTitle" xml:space="preserve"><value>Turn on: {0}?</value></data>
+  <data name="FeatConfirmOffTitle" xml:space="preserve"><value>Turn off: {0}?</value></data>
+  <data name="FeatConfirmToggleBody" xml:space="preserve"><value>Lotus will change only this option, the same one in Windows Settings, without asking for admin. The previous value is recorded and you can switch it back right here at any time.</value></data>
   <data name="GfOpen" xml:space="preserve"><value>Open in Windows</value></data>
   <data name="WuTitle" xml:space="preserve"><value>Windows up to date</value></data>
   <data name="WuWhat" xml:space="preserve"><value>Shows whether Windows is **waiting for a restart** (which often weighs on games) and how long since the PC last restarted. It also creates a **restore point** before bigger changes.</value></data>

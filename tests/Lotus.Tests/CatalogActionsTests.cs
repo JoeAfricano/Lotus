@@ -55,12 +55,12 @@ public sealed class CatalogActionsTests : IDisposable
         Assert.Equal(Eligibility.Unsupported, new AccessibilityHotkeysAction(new FakeKeys(null)).Eligibility);
     }
 
-    [Fact] public async Task MouseAccelerationKeepsThresholdsAndUndoes()
+    [Fact] public async Task MouseAccelerationOffWritesWindowsValuesAndUndoes()
     {
         var mouse = new FakeMouse([6, 10, 1]);
         var engine = new OptimizationEngine(Journal, new MouseAccelerationAction(mouse));
         var applied = await engine.ApplyAsync((await engine.AnalyzeAsync()).Id, true);
-        Assert.Equal([6, 10, 0], mouse.Values!);
+        Assert.Equal([0, 0, 0], mouse.Values!);
         Assert.Equal(OperationStage.Reverted, (await engine.RevertAsync(applied.Id, true)).Stage);
         Assert.Equal([6, 10, 1], mouse.Values!);
         Assert.Equal(OperationStage.NoChange, (await new OptimizationEngine(Journal, new MouseAccelerationAction(new FakeMouse([0, 0, 0]))).AnalyzeAsync()).Stage);
@@ -106,11 +106,48 @@ public sealed class CatalogActionsTests : IDisposable
         var changes = await vm.PreviewProfileAsync();
         Assert.DoesNotContain(changes, c => c.Plan.ActionId is MouseAccelerationAction.ActionId or AccessibilityHotkeysAction.ActionId);
         await vm.ApplyFeatureAsync(CatalogFeatures.MouseAcceleration, confirmed: true); // one by one still works
-        Assert.Equal([6, 10, 0], mouse.Values!);
+        Assert.Equal([0, 0, 0], mouse.Values!);
         Assert.True(vm.IsFeatureApplied(CatalogFeatures.MouseAcceleration));
         await vm.UndoFeatureAsync(CatalogFeatures.MouseAcceleration, confirmed: true);
         Assert.Equal([6, 10, 1], mouse.Values!);
     }
+
+    // Turn on / Turn off buttons: explicit states, journaled, and switching back restores the same values.
+    [Fact] public async Task TurnOnAndOffFromLotus()
+    {
+        var mouse = new FakeMouse([0, 0, 0]); var keys = new FakeKeys(new(506, 122, 58)); var reg = new FakeRegistry();
+        var engines = new Dictionary<string, OptimizationEngine>
+        {
+            [CatalogFeatures.MouseAcceleration] = new(Journal, new MouseAccelerationAction(mouse)),
+            [CatalogFeatures.AccessibilityHotkeys] = new(Journal, new AccessibilityHotkeysAction(keys)),
+            ["gamemode"] = new(Journal, RegistryDwordAction.GameMode(reg)),
+        };
+        var power = new SinglePower();
+        var vm = new PowerProfilesViewModel(new OptimizationEngine(Journal, new PowerSchemeAction(power)), power, Journal, new NoStartup(), new Lotus.Core.TextCatalog(), _ => { },
+            featureEngines: engines);
+        await vm.RefreshAsync();
+        Assert.True(vm.CanSetFeature(CatalogFeatures.MouseAcceleration)); Assert.False(vm.CanSetFeature("hags"));
+        await vm.SetFeatureAsync(CatalogFeatures.MouseAcceleration, on: true, confirmed: true);
+        Assert.Equal([6, 10, 1], mouse.Values!); // Windows' own thresholds when none were stored
+        await vm.SetFeatureAsync(CatalogFeatures.MouseAcceleration, on: false, confirmed: true);
+        Assert.Equal([0, 0, 0], mouse.Values!); // back to exactly what this PC had
+        await vm.SetFeatureAsync(CatalogFeatures.AccessibilityHotkeys, on: true, confirmed: true);
+        Assert.Equal(new AccessibilityKeyFlags(510, 126, 62), keys.Flags);
+        await vm.SetFeatureAsync(CatalogFeatures.AccessibilityHotkeys, on: false, confirmed: true);
+        Assert.Equal(new AccessibilityKeyFlags(506, 122, 58), keys.Flags);
+        await vm.SetFeatureAsync("gamemode", on: false, confirmed: true);
+        Assert.Equal(0, reg.Values[@"Software\Microsoft\GameBar\AutoGameModeEnabled"]);
+        await vm.SetFeatureAsync("gamemode", on: false, confirmed: true);
+        Assert.Equal(vm.Text.Format("FeatNoChange", vm.Text["FeatNamegamemode"]), vm.FeatureStatus);
+    }
+
+    [Fact] public void WindowedOptimizationsCanBeTurnedOffKeepingOtherPairs()
+    {
+        var off = new WindowedOptimizationsAction(new NoDx()).Plan(new("VRROptimizeEnable=0;SwapEffectUpgradeEnable=1;", 0, null), Guid.NewGuid(), CatalogFeatures.Off);
+        Assert.Equal("VRROptimizeEnable=0;SwapEffectUpgradeEnable=0;", off.Value);
+        Assert.Throws<InvalidOperationException>(() => new WindowedOptimizationsAction(new NoDx()).Plan(new("<absent>", 0, null), Guid.NewGuid(), "maybe"));
+    }
+    private sealed class NoDx : IDirectXUserSettings { public bool Supported => true; public string? Read() => null; public void Write(string? value) { } }
 
     private sealed class SinglePower : IPowerSchemeService
     {

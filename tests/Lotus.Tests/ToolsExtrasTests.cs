@@ -37,6 +37,26 @@ public sealed class ToolsExtrasTests
         Assert.Equal(2, calls.Count);
     }
 
+    [Fact] public async Task RowsWithStateActionsOfferTurnOnOrOffInsteadOfAdjust()
+    {
+        var calls = new List<string>();
+        var features = new Features(new GameFeature(CatalogFeatures.MouseAcceleration, FeatureState.On, "ms-settings:mousetouchpad"),
+            new GameFeature(CatalogFeatures.AccessibilityHotkeys, FeatureState.Off, "ms-settings:easeofaccess-keyboard"),
+            new GameFeature("hags", FeatureState.Off, "ms-settings:display-advancedgraphics"));
+        var actions = new FeatureActions(_ => Task.CompletedTask, _ => Task.CompletedTask, id => id != "hags", _ => false, () => Task.CompletedTask, () => "",
+            (id, on) => { calls.Add((on ? "on:" : "off:") + id); features.List[0] = features.List[0] with { State = on ? FeatureState.On : FeatureState.Off }; return Task.CompletedTask; },
+            id => id != "hags");
+        var vm = new GamingSetupViewModel(features, new Display(60, 60), actions, new TextCatalog(), new MemoryMaintenanceJournal(), ex => throw ex);
+        await vm.LoadAsync();
+        var mouse = vm.Rows.Single(r => r.Id == CatalogFeatures.MouseAcceleration);
+        Assert.True(mouse.CanToggle); Assert.True(mouse.IsOn); Assert.Equal(vm.Text["GfTurnOff"], mouse.ToggleLabel); Assert.False(mouse.CanApply);
+        Assert.Equal(vm.Text["GfTurnOn"], vm.Rows.Single(r => r.Id == CatalogFeatures.AccessibilityHotkeys).ToggleLabel);
+        Assert.False(vm.Rows.Single(r => r.Id == "hags").CanToggle);            // no action: only "Open in Windows"
+        await vm.SetAsync(CatalogFeatures.MouseAcceleration, on: false);
+        Assert.Equal(["off:" + CatalogFeatures.MouseAcceleration], calls);
+        Assert.Equal(vm.Text["GfTurnOn"], vm.Rows.Single(r => r.Id == CatalogFeatures.MouseAcceleration).ToggleLabel); // read again
+    }
+
     private sealed class Upkeep(WindowsStatus status, RestorePointResult restore) : IWindowsUpkeep
     {
         public WindowsStatus Read() => status;

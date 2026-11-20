@@ -23,6 +23,8 @@ public interface IOptimizationAction
     ConfigurationState Restore(ConfigurationState before, ConfigurationState applied, Guid operation) =>
         new(before.Value, checked(applied.Revision + 1), operation);
     bool CanAttributeRecovery => true;
+    // Actions that accept an explicit "on" / "off" desired state (Lotus' own Turn on / Turn off buttons).
+    bool CanSetState => false;
     // Implementations must check expected state. External Windows APIs may not offer atomic CAS.
     bool Exchange(ConfigurationState expected, ConfigurationState desired);
 }
@@ -38,6 +40,7 @@ public interface IOptimizationJournal
 public sealed class OptimizationEngine(IOptimizationJournal journal, IOptimizationAction action)
 {
     public ActionDefinition Definition => action.Definition;
+    public bool CanSetState => action.CanSetState;
     private Task<T> Locked<T>(Func<T> work) => Task.Run(() => { using var lease = journal.Acquire(); return work(); });
     public Task<OptimizationPlan> AnalyzeAsync(string? desiredState = null, string? profileId = null, Guid? batch = null) => Locked(() =>
     {

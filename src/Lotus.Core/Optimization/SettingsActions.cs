@@ -17,6 +17,14 @@ public sealed class RegistryDwordAction(IUserRegistry registry, string actionId,
     public ConfigurationState Detect() => new(registry.ReadDword(path, name)?.ToString() ?? Absent, 0, null);
     // Already effective (including the Windows default when the value is absent) means no change and no write.
     public ConfigurationState Plan(ConfigurationState before, Guid operation) => Effective(before) == desired ? before : new(desired.ToString(), 0, null);
+    // Turn on / Turn off: every switch here stores 1 = on and 0 = off.
+    public bool CanSetState => true;
+    public ConfigurationState Plan(ConfigurationState before, Guid operation, string? state)
+    {
+        if (state is null) return Plan(before, operation);
+        var value = CatalogFeatures.ParseOnOff(state) ? 1 : 0;
+        return Effective(before) == value ? before : new(value.ToString(), 0, null);
+    }
     public ConfigurationState Restore(ConfigurationState before, ConfigurationState applied, Guid operation) => before;
     public bool Exchange(ConfigurationState expected, ConfigurationState target)
     {

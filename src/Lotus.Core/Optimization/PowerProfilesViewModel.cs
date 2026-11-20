@@ -323,6 +323,14 @@ public sealed class PowerProfilesViewModel : ObservableObject
         if (plan.Stage == OperationStage.Planned) plan = await engine.ApplyAsync(plan.Id, confirmed);
         return plan.Stage switch { OperationStage.Applied => "FeatApplied", OperationStage.NoChange => "FeatNoChange", _ => "FeatConflict" };
     });
+    // Turn on / Turn off from Lotus itself (journaled like Apply; Undo restores what was there before).
+    public bool CanSetFeature(string id) => featureEngines.TryGetValue(id, out var e) && e.CanSetState;
+    public Task SetFeatureAsync(string id, bool on, bool confirmed) => FeatureRun(id, async engine =>
+    {
+        var plan = await engine.AnalyzeAsync(on ? CatalogFeatures.On : CatalogFeatures.Off, profileId);
+        if (plan.Stage == OperationStage.Planned) plan = await engine.ApplyAsync(plan.Id, confirmed);
+        return plan.Stage switch { OperationStage.Applied => on ? "FeatTurnedOn" : "FeatTurnedOff", OperationStage.NoChange => "FeatNoChange", _ => "FeatConflict" };
+    });
     public Task UndoFeatureAsync(string id, bool confirmed) => FeatureRun(id, async engine =>
     {
         if (featureApplied.GetValueOrDefault(id) is not { } applied) return "FeatNothingToUndo";

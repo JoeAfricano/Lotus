@@ -161,7 +161,7 @@ Tudo na aba Ferramentas, em cartões. Abrir ou analisar nunca muda nada; cada a�
 - **Arquivos e Armazenamento:** arquivos grandes, pastas que mais ocupam, duplicados pelo conteúdo (SHA-256) e downloads antigos; tudo só para a Lixeira, sempre deixando uma cópia.
 - **Inicialização do Windows:** editor, assinatura digital, caminho e mecanismo de cada item; desligar e religar com desfazer.
 - **Monitor na taxa certa** e **Recursos do Windows para jogos:** taxa atual × máxima do monitor, Modo de Jogo, gravação em segundo plano, otimizações em janela e agendamento de GPU, com ajuste reversível.
-- **Catálogo de ajustes** (um por um, nunca no perfil): desligar os atalhos das Teclas de Aderência (Shift 5 vezes tira você do jogo), desligar a aceleração do mouse e ligar "Finalizar tarefa" na barra de tarefas (Windows 11 23H2+). Só no seu usuário, sem administrador, com Desfazer. Escolhidos da lista do [winutil](https://github.com/ChrisTitusTech/winutil) (MIT) e reescritos no Lotus.
+- **Catálogo de ajustes** (um por um, nunca no perfil): desligar os atalhos das Teclas de Aderência (Shift 5 vezes tira você do jogo), desligar a aceleração do mouse e ligar "Finalizar tarefa" na barra de tarefas (Windows 11 23H2+). Cada um tem botão **Ligar/Desligar** no próprio Lotus (vale também para Modo de Jogo, gravação em segundo plano e otimizações em janela). Só no seu usuário, sem administrador. Escolhidos da lista do [winutil](https://github.com/ChrisTitusTech/winutil) (MIT) e reescritos no Lotus.
 - **Por que meu jogo fechou?:** cruza as falhas de jogos registradas pelo Windows com o que aconteceu no mesmo minuto (driver de vídeo, memória, disco, hardware) e explica a causa provável.
 - **Driver de vídeo novo:** uma vez por semana confere no site da NVIDIA (AMD e Intel: driver com mais de seis meses) e avisa uma vez por versão. Nunca baixa nem instala drivers.
 - **Windows em dia:** reinício pendente, tempo ligado e ponto de restauração do Windows.
@@ -197,7 +197,6 @@ Tudo na aba Ferramentas, em cartões. Abrir ou analisar nunca muda nada; cada a�
 - **Sem administrador** (`asInvoker`) e **sem telemetria**: o Lotus não tem servidores e não envia seus dados ao desenvolvedor.
 - **Google Drive opcional**, só com a permissão `drive.file`: o Lotus acessa apenas os arquivos que ele mesmo cria, na pasta `Lotus/Backups`. O login é feito no seu navegador (PKCE) e "Desconectar" revoga o acesso.
 - **Atualizações conferidas:** cada instalador baixado é comparado com o SHA-256 publicado na release antes de ser usado.
-- **Assinatura de código:** os instaladores gerados pelo GitHub Actions podem ser assinados pela SignPath Foundation. Veja a [política de assinatura](CODE_SIGNING_POLICY.md).
 - Detalhes na [Política de Privacidade](PRIVACY.md). Para relatar uma falha de segurança, veja [SECURITY.md](SECURITY.md).
 
 ## Compilar

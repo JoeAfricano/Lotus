@@ -5,8 +5,8 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 ## Próxima versão (em preparo)
 
 ### Novo
-- **Catálogo de ajustes** em Ferramentas › Recursos do Windows para jogos, um por um e com Desfazer: desligar os atalhos das Teclas de Aderência (apertar Shift 5 vezes abre uma janela que tira você do jogo), desligar a aceleração do mouse e ligar "Finalizar tarefa" no clique direito da barra de tarefas (Windows 11 23H2+). Só no seu usuário, sem administrador. Itens escolhidos da lista do winutil (MIT) e reescritos no Lotus. Nenhum entra no "Aplicar perfil".
-- **Build no GitHub Actions** (testes em cada pull request) e preparação para **instalador assinado** pela SignPath Foundation, que tira o aviso do SmartScreen quando a assinatura estiver aprovada.
+- **Catálogo de ajustes** em Ferramentas › Recursos do Windows para jogos, um por um e com Desfazer: desligar os atalhos das Teclas de Aderência (apertar Shift 5 vezes abre uma janela que tira você do jogo), desligar a aceleração do mouse e ligar "Finalizar tarefa" no clique direito da barra de tarefas (Windows 11 23H2+). Cada linha tem botão **Ligar/Desligar** no próprio Lotus, inclusive Modo de Jogo, gravação em segundo plano e otimizações em janela. Só no seu usuário, sem administrador. Itens escolhidos da lista do winutil (MIT) e reescritos no Lotus. Nenhum entra no "Aplicar perfil".
+- **Testes automáticos no GitHub Actions** em cada pull request.
 
 ## 1.9.0-alpha "Lotus" (19/11/2026)
 

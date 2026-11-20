@@ -5,6 +5,14 @@ namespace Lotus.Core.Optimization;
 // They are optional: offered one by one (Ferramentas › Recursos do Windows para jogos), never part of "Apply profile".
 public static class CatalogFeatures
 {
+    public const string On = "on", Off = "off";
+    // Explicit desired state from the Turn on / Turn off buttons; anything else is rejected.
+    public static bool ParseOnOff(string? desired) => desired switch
+    {
+        On => true,
+        Off => false,
+        _ => throw new InvalidOperationException("Unknown desired state.")
+    };
     public const string AccessibilityHotkeys = "accessibility-hotkeys";
     public const string MouseAcceleration = "mouse-acceleration";
     public const string TaskbarEndTask = "taskbar-end-task";
@@ -35,6 +43,16 @@ public sealed class AccessibilityHotkeysAction(IAccessibilityKeys keys) : IOptim
     {
         if (Parse(before.Value) is not { } f) throw new InvalidOperationException("Keyboard accessibility settings unavailable.");
         var target = new AccessibilityKeyFlags(f.Sticky & ~HotkeyActive, f.Filter & ~HotkeyActive, f.Toggle & ~HotkeyActive);
+        return target == f ? before : new(Format(target), 0, null);
+    }
+    public bool CanSetState => true;
+    public ConfigurationState Plan(ConfigurationState before, Guid operation, string? desired)
+    {
+        if (desired is null) return Plan(before, operation);
+        if (Parse(before.Value) is not { } f) throw new InvalidOperationException("Keyboard accessibility settings unavailable.");
+        var on = CatalogFeatures.ParseOnOff(desired);
+        int Set(int flags) => on ? flags | HotkeyActive : flags & ~HotkeyActive;
+        var target = new AccessibilityKeyFlags(Set(f.Sticky), Set(f.Filter), Set(f.Toggle));
         return target == f ? before : new(Format(target), 0, null);
     }
     public ConfigurationState Restore(ConfigurationState before, ConfigurationState applied, Guid operation) => before;
@@ -69,11 +87,21 @@ public sealed class MouseAccelerationAction(IMouseSettings mouse) : IOptimizatio
     public Eligibility Eligibility => mouse.Read() is { Length: 3 } ? Eligibility.Eligible : Eligibility.Unsupported;
     public bool CanAttributeRecovery => false;
     public ConfigurationState Detect() => new(mouse.Read() is { Length: 3 } v ? string.Join(',', v) : "<absent>", 0, null);
-    // Only the acceleration switch changes; the thresholds stay as they were, so undo is exact.
+    // Off writes 0,0,0, the same values the Windows Mouse settings page writes; undo restores the previous three exactly.
     public ConfigurationState Plan(ConfigurationState before, Guid operation)
     {
         if (Parse(before.Value) is not { } v) throw new InvalidOperationException("Mouse settings unavailable.");
-        return v[2] == 0 ? before : new(string.Join(',', v[0], v[1], 0), 0, null);
+        return v[2] == 0 ? before : new("0,0,0", 0, null);
+    }
+    public bool CanSetState => true;
+    // Turning it on with no thresholds stored uses Windows' own defaults (6, 10), as the Mouse settings page does.
+    public ConfigurationState Plan(ConfigurationState before, Guid operation, string? desired)
+    {
+        if (desired is null) return Plan(before, operation);
+        if (Parse(before.Value) is not { } v) throw new InvalidOperationException("Mouse settings unavailable.");
+        if (!CatalogFeatures.ParseOnOff(desired)) return Plan(before, operation);
+        if (v[2] != 0) return before;
+        return v[0] == 0 && v[1] == 0 ? new("6,10,1", 0, null) : new(string.Join(',', v[0], v[1], 1), 0, null);
     }
     public ConfigurationState Restore(ConfigurationState before, ConfigurationState applied, Guid operation) => before;
     public bool Exchange(ConfigurationState expected, ConfigurationState target)

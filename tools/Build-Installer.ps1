@@ -1,12 +1,11 @@
 # Builds the Lotus installer: self-contained Release publish + Inno Setup.
-# Usage: powershell -ExecutionPolicy Bypass -File tools\Build-Installer.ps1 [-Name "Lotus Base"] [-SkipPublish]
-# -SkipPublish packs the app already in artifacts\dist\Lotus (used by GitHub Actions after the app files are signed).
+# Usage: powershell -ExecutionPolicy Bypass -File tools\Build-Installer.ps1 [-Name "Lotus Base"]
 # Output: artifacts\dist\<Name>-Setup-<version>.exe (+ .sha256). Needs Inno Setup 6 (winget install JRSoftware.InnoSetup).
 # Google Drive backup: put the Desktop OAuth client file at secrets\google-oauth.json (not in Git); it is copied into the build.
-param([string]$Name = "Lotus", [switch]$SkipPublish)
+param([string]$Name = "Lotus")
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
-if (-not $SkipPublish) { & (Join-Path $PSScriptRoot 'Publish-Lotus.ps1') }
+& (Join-Path $PSScriptRoot 'Publish-Lotus.ps1')
 $out = Join-Path $root 'artifacts\dist\Lotus'
 $google = Join-Path $root 'secrets\google-oauth.json'
 if (Test-Path $google) { Copy-Item $google (Join-Path $out 'google-oauth.json') -Force; Write-Output "Google Drive: client included" }

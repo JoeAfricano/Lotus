@@ -6,10 +6,16 @@ namespace Lotus.Core.Maintenance;
 
 // ---- Monitor na taxa certa + Recursos do Windows para jogos ----
 // Reads the same inventory as Otimizar and uses its reversible actions (apply/undo are delegated, never reimplemented).
-public sealed record FeatureActions(Func<string, Task> Apply, Func<string, Task> Undo, Func<string, bool> HasAction, Func<string, bool> IsApplied, Func<Task> Refresh, Func<string> LastMessage);
+public sealed record FeatureActions(Func<string, Task> Apply, Func<string, Task> Undo, Func<string, bool> HasAction, Func<string, bool> IsApplied, Func<Task> Refresh, Func<string> LastMessage,
+    Func<string, bool, Task>? Set = null, Func<string, bool>? CanSet = null);
 
-public sealed partial class GamingFeatureRow(GameFeature feature, string name, string state, string advice, bool attention, bool canApply, bool canUndo) : ObservableObject
+public sealed partial class GamingFeatureRow(GameFeature feature, string name, string state, string advice, bool attention, bool canApply, bool canUndo,
+    bool canToggle = false, bool isOn = false, string toggleLabel = "") : ObservableObject
 {
+    // Turn on / Turn off button (one main action per row): replaces Adjust/Undo where the action accepts both states.
+    public bool CanToggle { get; } = canToggle;
+    public bool IsOn { get; } = isOn;
+    public string ToggleLabel { get; } = toggleLabel;
     public GameFeature Feature { get; } = feature;
     public string Id => Feature.Id;
     public string Name { get; } = name;
@@ -78,7 +84,10 @@ public sealed partial class GamingSetupViewModel(IGameFeatureInventory features,
                 : desired is null ? Text["FeatAdvice" + f.Id] : Text[desired == FeatureState.On ? "FeatRecommendOn" : "FeatRecommendOff"] + " " + Text["FeatAdvice" + f.Id];
             var attention = GameFeatureRules.NeedsAttention(f, Profile);
             var has = actions?.HasAction(f.Id) == true; var applied = actions?.IsApplied(f.Id) == true;
-            Rows.Add(new(f, Text["FeatName" + f.Id], Text["FeatState" + f.State], advice, attention, has && !applied && attention, has && applied));
+            var toggle = has && actions?.CanSet?.Invoke(f.Id) == true && f.State != FeatureState.Unavailable;
+            var on = f.State == FeatureState.On || f.State == FeatureState.SystemDefault && GameFeatureRules.DefaultOf(f.Id) == FeatureState.On;
+            Rows.Add(new(f, Text["FeatName" + f.Id], Text["FeatState" + f.State], advice, attention, !toggle && has && !applied && attention, !toggle && has && applied,
+                toggle, on, toggle ? Text[on ? "GfTurnOff" : "GfTurnOn"] : ""));
         }
         Status = Attention == 0 ? Text["GfAllGood"] : Text.Format("FeatAttention", Attention);
         OnPropertyChanged(nameof(Attention)); OnPropertyChanged(nameof(FeaturesTile));
@@ -92,17 +101,18 @@ public sealed partial class GamingSetupViewModel(IGameFeatureInventory features,
     // Same journaled action as Otimizar; afterwards everything is read again from Windows.
     public async Task ApplyAsync(string id) => await Change(id, undo: false);
     public async Task UndoAsync(string id) => await Change(id, undo: true);
-    private async Task Change(string id, bool undo)
+    public async Task SetAsync(string id, bool on) => await Change(id, undo: false, on);
+    private async Task Change(string id, bool undo, bool? on = null)
     {
-        if (Busy || actions is null || !actions.HasAction(id)) return;
+        if (Busy || actions is null || !actions.HasAction(id) || on is not null && actions.Set is null) return;
         Busy = true; Work.Start();
         try
         {
-            await (undo ? actions.Undo(id) : actions.Apply(id));
+            await (on is { } state ? actions.Set!(id, state) : undo ? actions.Undo(id) : actions.Apply(id));
             await Fill();
             var message = actions.LastMessage();
             Status = message.Length > 0 ? message : Status;
-            journal.Add(new(DateTimeOffset.Now, "gaming", (undo ? "undo:" : "apply:") + id, message, true));
+            journal.Add(new(DateTimeOffset.Now, "gaming", (on is { } s ? s ? "on:" : "off:" : undo ? "undo:" : "apply:") + id, message, true));
             Work.Finish(Text["SyRead"]);
         }
         catch (Exception ex) { log(ex); Status = Text["ToolFailed"]; Work.Fail(); }

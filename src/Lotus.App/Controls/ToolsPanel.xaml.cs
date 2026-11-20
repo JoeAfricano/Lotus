@@ -220,6 +220,15 @@ public sealed partial class ToolsPanel : UserControl
             && await Confirm(vm.Text.Format("FeatConfirmTitle", vm.Text["FeatName" + id]), vm.Text["FeatConfirmBody"], vm.Text["GfApply"], vm))
             await g.ApplyAsync(id);
     }
+    // Turn on / Turn off from the Lotus itself: same journaled action, confirmed first.
+    private async void OnFeatureToggle(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ToolsViewModel { Gaming: { } g } vm || (sender as FrameworkElement)?.Tag is not string id
+            || g.Rows.FirstOrDefault(r => r.Id == id) is not { CanToggle: true } row) return;
+        var on = !row.IsOn;
+        if (await Confirm(vm.Text.Format(on ? "FeatConfirmOnTitle" : "FeatConfirmOffTitle", vm.Text["FeatName" + id]), vm.Text["FeatConfirmToggleBody"], row.ToggleLabel, vm))
+            await g.SetAsync(id, on);
+    }
     private async void OnFeatureUndo(object sender, RoutedEventArgs e)
     {
         if (DataContext is ToolsViewModel { Gaming: { } g } vm && (sender as FrameworkElement)?.Tag is string id
