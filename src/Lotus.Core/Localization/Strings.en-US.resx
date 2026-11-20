@@ -1246,7 +1246,7 @@ Current conditions: {1}</value></data>
   <data name="WtProfileP1" xml:space="preserve"><value>No login, no password: Lotus only reads the Steam account already on this PC.</value></data>
   <data name="WtProfileP2" xml:space="preserve"><value>Prefer another name? Pick yours and a picture.</value></data>
   <data name="WtProfileP3" xml:space="preserve"><value>You can change it later in Settings › Edit profile.</value></data>
-  <data name="WtProfileTry" xml:space="preserve"><value></value></data>
+  <data name="WtProfileTry" xml:space="preserve"><value>Choose profile</value></data>
   <data name="WtProfileSteam" xml:space="preserve"><value>Use my Steam account</value></data>
   <data name="WtProfileOwn" xml:space="preserve"><value>Use another name</value></data>
   <data name="WtProfileName" xml:space="preserve"><value>Your player name</value></data>
@@ -1256,9 +1256,9 @@ Current conditions: {1}</value></data>
   <data name="WtThemeHeadline" xml:space="preserve"><value>Make Lotus yours</value></data>
   <data name="WtThemeLead" xml:space="preserve"><value>Pick the mode, a ready-made theme or your favorite color. You see the change right away.</value></data>
   <data name="WtThemeP1" xml:space="preserve"><value>Change it anytime in Settings › Appearance.</value></data>
-  <data name="WtThemeP2" xml:space="preserve"><value></value></data>
-  <data name="WtThemeP3" xml:space="preserve"><value></value></data>
-  <data name="WtThemeTry" xml:space="preserve"><value></value></data>
+  <data name="WtThemeP2" xml:space="preserve"><value>Ready-made themes have their own colors; the accent color applies to the modes.</value></data>
+  <data name="WtThemeP3" xml:space="preserve"><value>See it right away and change as often as you like: it is saved when you close the guide.</value></data>
+  <data name="WtThemeTry" xml:space="preserve"><value>Choose look</value></data>
   <data name="WtThemeMode" xml:space="preserve"><value>Mode</value></data>
   <data name="WtThemeReady" xml:space="preserve"><value>Ready-made themes</value></data>
   <data name="WtThemeAccent" xml:space="preserve"><value>Accent color</value></data>

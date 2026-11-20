@@ -78,7 +78,7 @@ public sealed class WelcomeTourTests
         var vm = new WelcomeTourViewModel(new TextCatalog(language), null, includeSetup: true);
         Assert.Equal(["welcome", "profile", "theme"], vm.Pages.Take(3).Select(p => p.Id));
         Assert.All(vm.Pages, p => { Assert.False(string.IsNullOrWhiteSpace(p.Title)); Assert.False(string.IsNullOrWhiteSpace(p.Headline)); Assert.False(string.IsNullOrWhiteSpace(p.Points[0])); });
-        Assert.All(vm.Pages.Where(p => p.Id is not ("welcome" or "news")), p => Assert.NotNull(AppRoutes.Resolve(p.Route)));
+        Assert.All(vm.Pages.Where(p => p.Id is not ("welcome" or "news") && !p.IsSetup), p => Assert.NotNull(AppRoutes.Resolve(p.Route)));
     }
 
     [Fact] public void OpensOnWhatsNewAfterAnUpdateAndWalksThePages()

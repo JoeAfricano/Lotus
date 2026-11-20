@@ -1246,7 +1246,7 @@ Condições atuais: {1}</value></data>
   <data name="WtProfileP1" xml:space="preserve"><value>Nada de login nem senha: o Lotus só lê a conta Steam que já está neste PC.</value></data>
   <data name="WtProfileP2" xml:space="preserve"><value>Prefere outro nome? Escolha o seu e uma foto.</value></data>
   <data name="WtProfileP3" xml:space="preserve"><value>Dá pra mudar depois em Configurações › Editar perfil.</value></data>
-  <data name="WtProfileTry" xml:space="preserve"><value></value></data>
+  <data name="WtProfileTry" xml:space="preserve"><value>Escolher perfil</value></data>
   <data name="WtProfileSteam" xml:space="preserve"><value>Usar minha conta Steam</value></data>
   <data name="WtProfileOwn" xml:space="preserve"><value>Usar outro nome</value></data>
   <data name="WtProfileName" xml:space="preserve"><value>Seu nome de jogador</value></data>
@@ -1256,9 +1256,9 @@ Condições atuais: {1}</value></data>
   <data name="WtThemeHeadline" xml:space="preserve"><value>Deixe o Lotus com a sua cara</value></data>
   <data name="WtThemeLead" xml:space="preserve"><value>Escolha o modo, um tema pronto ou a sua cor favorita. Você já vê a mudança na hora.</value></data>
   <data name="WtThemeP1" xml:space="preserve"><value>Dá pra trocar quando quiser em Configurações › Aparência.</value></data>
-  <data name="WtThemeP2" xml:space="preserve"><value></value></data>
-  <data name="WtThemeP3" xml:space="preserve"><value></value></data>
-  <data name="WtThemeTry" xml:space="preserve"><value></value></data>
+  <data name="WtThemeP2" xml:space="preserve"><value>Os temas prontos têm cores próprias; a cor de destaque vale para os modos.</value></data>
+  <data name="WtThemeP3" xml:space="preserve"><value>Veja na hora e mude quantas vezes quiser: tudo é salvo quando você fecha o guia.</value></data>
+  <data name="WtThemeTry" xml:space="preserve"><value>Escolher visual</value></data>
   <data name="WtThemeMode" xml:space="preserve"><value>Modo</value></data>
   <data name="WtThemeReady" xml:space="preserve"><value>Temas prontos</value></data>
   <data name="WtThemeAccent" xml:space="preserve"><value>Cor de destaque</value></data>
