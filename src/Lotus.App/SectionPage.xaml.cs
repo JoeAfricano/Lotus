@@ -321,7 +321,7 @@ public sealed partial class SectionPage : Page
         if (volumeSample is null) { volumeSample = DispatcherQueue.CreateTimer(); volumeSample.Interval = TimeSpan.FromMilliseconds(350); volumeSample.IsRepeating = false; volumeSample.Tick += (_, _) => UiSound.Play(UiSound.Cue.Done); }
         volumeSample.Stop(); volumeSample.Start();
     }
-    private void OnReplayWelcome(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenOnboarding(edit: false);
+    private void OnReplayWelcome(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenTour(Lotus.Core.Welcome.WelcomeOpening.Tour, firstRun: true);
     private void OnOpenTour(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenTour(Lotus.Core.Welcome.WelcomeOpening.Tour);
     private void OnOpenWhatsNew(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenTour(Lotus.Core.Welcome.WelcomeOpening.WhatsNew);
     private void OnRedoGuided(object sender, RoutedEventArgs e) { if (DataContext is SectionViewModel { Guided: { } g }) { g.Restart(); shell?.NavigateCommand.Execute("home"); } }

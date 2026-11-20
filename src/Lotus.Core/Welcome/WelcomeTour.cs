@@ -11,6 +11,7 @@ public static class WelcomePlan
 {
     public const string TourArgument = "--welcome";      // opens the tour (also in a development instance, to test)
     public const string WhatsNewArgument = "--whats-new"; // opens straight on Novidades
+    public const string FirstRunArgument = "--first-run"; // test: the first-run guide with account and look pages
 
     // First run: the tour after the profile setup. After an update: Novidades. Seen version is the last one shown.
     public static WelcomeOpening Decide(bool onboarded, string? seenVersion, string currentVersion, bool minimized, bool devInstance, bool tourArgument, bool whatsNewArgument)
@@ -25,7 +26,10 @@ public static class WelcomePlan
 }
 
 // One page of the tour. Scene names the animated illustration the view draws; Route is where "Experimentar" goes.
-public sealed record WelcomePage(string Id, string Glyph, string Title, string Lead, IReadOnlyList<string> Points, string TryLabel, string? Route);
+public sealed record WelcomePage(string Id, string Glyph, string Title, string Headline, string Lead, IReadOnlyList<string> Points, string TryLabel, string? Route)
+{
+    public bool IsSetup => Id is WelcomeTourViewModel.ProfileId or WelcomeTourViewModel.ThemeId; // interactive first-run choices
+}
 
 public sealed record WhatsNewGroup(string Title, IReadOnlyList<string> Items);
 public sealed record WhatsNewNotes(string Version, string Name, string Date, IReadOnlyList<WhatsNewGroup> Groups);
@@ -33,6 +37,10 @@ public sealed record WhatsNewNotes(string Version, string Name, string Date, IRe
 // Reads the current version's section of the CHANGELOG shipped with the app (no internet).
 public static class WhatsNewReader
 {
+    // Changelog files to try for a language, best first (CHANGELOG-English.md for English, then CHANGELOG.md).
+    public static IReadOnlyList<string> Files(string? language) =>
+        language is { } l && l.StartsWith("en", StringComparison.OrdinalIgnoreCase) ? ["CHANGELOG-English.md", "CHANGELOG.md"] : ["CHANGELOG.md"];
+
     public static WhatsNewNotes? Read(string? markdown, string version)
     {
         if (string.IsNullOrWhiteSpace(markdown) || string.IsNullOrWhiteSpace(version)) return null;
@@ -76,18 +84,19 @@ public static class WhatsNewReader
 
 public sealed class WelcomeTourViewModel : ObservableObject
 {
-    public const string WhatsNewId = "news";
+    public const string WhatsNewId = "news", ProfileId = "profile", ThemeId = "theme";
+    // First run: account and look come right after the welcome (they used to be the separate profile setup).
     private static readonly (string Id, string Glyph, string? Route)[] Definitions =
     [
-        ("welcome", "", null), ("optimize", "", "optimize"), ("games", "", "games"), ("score", "", "lotusscore"),
+        ("welcome", "", null), (ProfileId, "\uE77B", null), (ThemeId, "\uE790", null), ("optimize", "", "optimize"), ("games", "", "games"), ("score", "", "lotusscore"),
         ("tools", "", "tools"), ("saves", "", "saves"), ("diary", "", "diary"), (WhatsNewId, "", null),
     ];
     private int index;
 
-    public WelcomeTourViewModel(ITextCatalog text, WhatsNewNotes? notes)
+    public WelcomeTourViewModel(ITextCatalog text, WhatsNewNotes? notes, bool includeSetup = false)
     {
         Text = text; Notes = notes;
-        Pages = [.. Definitions.Select(d => new WelcomePage(d.Id, d.Glyph, text["Wt" + Key(d.Id)], text["Wt" + Key(d.Id) + "Lead"],
+        Pages = [.. Definitions.Where(d => includeSetup || d.Id is not (ProfileId or ThemeId)).Select(d => new WelcomePage(d.Id, d.Glyph, text["Wt" + Key(d.Id)], text["Wt" + Key(d.Id) + "Headline"], text["Wt" + Key(d.Id) + "Lead"],
             [text["Wt" + Key(d.Id) + "P1"], text["Wt" + Key(d.Id) + "P2"], text["Wt" + Key(d.Id) + "P3"]], text["Wt" + Key(d.Id) + "Try"], d.Route))];
     }
 
@@ -104,7 +113,7 @@ public sealed class WelcomeTourViewModel : ObservableObject
     public bool IsLast => index == Pages.Count - 1;
     public string NextLabel => Text[IsLast ? "WtFinish" : index == 0 ? "WtStart" : "WtNext"];
     public string StepText => Text.Format("ObStepOf", index + 1, Pages.Count);
-    public string NotesTitle => Notes is null ? Text["WtNewsNone"] : Text.Format("WtNewsVersion", Notes.Version, Notes.Name.Length > 0 ? Notes.Name : "Lotus");
+    public string NotesTitle => Notes is null ? Text["WtNewsNone"] : Text.Format("WtNewsVersion", Notes.Name.Length > 0 && Notes.Name != "Lotus" ? Notes.Name : "Lotus " + Lotus.Core.Updates.UpdateVersions.Display(Notes.Version));
 
     public void Open(WelcomeOpening opening) { index = opening == WelcomeOpening.WhatsNew ? Pages.Count - 1 : 0; Notify(); }
     public void Next() { if (!IsLast) Index = index + 1; }

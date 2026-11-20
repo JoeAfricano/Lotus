@@ -1,3 +1,4 @@
+using Lotus.Core.Profile;
 using Lotus.Core.Welcome;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -17,15 +18,28 @@ public sealed partial class WelcomeTourView : UserControl
     private const string ReleasesUrl = "https://github.com/JoeAfricano/Lotus/releases";
     private const double Cycle = 5.6; // seconds per scene loop
     private WelcomeTourViewModel? vm;
+    private OnboardingViewModel? setup; // first run: profile and look are chosen inside the guide and saved when it closes
     private Storyboard? loop, art;
     private int lastIndex;
     private bool closing;
     private readonly List<Button> railItems = [];
 
     public bool MotionEnabled { get; set; } = true;
+    public Lotus.Core.Backup.BackupViewModel? Backup { get; set; } // lets the saves page connect Google Drive right there
     public bool IsOpen => Visibility == Visibility.Visible && !closing;
     public event EventHandler? Closed;
     public event EventHandler<string>? TryRequested; // route of the feature the player wants to try
+    public event EventHandler<string>? LanguageRequested; // "pt-BR" | "en-US": the whole app switches, then Retext
+
+    // The language changed while the guide is open: same page, new texts.
+    public void Retext(WelcomeTourViewModel model)
+    {
+        var index = vm?.Index ?? 0;
+        vm = model; vm.Index = index; lastIndex = index;
+        RailKicker.Text = vm.Text["WtKicker"]; CloseButton.Content = vm.Text["WtClose"]; BackButton.Content = vm.Text["WtBack"];
+        SceneTag.Text = vm.Text["WtScExample"].ToUpperInvariant();
+        BuildRail(); Render(animate: false);
+    }
 
     public WelcomeTourView()
     {
@@ -41,9 +55,10 @@ public sealed partial class WelcomeTourView : UserControl
         }
     }
 
-    public void Open(WelcomeTourViewModel model, WelcomeOpening opening)
+    public void Open(WelcomeTourViewModel model, WelcomeOpening opening, OnboardingViewModel? firstRun = null)
     {
-        vm = model; closing = false;
+        vm = model; closing = false; setup = firstRun;
+        setup?.Start(edit: false);
         vm.Open(opening); lastIndex = vm.Index;
         RailKicker.Text = vm.Text["WtKicker"]; CloseButton.Content = vm.Text["WtClose"]; BackButton.Content = vm.Text["WtBack"];
         SceneTag.Text = vm.Text["WtScExample"].ToUpperInvariant();
@@ -62,6 +77,8 @@ public sealed partial class WelcomeTourView : UserControl
     {
         if (closing || Visibility == Visibility.Collapsed) return;
         closing = true;
+        steamWatch?.Stop(); steamWatch = null;
+        if (setup is { } chosen) { setup = null; try { chosen.Skip(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Welcome profile not saved"); } } // saves profile + look, marks the first run done
         loop?.Stop(); loop = null; art?.Stop(); art = null;
         var ms = MotionEnabled ? 200 : 0;
         var sb = new Storyboard();
@@ -124,7 +141,9 @@ public sealed partial class WelcomeTourView : UserControl
         var forward = vm.Index >= lastIndex; lastIndex = vm.Index;
         SelectRail();
         StepLabel.Text = vm.StepText;
-        PageTitle.Text = page.Title;
+        PageKicker.Text = page.Title.ToUpperInvariant();
+        PageTitle.Text = page.Headline;
+        PageGrid.RowDefinitions[0].Height = new GridLength(page.IsSetup ? 150 : 236);
         PageLead.Text = page.Lead;
         BuildDetails(page);
         BackButton.Visibility = vm.CanBack ? Visibility.Visible : Visibility.Collapsed;
@@ -147,9 +166,62 @@ public sealed partial class WelcomeTourView : UserControl
         Details.Children.Clear();
         if (vm is null) return;
         if (vm.IsWhatsNew) { BuildNotes(); return; }
+        if (page.Id == WelcomeTourViewModel.ProfileId) { BuildProfile(); return; }
+        if (page.Id == WelcomeTourViewModel.ThemeId) { BuildTheme(); return; }
         Details.Children.Add(new TextBlock { Text = vm.Text["WtHow"].ToUpperInvariant(), Style = (Style)Application.Current.Resources["EyebrowStyle"], Margin = new Thickness(0, 4, 0, 2) });
         foreach (var point in page.Points) Details.Children.Add(PointRow("", point));
+        if (page.Id == "welcome") AddLanguagePicker();
+        if (page.Id == "saves") AddDriveCard();
         if (page.Route is not null) Details.Children.Add(new TextBlock { Text = vm.Text["WtTryHint"], Style = (Style)Application.Current.Resources["CaptionStyle"], Margin = new Thickness(0, 6, 0, 0) });
+    }
+
+    // Saves page: connect Google Drive without leaving the guide (same sign-in as Backup de saves; drive.file only).
+    private void AddDriveCard()
+    {
+        if (vm is null || Backup is not { CloudConfigured: true } backup) return;
+        var row = new Grid { ColumnSpacing = 14 };
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); row.ColumnDefinitions.Add(new ColumnDefinition()); row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        row.Children.Add(new FontIcon { Glyph = "", FontSize = 22, Foreground = (Brush)Application.Current.Resources["RoseBrush"], VerticalAlignment = VerticalAlignment.Center });
+        var text = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
+        text.Children.Add(new TextBlock { Text = backup.CloudConnected ? backup.CloudAccountText : vm.Text["WtSavesDriveTitle"], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
+        text.Children.Add(new TextBlock { Text = vm.Text[backup.CloudConnected ? "WtSavesDriveDone" : "WtSavesDriveHint"], Style = (Style)Application.Current.Resources["CaptionStyle"], TextWrapping = TextWrapping.Wrap });
+        Grid.SetColumn(text, 1); row.Children.Add(text);
+        if (backup.CloudCanConnect)
+        {
+            var connect = new Button { Content = vm.Text["WtSavesDrive"], Style = (Style)Application.Current.Resources["PrimaryButtonStyle"], MinHeight = 36, VerticalAlignment = VerticalAlignment.Center };
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(connect, "wt-drive-connect");
+            connect.Click += async (_, _) =>
+            {
+                connect.IsEnabled = false;
+                try { await backup.ConnectAsync(); } catch (Exception ex) { Serilog.Log.Warning(ex, "Drive from welcome guide"); }
+                if (IsOpen && vm?.Current.Id == "saves") BuildDetails(vm.Current);
+            };
+            Grid.SetColumn(connect, 2); row.Children.Add(connect);
+        }
+        else row.Children.Add(PlacedIcon());
+        Details.Children.Add(new Border
+        {
+            Child = row, Padding = new Thickness(14, 12, 14, 12), CornerRadius = new CornerRadius(12), BorderThickness = new Thickness(1), Margin = new Thickness(0, 6, 0, 0),
+            Background = (Brush)Application.Current.Resources["BadgeBrush"], BorderBrush = (Brush)Application.Current.Resources["CardBorderBrush"],
+        });
+        static FontIcon PlacedIcon() { var done = new FontIcon { Glyph = "", FontSize = 16, Foreground = (Brush)Application.Current.Resources["SuccessBrush"], VerticalAlignment = VerticalAlignment.Center }; Grid.SetColumn(done, 2); return done; }
+    }
+
+    // Welcome page: Português (main) or English, for the whole app.
+    private void AddLanguagePicker()
+    {
+        if (vm is null) return;
+        Details.Children.Add(Heading(vm.Text["WtLanguage"]));
+        var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        foreach (var (code, label) in new[] { ("pt-BR", "Português"), ("en-US", "English") })
+        {
+            var selected = vm.Text.Language == code;
+            var b = Pill(label, selected, swatch: Solid(code == "pt-BR" ? "#2E9E5B" : "#3C5BC4"));
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(b, "wt-lang-" + code);
+            b.Click += (_, _) => { if (vm?.Text.Language != code) { UiSound.Play(UiSound.Cue.Toggle); LanguageRequested?.Invoke(this, code); } };
+            row.Children.Add(b);
+        }
+        Details.Children.Add(row);
     }
 
     private void BuildNotes()
@@ -218,11 +290,13 @@ public sealed partial class WelcomeTourView : UserControl
             "tools" => ToolsScene(sb),
             "saves" => SavesScene(sb),
             "diary" => DiaryScene(sb),
+            WelcomeTourViewModel.ProfileId => ProfileScene(sb),
+            WelcomeTourViewModel.ThemeId => ThemeScene(sb),
             _ => NewsScene(sb),
         };
         Scene.Children.Add(root);
         ShowArt(page.Id == "welcome");
-        SceneTag.Visibility = page.Id is "welcome" or WelcomeTourViewModel.WhatsNewId ? Visibility.Collapsed : Visibility.Visible;
+        SceneTag.Visibility = page.Id is "welcome" or WelcomeTourViewModel.WhatsNewId || page.IsSetup ? Visibility.Collapsed : Visibility.Visible;
         if (!MotionEnabled) return;
         Keys(sb, root, "Opacity", (0, 0), (0.35, 1), (Cycle - 0.45, 1), (Cycle, 0));
         loop = sb; sb.Begin();
@@ -433,12 +507,219 @@ public sealed partial class WelcomeTourView : UserControl
         }
         var center = new StackPanel { Spacing = 6, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
         center.Children.Add(Label((vm?.Text["WtNews"] ?? "").ToUpperInvariant(), 12, "#F07A9C", bold: true, spacing: 160, center: true));
-        var version = Label(vm?.Notes?.Version ?? "Lotus", 40, "#FFFFFF", bold: true, center: true);
+        // The name players know ("1.0 Beta"), never the internal number (2.0.0-beta) the updater compares.
+        var shown = vm?.Notes is { } n ? Lotus.Core.Updates.UpdateVersions.Display(n.Version) : "Lotus";
+        var version = Label(shown, 40, "#FFFFFF", bold: true, center: true);
         version.Foreground = (Brush)Application.Current.Resources["BrandGoldGradientBrush"];
         center.Children.Add(version); Pop(sb, version, 0.35);
-        if (vm?.Notes is { Name.Length: > 0 } notes) { var name = Label("“" + notes.Name + "”", 14, "#E6D6DE", center: true); center.Children.Add(name); Appear(sb, name, 0.9); }
+        if (vm?.Notes is { Name.Length: > 0 } notes && notes.Name != "Lotus" && !notes.Name.EndsWith(shown, StringComparison.OrdinalIgnoreCase))
+        { var name = Label("“" + notes.Name + "”", 14, "#E6D6DE", center: true); center.Children.Add(name); Appear(sb, name, 0.9); }
         grid.Children.Add(center);
         return grid;
+    }
+
+    // ---- first-run choices (account and look), same rules as the profile setup ----
+    private Microsoft.UI.Dispatching.DispatcherQueueTimer? steamWatch;
+
+    private void BuildProfile()
+    {
+        if (setup is not { } s || vm is null) return;
+        var caption = (Style)Application.Current.Resources["CaptionStyle"];
+        if (s.SteamFound)
+        {
+            var steam = Choice(s.UseSteam, vm.Text["WtProfileSteam"], s.SteamName, s.SteamPicture, s.SteamName);
+            steam.Click += (_, _) => { s.UseSteam = true; RefreshSetup(); };
+            Details.Children.Add(steam);
+        }
+        else
+        {
+            var missing = new Grid { ColumnSpacing = 12 };
+            missing.ColumnDefinitions.Add(new ColumnDefinition()); missing.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            missing.Children.Add(new TextBlock { Text = vm.Text["WtProfileNoSteam"], Style = caption, TextWrapping = TextWrapping.Wrap, VerticalAlignment = VerticalAlignment.Center });
+            var signIn = new Button { Content = s.SteamSignInLabel, Style = (Style)Application.Current.Resources["SoftButtonStyle"] };
+            signIn.Click += async (_, _) => { await Windows.System.Launcher.LaunchUriAsync(new Uri(s.SteamSignInUrl)); WatchSteam(); };
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(signIn, "wt-steam-signin");
+            Grid.SetColumn(signIn, 1); missing.Children.Add(signIn);
+            Details.Children.Add(missing);
+            WatchSteam();
+        }
+        var own = Choice(s.UseCustom, vm.Text["WtProfileOwn"], s.CustomName.Trim().Length > 0 ? s.CustomName.Trim() : vm.Text["ObDefaultName"], s.CustomPicture, s.PreviewName);
+        own.Click += (_, _) => { s.UseCustom = true; RefreshSetup(); };
+        Details.Children.Add(own);
+        var row = new Grid { ColumnSpacing = 10 };
+        row.ColumnDefinitions.Add(new ColumnDefinition()); row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        var name = new TextBox { PlaceholderText = vm.Text["WtProfileName"], Text = s.CustomName, MaxLength = 32 };
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(name, "wt-profile-name");
+        name.GotFocus += (_, _) => { if (!s.UseCustom) { s.UseCustom = true; } };
+        name.TextChanged += (_, _) => { s.CustomName = name.Text; UpdateProfileScene(); };
+        var photo = new Button { Content = vm.Text["WtProfilePhoto"], Style = (Style)Application.Current.Resources["SoftButtonStyle"] };
+        photo.Click += OnPickPicture;
+        Grid.SetColumn(photo, 1); row.Children.Add(name); row.Children.Add(photo);
+        Details.Children.Add(row);
+        Details.Children.Add(new TextBlock { Text = vm.Current.Points[0], Style = caption, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 2, 0, 0) });
+    }
+
+    // A selectable card: avatar (picture or initial), title and the name that will be used.
+    private static Button Choice(bool selected, string title, string detail, string? picture, string initialFrom)
+    {
+        var grid = new Grid { ColumnSpacing = 12 };
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); grid.ColumnDefinitions.Add(new ColumnDefinition()); grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        grid.Children.Add(Avatar(picture, initialFrom, 38));
+        var text = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Spacing = 1 };
+        text.Children.Add(new TextBlock { Text = title, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        text.Children.Add(new TextBlock { Text = detail, Style = (Style)Application.Current.Resources["CaptionStyle"], TextTrimming = TextTrimming.CharacterEllipsis });
+        Grid.SetColumn(text, 1); grid.Children.Add(text);
+        var mark = new FontIcon { Glyph = selected ? "" : "", FontSize = 14, Foreground = (Brush)Application.Current.Resources["RoseBrush"], VerticalAlignment = VerticalAlignment.Center };
+        Grid.SetColumn(mark, 2); grid.Children.Add(mark);
+        return new Button
+        {
+            Content = grid, HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch, Padding = new Thickness(12, 8, 14, 8), CornerRadius = new CornerRadius(12),
+            Background = (Brush)Application.Current.Resources[selected ? "BadgeBrush" : "CardBrush"],
+            BorderBrush = (Brush)Application.Current.Resources[selected ? "RoseBrush" : "CardBorderBrush"], BorderThickness = new Thickness(1),
+        };
+    }
+
+    private static Grid Avatar(string? picture, string name, double size)
+    {
+        var grid = new Grid { Width = size, Height = size };
+        grid.Children.Add(new Ellipse { Fill = (Brush)Application.Current.Resources["AccentGradientBrush"] });
+        grid.Children.Add(new TextBlock { Text = name.Length > 0 ? char.ToUpperInvariant(name[0]).ToString() : "P", FontSize = size * 0.45, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = (Brush)Application.Current.Resources["OnRoseBrush"], HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
+        if (picture is { Length: > 0 } && File.Exists(picture))
+        {
+            try { grid.Children.Add(new Ellipse { Fill = new ImageBrush { ImageSource = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(picture)) { DecodePixelWidth = (int)(size * 2) }, Stretch = Stretch.UniformToFill } }); }
+            catch (Exception) { }
+        }
+        return grid;
+    }
+
+    private async void OnPickPicture(object sender, RoutedEventArgs e)
+    {
+        if (setup is not { } s) return;
+        var picker = new Windows.Storage.Pickers.FileOpenPicker { SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary, ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail };
+        foreach (var ext in new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp" }) picker.FileTypeFilter.Add(ext);
+        WinRT.Interop.InitializeWithWindow.Initialize(picker, App.WindowHandle);
+        if (await picker.PickSingleFileAsync() is { } file) { s.ChoosePicture(file.Path); RefreshSetup(); }
+    }
+
+    // No Steam account yet: re-check every few seconds while the profile page is open (stops when it closes).
+    private void WatchSteam()
+    {
+        if (steamWatch is not null || setup is not { SteamFound: false }) return;
+        steamWatch = DispatcherQueue.CreateTimer(); steamWatch.Interval = TimeSpan.FromSeconds(3);
+        steamWatch.Tick += (t, _) =>
+        {
+            if (setup is not { } s || vm?.Current.Id != WelcomeTourViewModel.ProfileId || !IsOpen) { t.Stop(); steamWatch = null; return; }
+            if (s.RecheckSteam()) { t.Stop(); steamWatch = null; RefreshSetup(); }
+        };
+        steamWatch.Start();
+    }
+
+    private void BuildTheme()
+    {
+        if (setup is not { } s || vm is null) return;
+        Details.Children.Add(Heading(vm.Text["WtThemeMode"]));
+        var modes = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        foreach (var t in s.Themes)
+        {
+            var b = Pill(t.Label, t.Selected, swatch: Solid(t.Swatch));
+            b.Click += (_, _) => { s.Theme = t.Id; UiSound.Play(UiSound.Cue.Toggle); RefreshSetup(); };
+            modes.Children.Add(b);
+        }
+        Details.Children.Add(modes);
+        Details.Children.Add(Heading(vm.Text["WtThemeReady"]));
+        var ready = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        foreach (var f in s.Featured)
+        {
+            var b = Pill(f.Label, f.Selected, swatch: Swatch(f.Colors));
+            b.Click += (_, _) => { s.PickFeatured(f.Id); UiSound.Play(UiSound.Cue.Toggle); RefreshSetup(); };
+            ready.Children.Add(b);
+        }
+        Details.Children.Add(new ScrollViewer { Content = ready, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollMode = ScrollMode.Enabled, VerticalScrollBarVisibility = ScrollBarVisibility.Disabled, Padding = new Thickness(0, 0, 0, 6) });
+        Details.Children.Add(Heading(vm.Text["WtThemeAccent"]));
+        var accents = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
+        foreach (var a in s.Accents)
+        {
+            var dot = new Button
+            {
+                Width = 34, Height = 34, Padding = new Thickness(0), CornerRadius = new CornerRadius(17), Background = Solid(a.Hex),
+                BorderBrush = (Brush)Application.Current.Resources[a.Selected ? "MainTextBrush" : "CardBorderBrush"], BorderThickness = new Thickness(a.Selected ? 3 : 1),
+                Content = a.Selected ? new FontIcon { Glyph = "", FontSize = 12, Foreground = Solid("#FFFFFF") } : null,
+            };
+            ToolTipService.SetToolTip(dot, a.Label);
+            Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(dot, a.Label);
+            dot.Click += (_, _) => { s.Accent = a.Id; UiSound.Play(UiSound.Cue.Toggle); RefreshSetup(); };
+            accents.Children.Add(dot);
+        }
+        Details.Children.Add(accents);
+        Details.Children.Add(new TextBlock { Text = vm.Current.Points[0], Style = (Style)Application.Current.Resources["CaptionStyle"], TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 4, 0, 0) });
+    }
+
+    private static TextBlock Heading(string text) => new() { Text = text.ToUpperInvariant(), Style = (Style)Application.Current.Resources["EyebrowStyle"], Margin = new Thickness(0, 4, 0, 0) };
+    private static Button Pill(string label, bool selected, Brush swatch)
+    {
+        var content = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        content.Children.Add(new Border { Width = 16, Height = 16, CornerRadius = new CornerRadius(8), Background = swatch, BorderBrush = Solid("#55FFFFFF"), BorderThickness = new Thickness(1) });
+        content.Children.Add(new TextBlock { Text = label, VerticalAlignment = VerticalAlignment.Center });
+        return new Button
+        {
+            Content = content, MinHeight = 36, Padding = new Thickness(12, 6, 14, 6), CornerRadius = new CornerRadius(18), BorderThickness = new Thickness(1),
+            Background = (Brush)Application.Current.Resources[selected ? "BadgeBrush" : "CardBrush"],
+            BorderBrush = (Brush)Application.Current.Resources[selected ? "RoseBrush" : "CardBorderBrush"],
+        };
+    }
+    private static Brush Swatch(string colors)
+    {
+        var list = colors.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        try { return list.Length >= 2 ? Gradient(list[0], list[^1]) : Solid(list.Length == 1 ? list[0] : "#888888"); }
+        catch (Exception) { return Solid("#888888"); }
+    }
+
+    // A choice was made: redraw the controls and the live preview in the scene (no page animation).
+    private void RefreshSetup()
+    {
+        if (vm is null) return;
+        BuildDetails(vm.Current);
+        if (vm.Current.Id == WelcomeTourViewModel.ProfileId) UpdateProfileScene(); else BuildScene(vm.Current);
+    }
+
+    private TextBlock? sceneName;
+    private Grid? sceneAvatar;
+    private void UpdateProfileScene()
+    {
+        if (setup is not { } s || sceneName is null || sceneAvatar?.Parent is not Panel holder) return;
+        sceneName.Text = s.PreviewName;
+        var index = holder.Children.IndexOf(sceneAvatar);
+        var fresh = Avatar(s.PreviewPicture, s.PreviewName, 64);
+        holder.Children[index] = fresh; sceneAvatar = fresh;
+    }
+
+    private Grid ProfileScene(Storyboard sb)
+    {
+        var card = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 16, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+        sceneAvatar = Avatar(setup?.PreviewPicture, setup?.PreviewName ?? "", 64);
+        card.Children.Add(sceneAvatar);
+        var text = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Spacing = 6 };
+        sceneName = Label(setup?.PreviewName ?? "", 22, "#FFFFFF", bold: true);
+        text.Children.Add(sceneName);
+        text.Children.Add(Chip("", Text("ObStageLevel"), "#EEC1A8", small: true));
+        card.Children.Add(text);
+        var panel = MockCard(card, new Thickness(22, 16, 28, 16)); panel.HorizontalAlignment = HorizontalAlignment.Center; panel.VerticalAlignment = VerticalAlignment.Center;
+        Pop(sb, panel, 0.3);
+        return new Grid { Children = { panel } };
+    }
+
+    private Grid ThemeScene(Storyboard sb)
+    {
+        var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 14, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+        var picks = setup?.Featured.Take(4).ToList() ?? [];
+        for (var i = 0; i < picks.Count; i++)
+        {
+            var tile = new Border { Width = 92, Height = 64, CornerRadius = new CornerRadius(12), Background = Swatch(picks[i].Colors), BorderBrush = Solid(picks[i].Selected ? "#FFF07A9C" : "#44FFFFFF"), BorderThickness = new Thickness(picks[i].Selected ? 2 : 1) };
+            row.Children.Add(tile); Appear(sb, tile, 0.3 + i * 0.2, rise: 14);
+        }
+        var accent = new Ellipse { Width = 44, Height = 44, Fill = (Brush)Application.Current.Resources["AccentGradientBrush"], VerticalAlignment = VerticalAlignment.Center };
+        row.Children.Add(accent); Pop(sb, accent, 1.3, overshoot: true);
+        return new Grid { Children = { row } };
     }
 
     // ---- scene building blocks ----

@@ -69,15 +69,23 @@ public sealed class WelcomeTourTests
         var props = File.ReadAllText(Path.Combine(root!, "Directory.Build.props"));
         var version = System.Text.RegularExpressions.Regex.Match(props, "<Version>([^<]+)</Version>").Groups[1].Value;
         Assert.NotNull(WhatsNewReader.Read(File.ReadAllText(Path.Combine(root!, "CHANGELOG.md")), version));
+        Assert.NotNull(WhatsNewReader.Read(File.ReadAllText(Path.Combine(root!, "CHANGELOG-English.md")), version)); // English notes too
+    }
+
+    [Fact] public void EnglishPrefersItsOwnNotes()
+    {
+        Assert.Equal(["CHANGELOG-English.md", "CHANGELOG.md"], WhatsNewReader.Files("en-US"));
+        Assert.Equal(["CHANGELOG.md"], WhatsNewReader.Files("pt-BR"));
     }
 
     [Theory, InlineData("pt-BR"), InlineData("en-US")]
     public void EveryPageHasItsTextsAndFeaturePagesOpenAScreen(string language)
     {
-        var vm = new WelcomeTourViewModel(new TextCatalog(language), null);
-        Assert.Equal(8, vm.Pages.Count);
-        Assert.All(vm.Pages, p => { Assert.False(string.IsNullOrWhiteSpace(p.Title)); Assert.Equal(3, p.Points.Count); });
-        Assert.All(vm.Pages.Where(p => p.Id is not ("welcome" or "news")), p => Assert.NotNull(AppRoutes.Resolve(p.Route)));
+        Assert.Equal(8, new WelcomeTourViewModel(new TextCatalog(language), null).Pages.Count);
+        var vm = new WelcomeTourViewModel(new TextCatalog(language), null, includeSetup: true);
+        Assert.Equal(["welcome", "profile", "theme"], vm.Pages.Take(3).Select(p => p.Id));
+        Assert.All(vm.Pages, p => { Assert.False(string.IsNullOrWhiteSpace(p.Title)); Assert.False(string.IsNullOrWhiteSpace(p.Headline)); Assert.False(string.IsNullOrWhiteSpace(p.Points[0])); });
+        Assert.All(vm.Pages.Where(p => p.Id is not ("welcome" or "news") && !p.IsSetup), p => Assert.NotNull(AppRoutes.Resolve(p.Route)));
     }
 
     [Fact] public void OpensOnWhatsNewAfterAnUpdateAndWalksThePages()

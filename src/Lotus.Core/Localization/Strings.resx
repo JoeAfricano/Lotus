@@ -1174,67 +1174,102 @@ Condições atuais: {1}</value></data>
   <data name="SetPlayIntroHint" xml:space="preserve"><value>A intro completa toca na primeira vez e depois de cada atualização; nas outras vezes, só um trecho curto. Clique ou Esc para pular.</value></data>
   <data name="IntroSkip" xml:space="preserve"><value>Clique ou Esc para pular</value></data>
   <data name="WtKicker" xml:space="preserve"><value>CONHEÇA O LOTUS</value></data>
-  <data name="WtHow" xml:space="preserve"><value>Como funciona</value></data>
-  <data name="WtStart" xml:space="preserve"><value>Começar</value></data>
+  <data name="WtHow" xml:space="preserve"><value>O que você ganha</value></data>
+  <data name="WtStart" xml:space="preserve"><value>Bora começar</value></data>
   <data name="WtNext" xml:space="preserve"><value>Próximo</value></data>
   <data name="WtBack" xml:space="preserve"><value>Voltar</value></data>
-  <data name="WtFinish" xml:space="preserve"><value>Concluir</value></data>
+  <data name="WtFinish" xml:space="preserve"><value>Partiu jogar!</value></data>
   <data name="WtClose" xml:space="preserve"><value>Fechar</value></data>
-  <data name="WtTryHint" xml:space="preserve"><value>Abre a tela e fecha este guia.</value></data>
-  <data name="WtNewsVersion" xml:space="preserve"><value>Versão {0} "{1}"</value></data>
+  <data name="WtTryHint" xml:space="preserve"><value>O guia fecha e você cai direto nessa tela.</value></data>
+  <data name="WtNewsVersion" xml:space="preserve"><value>Novidades do {0}</value></data>
   <data name="WtNewsNone" xml:space="preserve"><value>As notas desta versão não foram encontradas neste PC.</value></data>
   <data name="WtNewsAll" xml:space="preserve"><value>Ver todas as versões</value></data>
   <data name="WtWelcome" xml:space="preserve"><value>Bem-vindo ao Lotus</value></data>
-  <data name="WtWelcomeLead" xml:space="preserve"><value>O Lotus deixa o PC pronto para jogar, sem você precisar entender de configuração. Veja em um minuto o que cada parte faz.</value></data>
-  <data name="WtWelcomeP1" xml:space="preserve"><value>Nada muda no Windows sem você **confirmar**.</value></data>
-  <data name="WtWelcomeP2" xml:space="preserve"><value>Tudo o que o Lotus muda tem **Desfazer**.</value></data>
-  <data name="WtWelcomeP3" xml:space="preserve"><value>Sem números inventados: o que não foi medido aparece como **não verificado**.</value></data>
-  <data name="WtWelcomeTry" xml:space="preserve"><value>Começar o tour</value></data>
+  <data name="WtWelcomeLead" xml:space="preserve"><value>O Lotus cuida da parte chata do PC pra você só apertar Jogar. Dá uma olhada rápida no que ele faz: leva um minutinho.</value></data>
+  <data name="WtWelcomeP1" xml:space="preserve"><value>Você no controle: nada muda no Windows sem o seu **ok**.</value></data>
+  <data name="WtWelcomeP2" xml:space="preserve"><value>Não curtiu? Um clique em **Desfazer** e tudo volta como era.</value></data>
+  <data name="WtWelcomeP3" xml:space="preserve"><value>Papo reto: o que o Lotus não mediu aparece como **não verificado**, nada de chute.</value></data>
+  <data name="WtWelcomeTry" xml:space="preserve"><value>Bora!</value></data>
   <data name="WtOptimize" xml:space="preserve"><value>Otimizar meu PC</value></data>
-  <data name="WtOptimizeLead" xml:space="preserve"><value>Escolha um perfil e o Lotus prepara o Windows para jogar: plano de energia, Modo de Jogo e taxa do monitor.</value></data>
-  <data name="WtOptimizeP1" xml:space="preserve"><value>**Jogo** para jogar, **Diário** para o dia a dia e **Personalizado** para escolher item por item.</value></data>
-  <data name="WtOptimizeP2" xml:space="preserve"><value>Antes de aplicar, o Lotus mostra o que vai mudar e pede sua confirmação.</value></data>
-  <data name="WtOptimizeP3" xml:space="preserve"><value>Mudou de ideia? **Desfazer** volta tudo ao que estava.</value></data>
-  <data name="WtOptimizeTry" xml:space="preserve"><value>Abrir Otimizar</value></data>
+  <data name="WtOptimizeLead" xml:space="preserve"><value>Escolha o perfil e o Lotus ajeita energia, Modo de Jogo e taxa do monitor pra você entrar na partida com o PC no ponto.</value></data>
+  <data name="WtOptimizeP1" xml:space="preserve"><value>**Jogo** pra jogatina, **Diário** pro dia a dia e **Personalizado** pra quem gosta de escolher cada detalhe.</value></data>
+  <data name="WtOptimizeP2" xml:space="preserve"><value>Antes de mexer, o Lotus mostra tudo o que vai mudar e espera o seu ok.</value></data>
+  <data name="WtOptimizeP3" xml:space="preserve"><value>Se arrependeu? **Desfazer** e pronto, tudo volta como estava.</value></data>
+  <data name="WtOptimizeTry" xml:space="preserve"><value>Quero otimizar</value></data>
   <data name="WtGames" xml:space="preserve"><value>Meus Jogos</value></data>
-  <data name="WtGamesLead" xml:space="preserve"><value>Seus jogos da Steam, Epic, GOG, EA, Ubisoft e Xbox num lugar só, com capa e Jogar a um clique.</value></data>
-  <data name="WtGamesP1" xml:space="preserve"><value>**Preparar e jogar**: o Lotus deixa o PC pronto e abre o jogo.</value></data>
-  <data name="WtGamesP2" xml:space="preserve"><value>Ajustes gráficos sugeridos para o seu PC em cada jogo.</value></data>
-  <data name="WtGamesP3" xml:space="preserve"><value>Com o jogo aberto, **Ctrl + Shift + L** mostra por que está travando.</value></data>
+  <data name="WtGamesLead" xml:space="preserve"><value>Steam, Epic, GOG, EA, Ubisoft e Xbox juntos, com capa bonita e o botão Jogar sempre à mão.</value></data>
+  <data name="WtGamesP1" xml:space="preserve"><value>**Preparar e jogar**: o Lotus deixa o PC pronto e já abre o jogo.</value></data>
+  <data name="WtGamesP2" xml:space="preserve"><value>Sugestões de gráficos pensadas pro seu PC, jogo por jogo.</value></data>
+  <data name="WtGamesP3" xml:space="preserve"><value>Travou no meio da partida? **Ctrl + Shift + L** mostra o que está pesando.</value></data>
   <data name="WtGamesTry" xml:space="preserve"><value>Ver meus jogos</value></data>
   <data name="WtScore" xml:space="preserve"><value>Lotus Score</value></data>
-  <data name="WtScoreLead" xml:space="preserve"><value>Um teste rápido do processador e da placa de vídeo para saber quanto o seu PC rende.</value></data>
-  <data name="WtScoreP1" xml:space="preserve"><value>FPS esperado em qualquer jogo, sempre com a fonte da estimativa.</value></data>
-  <data name="WtScoreP2" xml:space="preserve"><value>Mostra o **gargalo**: processador, placa de vídeo ou memória.</value></data>
-  <data name="WtScoreP3" xml:space="preserve"><value>Compare com outras peças antes de pensar em trocar.</value></data>
+  <data name="WtScoreLead" xml:space="preserve"><value>Um teste rápido no processador e na placa de vídeo mostra até onde a sua máquina vai.</value></data>
+  <data name="WtScoreP1" xml:space="preserve"><value>Veja quanto FPS esperar em qualquer jogo, sempre com a fonte da estimativa.</value></data>
+  <data name="WtScoreP2" xml:space="preserve"><value>Encontre o **gargalo**: processador, placa de vídeo ou memória.</value></data>
+  <data name="WtScoreP3" xml:space="preserve"><value>Pensando em upgrade? Compare as peças antes de gastar.</value></data>
   <data name="WtScoreTry" xml:space="preserve"><value>Medir meu PC</value></data>
   <data name="WtTools" xml:space="preserve"><value>Ferramentas</value></data>
-  <data name="WtToolsLead" xml:space="preserve"><value>Tudo para manter o PC em ordem, explicado em linguagem simples.</value></data>
-  <data name="WtToolsP1" xml:space="preserve"><value>**Check-up do PC** em um clique: só analisa, não muda nada.</value></data>
+  <data name="WtToolsLead" xml:space="preserve"><value>Uma caixa de ferramentas completa, explicada sem tecniquês.</value></data>
+  <data name="WtToolsP1" xml:space="preserve"><value>**Check-up do PC** num clique: ele só dá uma olhada, não mexe em nada.</value></data>
   <data name="WtToolsP2" xml:space="preserve"><value>Limpeza, programas que abrem com o Windows, saúde do disco, drivers e internet.</value></data>
-  <data name="WtToolsP3" xml:space="preserve"><value>**Por que meu jogo fechou?** procura a causa nos registros do Windows.</value></data>
+  <data name="WtToolsP3" xml:space="preserve"><value>O jogo fechou do nada? **Por que meu jogo fechou?** vai atrás da causa.</value></data>
   <data name="WtToolsTry" xml:space="preserve"><value>Abrir Ferramentas</value></data>
   <data name="WtSaves" xml:space="preserve"><value>Backup de saves</value></data>
-  <data name="WtSavesLead" xml:space="preserve"><value>Proteja o progresso dos seus jogos antes que algo dê errado.</value></data>
-  <data name="WtSavesP1" xml:space="preserve"><value>Cada cópia é conferida, para não guardar arquivo corrompido.</value></data>
-  <data name="WtSavesP2" xml:space="preserve"><value>Se quiser, envia para o **seu Google Drive**: na hora, toda semana ou todo mês.</value></data>
-  <data name="WtSavesP3" xml:space="preserve"><value>Para restaurar, é só escolher a cópia e confirmar.</value></data>
+  <data name="WtSavesLead" xml:space="preserve"><value>Horas de jogo não podem sumir por causa de um arquivo estragado. O Lotus copia seus saves antes que algo dê errado.</value></data>
+  <data name="WtSavesP1" xml:space="preserve"><value>Cada cópia é conferida, pra nunca guardar save corrompido.</value></data>
+  <data name="WtSavesP2" xml:space="preserve"><value>Quer ainda mais garantia? Mande pro **seu Google Drive**: na hora, toda semana ou todo mês.</value></data>
+  <data name="WtSavesP3" xml:space="preserve"><value>Precisou voltar? Escolha a cópia, confirme e pronto.</value></data>
   <data name="WtSavesTry" xml:space="preserve"><value>Proteger meus saves</value></data>
   <data name="WtDiary" xml:space="preserve"><value>Meu diário</value></data>
-  <data name="WtDiaryLead" xml:space="preserve"><value>Sua história com cada jogo: sessões, notas e conquistas.</value></data>
+  <data name="WtDiaryLead" xml:space="preserve"><value>Cada sessão, nota e conquista vira um capítulo do seu diário.</value></data>
   <data name="WtDiaryP1" xml:space="preserve"><value>As **sessões entram sozinhas** enquanto você joga.</value></data>
-  <data name="WtDiaryP2" xml:space="preserve"><value>Medalhas e níveis conforme você joga.</value></data>
-  <data name="WtDiaryP3" xml:space="preserve"><value>**O que jogar agora?** sugere pelo seu gosto.</value></data>
+  <data name="WtDiaryP2" xml:space="preserve"><value>Ganhe medalhas e suba de nível jogando.</value></data>
+  <data name="WtDiaryP3" xml:space="preserve"><value>Sem ideia do que jogar? **O que jogar agora?** sugere pelo seu gosto.</value></data>
   <data name="WtDiaryTry" xml:space="preserve"><value>Abrir meu diário</value></data>
   <data name="WtNews" xml:space="preserve"><value>Novidades</value></data>
-  <data name="WtNewsLead" xml:space="preserve"><value>O que mudou nesta versão do Lotus.</value></data>
-  <data name="WtNewsP1" xml:space="preserve"><value>Esta página aparece sozinha depois de cada atualização.</value></data>
+  <data name="WtNewsLead" xml:space="preserve"><value>Olha só o que chegou nesta versão.</value></data>
+  <data name="WtNewsP1" xml:space="preserve"><value>Esta página aparece sozinha sempre que o Lotus atualiza.</value></data>
   <data name="WtNewsP2" xml:space="preserve"><value>Para rever, vá em Configurações › Conheça o Lotus.</value></data>
   <data name="WtNewsP3" xml:space="preserve"><value>O histórico completo fica na página de versões do Lotus no GitHub.</value></data>
   <data name="WtNewsTry" xml:space="preserve"><value>Ver todas as versões</value></data>
-  <data name="WtScConfirm" xml:space="preserve"><value>Você confirma</value></data>
+  <data name="WtWelcomeHeadline" xml:space="preserve"><value>Bora deixar o PC no jeito pra jogar?</value></data>
+  <data name="WtOptimizeHeadline" xml:space="preserve"><value>Modo jogo ligado em um clique</value></data>
+  <data name="WtGamesHeadline" xml:space="preserve"><value>Toda a sua biblioteca num lugar só</value></data>
+  <data name="WtScoreHeadline" xml:space="preserve"><value>Descubra do que o seu PC é capaz</value></data>
+  <data name="WtToolsHeadline" xml:space="preserve"><value>PC em dia, sem dor de cabeça</value></data>
+  <data name="WtSavesHeadline" xml:space="preserve"><value>Seu progresso guardado a sete chaves</value></data>
+  <data name="WtDiaryHeadline" xml:space="preserve"><value>Sua história de jogador, registrada</value></data>
+  <data name="WtNewsHeadline" xml:space="preserve"><value>Tem novidade no Lotus!</value></data>
+  <data name="WtProfile" xml:space="preserve"><value>Seu perfil</value></data>
+  <data name="WtProfileHeadline" xml:space="preserve"><value>Quem vai jogar hoje?</value></data>
+  <data name="WtProfileLead" xml:space="preserve"><value>Conecte sua conta Steam ou escolha um nome e uma foto. É assim que o Lotus vai te chamar.</value></data>
+  <data name="WtProfileP1" xml:space="preserve"><value>Nada de login nem senha: o Lotus só lê a conta Steam que já está neste PC.</value></data>
+  <data name="WtProfileP2" xml:space="preserve"><value>Prefere outro nome? Escolha o seu e uma foto.</value></data>
+  <data name="WtProfileP3" xml:space="preserve"><value>Dá pra mudar depois em Configurações › Editar perfil.</value></data>
+  <data name="WtProfileTry" xml:space="preserve"><value>Escolher perfil</value></data>
+  <data name="WtProfileSteam" xml:space="preserve"><value>Usar minha conta Steam</value></data>
+  <data name="WtProfileOwn" xml:space="preserve"><value>Usar outro nome</value></data>
+  <data name="WtProfileName" xml:space="preserve"><value>Seu nome de jogador</value></data>
+  <data name="WtProfilePhoto" xml:space="preserve"><value>Escolher foto</value></data>
+  <data name="WtProfileNoSteam" xml:space="preserve"><value>Não achamos uma conta Steam neste PC. Entre na Steam e ela aparece aqui sozinha, ou use outro nome.</value></data>
+  <data name="WtTheme" xml:space="preserve"><value>Seu visual</value></data>
+  <data name="WtThemeHeadline" xml:space="preserve"><value>Deixe o Lotus com a sua cara</value></data>
+  <data name="WtThemeLead" xml:space="preserve"><value>Escolha o modo, um tema pronto ou a sua cor favorita. Você já vê a mudança na hora.</value></data>
+  <data name="WtThemeP1" xml:space="preserve"><value>Dá pra trocar quando quiser em Configurações › Aparência.</value></data>
+  <data name="WtThemeP2" xml:space="preserve"><value>Os temas prontos têm cores próprias; a cor de destaque vale para os modos.</value></data>
+  <data name="WtThemeP3" xml:space="preserve"><value>Veja na hora e mude quantas vezes quiser: tudo é salvo quando você fecha o guia.</value></data>
+  <data name="WtThemeTry" xml:space="preserve"><value>Escolher visual</value></data>
+  <data name="WtThemeMode" xml:space="preserve"><value>Modo</value></data>
+  <data name="WtThemeReady" xml:space="preserve"><value>Temas prontos</value></data>
+  <data name="WtThemeAccent" xml:space="preserve"><value>Cor de destaque</value></data>
+  <data name="WtSavesDrive" xml:space="preserve"><value>Conectar</value></data>
+  <data name="WtSavesDriveTitle" xml:space="preserve"><value>Quer guardar também no Google Drive?</value></data>
+  <data name="WtSavesDriveHint" xml:space="preserve"><value>Conecte sua conta e suas cópias ficam seguras na nuvem, na pasta Lotus/Backups. O Lotus só enxerga os arquivos que ele mesmo cria.</value></data>
+  <data name="WtSavesDriveDone" xml:space="preserve"><value>Tudo certo! Escolha em Backup de saves se o envio é na hora, toda semana ou todo mês.</value></data>
+  <data name="WtLanguage" xml:space="preserve"><value>Idioma · Language</value></data>
+  <data name="WtScConfirm" xml:space="preserve"><value>Você no controle</value></data>
   <data name="WtScUndo" xml:space="preserve"><value>Desfazer</value></data>
-  <data name="WtScHonest" xml:space="preserve"><value>Nada inventado</value></data>
+  <data name="WtScHonest" xml:space="preserve"><value>Sem chute</value></data>
   <data name="WtScPower" xml:space="preserve"><value>Plano de energia</value></data>
   <data name="WtScGameMode" xml:space="preserve"><value>Modo de Jogo</value></data>
   <data name="WtScRefresh" xml:space="preserve"><value>Taxa do monitor</value></data>

@@ -21,7 +21,7 @@
    </Grid>
 
    <!-- Page -->
-   <Grid Grid.Column="1" Padding="28,24,28,22" RowSpacing="18">
+   <Grid x:Name="PageGrid" Grid.Column="1" Padding="28,24,28,22" RowSpacing="18">
     <Grid.RowDefinitions><RowDefinition Height="236"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <!-- Scene: always on the dark plum stage so it looks the same in every theme -->
     <Grid x:Name="Stage" CornerRadius="14" RequestedTheme="Dark" AutomationProperties.AutomationId="wt-scene">
@@ -38,6 +38,7 @@
     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled" Padding="0,0,22,0">
      <StackPanel x:Name="Body" Spacing="10">
       <StackPanel.RenderTransform><TranslateTransform x:Name="BodyShift"/></StackPanel.RenderTransform>
+      <TextBlock x:Name="PageKicker" Style="{StaticResource EyebrowStyle}"/>
       <TextBlock x:Name="PageTitle" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.HeadingLevel="Level1"/>
       <TextBlock x:Name="PageLead" Style="{StaticResource BodyLargeStyle}" TextWrapping="Wrap" Opacity="0.85"/>
       <StackPanel x:Name="Details" Spacing="8" Margin="0,6,0,0"/>

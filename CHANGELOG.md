@@ -2,6 +2,22 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 2.0.0-beta "Lotus 1.0 Beta" (20/11/2026)
+
+### Anúncio importante
+- **O Lotus saiu da alpha: esta é a Lotus 1.0 Beta.** Tudo o que foi construído nas alphas (otimização reversível, Meus Jogos, ajustes gráficos por jogo, Lotus Score, Ferramentas, Backup de saves e o diário) agora está maduro para o dia a dia. Obrigado a todo mundo que testou!
+- **Atualizações mais espaçadas.** A partir de agora as versões saem com mais tempo entre uma e outra: cada uma mais completa e mais testada. Correções importantes continuam saindo logo que precisar.
+- **Seu Lotus atualiza sozinho para a beta**, como nas outras versões: seus jogos, diário, conquistas e configurações continuam como estão.
+
+### Novo
+- **Abertura animada.** Uma flor de lótus desenhada no próprio app se abre pétala por pétala, com brilho dourado e a marca. Completa (cerca de 3 s) na primeira vez e depois de cada atualização, curta (cerca de 1,4 s) nas outras. Clique ou Esc pula; Configurações › "Animação de abertura" desliga.
+- **Conheça o Lotus.** Um guia com uma página para cada parte do app (Otimizar, Meus Jogos, Lotus Score, Ferramentas, Backup de saves e Meu diário), cada uma com uma animação curta, texto simples e o botão para experimentar na hora.
+- **Primeira abertura num lugar só.** No mesmo guia você escolhe o idioma (Português ou English), conecta sua conta Steam ou escolhe nome e foto, escolhe tema e cor (com prévia ao vivo) e, se quiser, conecta o Google Drive para os backups de saves.
+- **Novidades.** Depois de cada atualização, o Lotus mostra o que mudou na versão (sem internet). Dá para rever em Configurações › "Conheça o Lotus".
+
+### Corrigido
+- O aviso amarelo sobre a troca de Hz não aparece mais sem motivo: nem quando uma janela de administrador (Gerenciador de Tarefas, instaladores) fica na frente, nem quando o jogo já está nos Hz certos.
+
 ## 1.9.0-alpha "Lotus" (19/11/2026)
 
 ### Novo

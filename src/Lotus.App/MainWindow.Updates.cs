@@ -23,8 +23,10 @@ public sealed partial class MainWindow
         var current = UpdateVersions.Parse(AppVersionText()) ?? new Version(0, 0, 0);
         // Development instance only: pretend to be an older version to try the update screen without installing.
         if (Environment.GetCommandLineArgs().Contains("--dev-instance") && UpdateVersions.Parse(Environment.GetEnvironmentVariable("LOTUS_PRETEND_VERSION")) is { } pretend) current = pretend;
+        var pretending = current != UpdateVersions.Parse(AppVersionText());
         updates = new UpdateViewModel(new Lotus.Infrastructure.Updates.GitHubUpdateSource(), new SetupInstaller(), current, text, ex => Serilog.Log.Warning(ex, "Updates"))
         {
+            CurrentName = pretending ? null : AppEdition.Name,
             AutoEnabled = () => preferences.Current.AutoUpdate,
             SetAuto = on => preferences.Update(preferences.Current with { AutoUpdate = on }),
         };
@@ -45,7 +47,7 @@ public sealed partial class MainWindow
         ShowUpdateDot(true);
         if (notifiedTag == release.Tag) return;
         notifiedTag = release.Tag;
-        var version = release.Tag.TrimStart('v');
+        var version = UpdateVersions.Display(release); // "1.0.1 Beta", never the internal number
         Serilog.Log.Information("Update available: {Version}", version);
         if (!preferences.Current.AutoUpdate)
         {

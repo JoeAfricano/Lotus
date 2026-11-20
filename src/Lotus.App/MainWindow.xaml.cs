@@ -301,7 +301,7 @@ public sealed partial class MainWindow : Window
         onboarding.AccentPreview += (_, accent) => palette.ApplyAccent(accent);
         onboarding.ThemePreview += (_, theme) => palette.Apply(theme);
         onboarding.CustomThemePreview += (_, spec) => palette.Preview(spec);
-        Onboarding.Closed += (_, _) => { palette.Apply(preferences.Current.Theme, preferences.Current.ActiveCustom()); palette.ApplyAccent(preferences.Current.Accent); ShowProfile(); ShowRoute(force: true); ContinueAfterOnboarding(); };
+        Onboarding.Closed += (_, _) => { palette.Apply(preferences.Current.Theme, preferences.Current.ActiveCustom()); palette.ApplyAccent(preferences.Current.Accent); ShowProfile(); ShowRoute(force: true); };
         palette.ApplyAccent(preferences.Current.Accent);
         UiSound.Volume = preferences.Current.UiSoundVolume / 100.0; UiSound.Enabled = preferences.Current.UiSounds;
         ShowProfile();

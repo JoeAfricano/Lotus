@@ -3,12 +3,10 @@ using Microsoft.UI.Xaml;
 
 namespace Lotus.App;
 
-// "Conheça o Lotus" guide: after the first-run profile setup (all pages) and after each update (Novidades), always
-// after the opening intro has finished. Settings can open it again at any time.
+// "Conheça o Lotus" guide: on the first run it is the only welcome (account and look are pages of it), after each
+// update it opens on Novidades; always after the opening intro has finished. Settings can open it again at any time.
 public sealed partial class MainWindow
 {
-    private bool tourAfterOnboarding;
-
     private void StartWelcome()
     {
         var args = Environment.GetCommandLineArgs();
@@ -17,37 +15,49 @@ public sealed partial class MainWindow
             args.Contains(Lotus.Infrastructure.Setup.WindowsStartup.MinimizedArgument), args.Contains("--dev-instance"),
             args.Contains(WelcomePlan.TourArgument), args.Contains(WelcomePlan.WhatsNewArgument));
         Tour.TryRequested += (_, route) => ViewModel.NavigateCommand.Execute(route);
-        Tour.Closed += (_, _) => MarkWelcomeSeen();
-        if (onboarding.NeedsWelcome)
+        // Language chosen in the guide: the whole app switches (same as Settings), then the guide is redrawn.
+        Tour.LanguageRequested += (_, language) =>
         {
-            tourAfterOnboarding = opening == WelcomeOpening.Tour;
-            AfterIntro(() => OpenOnboarding(edit: false));
-            return;
-        }
+            preferencesViewModel.LanguageIndex = language == "en-US" ? 1 : 0;
+            DispatcherQueue.TryEnqueue(() => { if (Tour.IsOpen) Tour.Retext(NewTourModel(tourFirstRun)); });
+        };
+        Tour.Closed += (_, _) =>
+        {
+            MarkWelcomeSeen();
+            palette.Apply(preferences.Current.Theme, preferences.Current.ActiveCustom()); palette.ApplyAccent(preferences.Current.Accent);
+            ShowProfile(); ShowRoute(force: true);
+        };
+        if (onboarding.NeedsWelcome || args.Contains(WelcomePlan.FirstRunArgument)) { AfterIntro(() => OpenTour(WelcomeOpening.Tour, firstRun: true)); return; }
         if (opening != WelcomeOpening.None) AfterIntro(() => OpenTour(opening));
         else AfterIntro(() => { if (AppWindow.IsVisible) UiSound.Play(UiSound.Cue.Startup); }); // soft hello (not when starting in the tray)
     }
 
-    // Called when the first-run profile setup closes: the feature guide follows it.
-    private void ContinueAfterOnboarding()
-    {
-        if (!tourAfterOnboarding) return;
-        tourAfterOnboarding = false;
-        DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => OpenTour(WelcomeOpening.Tour));
-    }
-
-    public void OpenTour(WelcomeOpening opening)
+    // firstRun: the guide also asks for the account and the look (saved when it closes, like the old profile setup).
+    private bool tourFirstRun;
+    public void OpenTour(WelcomeOpening opening, bool firstRun = false)
     {
         if (Tour.IsOpen) return;
+        tourFirstRun = firstRun;
+        Tour.MotionEnabled = !preferences.Current.ReduceMotion;
+        Tour.Backup = backup;
+        Tour.Open(NewTourModel(firstRun), opening == WelcomeOpening.None ? WelcomeOpening.Tour : opening, firstRun ? onboarding : null);
+    }
+
+    private WelcomeTourViewModel NewTourModel(bool firstRun)
+    {
         WhatsNewNotes? notes = null;
         try
         {
-            var path = System.IO.Path.Combine(AppContext.BaseDirectory, "CHANGELOG.md");
-            if (File.Exists(path)) notes = WhatsNewReader.Read(File.ReadAllText(path), AppVersionText());
+            // Notes in the app's language: English has its own file (from the beta on); Portuguese, or no English
+            // notes for this version, falls back to the main CHANGELOG.
+            foreach (var file in WhatsNewReader.Files(text.Language))
+            {
+                var path = System.IO.Path.Combine(AppContext.BaseDirectory, file);
+                if (File.Exists(path) && WhatsNewReader.Read(File.ReadAllText(path), AppVersionText()) is { } found) { notes = found; break; }
+            }
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "What's new notes not read"); }
-        Tour.MotionEnabled = !preferences.Current.ReduceMotion;
-        Tour.Open(new WelcomeTourViewModel(text, notes), opening == WelcomeOpening.None ? WelcomeOpening.Tour : opening);
+        return new WelcomeTourViewModel(text, notes, includeSetup: firstRun);
     }
 
     // A development instance shares the player's data: it never marks the guide as seen for the installed Lotus.
