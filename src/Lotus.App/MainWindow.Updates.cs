@@ -47,7 +47,7 @@ public sealed partial class MainWindow
         ShowUpdateDot(true);
         if (notifiedTag == release.Tag) return;
         notifiedTag = release.Tag;
-        var version = release.Tag.TrimStart('v');
+        var version = UpdateVersions.Display(release); // "1.0.1 Beta", never the internal number
         Serilog.Log.Information("Update available: {Version}", version);
         if (!preferences.Current.AutoUpdate)
         {

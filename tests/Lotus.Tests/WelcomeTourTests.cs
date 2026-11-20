@@ -69,12 +69,12 @@ public sealed class WelcomeTourTests
         var props = File.ReadAllText(Path.Combine(root!, "Directory.Build.props"));
         var version = System.Text.RegularExpressions.Regex.Match(props, "<Version>([^<]+)</Version>").Groups[1].Value;
         Assert.NotNull(WhatsNewReader.Read(File.ReadAllText(Path.Combine(root!, "CHANGELOG.md")), version));
-        Assert.NotNull(WhatsNewReader.Read(File.ReadAllText(Path.Combine(root!, "CHANGELOG.en-US.md")), version)); // English notes too
+        Assert.NotNull(WhatsNewReader.Read(File.ReadAllText(Path.Combine(root!, "CHANGELOG-English.md")), version)); // English notes too
     }
 
     [Fact] public void EnglishPrefersItsOwnNotes()
     {
-        Assert.Equal(["CHANGELOG.en-US.md", "CHANGELOG.md"], WhatsNewReader.Files("en-US"));
+        Assert.Equal(["CHANGELOG-English.md", "CHANGELOG.md"], WhatsNewReader.Files("en-US"));
         Assert.Equal(["CHANGELOG.md"], WhatsNewReader.Files("pt-BR"));
     }
 

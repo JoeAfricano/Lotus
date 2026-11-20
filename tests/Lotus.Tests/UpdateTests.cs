@@ -44,6 +44,12 @@ public sealed class UpdateTests : IDisposable
     [InlineData("2.0.0-beta", "1.0 Beta")] [InlineData("v2.1.0-beta", "1.1 Beta")] [InlineData("2.1.2", "1.1.2 Beta")] [InlineData("1.9.0-alpha", "1.9.0 alpha")]
     public void NumbersHaveFriendlyNames(string tag, string expected) => Assert.Equal(expected, UpdateVersions.Display(tag));
 
+    [Fact] public void ReleasesShowTheirTitleNotTheTag()
+    {
+        Assert.Equal("1.0.1 Beta", UpdateVersions.Display(Release("v2.0.1-beta", [1]) with { Title = "Lotus 1.0.1 Beta" }));
+        Assert.Equal("1.0.1 Beta", UpdateVersions.Display(Release("v2.0.1-beta", [1]) with { Title = "v2.0.1-beta" }));
+    }
+
     [Fact] public void BetaReachesAlphaInstalls() => Assert.True(UpdateVersions.IsNewer(UpdateVersions.Parse("v2.0.0-beta")!, UpdateVersions.Parse("1.10.0")!));
 
     [Fact] public void ConfiguredNameWinsOverTheNumber()

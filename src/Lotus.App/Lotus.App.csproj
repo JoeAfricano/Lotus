@@ -39,7 +39,7 @@
     <Content Include="Assets/ColorCalibration/*.png" CopyToOutputDirectory="PreserveNewest"/>
     <Content Include="../../THIRD-PARTY-NOTICES.md" Link="THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="PreserveNewest"/>
     <Content Include="../../CHANGELOG.md" Link="CHANGELOG.md" CopyToOutputDirectory="PreserveNewest"/>
-    <Content Include="../../CHANGELOG.en-US.md" Link="CHANGELOG.en-US.md" CopyToOutputDirectory="PreserveNewest"/>
+    <Content Include="../../CHANGELOG-English.md" Link="CHANGELOG-English.md" CopyToOutputDirectory="PreserveNewest"/>
     <ProjectReference Include="../Lotus.Core/Lotus.Core.csproj"/>
     <ProjectReference Include="../Lotus.Infrastructure/Lotus.Infrastructure.csproj"/>
   </ItemGroup>

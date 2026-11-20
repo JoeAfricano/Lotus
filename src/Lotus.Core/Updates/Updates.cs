@@ -42,6 +42,9 @@ public static class UpdateVersions
             ? $"{v.Major - 1}.{v.Minor}{(patch > 0 ? "." + patch : "")} Beta"
             : $"{v.Major}.{v.Minor}.{patch} alpha";
     }
+    // A release's name for notices: its GitHub title without "Lotus " ("Lotus 1.0.1 Beta" → "1.0.1 Beta"), else from the number.
+    public static string Display(UpdateRelease release) =>
+        release.Title.StartsWith("Lotus ", StringComparison.OrdinalIgnoreCase) && release.Title.Length > 6 ? release.Title[6..].Trim() : Display(release.Version);
     public static string Display(string? tag) => Parse(tag) is { } v ? Display(v) : tag?.Split('+')[0] ?? "";
 }
 
@@ -87,7 +90,7 @@ public sealed partial class UpdateViewModel(IUpdateSource source, IUpdateInstall
     public bool IsReady => State == UpdateState.Ready;
     public bool HasUpdate => Latest is not null && UpdateVersions.IsNewer(Latest.Version, Current);
     public bool CanInstall => HasUpdate && State is UpdateState.Available or UpdateState.Ready or UpdateState.Failed;
-    public string LatestTitle => Latest is { } l ? (l.Title.StartsWith("Lotus ", StringComparison.OrdinalIgnoreCase) ? l.Title : Text.Format("UpNewVersion", UpdateVersions.Display(l.Version))) : "";
+    public string LatestTitle => Latest is { } l ? Text.Format("UpNewVersion", UpdateVersions.Display(l)) : "";
     public string LatestDate => Latest is { } l ? Text.Format("UpPublished", l.Published.ToLocalTime().ToString("d", Culture)) : "";
     public string LatestNotes => Latest?.Notes ?? "";
     public string LatestSize => Latest is { Size: > 0 } l ? Size(l.Size) : "";
@@ -109,7 +112,7 @@ public sealed partial class UpdateViewModel(IUpdateSource source, IUpdateInstall
             if (release is not null && UpdateVersions.IsNewer(release.Version, Current))
             {
                 State = ReadyFile is not null && File.Exists(ReadyFile) ? UpdateState.Ready : UpdateState.Available;
-                Status = Text.Format("UpAvailable", release.Tag.TrimStart('v'));
+                Status = Text.Format("UpAvailable", UpdateVersions.Display(release));
                 Found?.Invoke(this, release);
                 return true;
             }
