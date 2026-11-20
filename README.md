@@ -13,7 +13,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 ![.NET](https://img.shields.io/badge/.NET-10%20%C2%B7%20WinUI%203-512bd4)
 [![License](https://img.shields.io/badge/licen%C3%A7a-MIT-3b8c5a)](LICENSE)
 
-**Versão atual: 1.8.0-alpha** — Estúdio visual do monitor, fluidez por jogo (Hz e RivaTuner), novos overlays e Ajuste da placa em etapas. Veja o que mudou em [Novidades](CHANGELOG.md).
+**Versão atual: 1.10.0-alpha** — abertura animada, guia "Conheça o Lotus" com idioma, conta, tema e Google Drive na primeira abertura, e página de Novidades após cada atualização. Veja o que mudou em [Novidades](CHANGELOG.md).
 
 [**Baixar o Lotus**](../../releases/latest) · [Novidades](CHANGELOG.md) · [Privacidade](PRIVACY.md) · [Reportar um problema](../../issues/new/choose)
 
@@ -181,7 +181,7 @@ Tudo na aba Ferramentas, em cartões. Abrir ou analisar nunca muda nada; cada a�
 - **Backup** em arquivo `.lotusbackup`, com o último save de cada jogo protegido, e cópia no **Google Drive** (pasta `Lotus/Backups`): conecte sua conta e envie quando quiser, toda semana ou todo mês; carregue ou exclua backups do Drive. O Lotus só acessa os arquivos que ele mesmo cria. Veja a [Política de Privacidade](PRIVACY.md).
 - **Atualizações:** procura a versão mais nova nas releases do GitHub, mostra as novidades, baixa com animação, confere o SHA-256 e reinstala sozinho. Opcional: atualizar automaticamente (nunca com um jogo aberto).
 - **Restaurar o Lotus:** volta ao início sem apagar nada. Faz uma cópia antes e guarda os dados antigos.
-- Tutorial inicial com exemplos em cada passo, temas prontos e um tour pelas áreas principais.
+- **Primeira abertura:** abertura animada e o guia "Conheça o Lotus" (idioma, conta Steam ou nome e foto, tema e cor, Google Drive e uma página para cada parte do app). Depois de cada atualização, a página **Novidades** mostra o que mudou.
 
 ### Leve enquanto você joga
 - Com um jogo aberto, ou com o Lotus minimizado, ele entra no **modo eficiência** do Windows, baixa a própria prioridade e devolve a memória que não está usando (cerca de 20 MB minimizado).
