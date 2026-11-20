@@ -31,6 +31,8 @@ public sealed class ForegroundGamePresentation : IDisposable
     public event EventHandler<string>? Changed;
     public string Status => Volatile.Read(ref status);
     public string? GameKey {get;private set;}
+    // False when the focused game already runs at the Hz it asks for: a skipped switch then is not worth a warning.
+    public bool SwitchNeeded {get;private set;}
     public ForegroundGamePresentation(IGameDisplayControl display, IRtssIntegration rtss, Action<Exception> log)
     {
         this.display=display; this.rtss=rtss; this.log=log;
@@ -51,6 +53,7 @@ public sealed class ForegroundGamePresentation : IDisposable
             // Only the latest stable event may reach the driver, avoiding repeated black-screen handshakes.
             if(!await transitions.WaitAsync(ticket)) return;
             await gate.WaitAsync();
+            var matched=false;
             try
             {
                 if(stopped || !transitions.IsCurrent(ticket)) return;
@@ -59,14 +62,20 @@ public sealed class ForegroundGamePresentation : IDisposable
                 GamePresentationRegistration? game=null;
                 if(pid>0 && registrations.Length>0)
                 {
-                    using var process=Process.GetProcessById(pid);
-                    var path=process.MainModule?.FileName;
+                    // Elevated or protected windows (Task Manager, installers, anti-cheat) deny access to their module:
+                    // they are simply not one of the player's games, never a failed Hz switch.
+                    string? path=null;
+                    try { using var process=Process.GetProcessById(pid); path=process.MainModule?.FileName; }
+                    catch(Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException or ArgumentException or UnauthorizedAccessException) { path=null; }
                     if(path is not null) game=Volatile.Read(ref registrations).FirstOrDefault(g=>g.Matches(path));
                 }
                 if(!transitions.IsCurrent(ticket) || pid!=ForegroundEvents.ProcessId()) return;
                 GameKey=game?.Key;
                 if(game is null) { apiWaitPid=0; session.Update(null,null); Publish(session.Status); return; }
-                var p=game.Prefs;
+                var p=game.Prefs; matched=true;
+                var modes=display.Modes();
+                var hz=PresentationPlan.ResolveHz(p,modes);
+                SwitchNeeded=session.Active || display.Current(p.Device) is not {} now || now.Width!=p.Width || now.Height!=p.Height || now.Hz!=hz;
                 // The approved profile must still be present; never overwrite the player's changes while playing.
                 if(rtss.Running()!=true || rtss.LimiterMode(p.Exe)!=p.AppliedLimiter || rtss.LimiterCap(p.Exe) is not {} cap || Math.Abs(cap-p.Cap)>0.011)
                 { session.Update(null,null); Publish("rtss-changed"); return; }
@@ -86,8 +95,6 @@ public sealed class ForegroundGamePresentation : IDisposable
                     if(api is not ("Direct3D 11" or "Direct3D 12"))
                     { session.Update(null,null); Publish("api-unsupported"); return; }
                 }
-                var modes=display.Modes();
-                var hz=PresentationPlan.ResolveHz(p,modes);
                 var target=modes.FirstOrDefault(m=>m.Device==p.Device&&m.Width==p.Width&&m.Height==p.Height&&m.Hz==hz);
                 if(target is null || Math.Abs(target.Rate-p.PreparedRate)>0.02)
                 { session.Update(null,null); Publish("prepare-again"); return; }
@@ -106,7 +113,7 @@ public sealed class ForegroundGamePresentation : IDisposable
             {
                 log(ex);
                 try { session.Update(null,null); } catch(Exception restore) { log(restore); }
-                Publish("failed");
+                Publish(matched?"failed":session.Status);
             }
             finally { gate.Release(); }
         });
