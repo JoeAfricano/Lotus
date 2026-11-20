@@ -70,6 +70,7 @@
   <controls:TrophyToast x:Name="Toast" Grid.Row="1" Grid.RowSpan="2" ViewRequested="OnToastView"/>
   <controls:GameNotice x:Name="Notice" Grid.Row="1" Grid.RowSpan="2"/>
   <controls:OnboardingView x:Name="Onboarding" Grid.RowSpan="3"/>
+  <controls:WelcomeTourView x:Name="Tour" Grid.RowSpan="3"/>
   <controls:IntroView x:Name="Intro" Grid.RowSpan="3"/>
  </Grid>
 </Window>

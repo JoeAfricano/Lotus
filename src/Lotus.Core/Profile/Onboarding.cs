@@ -17,10 +17,11 @@ public sealed record GoalOption(string Id, string Title, string Detail, string G
 public sealed record ThemeOption(string Id, string Label, string Swatch, bool Selected);
 public sealed record FeaturedTheme(string Id, string Label, string Colors, bool Selected); // Colors: the background colors, comma separated (for the swatch)
 
-// First-run welcome in steps (and later "Edit profile", which starts at the profile step and skips the tour).
+// First-run welcome in steps (and later "Edit profile", which starts at the profile step). The feature tour that used to
+// be the last step is now its own guide (Welcome/WelcomeTour.cs), opened right after this one closes.
 public sealed class OnboardingViewModel : ObservableObject
 {
-    public const int WelcomeStep = 0, ProfileStep = 1, GoalStep = 2, AccentStep = 3, AppsStep = 4, TourStep = 5;
+    public const int WelcomeStep = 0, ProfileStep = 1, GoalStep = 2, AccentStep = 3, AppsStep = 4;
     private readonly PreferencesService preferences;
     private readonly IProfileSource source;
     private readonly Action<Exception> log;
@@ -52,12 +53,12 @@ public sealed class OnboardingViewModel : ObservableObject
 
     public bool NeedsWelcome => !preferences.Current.Onboarded;
     public int Step => step;
-    public int StepCount => editing ? 3 : 6;
+    public int StepCount => editing ? 3 : 5;
     public int StepNumber => editing ? step : step + 1;
     public bool IsWelcome => step == WelcomeStep; public bool IsProfile => step == ProfileStep; public bool IsGoal => step == GoalStep;
-    public bool IsAccent => step == AccentStep; public bool IsApps => step == AppsStep; public bool IsTour => step == TourStep;
+    public bool IsAccent => step == AccentStep; public bool IsApps => step == AppsStep;
     public bool CanBack => editing ? step > ProfileStep : step > WelcomeStep;
-    public bool IsLast => editing ? step == AccentStep : step == TourStep;
+    public bool IsLast => editing ? step == AccentStep : step == AppsStep;
     public string NextLabel => Text[IsLast ? (editing ? "ObSave" : "ObStart") : step == WelcomeStep ? "ObBegin" : "ObNext"];
     public string StepText => Text.Format("ObStepOf", StepNumber, StepCount);
 
@@ -164,7 +165,7 @@ public sealed class OnboardingViewModel : ObservableObject
     }
     private void NotifyAll()
     {
-        foreach (var n in new[] { nameof(Step), nameof(StepCount), nameof(StepNumber), nameof(IsWelcome), nameof(IsProfile), nameof(IsGoal), nameof(IsAccent), nameof(IsApps), nameof(IsTour),
+        foreach (var n in new[] { nameof(Step), nameof(StepCount), nameof(StepNumber), nameof(IsWelcome), nameof(IsProfile), nameof(IsGoal), nameof(IsAccent), nameof(IsApps),
                      nameof(CanBack), nameof(IsLast), nameof(NextLabel), nameof(StepText), nameof(SteamFound), nameof(SteamName), nameof(SteamPicture), nameof(Goal), nameof(Accent), nameof(GoalTitle), nameof(GoalExamples), nameof(Theme), nameof(Themes) })
             OnPropertyChanged(n);
         NotifyProfile();

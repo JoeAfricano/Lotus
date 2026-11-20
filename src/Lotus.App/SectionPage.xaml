@@ -201,6 +201,12 @@
       <Button Grid.Column="2" Content="{Binding Text[ProfileEdit]}" Click="OnEditProfile" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="settings-profile"/>
       <Button Grid.Column="3" Content="{Binding Text[ObReplay]}" Click="OnReplayWelcome" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="settings-replay-welcome"/>
      </Grid></Border>
+     <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <FontIcon Glyph="&#xE734;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[SetTour]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[SetTourHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+      <Button Grid.Column="2" Content="{Binding Text[SetTourOpen]}" Click="OnOpenTour" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="settings-tour"/>
+      <Button Grid.Column="3" Content="{Binding Text[SetWhatsNewOpen]}" Click="OnOpenWhatsNew" Style="{StaticResource SoftButtonStyle}" AutomationProperties.AutomationId="settings-whats-new"/>
+     </Grid></Border>
      <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <FontIcon Glyph="&#xE9D9;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
       <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[GdRedoTitle]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[GdRedoHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>

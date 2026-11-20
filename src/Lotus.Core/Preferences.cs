@@ -14,6 +14,7 @@ public sealed record InterfacePreferences
     public bool UiSounds { get; init; } = true;    // soft interface sounds
     public bool PlayIntro { get; init; } = true;   // opening intro: full on first run and after updates, short otherwise
     public string? IntroSeenVersion { get; init; } // the Lotus version whose full intro was already shown
+    public string? WelcomeSeenVersion { get; init; } // the Lotus version whose welcome tour / Novidades page was already shown
     public int UiSoundVolume { get; init; } = 60; // 0–100    // First-run guided setup on Home (analyse, ask, apply what was accepted). Shown once; Settings can run it again.
     public bool GuidedDone { get; init; }
     public DateTimeOffset? GuidedAt { get; init; }
