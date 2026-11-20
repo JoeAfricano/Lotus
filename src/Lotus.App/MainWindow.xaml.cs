@@ -301,12 +301,11 @@ public sealed partial class MainWindow : Window
         onboarding.AccentPreview += (_, accent) => palette.ApplyAccent(accent);
         onboarding.ThemePreview += (_, theme) => palette.Apply(theme);
         onboarding.CustomThemePreview += (_, spec) => palette.Preview(spec);
-        Onboarding.Closed += (_, _) => { palette.Apply(preferences.Current.Theme, preferences.Current.ActiveCustom()); palette.ApplyAccent(preferences.Current.Accent); ShowProfile(); ShowRoute(force: true); };
+        Onboarding.Closed += (_, _) => { palette.Apply(preferences.Current.Theme, preferences.Current.ActiveCustom()); palette.ApplyAccent(preferences.Current.Accent); ShowProfile(); ShowRoute(force: true); ContinueAfterOnboarding(); };
         palette.ApplyAccent(preferences.Current.Accent);
         UiSound.Volume = preferences.Current.UiSoundVolume / 100.0; UiSound.Enabled = preferences.Current.UiSounds;
         ShowProfile();
-        if (onboarding.NeedsWelcome) DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => OpenOnboarding(edit: false));
-        else DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => { if (AppWindow.IsVisible) UiSound.Play(UiSound.Cue.Startup); }); // soft hello (not when starting in the tray)
+        StartWelcome(); // first-run profile setup → feature guide, or Novidades after an update (after the intro)
         ShowRoute();
         StartAchievements();
         StartDealsCheck();

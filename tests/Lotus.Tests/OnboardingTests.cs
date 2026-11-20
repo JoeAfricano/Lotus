@@ -32,11 +32,11 @@ public sealed class OnboardingTests : IDisposable
         var vm = new OnboardingViewModel(prefs, new Source(new("Joe", @"C:\a.png")), new TextCatalog(), ex => throw ex);
         Assert.True(vm.NeedsWelcome);
         vm.Start(edit: false);
-        Assert.True(vm.IsWelcome); Assert.Equal(6, vm.StepCount); Assert.True(vm.UseSteam); Assert.Equal("Joe", vm.PreviewName);
+        Assert.True(vm.IsWelcome); Assert.Equal(5, vm.StepCount); Assert.True(vm.UseSteam); Assert.Equal("Joe", vm.PreviewName);
         string? preview = null; vm.AccentPreview += (_, a) => preview = a;
         vm.Next(); vm.Next(); vm.Goal = "competitive"; vm.Next(); vm.Accent = "dark"; Assert.Equal("dark", preview);
         Assert.Single(vm.Accents, a => a.Selected && a.Id == "dark"); Assert.Single(vm.Goals, g => g.Selected && g.Id == "competitive");
-        vm.Next(); Assert.True(vm.IsApps); vm.Next(); Assert.True(vm.IsTour && vm.IsLast); vm.Next();
+        vm.Next(); Assert.True(vm.IsApps && vm.IsLast); vm.Next();
         var s = store.Saved;
         Assert.True(s.Onboarded); Assert.Equal(("steam", "Joe", @"C:\a.png", "competitive", "dark"), (s.ProfileSource, s.DisplayName, s.AvatarPath, s.Goal, s.Accent));
         Assert.False(new OnboardingViewModel(prefs, new Source(null), new TextCatalog(), _ => { }).NeedsWelcome);

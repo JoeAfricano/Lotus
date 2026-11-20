@@ -12,6 +12,9 @@ public sealed record InterfacePreferences
     public bool StartWithWindows { get; init; }   // opens minimized to the tray at sign-in
     public bool CloseToTray { get; init; } = true; // closing the window keeps Lotus in the background (hotkey keeps working)
     public bool UiSounds { get; init; } = true;    // soft interface sounds
+    public bool PlayIntro { get; init; } = true;   // opening intro: full on first run and after updates, short otherwise
+    public string? IntroSeenVersion { get; init; } // the Lotus version whose full intro was already shown
+    public string? WelcomeSeenVersion { get; init; } // the Lotus version whose welcome tour / Novidades page was already shown
     public int UiSoundVolume { get; init; } = 60; // 0–100    // First-run guided setup on Home (analyse, ask, apply what was accepted). Shown once; Settings can run it again.
     public bool GuidedDone { get; init; }
     public DateTimeOffset? GuidedAt { get; init; }
@@ -142,6 +145,7 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool StartWithWindows { get => service.Current.StartWithWindows; set { if (value != service.Current.StartWithWindows) { service.Update(service.Current with { StartWithWindows = value }); OnPropertyChanged(); } } }
     public bool CloseToTray { get => service.Current.CloseToTray; set { if (value != service.Current.CloseToTray) { service.Update(service.Current with { CloseToTray = value }); OnPropertyChanged(); } } }
     public bool UiSounds { get => service.Current.UiSounds; set { if (value != service.Current.UiSounds) { service.Update(service.Current with { UiSounds = value }); OnPropertyChanged(); } } }
+    public bool PlayIntro { get => service.Current.PlayIntro; set { if (value != service.Current.PlayIntro) { service.Update(service.Current with { PlayIntro = value }); OnPropertyChanged(); } } }
     public bool AutoSessions { get => service.Current.AutoSessions; set { if (value != service.Current.AutoSessions) { service.Update(service.Current with { AutoSessions = value }); OnPropertyChanged(); } } }
     public bool MinimizeForGames { get => service.Current.MinimizeForGames; set { if (value != service.Current.MinimizeForGames) { service.Update(service.Current with { MinimizeForGames = value }); OnPropertyChanged(); } } }
     public bool GamePriority { get => service.Current.GamePriority; set { if (value != service.Current.GamePriority) { service.Update(service.Current with { GamePriority = value }); OnPropertyChanged(); } } }

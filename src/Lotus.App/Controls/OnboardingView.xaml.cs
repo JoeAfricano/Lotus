@@ -30,7 +30,7 @@ public sealed partial class OnboardingView : UserControl
         vm.PropertyChanged -= OnVmChanged; vm.PropertyChanged += OnVmChanged;
         vm.Start(edit);
         lastStep = vm.Step;
-        BuildTour(vm); ShowStageArt(vm, animate: false);
+        ShowStageArt(vm, animate: false);
         Visibility = Visibility.Visible;
         UpdateProgress(animate: false);
         Animate(Backdrop, "Opacity", 0, 1, 260);
@@ -62,7 +62,6 @@ public sealed partial class OnboardingView : UserControl
         UpdateProgress(animate: true);
         StartBreathing(true);
         ShowStageArt(vm, animate: true);
-        if (vm.IsTour) StaggerTour();
         if (vm.IsProfile) WatchSteam();
     }
 
@@ -88,38 +87,7 @@ public sealed partial class OnboardingView : UserControl
         breathing.Begin();
     }
 
-    // Tour: six cards in two columns, each with what it is and a concrete example.
-    private void BuildTour(OnboardingViewModel vm)
-    {
-        TourList.Children.Clear(); TourList.ColumnDefinitions.Clear(); TourList.RowDefinitions.Clear();
-        TourList.ColumnDefinitions.Add(new ColumnDefinition()); TourList.ColumnDefinitions.Add(new ColumnDefinition());
-        var items = new[] { ("", "Optimize"), ("", "Games"), ("", "List"), ("", "Why"), ("", "Score"), ("\uE8F1", "Diary") };
-        for (var r = 0; r < items.Length / 2; r++) TourList.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        for (var i = 0; i < items.Length; i++)
-        {
-            var (glyph, key) = items[i];
-            var card = new Border
-            {
-                Padding = new Thickness(14, 12, 14, 12), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1),
-                Background = (Brush)Application.Current.Resources["CardBrush"], BorderBrush = (Brush)Application.Current.Resources["CardBorderBrush"],
-                Opacity = MotionEnabled ? 0 : 1, RenderTransform = new TranslateTransform(),
-            };
-            var row = new Grid { ColumnSpacing = 12 };
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); row.ColumnDefinitions.Add(new ColumnDefinition());
-            var badge = new Border { Width = 36, Height = 36, CornerRadius = new CornerRadius(11), VerticalAlignment = VerticalAlignment.Top, Background = (Brush)Application.Current.Resources["BadgeBrush"],
-                Child = new FontIcon { Glyph = glyph, FontSize = 15, Foreground = (Brush)Application.Current.Resources["RoseBrush"] } };
-            var text = new StackPanel { Spacing = 3 };
-            text.Children.Add(new TextBlock { Text = vm.Text["ObTour" + key], FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
-            text.Children.Add(RichText.Block(vm.Text["ObTour" + key + "Detail"], 12, 0.8));
-            text.Children.Add(new TextBlock { Text = vm.Text["ObTour" + key + "Ex"], FontSize = 11.5, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 2, 0, 0), Foreground = (Brush)Application.Current.Resources["GoldBrush"] });
-            Grid.SetColumn(text, 1); row.Children.Add(badge); row.Children.Add(text);
-            card.Child = row;
-            Grid.SetColumn(card, i % 2); Grid.SetRow(card, i / 2);
-            TourList.Children.Add(card);
-        }
-    }
-
-    // Stage art: the crystal lotus on every step; full on the welcome and the last step, softer behind the examples.
+    // Stage art: the crystal lotus on every step; full on the welcome, softer behind the examples.
     private bool artLoaded;
     private void ShowStageArt(OnboardingViewModel vm, bool animate)
     {
@@ -128,25 +96,12 @@ public sealed partial class OnboardingView : UserControl
             artLoaded = true;
             StageArt.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "Concept", "lotus-sculpture.png"))) { DecodePixelWidth = 900 };
         }
-        var target = vm.IsWelcome || vm.IsTour ? 1.0 : 0.42;
+        var target = vm.IsWelcome ? 1.0 : 0.42;
         if (animate) Animate(StageArt, "Opacity", StageArt.Opacity, target, 520); else StageArt.Opacity = target;
         if (animate) { Animate(StageShift, "Y", 18, 0, 420, Spring()); Animate(StageExamples, "Opacity", 0, 1, 300); }
     }
     private void OnPickTheme(object sender, RoutedEventArgs e) { if (Vm is { } vm && sender is FrameworkElement { Tag: string id }) vm.Theme = id; }
     private void OnPickFeatured(object sender, RoutedEventArgs e) { if (Vm is { } vm && sender is FrameworkElement { Tag: string id } f) { vm.PickFeatured(id); Motion.Pop(f); UiSound.Play(UiSound.Cue.Toggle); } }
-    // Rows arrive one after another (60 ms apart).
-    private void StaggerTour()
-    {
-        if (!MotionEnabled) return;
-        var i = 0;
-        foreach (FrameworkElement row in TourList.Children)
-        {
-            var sb = new Storyboard { BeginTime = TimeSpan.FromMilliseconds(80 + i++ * 60) };
-            Add(sb, row, "Opacity", 0, 1, 260); Add(sb, (TranslateTransform)row.RenderTransform, "Y", 10, 0, 320, Spring());
-            sb.Begin();
-        }
-    }
-
     private void OnNext(object sender, RoutedEventArgs e)
     {
         if (Vm is not { } vm) return;

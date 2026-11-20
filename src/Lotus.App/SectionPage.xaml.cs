@@ -322,6 +322,8 @@ public sealed partial class SectionPage : Page
         volumeSample.Stop(); volumeSample.Start();
     }
     private void OnReplayWelcome(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenOnboarding(edit: false);
+    private void OnOpenTour(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenTour(Lotus.Core.Welcome.WelcomeOpening.Tour);
+    private void OnOpenWhatsNew(object sender, RoutedEventArgs e) => MainWindow.Shell?.OpenTour(Lotus.Core.Welcome.WelcomeOpening.WhatsNew);
     private void OnRedoGuided(object sender, RoutedEventArgs e) { if (DataContext is SectionViewModel { Guided: { } g }) { g.Restart(); shell?.NavigateCommand.Execute("home"); } }
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {

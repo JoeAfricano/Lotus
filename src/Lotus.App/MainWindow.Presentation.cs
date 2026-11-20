@@ -28,7 +28,8 @@ public sealed partial class MainWindow
             presentation.Changed+=(_,state)=>DispatcherQueue.TryEnqueue(()=>
             {
                 PresentationChanged?.Invoke(this,EventArgs.Empty);
-                if(state is "failed" or "restore-pending" or "rtss-changed" or "api-unsupported" or "prepare-again")
+                // Only when the Hz really had to change (or the restore is pending): a game already at its Hz stays quiet.
+                if(state is "restore-pending" || (state is "failed" or "rtss-changed" or "api-unsupported" or "prepare-again" && presentation?.SwitchNeeded == true))
                     ShowWarning(text["GpSession_"+state]);
             });
             Refresh();
