@@ -70,6 +70,41 @@ public sealed class GamePresentationSaveTests : IDisposable
         Assert.True(await vm.SetConsole60Async(Game,true,Info with {State="noRtss"},false));
         Assert.True(store.Data.Games[Game.Key].Prefer60);Assert.NotEqual("",vm.Console60Status);
     }
+    private sealed class LimitRecipe : IGameSettingsRecipe
+    {
+        public string Raw="limit=60";public int Writes;
+        public string Id=>"fake";
+        public GameSettingsSupport? Probe(GameEntry game)=>new(Id,"Fake",true,"");
+        public string? ReadRaw(GameEntry game)=>Raw;
+        public void WriteRaw(GameEntry game,string raw) {Raw=raw;Writes++;}
+        public string Transform(string raw,SettingsRecommendation recommendation)=>raw;
+        public string? ClearFpsLimit(string raw)=>raw=="limit=0" ? null : "limit=0";
+    }
+    private sealed class Originals : IGameSettingsStore
+    {
+        public string? Original;
+        public string? LoadOriginal(string gameKey)=>Original;
+        public void SaveOriginalOnce(string gameKey,string raw)=>Original??=raw;
+        public void ClearOriginal(string gameKey)=>Original=null;
+    }
+    [Fact] public async Task ConsoleModeTurnsTheGamesOwnLimitOffAndKeepsTheOriginal()
+    {
+        var store=new Store();var recipe=new LimitRecipe();var originals=new Originals();var processes=new Processes();
+        var vm=new GamesViewModel(new Library(),new Manual(),new Launcher(),new TextCatalog(),_=>{},profileSource:new Pc(),recipes:[recipe],settingsStore:originals,processCheck:processes)
+            {PlayPrefs=new(store,_=>{}),DisplayControl=new Display(),Rtss=new WindowsRtssIntegration(Profiles,Backups,Elevated)};
+        Assert.True(await vm.SetConsole60Async(Game,true,Info,false));
+        // Stellar Blade (21/11/2026) kept its own 60 under RivaTuner's 59.99: only RivaTuner limits now.
+        Assert.Equal("limit=0",recipe.Raw);Assert.Equal("limit=60",originals.Original);
+        Assert.True(await vm.SetConsole60Async(Game,false,Info,false));
+        Assert.True(await vm.SetConsole60Async(Game,true,Info,false));
+        Assert.Equal(1,recipe.Writes);Assert.Equal("limit=60",originals.Original);
+        // Without RivaTuner nothing paces the game, so its own limit stays.
+        var other=new LimitRecipe();
+        var noRtss=new GamesViewModel(new Library(),new Manual(),new Launcher(),new TextCatalog(),_=>{},profileSource:new Pc(),recipes:[other],settingsStore:new Originals(),processCheck:processes)
+            {PlayPrefs=new(new Store(),_=>{}),DisplayControl=new Display(),Rtss=new WindowsRtssIntegration(Profiles,Backups,Elevated)};
+        Assert.True(await noRtss.SetConsole60Async(Game,true,Info with {State="noRtss"},false));
+        Assert.Equal("limit=60",other.Raw);
+    }
     [Fact] public void ConsoleModeKeepsTheFrameGenLimiterWhenThePlayerUsesFrameGen()
     {
         Assert.Equal("fluid",GamesViewModel.ConsoleLimiter(Info));

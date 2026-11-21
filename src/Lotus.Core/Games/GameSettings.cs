@@ -277,6 +277,8 @@ public interface IGameSettingsRecipe
     string Transform(string raw, SettingsRecommendation recommendation); // pure: only known keys change
     // One quality level up (+1) or down (-1); null when the recipe cannot step quality or is already at the limit.
     string? StepQuality(string raw, int step) => null;
+    // Turns only the game's own FPS limit off (unlimited), for when RivaTuner paces the game; null when nothing changes.
+    string? ClearFpsLimit(string raw) => null;
 }
 // Keeps the first (original) settings text per game so "Restore original" always returns to the pre-Lotus state.
 public interface IGameSettingsStore

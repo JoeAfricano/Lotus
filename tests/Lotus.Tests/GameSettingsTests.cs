@@ -63,6 +63,12 @@ public sealed class GameSettingsTests(Xunit.Abstractions.ITestOutputHelper outpu
         // RivaTuner pacing the game: the engine's own limit goes off so the two limiters do not fight.
         var paced = new IniText(recipe.Transform(File.ReadAllText(config), r with { ExternalLimiter = true }));
         Assert.Equal("0.000000", paced.Get("/Script/Engine.GameUserSettings", "FrameRateLimit"));
+        // Modo Console turns only the game's own limit off; nothing else changes, and an unlimited game is left alone.
+        var raw = File.ReadAllText(config).Replace("FrameRateLimit=0.000000", "FrameRateLimit=60.000000");
+        var cleared = recipe.ClearFpsLimit(raw)!;
+        Assert.Equal("0.000000", new IniText(cleared).Get("/Script/Engine.GameUserSettings", "FrameRateLimit"));
+        Assert.Equal(raw.Replace("FrameRateLimit=60.000000", "FrameRateLimit=0.000000"), cleared);
+        Assert.Null(recipe.ClearFpsLimit(cleared));
     }
 
     [Fact] public void UnrealRecipeAsksToRunTheGameOnceWhenConfigIsMissing()

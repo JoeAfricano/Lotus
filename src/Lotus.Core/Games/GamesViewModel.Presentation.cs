@@ -83,7 +83,27 @@ public sealed partial class GamesViewModel
         var has60=modes.Any(m=>m.SameOutput(output) && m.Hz==60);
         var plan=new GamePresentationPrefs(true,output.Device,output.Width,output.Height,!adaptiveSync && has60 ? 60 : 0,ConsoleLimiter(info),adaptiveSync || !has60 ? ConsoleCap : 0);
         if(!await SavePresentationAsync(game,plan,info,adaptiveSync)) Console60Status=PresentationStatus;
+        else await ClearGameFpsLimitAsync(game);
         return true;
+    }
+    // With RivaTuner pacing the game, a second limit inside the game makes the two fight: Stellar Blade kept its own 60
+    // under RivaTuner's 59.99 (José's PC, 21/11/2026). Only with the game closed, after saving the original once
+    // ("Restaurar original" brings it back), and verified by reading back. Any failure leaves the file as it was.
+    private async Task ClearGameFpsLimitAsync(GameEntry game)
+    {
+        try
+        {
+            await Task.Run(() =>
+            {
+                var (recipe, support) = Recipe(game);
+                if (recipe is null || support is not { CanApply: true } || settingsStore is null || processCheck?.IsRunning(game) == true) return;
+                if (recipe.ReadRaw(game) is not { } raw || recipe.ClearFpsLimit(raw) is not { } updated) return;
+                settingsStore.SaveOriginalOnce(game.Key, raw);
+                recipe.WriteRaw(game, updated);
+                if (recipe.ReadRaw(game) != updated) log(new IOException("FPS limit not cleared: " + game.Name));
+            });
+        }
+        catch (Exception ex) { log(ex); }
     }
     public const double ConsoleCap=60;
     public static string ConsoleLimiter(LowLatencyInfo? info)=>info is {UsesFrameGen:true} ? "auto" : "fluid";
