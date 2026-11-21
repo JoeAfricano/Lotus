@@ -18,5 +18,8 @@
     <Project Path="tests/Lotus.Tests/Lotus.Tests.csproj">
       <Platform Project="Any CPU" />
     </Project>
+    <Project Path="tests/Lotus.UITests/Lotus.UITests.csproj">
+      <Platform Project="Any CPU" />
+    </Project>
   </Folder>
 </Solution>
