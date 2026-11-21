@@ -112,7 +112,6 @@ public sealed class UnrealEngineRecipe(string? localAppData = null) : IGameSetti
         ini.Set("ScalabilityGroups", "sg.TextureQuality", ((int)r.TextureTier).ToString());
         // With RivaTuner pacing the game, the engine's own limit goes off (0 = unlimited) so only one limiter is left.
         ini.Set("/Script/Engine.GameUserSettings", "FrameRateLimit", (r.ExternalLimiter ? 0 : r.FpsCap).ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture));
-<<<<<<< HEAD
         return ini.ToString();
     }
     // Modo Console: RivaTuner caps the game, so the engine's own limit goes to 0 (unlimited). Only an existing limit changes.
@@ -122,8 +121,6 @@ public sealed class UnrealEngineRecipe(string? localAppData = null) : IGameSetti
         var current = ini.Get("/Script/Engine.GameUserSettings", "FrameRateLimit");
         if (current is null || (double.TryParse(current, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var v) && v == 0)) return null;
         ini.Set("/Script/Engine.GameUserSettings", "FrameRateLimit", "0.000000");
-=======
->>>>>>> a0659dbb5737c8f85603195ff62da3d2f6cc2670
         return ini.ToString();
     }
     // Steps every scalability group except textures (VRAM-bound) by one level within 0..3.
