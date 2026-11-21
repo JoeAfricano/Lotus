@@ -2140,6 +2140,10 @@ Your games and Windows are not changed.</value></data>
   <data name="GsReasonHalfRate" xml:space="preserve"><value>Your PC cannot hold the monitor rate, so the cap sits at an exact fraction of it: fewer FPS, but locked and smooth, like a console.</value></data>
   <data name="IgVsyncTitle" xml:space="preserve"><value>Turn on V-Sync and lock at {0} FPS</value></data>
   <data name="IgVsyncBody" xml:space="preserve"><value>Without FreeSync/G-Sync, the secret of console smoothness is FPS locked to the monitor rate (or half of it). Turn on V-Sync in the game and use the RivaTuner Turn on button below: Lotus picks the right mode and the frame pacing line goes flat. Keep the game's own limit at or above RivaTuner's (or off), never below: one limiter holds.</value></data>
+  <data name="IgRamOnTitle" xml:space="preserve"><value>Free memory for the game</value></data>
+  <data name="IgRamOnBody" xml:space="preserve"><value>Your PC has 16 GB of RAM or less, and current games use much of it. The Game profile already frees memory when the game opens. Help by closing the browser and heavy programs, and star the ones that can close by themselves in Tools › Free memory for gaming.</value></data>
+  <data name="IgRamOffTitle" xml:space="preserve"><value>Free memory before playing</value></data>
+  <data name="IgRamOffBody" xml:space="preserve"><value>Your PC has 16 GB of RAM or less, and current games use much of it: when RAM runs out, the game stutters. Close the browser and heavy programs before playing, or turn on Free memory when a game opens in the Game profile (Optimize my PC) so Lotus does it for you. Programs that can close are in Tools › Free memory for gaming.</value></data>
   <data name="IgVrrVsyncTitle" xml:space="preserve"><value>With FreeSync/G-Sync: V-Sync in the driver, not in the game</value></data>
   <data name="IgVrrVsyncBody" xml:space="preserve"><value>Keep V-Sync on in the graphics driver panel and off in the game. With the cap 3 FPS below the monitor rate, the screen follows every frame without tearing or V-Sync delay.</value></data>
   <data name="IgEnableVrrTitle" xml:space="preserve"><value>Turn on your monitor&apos;s FreeSync/G-Sync</value></data>
@@ -3420,6 +3424,13 @@ Your games and Windows are not changed.</value></data>
   <data name="BoNotificationsHint" xml:space="preserve"><value>Windows only applies this switch after signing out and back in, so it may not work in the same session. To silence right away, use Windows&apos; automatic &quot;Do not disturb&quot; while gaming (Settings › System › Notifications).</value></data>
   <data name="BoRecording" xml:space="preserve"><value>Turn off Xbox background recording</value></data>
   <data name="BoRecordingHint" xml:space="preserve"><value>Game Bar stops recording the last minutes while you play; it comes back when the game closes.</value></data>
+  <data name="BoMemory" xml:space="preserve"><value>Free memory when a game opens</value></data>
+  <data name="BoMemoryHint" xml:space="preserve"><value>Idle programs give their RAM back to Windows, Wallpaper Engine pauses and the programs in your &quot;Close before playing&quot; list close normally. Everything comes back when the game closes. To protect a program, tick the &quot;Never shrink&quot; shield in Tools › Free memory for gaming.</value></data>
+  <data name="PfWhyMemory" xml:space="preserve"><value>Once, when the game opens: idle programs give their RAM back to Windows and the game loads with more free memory. Only the programs you put in "Close before playing" close, and they reopen afterwards.</value></data>
+  <data name="BoMemoryFreedTitle" xml:space="preserve"><value>Memory freed for the game</value></data>
+  <data name="BoMemoryNoticeBody" xml:space="preserve"><value>In your {0} session ({1}), Lotus freed {2} of RAM for the game.</value></data>
+  <data name="BoMemoryNoticeOk" xml:space="preserve"><value>Got it</value></data>
+  <data name="PrKeepTip" xml:space="preserve"><value>Never shrink (Lotus leaves this program as it is when a game opens)</value></data>
   <data name="BoPriority" xml:space="preserve"><value>Priority for the game</value></data>
   <data name="BoPriorityHint" xml:space="preserve"><value>Apps like the browser stay open, just with a lower priority while you play.</value></data>
   <data name="OpTabProfiles" xml:space="preserve"><value>Profiles</value></data>
@@ -3943,8 +3954,11 @@ Your games and Windows are not changed.</value></data>
   <data name="Gs60ChoicePlain" xml:space="preserve"><value>Console Mode: 60 FPS</value></data>
   <data name="Gs60ChoiceHintLighter" xml:space="preserve"><value>Your PC already holds the monitor rate in this game. At 60 the image stays the same and the game runs lighter (less heat and power); without FreeSync/G-Sync, a frame repeats now and then.</value></data>
   <data name="Gs60Badge" xml:space="preserve"><value>Console Mode</value></data>
-  <data name="Gs60ChoiceWhat" xml:space="preserve"><value>Sets 60 FPS in the game and in RivaTuner, with Fluid pacing (every frame on screen for the same time, like a console). Turning it off brings back what was there before.</value></data>
+  <data name="Gs60ChoiceWhat" xml:space="preserve"><value>Sets 60 FPS in the game and RivaTuner just under the real 60 Hz, with Fluid pacing (every frame on screen for the same time, like a console). Turning it off brings back what was there before.</value></data>
   <data name="Gs60Partial" xml:space="preserve"><value>Console Mode: graphics are set for 60, but the RivaTuner/Hz part was not prepared. {0}</value></data>
   <data name="GsReasonRamGame" xml:space="preserve"><value>Your PC has less RAM than this game recommends: close the browser and other programs before playing.</value></data>
+  <data name="GsLineRamRelief" xml:space="preserve"><value>With 16 GB of RAM or less, free memory matters: close the browser and heavy programs before playing, and star the ones that can close in Tools › Free memory for gaming. {0}</value></data>
+  <data name="GsRamReliefOn" xml:space="preserve"><value>The Game profile already frees memory when this game opens.</value></data>
+  <data name="GsRamReliefOff" xml:space="preserve"><value>Turn on &quot;Free memory when a game opens&quot; in the Game profile (Optimize my PC) and Lotus does it for you.</value></data>
   <data name="GsLineMeasureToLearn" xml:space="preserve"><value>Estimate still uncertain: with the game running, use &quot;Measure and adjust&quot; or &quot;Why is it stuttering?&quot;. Lotus learns how this game runs on your PC and adjusts the suggestion by itself.</value></data>
 </root>

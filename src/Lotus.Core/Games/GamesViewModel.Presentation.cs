@@ -49,8 +49,10 @@ public sealed partial class GamesViewModel
 
     // "Modo Console" (José, 19/11/2026; 21/11/2026): the graphics for 60 FPS plus everything that keeps 60 steady, like a
     // console. Without FreeSync/G-Sync the monitor runs at 60 Hz while the game is in front (when the output offers 60 Hz
-    // at this resolution); RivaTuner caps at 60 itself (José asked for 60, not 59.99) in Fluidez (front edge sync, the
-    // console-like pacing), or the automatic mode when the player keeps frame generation on (only Reflex gets along with it).
+    // at this resolution) and RivaTuner caps just under the real 60 Hz (59.99 on an exact 60.000 Hz mode). A cap equal to
+    // the refresh rate made frames queue behind V-Sync: Stellar Blade on José's PC (21/11/2026) wobbled at 60 and ran flat
+    // at 59.99 (1% low 60, 0.1% low 55). With FreeSync/G-Sync the rate stays and RivaTuner caps 60. Pacing is Fluidez
+    // (front edge sync, console-like), or the automatic mode when the player keeps frame generation on (only Reflex fits).
     // Turning it off brings back the per-game plan that was there before. The graphics choice is kept even when the
     // RivaTuner/Hz part cannot be prepared (RivaTuner missing, game open): the status says why.
     public string Console60Status { get; private set; } = "";
@@ -79,7 +81,7 @@ public sealed partial class GamesViewModel
             if(await Task.Run(()=>DisplayControl.Current(device)) is {} c && c.Width==width && c.Height==height) {output=c;break;}
         if(output is null) {Console60Status=Text["GpUnsupported"];return true;}
         var has60=modes.Any(m=>m.SameOutput(output) && m.Hz==60);
-        var plan=new GamePresentationPrefs(true,output.Device,output.Width,output.Height,!adaptiveSync && has60 ? 60 : 0,ConsoleLimiter(info),ConsoleCap);
+        var plan=new GamePresentationPrefs(true,output.Device,output.Width,output.Height,!adaptiveSync && has60 ? 60 : 0,ConsoleLimiter(info),adaptiveSync || !has60 ? ConsoleCap : 0);
         if(!await SavePresentationAsync(game,plan,info,adaptiveSync)) Console60Status=PresentationStatus;
         return true;
     }

@@ -90,14 +90,14 @@
     <TextBlock Text="{Binding Status}" app:Motion.Settle="True" Style="{StaticResource CaptionStyle}" Foreground="{ThemeResource GoldBrush}" TextWrapping="Wrap" Visibility="{Binding Status, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="tools-proc-status"/>
     <controls:TaskProgressView State="{Binding Work}" AutomationProperties.AutomationId="tools-proc-task"/>
     <CheckBox Content="{Binding Text[PrShowAll]}" IsChecked="{Binding ShowAll, Mode=TwoWay}" AutomationProperties.AutomationId="tools-proc-all"/>
-    <Grid ColumnSpacing="12" Padding="12,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="80"/><ColumnDefinition Width="64"/><ColumnDefinition Width="150"/><ColumnDefinition Width="36"/></Grid.ColumnDefinitions>
+    <Grid ColumnSpacing="12" Padding="12,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="80"/><ColumnDefinition Width="64"/><ColumnDefinition Width="150"/><ColumnDefinition Width="36"/><ColumnDefinition Width="36"/></Grid.ColumnDefinitions>
      <TextBlock Text="{Binding Text[PrColName]}" Style="{StaticResource CaptionStyle}"/><TextBlock Grid.Column="1" Text="RAM" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right"/><TextBlock Grid.Column="2" Text="CPU" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Right"/>
     </Grid>
     <ItemsControl ItemsSource="{Binding Rows}" AutomationProperties.AutomationId="tools-proc-rows">
      <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
      <ItemsControl.ItemTemplate><DataTemplate>
       <Grid Padding="12,8" ColumnSpacing="12" CornerRadius="12" Background="{ThemeResource SubtleBrush}" BorderBrush="{ThemeResource CardBorderBrush}" BorderThickness="1">
-       <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="80"/><ColumnDefinition Width="64"/><ColumnDefinition Width="150"/><ColumnDefinition Width="36"/></Grid.ColumnDefinitions>
+       <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="80"/><ColumnDefinition Width="64"/><ColumnDefinition Width="150"/><ColumnDefinition Width="36"/><ColumnDefinition Width="36"/></Grid.ColumnDefinitions>
        <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}" IsEnabled="{Binding CanClose}" MinWidth="0" VerticalAlignment="Center" AutomationProperties.Name="{Binding Name}"/>
        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Location}" Style="{StaticResource CaptionStyle}" TextWrapping="NoWrap" MaxLines="1" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Location}"/></StackPanel>
        <TextBlock Grid.Column="2" Text="{Binding SizeText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
@@ -105,6 +105,9 @@
        <Border Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Center" CornerRadius="12" Padding="10,3" Background="{ThemeResource BadgeBrush}"><TextBlock Text="{Binding KindText}" FontSize="12" Foreground="{ThemeResource GoldBrush}"/></Border>
        <Button Grid.Column="5" Click="OnProcToggleList" Visibility="{Binding CanClose, Converter={StaticResource BooleanVisibility}}" Padding="6" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="{Binding DataContext.Text[PrListTip], ElementName=ProcCard}" AutomationProperties.Name="{Binding Name}">
         <Grid><FontIcon Glyph="&#xE734;" FontSize="15" Foreground="{ThemeResource MutedBrush}" Visibility="{Binding InCloseList, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}"/><FontIcon Glyph="&#xE735;" FontSize="15" Foreground="{ThemeResource RoseBrush}" Visibility="{Binding InCloseList, Converter={StaticResource BooleanVisibility}}"/></Grid>
+       </Button>
+       <Button Grid.Column="6" Click="OnProcToggleKeep" Visibility="{Binding CanKeep, Converter={StaticResource BooleanVisibility}}" Padding="6" Background="Transparent" BorderThickness="0" ToolTipService.ToolTip="{Binding DataContext.Text[PrKeepTip], ElementName=ProcCard}" AutomationProperties.Name="{Binding DataContext.Text[PrKeepTip], ElementName=ProcCard}" AutomationProperties.AutomationId="tools-proc-keep">
+        <Grid><FontIcon Glyph="&#xEA18;" FontSize="15" Foreground="{ThemeResource MutedBrush}" Visibility="{Binding InKeepList, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}"/><Border Width="26" Height="26" CornerRadius="13" Background="{ThemeResource RoseBrush}" Visibility="{Binding InKeepList, Converter={StaticResource BooleanVisibility}}"><FontIcon Glyph="&#xEA18;" FontSize="14" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></Grid>
        </Button>
       </Grid>
      </DataTemplate></ItemsControl.ItemTemplate>

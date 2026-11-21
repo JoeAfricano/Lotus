@@ -36,9 +36,11 @@ public sealed record InterfacePreferences
     public bool BoostPower { get; init; } = true;          // High performance plan during the game
     public bool BoostNotifications { get; init; }          // off by default: on Windows 11 22H2 ToastEnabled only applies after signing out (tested 13/11/2026)
     public bool BoostRecording { get; init; } = true;      // Xbox background recording off during the game
-    // Apps are never closed for the game (José's decision): heavy apps only get a lower priority (GamePriority).
+    // "Liberar memória ao abrir um jogo" (José, 21/11/2026): only the programs the player listed in "Fechar antes de
+    // jogar" are asked to close (never forced) and reopen after; idle programs give memory back; Wallpaper Engine pauses.
+    public bool BoostMemory { get; init; } = true;
     [System.Text.Json.Serialization.JsonIgnore]
-    public Lotus.Core.Games.BoostOptions BoostOptions => new(BoostPower, BoostNotifications, BoostRecording);
+    public Lotus.Core.Games.BoostOptions BoostOptions => new(BoostPower, BoostNotifications, BoostRecording, BoostMemory);
     public bool ResumePrompts { get; init; } = true; // after a game closes normally, offer to write "Onde eu parei?" (discreet in-app notice)
     public string DriveSchedule { get; init; } = "manual"; // Google Drive copy: manual (only on click), weekly or monthly
     public bool AutoUpdate { get; init; } // download and install new Lotus versions from GitHub without asking
@@ -153,6 +155,7 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool BoostPower { get => service.Current.BoostPower; set { if (value != service.Current.BoostPower) { service.Update(service.Current with { BoostPower = value }); OnPropertyChanged(); } } }
     public bool BoostNotifications { get => service.Current.BoostNotifications; set { if (value != service.Current.BoostNotifications) { service.Update(service.Current with { BoostNotifications = value }); OnPropertyChanged(); } } }
     public bool BoostRecording { get => service.Current.BoostRecording; set { if (value != service.Current.BoostRecording) { service.Update(service.Current with { BoostRecording = value }); OnPropertyChanged(); } } }
+    public bool BoostMemory { get => service.Current.BoostMemory; set { if (value != service.Current.BoostMemory) { service.Update(service.Current with { BoostMemory = value }); OnPropertyChanged(); } } }
     public bool DriverNotices { get => service.Current.DriverNotices; set { if (value != service.Current.DriverNotices) { service.Update(service.Current with { DriverNotices = value }); OnPropertyChanged(); } } }
     public bool FpsDataUpdates { get => service.Current.FpsDataUpdates; set { if (value != service.Current.FpsDataUpdates) { service.Update(service.Current with { FpsDataUpdates = value }); OnPropertyChanged(); } } }
     public bool ResumePrompts { get => service.Current.ResumePrompts; set { if (value != service.Current.ResumePrompts) { service.Update(service.Current with { ResumePrompts = value }); OnPropertyChanged(); } } }

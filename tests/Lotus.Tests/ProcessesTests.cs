@@ -49,6 +49,21 @@ public sealed class ProcessesTests : IDisposable
         Assert.Contains("900", vm.Status);
     }
 
+    [Fact] public async Task NeverShrinkListIsSavedAndShown()
+    {
+        var keep = new MemoryCloseList();
+        var vm = new ProcessesViewModel(new FakeSampler([P("spotify", 20), P("chrome", 900)]), new MemoryCloseList(), new TextCatalog(), new MemoryMaintenanceJournal(), ex => throw ex, keep);
+        vm.ShowAll = true; await vm.RefreshAsync();
+        var row = vm.Rows.Single(r => r.Sample.ExeName == "spotify");
+        vm.ToggleKeep(row);
+        Assert.True(row.InKeepList);
+        Assert.Equal(["spotify"], keep.Load());
+        vm.ShowAll = false;                                                   // small, but listed: still shown
+        Assert.Contains(vm.Rows, r => r.Sample.ExeName == "spotify" && r.InKeepList);
+        vm.ToggleKeep(vm.Rows.Single(r => r.Sample.ExeName == "spotify"));
+        Assert.Empty(keep.Load());
+    }
+
     [Fact] public async Task WhatDoesNotCloseIsReportedNotHidden()
     {
         var sampler = new FakeSampler([P("tray", 500, window: false)]);

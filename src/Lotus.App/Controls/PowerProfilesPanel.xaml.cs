@@ -44,13 +44,14 @@ public sealed partial class PowerProfilesPanel : UserControl
         GameTimeline.Children.Clear();
         if (game)
         {
-            var s = vm.BoostState?.Invoke() ?? (true, true, true, true, true);
+            var s = vm.BoostState?.Invoke() ?? (true, true, true, true, true, true);
             GameTimeline.Children.Add(Stage("1", t["PfStageOpen"]));
             if (s.Power) GameTimeline.Children.Add(Item("", t["BoPower"], t["PfWhyPower"]));
             if (s.Notifications) GameTimeline.Children.Add(Item("", t["BoNotifications"], t["PfWhyNotifications"]));
             if (s.Recording) GameTimeline.Children.Add(Item("", t["BoRecording"], t["PfWhyRecording"]));
+            if (s.Memory) GameTimeline.Children.Add(Item("", t["BoMemory"], t["PfWhyMemory"]));
             if (s.Priority) GameTimeline.Children.Add(Item("", t["PfPriorityLine"], t["PfWhyPriority"]));
-            if (!(s.Power || s.Notifications || s.Recording || s.Priority)) GameTimeline.Children.Add(Item("", t["PfNothingOn"], t["PfNothingOnWhy"]));
+            if (!(s.Power || s.Notifications || s.Recording || s.Priority || s.Memory)) GameTimeline.Children.Add(Item("", t["PfNothingOn"], t["PfNothingOnWhy"]));
             GameTimeline.Children.Add(Stage("2", t["PfStagePlaying"]));
             GameTimeline.Children.Add(Item("", t["PfPlayingLine"], t["PfWhyPlaying"]));
             GameTimeline.Children.Add(Stage("3", t["PfStageClose"]));

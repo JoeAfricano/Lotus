@@ -8,8 +8,9 @@ namespace Lotus.App;
 // Light mode: Lotus gets out of the way of the game without losing anything.
 // - A library game is running and Lotus is not in front: Windows efficiency mode (EcoQoS, the leaf in Task Manager),
 //   lower priority and the memory Lotus is not using goes back to Windows.
-// - The window is minimized or in the tray for a while: the current page and its images are released too; they come
-//   back as soon as the window is shown again (same section, same state of the view models).
+// - The window is minimized or in the tray for a while: the current page and its images are released too, and Lotus
+//   gives its own idle memory back once (compacting GC + working-set trim); they come back as soon as the window is
+//   shown again (same section, same state of the view models).
 // Everything the player started keeps running (in-game analysis, Score test, measurements live in view models).
 public sealed partial class MainWindow
 {
@@ -119,10 +120,18 @@ public sealed partial class MainWindow
             pageReleased = true;
             ContentFrame.Content = null; ContentFrame.BackStack.Clear(); displayedSectionId = null;
             Controls.HomeBanner.ReleaseCachedPhotos();
-            // One optional background collection of Lotus's unreachable wrappers, not a working-set purge or a
-            // periodic blocking/compacting GC. The runtime may skip it if a collection would not be worthwhile.
-            _ = Task.Run(() => GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized, blocking:false, compacting:false));
             Serilog.Log.Information("Light mode: hidden page and banner cache released");
+            // Lotus light in the tray (José, 21/11/2026): once per hide, a compacting collection and its own working set
+            // back to Windows. Never periodic; it comes back on its own when the window shows again. Numbers are measured.
+            _ = Task.Run(() =>
+            {
+                try
+                {
+                    var (ws0, ws1, pr0, pr1) = Lotus.Infrastructure.Games.WindowsMemoryRelief.TrimSelf();
+                    Serilog.Log.Information("Light mode: Lotus memory {WorkingBefore} -> {WorkingAfter} MB in RAM, private {PrivateBefore} -> {PrivateAfter} MB", ws0 >> 20, ws1 >> 20, pr0 >> 20, pr1 >> 20);
+                }
+                catch (Exception ex) { Serilog.Log.Warning(ex, "Light mode: trim"); }
+            });
         }
     }
     private void OnReleasePage(Microsoft.UI.Dispatching.DispatcherQueueTimer timer, object args) => UpdateLightMode();

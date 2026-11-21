@@ -40,7 +40,7 @@ public sealed record InGameTip(string Key, string[] Args, int Weight);
 
 public static class InGameAdvisor
 {
-    public static IReadOnlyList<InGameTip> Advise(GameTech tech, SettingsRecommendation r, SystemProfile pc, IReadOnlyList<StutterFinding>? measured = null, string goal = "balanced")
+    public static IReadOnlyList<InGameTip> Advise(GameTech tech, SettingsRecommendation r, SystemProfile pc, IReadOnlyList<StutterFinding>? measured = null, string goal = "balanced", bool memoryRelief = false)
     {
         var tips = new List<InGameTip>();
         var keys = measured?.Select(f => f.Key).ToHashSet() ?? [];
@@ -77,6 +77,8 @@ public static class InGameAdvisor
         // Pacing: without VRR, V-Sync on at the exact cap keeps frames even (console-like); with VRR, V-Sync in the driver.
         tips.Add(r.AdaptiveSync ? new("IgVrrVsync", [], 62) : new("IgVsync", [r.FpsCap.ToString()], 78));
         if (goal == "competitive") tips.Add(new("IgCompetitive", [], 65));
+        // 16 GB or less (José, 21/11/2026): free memory before playing; stronger when the game asks for more than the PC has.
+        if (SettingsAdvisor.LowRam(pc)) tips.Add(new(memoryRelief ? "IgRamOn" : "IgRamOff", [], r.Game?.RamGb is { } need && pc.RamMb / 1024.0 + 0.5 < need ? 86 : 58));
         return [.. tips.OrderByDescending(t => t.Weight)];
     }
 }

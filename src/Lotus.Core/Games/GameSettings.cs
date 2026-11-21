@@ -25,10 +25,11 @@ public static class FramePacing
 }
 
 // PacedCap: exact cap for a frame limiter (can be fractional, e.g. 37.5 on 75 Hz); AdaptiveSync: computed for a VRR monitor.
+// ExternalLimiter: RivaTuner paces this game (per-game plan saved), so the game's own limit should stay off.
 // EstimatedFps: what this game should reach with these settings on this PC (0 = no estimate for the game; never shown as measured).
 public sealed record SettingsRecommendation(QualityTier Tier, QualityTier TextureTier, Upscaler Upscaler, UpscaleMode Mode, int FpsCap, int TargetFps,
     int GpuScore, IReadOnlyList<string> ReasonKeys, double PacedCap = 0, bool AdaptiveSync = false, double EstimatedFps = 0, GameFpsCurve? Game = null,
-    bool CanPrefer60 = false, bool Prefer60 = false, Upscaler Available = Upscaler.None, string Why60 = "");
+    bool CanPrefer60 = false, bool Prefer60 = false, Upscaler Available = Upscaler.None, string Why60 = "", bool ExternalLimiter = false);
 
 // How one game runs on this PC at the display's resolution, per quality tier (Low → Ultra), without upscaling:
 // GpuFps = what the graphics card can draw, CpuFps = what the processor can feed (lighter graphics barely raise it),
@@ -208,6 +209,10 @@ public static class SettingsAdvisor
     // the game) the card has room at this resolution.
     public static string NoUpscaleKey(SettingsRecommendation r) =>
         r.Available == Upscaler.None ? "GsUpscaleNoneInGame" : r.Game is not null ? "GsUpscaleNotNeeded" : "GsLineNoUpscale";
+
+    // 16 GB or less installed (Windows reports a little under it, e.g. 16 253 MB for 16 GB): memory is the first thing
+    // a modern game runs out of, so the game tips explain how to free it.
+    public static bool LowRam(SystemProfile p) => p.RamMb is > 0 and <= 16 * 1024 + 512;
 
     private static int Refresh(SystemProfile p) => Math.Clamp(p.RefreshHz <= 0 ? 60 : p.RefreshHz, 50, 500);
 

@@ -2,6 +2,18 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 2.0.2-beta "Lotus 1.0.2 Beta" (21/11/2026)
+
+### Novo
+- **Liberar memória ao abrir um jogo** (perfil Jogo, ligado por padrão, interruptor em "Ajustar o perfil Jogo"). Uma vez, quando o jogo abre: a RAM dos programas parados volta para o Windows (o jogo, a janela da frente, o Windows, drivers, antitrapaça, Steam/launchers, Discord e OBS ficam como estão), o Wallpaper Engine pausa e só os programas que **você** pôs em "Fechar antes de jogar" fecham normalmente, como no X. Quando o jogo fecha, o Wallpaper Engine volta e esses programas reabrem minimizados. Sem administrador e sem limpar o cache do Windows. A memória liberada é medida de verdade e aparece num aviso dentro do próprio Lotus quando você volta a ele ("Na partida de Stellar Blade, o Lotus liberou 2,4 GB de RAM para o jogo"), além de ficar no histórico das Ferramentas.
+- **Nunca encolher.** Em Ferramentas › Liberar memória para jogar, o escudo ao lado de cada programa o deixa fora da liberação de memória: ele não é encolhido, fechado nem pausado (por exemplo, o app de música que você ouve jogando).
+- **Dica de memória nos jogos (16 GB ou menos).** Em "Otimizar este jogo", PCs com 16 GB de RAM ou menos ganham uma dica para liberar memória antes de jogar, dizendo se o perfil Jogo já faz isso sozinho. Ela sobe na lista quando o jogo recomenda mais RAM do que o PC tem. No teste com Stellar Blade em 16 GB de RAM, as travadas acompanhavam a RAM livre perto de zero.
+- **Lotus mais leve na bandeja.** Ao ir para a bandeja, o Lotus devolve ao Windows a memória que não está usando. Medido no PC de teste: de 337 MB para 27 MB em uso na RAM logo depois (cerca de 80 MB depois de 30 s). Tudo volta ao abrir a janela.
+
+### Melhorado
+- **Modo Console mais estável.** Sem FreeSync/G-Sync, o RivaTuner volta a ficar logo abaixo dos 60 Hz reais (59,99). Com o limite exatamente igual à taxa do monitor, os quadros faziam fila no V-Sync e a linha do framepacer oscilava. No teste com Stellar Blade, em 59,99 a linha ficou reta (1% low 60, 0,1% low 55).
+- **Um limitador só.** Quando o RivaTuner já cuida do ritmo de um jogo Unreal, aplicar as configurações do Lotus agora desliga o limite de FPS do próprio jogo (Ilimitado), em vez de colocar o mesmo valor nos dois.
+
 ## 2.0.1-beta "Lotus 1.0.1 Beta" (21/11/2026)
 
 ### Melhorado

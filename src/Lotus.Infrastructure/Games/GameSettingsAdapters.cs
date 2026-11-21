@@ -73,7 +73,7 @@ public sealed class WindowsSystemProfile(IDisplayModes display) : ISystemProfile
 }
 
 // Unreal Engine (UE4/UE5): GameUserSettings.ini under %LOCALAPPDATA%\<Project>\Saved\Config\<Platform>\.
-// Only ScalabilityGroups (0 = Low … 3 = Epic) and FrameRateLimit change; every other line is kept as is.
+// Only ScalabilityGroups (0 = Low … 3 = Epic) and FrameRateLimit (0 when RivaTuner paces the game) change; every other line is kept as is.
 public sealed class UnrealEngineRecipe(string? localAppData = null) : IGameSettingsRecipe
 {
     public string Id => "unreal.gameusersettings.v1";
@@ -110,7 +110,8 @@ public sealed class UnrealEngineRecipe(string? localAppData = null) : IGameSetti
         var ini = new IniText(raw);
         foreach (var g in Groups) ini.Set("ScalabilityGroups", g, ((int)r.Tier).ToString());
         ini.Set("ScalabilityGroups", "sg.TextureQuality", ((int)r.TextureTier).ToString());
-        ini.Set("/Script/Engine.GameUserSettings", "FrameRateLimit", r.FpsCap.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture));
+        // With RivaTuner pacing the game, the engine's own limit goes off (0 = unlimited) so only one limiter is left.
+        ini.Set("/Script/Engine.GameUserSettings", "FrameRateLimit", (r.ExternalLimiter ? 0 : r.FpsCap).ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture));
         return ini.ToString();
     }
     // Steps every scalability group except textures (VRAM-bound) by one level within 0..3.

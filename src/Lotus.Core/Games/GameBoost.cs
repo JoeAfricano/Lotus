@@ -24,13 +24,14 @@ public interface IBoostJournal
 
 // Which steps the player wants (Otimizar > "Ajustar o perfil Jogo"). Process priority keeps its own setting
 // (InterfacePreferences.GamePriority) and its own engine (IGamePriority), which already restores on exit.
-public sealed record BoostOptions(bool Power = true, bool Notifications = true, bool BackgroundRecording = true)
+public sealed record BoostOptions(bool Power = true, bool Notifications = true, bool BackgroundRecording = true, bool Memory = true)
 {
     public bool Wants(string stepId) => stepId switch
     {
         BoostSteps.Power => Power,
         BoostSteps.Notifications => Notifications,
         BoostSteps.BackgroundRecording => BackgroundRecording,
+        BoostSteps.Memory => Memory,
         _ => false
     };
 }
@@ -40,7 +41,8 @@ public static class BoostSteps
     public const string Power = "power";
     public const string Notifications = "notifications";
     public const string BackgroundRecording = "background-recording";
-    public static readonly string[] All = [Power, Notifications, BackgroundRecording];
+    public const string Memory = "memory";
+    public static readonly string[] All = [Power, Notifications, BackgroundRecording, Memory];
 }
 
 public sealed record BoostResult(IReadOnlyList<string> Applied, IReadOnlyList<string> Failed);
