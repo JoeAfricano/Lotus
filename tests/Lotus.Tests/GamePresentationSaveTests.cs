@@ -58,9 +58,9 @@ public sealed class GamePresentationSaveTests : IDisposable
         Assert.True(await vm.SetConsole60Async(Game,true,Info,false));
         var on=store.Data.Games[Game.Key];
         Assert.True(on.Prefer60);Assert.Equal("",vm.Console60Status);
-        // Modo Console (21/11/2026): RivaTuner at 60 itself (not 59.99) and the console-like Fluidez pacing.
-        Assert.Equal((true,60,60.0,"fluid"),(on.Presentation.Enabled,on.Presentation.Hz,on.Presentation.Cap,on.Presentation.AppliedLimiter));
-        Assert.Equal(60,vm.Rtss!.LimiterCap("game.exe"));Assert.Equal("fluid",vm.Rtss.LimiterMode("game.exe"));
+        // Modo Console (21/11/2026): RivaTuner just under the real 60 Hz (a cap equal to it queued frames) and Fluidez pacing.
+        Assert.Equal((true,60,59.93,"fluid"),(on.Presentation.Enabled,on.Presentation.Hz,on.Presentation.Cap,on.Presentation.AppliedLimiter));
+        Assert.Equal(59.93,vm.Rtss!.LimiterCap("game.exe"));Assert.Equal("fluid",vm.Rtss.LimiterMode("game.exe"));
         Assert.False(on.Before60!.Enabled);
         Assert.True(await vm.SetConsole60Async(Game,false,Info,false));
         var off=store.Data.Games[Game.Key];
