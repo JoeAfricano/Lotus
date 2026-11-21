@@ -13,7 +13,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 ![.NET](https://img.shields.io/badge/.NET-10%20%C2%B7%20WinUI%203-512bd4)
 [![License](https://img.shields.io/badge/licen%C3%A7a-MIT-3b8c5a)](LICENSE)
 
-**Versão atual: Lotus 1.0 Beta** — o Lotus saiu da alpha! Chegam a abertura animada, o guia "Conheça o Lotus" (idioma, conta, tema e Google Drive na primeira abertura) e a página de Novidades após cada atualização. A partir de agora as atualizações saem mais espaçadas, cada uma mais completa e testada. Veja o que mudou em [Novidades](CHANGELOG.md).
+**Versão atual: Lotus 1.0.1 Beta** — o botão 60 do cartão Limite de FPS virou **Modo Console**: 60 FPS no jogo e no RivaTuner, com o ritmo Fluidez de console. Na 1.0 Beta o Lotus saiu da alpha! Chegaram a abertura animada, o guia "Conheça o Lotus" (idioma, conta, tema e Google Drive na primeira abertura) e a página de Novidades após cada atualização. A partir de agora as atualizações saem mais espaçadas, cada uma mais completa e testada. Veja o que mudou em [Novidades](CHANGELOG.md).
 
 [**Baixar o Lotus**](../../releases/latest) · [Novidades](CHANGELOG.md) · [Privacidade](PRIVACY.md) · [Reportar um problema](../../issues/new/choose)
 
@@ -73,7 +73,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 - Seus dados ficam em `%LOCALAPPDATA%\Lotus` e nunca são apagados pelo instalador.
 - Requer Windows 10 2004 (19041) ou mais novo, x64.
 
-> O Lotus está em **beta** (Lotus 1.0 Beta): as funções estão prontas para uso diário e as atualizações saem mais espaçadas, cada uma mais completa e testada. Sugestões e problemas são muito bem-vindos em [Issues](../../issues).
+> O Lotus está em **beta** (Lotus 1.0.1 Beta): as funções estão prontas para uso diário e as atualizações saem mais espaçadas, cada uma mais completa e testada. Sugestões e problemas são muito bem-vindos em [Issues](../../issues).
 ## Funções em detalhe
 
 ### Otimizar o PC
@@ -107,6 +107,7 @@ Abas **Perfis · Desempenho · Ajuste da placa · Restaurar**.
   - **Com FreeSync/G-Sync:** 3 FPS abaixo da taxa do monitor.
   - **Sem:** logo abaixo da taxa **real** do monitor, que o Lotus lê do Windows (por exemplo 74,97 num monitor de 74,973 Hz), ou uma fração exata dela, com V-Sync no jogo e o limite do próprio jogo acima disso (ou desligado), para o RivaTuner mandar. Assim os quadros não fazem fila: a linha fica reta e o atraso cai.
   - **"Por que está travando?"** avisa quando o limite está acima da taxa real do monitor.
+  - **Modo Console (opcional, por jogo):** botão com ícone de controle no cartão Limite de FPS. Ligado, escolhe gráficos para 60 FPS, coloca 60 no jogo e no RivaTuner com o ritmo Fluidez e, sem FreeSync/G-Sync, passa o monitor para 60 Hz só enquanto o jogo está na frente. Desligar volta ao que estava.
 - **FreeSync/G-Sync.** O Lotus pergunta uma vez. Numa placa NVIDIA, o driver responde sozinho. Na AMD e na Intel, a identificação do monitor (EDID) indica se ele suporta e recomenda ativar.
 - **Overlay de FPS** pelo RivaTuner, em estilos com prévia: **Equilíbrio** (topo), **Neon** (canto direito) e **Pulse** (canto esquerdo) nativos do RivaTuner, mais **Lateral** e a **Janela Lotus** (experimental, uma janela própria do Lotus sem injetar nada no jogo; atalhos Ctrl+Alt+O e Ctrl+Alt+tecla). Os estilos antigos continuam disponíveis: **Barra no topo**, **Cartão Neon**, **Lateral** e **Pulse** (gerado nas cores do seu tema, com 1% e 0,1% low em destaque e o gráfico de frametime com a linha do seu limite de FPS). Trocar de estilo reabre o RivaTuner sozinho, sem mexer nos seus limites e perfis; com um jogo aberto, a troca espera ele fechar. O Lotus abre o RivaTuner antes do jogo quando precisa dele.
 - **Geração de quadros:** na NVIDIA, Reflex como opção principal. Na AMD e na Intel, o Lotus indica o limite do jogo ou do driver.

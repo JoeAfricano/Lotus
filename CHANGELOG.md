@@ -2,6 +2,11 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 2.0.1-beta "Lotus 1.0.1 Beta" (21/11/2026)
+
+### Melhorado
+- **Modo Console.** O botão "60" do cartão Limite de FPS agora se chama Modo Console (com o ícone de controle). Ligado, coloca 60 FPS no jogo **e no RivaTuner** (antes o RivaTuner ficava em 59,99) e volta o ritmo para Fluidez, como num console: cada quadro fica na tela pelo mesmo tempo. Sem FreeSync/G-Sync, o monitor continua passando para 60 Hz só enquanto o jogo está na frente. Desligar volta ao que estava antes. Se você usa o gerador de quadros no jogo, o Lotus mantém o modo que funciona com ele.
+
 ## 2.0.0-beta "Lotus 1.0 Beta" (20/11/2026)
 
 ### Anúncio importante

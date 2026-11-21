@@ -2,6 +2,11 @@
 
 Release notes in English, shown on the What's new page when Lotus is in English. The full history (in Portuguese) is in [CHANGELOG.md](CHANGELOG.md).
 
+## 2.0.1-beta "Lotus 1.0.1 Beta" (11/21/2026)
+
+### Improved
+- **Console Mode.** The "60" button on the FPS limit card is now called Console Mode (with the controller icon). On, it sets 60 FPS in the game **and in RivaTuner** (RivaTuner used to stay at 59.99) and brings pacing back to Fluid, like a console: every frame stays on screen for the same time. Without FreeSync/G-Sync, the monitor still switches to 60 Hz only while the game is in front. Turning it off brings back what was there before. If you use frame generation in the game, Lotus keeps the mode that works with it.
+
 ## 2.0.0-beta "Lotus 1.0 Beta" (11/20/2026)
 
 ### Important announcement
