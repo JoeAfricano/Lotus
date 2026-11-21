@@ -127,6 +127,11 @@
         <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.BoostRecording, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[BoRecording]}"/>
        </Grid></Border>
        <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <FontIcon Glyph="&#xE964;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[BoMemory]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[BoMemoryHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
+        <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.BoostMemory, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[BoMemory]}" AutomationProperties.AutomationId="boost-memory"/>
+       </Grid></Border>
+       <Border Style="{StaticResource SettingRowStyle}"><Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
         <FontIcon Glyph="&#xE8CB;" FontSize="18" Foreground="{ThemeResource RoseBrush}" VerticalAlignment="Center"/>
         <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="{Binding Text[BoPriority]}" TextWrapping="Wrap"/><TextBlock Text="{Binding Text[BoPriorityHint]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
         <ToggleSwitch Grid.Column="2" IsOn="{Binding Preferences.GamePriority, Mode=TwoWay}" OnContent="" OffContent="" MinWidth="0" AutomationProperties.Name="{Binding Text[BoPriority]}"/>

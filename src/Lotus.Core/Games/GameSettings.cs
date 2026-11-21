@@ -210,6 +210,10 @@ public static class SettingsAdvisor
     public static string NoUpscaleKey(SettingsRecommendation r) =>
         r.Available == Upscaler.None ? "GsUpscaleNoneInGame" : r.Game is not null ? "GsUpscaleNotNeeded" : "GsLineNoUpscale";
 
+    // 16 GB or less installed (Windows reports a little under it, e.g. 16 253 MB for 16 GB): memory is the first thing
+    // a modern game runs out of, so the game tips explain how to free it.
+    public static bool LowRam(SystemProfile p) => p.RamMb is > 0 and <= 16 * 1024 + 512;
+
     private static int Refresh(SystemProfile p) => Math.Clamp(p.RefreshHz <= 0 ? 60 : p.RefreshHz, 50, 500);
 
     // Upscaler: the one the game ships that fits the card; none when a scan found none; the card's own when not scanned.

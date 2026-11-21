@@ -2,7 +2,13 @@
 
 Release notes in English, shown on the What's new page when Lotus is in English. The full history (in Portuguese) is in [CHANGELOG.md](CHANGELOG.md).
 
-## 2.0.2-beta "Lotus 1.0.2 Beta" (in preparation)
+## 2.0.2-beta "Lotus 1.0.2 Beta" (11/21/2026)
+
+### New
+- **Free memory when a game opens** (Game profile, on by default, switch in "Adjust the Game profile"). Once, when the game opens: idle programs give their RAM back to Windows (the game, the foreground window, Windows, drivers, anti-cheat, Steam/launchers, Discord and OBS are left alone), Wallpaper Engine pauses and only the programs **you** put in "Close before playing" close normally, like clicking X. When the game closes, Wallpaper Engine plays again and those programs reopen minimized. No administrator and no Windows cache purge. The memory freed is actually measured and shown in a notice inside Lotus itself when you come back to it ("In your Stellar Blade session, Lotus freed 2.4 GB of RAM for the game"), and kept in the Tools history.
+- **Never shrink.** In Tools › Free memory for gaming, the shield next to each program keeps it out of the memory freeing: it is not trimmed, closed or paused (for example, the music app you listen to while playing).
+- **Memory tip in games (16 GB or less).** In "Optimize this game", PCs with 16 GB of RAM or less get a tip to free memory before playing, saying whether the Game profile already does it. It moves up the list when the game recommends more RAM than the PC has. In a Stellar Blade test on 16 GB of RAM, stutters followed free RAM dropping close to zero.
+- **Lighter Lotus in the tray.** When it goes to the tray, Lotus gives the memory it is not using back to Windows. Measured on the test PC: from 337 MB to 27 MB in RAM right after (about 80 MB after 30 s). Everything comes back when the window opens.
 
 ### Improved
 - **Steadier Console Mode.** Without FreeSync/G-Sync, RivaTuner is back just under the real 60 Hz (59.99). With a limit exactly equal to the monitor rate, frames queued behind V-Sync and the framepacer line wobbled. In a Stellar Blade test, 59.99 kept the line flat (1% low 60, 0.1% low 55).

@@ -284,6 +284,7 @@ public sealed partial class ToolsPanel : UserControl
     // ---- Memory and processes ----
     private async void OnProcRefresh(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Processes: { } p }) await p.RefreshAsync(); }
     private void OnProcToggleList(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Processes: { } p } && (sender as FrameworkElement)?.DataContext is Lotus.Core.Maintenance.ProcessRow row) p.ToggleInList(row); }
+    private void OnProcToggleKeep(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { Processes: { } p } && (sender as FrameworkElement)?.DataContext is Lotus.Core.Maintenance.ProcessRow row) p.ToggleKeep(row); }
     private async void OnProcPickList(object sender, RoutedEventArgs e)
     {
         if (DataContext is ToolsViewModel { Processes: { } p } vm && p.SelectCloseList() == 0) await Confirm(vm.Text["PrTitle"], vm.Text["PrListEmpty"], null, vm);

@@ -18,6 +18,10 @@ public sealed partial class MainWindow
         new Lotus.Core.Games.PowerBoostStep(new Lotus.Infrastructure.Optimization.WindowsPowerSchemes()),
         new Lotus.Infrastructure.Games.NotificationsBoostStep(),
         new Lotus.Infrastructure.Games.RecordingBoostStep(),
+        new Lotus.Core.Games.MemoryReliefStep(
+            new Lotus.Infrastructure.Games.WindowsMemoryRelief(() => [.. games.InstalledGames().Select(g => g.ExePath).OfType<string>()]),
+            () => new Lotus.Infrastructure.Maintenance.JsonCloseList(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Maintenance", "close-before-play.json")).Load(),
+            r => lastRelief = r, keepList: () => new Lotus.Infrastructure.Maintenance.JsonCloseList(KeepListFile).Load()),
     ], new Lotus.Infrastructure.Games.FileBoostJournal(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "game-boost.json")));
 
     private async Task OnGameCheckAsync(GameEntry? running)
@@ -25,7 +29,7 @@ public sealed partial class MainWindow
         if (!initialized) return;
         sessionHub.Observe(running, DateTimeOffset.Now); // shared with "Preparar e jogar" (no second polling loop)
         if (sessions.Update(running, DateTimeOffset.Now) is { } done) OnSessionFinished(done);
-        if (running is null) ShowPendingResumePrompt();
+        if (running is null) { ShowPendingResumePrompt(); ShowPendingRelief(); }
         await UpdateBoostAsync(running);
         await UpdateGameTuneAsync(running);
         await UpdateOverlayWindowAsync(running);
@@ -58,18 +62,51 @@ public sealed partial class MainWindow
                 var process = await Task.Run(() => games.GameProcess(running!));
                 if (process is null) return;
                 var options = preferences.Current.BoostOptions;
+                lastRelief = null;
                 var result = await Task.Run(() => Boost.Start(process, options));
                 Serilog.Log.Information("Perfil Jogo on for {Game}: {Applied} (failed: {Failed})", running!.Name, string.Join(", ", result.Applied), string.Join(", ", result.Failed));
+                if (lastRelief is { } relief) ReportRelief(relief, running.Name);
             }
             else if (!want && Boost.IsActive)
             {
                 var back = await Task.Run(Boost.Stop);
                 Serilog.Log.Information("Perfil Jogo off: {Steps} restored", string.Join(", ", back));
+                if (pendingReliefNote is { } note) { pendingReliefNote = null; tray?.Notify(note.Title, note.Body); }
             }
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Perfil Jogo"); }
     }
 
+    // "Liberar memória ao abrir um jogo": the measured result goes to the log and the Tools history, and is shown inside
+    // Lotus (not a Windows balloon over the game) the next time its window is on screen, usually when the game closes.
+    internal static string KeepListFile => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Maintenance", "never-trim.json");
+    private volatile Lotus.Core.Games.MemoryReliefReport? lastRelief;
+    private (string Title, string Body)? pendingReliefNote;
+    private void ReportRelief(Lotus.Core.Games.MemoryReliefReport r, string game)
+    {
+        Serilog.Log.Information("Memory relief for {Game}: {Freed} MB available more, {Trimmed} MB trimmed from {Count} programs, closed [{Closed}], wallpaper paused {Wallpaper}",
+            game, r.FreedBytes >> 20, r.TrimmedBytes >> 20, r.Trimmed, string.Join(", ", r.Closed.Select(Path.GetFileName)), r.WallpaperPaused);
+        try { tools.Journal.Add(new(DateTimeOffset.Now, "processes", "game-memory", $"{game}: {r.FreedBytes} bytes available more; {r.TrimmedBytes} bytes trimmed from {r.Trimmed} programs; closed {r.Closed.Count}; wallpaper paused {r.WallpaperPaused}", true)); }
+        catch (Exception ex) { Serilog.Log.Warning(ex, "Memory relief history"); }
+        if (r.FreedBytes < Lotus.Core.Games.MemoryRelief.ShownFrom) return; // only a measured, meaningful number is shown
+        var size = (r.FreedBytes / (double)(1L << 30)).ToString(r.FreedBytes >= 1L << 30 ? "0.0" : "0.00", System.Globalization.CultureInfo.GetCultureInfo(text.Language)) + " GB";
+        pendingReliefNote = (text["BoMemoryFreedTitle"], text.Format("BoMemoryNoticeBody", game, DateTime.Now.ToString("HH:mm"), size));
+        ShowPendingRelief();
+    }
+    private void ShowPendingRelief()
+    {
+        // Development preview of the notice (prints only): nothing measured, nothing recorded.
+        if (Environment.GetCommandLineArgs().Contains("--dev-instance") && Environment.GetEnvironmentVariable("LOTUS_PREVIEW_MEMORY_NOTICE") is { Length: > 0 } preview)
+        {
+            Environment.SetEnvironmentVariable("LOTUS_PREVIEW_MEMORY_NOTICE", null);
+            pendingReliefNote = (text["BoMemoryFreedTitle"], text.Format("BoMemoryNoticeBody", preview, DateTime.Now.ToString("HH:mm"), "2.4 GB"));
+        }
+        if (pendingReliefNote is not { } note || !initialized) return;
+        var visible = AppWindow.IsVisible && AppWindow.Presenter is not Microsoft.UI.Windowing.OverlappedPresenter { State: Microsoft.UI.Windowing.OverlappedPresenterState.Minimized };
+        if (!visible) return;
+        pendingReliefNote = null;
+        Notice.Show(new(text["BoMemory"], note.Title, note.Body, "\uE964", null, [new(text["BoMemoryNoticeOk"], () => Notice.Hide(), Primary: true)], Seconds: 20));
+    }
     // A development build (--dev-instance) next to a running installed Lotus leaves the game to the installed one:
     // both changed the same processes' priority and wrote the same diary.
     private static bool DevBesideInstalled()

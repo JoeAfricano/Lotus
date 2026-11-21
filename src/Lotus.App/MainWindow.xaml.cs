@@ -160,7 +160,7 @@ public sealed partial class MainWindow : Window
         IReadOnlyCollection<string> GameExes() => [.. games.InstalledGames().Select(g => g.ExePath).OfType<string>()];
         tools.Processes = new Lotus.Core.Maintenance.ProcessesViewModel(new Lotus.Infrastructure.Maintenance.WindowsProcessSampler(GameExes),
             new Lotus.Infrastructure.Maintenance.JsonCloseList(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "Maintenance", "close-before-play.json")),
-            text, tools.Journal, ex => Serilog.Log.Warning(ex, "Processes"));
+            text, tools.Journal, ex => Serilog.Log.Warning(ex, "Processes"), new Lotus.Infrastructure.Maintenance.JsonCloseList(KeepListFile));
         // Startup: same inventory and the same journaled toggle as Otimizar (exact undo of what Lotus turned off).
         tools.Startup = new Lotus.Core.Maintenance.StartupToolViewModel(new Lotus.Infrastructure.Optimization.WindowsStartupInventory(), new Lotus.Infrastructure.Maintenance.WindowsStartupDetails(),
             async entry => { await powerProfiles.ToggleStartupAsync(new Lotus.Core.Optimization.StartupRow(entry.Name, entry.Location, "", entry.Enabled == false, entry, true)); return true; },
@@ -185,7 +185,7 @@ public sealed partial class MainWindow : Window
             new Lotus.Infrastructure.Maintenance.ExplorerRevealer(), Lotus.Infrastructure.Maintenance.LocalDrives.Read, places.Resolve, text, tools.Journal, ex => Serilog.Log.Warning(ex, "Storage"));
         games.Rtss = integrations.Rtss;
         // Perfil Jogo is for game sessions: applying it turns on the boost and the game priority; Diário turns both off.
-        powerProfiles.BoostState = () => (preferences.Current.GameBoost, preferences.Current.BoostPower, preferences.Current.BoostNotifications, preferences.Current.BoostRecording, preferences.Current.GamePriority);
+        powerProfiles.BoostState = () => (preferences.Current.GameBoost, preferences.Current.BoostPower, preferences.Current.BoostNotifications, preferences.Current.BoostRecording, preferences.Current.GamePriority, preferences.Current.BoostMemory);
         powerProfiles.PlayingGame = () => lightGame?.Name;
         powerProfiles.ProfileApplied = id =>
         {
@@ -208,6 +208,7 @@ public sealed partial class MainWindow : Window
         games.AdaptiveSync = () => preferences.Current.AdaptiveSync;
         games.Display = new Lotus.Infrastructure.Games.WindowsDisplaySync();
         // Per-game settings: the game's FPS curve from the Lotus Score (table, Steam requirements, own measurement).
+        games.MemoryReliefOn = () => preferences.Current.GameBoost && preferences.Current.BoostMemory;
         games.Curve = (g, pc) => score.CurveForAsync(g.Name, g.Store == Lotus.Core.Games.GameStores.Steam ? g.Id : null, pc.Height, pc.GpuName, pc.CpuName);
         games.ScoreLine = (g, r, pc) =>
         {
@@ -612,6 +613,7 @@ public sealed partial class MainWindow : Window
         if (AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized } presenter) presenter.Restore();
         Activate();
         if (pendingReport is { } r && pendingGame is { } g) { pendingReport = null; _ = ShowReportAsync(g, r); }
+        ShowPendingRelief();
     }
     private void ApplyStartup()
     {

@@ -66,7 +66,7 @@ public static class ProcessRules
     }
 }
 
-public sealed partial class ProcessRow(ProcessSample sample, string sizeText, string cpuText, string kindText, bool inList) : ObservableObject
+public sealed partial class ProcessRow(ProcessSample sample, string sizeText, string cpuText, string kindText, bool inList, bool inKeepList = false) : ObservableObject
 {
     public ProcessSample Sample { get; } = sample;
     public string Name => Sample.Name;
@@ -76,12 +76,25 @@ public sealed partial class ProcessRow(ProcessSample sample, string sizeText, st
     public string KindText { get; } = kindText;
     public bool CanClose => Sample.Kind == ProcessKind.Normal;
     public bool Protected => !CanClose;
+    // "Nunca encolher" only where "Liberar memória ao abrir um jogo" could act (the player's programs and the assistant).
+    public bool CanKeep => Sample.Kind == ProcessKind.Normal || Sample.ExeName.Equals("claude", StringComparison.OrdinalIgnoreCase);
     [ObservableProperty] private bool selected;
     [ObservableProperty] private bool inCloseList = inList;
+    // "Nunca encolher": "Liberar memória ao abrir um jogo" leaves this program as it is (not trimmed, not closed).
+    [ObservableProperty] private bool inKeepList = inKeepList;
 }
 
-public sealed partial class ProcessesViewModel(IProcessSampler sampler, ICloseListStore closeList, ITextCatalog text, IMaintenanceJournal journal, Action<Exception> log) : ObservableObject
+public sealed partial class ProcessesViewModel(IProcessSampler sampler, ICloseListStore closeList, ITextCatalog text, IMaintenanceJournal journal, Action<Exception> log, ICloseListStore? keepList = null) : ObservableObject
 {
+    private readonly ICloseListStore keep = keepList ?? new MemoryCloseList();
+    public IReadOnlyList<string> KeepList => keep.Load();
+    // Any program can be kept as it is (also protected ones: harmless, and the list stays the player's own words).
+    public void ToggleKeep(ProcessRow row)
+    {
+        var list = keep.Load().ToList();
+        if (list.RemoveAll(x => x.Equals(row.Sample.ExeName, StringComparison.OrdinalIgnoreCase)) == 0) list.Add(row.Sample.ExeName);
+        try { keep.Save(list); row.InKeepList = !row.InKeepList; } catch (Exception ex) { log(ex); }
+    }
     public ITextCatalog Text { get; } = text;
     public ObservableCollection<ProcessRow> Rows { get; } = [];
     public TaskState Work { get; } = new();
@@ -121,13 +134,13 @@ public sealed partial class ProcessesViewModel(IProcessSampler sampler, ICloseLi
 
     private void Fill()
     {
-        var list = closeList.Load();
+        var list = closeList.Load(); var kept = keep.Load();
         Rows.Clear();
         foreach (var p in last.OrderByDescending(p => p.Bytes))
         {
             var listed = list.Contains(p.ExeName, StringComparer.OrdinalIgnoreCase);
-            if (!ShowAll && p.Bytes < 100L << 20 && p.CpuPercent < 1 && !listed) continue;
-            Rows.Add(new(p, Size(p.Bytes), p.CpuPercent.ToString("0.0", Culture) + "%", Text["PrKind" + p.Kind], listed));
+            if (!ShowAll && p.Bytes < 100L << 20 && p.CpuPercent < 1 && !listed && !kept.Contains(p.ExeName, StringComparer.OrdinalIgnoreCase)) continue;
+            Rows.Add(new(p, Size(p.Bytes), p.CpuPercent.ToString("0.0", Culture) + "%", Text["PrKind" + p.Kind], listed, kept.Contains(p.ExeName, StringComparer.OrdinalIgnoreCase)));
         }
     }
 

@@ -300,6 +300,8 @@ public sealed partial class GamesViewModel : ObservableObject
 
     // The game's FPS curve on this PC (Lotus Score table, Steam requirements, the player's own measurement); set by the window.
     public Func<GameEntry, SystemProfile, Task<GameFpsCurve?>>? Curve { get; set; }
+    // Perfil Jogo on and "Liberar memória ao abrir um jogo" on (set by the window).
+    public Func<bool>? MemoryReliefOn { get; set; }
     private async Task<SettingsRecommendation> RecommendFor(GameEntry game, SystemProfile p, GameTech? tech = null)
     {
         GameFpsCurve? curve = null;
@@ -332,6 +334,9 @@ public sealed partial class GamesViewModel : ObservableObject
                 // Uncertain estimate: Lotus finds out by itself the next time the game is measured on this PC.
                 if (r.Game is not { Basis: "measured" }) lines.Add(Text["GsLineMeasureToLearn"]);
                 lines.AddRange(r.ReasonKeys.Select(k => Text[k]));
+                // 16 GB or less (José, 21/11/2026): how Lotus frees memory for the game, and whether that switch is on.
+                if (SettingsAdvisor.LowRam(p))
+                    lines.Add(Text.Format("GsLineRamRelief", Text[MemoryReliefOn?.Invoke() == true ? "GsRamReliefOn" : "GsRamReliefOff"]));
                 var hardware = Text.Format("GsHardware", string.IsNullOrWhiteSpace(p.GpuName) ? "?" : p.GpuName, p.VramMb / 1024.0, p.Width, p.Height, p.RefreshHz);
                 if (!string.IsNullOrWhiteSpace(p.CpuName)) hardware += " · " + p.CpuName.Trim();
                 return new GameSettingsAnalysis(r, lines, hardware, support, settingsStore?.LoadOriginal(game.Key) is not null, pendingSteps.TryGetValue(game.Key, out var step) ? step : null);
@@ -506,7 +511,7 @@ public sealed partial class GamesViewModel : ObservableObject
                 var last = LastReport(game);
                 var monitor = MonitorSync();
                 var useFrameGen = tech.FrameGen && PrefsFor(game).UseFrameGen;
-                var advice = InGameAdvisor.Advise(tech, settings.Recommendation, profileSource!.Read(), last?.Findings, Goal?.Invoke() ?? "balanced").ToList();
+                var advice = InGameAdvisor.Advise(tech, settings.Recommendation, profileSource!.Read(), last?.Findings, Goal?.Invoke() ?? "balanced", MemoryReliefOn?.Invoke() == true).ToList();
                 if (useFrameGen) advice.RemoveAll(t => t.Key == "IgFrameGenOff"); // the player chose it: no nagging
                 // The last measurement held the target with the GPU partly idle: there is room for a prettier image.
                 // (Wukong on an RTX 5060 at 75 Hz: High + DLSS Balanced held 75 with the GPU at 82%.)

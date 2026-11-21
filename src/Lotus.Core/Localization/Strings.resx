@@ -2140,6 +2140,10 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GsReasonHalfRate" xml:space="preserve"><value>O seu PC não sustenta a taxa do monitor, então o limite fica numa fração exata dela: menos FPS, mas cravado e liso, como em console.</value></data>
   <data name="IgVsyncTitle" xml:space="preserve"><value>Ligue o V-Sync e trave em {0} FPS</value></data>
   <data name="IgVsyncBody" xml:space="preserve"><value>Sem FreeSync/G-Sync, o segredo da fluidez de console é o FPS cravado na taxa do monitor (ou na metade). Ligue o V-Sync no jogo e use o botão Ligar do RivaTuner abaixo: o Lotus escolhe o modo certo e a linha do framepacer fica reta. O limite do próprio jogo fica igual ou acima do RivaTuner (ou desligado), nunca abaixo: um limitador manda.</value></data>
+  <data name="IgRamOnTitle" xml:space="preserve"><value>Memória livre para o jogo</value></data>
+  <data name="IgRamOnBody" xml:space="preserve"><value>Seu PC tem 16 GB de RAM ou menos, e jogos atuais usam boa parte disso. O perfil Jogo já libera memória quando o jogo abre. Ajude fechando o navegador e programas pesados, e marque com a estrela os que podem fechar sozinhos em Ferramentas › Liberar memória para jogar.</value></data>
+  <data name="IgRamOffTitle" xml:space="preserve"><value>Libere memória antes de jogar</value></data>
+  <data name="IgRamOffBody" xml:space="preserve"><value>Seu PC tem 16 GB de RAM ou menos, e jogos atuais usam boa parte disso: quando a RAM acaba, o jogo trava. Feche o navegador e programas pesados antes de jogar, ou ligue Liberar memória ao abrir um jogo no perfil Jogo (Otimizar meu PC) para o Lotus fazer isso sozinho. Os programas que podem fechar ficam em Ferramentas › Liberar memória para jogar.</value></data>
   <data name="IgVrrVsyncTitle" xml:space="preserve"><value>Com FreeSync/G-Sync: V-Sync no driver, não no jogo</value></data>
   <data name="IgVrrVsyncBody" xml:space="preserve"><value>Deixe o V-Sync ligado no painel da placa de vídeo e desligado no jogo. Com o limite 3 FPS abaixo da taxa do monitor, a tela acompanha cada quadro sem tearing e sem o atraso do V-Sync.</value></data>
   <data name="IgEnableVrrTitle" xml:space="preserve"><value>Ative o FreeSync/G-Sync do seu monitor</value></data>
@@ -3420,6 +3424,13 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="BoNotificationsHint" xml:space="preserve"><value>O Windows só aplica esta chave depois de sair e entrar na conta, então ela pode não valer na mesma sessão. Para silenciar já, use o &quot;Não incomodar&quot; automático do Windows ao jogar (Configurações › Sistema › Notificações).</value></data>
   <data name="BoRecording" xml:space="preserve"><value>Desligar a gravação em segundo plano do Xbox</value></data>
   <data name="BoRecordingHint" xml:space="preserve"><value>A Game Bar para de gravar os últimos minutos enquanto você joga; volta quando o jogo fecha.</value></data>
+  <data name="BoMemory" xml:space="preserve"><value>Liberar memória ao abrir um jogo</value></data>
+  <data name="BoMemoryHint" xml:space="preserve"><value>Os programas parados devolvem a RAM ao Windows, o Wallpaper Engine pausa e os programas da sua lista &quot;Fechar antes de jogar&quot; fecham normalmente. Tudo volta quando o jogo fecha. Para proteger um programa, marque o escudo &quot;Nunca encolher&quot; em Ferramentas › Liberar memória para jogar.</value></data>
+  <data name="PfWhyMemory" xml:space="preserve"><value>Uma vez, ao abrir o jogo: a RAM dos programas parados volta para o Windows e o jogo carrega com mais memória livre. Só fecham os programas que você pôs em "Fechar antes de jogar", e eles reabrem depois.</value></data>
+  <data name="BoMemoryFreedTitle" xml:space="preserve"><value>Memória liberada para o jogo</value></data>
+  <data name="BoMemoryNoticeBody" xml:space="preserve"><value>Na partida de {0} ({1}), o Lotus liberou {2} de RAM para o jogo.</value></data>
+  <data name="BoMemoryNoticeOk" xml:space="preserve"><value>Entendi</value></data>
+  <data name="PrKeepTip" xml:space="preserve"><value>Nunca encolher (o Lotus deixa este programa como está ao abrir um jogo)</value></data>
   <data name="BoPriority" xml:space="preserve"><value>Prioridade para o jogo</value></data>
   <data name="BoPriorityHint" xml:space="preserve"><value>Apps como navegador continuam abertos, só com prioridade menor enquanto você joga.</value></data>
   <data name="OpTabProfiles" xml:space="preserve"><value>Perfis</value></data>
@@ -3946,5 +3957,8 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="Gs60ChoiceWhat" xml:space="preserve"><value>Coloca 60 FPS no jogo e o RivaTuner logo abaixo dos 60 Hz reais, com o ritmo Fluidez (cada quadro na tela pelo mesmo tempo, como num console). Desligar volta ao que estava antes.</value></data>
   <data name="Gs60Partial" xml:space="preserve"><value>Modo Console: os gráficos ficaram em 60, mas a parte do RivaTuner/Hz não foi preparada. {0}</value></data>
   <data name="GsReasonRamGame" xml:space="preserve"><value>Seu PC tem menos memória RAM do que este jogo recomenda: feche navegador e outros programas antes de jogar.</value></data>
+  <data name="GsLineRamRelief" xml:space="preserve"><value>Com 16 GB de RAM ou menos, memória livre faz diferença: feche navegador e programas pesados antes de jogar e marque com a estrela os que podem fechar em Ferramentas › Liberar memória para jogar. {0}</value></data>
+  <data name="GsRamReliefOn" xml:space="preserve"><value>O perfil Jogo já libera memória quando este jogo abre.</value></data>
+  <data name="GsRamReliefOff" xml:space="preserve"><value>Ligue &quot;Liberar memória ao abrir um jogo&quot; no perfil Jogo (Otimizar meu PC) para o Lotus fazer isso sozinho.</value></data>
   <data name="GsLineMeasureToLearn" xml:space="preserve"><value>Estimativa ainda incerta: com o jogo aberto, use &quot;Medir e ajustar&quot; ou &quot;Por que está travando?&quot;. O Lotus aprende quanto este jogo rende no seu PC e ajusta a sugestão sozinho.</value></data>
 </root>
