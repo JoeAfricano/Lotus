@@ -2,13 +2,13 @@
   <PropertyGroup><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><LangVersion>14</LangVersion><Deterministic>true</Deterministic></PropertyGroup>
   <!-- Lotus version. Betas use 2.x inside (2.0.0 = "Lotus 1.0 Beta") so alpha 1.x installs still see them as newer. -->
   <PropertyGroup>
-    <Version>2.0.0</Version>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
-    <InformationalVersion>2.0.0-beta</InformationalVersion>
+    <Version>2.0.1</Version>
+    <AssemblyVersion>2.0.1.0</AssemblyVersion>
+    <FileVersion>2.0.1.0</FileVersion>
+    <InformationalVersion>2.0.1-beta</InformationalVersion>
     <!-- The name players see (Settings, updates, installer, Novidades). Free text: it never has to match the number above,
          which only has to keep growing for the updater. -->
-    <LotusDisplayVersion>1.0 Beta</LotusDisplayVersion>
+    <LotusDisplayVersion>1.0.1 Beta</LotusDisplayVersion>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>Lotus</Product>
     <Company>Joeafricano</Company>

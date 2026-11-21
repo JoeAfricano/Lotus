@@ -3935,14 +3935,16 @@ Your games and Windows are not changed.</value></data>
   <data name="GsBasisRequirements" xml:space="preserve"><value>Steam recommended requirements</value></data>
   <data name="TuneGameLine" xml:space="preserve"><value>With these settings this game should run at about {0} FPS on your PC. Estimate: {1}.</value></data>
   <data name="GsReasonTargetLower" xml:space="preserve"><value>Target below the monitor rate, at an exact fraction of it (or what the PC holds with FreeSync/G-Sync): a steady image instead of swings.</value></data>
-  <data name="GsReasonPrefer60" xml:space="preserve"><value>You turned on console-style 60 in this game: a fixed 60 FPS limit.</value></data>
-  <data name="Gs60Choice" xml:space="preserve"><value>Console-style 60, with better graphics</value></data>
+  <data name="GsReasonPrefer60" xml:space="preserve"><value>You turned on Console Mode in this game: a fixed 60 FPS limit.</value></data>
+  <data name="Gs60Choice" xml:space="preserve"><value>Console Mode: 60 FPS with better graphics</value></data>
   <data name="Gs60ChoiceHint" xml:space="preserve"><value>By default Lotus lowers graphics to keep up with the monitor rate. At 60 the image looks better; without FreeSync/G-Sync a frame repeats now and then and motion may judder a little.</value></data>
   <data name="Gs60ChoiceHintVrr" xml:space="preserve"><value>By default Lotus lowers graphics to keep up with the monitor rate. At 60 with FreeSync/G-Sync the image looks better and stays smooth.</value></data>
   <data name="Gs60ChoiceHintCantHold" xml:space="preserve"><value>Your PC cannot reach the monitor rate in this game, so by default Lotus locks an exact fraction of it for a steady image. At 60 the game runs smoother; without FreeSync/G-Sync, a frame repeats now and then.</value></data>
-  <data name="Gs60ChoicePlain" xml:space="preserve"><value>Console-style 60</value></data>
+  <data name="Gs60ChoicePlain" xml:space="preserve"><value>Console Mode: 60 FPS</value></data>
   <data name="Gs60ChoiceHintLighter" xml:space="preserve"><value>Your PC already holds the monitor rate in this game. At 60 the image stays the same and the game runs lighter (less heat and power); without FreeSync/G-Sync, a frame repeats now and then.</value></data>
-  <data name="Gs60Partial" xml:space="preserve"><value>Console-style 60: graphics are set for 60, but the RivaTuner/Hz part was not prepared. {0}</value></data>
+  <data name="Gs60Badge" xml:space="preserve"><value>Console Mode</value></data>
+  <data name="Gs60ChoiceWhat" xml:space="preserve"><value>Sets 60 FPS in the game and in RivaTuner, with Fluid pacing (every frame on screen for the same time, like a console). Turning it off brings back what was there before.</value></data>
+  <data name="Gs60Partial" xml:space="preserve"><value>Console Mode: graphics are set for 60, but the RivaTuner/Hz part was not prepared. {0}</value></data>
   <data name="GsReasonRamGame" xml:space="preserve"><value>Your PC has less RAM than this game recommends: close the browser and other programs before playing.</value></data>
   <data name="GsLineMeasureToLearn" xml:space="preserve"><value>Estimate still uncertain: with the game running, use &quot;Measure and adjust&quot; or &quot;Why is it stuttering?&quot;. Lotus learns how this game runs on your PC and adjusts the suggestion by itself.</value></data>
 </root>
