@@ -21,6 +21,8 @@ public static class PresentMonCsv
         var interval = Column("MsBetweenPresents");
         if (interval < 0) interval = Column("msBetweenPresents");
         var type = Column("FrameType"); var modeColumn = Column("PresentMode");
+        var shown = Column("MsBetweenDisplayChange"); if (shown < 0) shown = Column("DisplayedTime");
+        var displayed = new Dictionary<string, List<double>>(); // per swap chain: how long each shown frame stayed on screen
         var modes = new Dictionary<string, Dictionary<string, int>>(); // per swap chain: present mode → frames
         if (new[] { process, chain, time, interval }.Any(i => i < 0)) throw new InvalidDataException("Unsupported PresentMon CSV schema.");
         var streams = new Dictionary<string, List<FrameSample>>();
@@ -59,12 +61,19 @@ public static class PresentMonCsv
                 (frames.Count > 0 && seconds / (inMilliseconds ? 1000 : 1) <= frames[^1].TimeSeconds)) { invalid++; continue; }
             if (inMilliseconds) seconds /= 1000;
             frames.Add(new(seconds, dt));
+            // 0 or "NA" = this frame never reached the screen (replaced by a newer one): not a repeat.
+            if (shown >= 0 && double.TryParse(row[shown], NumberStyles.Float, CultureInfo.InvariantCulture, out var onScreen) && double.IsFinite(onScreen) && onScreen > 0)
+            {
+                if (!displayed.TryGetValue(row[chain], out var list)) displayed[row[chain]] = list = [];
+                list.Add(onScreen);
+            }
         }
         var dominant = streams.OrderByDescending(s => s.Value.Count).ThenBy(s => s.Key).FirstOrDefault();
         IReadOnlyList<FrameSample> samples = dominant.Value ?? [];
         return new(dominant.Key ?? "", Math.Max(0, streams.Count - 1), invalid, total, samples,
             invalid == 0 && !truncated && !losses.Any(v => v > 0) ? BenchmarkMath.Calculate(samples) : null,
             types.Count == 0 ? "Unavailable" : string.Join(", ", types.Order()), truncated, losses[0], losses[1], losses[2],
-            dominant.Key is { } key && modes.TryGetValue(key, out var found) ? found.OrderByDescending(m => m.Value).First().Key : null);
+            dominant.Key is { } key && modes.TryGetValue(key, out var found) ? found.OrderByDescending(m => m.Value).First().Key : null,
+            dominant.Key is { } shownKey && displayed.TryGetValue(shownKey, out var intervals) ? DisplayRepeats.Count(intervals) : null);
     }
 }

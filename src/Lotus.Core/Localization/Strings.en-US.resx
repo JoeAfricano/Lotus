@@ -3277,6 +3277,12 @@ Your games and Windows are not changed.</value></data>
   <data name="WhyCapAboveRefreshTitle" xml:space="preserve"><value>The FPS limit is above the monitor's real rate</value></data>
   <data name="WhyCapAboveRefreshBody" xml:space="preserve"><value>RivaTuner limits this game at **{0}**. Without FreeSync/G-Sync, a limit above the real rate makes frames **wait in the V-Sync queue**: more delay and a jagged frame pacing line, even with FPS at the top. In Optimize this game, use the RivaTuner Turn on button: Lotus sets the limit just under the real rate.</value></data>
   <data name="WhyCapAboveRefreshTip" xml:space="preserve"><value>Tip: limit just under the monitor's real rate, with V-Sync.</value></data>
+  <data name="WhyRepeatsTitle" xml:space="preserve"><value>The screen is repeating frames</value></data>
+  <data name="WhyRepeatsBody" xml:space="preserve"><value>The screen showed the same frame twice about **{0} times a minute**. Each repeat is a small hitch you feel, even when RivaTuner's frame-time line looks flat. It happens when the game misses the next screen refresh.</value></data>
+  <data name="WhyRepeatsTip" xml:space="preserve"><value>Tip: a steady FPS below the screen's rate avoids repeats.</value></data>
+  <data name="WhyConsoleModeTitle" xml:space="preserve"><value>This game is steadier in Console Mode</value></data>
+  <data name="WhyConsoleModeBody" xml:space="preserve"><value>The game ran at **{0}**: it can't hold the screen's rate, so the screen keeps repeating frames. In **Console Mode** the screen goes to 60 Hz while you play and RivaTuner limits just under it, giving the processor more time for each frame. Close the game and turn on Console Mode in Optimize this game.</value></data>
+  <data name="WhyConsoleModeTip" xml:space="preserve"><value>Tip: turn on Console Mode in Optimize this game.</value></data>
   <data name="GiBeatTitle" xml:space="preserve"><value>Time to beat</value></data>
   <data name="GiBeatStory" xml:space="preserve"><value>main story</value></data>
   <data name="GiBeatPlus" xml:space="preserve"><value>main + extras</value></data>

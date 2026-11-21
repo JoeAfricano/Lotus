@@ -30,13 +30,38 @@ public sealed class StutterDiagnosisTests
 
     [Fact] public void ManyHitchesWithoutKnownCauseAreReported() => Assert.Equal(["WhyUnknownStutter"], Keys(Inputs(spikes: 40)));
 
+    // Stellar Blade on José's PC (21/11/2026): 67.6 FPS on a 74.973 Hz screen without VRR, 1,030 repeats in 5 minutes.
+    private static StutterInputs Stellar(bool vrr = false, bool console = false, int? repeats = 1030, double avg = 67.6, double hz = 74.973, double? cap = 74.97) =>
+        new(avg, 55, 0, 300, 55, 75, ShaderState.Compiled, 0, 70, [], true, null, null, cap, hz, vrr, repeats, console);
+    [Fact] public void AGameBelowTheScreenRateGetsRepeatsAndConsoleMode()
+    {
+        var findings = StutterDiagnosis.Analyze(Stellar());
+        Assert.Equal("WhyConsoleMode", findings[0].Key); Assert.Equal("68 FPS / 75 Hz", findings[0].Detail);
+        Assert.Equal("206", findings.Single(f => f.Key == "WhyRepeats").Detail);
+        Assert.DoesNotContain(StutterDiagnosis.Analyze(Stellar(vrr: true)), f => f.Key == "WhyConsoleMode");     // the screen follows the game
+        Assert.DoesNotContain(StutterDiagnosis.Analyze(Stellar(console: true)), f => f.Key == "WhyConsoleMode"); // already on
+        Assert.DoesNotContain(StutterDiagnosis.Analyze(Stellar(avg: 74.5)), f => f.Key == "WhyConsoleMode");     // holds the rate
+        Assert.DoesNotContain(StutterDiagnosis.Analyze(Stellar(avg: 40)), f => f.Key == "WhyConsoleMode");       // too slow even for 60
+        Assert.DoesNotContain(StutterDiagnosis.Analyze(Stellar(hz: 60)), f => f.Key == "WhyConsoleMode");        // already a 60 Hz screen
+        Assert.DoesNotContain(StutterDiagnosis.Analyze(Stellar(avg: 58, cap: 58)), f => f.Key == "WhyConsoleMode"); // held by a limiter
+        Assert.DoesNotContain(StutterDiagnosis.Analyze(Stellar(repeats: 50)), f => f.Key == "WhyRepeats");          // 10 a minute: fine
+        Assert.DoesNotContain(StutterDiagnosis.Analyze(Stellar(repeats: null)), f => f.Key == "WhyRepeats");        // not measured
+    }
+
+    [Fact] public void DisplayRepeatsCountFramesHeldForTwoRefreshes()
+    {
+        var intervals = Enumerable.Repeat(13.34, 200).Concat(Enumerable.Repeat(26.68, 10)).Concat([40.0]).ToList();
+        Assert.Equal(11, Lotus.Core.Benchmark.DisplayRepeats.Count(intervals));
+        Assert.Null(Lotus.Core.Benchmark.DisplayRepeats.Count([16.7, 33.4]));
+    }
+
     [Fact] public void EveryFindingHasLocalizedTexts()
     {
         foreach (var language in new[] { "pt-BR", "en-US" })
         {
             var text = new TextCatalog(language);
-            foreach (var key in new[] { "WhyShaders", "WhyMemory", "WhyProfile", "WhyGpuLimit", "WhyCpuLimit", "WhyUnknownStutter", "WhyAllGood" })
-            { Assert.NotEmpty(text[key + "Title"]); Assert.NotEmpty(text.Format(key + "Body", "x")); }
+            foreach (var key in new[] { "WhyShaders", "WhyMemory", "WhyProfile", "WhyGpuLimit", "WhyCpuLimit", "WhyUnknownStutter", "WhyAllGood", "WhyRepeats", "WhyConsoleMode" })
+            { Assert.NotEmpty(text[key + "Title"]); Assert.NotEmpty(text.Format(key + "Body", "x")); Assert.NotEmpty(text[key + "Tip"]); }
         }
     }
 }

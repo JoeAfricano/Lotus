@@ -610,7 +610,7 @@ public sealed partial class GamesViewModel : ObservableObject
             IReadOnlyList<string> overlays = Overlays is null ? [] : await Task.Run(() => (IReadOnlyList<string>)[.. Overlays.Scan().Where(o => o.Heavy).Select(o => o.Name)], token);
             var findings = StutterDiagnosis.Analyze(new(s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds, gpuBusy, target,
                 ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower, overlays, cpuHeat, await Task.Run(() => RtssCapFor(run.Executable), token),
-                FramePacing.RealRefresh(pc.RefreshHz, pc.ExactRefreshHz), vrr));
+                FramePacing.RealRefresh(pc.RefreshHz, pc.ExactRefreshHz), vrr, session.Data.RepeatedFrames, PrefsFor(game).Prefer60));
             if (findings.Any(f => f.Fix == StutterFix.LowerQuality)) pendingSteps[game.Key] = -1; // ready for "Otimizar configurações" after closing
             var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds)
                 + (latencyMs is { } ms ? " · " + Text.Format("WhyLatency", ms) : "");

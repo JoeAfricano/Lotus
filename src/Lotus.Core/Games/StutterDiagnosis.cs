@@ -7,7 +7,9 @@ public sealed record StutterFinding(string Key, StutterFix Fix, int Weight, stri
 public sealed record StutterInputs(double AverageFps, double Low1Fps, int SpikeCount, double DurationSeconds, double? GpuBusy, int TargetFps,
     ShaderState? Shaders, int PendingProfileSteps, double? MemoryLoadPercent, IReadOnlyList<string> TopMemoryApps, bool CanLowerQuality, IReadOnlyList<string>? Overlays = null, CpuHeat? Heat = null,
     double? FrameCap = null, // a frame limiter in force (RivaTuner), when known
-    double RealRefreshHz = 0, bool AdaptiveSync = false); // the monitor's real rate (e.g. 74.973) and whether FreeSync/G-Sync is on
+    double RealRefreshHz = 0, bool AdaptiveSync = false, // the monitor's real rate (e.g. 74.973) and whether FreeSync/G-Sync is on
+    int? RepeatedFrames = null, // frames the screen showed twice (PresentMon); null = not measured
+    bool ConsoleMode = false); // Modo Console already on for this game
 
 public static class StutterDiagnosis
 {
@@ -27,6 +29,14 @@ public static class StutterDiagnosis
         if (!i.AdaptiveSync && i.FrameCap is { } limit && FramePacing.AboveRefresh(limit, i.RealRefreshHz))
             list.Add(new("WhyCapAboveRefresh", StutterFix.None, stutters ? 58 : 40,
                 string.Create(System.Globalization.CultureInfo.InvariantCulture, $"{limit:0.##} FPS / {i.RealRefreshHz:0.###} Hz")));
+        // Repeated frames on screen: the hitch a flat frame-time line hides (Stellar Blade, José's PC, 21/11/2026).
+        var perMinute = i.RepeatedFrames is { } repeats && i.DurationSeconds >= 10 ? repeats * 60 / i.DurationSeconds : 0;
+        if (perMinute >= 30) list.Add(new("WhyRepeats", StutterFix.None, 62, Math.Round(perMinute).ToString(System.Globalization.CultureInfo.InvariantCulture)));
+        // Without FreeSync/G-Sync, a game that cannot hold the monitor's rate repeats frames all the time. At 60 Hz the
+        // processor has more time per frame: on José's PC Stellar Blade went from 172 to 18 repeats a minute (21/11/2026).
+        if (!i.AdaptiveSync && !i.ConsoleMode && i.RealRefreshHz > 62 && i.AverageFps >= 50 && i.AverageFps < i.RealRefreshHz * 0.95
+            && !(i.FrameCap is { } held and > 0 && i.AverageFps >= held * 0.97))
+            list.Add(new("WhyConsoleMode", StutterFix.None, 68, string.Create(System.Globalization.CultureInfo.InvariantCulture, $"{i.AverageFps:0} FPS / {i.RealRefreshHz:0} Hz")));
         // Sudden drops: shader compilation is the classic cause in modern DirectX 12 games.
         if (stutters && i.Shaders is ShaderState.Ready or ShaderState.Stale) list.Add(new("WhyShaders", StutterFix.Precompile, 90));
         if (i.MemoryLoadPercent is >= 85) list.Add(new("WhyMemory", StutterFix.CloseApps, stutters ? 80 : 50, string.Join(", ", i.TopMemoryApps.Take(3))));

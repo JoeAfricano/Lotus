@@ -3277,6 +3277,12 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="WhyCapAboveRefreshTitle" xml:space="preserve"><value>O limite de FPS está acima da taxa real do monitor</value></data>
   <data name="WhyCapAboveRefreshBody" xml:space="preserve"><value>O RivaTuner limita este jogo em **{0}**. Sem FreeSync/G-Sync, um limite acima da taxa real faz os quadros **esperarem na fila do V-Sync**: mais atraso e a linha do framepacer serrilhada, mesmo com o FPS no máximo. Em Otimizar este jogo, use o botão Ligar do RivaTuner: o Lotus põe o limite logo abaixo da taxa real.</value></data>
   <data name="WhyCapAboveRefreshTip" xml:space="preserve"><value>Dica: limite logo abaixo da taxa real do monitor, com V-Sync.</value></data>
+  <data name="WhyRepeatsTitle" xml:space="preserve"><value>A tela está repetindo quadros</value></data>
+  <data name="WhyRepeatsBody" xml:space="preserve"><value>A tela mostrou o mesmo quadro duas vezes cerca de **{0} vezes por minuto**. Cada repetição é uma travadinha que você sente, mesmo quando a linha de tempo de quadro do RivaTuner parece reta. Acontece quando o jogo não entrega um quadro a tempo para a próxima atualização da tela.</value></data>
+  <data name="WhyRepeatsTip" xml:space="preserve"><value>Dica: um FPS estável abaixo da taxa da tela evita repetições.</value></data>
+  <data name="WhyConsoleModeTitle" xml:space="preserve"><value>Este jogo fica mais estável no Modo Console</value></data>
+  <data name="WhyConsoleModeBody" xml:space="preserve"><value>O jogo fez **{0}**: não segura a taxa da tela, então ela repete quadros o tempo todo. No **Modo Console** a tela vai para 60 Hz enquanto você joga e o RivaTuner limita logo abaixo disso, o que dá mais tempo ao processador para cada quadro. Feche o jogo e ligue o Modo Console em Otimizar este jogo.</value></data>
+  <data name="WhyConsoleModeTip" xml:space="preserve"><value>Dica: ligue o Modo Console em Otimizar este jogo.</value></data>
   <data name="GiBeatTitle" xml:space="preserve"><value>Tempo para zerar</value></data>
   <data name="GiBeatStory" xml:space="preserve"><value>história</value></data>
   <data name="GiBeatPlus" xml:space="preserve"><value>com extras</value></data>

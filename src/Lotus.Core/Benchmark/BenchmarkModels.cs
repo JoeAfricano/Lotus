@@ -6,11 +6,25 @@ public sealed record CaptureTarget(int Pid, string Executable, DateTimeOffset Pr
 }
 public sealed record CaptureRequest(CaptureTarget Target, int Seconds, bool Elevated, string Conditions, string HardwareJson);
 public sealed record FrameSample(double TimeSeconds, double Milliseconds);
+public static class DisplayRepeats
+{
+    // A frame on screen for 1.5 normal display intervals or more was a repeated refresh: the player sees a hitch even
+    // when the game's own frame times look flat (Stellar Blade on José's PC, 21/11/2026: 67 FPS on a 75 Hz screen,
+    // flat RivaTuner line, 3.4 repeated frames per second). The normal interval is the median; needs enough frames.
+    public static int? Count(IReadOnlyList<double> displayIntervalsMs)
+    {
+        if (displayIntervalsMs.Count < 100) return null;
+        var sorted = displayIntervalsMs.Order().ToArray();
+        var median = sorted[sorted.Length / 2];
+        return median <= 0 ? null : displayIntervalsMs.Count(v => v >= median * 1.5);
+    }
+}
 public sealed record FrameStatistics(int Count, double DurationSeconds, double AverageFps, double Low1Fps,
     double P95Ms, double P99Ms, double MedianMs, int SpikeCount, double SpikeThresholdMs);
 public sealed record ParsedCapture(string SwapChain, int OtherSwapChains, int InvalidRows, int TotalRows,
     IReadOnlyList<FrameSample> Frames, FrameStatistics? Statistics, string FrameTypes, bool Truncated,
-    long? LostEvents = null, long? LostBuffers = null, long? OverflowedPresents = null, string? PresentMode = null); // PresentMode: the most frequent one of the measured swap chain
+    long? LostEvents = null, long? LostBuffers = null, long? OverflowedPresents = null, string? PresentMode = null, // PresentMode: the most frequent one of the measured swap chain
+    int? RepeatedFrames = null); // frames the screen showed for two refreshes or more (a stutter a frame-time line hides); null = not measured
 public sealed record BenchmarkSession(Guid Id, CaptureTarget Target, DateTimeOffset StartedUtc, double WallSeconds,
     string Status, string ProviderVersion, string AlgorithmVersion, string RawPath, string RawSha256,
     string Conditions, string HardwareJson, ParsedCapture? Data, string Diagnostics)
