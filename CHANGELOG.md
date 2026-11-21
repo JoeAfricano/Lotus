@@ -2,6 +2,12 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 2.0.2-beta "Lotus 1.0.2 Beta" (em preparo)
+
+### Melhorado
+- **Modo Console mais estável.** Sem FreeSync/G-Sync, o RivaTuner volta a ficar logo abaixo dos 60 Hz reais (59,99). Com o limite exatamente igual à taxa do monitor, os quadros faziam fila no V-Sync e a linha do framepacer oscilava. No teste com Stellar Blade, em 59,99 a linha ficou reta (1% low 60, 0,1% low 55).
+- **Um limitador só.** Quando o RivaTuner já cuida do ritmo de um jogo Unreal, aplicar as configurações do Lotus agora desliga o limite de FPS do próprio jogo (Ilimitado), em vez de colocar o mesmo valor nos dois.
+
 ## 2.0.1-beta "Lotus 1.0.1 Beta" (21/11/2026)
 
 ### Melhorado

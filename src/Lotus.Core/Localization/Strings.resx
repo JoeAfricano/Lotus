@@ -3943,7 +3943,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="Gs60ChoicePlain" xml:space="preserve"><value>Modo Console: 60 FPS</value></data>
   <data name="Gs60ChoiceHintLighter" xml:space="preserve"><value>Seu PC já segura a taxa do monitor neste jogo. Em 60 a imagem fica igual e o jogo pesa menos (menos calor e consumo); sem FreeSync/G-Sync, um quadro se repete de vez em quando.</value></data>
   <data name="Gs60Badge" xml:space="preserve"><value>Modo Console</value></data>
-  <data name="Gs60ChoiceWhat" xml:space="preserve"><value>Coloca 60 FPS no jogo e no RivaTuner, com o ritmo Fluidez (cada quadro na tela pelo mesmo tempo, como num console). Desligar volta ao que estava antes.</value></data>
+  <data name="Gs60ChoiceWhat" xml:space="preserve"><value>Coloca 60 FPS no jogo e o RivaTuner logo abaixo dos 60 Hz reais, com o ritmo Fluidez (cada quadro na tela pelo mesmo tempo, como num console). Desligar volta ao que estava antes.</value></data>
   <data name="Gs60Partial" xml:space="preserve"><value>Modo Console: os gráficos ficaram em 60, mas a parte do RivaTuner/Hz não foi preparada. {0}</value></data>
   <data name="GsReasonRamGame" xml:space="preserve"><value>Seu PC tem menos memória RAM do que este jogo recomenda: feche navegador e outros programas antes de jogar.</value></data>
   <data name="GsLineMeasureToLearn" xml:space="preserve"><value>Estimativa ainda incerta: com o jogo aberto, use &quot;Medir e ajustar&quot; ou &quot;Por que está travando?&quot;. O Lotus aprende quanto este jogo rende no seu PC e ajusta a sugestão sozinho.</value></data>

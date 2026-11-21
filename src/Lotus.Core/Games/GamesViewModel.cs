@@ -356,7 +356,8 @@ public sealed partial class GamesViewModel : ObservableObject
             if (processCheck?.IsRunning(game) == true) return "GsCloseGame";
             var raw = recipe.ReadRaw(game);
             if (raw is null) return "GsNotSupported";
-            var updated = recipe.Transform(raw, recommendation);
+            // RivaTuner already paces this game: a second limit in the game itself makes the two fight (Stellar Blade, 21/11/2026).
+            var updated = recipe.Transform(raw, PrefsFor(game).Presentation.Enabled ? recommendation with { ExternalLimiter = true } : recommendation);
             if (updated == raw) return "GsAlready";
             settingsStore.SaveOriginalOnce(game.Key, raw);
             recipe.WriteRaw(game, updated);

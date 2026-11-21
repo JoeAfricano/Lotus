@@ -2,6 +2,12 @@
 
 Release notes in English, shown on the What's new page when Lotus is in English. The full history (in Portuguese) is in [CHANGELOG.md](CHANGELOG.md).
 
+## 2.0.2-beta "Lotus 1.0.2 Beta" (in preparation)
+
+### Improved
+- **Steadier Console Mode.** Without FreeSync/G-Sync, RivaTuner is back just under the real 60 Hz (59.99). With a limit exactly equal to the monitor rate, frames queued behind V-Sync and the framepacer line wobbled. In a Stellar Blade test, 59.99 kept the line flat (1% low 60, 0.1% low 55).
+- **One limiter only.** When RivaTuner already paces an Unreal game, applying Lotus settings now turns the game's own FPS limit off (unlimited) instead of setting the same value in both.
+
 ## 2.0.1-beta "Lotus 1.0.1 Beta" (11/21/2026)
 
 ### Improved

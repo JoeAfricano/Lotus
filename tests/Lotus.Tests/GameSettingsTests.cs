@@ -60,6 +60,9 @@ public sealed class GameSettingsTests(Xunit.Abstractions.ITestOutputHelper outpu
         Assert.Equal("75.000000", ini.Get("/Script/Engine.GameUserSettings", "FrameRateLimit")); // the 75 Hz rate (no VRR)
         Assert.Equal("False", ini.Get("/Script/Engine.GameUserSettings", "bUseVSync")); Assert.Equal("1", ini.Get("Custom", "Keep"));
         Assert.Null(recipe.Probe(new GameEntry(GameStores.Steam, "2", "Other", Path.Combine(root, "Nope"))));
+        // RivaTuner pacing the game: the engine's own limit goes off so the two limiters do not fight.
+        var paced = new IniText(recipe.Transform(File.ReadAllText(config), r with { ExternalLimiter = true }));
+        Assert.Equal("0.000000", paced.Get("/Script/Engine.GameUserSettings", "FrameRateLimit"));
     }
 
     [Fact] public void UnrealRecipeAsksToRunTheGameOnceWhenConfigIsMissing()
