@@ -103,13 +103,14 @@ public sealed class GamePresentationTests
         Assert.True(new FocusDisplaySession(d,s).Recover());Assert.Equal(75,d.Mode!.Hz);Assert.Null(s.Value);
     }
     [Theory]
-    [InlineData(false,null,false,"fluid")]
-    [InlineData(true,null,false,"fluid")]
-    [InlineData(true,"Direct3D 12",true,"responsive")]
-    [InlineData(true,"Vulkan",true,"fluid")]
-    [InlineData(false,"Direct3D 12",true,"fluid")]
-    public void AutomaticModeHonorsGpuApiAndFrameGeneration(bool nvidia,string? api,bool fg,string expected)
-        =>Assert.Equal(expected,PresentationPlan.ResolveLimiter(Prefs(),nvidia,api,fg));
+    [InlineData(false,null,false,false,"fluid")]
+    [InlineData(true,null,false,false,"fluid")]
+    [InlineData(true,"Direct3D 12",true,true,"responsive")]
+    [InlineData(true,"Direct3D 12",true,false,"fgvsync")]
+    [InlineData(true,"Vulkan",true,false,"fluid")]
+    [InlineData(false,"Direct3D 12",true,false,"fluid")]
+    public void AutomaticModeHonorsGpuApiAndFrameGeneration(bool nvidia,string? api,bool fg,bool vrr,string expected)
+        =>Assert.Equal(expected,PresentationPlan.ResolveLimiter(Prefs(),nvidia,api,fg,vrr));
     [Fact] public void ManualChoiceIsPreserved()=>Assert.Equal("back",PresentationPlan.ResolveLimiter(Prefs() with {Limiter="back"},true,"Direct3D 12",false));
     [Fact] public void FractionalHzAndVrrCapsAreNotRoundedUp()
     {

@@ -85,7 +85,8 @@ public sealed class RtssLatencyTests(ITestOutputHelper output)
     public void FrameGenIsThePlayersChoice()
     {
         var info = new GamesViewModel.LowLatencyInfo("ok", "game.exe", null, true, FrameGen: true, Api: "Direct3D 12", UsesFrameGen: true);
-        Assert.Equal(("responsive", "LlWhyFrameGenChosen"), LimiterChoice.Pick(info, false, 75, 74, 60));  // fixed 75 Hz, chosen anyway
+        Assert.Equal(("fgvsync", "LlWhyFrameGenVsync"), LimiterChoice.Pick(info, false, 75, 74, 60));  // fixed 75 Hz: driver V-Sync, no RivaTuner limit
+        Assert.Equal(("responsive", "LlWhyFrameGenChosen"), LimiterChoice.Pick(info, true, 75, 74, 60));  // VRR below 120 Hz, chosen anyway
         Assert.Equal(("responsive", "LlWhyFrameGen"), LimiterChoice.Pick(info, true, 144, null, null));   // where it fits
         Assert.Equal((null, "LlFrameGenOther"), LimiterChoice.Pick(info with { Nvidia = false }, false, 75, null, null));
         Assert.Equal(("scanline", "LlWhyScanline"), LimiterChoice.Pick(info with { UsesFrameGen = false }, false, 75, 74, 60)); // not chosen: normal pick

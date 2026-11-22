@@ -201,7 +201,7 @@ public sealed partial class GameTunePanel : UserControl
         var current = info?.Cap is { } written ? written.ToString("0.##", culture) : capText;
         var state = info?.Mode switch
         {
-            "fluid" => text.Format("LlStateFluid", current), "responsive" => text.Format("LlStateOn", current), "scanline" => text["LlStateScanline"], _ => text["LlStateOff"],
+            "fluid" => text.Format("LlStateFluid", current), "responsive" => text.Format("LlStateOn", current), "scanline" => text["LlStateScanline"], "fgvsync" => text.Format("LlStateFgVsync", current), _ => text["LlStateOff"],
         };
         if (info is { On: true, Cap: { } w } && info.Mode != "scanline" && Math.Abs(w - cap) > 0.01) state += " · " + text.Format("LlCapUpdate", capText);
         head.Children.Add(new TextBlock { Text = state, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap });
@@ -251,7 +251,7 @@ public sealed partial class GameTunePanel : UserControl
         // What to set in the game for the mode in use (or about to be used).
         var shown = info.Mode ?? info.Recommended;
         if (shown is not null)
-            s.Children.Add(Caption(text.Format(shown switch { "scanline" => "LlNoteScanline", "responsive" => r.AdaptiveSync ? "LlNoteVrr" : "LlNoteReflexFixed", _ => r.AdaptiveSync ? "LlNoteVrr" : "LlNoteFixed" }, info.Exe!)));
+            s.Children.Add(Caption(text.Format(shown switch { "scanline" => "LlNoteScanline", "fgvsync" => "LlNoteFgVsync", "responsive" => r.AdaptiveSync ? "LlNoteVrr" : "LlNoteReflexFixed", _ => r.AdaptiveSync ? "LlNoteVrr" : "LlNoteFixed" }, info.Exe!)));
         if (!info.Nvidia && !info.FrameGen) s.Children.Add(Caption(text["LlAmd"]));
         if (info.Nvidia && !info.ReflexFits) s.Children.Add(Caption(text.Format("LlApiNoReflex", info.Api!)));
         return box;

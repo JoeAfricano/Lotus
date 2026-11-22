@@ -2,6 +2,14 @@
 
 Release notes in English, shown on the What's new page when Lotus is in English. The full history (in Portuguese) is in [CHANGELOG.md](CHANGELOG.md).
 
+## 2.0.3-beta "Lotus 1.0.3 Beta" (11/22/2026)
+
+### New
+- **Frame generation without G-Sync/FreeSync.** Tick "I use frame generation in this game" and save with Automatic mode. On an NVIDIA card and a monitor without G-Sync/FreeSync, Lotus turns on the **NVIDIA driver's V-Sync for that game only** and **RivaTuner's Reflex limiter just under the monitor's real rate**. With frame generation on, games lock their own V-Sync, and without it frames arrived in pairs with tearing (it looked like half the FPS). Lotus saves how things were first; Restore or Turn off puts RivaTuner and the driver's V-Sync back exactly as before.
+- Measured in Gothic 1 Remake (RTX 5060, 75 Hz monitor without G-Sync, walking and turning the camera): **no tearing, a flat frametime line (worst 1% at 13.6 ms) and 59 ms PC latency**. In the same test, the old mode (Reflex without V-Sync) showed paired frames with tearing; scanline sync (tear line off screen) was smooth but at 105 ms; 60 Hz with frame generation had the same stutters and 67 ms.
+
+### Improved
+- **Ticking frame generation** on the game's presentation card switches pacing back to Automatic (the only one that works with frame generation on NVIDIA) instead of failing on Save.
 ## 2.0.2-beta "Lotus 1.0.2 Beta" (11/21/2026)
 
 ### New

@@ -43,8 +43,11 @@ public static class PresentationPlan
     public static int ResolveHz(GamePresentationPrefs p, IReadOnlyList<GameDisplayMode> modes) =>
         modes.Where(m => m.Device == p.Device && m.Width == p.Width && m.Height == p.Height && (p.Hz == 0 || m.Hz == p.Hz))
             .Select(m => m.Hz).DefaultIfEmpty(0).Max();
-    public static string ResolveLimiter(GamePresentationPrefs p, bool nvidia, string? api, bool frameGen) => p.Limiter == "auto"
-        ? (frameGen && nvidia && (api is null or "Direct3D 11" or "Direct3D 12") ? "responsive" : "fluid") : p.Limiter;
+    // Frame generation on NVIDIA: with VRR, Reflex; on a fixed-refresh monitor, "fgvsync" (driver V-Sync + RivaTuner
+    // Reflex). Gothic 1 Remake at 75 Hz (22/11/2026): smooth with no tearing while walking, while Reflex without V-Sync showed
+    // frames in pairs with tearing and scanline sync was smooth at 105 ms. See docs/LOTUS_FRAMEGEN_NO_VRR.md.
+    public static string ResolveLimiter(GamePresentationPrefs p, bool nvidia, string? api, bool frameGen, bool vrr = false) => p.Limiter == "auto"
+        ? (frameGen && nvidia && (api is null or "Direct3D 11" or "Direct3D 12") ? (vrr ? "responsive" : "fgvsync") : "fluid") : p.Limiter;
     public static bool ReflexAvailable(bool nvidia, string? api) => nvidia && api is "Direct3D 11" or "Direct3D 12";
     public static double Cap(GamePresentationPrefs p, double realHz, bool vrr) => p.Cap > 0 ? p.Cap
         : vrr ? Math.Max(20, realHz - 3) : FramePacing.FixedCap(realHz);
