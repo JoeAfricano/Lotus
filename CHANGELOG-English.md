@@ -6,6 +6,7 @@ Release notes in English, shown on the What's new page when Lotus is in English.
 
 ### Improved
 - **Real FPS on the Lotus Neon overlay.** The big FPS number now shows how many frames **appear on screen** (RivaTuner's own PresentMon), not how many the game sends. With frame generation, frames are sent in bursts and the old number and graph could mislead. The Framepacer graph and the other numbers are still measured frame by frame to stay fluid; with frame generation the graph may still turn into a solid block at times, which is how RivaTuner measures, while the picture on screen stays smooth.
+- **Hint when picking the overlay.** In My Games › Overlay, the Lotus Neon tile says it is the best choice if you play with frame generation.
 
 ## 2.0.3-beta "Lotus 1.0.3 Beta" (11/22/2026)
 
