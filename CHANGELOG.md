@@ -6,6 +6,7 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 
 ### Melhorado
 - **FPS real no overlay Lotus Neon.** O número grande de FPS agora mostra quantos quadros **aparecem na tela** (PresentMon do próprio RivaTuner), e não quantos o jogo envia. Com o gerador de quadros, o envio sai em rajadas e o número e o gráfico antigos podiam enganar. O gráfico do Framepacer e os outros números continuam medidos quadro a quadro, para manter a fluidez. Com o gerador de quadros, o gráfico ainda pode virar um bloco cheio às vezes. Isso é do jeito que o RivaTuner mede, e a imagem na tela continua lisa.
+- **Aviso na escolha do overlay.** Em Meus Jogos › Overlay, o quadro do Lotus Neon avisa que ele é o ideal para quem joga com gerador de quadros.
 
 ## 2.0.3-beta "Lotus 1.0.3 Beta" (22/11/2026)
 

@@ -3612,7 +3612,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="OwMoveDown" xml:space="preserve"><value>Descer {0}</value></data>
   <data name="OwHotkey" xml:space="preserve"><value>Ctrl+Alt+O muda o canto. O atalho escolhido acima mostra ou oculta a janela. Se outra aplicação usar a mesma combinação, escolha outra tecla.</value></data>
   <data name="OsPremiumNeon" xml:space="preserve"><value>Lotus Neon</value></data>
-  <data name="OsPremiumNeonShort" xml:space="preserve"><value>Cartão à direita, FPS grande e gráfico na base.</value></data>
+  <data name="OsPremiumNeonShort" xml:space="preserve"><value>Cartão à direita, FPS grande e gráfico na base. Ideal para quem joga com gerador de quadros: o FPS grande mostra os quadros que aparecem na tela.</value></data>
   <data name="OsPremiumNeonWhat" xml:space="preserve"><value>Cartão compacto com números brancos, GPU e CPU em linhas, memória e FRAMEPACER na base. Usa somente os sensores do RivaTuner. Posição preparada para 1920 × 1080; leituras sem suporte podem ficar indisponíveis.</value></data>
   <data name="OsPremiumPulse" xml:space="preserve"><value>Lotus Pulse Premium</value></data>
   <data name="OsPremiumPulseShort" xml:space="preserve"><value>Coluna à esquerda com gráfico central.</value></data>

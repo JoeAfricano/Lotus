@@ -3612,7 +3612,7 @@ Your games and Windows are not changed.</value></data>
   <data name="OwMoveDown" xml:space="preserve"><value>Move {0} down</value></data>
   <data name="OwHotkey" xml:space="preserve"><value>Ctrl+Alt+O changes the corner. The shortcut above shows or hides the window. Choose another key if an application uses the same combination.</value></data>
   <data name="OsPremiumNeon" xml:space="preserve"><value>Lotus Neon</value></data>
-  <data name="OsPremiumNeonShort" xml:space="preserve"><value>Right-side card, large FPS and graph at the bottom.</value></data>
+  <data name="OsPremiumNeonShort" xml:space="preserve"><value>Right-side card, large FPS and graph at the bottom. Best if you play with frame generation: the large FPS shows the frames that appear on screen.</value></data>
   <data name="OsPremiumNeonWhat" xml:space="preserve"><value>Compact card with white numbers, GPU and CPU rows, memory and FRAMEPACER at the bottom. Uses RivaTuner sensors only. Position designed for 1920 × 1080; unsupported readings may be unavailable.</value></data>
   <data name="OsPremiumPulse" xml:space="preserve"><value>Lotus Pulse Premium</value></data>
   <data name="OsPremiumPulseShort" xml:space="preserve"><value>Left column with a central graph.</value></data>
