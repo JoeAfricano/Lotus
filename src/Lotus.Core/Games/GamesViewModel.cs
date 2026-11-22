@@ -563,7 +563,7 @@ public sealed partial class GamesViewModel : ObservableObject
         try
         {
             var ok = mode is null ? await Rtss.DisableLowLatencyAsync(exe) : await Rtss.EnableLimiterAsync(exe, fpsCap, mode);
-            status = Text[ok ? mode switch { "fluid" => "LlFluidOn", "responsive" => "LlOn", "scanline" => "LlScanlineOn", _ => "LlOff" } : "LlFailed"]; Notify();
+            status = Text[ok ? mode switch { "fluid" => "LlFluidOn", "responsive" => "LlOn", "scanline" => "LlScanlineOn", "fgvsync" => "LlFgVsyncOn", _ => "LlOff" } : "LlFailed"]; Notify();
             if (ok) ClearLater(status);
             return ok;
         }

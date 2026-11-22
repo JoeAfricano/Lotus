@@ -3717,7 +3717,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GpMode_back" xml:space="preserve"><value>Back Edge Sync · next frame start</value></data>
   <data name="GpMode_async" xml:space="preserve"><value>Async · no catch-up after a delay</value></data>
   <data name="GpMode_responsive" xml:space="preserve"><value>NVIDIA Reflex · RivaTuner limiter</value></data>
-  <data name="GpWhy_auto" xml:space="preserve"><value>Prioritizes regular pacing without ignoring responsiveness. Front Edge is the baseline; NVIDIA frame generation prefers Reflex.</value></data>
+  <data name="GpWhy_auto" xml:space="preserve"><value>Prioritizes regular pacing without ignoring responsiveness. Front Edge is the baseline; NVIDIA frame generation prefers Reflex with G-Sync/FreeSync and the driver's V-Sync without them.</value></data>
   <data name="GpWhy_fluid" xml:space="preserve"><value>Prioritizes regular intervals between Present calls. This is not V-Sync and does not guarantee minimum latency.</value></data>
   <data name="GpWhy_back" xml:space="preserve"><value>Synchronizes the end of Present and the next frame start. Compare pacing and responsiveness.</value></data>
   <data name="GpWhy_async" xml:space="preserve"><value>Enforces a minimum frame interval without catching up after delays. May favor responsiveness.</value></data>
@@ -3961,4 +3961,11 @@ Your games and Windows are not changed.</value></data>
   <data name="GsRamReliefOn" xml:space="preserve"><value>The Game profile already frees memory when this game opens.</value></data>
   <data name="GsRamReliefOff" xml:space="preserve"><value>Turn on &quot;Free memory when a game opens&quot; in the Game profile (Optimize my PC) and Lotus does it for you.</value></data>
   <data name="GsLineMeasureToLearn" xml:space="preserve"><value>Estimate still uncertain: with the game running, use &quot;Measure and adjust&quot; or &quot;Why is it stuttering?&quot;. Lotus learns how this game runs on your PC and adjusts the suggestion by itself.</value></data>
+  <data name="LlMode_fgvsync" xml:space="preserve"><value>Frame generation without G-Sync (driver V-Sync)</value></data>
+  <data name="LlStateFgVsync" xml:space="preserve"><value>Frame generation without G-Sync on at {0} FPS</value></data>
+  <data name="LlWhyFrameGenVsync" xml:space="preserve"><value>You use frame generation on a monitor without G-Sync/FreeSync. Lotus turns on the NVIDIA driver's V-Sync for this game only and uses RivaTuner's Reflex limiter at {0} FPS: the picture stays smooth with no tearing, and the frametime line stays flat even while moving.</value></data>
+  <data name="LlNoteFgVsync" xml:space="preserve"><value>RivaTuner profile: {0}, Reflex limiter. V-Sync comes from the NVIDIA driver for this game only. Keep frame generation and Reflex on in the game and restart the game if it is already open. Turning it off puts the RivaTuner profile and the driver's V-Sync back as they were.</value></data>
+  <data name="LlFgVsyncOn" xml:space="preserve"><value>Frame generation without G-Sync is on for this game: NVIDIA driver V-Sync on with RivaTuner's Reflex limiter.</value></data>
+  <data name="GpFrameGenFixedHint" xml:space="preserve"><value>Without G-Sync/FreeSync: with Automatic mode, saving turns on the NVIDIA driver's V-Sync for this game only, together with RivaTuner's Reflex limiter. Restore undoes both.</value></data>
+  <data name="GpPreparedFgVsync" xml:space="preserve"><value>Prepared: frame generation with NVIDIA driver V-Sync and RivaTuner Reflex at {0} FPS; monitor at {1} Hz while the game is in front. Saved does not mean active.</value></data>
 </root>

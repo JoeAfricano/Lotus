@@ -19,6 +19,10 @@ public static class LimiterChoice
     public static (string? Mode, string Why) Pick(GamesViewModel.LowLatencyInfo info, bool adaptiveSync, int refreshHz, double? lastAverageFps, double? lastGpuBusy)
     {
         var reflex = info.Nvidia && info.ReflexFits;
+        // Fixed refresh with the player's frame generation on NVIDIA: the driver's V-Sync plus RivaTuner's Reflex limiter
+        // ("fgvsync"). Gothic 1 Remake, 75 Hz (22/11/2026), walking: no tearing, frametime p99 13.6 ms, 59 ms; Reflex without
+        // V-Sync showed frames in pairs with tearing; scanline sync was smooth but at 105 ms. With VRR, Reflex as before.
+        if (info.FrameGen && info.UsesFrameGen && reflex && !adaptiveSync) return ("fgvsync", "LlWhyFrameGenVsync");
         if (info.FrameGen && (info.UsesFrameGen || FrameGenFits(adaptiveSync, refreshHz)))
             return reflex ? ("responsive", info.UsesFrameGen && !FrameGenFits(adaptiveSync, refreshHz) ? "LlWhyFrameGenChosen" : "LlWhyFrameGen") : (null, "LlFrameGenOther");
         if (adaptiveSync) return reflex ? ("responsive", "LlWhyVrrReflex") : ("fluid", "LlWhyVrrFluid");

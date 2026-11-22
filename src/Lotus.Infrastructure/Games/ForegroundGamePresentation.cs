@@ -77,9 +77,11 @@ public sealed class ForegroundGamePresentation : IDisposable
                 var hz=PresentationPlan.ResolveHz(p,modes);
                 SwitchNeeded=session.Active || display.Current(p.Device) is not {} now || now.Width!=p.Width || now.Height!=p.Height || now.Hz!=hz;
                 // The approved profile must still be present; never overwrite the player's changes while playing.
-                if(rtss.Running()!=true || rtss.LimiterMode(p.Exe)!=p.AppliedLimiter || rtss.LimiterCap(p.Exe) is not {} cap || Math.Abs(cap-p.Cap)>0.011)
+                // Scanline sync has no RivaTuner cap; every other mode must still hold the approved cap.
+                var uncapped=p.AppliedLimiter=="scanline";
+                if(rtss.Running()!=true || rtss.LimiterMode(p.Exe)!=p.AppliedLimiter || (!uncapped && (rtss.LimiterCap(p.Exe) is not {} cap || Math.Abs(cap-p.Cap)>0.011)))
                 { session.Update(null,null); Publish("rtss-changed"); return; }
-                if(p.AppliedLimiter=="responsive")
+                if(p.AppliedLimiter is "responsive" or "fgvsync") // both use RivaTuner's Reflex limiter
                 {
                     var api=rtss.GameApi(p.Exe);
                     if(api is null)

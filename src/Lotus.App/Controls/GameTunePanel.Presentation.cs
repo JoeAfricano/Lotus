@@ -53,8 +53,17 @@ public sealed partial class GameTunePanel
         if(info is {FrameGen:true})
         {
             var fg=new CheckBox {Content=text["LlUseFrameGen"],IsChecked=info.UsesFrameGen};
-            fg.Click+=(_,_)=> {info=info with {UsesFrameGen=fg.IsChecked==true};markDirty?.Invoke();};
+            fg.Click+=(_,_)=>
+            {
+                info=info with {UsesFrameGen=fg.IsChecked==true};
+                // With frame generation on NVIDIA only the automatic mode fits (Reflex with VRR, driver V-Sync without):
+                // pick it for the player instead of failing on Save with a manual mode.
+                if(fg.IsChecked==true && info.Nvidia) limiter.SelectedIndex=Math.Max(0,limiter.Items.OfType<ComboBoxItem>().ToList().FindIndex(i=>Equals(i.Tag,"auto")));
+                markDirty?.Invoke();
+            };
             options.Children.Add(fg);
+            // Without G-Sync/FreeSync on NVIDIA, saving with the automatic mode applies the frame generation preset.
+            if(info.Nvidia && !t.Settings.Recommendation.AdaptiveSync) options.Children.Add(Caption(text["GpFrameGenFixedHint"]));
         }
         details.Children.Add(Caption(t.Settings.Recommendation.AdaptiveSync?text["GpCapVrr"]:text["GpCapFixed"]));
         details.Children.Add(Caption(text["GpSyncHint"]));
@@ -64,7 +73,8 @@ public sealed partial class GameTunePanel
         details.Children.Add(custom);
         options.Children.Add(new Expander {Header=text["GpAdvanced"],Content=details,HorizontalAlignment=HorizontalAlignment.Stretch});
         var result=new InfoBar {IsOpen=saved.Enabled,IsClosable=false,Severity=InfoBarSeverity.Success,
-            Message=saved.Enabled?text.Format("GpPrepared",saved.Cap.ToString("0.##"),saved.PreparedRate.ToString("0.###")):""};
+            Message=!saved.Enabled?"":saved.AppliedLimiter=="fgvsync"?text.Format("GpPreparedFgVsync",saved.Cap.ToString("0.##"),saved.PreparedRate.ToString("0.###"))
+                :text.Format("GpPrepared",saved.Cap.ToString("0.##"),saved.PreparedRate.ToString("0.###"))};
         markDirty=()=> {result.Message=text["GpUnsaved"];result.Severity=InfoBarSeverity.Warning;result.IsOpen=true;PrimaryAction.IsEnabled=false;};
         enabled.Toggled+=(_,_)=>markDirty();
         monitor.SelectionChanged+=(_,_)=>markDirty(); hz.SelectionChanged+=(_,_)=>markDirty();

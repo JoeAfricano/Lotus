@@ -2,6 +2,15 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 2.0.3-beta "Lotus 1.0.3 Beta" (22/11/2026)
+
+### Novo
+- **Gerador de quadros sem G-Sync/FreeSync.** Marque "Uso o gerador de quadros neste jogo" e salve no modo Automático. Com placa NVIDIA e monitor sem G-Sync/FreeSync, o Lotus liga o **V-Sync do driver NVIDIA só naquele jogo** e o **limitador Reflex do RivaTuner logo abaixo da taxa real do monitor**. Com o gerador ligado, os jogos travam o próprio V-Sync, e sem ele os quadros chegavam em pares e com rasgo (na prática pareciam a metade do FPS). Antes de mudar, o Lotus guarda como estava. Restaurar ou Desligar devolve o RivaTuner e o V-Sync do driver exatamente ao original.
+- Medido no Gothic 1 Remake (RTX 5060, monitor de 75 Hz sem G-Sync, andando e girando a câmera): **sem rasgo, linha do frametime reta (pior 1% em 13,6 ms) e 59 ms de atraso do PC**. Comparações do mesmo teste: o modo antigo (Reflex sem V-Sync) dava quadros em pares com rasgo. O Scanline Sync (rasgo fora da tela) ficava liso, mas com 105 ms de atraso. A 60 Hz com gerador, as travadas ficaram iguais e o atraso subiu para 67 ms.
+
+### Melhorado
+- **Ao marcar o gerador de quadros** no cartão de apresentação do jogo, o ritmo volta sozinho para Automático (o único que funciona com o gerador numa placa NVIDIA), em vez de dar erro ao salvar.
+- O "Rasgo fora da tela" (Resposta sem V-Sync / Scanline Sync) continua sendo usado **sem** gerador de quadros, quando sobra GPU.
 ## 2.0.2-beta "Lotus 1.0.2 Beta" (21/11/2026)
 
 ### Novo

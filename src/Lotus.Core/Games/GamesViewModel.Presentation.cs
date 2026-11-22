@@ -23,9 +23,9 @@ public sealed partial class GamesViewModel
         var current=await Task.Run(()=>DisplayControl.Current(prefs.Device));
         var modes=await DisplayModesAsync(); var hz=PresentationPlan.ResolveHz(prefs,modes);
         if(current is null || current.Width!=prefs.Width || current.Height!=prefs.Height || hz==0) return Finish(false,"GpUnsupported");
-        var mode=PresentationPlan.ResolveLimiter(prefs,info.Nvidia,info.Api,info.UsesFrameGen);
-        if(mode=="responsive" && (!info.Nvidia || !info.ReflexFits)) return Finish(false,"GpReflexUnavailable");
-        if(info.UsesFrameGen && info.Nvidia && mode!="responsive") return Finish(false,"GpFrameGenConflict");
+        var mode=PresentationPlan.ResolveLimiter(prefs,info.Nvidia,info.Api,info.UsesFrameGen,adaptiveSync);
+        if(mode is "responsive" or "fgvsync" && (!info.Nvidia || !info.ReflexFits)) return Finish(false,"GpReflexUnavailable");
+        if(info.UsesFrameGen && info.Nvidia && mode is not ("responsive" or "fgvsync")) return Finish(false,"GpFrameGenConflict");
         var selected=modes.First(m=>m.Device==prefs.Device&&m.Hz==hz&&m.Width==prefs.Width&&m.Height==prefs.Height);
         var rate=current.Hz==hz?current.Rate:selected.Rate;
         var cap=PresentationPlan.Cap(prefs,rate,adaptiveSync);

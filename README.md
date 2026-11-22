@@ -1,3 +1,4 @@
+- **Gerador de quadros sem G-Sync/FreeSync (NVIDIA):** marcando "Uso o gerador de quadros neste jogo", o Lotus liga o V-Sync do driver NVIDIA só naquele jogo e o limitador Reflex do RivaTuner logo abaixo da taxa real do monitor. Sem rasgo e com a linha do frametime reta (Gothic 1 Remake a 75 Hz, andando: pior 1% em 13,6 ms, 59 ms de atraso do PC). Restaurar devolve tudo como estava.
 <div align="center">
 
 <img src="docs/images/logo.png" width="112" alt="Lotus"/>
@@ -13,7 +14,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 ![.NET](https://img.shields.io/badge/.NET-10%20%C2%B7%20WinUI%203-512bd4)
 [![License](https://img.shields.io/badge/licen%C3%A7a-MIT-3b8c5a)](LICENSE)
 
-**Versão atual: Lotus 1.0.1 Beta** — o botão 60 do cartão Limite de FPS virou **Modo Console**: 60 FPS no jogo e no RivaTuner, com o ritmo Fluidez de console. Na 1.0 Beta o Lotus saiu da alpha! Chegaram a abertura animada, o guia "Conheça o Lotus" (idioma, conta, tema e Google Drive na primeira abertura) e a página de Novidades após cada atualização. A partir de agora as atualizações saem mais espaçadas, cada uma mais completa e testada. Veja o que mudou em [Novidades](CHANGELOG.md).
+**Versão atual: Lotus 1.0.3 Beta** — **gerador de quadros sem G-Sync/FreeSync**: marque "Uso o gerador de quadros neste jogo" e o Lotus liga o V-Sync do driver NVIDIA só naquele jogo com o limitador Reflex do RivaTuner, sem rasgo e com a linha do frametime reta (tudo reversível). Na 1.0 Beta o Lotus saiu da alpha! Chegaram a abertura animada, o guia "Conheça o Lotus" e a página de Novidades após cada atualização. Veja o que mudou em [Novidades](CHANGELOG.md).
 
 [**Baixar o Lotus**](../../releases/latest) · [Novidades](CHANGELOG.md) · [Privacidade](PRIVACY.md) · [Reportar um problema](../../issues/new/choose)
 
@@ -73,7 +74,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 - Seus dados ficam em `%LOCALAPPDATA%\Lotus` e nunca são apagados pelo instalador.
 - Requer Windows 10 2004 (19041) ou mais novo, x64.
 
-> O Lotus está em **beta** (Lotus 1.0.1 Beta): as funções estão prontas para uso diário e as atualizações saem mais espaçadas, cada uma mais completa e testada. Sugestões e problemas são muito bem-vindos em [Issues](../../issues).
+> O Lotus está em **beta** (Lotus 1.0.3 Beta): as funções estão prontas para uso diário e as atualizações saem mais espaçadas, cada uma mais completa e testada. Sugestões e problemas são muito bem-vindos em [Issues](../../issues).
 ## Funções em detalhe
 
 ### Otimizar o PC

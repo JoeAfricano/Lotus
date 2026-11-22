@@ -177,9 +177,19 @@ public static class RtssElevatedHelper
             }
             else if (!RtssProfiles.Restore(args[i + 1], RtssProfiles.DefaultProfilesDir, backups)) return 4;
             RtssReload.TryUpdate();
+            // Frame generation preset without VRR: the NVIDIA driver's V-Sync for this game, with its own backup.
+            var nvOn = Array.IndexOf(args, "--nv-vsync-on"); var nvOff = Array.IndexOf(args, "--nv-vsync-restore");
+            if (nvOn >= 0 && (nvOn + 1 >= args.Length || !ValidExe(args[nvOn + 1]) || !NvidiaDriverVsync.ForceOnFor(args[nvOn + 1], backups))) return 5;
+            if (nvOff >= 0 && (nvOff + 1 >= args.Length || !ValidExe(args[nvOff + 1]) || !NvidiaDriverVsync.Restore(args[nvOff + 1], backups))) return 5;
             return 0;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or JsonException or InvalidDataException) { return 2; }
+    }
+
+    private static bool ValidExe(string exe)
+    {
+        try { RtssProfiles.Validate(new(exe, [])); return exe.EndsWith(".exe", StringComparison.OrdinalIgnoreCase); }
+        catch (InvalidOperationException) { return false; }
     }
 
     // Accepts only an existing folder named "Lotus"; otherwise uses this account's own %LOCALAPPDATA%\Lotus.
@@ -291,7 +301,8 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
         var ini = new IniText(raw);
         if (int.TryParse(ini.Get("Framerate", "SyncScanline0"), out var line) && line != 0) return "scanline";
         if (!int.TryParse(ini.Get("Framerate", "Limit"), out var limit) || limit <= 0) return null;
-        return ini.Get("Framerate", "SyncLimiter") switch { ReflexLimiter => "responsive", FrontEdgeLimiter => "fluid", "2" => "back", "0" => "async", _ => null };
+        // Reflex plus the NVIDIA driver's V-Sync set by Lotus for this game: the frame generation preset without VRR.
+        return ini.Get("Framerate", "SyncLimiter") switch { ReflexLimiter => NvidiaDriverVsync.OwnedByLotus(Backups, exe) && NvidiaDriverVsync.Read(exe) == NvidiaDriverVsync.ForceOn ? "fgvsync" : "responsive", FrontEdgeLimiter => "fluid", "2" => "back", "0" => "async", _ => null };
     }
     public double? LimiterCap(string exe)
     {
@@ -301,16 +312,17 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
     // The cap may be fractional (37.5 on 75 Hz): RTSS stores Limit / LimitDenominator.
     public async Task<bool> EnableLimiterAsync(string exe, double fpsCap, string mode)
     {
-        if (mode is not ("fluid" or "responsive" or "scanline" or "async" or "back") || !double.IsFinite(fpsCap) || (mode != "scanline" && fpsCap is < 20 or > 1000)) return false;
+        var uncapped = mode is "scanline";
+        if (mode is not ("fluid" or "responsive" or "scanline" or "fgvsync" or "async" or "back") || !double.IsFinite(fpsCap) || (!uncapped && fpsCap is < 20 or > 1000)) return false;
         RtssChange[] changes;
-        if (mode == "scanline")
+        if (uncapped)
             changes = [new("Framerate", "Limit", "0"), new("Framerate", "LimitDenominator", "1"), new("Framerate", "SyncLimiter", "0"), new("Framerate", "SyncScanline0", DefaultScanline)];
         else
         {
             var whole = Math.Abs(fpsCap - Math.Round(fpsCap)) < 0.001;
             var limit = whole ? (int)Math.Round(fpsCap) : (int)Math.Round(fpsCap * 100);
             changes = [new("Framerate", "Limit", limit.ToString(System.Globalization.CultureInfo.InvariantCulture)), new("Framerate", "LimitDenominator", whole ? "1" : "100"),
-                new("Framerate", "SyncLimiter", mode switch { "fluid" => FrontEdgeLimiter, "responsive" => ReflexLimiter, "back" => "2", _ => "0" }), new("Framerate", "SyncScanline0", "0")];
+                new("Framerate", "SyncLimiter", mode switch { "fluid" => FrontEdgeLimiter, "responsive" or "fgvsync" => ReflexLimiter, "back" => "2", _ => "0" }), new("Framerate", "SyncScanline0", "0")];
         }
         // Match the diagnostic time point to the pacing strategy; never smooth or discard hitch samples.
         // Front edge controls presentation; the other modes prioritize frame-start/return timing.
@@ -320,8 +332,11 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
         Directory.CreateDirectory(dir);
         var request = Path.Combine(dir, "rtss-" + Guid.NewGuid().ToString("N") + ".json");
         await File.WriteAllTextAsync(request, JsonSerializer.Serialize(new RtssRequest(exe, changes)));
-        try { return await RunElevated(["--rtss-apply", request]) == 0 && LimiterMode(exe) == mode
-            && (mode == "scanline" || (LimiterCap(exe) is { } read && Math.Abs(read-fpsCap)<0.011))
+        // "fgvsync": frame generation on a fixed-refresh monitor. RivaTuner's Reflex limiter at the paced cap plus the NVIDIA
+        // driver's V-Sync for this game (games lock their own V-Sync with DLSS FG). Any other mode gives a V-Sync Lotus set back.
+        string[] driver = mode == "fgvsync" ? ["--nv-vsync-on", exe] : ["--nv-vsync-restore", exe];
+        try { return await RunElevated(["--rtss-apply", request, ..driver]) == 0 && LimiterMode(exe) == mode
+            && (uncapped || (LimiterCap(exe) is { } read && Math.Abs(read-fpsCap)<0.011))
             && RtssProfiles.Read(exe,Profiles) is {} applied && new IniText(applied).Get("Statistics","FrametimeCalc")==framePoint; }
         finally { File.Delete(request); }
     }
@@ -331,7 +346,7 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
         var backup=Path.Combine(Backups,exe+".original");
         if(!File.Exists(backup)) return false;
         var expected=await File.ReadAllBytesAsync(backup);
-        if(await RunElevated(["--rtss-restore", exe])!=0) return false;
+        if(await RunElevated(["--rtss-restore", exe, "--nv-vsync-restore", exe])!=0 || NvidiaDriverVsync.OwnedByLotus(Backups, exe)) return false;
         var target=Path.Combine(Profiles,RtssProfiles.FileName(exe));
         if(expected.AsSpan().SequenceEqual("<absent>"u8)) return !File.Exists(target);
         if(!File.Exists(target)) return false;

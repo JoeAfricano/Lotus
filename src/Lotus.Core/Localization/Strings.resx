@@ -3717,7 +3717,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GpMode_back" xml:space="preserve"><value>Back Edge Sync · início do próximo quadro</value></data>
   <data name="GpMode_async" xml:space="preserve"><value>Async · limite sem compensação após atrasos</value></data>
   <data name="GpMode_responsive" xml:space="preserve"><value>NVIDIA Reflex · limitador do RivaTuner</value></data>
-  <data name="GpWhy_auto" xml:space="preserve"><value>Prioriza cadência regular sem ignorar a resposta. Front Edge é a base; com geração de quadros NVIDIA, prefere Reflex.</value></data>
+  <data name="GpWhy_auto" xml:space="preserve"><value>Prioriza cadência regular sem ignorar a resposta. Front Edge é a base; com geração de quadros NVIDIA, prefere Reflex com G-Sync/FreeSync e o V-Sync do driver sem eles.</value></data>
   <data name="GpWhy_fluid" xml:space="preserve"><value>Prioriza intervalos regulares entre chamadas Present. Não é V-Sync nem garante o menor atraso.</value></data>
   <data name="GpWhy_back" xml:space="preserve"><value>Sincroniza o fim de Present e o início do próximo quadro. Alternativa para comparar regularidade e resposta.</value></data>
   <data name="GpWhy_async" xml:space="preserve"><value>Mantém um intervalo mínimo entre quadros, sem compensar atrasos. Pode favorecer a resposta.</value></data>
@@ -3961,4 +3961,11 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GsRamReliefOn" xml:space="preserve"><value>O perfil Jogo já libera memória quando este jogo abre.</value></data>
   <data name="GsRamReliefOff" xml:space="preserve"><value>Ligue &quot;Liberar memória ao abrir um jogo&quot; no perfil Jogo (Otimizar meu PC) para o Lotus fazer isso sozinho.</value></data>
   <data name="GsLineMeasureToLearn" xml:space="preserve"><value>Estimativa ainda incerta: com o jogo aberto, use &quot;Medir e ajustar&quot; ou &quot;Por que está travando?&quot;. O Lotus aprende quanto este jogo rende no seu PC e ajusta a sugestão sozinho.</value></data>
+  <data name="LlMode_fgvsync" xml:space="preserve"><value>Gerador de quadros sem G-Sync (V-Sync do driver)</value></data>
+  <data name="LlStateFgVsync" xml:space="preserve"><value>Gerador de quadros sem G-Sync ligado em {0} FPS</value></data>
+  <data name="LlWhyFrameGenVsync" xml:space="preserve"><value>Você usa o gerador de quadros num monitor sem G-Sync/FreeSync. O Lotus liga o V-Sync do driver NVIDIA só neste jogo e usa o limitador Reflex do RivaTuner em {0} FPS: a imagem fica lisa, sem rasgo, e a linha do frametime fica reta mesmo andando.</value></data>
+  <data name="LlNoteFgVsync" xml:space="preserve"><value>Perfil do RivaTuner: {0}, limitador Reflex. O V-Sync vem do driver NVIDIA só para este jogo. Deixe o gerador de quadros e o Reflex ligados no jogo e reabra o jogo se ele já estiver aberto. Desligar volta o perfil do RivaTuner e o V-Sync do driver como estavam.</value></data>
+  <data name="LlFgVsyncOn" xml:space="preserve"><value>Gerador de quadros sem G-Sync ligado neste jogo: V-Sync do driver NVIDIA ligado e limitador Reflex do RivaTuner.</value></data>
+  <data name="GpFrameGenFixedHint" xml:space="preserve"><value>Sem G-Sync/FreeSync: com o modo Automático, ao salvar o Lotus liga o V-Sync do driver NVIDIA só neste jogo, junto com o limitador Reflex do RivaTuner. Restaurar desfaz os dois.</value></data>
+  <data name="GpPreparedFgVsync" xml:space="preserve"><value>Preparado: gerador de quadros com V-Sync do driver NVIDIA e RivaTuner Reflex em {0} FPS; monitor em {1} Hz quando o jogo estiver em primeiro plano. Salvo não significa ativo.</value></data>
 </root>
