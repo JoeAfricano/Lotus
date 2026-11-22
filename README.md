@@ -14,7 +14,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 ![.NET](https://img.shields.io/badge/.NET-10%20%C2%B7%20WinUI%203-512bd4)
 [![License](https://img.shields.io/badge/licen%C3%A7a-MIT-3b8c5a)](LICENSE)
 
-**Versão atual: Lotus 1.0.3 Beta** — **gerador de quadros sem G-Sync/FreeSync**: marque "Uso o gerador de quadros neste jogo" e o Lotus liga o V-Sync do driver NVIDIA só naquele jogo com o limitador Reflex do RivaTuner, sem rasgo e com a linha do frametime reta (tudo reversível). Na 1.0 Beta o Lotus saiu da alpha! Chegaram a abertura animada, o guia "Conheça o Lotus" e a página de Novidades após cada atualização. Veja o que mudou em [Novidades](CHANGELOG.md).
+**Versão atual: Lotus 1.0.4 Beta** — o FPS grande do overlay Lotus Neon agora mostra os quadros que aparecem na tela. Desde a 1.0.3, **gerador de quadros sem G-Sync/FreeSync**: marque "Uso o gerador de quadros neste jogo" e o Lotus liga o V-Sync do driver NVIDIA só naquele jogo com o limitador Reflex do RivaTuner, sem rasgo e com a linha do frametime reta (tudo reversível). Na 1.0 Beta o Lotus saiu da alpha! Chegaram a abertura animada, o guia "Conheça o Lotus" e a página de Novidades após cada atualização. Veja o que mudou em [Novidades](CHANGELOG.md).
 
 [**Baixar o Lotus**](../../releases/latest) · [Novidades](CHANGELOG.md) · [Privacidade](PRIVACY.md) · [Reportar um problema](../../issues/new/choose)
 
@@ -74,7 +74,7 @@ Biblioteca de jogos, otimização reversível, diário, proteção de saves e ba
 - Seus dados ficam em `%LOCALAPPDATA%\Lotus` e nunca são apagados pelo instalador.
 - Requer Windows 10 2004 (19041) ou mais novo, x64.
 
-> O Lotus está em **beta** (Lotus 1.0.3 Beta): as funções estão prontas para uso diário e as atualizações saem mais espaçadas, cada uma mais completa e testada. Sugestões e problemas são muito bem-vindos em [Issues](../../issues).
+> O Lotus está em **beta** (Lotus 1.0.4 Beta): as funções estão prontas para uso diário e as atualizações saem mais espaçadas, cada uma mais completa e testada. Sugestões e problemas são muito bem-vindos em [Issues](../../issues).
 ## Funções em detalhe
 
 ### Otimizar o PC
