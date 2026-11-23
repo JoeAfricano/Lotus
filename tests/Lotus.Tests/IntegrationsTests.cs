@@ -136,6 +136,26 @@ public sealed class IntegrationsTests : IDisposable
         public bool? Running() => running;
     }
 
+    private sealed class FailingStyleRtss(string? reason) : IRtssIntegration
+    {
+        public ToolState State() => new(true, "7.3.7");
+        public bool? OverlayConfigured() => true; public bool HasBackup() => false;
+        public Task<bool> ApplyLotusOverlayAsync() => Task.FromResult(true); public Task<bool> RestoreAsync() => Task.FromResult(true);
+        public string ExportLayout(string variant = "top") => @"C:\x\Lotus.ovl"; public bool LayoutActive() => false;
+        public string? ActiveLayoutName() => null; public bool HasLayoutBackup() => false;
+        public Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false) => Task.FromResult(false);
+        public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
+        public string? LastFailure => reason;
+    }
+    [Theory, InlineData("uac", "OsFailedUac"), InlineData("plugin", "OsFailedPlugin"), InlineData("other", "OsFailed")]
+    public async Task OverlayStyle_failure_explains_the_reason(string reason, string key)
+    {
+        var text = new TextCatalog();
+        var vm = new IntegrationsViewModel(new FailingStyleRtss(reason), new Tools(true, false), text, _ => { });
+        await vm.UseStyleAsync("premium-top");
+        Assert.Equal(text[key], vm.Message);
+    }
+
     [Fact] public async Task OverlayStyle_is_busy_before_game_detection_and_rejects_duplicate_commands()
     {
         var rtss = new StyleRtss(false); var detection = new TaskCompletionSource<bool>();
@@ -258,7 +278,10 @@ public sealed class IntegrationsTests : IDisposable
         }
         var rtss = new WindowsRtssIntegration(Profiles, Backups, Runner, config, overlays);
         Assert.False(rtss.LayoutActive());
-        Assert.True(await rtss.ActivateLayoutAsync());
+        // RivaTuner without its OverlayEditor plugin: refused before any permission prompt, with the reason.
+        Assert.False(await rtss.ActivateLayoutAsync()); Assert.Equal("plugin", rtss.LastFailure); Assert.Equal(original, File.ReadAllText(config));
+        Directory.CreateDirectory(Path.Combine(root, "Plugins", "Client")); File.WriteAllText(Path.Combine(root, "Plugins", "Client", "OverlayEditor.dll"), "");
+        Assert.True(await rtss.ActivateLayoutAsync()); Assert.Null(rtss.LastFailure);
         Assert.True(rtss.LayoutActive()); Assert.True(rtss.HasLayoutBackup()); Assert.True(File.Exists(Path.Combine(overlays, "Lotus.ovl")));
         Assert.True(await rtss.RestoreLayoutAsync()); Assert.Equal(original, File.ReadAllText(config)); Assert.False(rtss.LayoutActive());
     }

@@ -159,6 +159,8 @@ public static class RtssElevatedHelper
         {
             if (args[i] == "--rtss-layout")
             {
+                // The layouts run on RivaTuner's OverlayEditor plugin (shipped since RTSS 7.3); without it nothing would show.
+                if (!File.Exists(Path.Combine(RtssInstall.Dir, "Plugins", "Client", "OverlayEditor.dll"))) return 6;
                 RtssOverlayPlugin.ActivateLayout(args[i + 1], LotusOverlayLayout.DefaultConfig, Path.Combine(RtssInstall.Dir, "Profiles", "Config"), backups, Path.Combine(data, "Overlays"), Path.Combine(RtssInstall.Dir,"Profiles","Global"));
                 if (args.Contains("--rtss-restart")) RtssRestart.Run(); // profiles and limiter live in files, untouched by a restart
             }
@@ -244,8 +246,15 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
     public bool HasLayoutBackup() => File.Exists(Path.Combine(Backups, "OverlayEditor.cfg.original"));
     public string? ActiveLayoutName() => LotusOverlayLayout.ActiveLayout(OverlayConfig) is { Length: > 0 } p ? Path.GetFileNameWithoutExtension(p) : null;
     // restart: RivaTuner is closed and opened again in the same approved step, so the new layout shows without the player doing it.
-    public async Task<bool> ActivateLayoutAsync(string variant = LotusOverlayLayout.Main, bool restart = false) =>
-        await RunElevated(restart ? ["--rtss-layout", ExportLayout(variant), "--rtss-restart"] : ["--rtss-layout", ExportLayout(variant)]) == 0 && LayoutActive();
+    public async Task<bool> ActivateLayoutAsync(string variant = LotusOverlayLayout.Main, bool restart = false)
+    {
+        // Checked here too, so a RivaTuner without OverlayEditor does not cost the player a Windows permission prompt.
+        if (!File.Exists(Path.Combine(InstallDir, "Plugins", "Client", "OverlayEditor.dll"))) { LastFailure = "plugin"; return false; }
+        var code = await RunElevated(restart ? ["--rtss-layout", ExportLayout(variant), "--rtss-restart"] : ["--rtss-layout", ExportLayout(variant)]);
+        LastFailure = code switch { 0 => LayoutActive() ? null : "other", 1223 => "uac", 6 => "plugin", _ => "other" };
+        return LastFailure is null;
+    }
+    public string? LastFailure { get; private set; }
     public async Task<bool> RestoreLayoutAsync() => await RunElevated(Running()==true?["--rtss-layout-restore","--rtss-restart"]:["--rtss-layout-restore"]) == 0 && !HasLayoutBackup();
 
     public static readonly IReadOnlyList<RtssChange> LotusOverlay =

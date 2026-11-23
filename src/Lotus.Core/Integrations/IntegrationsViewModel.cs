@@ -18,6 +18,9 @@ public interface IRtssIntegration
     bool HasLayoutBackup();
     Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false); // restart: reopen RivaTuner in the same approved step
     Task<bool> RestoreLayoutAsync();
+    // Why the last ActivateLayoutAsync failed: "uac" (permission declined), "plugin" (RivaTuner without OverlayEditor,
+    // too old or partly installed), "other", or null.
+    string? LastFailure => null;
     // Low latency per game (RivaTuner NVIDIA Reflex frame limiter, which also turns on Reflex low-latency in games
     // without native Reflex). Only that game's profile changes; disabling restores the profile exactly as it was.
     // Mode: "fluid" = front edge sync (flat frame pacing, any GPU) | "responsive" = NVIDIA Reflex limiter.
@@ -111,7 +114,7 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             }
             PendingVariant = null; OnPropertyChanged(nameof(PendingVariant));
             var reopen = rtss.Running() == true;
-            if(!await rtss.ActivateLayoutAsync(variant,reopen)){Message=Text["OsFailed"];return;}
+            if(!await rtss.ActivateLayoutAsync(variant,reopen)){Message=Text[rtss.LastFailure switch{"uac"=>"OsFailedUac","plugin"=>"OsFailedPlugin",_=>"OsFailed"}];return;}
             if(variant is "premium-top" or "premium-neon" or "premium-pulse")
             {
                 if(!await rtss.StartAsync()){Message=Text["OsPreparedRtssClosed"];return;}

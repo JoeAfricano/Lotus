@@ -33,10 +33,12 @@ public static class RtssOverlayPlugin
         if(!success)RollBack();
         return success;
     }
+    // A RivaTuner that was installed but never opened (fresh PC, silent winget install) has no Config file or no [Plugins]
+    // list yet: RTSS writes it on first run, and a plugin missing from it is off. Both cases count as "0" (off).
     public static void Enable(string config, string backups)
     {
-        var ini = new IniText(RtssProfiles.ReadAnsi(config));
-        var current = ini.Get("Plugins", "OverlayEditor.dll");
+        var ini = new IniText(File.Exists(config) ? RtssProfiles.ReadAnsi(config) : "");
+        var current = ini.Get("Plugins", "OverlayEditor.dll") ?? "0";
         if (current is not ("0" or "1")) throw new InvalidDataException("Unsupported RTSS plugin configuration.");
         Directory.CreateDirectory(backups);
         var backup = Path.Combine(backups, BackupName);
@@ -57,8 +59,9 @@ public static class RtssOverlayPlugin
         if (!File.Exists(backup)) return true; // backups from older Lotus versions did not change this flag
         var original = File.ReadAllText(backup);
         if (original is not ("0" or "1")) return false;
+        if (!File.Exists(config)) { File.Delete(backup); return true; } // RivaTuner reinstalled or reset: nothing left to restore
         var ini = new IniText(RtssProfiles.ReadAnsi(config));
-        var current = ini.Get("Plugins", "OverlayEditor.dll");
+        var current = ini.Get("Plugins", "OverlayEditor.dll") ?? "0";
         if (current != "1" && current != original) return false; // a later user change wins
         ini.Set("Plugins", "OverlayEditor.dll", original);
         RtssProfiles.WriteAnsi(config, ini.ToString());

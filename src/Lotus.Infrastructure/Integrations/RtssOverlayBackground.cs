@@ -10,7 +10,7 @@ public static class RtssOverlayBackground
     static readonly Dictionary<string,string> Desired=new(){["EnableOSD"]="1",["EnableFill"]="0",["EnableBgnd"]="0"};
     public static void Apply(string profile,string backups)
     {
-        var ini=new IniText(RtssProfiles.ReadAnsi(profile));
+        var ini=new IniText(File.Exists(profile)?RtssProfiles.ReadAnsi(profile):""); // a never-opened RivaTuner may not have written Global yet
         var original=Desired.Keys.ToDictionary(k=>k,k=>ini.Get("OSD",k));
         if(original.Values.Any(v=>v is not (null or "0" or "1")))throw new InvalidDataException("Unsupported OSD flag.");
         Directory.CreateDirectory(backups);var backup=Path.Combine(backups,BackupName);
@@ -25,6 +25,7 @@ public static class RtssOverlayBackground
         var backup=Path.Combine(backups,BackupName);if(!File.Exists(backup))return true;
         var original=JsonSerializer.Deserialize<Dictionary<string,string?>>(File.ReadAllText(backup));
         if(original is null||original.Count!=3||original.Keys.Any(k=>!Desired.ContainsKey(k))||original.Values.Any(v=>v is not (null or "0" or "1")))return false;
+        if(!File.Exists(profile)){File.Delete(backup);return true;} // RivaTuner reinstalled or reset: nothing left to restore
         var raw=RtssProfiles.ReadAnsi(profile);var ini=new IniText(raw);
         if(original.Any(p=>ini.Get("OSD",p.Key)!=Desired[p.Key]&&ini.Get("OSD",p.Key)!=p.Value))return false;
         foreach(var (key,value) in original)if(value is not null)ini.Set("OSD",key,value);
