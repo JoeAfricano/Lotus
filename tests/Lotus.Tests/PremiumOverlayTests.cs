@@ -90,7 +90,7 @@ public sealed class PremiumOverlayTests : IDisposable
     [Fact] public void FreshInstallActivationWorksWithoutConfigOrGlobalAndRollsBackToNothing()
     {
         var overlays=Path.Combine(root,"Overlays");var backups=Path.Combine(root,"Backups");var layoutCfg=Path.Combine(root,"OverlayEditor.cfg");
-        var plugin=Path.Combine(root,"Config");var global=Path.Combine(root,"Global");
+        var plugin=Path.Combine(root,"Profiles","Config");var global=Path.Combine(root,"Profiles","Global"); // no Profiles folder yet
         var layout=LotusOverlayLayout.Export(overlays,LotusOverlayLayout.PremiumTop);
         RtssOverlayPlugin.ActivateLayout(layout,layoutCfg,plugin,backups,overlays,global);
         Assert.Equal("1",new IniText(File.ReadAllText(plugin)).Get("Plugins","OverlayEditor.dll"));

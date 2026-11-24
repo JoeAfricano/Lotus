@@ -62,6 +62,8 @@ public static partial class RtssProfiles
     public static string ReadAnsi(string path) => File.ReadAllText(path, System.Text.Encoding.Latin1);
     public static void WriteAnsi(string path, string text)
     {
+        // A RivaTuner that was never opened has no Profiles folder yet (it creates it on first run).
+        if (Path.GetDirectoryName(Path.GetFullPath(path)) is { } folder) Directory.CreateDirectory(folder);
         var temp = path + ".lotus.tmp"; File.WriteAllText(temp, text, System.Text.Encoding.Latin1); File.Move(temp, path, overwrite: true);
     }
     // Backups are exact byte copies (or a marker when the file did not exist); restore writes those bytes back.
