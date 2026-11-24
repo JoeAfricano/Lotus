@@ -220,8 +220,15 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
 {
     private string Map => sharedMemory ?? RtssSharedMemory.DefaultMap;
     private string InstallDir => Path.GetDirectoryName(Profiles)!;
-    // Open = its shared memory exists. Nothing is started or changed by asking.
-    public bool? Running() => RtssSharedMemory.IsAvailable(Map);
+    // Open = its shared memory exists. Nothing is started or changed by asking. The map can outlive RTSS.exe while another
+    // program (Lotus's own readers included) still holds it, so the real one also needs the RTSS process.
+    public bool? Running() => RtssSharedMemory.IsAvailable(Map) && (sharedMemory is not null || RtssProcessOpen());
+    private static bool RtssProcessOpen()
+    {
+        var found = System.Diagnostics.Process.GetProcessesByName("RTSS");
+        foreach (var p in found) p.Dispose();
+        return found.Length > 0;
+    }
     // Opens RivaTuner (its own manifest asks Windows for administrator) and waits up to 10 s until it answers, so the
     // game started next is hooked. False when it is not installed, the player declined the prompt, or it did not come up.
     public async Task<bool> StartAsync()

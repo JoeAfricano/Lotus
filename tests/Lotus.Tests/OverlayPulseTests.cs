@@ -4,6 +4,8 @@ using Xunit;
 
 namespace Lotus.Tests;
 
+// Same collection: OverlayPulseTests changes the shared Pulse colors that the Pulse preview renders with.
+[Collection("PulseLayoutStatics")]
 public sealed class OverlayPulseTests
 {
     private static string Sources => "[Source0]\r\nName=Frametime\r\n[Source1]\r\nName=GPU Load\r\n";

@@ -6,6 +6,8 @@ using Xunit;
 
 namespace Lotus.Tests;
 
+// Same collection: OverlayPulseTests changes the shared Pulse colors that the Pulse preview renders with.
+[Collection("PulseLayoutStatics")]
 public sealed class PremiumOverlayTests : IDisposable
 {
     [Fact] public void Concurrent_preview_requests_produce_decodable_pngs_including_pulse()
