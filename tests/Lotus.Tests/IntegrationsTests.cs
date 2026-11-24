@@ -162,7 +162,7 @@ public sealed class IntegrationsTests : IDisposable
         var vm = new IntegrationsViewModel(rtss,new Tools(true,false),new TextCatalog(),_=>{}) { GameRunning=()=>detection.Task };
         var first=vm.UseStyleAsync("neon"); Assert.True(vm.Busy);
         await vm.UseStyleAsync("lateral"); Assert.Empty(rtss.Calls);
-        detection.SetResult(false); await first; Assert.False(vm.Busy); Assert.Equal([("neon",false)],rtss.Calls);
+        detection.SetResult(false); await first; Assert.False(vm.Busy); Assert.Equal([("neon",true)],rtss.Calls);
     }
 
     [Fact] public void Overlay_preview_uses_the_app_callback_for_the_Lotus_window_renderer()
@@ -198,12 +198,12 @@ public sealed class IntegrationsTests : IDisposable
         await vm.RestoreLayoutAsync(); Assert.Equal(1,rtss.Restores);
     }
 
-    [Fact] public async Task OverlayStyleOutsideAGameAppliesNowAndReopensOnlyWhenOpen()
+    [Fact] public async Task OverlayStyleOutsideAGameAppliesNowAndLeavesRivaTunerOpen()
     {
         var closed = new StyleRtss(running: false);
         var vm = new IntegrationsViewModel(closed, new Tools(true, false), new TextCatalog(), _ => { }) { GameRunning = () => Task.FromResult(false) };
         await vm.UseStyleAsync("neon");
-        Assert.Equal([("neon", false)], closed.Calls);   // RivaTuner closed: just switch the layout
+        Assert.Equal([("neon", true)], closed.Calls);    // every style leaves RivaTuner open in the same approved step
         Assert.Equal("neon", vm.ActiveVariant);
         await vm.OnGameClosedAsync();                    // nothing pending: nothing more happens
         Assert.Single(closed.Calls);
@@ -211,7 +211,7 @@ public sealed class IntegrationsTests : IDisposable
     [Fact] public async Task PremiumStyleOpensRtssAsPartOfTheSameAction()
     {
         var rtss=new StyleRtss(false);var vm=new IntegrationsViewModel(rtss,new Tools(false,false),new TextCatalog(),_=>{});
-        await vm.UseStyleAsync("premium-neon");Assert.Equal([("premium-neon",false)],rtss.Calls);Assert.Equal(1,rtss.Starts);
+        await vm.UseStyleAsync("premium-neon");Assert.Equal([("premium-neon",true)],rtss.Calls);Assert.Equal(1,rtss.Starts);
     }
 
     private sealed class Tools(bool ab, bool scs) : IToolDetector

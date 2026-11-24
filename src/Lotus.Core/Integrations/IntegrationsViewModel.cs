@@ -113,13 +113,12 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
                 return;
             }
             PendingVariant = null; OnPropertyChanged(nameof(PendingVariant));
-            var reopen = rtss.Running() == true;
-            if(!await rtss.ActivateLayoutAsync(variant,reopen)){Message=Text[rtss.LastFailure switch{"uac"=>"OsFailedUac","plugin"=>"OsFailedPlugin",_=>"OsFailed"}];return;}
-            if(variant is "premium-top" or "premium-neon" or "premium-pulse")
-            {
-                if(!await rtss.StartAsync()){Message=Text["OsPreparedRtssClosed"];return;}
-            }
-            Message=Text[reopen?"OsAppliedReopened":"IntLayoutApplied"];
+            // One click leaves everything ready: layout, OverlayEditor plugin, OSD on, and RivaTuner (re)opened, all in the
+            // same Windows permission step. StartAsync is only a fallback when RivaTuner did not come up from that step.
+            var wasOpen = rtss.Running() == true;
+            if(!await rtss.ActivateLayoutAsync(variant,true)){Message=Text[rtss.LastFailure switch{"uac"=>"OsFailedUac","plugin"=>"OsFailedPlugin",_=>"OsFailed"}];return;}
+            if(rtss.Running()!=true&&!await rtss.StartAsync()){Message=Text["OsPreparedRtssClosed"];return;}
+            Message=Text[wasOpen?"OsAppliedReopened":"OsAppliedOpened"];
         });
     }
     public async Task OnGameClosedAsync() { if (PendingVariant is { } v) await UseStyleAsync(v); }

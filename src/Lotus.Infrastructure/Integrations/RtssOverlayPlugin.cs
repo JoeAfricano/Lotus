@@ -11,7 +11,7 @@ public static class RtssOverlayPlugin
         var files=new List<string>{layoutConfig,pluginConfig,Path.Combine(backups,"OverlayEditor.cfg.original"),Path.Combine(backups,BackupName)};
         if(globalProfile is not null){files.Add(globalProfile);files.Add(Path.Combine(backups,RtssOverlayBackground.BackupName));}
         PreserveOnFailure(() => { LotusOverlayLayout.Activate(layout,layoutConfig,backups,overlays); Enable(pluginConfig,backups);
-            if(globalProfile is not null){if(Path.GetFileName(layout).StartsWith("Lotus-Premium-",StringComparison.OrdinalIgnoreCase))RtssOverlayBackground.Apply(globalProfile,backups);else if(!RtssOverlayBackground.Restore(globalProfile,backups))throw new IOException("OSD background restoration conflicted.");}return true; },files.ToArray());
+            if(globalProfile is not null){if(Path.GetFileName(layout).StartsWith("Lotus-Premium-",StringComparison.OrdinalIgnoreCase))RtssOverlayBackground.Apply(globalProfile,backups);else if(!RtssOverlayBackground.Restore(globalProfile,backups))throw new IOException("OSD background restoration conflicted.");else RtssOverlayBackground.Apply(globalProfile,backups,premium:false);}return true; },files.ToArray());
     }
     public static bool RestoreLayout(string layoutConfig,string pluginConfig,string backups,string? globalProfile=null)
     {

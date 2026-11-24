@@ -8,17 +8,20 @@ public static class RtssOverlayBackground
 {
     internal const string BackupName="OverlayEditor.background.original.json";
     static readonly Dictionary<string,string> Desired=new(){["EnableOSD"]="1",["EnableFill"]="0",["EnableBgnd"]="0"};
-    public static void Apply(string profile,string backups)
+    // premium: the OSD on with RivaTuner's own fill and box off (the artwork has alpha). Other layouts: only the OSD on, so a
+    // fresh RivaTuner (or one with "Show On-Screen Display" off) shows the chosen style. The first originals are kept.
+    public static void Apply(string profile,string backups,bool premium=true)
     {
         var ini=new IniText(File.Exists(profile)?RtssProfiles.ReadAnsi(profile):""); // a never-opened RivaTuner may not have written Global yet
         var original=Desired.Keys.ToDictionary(k=>k,k=>ini.Get("OSD",k));
         if(original.Values.Any(v=>v is not (null or "0" or "1")))throw new InvalidDataException("Unsupported OSD flag.");
         Directory.CreateDirectory(backups);var backup=Path.Combine(backups,BackupName);
         if(!File.Exists(backup))File.WriteAllText(backup,JsonSerializer.Serialize(original));
-        foreach(var (key,value) in Desired)ini.Set("OSD",key,value);
+        var wanted=premium?Desired:Desired.Where(p=>p.Key=="EnableOSD").ToDictionary(p=>p.Key,p=>p.Value);
+        foreach(var (key,value) in wanted)ini.Set("OSD",key,value);
         RtssProfiles.WriteAnsi(profile,ini.ToString());
         var verify=new IniText(RtssProfiles.ReadAnsi(profile));
-        if(Desired.Any(p=>verify.Get("OSD",p.Key)!=p.Value))throw new IOException("OSD flags were not verified.");
+        if(wanted.Any(p=>verify.Get("OSD",p.Key)!=p.Value))throw new IOException("OSD flags were not verified.");
     }
     public static bool Restore(string profile,string backups)
     {

@@ -71,6 +71,22 @@ public sealed class PremiumOverlayTests : IDisposable
         RtssOverlayPlugin.Enable(missing,backups2);Assert.Equal("1",new IniText(File.ReadAllText(missing)).Get("Plugins","OverlayEditor.dll"));
         File.Delete(missing);Assert.True(RtssOverlayPlugin.Restore(missing,backups2));Assert.False(File.Exists(missing));
     }
+    // Any style leaves the OSD on (a fresh RivaTuner or one with the OSD off would otherwise show nothing); premium also
+    // turns RivaTuner's own fill and box off. Switching styles and undoing give back the player's original flags.
+    [Fact] public void EveryStyleTurnsTheOsdOnAndUndoGivesBackTheOriginal()
+    {
+        var overlays=Path.Combine(root,"Overlays");var backups=Path.Combine(root,"Backups");var layoutCfg=Path.Combine(root,"OverlayEditor.cfg");
+        var plugin=Path.Combine(root,"Config");var global=Path.Combine(root,"Global");
+        const string original="[OSD]\r\nEnableOSD=0\r\nEnableFill=1\r\nEnableBgnd=1";File.WriteAllText(global,original);
+        RtssOverlayPlugin.ActivateLayout(LotusOverlayLayout.Export(overlays,LotusOverlayLayout.Lateral),layoutCfg,plugin,backups,overlays,global);
+        var ini=new IniText(File.ReadAllText(global));Assert.Equal("1",ini.Get("OSD","EnableOSD"));Assert.Equal("1",ini.Get("OSD","EnableFill"));Assert.Equal("1",ini.Get("OSD","EnableBgnd"));
+        RtssOverlayPlugin.ActivateLayout(LotusOverlayLayout.Export(overlays,LotusOverlayLayout.PremiumNeon),layoutCfg,plugin,backups,overlays,global);
+        ini=new IniText(File.ReadAllText(global));Assert.Equal("1",ini.Get("OSD","EnableOSD"));Assert.Equal("0",ini.Get("OSD","EnableFill"));Assert.Equal("0",ini.Get("OSD","EnableBgnd"));
+        RtssOverlayPlugin.ActivateLayout(LotusOverlayLayout.Export(overlays,LotusOverlayLayout.Neon),layoutCfg,plugin,backups,overlays,global);
+        ini=new IniText(File.ReadAllText(global));Assert.Equal("1",ini.Get("OSD","EnableOSD"));Assert.Equal("1",ini.Get("OSD","EnableFill"));
+        Assert.True(RtssOverlayPlugin.RestoreLayout(layoutCfg,plugin,backups,global));
+        Assert.Equal(original,File.ReadAllText(global));
+    }
     [Fact] public void FreshInstallActivationWorksWithoutConfigOrGlobalAndRollsBackToNothing()
     {
         var overlays=Path.Combine(root,"Overlays");var backups=Path.Combine(root,"Backups");var layoutCfg=Path.Combine(root,"OverlayEditor.cfg");
