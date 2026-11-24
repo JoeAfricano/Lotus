@@ -32,6 +32,12 @@ public sealed class OverlayStylePicker : UserControl
     private readonly Dictionary<string,Task<Microsoft.UI.Xaml.Media.Imaging.BitmapImage>> previewImages = new();
     private int windowPreviewVersion;
     private readonly TextBlock message = new() { FontSize = 12, TextWrapping = TextWrapping.Wrap };
+    // Show/hide key of the overlay, kept by RivaTuner (works with or without Lotus open).
+    private readonly StackPanel hotkeyPanel = new() { Spacing = 8 };
+    private readonly ComboBox hotkeyBox = new() { MinWidth = 220 };
+    private readonly Button hotkeySave = new() { MinHeight = 36, VerticalAlignment = VerticalAlignment.Bottom };
+    private readonly TextBlock hotkeyNote = new() { FontSize = 12, TextWrapping = TextWrapping.Wrap };
+    private string? hotkeyShown; // the choice the list was last filled with
     private readonly StackPanel windowPanel = new() { Spacing = 14 };
     private readonly Image windowPreview = new() { Stretch = Stretch.Uniform, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(14) };
     private readonly ProgressBar busy = new() { IsIndeterminate = true };
@@ -54,6 +60,14 @@ public sealed class OverlayStylePicker : UserControl
         preview.Click += (_, _) => vm?.PreviewOverlay();
         restore.Click += async (_, _) => { if (vm is not null && await Confirm(vm.Text["IntLayoutRestoreTitle"], vm.Text["IntRestoreConfirmBody"])) { await vm.RestoreLayoutAsync(); Render(); } };
         statusPill.Child = status;
+        hotkeySave.Style = (Style)res["SoftButtonStyle"]; hotkeyNote.Foreground = (Brush)res["MutedBrush"];
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(hotkeyBox, "overlay-hotkey");
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(hotkeySave, "overlay-hotkey-save");
+        hotkeyBox.SelectionChanged += (_, _) => UpdateHotkeySave();
+        hotkeySave.Click += async (_, _) => { if (vm is not null && hotkeyBox.SelectedItem is ComboBoxItem { Tag: string key }) { await vm.SetOverlayHotkeyAsync(key); hotkeyShown = null; Render(); } };
+        var hotkeyRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        hotkeyRow.Children.Add(hotkeyBox); hotkeyRow.Children.Add(hotkeySave);
+        hotkeyPanel.Children.Add(hotkeyRow); hotkeyPanel.Children.Add(hotkeyNote);
 
         var head = new Grid { ColumnSpacing = 16 };
         head.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); head.ColumnDefinitions.Add(new ColumnDefinition()); head.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -75,6 +89,7 @@ public sealed class OverlayStylePicker : UserControl
         body.Children.Add(what);
         body.Children.Add(windowPanel);
         body.Children.Add(actions);
+        body.Children.Add(hotkeyPanel);
         body.Children.Add(busy);
         body.Children.Add(message);
         Content = new Border { Style = (Style)res["CardStyle"], Child = body };
@@ -151,11 +166,31 @@ public sealed class OverlayStylePicker : UserControl
         restore.Content = t["IntLayoutRestore"];
         restore.Visibility = vm.CanRestoreLayout ? Visibility.Visible : Visibility.Collapsed;
         busy.Visibility = vm.Busy ? Visibility.Visible : Visibility.Collapsed;
+        RenderHotkey(t);
         // "Ver o overlay agora" shows what RivaTuner has loaded, not the tile being looked at: say so when they differ.
         message.Text = !vm.RtssInstalled ? t["OsNeedRtss"] : vm.Message.Length > 0 ? vm.Message : !isOn ? vm.PendingVariant is { } pend ? t.Format("OsPendingName", t[Key(pend)]) : t.Format("OsPreviewActive", on is null ? t["OsNoneShort"] : t[Key(on)]) : "";
         message.Visibility = message.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
+    private void RenderHotkey(Lotus.Core.ITextCatalog t)
+    {
+        hotkeyPanel.Visibility = vm!.RtssInstalled && selected != "window" ? Visibility.Visible : Visibility.Collapsed;
+        hotkeyBox.Header = t["OsHotkeyTitle"];
+        if (hotkeyShown != vm.OverlayHotkey) // refill only when RivaTuner's key changed, so a pending pick is kept
+        {
+            hotkeyShown = vm.OverlayHotkey;
+            hotkeyBox.Items.Clear();
+            foreach (var key in Lotus.Core.Integrations.OverlayHotkeys.Choices)
+                hotkeyBox.Items.Add(new ComboBoxItem { Content = key == Lotus.Core.Integrations.OverlayHotkeys.None ? t["OsHotkeyNone"] : Lotus.Core.Integrations.OverlayHotkeys.Describe(Lotus.Core.Integrations.OverlayHotkeys.Code(key)!.Value), Tag = key });
+            if (vm.OverlayHotkey == Lotus.Core.Integrations.OverlayHotkeys.Custom)
+                hotkeyBox.Items.Insert(0, new ComboBoxItem { Content = t.Format("OsHotkeyCustom", vm.OverlayHotkeyText ?? ""), Tag = Lotus.Core.Integrations.OverlayHotkeys.Custom });
+            hotkeyBox.SelectedIndex = hotkeyBox.Items.Cast<ComboBoxItem>().ToList().FindIndex(i => (string)i.Tag == vm.OverlayHotkey);
+        }
+        hotkeySave.Content = t["OsHotkeySave"];
+        hotkeyNote.Text = t["OsHotkeyHint"] + (vm.AfterburnerHotkeyText is { } ab ? " " + t.Format("OsHotkeyAfterburner", ab) : "");
+        UpdateHotkeySave();
+    }
+    private void UpdateHotkeySave() => hotkeySave.IsEnabled = vm is { Busy: false } && hotkeyBox.SelectedItem is ComboBoxItem { Tag: string key } && key != vm.OverlayHotkey && key != Lotus.Core.Integrations.OverlayHotkeys.Custom;
     private void ArrangeTiles()
     {
         int columns = Math.Clamp((int)((tileRow.ActualWidth > 0 ? tileRow.ActualWidth : 1000) / 230), 1, 4);

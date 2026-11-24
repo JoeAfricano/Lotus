@@ -3971,4 +3971,15 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="LlFgVsyncOn" xml:space="preserve"><value>Gerador de quadros sem G-Sync ligado neste jogo: V-Sync do driver NVIDIA ligado e limitador Reflex do RivaTuner.</value></data>
   <data name="GpFrameGenFixedHint" xml:space="preserve"><value>Sem G-Sync/FreeSync: com o modo Automático, ao salvar o Lotus liga o V-Sync do driver NVIDIA só neste jogo, junto com o limitador Reflex do RivaTuner. Restaurar desfaz os dois.</value></data>
   <data name="GpPreparedFgVsync" xml:space="preserve"><value>Preparado: gerador de quadros com V-Sync do driver NVIDIA e RivaTuner Reflex em {0} FPS; monitor em {1} Hz quando o jogo estiver em primeiro plano. Salvo não significa ativo.</value></data>
+  <data name="OsHotkeyTitle" xml:space="preserve"><value>Atalho para mostrar e esconder o overlay</value></data>
+  <data name="OsHotkeyHint" xml:space="preserve"><value>Fica guardado no próprio RivaTuner e funciona mesmo com o Lotus fechado. O Windows pede permissão uma vez para salvar.</value></data>
+  <data name="OsHotkeyNone" xml:space="preserve"><value>Nenhum (devolve o que o RivaTuner tinha)</value></data>
+  <data name="OsHotkeyCustom" xml:space="preserve"><value>{0} (definido no RivaTuner)</value></data>
+  <data name="OsHotkeySave" xml:space="preserve"><value>Usar este atalho</value></data>
+  <data name="OsHotkeyAfterburner" xml:space="preserve"><value>O MSI Afterburner também mostra e esconde o overlay com {0}.</value></data>
+  <data name="OsHotkeySaved" xml:space="preserve"><value>Pronto: {0} agora mostra e esconde o overlay no jogo.</value></data>
+  <data name="OsHotkeyRemoved" xml:space="preserve"><value>Atalho removido; o RivaTuner voltou ao que tinha antes.</value></data>
+  <data name="OsHotkeyFailed" xml:space="preserve"><value>Não deu para salvar o atalho e nada foi mudado. Tente de novo; se continuar, abra o RivaTuner uma vez e feche.</value></data>
+  <data name="OsHotkeyCloseGame" xml:space="preserve"><value>Feche o jogo antes de trocar o atalho (o RivaTuner precisa reabrir para usar a tecla nova).</value></data>
+  <data name="OsHotkeyAfterburnerSame" xml:space="preserve"><value>{0} já mostra e esconde o overlay pelo MSI Afterburner. Escolha outra tecla: se os dois usarem a mesma, um desfaz o outro.</value></data>
 </root>

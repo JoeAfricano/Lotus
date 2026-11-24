@@ -21,6 +21,11 @@ public interface IRtssIntegration
     // Why the last ActivateLayoutAsync or RestoreLayoutAsync failed: "uac" (permission declined), "plugin" (RivaTuner without OverlayEditor,
     // too old or partly installed), "other", or null.
     string? LastFailure => null;
+    // Show/hide key of the overlay: RivaTuner's own (HotkeyHandler plugin, an OverlayHotkeys code, 0 = none) and MSI
+    // Afterburner's (null when it is not installed or has none). Setting it goes through the elevated helper.
+    uint OverlayHotkey() => 0;
+    uint? AfterburnerOverlayHotkey() => null;
+    Task<bool> SetOverlayHotkeyAsync(string choice) => Task.FromResult(false);
     // Low latency per game (RivaTuner NVIDIA Reflex frame limiter, which also turns on Reflex low-latency in games
     // without native Reflex). Only that game's profile changes; disabling restores the profile exactly as it was.
     // Mode: "fluid" = front edge sync (flat frame pacing, any GPU) | "responsive" = NVIDIA Reflex limiter.
@@ -52,6 +57,9 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
     public string? ActiveVariant { get; private set; } // "top" or "neon" when a Lotus layout is active, else null
     public string? ExportedPath { get; private set; }
     public bool Busy { get; private set; }
+    public string OverlayHotkey { get; private set; } = OverlayHotkeys.None; // an OverlayHotkeys choice, or Custom
+    public string? OverlayHotkeyText { get; private set; }  // RivaTuner's key, as text ("Ctrl + F10"), or null
+    public string? AfterburnerHotkeyText { get; private set; } // MSI Afterburner's own key, or null
 
     public void Refresh()
     {
@@ -73,11 +81,14 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             LayoutOn = active || (r.Installed && rtss.ActiveLayoutName() is { } name && name.StartsWith("Lotus", StringComparison.OrdinalIgnoreCase)); // incl. the player's own Lotus layouts
             ActiveVariant = !active ? null : rtss.ActiveLayoutName() switch { "Lotus-Premium-equilibrio" => "premium-top", "Lotus-Premium-neon" => "premium-neon", "Lotus-Premium-pulse" => "premium-pulse", "Lotus-Neon" => "neon", "Lotus-Lateral" => "lateral", "Lotus-Pulse" => "pulse", "Lotus-Window" => "window", _ => "top" };
             LayoutStatus = !r.Installed ? "" : active ? Text[rtss.ActiveLayoutName() == "Lotus-Neon" ? "IntLayoutActiveNeon" : "IntLayoutActive"] : rtss.ActiveLayoutName() is { } other ? Text.Format("IntLayoutOther", other) : Text["IntLayoutInactive"];
+            var key = r.Installed ? rtss.OverlayHotkey() : 0u;
+            OverlayHotkey = OverlayHotkeys.ChoiceOf(key); OverlayHotkeyText = OverlayHotkeys.Describe(key);
+            AfterburnerHotkeyText = rtss.AfterburnerOverlayHotkey() is { } abKey ? OverlayHotkeys.Describe(abKey) : null;
             var ab = tools.Afterburner(); AfterburnerStatus = ab.Installed ? Text.Format("IntAfterburnerOn", ab.Version ?? "?") : Text["IntNotInstalled"];
             var scs = tools.ScsKiller(); ScsStatus = scs.Installed ? Text.Format("IntScsOn", scs.Version ?? "?") : Text["IntScsOff"];
         }
         catch (Exception ex) { log(ex); }
-        foreach (var p in new[] { nameof(RtssStatus), nameof(AfterburnerStatus), nameof(ScsStatus), nameof(RtssInstalled), nameof(CanRestoreRtss), nameof(CanRestoreLayout), nameof(LayoutStatus), nameof(ActiveVariant) }) OnPropertyChanged(p);
+        foreach (var p in new[] { nameof(RtssStatus), nameof(AfterburnerStatus), nameof(ScsStatus), nameof(RtssInstalled), nameof(CanRestoreRtss), nameof(CanRestoreLayout), nameof(LayoutStatus), nameof(ActiveVariant), nameof(OverlayHotkey), nameof(OverlayHotkeyText), nameof(AfterburnerHotkeyText) }) OnPropertyChanged(p);
     }
 
     public Task ApplyOverlayAsync() => Run(async () => Message = Text[await rtss.ApplyLotusOverlayAsync() ? "IntOverlayApplied" : "IntOverlayFailed"]);
@@ -120,6 +131,19 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
             if(rtss.Running()!=true&&!await rtss.StartAsync()){Message=Text["OsPreparedRtssClosed"];return;}
             Message=Text[wasOpen?"OsAppliedReopened":"OsAppliedOpened"];
         });
+    }
+    // The key that shows and hides the overlay, kept by RivaTuner itself (it works with or without Lotus open). RivaTuner
+    // reads it when it starts, so an open RivaTuner is reopened in the same approved step; never under a running game.
+    // A key MSI Afterburner already uses is refused: both would flip the overlay at once and it would stay as it was.
+    public async Task SetOverlayHotkeyAsync(string choice)
+    {
+        if (!OverlayHotkeys.Choices.Contains(choice) || choice == OverlayHotkey) return;
+        if (GameRunning is not null && await GameRunning()) { Message = Text["OsHotkeyCloseGame"]; OnPropertyChanged(nameof(Message)); return; }
+        if (OverlayHotkeys.Code(choice) is { } code && rtss.AfterburnerOverlayHotkey() == code)
+        { Message = Text.Format("OsHotkeyAfterburnerSame", OverlayHotkeys.Describe(code) ?? ""); OnPropertyChanged(nameof(Message)); return; }
+        await Run(async () => Message = await rtss.SetOverlayHotkeyAsync(choice)
+            ? choice == OverlayHotkeys.None ? Text["OsHotkeyRemoved"] : Text.Format("OsHotkeySaved", OverlayHotkeys.Describe(OverlayHotkeys.Code(choice)!.Value) ?? "")
+            : Text[rtss.LastFailure == "uac" ? "OsFailedUac" : "OsHotkeyFailed"]);
     }
     public async Task OnGameClosedAsync() { if (PendingVariant is { } v) await UseStyleAsync(v); }
     public async Task RestoreLayoutAsync()

@@ -3971,4 +3971,15 @@ Your games and Windows are not changed.</value></data>
   <data name="LlFgVsyncOn" xml:space="preserve"><value>Frame generation without G-Sync is on for this game: NVIDIA driver V-Sync on with RivaTuner's Reflex limiter.</value></data>
   <data name="GpFrameGenFixedHint" xml:space="preserve"><value>Without G-Sync/FreeSync: with Automatic mode, saving turns on the NVIDIA driver's V-Sync for this game only, together with RivaTuner's Reflex limiter. Restore undoes both.</value></data>
   <data name="GpPreparedFgVsync" xml:space="preserve"><value>Prepared: frame generation with NVIDIA driver V-Sync and RivaTuner Reflex at {0} FPS; monitor at {1} Hz while the game is in front. Saved does not mean active.</value></data>
+  <data name="OsHotkeyTitle" xml:space="preserve"><value>Shortcut to show and hide the overlay</value></data>
+  <data name="OsHotkeyHint" xml:space="preserve"><value>Kept by RivaTuner itself, so it works even with Lotus closed. Windows asks for permission once to save it.</value></data>
+  <data name="OsHotkeyNone" xml:space="preserve"><value>None (gives back what RivaTuner had)</value></data>
+  <data name="OsHotkeyCustom" xml:space="preserve"><value>{0} (set in RivaTuner)</value></data>
+  <data name="OsHotkeySave" xml:space="preserve"><value>Use this shortcut</value></data>
+  <data name="OsHotkeyAfterburner" xml:space="preserve"><value>MSI Afterburner also shows and hides the overlay with {0}.</value></data>
+  <data name="OsHotkeySaved" xml:space="preserve"><value>Done: {0} now shows and hides the overlay in game.</value></data>
+  <data name="OsHotkeyRemoved" xml:space="preserve"><value>Shortcut removed; RivaTuner is back to what it had before.</value></data>
+  <data name="OsHotkeyFailed" xml:space="preserve"><value>The shortcut could not be saved and nothing was changed. Try again; if it keeps failing, open RivaTuner once and close it.</value></data>
+  <data name="OsHotkeyCloseGame" xml:space="preserve"><value>Close the game before changing the shortcut (RivaTuner needs to reopen to use the new key).</value></data>
+  <data name="OsHotkeyAfterburnerSame" xml:space="preserve"><value>{0} already shows and hides the overlay through MSI Afterburner. Pick another key: if both use the same one, one undoes the other.</value></data>
 </root>
