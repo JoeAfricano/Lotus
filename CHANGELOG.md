@@ -2,6 +2,15 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 2.0.5-beta "Lotus 1.0.5 Beta" (23/11/2026)
+
+### Corrigido
+- **Overlay num PC com RivaTuner recém-instalado.** Num computador em que o RivaTuner foi instalado e ainda não tinha sido aberto, "Usar" em qualquer estilo de overlay dava "Não deu para trocar o estilo". O RivaTuner só cria a pasta de perfis e a lista de plugins na primeira vez que abre, e o Lotus não esperava por isso. Agora o Lotus cria o que falta e o estilo funciona de primeira. Testado num RivaTuner 7.3.7 recém-instalado e nunca aberto.
+
+### Melhorado
+- **Um clique deixa tudo pronto.** Ao clicar em "Usar" em qualquer estilo (não só nos premium), o Lotus ativa o editor de overlay do RivaTuner, liga a exibição do overlay, coloca o estilo e abre o RivaTuner (ou reabre, se já estava aberto). Tudo com **um único aviso do Windows**; antes, num PC comum, podiam aparecer dois (um do Lotus e outro do RivaTuner). Desfazer devolve as configurações que você tinha.
+- **Mensagens mais claras.** Se você recusar a permissão do Windows, o Lotus diz isso e pede para tentar de novo respondendo "Sim". Se o RivaTuner for antigo e não tiver o editor de overlay, o Lotus pede para atualizá-lo, sem pedir permissão à toa.
+
 ## 2.0.4-beta "Lotus 1.0.4 Beta" (22/11/2026)
 
 ### Melhorado

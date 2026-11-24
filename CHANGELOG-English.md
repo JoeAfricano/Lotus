@@ -2,6 +2,15 @@
 
 Release notes in English, shown on the What's new page when Lotus is in English. The full history (in Portuguese) is in [CHANGELOG.md](CHANGELOG.md).
 
+## 2.0.5-beta "Lotus 1.0.5 Beta" (11/23/2026)
+
+### Fixed
+- **Overlay on a PC with a freshly installed RivaTuner.** On a computer where RivaTuner was installed but never opened, "Use" on any overlay style showed "The style could not be changed". RivaTuner only creates its profiles folder and plugin list the first time it opens, and Lotus did not expect that. Lotus now creates what is missing and the style works the first time. Tested on a freshly installed, never-opened RivaTuner 7.3.7.
+
+### Improved
+- **One click leaves everything ready.** "Use" on any style (not only the premium ones) turns on RivaTuner's overlay editor, turns the overlay display on, sets the style and opens RivaTuner (or reopens it if it was open). All with **a single Windows prompt**; before, a regular PC could show two (one from Lotus and one from RivaTuner). Undo gives back the settings you had.
+- **Clearer messages.** If you decline the Windows permission, Lotus says so and asks you to try again answering "Yes". If RivaTuner is old and lacks the overlay editor, Lotus asks you to update it, without asking for permission for nothing.
+
 ## 2.0.4-beta "Lotus 1.0.4 Beta" (11/22/2026)
 
 ### Improved
