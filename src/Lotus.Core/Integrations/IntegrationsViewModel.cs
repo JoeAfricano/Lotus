@@ -18,7 +18,7 @@ public interface IRtssIntegration
     bool HasLayoutBackup();
     Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false); // restart: reopen RivaTuner in the same approved step
     Task<bool> RestoreLayoutAsync();
-    // Why the last ActivateLayoutAsync failed: "uac" (permission declined), "plugin" (RivaTuner without OverlayEditor,
+    // Why the last ActivateLayoutAsync or RestoreLayoutAsync failed: "uac" (permission declined), "plugin" (RivaTuner without OverlayEditor,
     // too old or partly installed), "other", or null.
     string? LastFailure => null;
     // Low latency per game (RivaTuner NVIDIA Reflex frame limiter, which also turns on Reflex low-latency in games
@@ -125,7 +125,7 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
     public async Task RestoreLayoutAsync()
     {
         if(GameRunning is not null&&await GameRunning()){Message=Text["OsRestoreCloseGame"];OnPropertyChanged(nameof(Message));return;}
-        await Run(async()=>Message=Text[await rtss.RestoreLayoutAsync()?"IntLayoutRestored":"IntOverlayFailed"]);
+        await Run(async()=>Message=Text[await rtss.RestoreLayoutAsync()?"IntLayoutRestored":rtss.LastFailure=="uac"?"OsFailedUac":"IntOverlayFailed"]);
     }
     // null when the file could not be written (locked, disk full); the message explains it.
     public string? ExportLayout()

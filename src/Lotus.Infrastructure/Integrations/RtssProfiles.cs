@@ -269,7 +269,12 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
         return LastFailure is null;
     }
     public string? LastFailure { get; private set; }
-    public async Task<bool> RestoreLayoutAsync() => await RunElevated(Running()==true?["--rtss-layout-restore","--rtss-restart"]:["--rtss-layout-restore"]) == 0 && !HasLayoutBackup();
+    public async Task<bool> RestoreLayoutAsync()
+    {
+        var code = await RunElevated(Running()==true?["--rtss-layout-restore","--rtss-restart"]:["--rtss-layout-restore"]);
+        LastFailure = code switch { 0 => HasLayoutBackup() ? "other" : null, 1223 => "uac", _ => "other" };
+        return LastFailure is null;
+    }
 
     public static readonly IReadOnlyList<RtssChange> LotusOverlay =
     [

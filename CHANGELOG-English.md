@@ -9,7 +9,7 @@ Release notes in English, shown on the What's new page when Lotus is in English.
 
 ### Improved
 - **One click leaves everything ready.** "Use" on any style (not only the premium ones) turns on RivaTuner's overlay editor, turns the overlay display on, sets the style and opens RivaTuner (or reopens it if it was open). All with **a single Windows prompt**; before, a regular PC could show two (one from Lotus and one from RivaTuner). Undo gives back the settings you had.
-- **Clearer messages.** If you decline the Windows permission, Lotus says so and asks you to try again answering "Yes". If RivaTuner is old and lacks the overlay editor, Lotus asks you to update it, without asking for permission for nothing.
+- **Clearer messages.** If the Windows permission is declined (when using or undoing a style), Lotus says so and explains what to do, including when the account needs an administrator password. If RivaTuner is old and lacks the overlay editor, Lotus asks you to update it, without asking for permission for nothing.
 
 ## 2.0.4-beta "Lotus 1.0.4 Beta" (11/22/2026)
 

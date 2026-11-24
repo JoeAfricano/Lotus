@@ -155,6 +155,24 @@ public sealed class IntegrationsTests : IDisposable
         await vm.UseStyleAsync("premium-top");
         Assert.Equal(text[key], vm.Message);
     }
+    [Fact] public async Task OverlayRestore_declined_permission_says_so()
+    {
+        var text = new TextCatalog();
+        var vm = new IntegrationsViewModel(new FailingRestoreRtss(), new Tools(true, false), text, _ => { });
+        await vm.RestoreLayoutAsync();
+        Assert.Equal(text["OsFailedUac"], vm.Message);
+    }
+    private sealed class FailingRestoreRtss : IRtssIntegration
+    {
+        public ToolState State() => new(true, "7.3.7");
+        public bool? OverlayConfigured() => true; public bool HasBackup() => false;
+        public Task<bool> ApplyLotusOverlayAsync() => Task.FromResult(true); public Task<bool> RestoreAsync() => Task.FromResult(true);
+        public string ExportLayout(string variant = "top") => @"C:\x\Lotus.ovl"; public bool LayoutActive() => true;
+        public string? ActiveLayoutName() => "Lotus"; public bool HasLayoutBackup() => true;
+        public Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false) => Task.FromResult(true);
+        public Task<bool> RestoreLayoutAsync() => Task.FromResult(false);
+        public string? LastFailure => "uac";
+    }
 
     [Fact] public async Task OverlayStyle_is_busy_before_game_detection_and_rejects_duplicate_commands()
     {

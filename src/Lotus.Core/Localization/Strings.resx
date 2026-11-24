@@ -3402,7 +3402,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="OsAppliedReopened" xml:space="preserve"><value>Estilo ativado e RivaTuner reaberto. Seus limites de FPS e perfis continuam iguais.</value></data>
   <data name="OsFailed" xml:space="preserve"><value>Não deu para trocar o estilo e nada foi mudado. Abra o RivaTuner uma vez pelo menu Iniciar, feche-o e tente de novo; se continuar, reinstale o RivaTuner.</value></data>
   <data name="OsAppliedOpened" xml:space="preserve"><value>Estilo ativado e RivaTuner aberto. Abra o jogo para ver o overlay; seus limites de FPS e perfis continuam iguais.</value></data>
-  <data name="OsFailedUac" xml:space="preserve"><value>O Windows não deu permissão, então nada foi mudado. Clique de novo e responda &quot;Sim&quot; no aviso do Windows.</value></data>
+  <data name="OsFailedUac" xml:space="preserve"><value>O Windows não deu permissão de administrador, então nada foi mudado. Clique de novo e responda &quot;Sim&quot; no aviso do Windows. Se o Windows pedir a senha de um administrador e você não tiver, peça para quem administra o computador aprovar: o RivaTuner só funciona com essa permissão.</value></data>
   <data name="OsFailedPlugin" xml:space="preserve"><value>Este RivaTuner não tem o editor de overlay (OverlayEditor), que os estilos do Lotus usam. Atualize o RivaTuner para a versão mais nova (gratuito, no site oficial da Guru3D) e tente de novo.</value></data>
   <data name="ScorePickFromReq" xml:space="preserve"><value>Requisitos recomendados da Steam</value></data>
   <data name="ScoreConfHigh" xml:space="preserve"><value>Confiança alta · 2+ laboratórios</value></data>

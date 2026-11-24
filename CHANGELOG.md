@@ -9,7 +9,7 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 
 ### Melhorado
 - **Um clique deixa tudo pronto.** Ao clicar em "Usar" em qualquer estilo (não só nos premium), o Lotus ativa o editor de overlay do RivaTuner, liga a exibição do overlay, coloca o estilo e abre o RivaTuner (ou reabre, se já estava aberto). Tudo com **um único aviso do Windows**; antes, num PC comum, podiam aparecer dois (um do Lotus e outro do RivaTuner). Desfazer devolve as configurações que você tinha.
-- **Mensagens mais claras.** Se você recusar a permissão do Windows, o Lotus diz isso e pede para tentar de novo respondendo "Sim". Se o RivaTuner for antigo e não tiver o editor de overlay, o Lotus pede para atualizá-lo, sem pedir permissão à toa.
+- **Mensagens mais claras.** Se a permissão do Windows for recusada (ao usar ou ao desfazer um estilo), o Lotus diz isso e explica o que fazer, inclusive quando a conta precisa da senha de um administrador. Se o RivaTuner for antigo e não tiver o editor de overlay, o Lotus pede para atualizá-lo, sem pedir permissão à toa.
 
 ## 2.0.4-beta "Lotus 1.0.4 Beta" (22/11/2026)
 
