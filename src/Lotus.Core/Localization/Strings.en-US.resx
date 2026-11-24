@@ -3400,7 +3400,10 @@ Your games and Windows are not changed.</value></data>
   <data name="OsPendingGame" xml:space="preserve"><value>A game is open: the new style is applied when it closes (the game is not interrupted).</value></data>
   <data name="OsPendingName" xml:space="preserve"><value>Will be applied when the game closes: {0}.</value></data>
   <data name="OsAppliedReopened" xml:space="preserve"><value>Style turned on and RivaTuner reopened. Your FPS limits and profiles stay the same.</value></data>
-  <data name="OsFailed" xml:space="preserve"><value>The style could not be changed. If Windows asked for permission and it was declined, try again; if RivaTuner does not reopen, open it from the Start menu.</value></data>
+  <data name="OsFailed" xml:space="preserve"><value>The style could not be changed and nothing was changed. Open RivaTuner once from the Start menu, close it and try again; if it keeps failing, reinstall RivaTuner.</value></data>
+  <data name="OsAppliedOpened" xml:space="preserve"><value>Style turned on and RivaTuner opened. Start the game to see the overlay; your FPS limits and profiles stay the same.</value></data>
+  <data name="OsFailedUac" xml:space="preserve"><value>Windows did not give administrator permission, so nothing was changed. Click again and answer &quot;Yes&quot; on the Windows prompt. If Windows asks for an administrator password you do not have, ask whoever manages this computer to approve: RivaTuner only works with that permission.</value></data>
+  <data name="OsFailedPlugin" xml:space="preserve"><value>This RivaTuner does not have the overlay editor (OverlayEditor) that Lotus styles use. Update RivaTuner to the latest version (free, on the official Guru3D site) and try again.</value></data>
   <data name="ScorePickFromReq" xml:space="preserve"><value>Steam recommended requirements</value></data>
   <data name="ScoreConfHigh" xml:space="preserve"><value>High confidence · 2+ labs</value></data>
   <data name="ScoreConfMid" xml:space="preserve"><value>Medium confidence · 1 lab</value></data>

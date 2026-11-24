@@ -62,6 +62,8 @@ public static partial class RtssProfiles
     public static string ReadAnsi(string path) => File.ReadAllText(path, System.Text.Encoding.Latin1);
     public static void WriteAnsi(string path, string text)
     {
+        // A RivaTuner that was never opened has no Profiles folder yet (it creates it on first run).
+        if (Path.GetDirectoryName(Path.GetFullPath(path)) is { } folder) Directory.CreateDirectory(folder);
         var temp = path + ".lotus.tmp"; File.WriteAllText(temp, text, System.Text.Encoding.Latin1); File.Move(temp, path, overwrite: true);
     }
     // Backups are exact byte copies (or a marker when the file did not exist); restore writes those bytes back.
@@ -107,10 +109,12 @@ public static class RtssInstall
 
 // Closes RivaTuner and opens it again from its installed folder (elevated helper only, after the player's UAC "yes").
 // Only RTSS.exe is closed; its profiles (limits, Reflex) are files and stay as they are.
+// openIfClosed: also opens a closed RivaTuner, inside the same approved step (RTSS.exe itself needs administrator, so
+// opening it from the helper spares the player a second Windows prompt), and waits until it answers.
 [SupportedOSPlatform("windows")]
 public static class RtssRestart
 {
-    public static void Run()
+    public static void Run(bool openIfClosed = false)
     {
         var exe = Path.Combine(RtssInstall.Dir, "RTSS.exe");
         if (!File.Exists(exe)) return;
@@ -119,9 +123,10 @@ public static class RtssRestart
         {
             using (p) { was = true; try { p.Kill(); p.WaitForExit(5000); } catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception) { } }
         }
-        if (!was) return; // not open: nothing to reopen (the next game start opens it as usual)
-        Thread.Sleep(600);
+        if (!was && !openIfClosed) return; // not open: nothing to reopen (the next game start opens it as usual)
+        if (was) Thread.Sleep(600);
         using var started = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exe) { UseShellExecute = true, WorkingDirectory = RtssInstall.Dir });
+        for (var i = 0; i < 40 && !Games.RtssSharedMemory.IsAvailable(); i++) Thread.Sleep(250); // up to 10 s
     }
 }
 
@@ -159,8 +164,11 @@ public static class RtssElevatedHelper
         {
             if (args[i] == "--rtss-layout")
             {
+                // The layouts run on RivaTuner's OverlayEditor plugin (shipped since RTSS 7.3); without it nothing would show.
+                if (!File.Exists(Path.Combine(RtssInstall.Dir, "Plugins", "Client", "OverlayEditor.dll"))) return 6;
                 RtssOverlayPlugin.ActivateLayout(args[i + 1], LotusOverlayLayout.DefaultConfig, Path.Combine(RtssInstall.Dir, "Profiles", "Config"), backups, Path.Combine(data, "Overlays"), Path.Combine(RtssInstall.Dir,"Profiles","Global"));
-                if (args.Contains("--rtss-restart")) RtssRestart.Run(); // profiles and limiter live in files, untouched by a restart
+                if (args.Contains("--rtss-open")) RtssRestart.Run(openIfClosed: true); // ready to show: reopened, or opened when closed
+                else if (args.Contains("--rtss-restart")) RtssRestart.Run(); // profiles and limiter live in files, untouched by a restart
             }
             else if (args[i] == "--rtss-layout-restore")
             {
@@ -212,8 +220,15 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
 {
     private string Map => sharedMemory ?? RtssSharedMemory.DefaultMap;
     private string InstallDir => Path.GetDirectoryName(Profiles)!;
-    // Open = its shared memory exists. Nothing is started or changed by asking.
-    public bool? Running() => RtssSharedMemory.IsAvailable(Map);
+    // Open = its shared memory exists. Nothing is started or changed by asking. The map can outlive RTSS.exe while another
+    // program (Lotus's own readers included) still holds it, so the real one also needs the RTSS process.
+    public bool? Running() => RtssSharedMemory.IsAvailable(Map) && (sharedMemory is not null || RtssProcessOpen());
+    private static bool RtssProcessOpen()
+    {
+        var found = System.Diagnostics.Process.GetProcessesByName("RTSS");
+        foreach (var p in found) p.Dispose();
+        return found.Length > 0;
+    }
     // Opens RivaTuner (its own manifest asks Windows for administrator) and waits up to 10 s until it answers, so the
     // game started next is hooked. False when it is not installed, the player declined the prompt, or it did not come up.
     public async Task<bool> StartAsync()
@@ -243,10 +258,23 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
         .Any(v => string.Equals(Path.GetFullPath(active), Path.GetFullPath(Path.Combine(Overlays, LotusOverlayLayout.FileFor(v))), StringComparison.OrdinalIgnoreCase));
     public bool HasLayoutBackup() => File.Exists(Path.Combine(Backups, "OverlayEditor.cfg.original"));
     public string? ActiveLayoutName() => LotusOverlayLayout.ActiveLayout(OverlayConfig) is { Length: > 0 } p ? Path.GetFileNameWithoutExtension(p) : null;
-    // restart: RivaTuner is closed and opened again in the same approved step, so the new layout shows without the player doing it.
-    public async Task<bool> ActivateLayoutAsync(string variant = LotusOverlayLayout.Main, bool restart = false) =>
-        await RunElevated(restart ? ["--rtss-layout", ExportLayout(variant), "--rtss-restart"] : ["--rtss-layout", ExportLayout(variant)]) == 0 && LayoutActive();
-    public async Task<bool> RestoreLayoutAsync() => await RunElevated(Running()==true?["--rtss-layout-restore","--rtss-restart"]:["--rtss-layout-restore"]) == 0 && !HasLayoutBackup();
+    // restart: in the same approved step RivaTuner is reopened (or opened, when closed), so the new layout shows at once
+    // without the player doing anything and without a second Windows prompt.
+    public async Task<bool> ActivateLayoutAsync(string variant = LotusOverlayLayout.Main, bool restart = false)
+    {
+        // Checked here too, so a RivaTuner without OverlayEditor does not cost the player a Windows permission prompt.
+        if (!File.Exists(Path.Combine(InstallDir, "Plugins", "Client", "OverlayEditor.dll"))) { LastFailure = "plugin"; return false; }
+        var code = await RunElevated(restart ? ["--rtss-layout", ExportLayout(variant), "--rtss-open"] : ["--rtss-layout", ExportLayout(variant)]);
+        LastFailure = code switch { 0 => LayoutActive() ? null : "other", 1223 => "uac", 6 => "plugin", _ => "other" };
+        return LastFailure is null;
+    }
+    public string? LastFailure { get; private set; }
+    public async Task<bool> RestoreLayoutAsync()
+    {
+        var code = await RunElevated(Running()==true?["--rtss-layout-restore","--rtss-restart"]:["--rtss-layout-restore"]);
+        LastFailure = code switch { 0 => HasLayoutBackup() ? "other" : null, 1223 => "uac", _ => "other" };
+        return LastFailure is null;
+    }
 
     public static readonly IReadOnlyList<RtssChange> LotusOverlay =
     [

@@ -136,13 +136,51 @@ public sealed class IntegrationsTests : IDisposable
         public bool? Running() => running;
     }
 
+    private sealed class FailingStyleRtss(string? reason) : IRtssIntegration
+    {
+        public ToolState State() => new(true, "7.3.7");
+        public bool? OverlayConfigured() => true; public bool HasBackup() => false;
+        public Task<bool> ApplyLotusOverlayAsync() => Task.FromResult(true); public Task<bool> RestoreAsync() => Task.FromResult(true);
+        public string ExportLayout(string variant = "top") => @"C:\x\Lotus.ovl"; public bool LayoutActive() => false;
+        public string? ActiveLayoutName() => null; public bool HasLayoutBackup() => false;
+        public Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false) => Task.FromResult(false);
+        public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
+        public string? LastFailure => reason;
+    }
+    [Theory, InlineData("uac", "OsFailedUac"), InlineData("plugin", "OsFailedPlugin"), InlineData("other", "OsFailed")]
+    public async Task OverlayStyle_failure_explains_the_reason(string reason, string key)
+    {
+        var text = new TextCatalog();
+        var vm = new IntegrationsViewModel(new FailingStyleRtss(reason), new Tools(true, false), text, _ => { });
+        await vm.UseStyleAsync("premium-top");
+        Assert.Equal(text[key], vm.Message);
+    }
+    [Fact] public async Task OverlayRestore_declined_permission_says_so()
+    {
+        var text = new TextCatalog();
+        var vm = new IntegrationsViewModel(new FailingRestoreRtss(), new Tools(true, false), text, _ => { });
+        await vm.RestoreLayoutAsync();
+        Assert.Equal(text["OsFailedUac"], vm.Message);
+    }
+    private sealed class FailingRestoreRtss : IRtssIntegration
+    {
+        public ToolState State() => new(true, "7.3.7");
+        public bool? OverlayConfigured() => true; public bool HasBackup() => false;
+        public Task<bool> ApplyLotusOverlayAsync() => Task.FromResult(true); public Task<bool> RestoreAsync() => Task.FromResult(true);
+        public string ExportLayout(string variant = "top") => @"C:\x\Lotus.ovl"; public bool LayoutActive() => true;
+        public string? ActiveLayoutName() => "Lotus"; public bool HasLayoutBackup() => true;
+        public Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false) => Task.FromResult(true);
+        public Task<bool> RestoreLayoutAsync() => Task.FromResult(false);
+        public string? LastFailure => "uac";
+    }
+
     [Fact] public async Task OverlayStyle_is_busy_before_game_detection_and_rejects_duplicate_commands()
     {
         var rtss = new StyleRtss(false); var detection = new TaskCompletionSource<bool>();
         var vm = new IntegrationsViewModel(rtss,new Tools(true,false),new TextCatalog(),_=>{}) { GameRunning=()=>detection.Task };
         var first=vm.UseStyleAsync("neon"); Assert.True(vm.Busy);
         await vm.UseStyleAsync("lateral"); Assert.Empty(rtss.Calls);
-        detection.SetResult(false); await first; Assert.False(vm.Busy); Assert.Equal([("neon",false)],rtss.Calls);
+        detection.SetResult(false); await first; Assert.False(vm.Busy); Assert.Equal([("neon",true)],rtss.Calls);
     }
 
     [Fact] public void Overlay_preview_uses_the_app_callback_for_the_Lotus_window_renderer()
@@ -178,12 +216,12 @@ public sealed class IntegrationsTests : IDisposable
         await vm.RestoreLayoutAsync(); Assert.Equal(1,rtss.Restores);
     }
 
-    [Fact] public async Task OverlayStyleOutsideAGameAppliesNowAndReopensOnlyWhenOpen()
+    [Fact] public async Task OverlayStyleOutsideAGameAppliesNowAndLeavesRivaTunerOpen()
     {
         var closed = new StyleRtss(running: false);
         var vm = new IntegrationsViewModel(closed, new Tools(true, false), new TextCatalog(), _ => { }) { GameRunning = () => Task.FromResult(false) };
         await vm.UseStyleAsync("neon");
-        Assert.Equal([("neon", false)], closed.Calls);   // RivaTuner closed: just switch the layout
+        Assert.Equal([("neon", true)], closed.Calls);    // every style leaves RivaTuner open in the same approved step
         Assert.Equal("neon", vm.ActiveVariant);
         await vm.OnGameClosedAsync();                    // nothing pending: nothing more happens
         Assert.Single(closed.Calls);
@@ -191,7 +229,7 @@ public sealed class IntegrationsTests : IDisposable
     [Fact] public async Task PremiumStyleOpensRtssAsPartOfTheSameAction()
     {
         var rtss=new StyleRtss(false);var vm=new IntegrationsViewModel(rtss,new Tools(false,false),new TextCatalog(),_=>{});
-        await vm.UseStyleAsync("premium-neon");Assert.Equal([("premium-neon",false)],rtss.Calls);Assert.Equal(1,rtss.Starts);
+        await vm.UseStyleAsync("premium-neon");Assert.Equal([("premium-neon",true)],rtss.Calls);Assert.Equal(1,rtss.Starts);
     }
 
     private sealed class Tools(bool ab, bool scs) : IToolDetector
@@ -258,7 +296,10 @@ public sealed class IntegrationsTests : IDisposable
         }
         var rtss = new WindowsRtssIntegration(Profiles, Backups, Runner, config, overlays);
         Assert.False(rtss.LayoutActive());
-        Assert.True(await rtss.ActivateLayoutAsync());
+        // RivaTuner without its OverlayEditor plugin: refused before any permission prompt, with the reason.
+        Assert.False(await rtss.ActivateLayoutAsync()); Assert.Equal("plugin", rtss.LastFailure); Assert.Equal(original, File.ReadAllText(config));
+        Directory.CreateDirectory(Path.Combine(root, "Plugins", "Client")); File.WriteAllText(Path.Combine(root, "Plugins", "Client", "OverlayEditor.dll"), "");
+        Assert.True(await rtss.ActivateLayoutAsync()); Assert.Null(rtss.LastFailure);
         Assert.True(rtss.LayoutActive()); Assert.True(rtss.HasLayoutBackup()); Assert.True(File.Exists(Path.Combine(overlays, "Lotus.ovl")));
         Assert.True(await rtss.RestoreLayoutAsync()); Assert.Equal(original, File.ReadAllText(config)); Assert.False(rtss.LayoutActive());
     }

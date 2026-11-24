@@ -6,6 +6,8 @@ using Xunit;
 
 namespace Lotus.Tests;
 
+// Same collection: OverlayPulseTests changes the shared Pulse colors that the Pulse preview renders with.
+[Collection("PulseLayoutStatics")]
 public sealed class PremiumOverlayTests : IDisposable
 {
     [Fact] public void Concurrent_preview_requests_produce_decodable_pngs_including_pulse()
@@ -57,8 +59,48 @@ public sealed class PremiumOverlayTests : IDisposable
     }
     [Fact] public void UnknownPluginConfigurationIsNotWritten()
     {
-        var config=Path.Combine(root,"Config");const string original="[Settings]\r\nX=1";File.WriteAllText(config,original);
+        var config=Path.Combine(root,"Config");const string original="[Plugins]\r\nOverlayEditor.dll=yes";File.WriteAllText(config,original);
         Assert.Throws<InvalidDataException>(()=>RtssOverlayPlugin.Enable(config,root));Assert.Equal(original,File.ReadAllText(config));
+    }
+    // A RivaTuner installed but never opened (fresh PC): no [Plugins] list yet, or no Config file at all.
+    [Fact] public void NeverOpenedRivaTunerGetsThePluginEnabledAndRestoredToOff()
+    {
+        var config=Path.Combine(root,"Config");var backups=Path.Combine(root,"Backup");File.WriteAllText(config,"[Settings]\r\nFirstRun=1");
+        RtssOverlayPlugin.Enable(config,backups);
+        var ini=new IniText(File.ReadAllText(config));Assert.Equal("1",ini.Get("Plugins","OverlayEditor.dll"));Assert.Equal("1",ini.Get("Settings","FirstRun"));
+        Assert.True(RtssOverlayPlugin.Restore(config,backups));Assert.Equal("0",new IniText(File.ReadAllText(config)).Get("Plugins","OverlayEditor.dll"));
+        var missing=Path.Combine(root,"NoConfig");var backups2=Path.Combine(root,"Backup2");
+        RtssOverlayPlugin.Enable(missing,backups2);Assert.Equal("1",new IniText(File.ReadAllText(missing)).Get("Plugins","OverlayEditor.dll"));
+        File.Delete(missing);Assert.True(RtssOverlayPlugin.Restore(missing,backups2));Assert.False(File.Exists(missing));
+    }
+    // Any style leaves the OSD on (a fresh RivaTuner or one with the OSD off would otherwise show nothing); premium also
+    // turns RivaTuner's own fill and box off. Switching styles and undoing give back the player's original flags.
+    [Fact] public void EveryStyleTurnsTheOsdOnAndUndoGivesBackTheOriginal()
+    {
+        var overlays=Path.Combine(root,"Overlays");var backups=Path.Combine(root,"Backups");var layoutCfg=Path.Combine(root,"OverlayEditor.cfg");
+        var plugin=Path.Combine(root,"Config");var global=Path.Combine(root,"Global");
+        const string original="[OSD]\r\nEnableOSD=0\r\nEnableFill=1\r\nEnableBgnd=1";File.WriteAllText(global,original);
+        RtssOverlayPlugin.ActivateLayout(LotusOverlayLayout.Export(overlays,LotusOverlayLayout.Lateral),layoutCfg,plugin,backups,overlays,global);
+        var ini=new IniText(File.ReadAllText(global));Assert.Equal("1",ini.Get("OSD","EnableOSD"));Assert.Equal("1",ini.Get("OSD","EnableFill"));Assert.Equal("1",ini.Get("OSD","EnableBgnd"));
+        RtssOverlayPlugin.ActivateLayout(LotusOverlayLayout.Export(overlays,LotusOverlayLayout.PremiumNeon),layoutCfg,plugin,backups,overlays,global);
+        ini=new IniText(File.ReadAllText(global));Assert.Equal("1",ini.Get("OSD","EnableOSD"));Assert.Equal("0",ini.Get("OSD","EnableFill"));Assert.Equal("0",ini.Get("OSD","EnableBgnd"));
+        RtssOverlayPlugin.ActivateLayout(LotusOverlayLayout.Export(overlays,LotusOverlayLayout.Neon),layoutCfg,plugin,backups,overlays,global);
+        ini=new IniText(File.ReadAllText(global));Assert.Equal("1",ini.Get("OSD","EnableOSD"));Assert.Equal("1",ini.Get("OSD","EnableFill"));
+        Assert.True(RtssOverlayPlugin.RestoreLayout(layoutCfg,plugin,backups,global));
+        Assert.Equal(original,File.ReadAllText(global));
+    }
+    [Fact] public void FreshInstallActivationWorksWithoutConfigOrGlobalAndRollsBackToNothing()
+    {
+        var overlays=Path.Combine(root,"Overlays");var backups=Path.Combine(root,"Backups");var layoutCfg=Path.Combine(root,"OverlayEditor.cfg");
+        var plugin=Path.Combine(root,"Profiles","Config");var global=Path.Combine(root,"Profiles","Global"); // no Profiles folder yet
+        var layout=LotusOverlayLayout.Export(overlays,LotusOverlayLayout.PremiumTop);
+        RtssOverlayPlugin.ActivateLayout(layout,layoutCfg,plugin,backups,overlays,global);
+        Assert.Equal("1",new IniText(File.ReadAllText(plugin)).Get("Plugins","OverlayEditor.dll"));
+        Assert.Equal("1",new IniText(File.ReadAllText(global)).Get("OSD","EnableOSD"));
+        Assert.Equal(Path.GetFullPath(layout),LotusOverlayLayout.ActiveLayout(layoutCfg));
+        Assert.True(RtssOverlayPlugin.RestoreLayout(layoutCfg,plugin,backups,global));
+        Assert.False(File.Exists(layoutCfg));Assert.Equal("0",new IniText(File.ReadAllText(plugin)).Get("Plugins","OverlayEditor.dll"));
+        Assert.Null(new IniText(File.ReadAllText(global)).Get("OSD","EnableOSD"));
     }
     [Fact] public void RestoreDoesNotOverwriteUserDisableWhenOriginalWasEnabled()
     {
@@ -69,9 +111,9 @@ public sealed class PremiumOverlayTests : IDisposable
     {
         var overlays=Path.Combine(root,"Overlays");var backups=Path.Combine(root,"Backups");var config=Path.Combine(root,"OverlayEditor.cfg");var plugin=Path.Combine(root,"Config");
         var layout=LotusOverlayLayout.Export(overlays,LotusOverlayLayout.PremiumTop);
-        const string original="[Settings]\r\nLayout=previous.ovl";File.WriteAllText(config,original);File.WriteAllText(plugin,"invalid plugin file");
+        const string original="[Settings]\r\nLayout=previous.ovl";File.WriteAllText(config,original);File.WriteAllText(plugin,"[Plugins]\r\nOverlayEditor.dll=invalid");
         Assert.Throws<InvalidDataException>(()=>RtssOverlayPlugin.ActivateLayout(layout,config,plugin,backups,overlays));
-        Assert.Equal(original,File.ReadAllText(config));Assert.Equal("invalid plugin file",File.ReadAllText(plugin));Assert.False(File.Exists(Path.Combine(backups,"OverlayEditor.cfg.original")));
+        Assert.Equal(original,File.ReadAllText(config));Assert.Equal("[Plugins]\r\nOverlayEditor.dll=invalid",File.ReadAllText(plugin));Assert.False(File.Exists(Path.Combine(backups,"OverlayEditor.cfg.original")));
     }
     [Fact] public void CleanBackgroundRestoresOnlyItsKeysAndKeepsNewFpsLimit()
     {

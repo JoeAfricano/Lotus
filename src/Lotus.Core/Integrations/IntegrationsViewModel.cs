@@ -18,6 +18,9 @@ public interface IRtssIntegration
     bool HasLayoutBackup();
     Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false); // restart: reopen RivaTuner in the same approved step
     Task<bool> RestoreLayoutAsync();
+    // Why the last ActivateLayoutAsync or RestoreLayoutAsync failed: "uac" (permission declined), "plugin" (RivaTuner without OverlayEditor,
+    // too old or partly installed), "other", or null.
+    string? LastFailure => null;
     // Low latency per game (RivaTuner NVIDIA Reflex frame limiter, which also turns on Reflex low-latency in games
     // without native Reflex). Only that game's profile changes; disabling restores the profile exactly as it was.
     // Mode: "fluid" = front edge sync (flat frame pacing, any GPU) | "responsive" = NVIDIA Reflex limiter.
@@ -110,20 +113,19 @@ public sealed class IntegrationsViewModel(IRtssIntegration rtss, IToolDetector t
                 return;
             }
             PendingVariant = null; OnPropertyChanged(nameof(PendingVariant));
-            var reopen = rtss.Running() == true;
-            if(!await rtss.ActivateLayoutAsync(variant,reopen)){Message=Text["OsFailed"];return;}
-            if(variant is "premium-top" or "premium-neon" or "premium-pulse")
-            {
-                if(!await rtss.StartAsync()){Message=Text["OsPreparedRtssClosed"];return;}
-            }
-            Message=Text[reopen?"OsAppliedReopened":"IntLayoutApplied"];
+            // One click leaves everything ready: layout, OverlayEditor plugin, OSD on, and RivaTuner (re)opened, all in the
+            // same Windows permission step. StartAsync is only a fallback when RivaTuner did not come up from that step.
+            var wasOpen = rtss.Running() == true;
+            if(!await rtss.ActivateLayoutAsync(variant,true)){Message=Text[rtss.LastFailure switch{"uac"=>"OsFailedUac","plugin"=>"OsFailedPlugin",_=>"OsFailed"}];return;}
+            if(rtss.Running()!=true&&!await rtss.StartAsync()){Message=Text["OsPreparedRtssClosed"];return;}
+            Message=Text[wasOpen?"OsAppliedReopened":"OsAppliedOpened"];
         });
     }
     public async Task OnGameClosedAsync() { if (PendingVariant is { } v) await UseStyleAsync(v); }
     public async Task RestoreLayoutAsync()
     {
         if(GameRunning is not null&&await GameRunning()){Message=Text["OsRestoreCloseGame"];OnPropertyChanged(nameof(Message));return;}
-        await Run(async()=>Message=Text[await rtss.RestoreLayoutAsync()?"IntLayoutRestored":"IntOverlayFailed"]);
+        await Run(async()=>Message=Text[await rtss.RestoreLayoutAsync()?"IntLayoutRestored":rtss.LastFailure=="uac"?"OsFailedUac":"IntOverlayFailed"]);
     }
     // null when the file could not be written (locked, disk full); the message explains it.
     public string? ExportLayout()
