@@ -155,7 +155,7 @@ public static class RtssElevatedHelper
 {
     public static int? TryRun(string[] args)
     {
-        var i = Array.FindIndex(args, a => a is "--rtss-apply" or "--rtss-restore" or "--rtss-layout" or "--rtss-layout-restore");
+        var i = Array.FindIndex(args, a => a is "--rtss-apply" or "--rtss-restore" or "--rtss-layout" or "--rtss-layout-restore" or "--rtss-hotkey");
         if (i < 0 || (args[i] != "--rtss-layout-restore" && i + 1 >= args.Length)) return null;
         // The invoking user's Lotus folder: UAC may elevate as another account, whose %LOCALAPPDATA% differs.
         var data = DataRoot(args);
@@ -169,6 +169,12 @@ public static class RtssElevatedHelper
                 RtssOverlayPlugin.ActivateLayout(args[i + 1], LotusOverlayLayout.DefaultConfig, Path.Combine(RtssInstall.Dir, "Profiles", "Config"), backups, Path.Combine(data, "Overlays"), Path.Combine(RtssInstall.Dir,"Profiles","Global"));
                 if (args.Contains("--rtss-open")) RtssRestart.Run(openIfClosed: true); // ready to show: reopened, or opened when closed
                 else if (args.Contains("--rtss-restart")) RtssRestart.Run(); // profiles and limiter live in files, untouched by a restart
+            }
+            else if (args[i] == "--rtss-hotkey")
+            {
+                RtssOverlayHotkey.Apply(args[i + 1], RtssOverlayHotkey.DefaultConfig, Path.Combine(RtssInstall.Dir, "Profiles", "Config"), backups);
+                if (args.Contains("--rtss-restart")) RtssRestart.Run(); // the plugin reads its keys when RivaTuner starts
+                return 0;
             }
             else if (args[i] == "--rtss-layout-restore")
             {
@@ -269,6 +275,23 @@ public sealed class WindowsRtssIntegration(string? profilesDir = null, string? b
         return LastFailure is null;
     }
     public string? LastFailure { get; private set; }
+
+    // Overlay show/hide key: RivaTuner's HotkeyHandler plugin, and MSI Afterburner's own (read only).
+    private string HotkeyConfig => overlayConfig is null ? RtssOverlayHotkey.DefaultConfig : Path.Combine(Path.GetDirectoryName(overlayConfig)!, "HotkeyHandler.cfg");
+    public uint OverlayHotkey() => RtssOverlayHotkey.Read(HotkeyConfig, Path.Combine(Profiles, "Config"));
+    public uint? AfterburnerOverlayHotkey()
+    {
+        var cfg = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "MSI Afterburner", "Profiles", "MSIAfterburner.cfg");
+        try { return File.Exists(cfg) && RtssOverlayHotkey.Parse(new IniText(RtssProfiles.ReadAnsi(cfg)).Get("Settings", "OSDToggleHotkey")) is var k and > 0 ? k : null; }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return null; }
+    }
+    public async Task<bool> SetOverlayHotkeyAsync(string choice)
+    {
+        if (!Lotus.Core.Integrations.OverlayHotkeys.Choices.Contains(choice)) return false;
+        var code = await RunElevated(Running() == true ? ["--rtss-hotkey", choice, "--rtss-restart"] : ["--rtss-hotkey", choice]);
+        LastFailure = code switch { 0 => null, 1223 => "uac", _ => "other" };
+        return LastFailure is null && (Lotus.Core.Integrations.OverlayHotkeys.Code(choice) is not { } want || OverlayHotkey() == want);
+    }
     public async Task<bool> RestoreLayoutAsync()
     {
         var code = await RunElevated(Running()==true?["--rtss-layout-restore","--rtss-restart"]:["--rtss-layout-restore"]);

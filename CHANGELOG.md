@@ -4,6 +4,9 @@ Todas as versões estão em [Releases](../../releases). Para atualizar, rode o i
 
 ## 2.0.5-beta "Lotus 1.0.5 Beta" (23/11/2026)
 
+### Novo
+- **Atalho do overlay no Lotus.** Em Meus Jogos › Overlay, escolha a tecla que mostra e esconde o overlay no jogo (Scroll Lock, Pause, Ctrl + F10, Ctrl + F11, Ctrl + Alt + F10, Ctrl + Alt + F11 ou Ctrl + Shift + O), sem abrir o RivaTuner nem o MSI Afterburner. O atalho fica guardado no próprio RivaTuner, então funciona mesmo com o Lotus fechado. Se o MSI Afterburner já usa uma tecla para isso, o Lotus mostra qual é e não deixa repetir a mesma, porque um programa desfaria o que o outro fez. "Nenhum" devolve o que o RivaTuner tinha antes.
+
 ### Corrigido
 - **Overlay num PC com RivaTuner recém-instalado.** Num computador em que o RivaTuner foi instalado e ainda não tinha sido aberto, "Usar" em qualquer estilo de overlay dava "Não deu para trocar o estilo". O RivaTuner só cria a pasta de perfis e a lista de plugins na primeira vez que abre, e o Lotus não esperava por isso. Agora o Lotus cria o que falta e o estilo funciona de primeira. Testado num RivaTuner 7.3.7 recém-instalado e nunca aberto.
 

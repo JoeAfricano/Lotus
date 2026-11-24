@@ -4,6 +4,9 @@ Release notes in English, shown on the What's new page when Lotus is in English.
 
 ## 2.0.5-beta "Lotus 1.0.5 Beta" (11/23/2026)
 
+### New
+- **Overlay shortcut in Lotus.** In My Games › Overlay, pick the key that shows and hides the overlay in game (Scroll Lock, Pause, Ctrl + F10, Ctrl + F11, Ctrl + Alt + F10, Ctrl + Alt + F11 or Ctrl + Shift + O) without opening RivaTuner or MSI Afterburner. The shortcut is kept by RivaTuner itself, so it works even with Lotus closed. If MSI Afterburner already uses a key for this, Lotus shows which one and does not allow the same key, since one program would undo the other. "None" gives back what RivaTuner had before.
+
 ### Fixed
 - **Overlay on a PC with a freshly installed RivaTuner.** On a computer where RivaTuner was installed but never opened, "Use" on any overlay style showed "The style could not be changed". RivaTuner only creates its profiles folder and plugin list the first time it opens, and Lotus did not expect that. Lotus now creates what is missing and the style works the first time. Tested on a freshly installed, never-opened RivaTuner 7.3.7.
 
