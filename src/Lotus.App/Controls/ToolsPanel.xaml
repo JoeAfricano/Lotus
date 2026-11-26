@@ -555,6 +555,13 @@
      <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="{Binding Text[ToolDriverTitle]}" FontWeight="SemiBold"/><TextBlock Text="{Binding DriverStatus}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-driver"/><TextBlock app:Rich.Text="{Binding Text[ToolDriverWhat]}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"/></StackPanel>
      <Button Grid.Column="2" Content="{Binding Text[ToolDrvCheck]}" Click="OnCheckDrivers" Visibility="{Binding CanCheckDrivers, Converter={StaticResource BooleanVisibility}}" Style="{StaticResource PrimaryButtonStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="tools-drivers-check"/>
     </Grid>
+    <!-- NVIDIA shader cache size: read only -->
+    <Grid ColumnSpacing="12" Padding="14,10" CornerRadius="12" Background="{ThemeResource SubtleBrush}" Visibility="{Binding ShaderCacheText, Converter={StaticResource PresenceVisibility}}" AutomationProperties.AutomationId="tools-shader-cache">
+     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+     <FontIcon Glyph="&#xE7BA;" FontSize="14" Foreground="{ThemeResource WarningBrush}" Visibility="{Binding ShaderCacheWarning, Converter={StaticResource BooleanVisibility}}" VerticalAlignment="Top" Margin="0,2,0,0"/>
+     <FontIcon Glyph="&#xE73E;" FontSize="14" Foreground="{ThemeResource SuccessBrush}" Visibility="{Binding ShaderCacheWarning, Converter={StaticResource BooleanVisibility}, ConverterParameter=Invert}" VerticalAlignment="Top" Margin="0,2,0,0"/>
+     <TextBlock Grid.Column="1" Text="{Binding ShaderCacheText}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" AutomationProperties.AutomationId="tools-shader-cache-text"/>
+    </Grid>
     <ItemsControl ItemsSource="{Binding DriverRows}" AutomationProperties.AutomationId="tools-driver-rows">
      <ItemsControl.ItemTemplate><DataTemplate>
       <Grid ColumnSpacing="12" Margin="0,3"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="300"/><ColumnDefinition/></Grid.ColumnDefinitions>

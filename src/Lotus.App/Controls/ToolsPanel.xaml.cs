@@ -164,6 +164,7 @@ public sealed partial class ToolsPanel : UserControl
         if (id is "monitor" or "features" && DataContext is ToolsViewModel { Gaming: { Monitor: null, Rows.Count: 0 } gm }) _ = gm.LoadAsync(); // reading only
         if (id == "crash" && DataContext is ToolsViewModel { Crashes: { Loaded: false } cr }) _ = cr.LoadAsync(); // reading only
         if (id == "windows" && DataContext is ToolsViewModel { Upkeep: { Loaded: false } up }) _ = up.LoadAsync(); // reading only
+        if (id == "drivers" && DataContext is ToolsViewModel tv) _ = tv.LoadShaderCacheAsync(); // reading only (NVIDIA driver settings)
         Motion.EnterPage(cards[id]);
     }
     private void OnBack(object sender, RoutedEventArgs e)

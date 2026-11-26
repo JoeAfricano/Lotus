@@ -189,6 +189,21 @@ public sealed class ToolsViewModel(IAppCloser apps, ITempCleaner temp, IConnecti
         OnPropertyChanged(nameof(HasNetHistory));
     }
 
+    // ---- NVIDIA shader cache size (read only, when the drivers card opens; null reader = not an NVIDIA PC) ----
+    public Func<ShaderCacheSize?>? ShaderCacheReader { get; set; }
+    public string ShaderCacheText { get; private set; } = "";
+    public bool ShaderCacheWarning { get; private set; }
+    public async Task LoadShaderCacheAsync()
+    {
+        if (ShaderCacheReader is not { } read || ShaderCacheText.Length > 0) return;
+        ShaderCacheSize? size = null;
+        try { size = await Task.Run(read); } catch (Exception ex) { log(ex); }
+        if (size is null) return; // not an NVIDIA card, or the driver did not answer: nothing shown
+        ShaderCacheWarning = size is { Value: 0, DriverDefault: false } || size is { } v && ShaderCacheRules.Small(v);
+        ShaderCacheText = ShaderCacheRules.Describe(size, Text, Culture) + " " + Text["ScDriverNote"];
+        OnPropertyChanged(nameof(ShaderCacheText)); OnPropertyChanged(nameof(ShaderCacheWarning));
+    }
+
     // ---- Outdated drivers: NVIDIA's service for the graphics card, Windows Update for the rest ----
     public TaskState DriverTask { get; } = new();
     public ObservableCollection<InfoRow> DriverRows { get; } = [];

@@ -4046,4 +4046,11 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="WhyHitchGpuBody" xml:space="preserve"><value>{0} Nesses momentos a placa de vídeo estava 100% ocupada. Baixar resolução, texturas ou usar DLSS/FSR num modo mais leve dá folga para os picos.</value></data>
   <data name="WhyHitchGpuTip" xml:space="preserve"><value>Dica: use DLSS/FSR num modo mais leve.</value></data>
   <data name="GsMeasureNoFrames" xml:space="preserve"><value>Nenhum quadro do jogo chegou nos primeiros 10 segundos, então a medição parou. O jogo precisa estar na tela e rodando (não no menu de pausa nem minimizado). Se estava, tente de novo: o Lotus fecha sozinho gravações antigas que tenham ficado presas.</value></data>
+  <data name="ScNotRead" xml:space="preserve"><value>Cache de shaders da NVIDIA: não verificado.</value></data>
+  <data name="ScDefault" xml:space="preserve"><value>Cache de shaders da NVIDIA: tamanho padrão do driver.</value></data>
+  <data name="ScUnlimited" xml:space="preserve"><value>Cache de shaders da NVIDIA: Ilimitado. Bom para jogos que preparam shaders durante o jogo.</value></data>
+  <data name="ScOff" xml:space="preserve"><value>Cache de shaders da NVIDIA: desligado. Assim o jogo prepara os shaders de novo toda vez e trava mais. Para ligar: Painel de Controle da NVIDIA › Gerenciar configurações 3D › Tamanho do cache do shader (escolha 10 GB ou Ilimitado).</value></data>
+  <data name="ScSmall" xml:space="preserve"><value>Cache de shaders da NVIDIA: {0}. É pouco para jogos atuais. No Painel de Controle da NVIDIA › Gerenciar configurações 3D › Tamanho do cache do shader, escolha 10 GB ou Ilimitado.</value></data>
+  <data name="ScSize" xml:space="preserve"><value>Cache de shaders da NVIDIA: {0}.</value></data>
+  <data name="ScDriverNote" xml:space="preserve"><value>Cada atualização do driver de vídeo zera esse cache: nas primeiras partidas depois dela, o jogo pode travar mais ao passar por cada área pela primeira vez.</value></data>
 </root>

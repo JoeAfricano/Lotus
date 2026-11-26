@@ -4046,4 +4046,11 @@ Your games and Windows are not changed.</value></data>
   <data name="WhyHitchGpuBody" xml:space="preserve"><value>{0} At those moments the graphics card was 100% busy. Lowering resolution or textures, or using DLSS/FSR in a lighter mode, leaves room for the peaks.</value></data>
   <data name="WhyHitchGpuTip" xml:space="preserve"><value>Tip: use DLSS/FSR in a lighter mode.</value></data>
   <data name="GsMeasureNoFrames" xml:space="preserve"><value>No game frame arrived in the first 10 seconds, so the measurement stopped. The game must be on screen and running (not paused or minimized). If it was, try again: Lotus closes old recordings that got stuck on its own.</value></data>
+  <data name="ScNotRead" xml:space="preserve"><value>NVIDIA shader cache: not verified.</value></data>
+  <data name="ScDefault" xml:space="preserve"><value>NVIDIA shader cache: the driver's default size.</value></data>
+  <data name="ScUnlimited" xml:space="preserve"><value>NVIDIA shader cache: Unlimited. Good for games that prepare shaders while playing.</value></data>
+  <data name="ScOff" xml:space="preserve"><value>NVIDIA shader cache: off. The game then prepares shaders again every time and stutters more. To turn it on: NVIDIA Control Panel › Manage 3D settings › Shader Cache Size (choose 10 GB or Unlimited).</value></data>
+  <data name="ScSmall" xml:space="preserve"><value>NVIDIA shader cache: {0}. That is little for current games. In NVIDIA Control Panel › Manage 3D settings › Shader Cache Size, choose 10 GB or Unlimited.</value></data>
+  <data name="ScSize" xml:space="preserve"><value>NVIDIA shader cache: {0}.</value></data>
+  <data name="ScDriverNote" xml:space="preserve"><value>Every graphics driver update empties this cache: in the first sessions after it, the game may stutter more the first time through each area.</value></data>
 </root>

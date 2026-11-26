@@ -183,5 +183,35 @@ public static class NvidiaDriverVsync
             NativeLibrary.Free(lib);
         }
     }
+    // Global profile "Shader Cache Size" (0x00AC8497): (value, isCurrentPredefined). Read only; null when not NVIDIA or unreadable.
+    public const uint ShaderCacheId = 0x00AC8497;
+    private const uint QiGetGlobalProfile = 0x617bff9f;
+    private const int SettingIsPredefined = 4112;
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int GlobalProfileFn(IntPtr session, out IntPtr profile);
+    public static (uint Value, bool Predefined)? ReadShaderCache()
+    {
+        if (!NativeLibrary.TryLoad("nvapi64.dll", out var lib)) return null;
+        var session = IntPtr.Zero; var setting = IntPtr.Zero;
+        try
+        {
+            if (qi_(lib) is not { } qi) return null;
+            T Fn<T>(uint id) where T : Delegate => qi(id) is var p && p != IntPtr.Zero ? Marshal.GetDelegateForFunctionPointer<T>(p) : throw new EntryPointNotFoundException();
+            if (Fn<InitFn>(QiInitialize)() != 0 || Fn<SessionFn>(QiCreateSession)(out session) != 0 || Fn<SessionOnlyFn>(QiLoad)(session) != 0) return null;
+            if (Fn<GlobalProfileFn>(QiGetGlobalProfile)(session, out var profile) != 0) return null;
+            setting = Marshal.AllocHGlobal(SettingSize);
+            Marshal.Copy(new byte[SettingSize], 0, setting, SettingSize);
+            Marshal.WriteInt32(setting, 0, SettingSize | (1 << 16)); // NVDRS_SETTING_VER1
+            if (Fn<GetSettingFn>(QiGetSetting)(session, profile, ShaderCacheId, setting) != 0) return null;
+            return ((uint)Marshal.ReadInt32(setting, SettingCurrent), Marshal.ReadInt32(setting, SettingIsPredefined) != 0);
+        }
+        catch (Exception ex) when (ex is MarshalDirectiveException or EntryPointNotFoundException or AccessViolationException) { return null; }
+        finally
+        {
+            if (setting != IntPtr.Zero) Marshal.FreeHGlobal(setting);
+            if (session != IntPtr.Zero)
+                try { if (qi_(lib) is { } q && q(QiDestroySession) is var d && d != IntPtr.Zero) Marshal.GetDelegateForFunctionPointer<SessionOnlyFn>(d)(session); } catch (EntryPointNotFoundException) { }
+            NativeLibrary.Free(lib);
+        }
+    }
     private static QueryInterfaceFn? qi_(IntPtr lib) => NativeLibrary.TryGetExport(lib, "nvapi_QueryInterface", out var p) ? Marshal.GetDelegateForFunctionPointer<QueryInterfaceFn>(p) : null;
 }
