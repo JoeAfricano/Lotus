@@ -138,6 +138,7 @@ public sealed partial class MainWindow : Window
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
         games.Watch = sessionHub; // the light-mode check, shared (no second polling loop)
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
+        games.HitchContext = new Lotus.Infrastructure.Games.PdhHitchContextSampler(); // cause of each hitch in "Por que está travando?"
         games.Heat = cpuHeat;
         WatchCpuHeat();
         RecoverGpuTune(); // undo a GPU tune left unfinished by a crash

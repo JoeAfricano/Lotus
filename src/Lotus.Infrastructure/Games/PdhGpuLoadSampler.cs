@@ -37,7 +37,7 @@ public sealed class PdhGpuLoadSampler : IGpuLoadSampler
         finally { PdhCloseQuery(query); }
     }
 
-    private static double? Read(IntPtr counter)
+    internal static double? Read(IntPtr counter)
     {
         uint size = 0;
         if (PdhGetFormattedCounterArray(counter, FmtDouble, ref size, out _, IntPtr.Zero) != MoreData || size == 0) return null;

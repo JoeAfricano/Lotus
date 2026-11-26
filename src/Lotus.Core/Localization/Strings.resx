@@ -4026,4 +4026,23 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="HkPressedHint" xml:space="preserve"><value>Apertado: está desligado neste jogo. Aperte de novo para voltar como estava.</value></data>
   <data name="RtssNotOpenedStart" xml:space="preserve"><value>O RivaTuner está fechado e não abriu junto com o Lotus. Abra o RivaTuner antes de jogar: sem ele, o Modo Console, o limite de FPS e o overlay do Lotus não funcionam.</value></data>
   <data name="GpSession_rtss-closed" xml:space="preserve"><value>O RivaTuner estava fechado, então o limite de FPS e a troca de Hz deste jogo não valeram agora. O Lotus já abriu o RivaTuner: feche o jogo e abra de novo para valer.</value></data>
+  <data name="WhyHitchPart" xml:space="preserve"><value>{0}: {1}</value></data>
+  <data name="WhyHitchSplit" xml:space="preserve"><value>Das **{0} travadas** acima de 50 ms, a causa provável de cada uma foi: {1}.</value></data>
+  <data name="WhyHitchApps" xml:space="preserve"><value>Quem mais usava a RAM: {0}.</value></data>
+  <data name="WhyHitchNameCpu" xml:space="preserve"><value>processador/jogo</value></data>
+  <data name="WhyHitchNameMemory" xml:space="preserve"><value>memória</value></data>
+  <data name="WhyHitchNameDisk" xml:space="preserve"><value>disco</value></data>
+  <data name="WhyHitchNameGpu" xml:space="preserve"><value>placa de vídeo</value></data>
+  <data name="WhyHitchCpuTitle" xml:space="preserve"><value>As travadas vêm do processador e do próprio jogo</value></data>
+  <data name="WhyHitchCpuBody" xml:space="preserve"><value>{0} Nesses momentos a placa de vídeo estava folgada, sem leitura de disco nem de memória a mais: o jogo travou fazendo alguma tarefa própria (como preparar shaders ou carregar uma área). Pré-compilar os shaders, baixar opções que pesam no processador (multidão, distância de visão, sombras) e fechar programas abertos costuma ajudar. Em processadores com pouco cache, parte disso não some só com ajustes.</value></data>
+  <data name="WhyHitchCpuTip" xml:space="preserve"><value>Dica: baixe multidão, distância de visão e sombras.</value></data>
+  <data name="WhyHitchMemoryTitle" xml:space="preserve"><value>As travadas vêm da memória RAM cheia</value></data>
+  <data name="WhyHitchMemoryBody" xml:space="preserve"><value>{0} Nesses momentos o Windows estava buscando de volta no disco partes da memória que não cabiam na RAM. Feche programas pesados antes de jogar e confira se a compressão de memória está ligada (Ferramentas › Windows em dia). Mais RAM resolve de vez.</value></data>
+  <data name="WhyHitchMemoryTip" xml:space="preserve"><value>Dica: feche programas pesados e confira a compressão de memória.</value></data>
+  <data name="WhyHitchDiskTitle" xml:space="preserve"><value>As travadas vêm de leitura de disco</value></data>
+  <data name="WhyHitchDiskBody" xml:space="preserve"><value>{0} Nesses momentos o jogo estava lendo muitos arquivos. Isso é comum ao entrar numa área nova. Instalar o jogo num SSD (de preferência NVMe) e deixar espaço livre no disco ajuda.</value></data>
+  <data name="WhyHitchDiskTip" xml:space="preserve"><value>Dica: instale o jogo num SSD.</value></data>
+  <data name="WhyHitchGpuTitle" xml:space="preserve"><value>As travadas vêm da placa de vídeo no limite</value></data>
+  <data name="WhyHitchGpuBody" xml:space="preserve"><value>{0} Nesses momentos a placa de vídeo estava 100% ocupada. Baixar resolução, texturas ou usar DLSS/FSR num modo mais leve dá folga para os picos.</value></data>
+  <data name="WhyHitchGpuTip" xml:space="preserve"><value>Dica: use DLSS/FSR num modo mais leve.</value></data>
 </root>

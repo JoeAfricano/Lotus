@@ -7,7 +7,8 @@ public sealed record StutterFinding(string Key, StutterFix Fix, int Weight, stri
 public sealed record StutterInputs(double AverageFps, double Low1Fps, int SpikeCount, double DurationSeconds, double? GpuBusy, int TargetFps,
     ShaderState? Shaders, int PendingProfileSteps, double? MemoryLoadPercent, IReadOnlyList<string> TopMemoryApps, bool CanLowerQuality, IReadOnlyList<string>? Overlays = null, CpuHeat? Heat = null,
     double? FrameCap = null, // a frame limiter in force (RivaTuner), when known
-    double RealRefreshHz = 0, bool AdaptiveSync = false); // the monitor's real rate (e.g. 74.973) and whether FreeSync/G-Sync is on
+    double RealRefreshHz = 0, bool AdaptiveSync = false, // the monitor's real rate (e.g. 74.973) and whether FreeSync/G-Sync is on
+    HitchBreakdown? Hitches = null); // likely cause of each frame above 50 ms (see HitchCauses); Detail is filled in by the caller
 
 public static class StutterDiagnosis
 {
@@ -27,6 +28,9 @@ public static class StutterDiagnosis
         if (!i.AdaptiveSync && i.FrameCap is { } limit && FramePacing.AboveRefresh(limit, i.RealRefreshHz))
             list.Add(new("WhyCapAboveRefresh", StutterFix.None, stutters ? 58 : 40,
                 string.Create(System.Globalization.CultureInfo.InvariantCulture, $"{limit:0.##} FPS / {i.RealRefreshHz:0.###} Hz")));
+        // Where the hitches came from, when there were enough to show a pattern. Memory as the main cause offers closing apps.
+        if (i.Hitches is { Total: >= HitchCauses.MinHitches } h)
+            list.Add(new("WhyHitch" + h.Main, h.Main == HitchCause.Memory && i.TopMemoryApps.Count > 0 ? StutterFix.CloseApps : StutterFix.None, 85));
         // Sudden drops: shader compilation is the classic cause in modern DirectX 12 games.
         if (stutters && i.Shaders is ShaderState.Ready or ShaderState.Stale) list.Add(new("WhyShaders", StutterFix.Precompile, 90));
         if (i.MemoryLoadPercent is >= 85) list.Add(new("WhyMemory", StutterFix.CloseApps, stutters ? 80 : 50, string.Join(", ", i.TopMemoryApps.Take(3))));

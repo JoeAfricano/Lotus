@@ -577,6 +577,7 @@ public sealed partial class GamesViewModel : ObservableObject
 
     // ---- Por que está travando? ----
     public IMemoryPressure? Memory { get; set; }
+    public IHitchContextSampler? HitchContext { get; set; } // per-second page-file reads, game reads and GPU load (cause of each hitch)
     public ICpuHeatSampler? Heat { get; set; } // processor held back by heat or power during the measurement
     // GpuBusy (%) and LatencyMs come from RivaTuner's Reflex timings when the game gives them; null = not measured.
     public sealed record StutterReport(string Summary, IReadOnlyList<StutterFinding> Findings, double AverageFps = 0, double Low1Fps = 0, int Spikes = 0, DateTimeOffset? When = null,
@@ -592,12 +593,14 @@ public sealed partial class GamesViewModel : ObservableObject
             status = Text.Format("WhyMeasuring", seconds); Notify();
             var gpu = gpuSampler?.AverageAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<double?>(null);
             var heat = Heat?.MeasureAsync(TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<CpuHeat?>(null);
+            var context = HitchContext?.SampleAsync(run.Pid, TimeSpan.FromSeconds(seconds), token) ?? Task.FromResult<IReadOnlyList<HitchSecond>>([]);
             var session = await capture!.CaptureAsync(new(new(run.Pid, run.Executable, run.StartedUtc), seconds, Elevated: true, "Lotus: " + game.Name, "{}"), token);
             var gpuBusy = session.Extras?.GpuBusyPercent ?? await gpu; // the game's own GPU share (RivaTuner/Reflex) beats the whole-GPU load
             // With frame generation the Reflex markers cover only the real frames: the generator's delay is missing, so
             // the number would look better than it feels. Not shown then.
             var latencyMs = PrefsFor(game).UseFrameGen ? null : session.Extras?.PcLatencyMs;
             CpuHeat? cpuHeat = null; try { cpuHeat = await heat; } catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
+            IReadOnlyList<HitchSecond> perSecond = []; try { perSecond = await context; } catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
             if (session.Data?.Statistics is not { } s) { status = Text["GsMeasureFailed"]; Notify(); return null; }
             var (recipe, support) = Recipe(game);
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
@@ -608,9 +611,11 @@ public sealed partial class GamesViewModel : ObservableObject
             var pending = GameProfile is null ? 0 : (await GameProfile.PreviewAsync()).Count(p => !p.AlreadyApplied);
             var (load, apps) = Memory is null ? (0d, (IReadOnlyList<string>)[]) : await Task.Run(() => Memory.Read(game), token);
             IReadOnlyList<string> overlays = Overlays is null ? [] : await Task.Run(() => (IReadOnlyList<string>)[.. Overlays.Scan().Where(o => o.Heavy).Select(o => o.Name)], token);
+            var hitches = session.Data?.Frames is { Count: > 0 } frames ? HitchCauses.Classify(frames, perSecond) : null;
             var findings = StutterDiagnosis.Analyze(new(s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds, gpuBusy, target,
                 ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower, overlays, cpuHeat, await Task.Run(() => RtssCapFor(run.Executable), token),
-                FramePacing.RealRefresh(pc.RefreshHz, pc.ExactRefreshHz), vrr));
+                FramePacing.RealRefresh(pc.RefreshHz, pc.ExactRefreshHz), vrr, hitches));
+            findings = [.. findings.Select(f => f.Key.StartsWith("WhyHitch", StringComparison.Ordinal) && hitches is { } h ? f with { Detail = HitchSplit(h, f.Fix == StutterFix.CloseApps ? apps : []) } : f)];
             if (findings.Any(f => f.Fix == StutterFix.LowerQuality)) pendingSteps[game.Key] = -1; // ready for "Otimizar configurações" after closing
             var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds)
                 + (latencyMs is { } ms ? " · " + Text.Format("WhyLatency", ms) : "");
@@ -621,6 +626,15 @@ public sealed partial class GamesViewModel : ObservableObject
         }
         catch (OperationCanceledException) { status = ""; Notify(); return null; }
         catch (Exception ex) { log(ex); status = Text["GsMeasureFailed"]; Notify(); return null; }
+    }
+
+    // "12 travadas: processador 9 · memória 3" (only the causes that appeared, biggest first), plus who uses the RAM.
+    private string HitchSplit(HitchBreakdown h, IReadOnlyList<string> apps)
+    {
+        var parts = new[] { HitchCause.Cpu, HitchCause.Memory, HitchCause.Disk, HitchCause.Gpu }.Where(c => h.Count(c) > 0).OrderByDescending(h.Count)
+            .Select(c => Text.Format("WhyHitchPart", Text["WhyHitchName" + c], h.Count(c)));
+        var line = Text.Format("WhyHitchSplit", h.Total, string.Join(" · ", parts));
+        return apps.Count > 0 ? line + " " + Text.Format("WhyHitchApps", string.Join(", ", apps.Take(3))) : line;
     }
 
     // The only fix applied while the game runs: the Game profile (journaled, reversible).

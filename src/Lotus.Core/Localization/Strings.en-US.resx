@@ -4026,4 +4026,23 @@ Your games and Windows are not changed.</value></data>
   <data name="HkPressedHint" xml:space="preserve"><value>Pressed: it is off in this game. Press again to restore it.</value></data>
   <data name="RtssNotOpenedStart" xml:space="preserve"><value>RivaTuner is closed and did not open with Lotus. Open RivaTuner before playing: without it, Console Mode, the FPS limit and the Lotus overlay do not work.</value></data>
   <data name="GpSession_rtss-closed" xml:space="preserve"><value>RivaTuner was closed, so this game's FPS limit and Hz switch did not apply now. Lotus has opened RivaTuner: close the game and open it again for them to apply.</value></data>
+  <data name="WhyHitchPart" xml:space="preserve"><value>{0}: {1}</value></data>
+  <data name="WhyHitchSplit" xml:space="preserve"><value>Of the **{0} hitches** above 50 ms, the likely cause of each was: {1}.</value></data>
+  <data name="WhyHitchApps" xml:space="preserve"><value>Using the most RAM: {0}.</value></data>
+  <data name="WhyHitchNameCpu" xml:space="preserve"><value>processor/game</value></data>
+  <data name="WhyHitchNameMemory" xml:space="preserve"><value>memory</value></data>
+  <data name="WhyHitchNameDisk" xml:space="preserve"><value>disk</value></data>
+  <data name="WhyHitchNameGpu" xml:space="preserve"><value>graphics card</value></data>
+  <data name="WhyHitchCpuTitle" xml:space="preserve"><value>The hitches come from the processor and the game itself</value></data>
+  <data name="WhyHitchCpuBody" xml:space="preserve"><value>{0} At those moments the graphics card had room, with no extra disk or memory reads: the game stalled doing its own work (such as preparing shaders or loading an area). Pre-compiling shaders, lowering processor-heavy options (crowds, view distance, shadows) and closing open programs usually helps. On processors with little cache, part of it does not go away with settings alone.</value></data>
+  <data name="WhyHitchCpuTip" xml:space="preserve"><value>Tip: lower crowds, view distance and shadows.</value></data>
+  <data name="WhyHitchMemoryTitle" xml:space="preserve"><value>The hitches come from full RAM</value></data>
+  <data name="WhyHitchMemoryBody" xml:space="preserve"><value>{0} At those moments Windows was reading back from the disk parts of memory that did not fit in RAM. Close heavy programs before playing and check that memory compression is on (Tools › Windows up to date). More RAM fixes it for good.</value></data>
+  <data name="WhyHitchMemoryTip" xml:space="preserve"><value>Tip: close heavy programs and check memory compression.</value></data>
+  <data name="WhyHitchDiskTitle" xml:space="preserve"><value>The hitches come from disk reads</value></data>
+  <data name="WhyHitchDiskBody" xml:space="preserve"><value>{0} At those moments the game was reading many files. This is common when entering a new area. Installing the game on an SSD (preferably NVMe) and keeping free space on the disk helps.</value></data>
+  <data name="WhyHitchDiskTip" xml:space="preserve"><value>Tip: install the game on an SSD.</value></data>
+  <data name="WhyHitchGpuTitle" xml:space="preserve"><value>The hitches come from the graphics card at its limit</value></data>
+  <data name="WhyHitchGpuBody" xml:space="preserve"><value>{0} At those moments the graphics card was 100% busy. Lowering resolution or textures, or using DLSS/FSR in a lighter mode, leaves room for the peaks.</value></data>
+  <data name="WhyHitchGpuTip" xml:space="preserve"><value>Tip: use DLSS/FSR in a lighter mode.</value></data>
 </root>
