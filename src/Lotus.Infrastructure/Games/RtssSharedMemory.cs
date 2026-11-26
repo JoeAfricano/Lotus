@@ -144,7 +144,7 @@ public sealed class RtssPreferredCaptureProvider(IFrameCaptureProvider fallback,
         var started = DateTimeOffset.UtcNow;
         using var reflexStop = CancellationTokenSource.CreateLinkedTokenSource(stop);
         var reflex = Task.Run(() => SampleReflexAsync(pid, reflexStop.Token));
-        FrameStatistics? stats; int count; string algorithm, diagnostics;
+        FrameStatistics? stats; int count; string algorithm, diagnostics; IReadOnlyList<FrameSample> frames = [];
         try
         {
             // The pipe only has frames of games opened after Lotus started listening; otherwise shared memory.
@@ -152,6 +152,7 @@ public sealed class RtssPreferredCaptureProvider(IFrameCaptureProvider fallback,
             if (piped is { Count: > 0 })
             {
                 (stats, count, algorithm, diagnostics) = (Statistics(piped), piped.Count, "rtss-pipe-v1", "RTSS frametime pipe: every frame.");
+                frames = Timeline(piped); // every frame with its time, for the cause of each hitch
             }
             else
             {
@@ -162,9 +163,17 @@ public sealed class RtssPreferredCaptureProvider(IFrameCaptureProvider fallback,
         finally { reflexStop.Cancel(); }
         var (busy, latency) = await reflex;
         var extras = new FrameExtras(busy, latency, RtssSharedMemory.Read(mapName).FirstOrDefault(a => a.ProcessId == pid)?.Api);
-        var data = new ParsedCapture("RTSS", 0, 0, count, [], stats, algorithm == "rtss-pipe-v1" ? "rtss-pipe" : "rtss-polled", false);
+        var data = new ParsedCapture("RTSS", 0, 0, count, frames, stats, algorithm == "rtss-pipe-v1" ? "rtss-pipe" : "rtss-polled", false);
         return new(Guid.NewGuid(), request.Target, started, (DateTimeOffset.UtcNow - started).TotalSeconds, stats is null ? "InsufficientData" : "Completed",
             "RTSS shared memory", algorithm, "", "", request.Conditions, request.HardwareJson, data, diagnostics) { Extras = extras };
+    }
+
+    // Frame times in order become a timeline: each frame ends where the next one starts (seconds from the first frame).
+    public static IReadOnlyList<FrameSample> Timeline(IReadOnlyList<double> frameTimesMs)
+    {
+        var list = new List<FrameSample>(frameTimesMs.Count); var t = 0.0;
+        foreach (var ms in frameTimesMs) { if (!double.IsFinite(ms) || ms <= 0) continue; t += ms / 1000; list.Add(new(t, ms)); }
+        return list;
     }
 
     // Same definitions as the benchmark (1% low = mean of the slowest 1%, spikes above max(50 ms, 3x median)), with

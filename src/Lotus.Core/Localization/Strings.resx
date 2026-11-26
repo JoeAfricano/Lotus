@@ -4045,4 +4045,5 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="WhyHitchGpuTitle" xml:space="preserve"><value>As travadas vêm da placa de vídeo no limite</value></data>
   <data name="WhyHitchGpuBody" xml:space="preserve"><value>{0} Nesses momentos a placa de vídeo estava 100% ocupada. Baixar resolução, texturas ou usar DLSS/FSR num modo mais leve dá folga para os picos.</value></data>
   <data name="WhyHitchGpuTip" xml:space="preserve"><value>Dica: use DLSS/FSR num modo mais leve.</value></data>
+  <data name="GsMeasureNoFrames" xml:space="preserve"><value>Nenhum quadro do jogo chegou nos primeiros 10 segundos, então a medição parou. O jogo precisa estar na tela e rodando (não no menu de pausa nem minimizado). Se estava, tente de novo: o Lotus fecha sozinho gravações antigas que tenham ficado presas.</value></data>
 </root>

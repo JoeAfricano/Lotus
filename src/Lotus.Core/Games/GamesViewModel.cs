@@ -407,7 +407,7 @@ public sealed partial class GamesViewModel : ObservableObject
             // With frame generation the Reflex markers cover only the real frames: the generator's delay is missing, so
             // the number would look better than it feels. Not shown then.
             var latencyMs = PrefsFor(game).UseFrameGen ? null : session.Extras?.PcLatencyMs;
-            if (session.Data?.Statistics is not { } s) { status = Text["GsMeasureFailed"]; Notify(); return null; }
+            if (session.Data?.Statistics is not { } s) { status = Text[session.Status == "NoFrames" ? "GsMeasureNoFrames" : "GsMeasureFailed"]; Notify(); return null; }
             var (recipe, support) = Recipe(game);
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
             var canRaise = raw is not null && recipe!.StepQuality(raw, +1) is not null;
@@ -601,7 +601,7 @@ public sealed partial class GamesViewModel : ObservableObject
             var latencyMs = PrefsFor(game).UseFrameGen ? null : session.Extras?.PcLatencyMs;
             CpuHeat? cpuHeat = null; try { cpuHeat = await heat; } catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
             IReadOnlyList<HitchSecond> perSecond = []; try { perSecond = await context; } catch (Exception ex) when (ex is not OperationCanceledException) { log(ex); }
-            if (session.Data?.Statistics is not { } s) { status = Text["GsMeasureFailed"]; Notify(); return null; }
+            if (session.Data?.Statistics is not { } s) { status = Text[session.Status == "NoFrames" ? "GsMeasureNoFrames" : "GsMeasureFailed"]; Notify(); return null; }
             var (recipe, support) = Recipe(game);
             var raw = support is { CanApply: true } ? recipe!.ReadRaw(game) : null;
             var canLower = raw is not null && recipe!.StepQuality(raw, -1) is not null;

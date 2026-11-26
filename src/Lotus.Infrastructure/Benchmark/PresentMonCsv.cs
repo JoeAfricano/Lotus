@@ -8,6 +8,19 @@ public static class PresentMonCsv
 {
     public const int MaximumRows = 300_000;
     public const long MaximumBytes = 128 * 1024 * 1024;
+    // True once the CSV has a header and at least one frame row (read while PresentMon still writes it).
+    public static bool HasRows(string path)
+    {
+        try
+        {
+            if (!File.Exists(path)) return false;
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            var buffer = new byte[65536]; var read = stream.Read(buffer, 0, buffer.Length); var lines = 0;
+            for (var i = 0; i < read; i++) if (buffer[i] == (byte)'\n' && ++lines >= 2) return true;
+            return false;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return true; } // unreadable now: do not cut the capture
+    }
     public static ParsedCapture Read(string path, int pid, CancellationToken token = default)
     {
         if (new FileInfo(path).Length > MaximumBytes) throw new InvalidDataException("CSV exceeds 128 MiB.");

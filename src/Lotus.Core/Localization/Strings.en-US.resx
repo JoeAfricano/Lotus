@@ -4045,4 +4045,5 @@ Your games and Windows are not changed.</value></data>
   <data name="WhyHitchGpuTitle" xml:space="preserve"><value>The hitches come from the graphics card at its limit</value></data>
   <data name="WhyHitchGpuBody" xml:space="preserve"><value>{0} At those moments the graphics card was 100% busy. Lowering resolution or textures, or using DLSS/FSR in a lighter mode, leaves room for the peaks.</value></data>
   <data name="WhyHitchGpuTip" xml:space="preserve"><value>Tip: use DLSS/FSR in a lighter mode.</value></data>
+  <data name="GsMeasureNoFrames" xml:space="preserve"><value>No game frame arrived in the first 10 seconds, so the measurement stopped. The game must be on screen and running (not paused or minimized). If it was, try again: Lotus closes old recordings that got stuck on its own.</value></data>
 </root>
