@@ -2,6 +2,7 @@ using Lotus.Core.Catalog;
 using Lotus.Core.Games;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 
 namespace Lotus.App.Controls;
@@ -49,11 +50,13 @@ public sealed partial class GameHooksCard : UserControl
         var badge = new Border { Style = (Style)Application.Current.Resources["IconBadgeStyle"],
             Child = new FontIcon { Glyph = hook.Disabled ? "" : "", Style = (Style)Application.Current.Resources["BadgeIconStyle"] } };
         var texts = new StackPanel { Spacing = 2, VerticalAlignment = VerticalAlignment.Center };
-        texts.Children.Add(new TextBlock { Text = t.Format(hook.Disabled ? "HkTitleOff" : "HkTitleOn", hook.Label), FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 14, TextWrapping = TextWrapping.Wrap });
+        texts.Children.Add(new TextBlock { Text = t.Format("HkTitle", hook.Label), FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, FontSize = 14, TextWrapping = TextWrapping.Wrap });
         texts.Children.Add(new TextBlock { Text = t.Format(hook.Disabled ? "HkSummaryOff" : "HkSummaryOn", hook.Label, hook.Name), Style = (Style)Application.Current.Resources["CaptionStyle"], TextWrapping = TextWrapping.Wrap });
-        var button = new Button { Style = (Style)Application.Current.Resources["SoftButtonStyle"], VerticalAlignment = VerticalAlignment.Center,
-            Content = t.Format(hook.Disabled ? "HkOn" : "HkOff", hook.Label) };
-        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(button, hook.Disabled ? "game-hook-on" : "game-hook-off");
+        // The same button in every game (José, 26/11/2026): pressed = turned off; pressing again brings the original file back.
+        var button = new ToggleButton { IsChecked = hook.Disabled, VerticalAlignment = VerticalAlignment.Center, MinHeight = 36, CornerRadius = new CornerRadius(10),
+            Content = t.Format("HkOff", hook.Label) };
+        ToolTipService.SetToolTip(button, t[hook.Disabled ? "HkPressedHint" : "HkPressHint"]);
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(button, "game-hook-toggle");
         button.Click += async (_, _) => await Toggle(t, game, hook, button);
         Grid.SetColumn(texts, 1); Grid.SetColumn(button, 2);
         head.Children.Add(badge); head.Children.Add(texts); head.Children.Add(button);
@@ -74,7 +77,7 @@ public sealed partial class GameHooksCard : UserControl
         return panel;
     }
 
-    private async Task Toggle(Lotus.Core.ITextCatalog t, GameEntry game, GameHook hook, Button button)
+    private async Task Toggle(Lotus.Core.ITextCatalog t, GameEntry game, GameHook hook, ToggleButton button)
     {
         if (MainWindow.Shell is not { } shell) return;
         button.IsEnabled = false;
