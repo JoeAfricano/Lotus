@@ -40,6 +40,7 @@ public sealed partial class MainWindow : Window
     private Lotus.Infrastructure.Catalog.SteamCatalog catalog = null!;
     public Lotus.Core.Catalog.IGameCatalog Catalog => catalog;
     public Lotus.Core.Games.GamesViewModel Games => games; // Steam store data shared by every page (one cache, one request gate)
+    public Lotus.Core.Games.IGameHookStore Hooks { get; } = new Lotus.Infrastructure.Games.WindowsGameHooks(); // hook DLLs in game folders (off/on by rename)
     private Lotus.Core.Games.PlayerPanelViewModel? player;
     private Lotus.Core.Diary.GameDiary diary = null!;
     private Lotus.Core.Diary.GameLengthLookup? pageLengths;

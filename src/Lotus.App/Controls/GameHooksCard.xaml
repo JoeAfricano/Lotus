@@ -1,0 +1,7 @@
+<UserControl x:Class="Lotus.App.Controls.GameHooksCard" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Visibility="Collapsed" AutomationProperties.AutomationId="game-hooks">
+ <!-- Hooks in the game folder (SCSKiller's d3d12.dll proxy, ReShade, mods...): optional off/on switch, filled in code -->
+ <Border Style="{StaticResource CardStyle}" Padding="18,14">
+  <StackPanel x:Name="Rows" Spacing="14"/>
+ </Border>
+</UserControl>

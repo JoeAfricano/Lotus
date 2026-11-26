@@ -124,6 +124,7 @@
   <!-- Installed games: "Preparar e Jogar" for this game -->
   <local:PrepareCard/>
   <local:SaveProtectionCard/>
+  <local:GameHooksCard/>
   <TextBlock Text="{Binding SourceText}" Style="{StaticResource CaptionStyle}" FontSize="12"/>
  </StackPanel>
 </UserControl>
