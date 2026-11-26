@@ -15,9 +15,9 @@ public sealed class CaptureReliabilityTests : IDisposable
         Assert.Empty(ledger.Pending());
         var a = "Lotus-" + Guid.NewGuid().ToString("N"); var b = "Lotus-" + Guid.NewGuid().ToString("N");
         ledger.Add(a); ledger.Add(b); ledger.Add(a);
-        Assert.Equal([b, a], ledger.Pending());
+        Assert.Equal(new[] { b, a }, ledger.Pending());
         File.AppendAllLines(Path.Combine(dir, "open-etw-sessions.txt"), ["NT Kernel Logger", "Lotus-x"]); // never another tool's session
-        Assert.Equal([b, a], ledger.Pending());
+        Assert.Equal(new[] { b, a }, ledger.Pending());
         ledger.Remove(a); ledger.Remove(b);
         Assert.Empty(ledger.Pending());
         Assert.False(File.Exists(Path.Combine(dir, "open-etw-sessions.txt")));
