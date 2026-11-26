@@ -156,4 +156,18 @@ public sealed class RtssPlayTests : IDisposable
             Assert.Null(await Vm(idle).EnsureRtssAsync(game)); Assert.Equal(0, idle.Starts); // open, not installed, not in use, unknown
         }
     }
+
+    [Fact] public async Task RivaTunerOpensWhenLotusStartsOnlyWhenLotusUsesIt()
+    {
+        var text = new TextCatalog();
+        GamesViewModel Vm(Rtss r) => new(new NoLibrary(), new NoStore(), new NoLauncher(), text, _ => { }) { Rtss = r };
+        var closedOverlay = new Rtss(true, false, true); var vm = Vm(closedOverlay); string? warning = null; vm.RtssWarning += (_, m) => warning = m;
+        Assert.False(await vm.EnsureRtssAtStartAsync()); Assert.Equal(1, closedOverlay.Starts); Assert.Equal(text["RtssNotOpenedStart"], warning);
+        foreach (var idle in new[] { new Rtss(true, true, true), new Rtss(false, false, true), new Rtss(true, false, false), new Rtss(true, null, true) })
+        {
+            Assert.Null(await Vm(idle).EnsureRtssAtStartAsync()); Assert.Equal(0, idle.Starts); // open, not installed, not in use (no plans in an empty library), unknown
+        }
+        var running = new Rtss(true, true, false);
+        Assert.True(await Vm(running).OpenRtssForRunningGameAsync()); Assert.Equal(0, running.Starts); // already open: nothing started
+    }
 }

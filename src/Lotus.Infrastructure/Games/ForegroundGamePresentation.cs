@@ -79,6 +79,8 @@ public sealed class ForegroundGamePresentation : IDisposable
                 // The approved profile must still be present; never overwrite the player's changes while playing.
                 // Scanline sync has no RivaTuner cap; every other mode must still hold the approved cap.
                 var uncapped=p.AppliedLimiter=="scanline";
+                // Closed RivaTuner (not a changed profile): the app opens it and asks to reopen the game.
+                if(rtss.Running()==false) { session.Update(null,null); Publish("rtss-closed"); return; }
                 if(rtss.Running()!=true || rtss.LimiterMode(p.Exe)!=p.AppliedLimiter || (!uncapped && (rtss.LimiterCap(p.Exe) is not {} cap || Math.Abs(cap-p.Cap)>0.011)))
                 { session.Update(null,null); Publish("rtss-changed"); return; }
                 if(p.AppliedLimiter is "responsive" or "fgvsync") // both use RivaTuner's Reflex limiter

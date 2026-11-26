@@ -16,18 +16,49 @@ public sealed partial class GamesViewModel
         try
         {
             if (!await Task.Run(() => NeedsRtss(rtss, game))) return null;
-            if (Interlocked.Exchange(ref rtssStarting, 1) == 1) return null; // a double click never asks twice
-            try
-            {
-                status = Text["RtssOpening"]; Notify();
-                var ok = await rtss.StartAsync();
-                status = ok ? "" : Text["RtssNotOpened"]; Notify();
-                if (!ok) RtssWarning?.Invoke(this, Text["RtssNotOpened"]);
-                return ok;
-            }
-            finally { Interlocked.Exchange(ref rtssStarting, 0); }
+            return await StartRtss(rtss, Text["RtssNotOpened"]);
         }
         catch (Exception ex) { log(ex); return false; }
+    }
+
+    // Lotus just started (often with Windows). After a restart RivaTuner may stay closed (Afterburner opened and did not start
+    // it: Stellar Blade study, 26/11/2026), and games opened from Steam or a shortcut never pass through Play, so Modo Console
+    // ran at 74 Hz without its 59.99 cap. Opened once here when Lotus uses it: its overlay or any game with a RivaTuner plan.
+    public async Task<bool?> EnsureRtssAtStartAsync()
+    {
+        if (Rtss is not { } rtss) return null;
+        try
+        {
+            if (!await Task.Run(() => rtss.State().Installed == true && rtss.Running() == false && (rtss.OverlayConfigured() == true || rtss.LayoutActive() || UsesRtssPlan(rtss)))) return null;
+            return await StartRtss(rtss, Text["RtssNotOpenedStart"]);
+        }
+        catch (Exception ex) { log(ex); return false; }
+    }
+
+    // A game with a RivaTuner plan came to the front while RivaTuner was closed: open it now for the next launch
+    // (RivaTuner only hooks games started after it); the caller tells the player to reopen the game.
+    public async Task<bool> OpenRtssForRunningGameAsync()
+    {
+        if (Rtss is not { } rtss) return false;
+        try { return await Task.Run(() => rtss.Running()) == true || await StartRtss(rtss, Text["RtssNotOpened"]) == true; }
+        catch (Exception ex) { log(ex); return false; }
+    }
+
+    private bool UsesRtssPlan(Lotus.Core.Integrations.IRtssIntegration rtss) =>
+        InstalledGames().Any(g => PrefsFor(g).Presentation is { Enabled: true, Exe: { Length: > 0 } exe } && rtss.LimiterMode(exe) is not null);
+
+    private async Task<bool?> StartRtss(Lotus.Core.Integrations.IRtssIntegration rtss, string failed)
+    {
+        if (Interlocked.Exchange(ref rtssStarting, 1) == 1) return null; // a double click never asks twice
+        try
+        {
+            status = Text["RtssOpening"]; Notify();
+            var ok = await rtss.StartAsync();
+            status = ok ? "" : failed; Notify();
+            if (!ok) RtssWarning?.Invoke(this, failed);
+            return ok;
+        }
+        finally { Interlocked.Exchange(ref rtssStarting, 0); }
     }
 
     private bool NeedsRtss(Lotus.Core.Integrations.IRtssIntegration rtss, GameEntry game)

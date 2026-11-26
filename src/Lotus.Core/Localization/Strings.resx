@@ -4024,4 +4024,6 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="HkTitle" xml:space="preserve"><value>{0} neste jogo</value></data>
   <data name="HkPressHint" xml:space="preserve"><value>Apertar desliga só neste jogo. Apertar de novo volta como estava.</value></data>
   <data name="HkPressedHint" xml:space="preserve"><value>Apertado: está desligado neste jogo. Aperte de novo para voltar como estava.</value></data>
+  <data name="RtssNotOpenedStart" xml:space="preserve"><value>O RivaTuner está fechado e não abriu junto com o Lotus. Abra o RivaTuner antes de jogar: sem ele, o Modo Console, o limite de FPS e o overlay do Lotus não funcionam.</value></data>
+  <data name="GpSession_rtss-closed" xml:space="preserve"><value>O RivaTuner estava fechado, então o limite de FPS e a troca de Hz deste jogo não valeram agora. O Lotus já abriu o RivaTuner: feche o jogo e abra de novo para valer.</value></data>
 </root>

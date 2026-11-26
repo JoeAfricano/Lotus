@@ -4024,4 +4024,6 @@ Your games and Windows are not changed.</value></data>
   <data name="HkTitle" xml:space="preserve"><value>{0} in this game</value></data>
   <data name="HkPressHint" xml:space="preserve"><value>Pressing turns it off in this game only. Press again to restore it.</value></data>
   <data name="HkPressedHint" xml:space="preserve"><value>Pressed: it is off in this game. Press again to restore it.</value></data>
+  <data name="RtssNotOpenedStart" xml:space="preserve"><value>RivaTuner is closed and did not open with Lotus. Open RivaTuner before playing: without it, Console Mode, the FPS limit and the Lotus overlay do not work.</value></data>
+  <data name="GpSession_rtss-closed" xml:space="preserve"><value>RivaTuner was closed, so this game's FPS limit and Hz switch did not apply now. Lotus has opened RivaTuner: close the game and open it again for them to apply.</value></data>
 </root>
