@@ -3997,4 +3997,31 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="HkNoAccess" xml:space="preserve"><value>O Windows não deixou mudar esse arquivo (pasta protegida). Nada foi alterado.</value></data>
   <data name="HkConflict" xml:space="preserve"><value>Já existe outro {0} nessa pasta (o programa pode ter instalado o dele de novo). Nada foi alterado.</value></data>
   <data name="HkMissing" xml:space="preserve"><value>O arquivo não está mais lá. Nada foi alterado.</value></data>
+  <data name="MzTitle" xml:space="preserve"><value>Compressão de memória</value></data>
+  <data name="MzWhat" xml:space="preserve"><value>Quando a RAM enche, o Windows guarda parte dela comprimida na própria memória em vez de mandar para o disco, que é bem mais lento. O serviço SysMain ajuda nisso. Alguns "otimizadores" desligam os dois.</value></data>
+  <data name="MzOn" xml:space="preserve"><value>Ligada. Compressão: {0} · SysMain: {1}</value></data>
+  <data name="MzOff" xml:space="preserve"><value>Desligada. Compressão: {0} · SysMain: {1}</value></data>
+  <data name="MzStateOn" xml:space="preserve"><value>ativa</value></data>
+  <data name="MzStateOff" xml:space="preserve"><value>desligada</value></data>
+  <data name="MzSysMainAutomatic" xml:space="preserve"><value>automático</value></data>
+  <data name="MzSysMainManual" xml:space="preserve"><value>manual</value></data>
+  <data name="MzSysMainDisabled" xml:space="preserve"><value>desativado</value></data>
+  <data name="MzSysMainUnknown" xml:space="preserve"><value>não verificado</value></data>
+  <data name="MzStopped" xml:space="preserve"><value>(parado)</value></data>
+  <data name="MzOnAdvice" xml:space="preserve"><value>Está como o Windows vem de fábrica. Nada a fazer.</value></data>
+  <data name="MzOffAdvice" xml:space="preserve"><value>Com bastante RAM a diferença tende a ser menor. Ligar é opcional.</value></data>
+  <data name="MzOffAdviceSmall" xml:space="preserve"><value>Recomendado para PCs com até 16 GB. No PC do estudo do Stellar Blade (16 GB), ligar os dois e reiniciar reduziu as travadas acima de 50 ms de uma mediana de 14,5 para 3,5 a cada 5 minutos. A melhora veio junto com o reinício, e o resultado pode ser outro no seu PC.</value></data>
+  <data name="MzRestartPending" xml:space="preserve"><value>Mudança feita. Reinicie o PC para ela valer.</value></data>
+  <data name="MzEnable" xml:space="preserve"><value>Ligar compressão de memória</value></data>
+  <data name="MzUndo" xml:space="preserve"><value>Desfazer</value></data>
+  <data name="MzConfirmTitle" xml:space="preserve"><value>Ligar a compressão de memória?</value></data>
+  <data name="MzConfirmBody" xml:space="preserve"><value>O Lotus vai ligar o serviço SysMain (automático) e a compressão de memória do Windows. O Windows vai pedir permissão de administrador. Depois é preciso reiniciar o PC para valer. O estado de agora fica guardado, e Desfazer volta como estava.</value></data>
+  <data name="MzUndoConfirmTitle" xml:space="preserve"><value>Voltar como estava?</value></data>
+  <data name="MzUndoConfirmBody" xml:space="preserve"><value>O Lotus vai devolver a compressão de memória e o SysMain ao estado de antes da mudança. O Windows vai pedir permissão de administrador, e depois é preciso reiniciar o PC.</value></data>
+  <data name="MzWorking" xml:space="preserve"><value>Aguardando a permissão do Windows…</value></data>
+  <data name="MzDeclined" xml:space="preserve"><value>A permissão de administrador não foi dada. Nada foi alterado.</value></data>
+  <data name="MzEnabled" xml:space="preserve"><value>Ligado. Reinicie o PC para valer.</value></data>
+  <data name="MzUndone" xml:space="preserve"><value>Voltou como estava. Reinicie o PC para valer.</value></data>
+  <data name="MzError" xml:space="preserve"><value>O Windows não concluiu a mudança: {0}</value></data>
+  <data name="MzDone" xml:space="preserve"><value>Pronto</value></data>
 </root>

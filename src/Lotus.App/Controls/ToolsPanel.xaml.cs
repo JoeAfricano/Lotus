@@ -242,6 +242,17 @@ public sealed partial class ToolsPanel : UserControl
             await u.CreateRestorePointAsync();
     }
 
+    private async void OnMemoryEnable(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel { Upkeep: { } u } vm && await Confirm(vm.Text["MzConfirmTitle"], vm.Text["MzConfirmBody"], vm.Text["MzEnable"], vm))
+            await u.EnableMemoryAsync();
+    }
+    private async void OnMemoryUndo(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel { Upkeep: { } u } vm && await Confirm(vm.Text["MzUndoConfirmTitle"], vm.Text["MzUndoConfirmBody"], vm.Text["MzUndo"], vm))
+            await u.UndoMemoryAsync();
+    }
+
     // ---- Disk health and system ----
     private async void OnDiskRefresh(object sender, RoutedEventArgs e) { if (DataContext is ToolsViewModel { DiskTool: { } d }) await d.LoadAsync(); }
     private async void OnDiskScan(object sender, RoutedEventArgs e)

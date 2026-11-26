@@ -3997,4 +3997,31 @@ Your games and Windows are not changed.</value></data>
   <data name="HkNoAccess" xml:space="preserve"><value>Windows did not allow changing this file (protected folder). Nothing was changed.</value></data>
   <data name="HkConflict" xml:space="preserve"><value>There is already another {0} in that folder (the program may have installed its own again). Nothing was changed.</value></data>
   <data name="HkMissing" xml:space="preserve"><value>The file is no longer there. Nothing was changed.</value></data>
+  <data name="MzTitle" xml:space="preserve"><value>Memory compression</value></data>
+  <data name="MzWhat" xml:space="preserve"><value>When RAM fills up, Windows keeps part of it compressed in memory instead of sending it to the disk, which is much slower. The SysMain service helps with this. Some "optimizers" turn both off.</value></data>
+  <data name="MzOn" xml:space="preserve"><value>On. Compression: {0} · SysMain: {1}</value></data>
+  <data name="MzOff" xml:space="preserve"><value>Off. Compression: {0} · SysMain: {1}</value></data>
+  <data name="MzStateOn" xml:space="preserve"><value>active</value></data>
+  <data name="MzStateOff" xml:space="preserve"><value>off</value></data>
+  <data name="MzSysMainAutomatic" xml:space="preserve"><value>automatic</value></data>
+  <data name="MzSysMainManual" xml:space="preserve"><value>manual</value></data>
+  <data name="MzSysMainDisabled" xml:space="preserve"><value>disabled</value></data>
+  <data name="MzSysMainUnknown" xml:space="preserve"><value>not verified</value></data>
+  <data name="MzStopped" xml:space="preserve"><value>(stopped)</value></data>
+  <data name="MzOnAdvice" xml:space="preserve"><value>This is how Windows ships. Nothing to do.</value></data>
+  <data name="MzOffAdvice" xml:space="preserve"><value>With plenty of RAM the difference tends to be smaller. Turning it on is optional.</value></data>
+  <data name="MzOffAdviceSmall" xml:space="preserve"><value>Recommended for PCs with up to 16 GB. On the Stellar Blade study PC (16 GB), turning both on and restarting reduced hitches above 50 ms from a median of 14.5 to 3.5 every 5 minutes. The gain came together with the restart, and your PC may differ.</value></data>
+  <data name="MzRestartPending" xml:space="preserve"><value>Change made. Restart the PC for it to take effect.</value></data>
+  <data name="MzEnable" xml:space="preserve"><value>Turn on memory compression</value></data>
+  <data name="MzUndo" xml:space="preserve"><value>Undo</value></data>
+  <data name="MzConfirmTitle" xml:space="preserve"><value>Turn on memory compression?</value></data>
+  <data name="MzConfirmBody" xml:space="preserve"><value>Lotus will turn on the SysMain service (automatic) and Windows memory compression. Windows will ask for administrator permission. Then the PC must restart for it to take effect. The current state is saved, and Undo restores it.</value></data>
+  <data name="MzUndoConfirmTitle" xml:space="preserve"><value>Go back to how it was?</value></data>
+  <data name="MzUndoConfirmBody" xml:space="preserve"><value>Lotus will return memory compression and SysMain to how they were before the change. Windows will ask for administrator permission, and then the PC must restart.</value></data>
+  <data name="MzWorking" xml:space="preserve"><value>Waiting for Windows permission…</value></data>
+  <data name="MzDeclined" xml:space="preserve"><value>Administrator permission was not given. Nothing was changed.</value></data>
+  <data name="MzEnabled" xml:space="preserve"><value>Turned on. Restart the PC for it to take effect.</value></data>
+  <data name="MzUndone" xml:space="preserve"><value>Back to how it was. Restart the PC for it to take effect.</value></data>
+  <data name="MzError" xml:space="preserve"><value>Windows did not finish the change: {0}</value></data>
+  <data name="MzDone" xml:space="preserve"><value>Done</value></data>
 </root>
