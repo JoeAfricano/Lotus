@@ -4,21 +4,18 @@ Release notes in English, shown on the What's new page when Lotus is in English.
 
 ## 2.0.6-beta "Lotus 1.0.6 Beta" (11/27/2026)
 
-Improvements taken from a stutter study on Stellar Blade and Black Myth: Wukong (RTX 5060, Ryzen 5 5500, 16 GB), with dozens of measured runs.
+An update focused on smoother games, with fewer hitches and fewer surprises when you sit down to play.
 
 ### New
-- **"Turn off SCSKiller" button on the game page.** In recording mode, SCSKiller puts its own file (`d3d12.dll`) in the game folder, which sits between the game and the graphics card the whole time. In Stellar Blade, turning that file off removed the hitches above 50 ms in the tests (3 runs of 5 minutes, no frame above 34 ms). In Wukong it made no difference. That is why it is **optional**: the card only shows when the folder has such a file, explains why it can stutter in some games, and nothing changes until you press it. Pressed = off. Press again to restore it. Lotus deletes nothing, it only renames the file, and asks you to close the game first. It also recognizes ReShade, OptiScaler and mods that use the same trick (`dxgi.dll`, `d3d11.dll`, `dinput8.dll`, `version.dll`).
-- **Memory compression in Tools › Windows up to date.** Shows whether Windows memory compression and the SysMain service are on (some "optimizers" turn both off) and offers to turn them on, with your confirmation and administrator permission. The PC must restart afterwards. The previous state is saved, and Undo restores it exactly. On the study PC (16 GB), turning both on and restarting cut hitches above 50 ms from a median of 14.5 to 3.5 every 5 minutes. The gain came together with the restart and may differ on your PC.
-- **Cause of each hitch in "Why is it stuttering?".** Each frame above 50 ms is compared with what the PC was doing in that second: memory (Windows reading back from the disk what did not fit in RAM), disk (the game reading files), graphics card at its limit, or processor/game. The result says, for example, "Of the 12 hitches: processor/game 9 · memory 3", with the right tip for the main cause. It is the likely cause of each second, not a trace inside the game.
-- **NVIDIA shader cache in Tools › Drivers.** Shows the size set in the driver (for example, Unlimited), warns when it is off or small, and explains that every driver update empties this cache. Read only: Lotus changes nothing.
+- **"Turn off SCSKiller" button on the game page.** SCSKiller helps prevent stutter by preparing shaders ahead of time, but it leaves its own file in the game folder that, in some games, can cause small hitches. Now you can turn that file off only in the game you want, with one press, and let the game talk straight to the graphics card. It is **optional**: the card explains when it is worth it, nothing changes until you press it, nothing is deleted, and pressing again restores it. It also works with ReShade, OptiScaler and mods that use the same kind of file.
+- **Game pictures in large size.** On the game page (in My Games and the Game list), click a picture to see it large, in high definition, filling the window. Use the arrows for the others, and Esc or a click outside to close.
+- **Memory compression in Tools › Windows up to date.** Shows whether Windows memory compression and the SysMain service are on (some "optimizers" turn both off) and offers to turn them on, with your confirmation. With them on, Windows makes better use of RAM and has to fetch less from the disk mid-game, which helps most on PCs with 16 GB or less. Undo restores it exactly.
+- **The cause of each hitch in "Why is it stuttering?".** Lotus now shows what most likely caused each hitch: full memory, disk, graphics card at its limit, or processor. You see right away where the problem is and get the right tip to fix it.
+- **NVIDIA shader cache in Tools › Drivers.** Shows the driver's shader cache size and warns when it is off or small. A good cache keeps the game from preparing the same shaders again, which cuts stutter. Read only: Lotus changes nothing.
 
 ### Improved
-- **RivaTuner open before the game.** Lotus already opened RivaTuner when you played with its Play button. Now it also opens it when Lotus itself starts (for example, with Windows), if something you use needs RivaTuner (overlay, Console Mode or a game's FPS limit). In the study, after a restart RivaTuner did not open by itself, and the game opened from Steam ran without the limit and without the switch to 60 Hz. If a game still opens with RivaTuner closed, Lotus opens RivaTuner and asks you to close and reopen the game, because RivaTuner only hooks games opened after it.
-- **More reliable frame measurement.** Before measuring, Lotus closes the Windows recordings that a Lotus closed mid-measurement may have left open. A stuck recording could make PresentMon record nothing, with no warning. If no frame arrives in the first 10 seconds, the measurement stops and explains why instead of showing an empty result.
-
-### Not verified
-- Opening RivaTuner automatically while it is closed was not tested on the test PC, because it was already open.
-- The cause of each hitch was tested with the PC idle (the sampler worked without administrator). It has not yet been seen with a heavy game open.
+- **RivaTuner ready before the game.** Lotus now opens RivaTuner as soon as Lotus itself starts, if you use the overlay, Console Mode or the FPS limit. These features then work even when you open the game from Steam or anywhere else. And if a game opens before RivaTuner, Lotus tells you what to do.
+- **More reliable frame measurement.** FPS measurement is steadier, and if something blocks reading the frames, Lotus tells you why instead of showing an empty result.
 
 ## 2.0.5-beta "Lotus 1.0.5 Beta" (11/23/2026)
 

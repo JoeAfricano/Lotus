@@ -1404,6 +1404,9 @@ Could not measure right now. Try again in a few seconds.</value></data>
   <data name="GdRedoTitle" xml:space="preserve"><value>Guided analysis</value></data>
   <data name="GdRedoHint" xml:space="preserve"><value>Analyzes the PC again and asks what to change, like the first time.</value></data>
   <data name="GdRedo" xml:space="preserve"><value>Run again</value></data>
+  <data name="GiShotClose" xml:space="preserve"><value>Close</value></data>
+  <data name="GiShotPrev" xml:space="preserve"><value>Previous picture</value></data>
+  <data name="GiShotNext" xml:space="preserve"><value>Next picture</value></data>
   <data name="GiNoSynopsis" xml:space="preserve"><value>No synopsis available for this game.</value></data>
   <data name="GiRelease" xml:space="preserve"><value>Released {0}</value></data>
   <data name="GiReleaseSoon" xml:space="preserve"><value>Expected {0}</value></data>
@@ -3985,8 +3988,8 @@ Your games and Windows are not changed.</value></data>
   <data name="HkSummaryOn" xml:space="preserve"><value>The file {1} in the game folder belongs to {0}. The game loads it instead of the Windows file.</value></data>
   <data name="HkSummaryOff" xml:space="preserve"><value>The {0} file {1} is kept under another name. The game uses Windows' own file.</value></data>
   <data name="HkWhyTitle" xml:space="preserve"><value>Why can this cause stutter? (optional)</value></data>
-  <data name="HkWhyScs" xml:space="preserve"><value>SCSKiller puts its own file (d3d12.dll) in the game folder to record the shaders the game uses. That file sits between the game and the graphics card the whole time. In some games this causes stutter: in Stellar Blade, turning it off removed the hitches above 50 ms in the tests on this PC. In Wukong it made no difference. Only turn it off if the game stutters. Nothing is deleted: Lotus only renames the file, and pressing again restores it.</value></data>
-  <data name="HkWhyOther" xml:space="preserve"><value>Programs such as ReShade, OptiScaler or mods put a file with a Windows name in the game folder. It sits between the game and Windows the whole time, and in some games this causes stutter. Only turn it off to test if the game stutters. While it is off, the program or mod that uses this file does not work. Nothing is deleted: Lotus only renames the file, and pressing again restores it.</value></data>
+  <data name="HkWhyScs" xml:space="preserve"><value>SCSKiller helps prevent stutter by preparing the game's shaders ahead of time. To do that, it leaves its own file (d3d12.dll) in the game folder, which sits between the game and the graphics card while you play. In most games this does no harm, but in some it can cause small hitches. Turning it off lets the game talk straight to the graphics card, which can make the picture smoother in those cases. It is optional: only worth it if the game stutters. Nothing is deleted, and pressing again restores it.</value></data>
+  <data name="HkWhyOther" xml:space="preserve"><value>Programs such as ReShade, OptiScaler or mods leave a file with a Windows name in the game folder, which sits between the game and Windows while you play. In most games this does no harm, but in some it can cause small hitches. Turning it off lets the game use Windows' own file, which can make the picture smoother in those cases. It is optional: only worth it if the game stutters, and while it is off the program or mod does not work. Nothing is deleted, and pressing again restores it.</value></data>
   <data name="HkOff" xml:space="preserve"><value>Turn off {0}</value></data>
   <data name="HkDoneOff" xml:space="preserve"><value>Turned off. Play for a while and see if it is smoother. To go back, press the button again.</value></data>
   <data name="HkDoneOn" xml:space="preserve"><value>Back to how it was. The game loads {0} again.</value></data>

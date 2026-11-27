@@ -18,6 +18,14 @@ public sealed partial class GameDetailView : UserControl
     // Gallery arrows: one screenshot (320 px + 12 spacing) per click; each arrow shows only when it can move.
     private void OnShotsPrev(object sender, RoutedEventArgs e) => Shots.ChangeView(Math.Max(0, Shots.HorizontalOffset - 332), null, null);
     private void OnShotsNext(object sender, RoutedEventArgs e) => Shots.ChangeView(Math.Min(Shots.ScrollableWidth, Shots.HorizontalOffset + 332), null, null);
+    // A click on a screenshot opens it big, in full size, with arrows for the others.
+    private void OnShotTapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+    {
+        if (vm is null || XamlRoot is null || sender is not FrameworkElement { DataContext: string shot }) return;
+        var shots = vm.Screenshots;
+        ScreenshotViewer.Show(XamlRoot, shots, Math.Max(0, shots.ToList().IndexOf(shot)), vm.Text);
+        e.Handled = true;
+    }
     private void OnShotsMoved(object? sender, ScrollViewerViewChangedEventArgs e) => PaintShotArrows();
     private void PaintShotArrows()
     {
