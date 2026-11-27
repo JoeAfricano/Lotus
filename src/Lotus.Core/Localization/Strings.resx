@@ -1404,6 +1404,9 @@ Não foi possível medir agora. Tente de novo em alguns segundos.</value></data>
   <data name="GdRedoTitle" xml:space="preserve"><value>Análise guiada</value></data>
   <data name="GdRedoHint" xml:space="preserve"><value>Analisa o PC de novo e pergunta o que mudar, como na primeira vez.</value></data>
   <data name="GdRedo" xml:space="preserve"><value>Rodar de novo</value></data>
+  <data name="GiShotClose" xml:space="preserve"><value>Fechar</value></data>
+  <data name="GiShotPrev" xml:space="preserve"><value>Foto anterior</value></data>
+  <data name="GiShotNext" xml:space="preserve"><value>Próxima foto</value></data>
   <data name="GiNoSynopsis" xml:space="preserve"><value>Sem sinopse disponível para este jogo.</value></data>
   <data name="GiRelease" xml:space="preserve"><value>Lançado em {0}</value></data>
   <data name="GiReleaseSoon" xml:space="preserve"><value>Previsto para {0}</value></data>

@@ -1404,6 +1404,9 @@ Could not measure right now. Try again in a few seconds.</value></data>
   <data name="GdRedoTitle" xml:space="preserve"><value>Guided analysis</value></data>
   <data name="GdRedoHint" xml:space="preserve"><value>Analyzes the PC again and asks what to change, like the first time.</value></data>
   <data name="GdRedo" xml:space="preserve"><value>Run again</value></data>
+  <data name="GiShotClose" xml:space="preserve"><value>Close</value></data>
+  <data name="GiShotPrev" xml:space="preserve"><value>Previous picture</value></data>
+  <data name="GiShotNext" xml:space="preserve"><value>Next picture</value></data>
   <data name="GiNoSynopsis" xml:space="preserve"><value>No synopsis available for this game.</value></data>
   <data name="GiRelease" xml:space="preserve"><value>Released {0}</value></data>
   <data name="GiReleaseSoon" xml:space="preserve"><value>Expected {0}</value></data>
