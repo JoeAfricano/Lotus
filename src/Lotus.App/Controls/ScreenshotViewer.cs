@@ -24,7 +24,7 @@ public static class ScreenshotViewer
         var ring = new ProgressRing { IsActive = true, Width = 40, Height = 40, Foreground = new SolidColorBrush(Colors.White) };
         var counter = new TextBlock { Foreground = new SolidColorBrush(Colors.White), Opacity = 0.8, FontSize = 13, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 0, 20) };
         var close = RoundButton("", text["GiShotClose"], "game-shot-close");
-        close.HorizontalAlignment = HorizontalAlignment.Right; close.VerticalAlignment = VerticalAlignment.Top; close.Margin = new Thickness(0, 12, 12, 0);
+        close.HorizontalAlignment = HorizontalAlignment.Right; close.VerticalAlignment = VerticalAlignment.Top; close.Margin = new Thickness(0, 56, 20, 0); // below the window caption buttons, so a click never closes Lotus by mistake
         var prev = RoundButton("", text["GiShotPrev"], "game-shot-prev");
         prev.HorizontalAlignment = HorizontalAlignment.Left; prev.Margin = new Thickness(16, 0, 0, 0);
         var next = RoundButton("", text["GiShotNext"], "game-shot-next");
