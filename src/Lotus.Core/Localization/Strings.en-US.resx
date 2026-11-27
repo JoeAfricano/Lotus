@@ -3995,7 +3995,7 @@ Your games and Windows are not changed.</value></data>
   <data name="HkDoneOn" xml:space="preserve"><value>Back to how it was. The game loads {0} again.</value></data>
   <data name="HkRunning" xml:space="preserve"><value>Close the game first: the file is in use. Nothing was changed.</value></data>
   <data name="HkNoAccess" xml:space="preserve"><value>Windows did not allow changing this file (protected folder). Nothing was changed.</value></data>
-  <data name="HkConflict" xml:space="preserve"><value>There is already another {0} in that folder (the program may have installed its own again). Nothing was changed.</value></data>
+  <data name="HkConflict" xml:space="preserve"><value>That folder already has a different kept copy of {0} (maybe from another version of the program). So neither is lost, nothing was changed.</value></data>
   <data name="HkMissing" xml:space="preserve"><value>The file is no longer there. Nothing was changed.</value></data>
   <data name="MzTitle" xml:space="preserve"><value>Memory compression</value></data>
   <data name="MzWhat" xml:space="preserve"><value>When RAM fills up, Windows keeps part of it compressed in memory instead of sending it to the disk, which is much slower. The SysMain service helps with this. Some "optimizers" turn both off.</value></data>

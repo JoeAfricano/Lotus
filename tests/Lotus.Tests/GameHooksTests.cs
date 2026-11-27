@@ -67,6 +67,27 @@ public sealed class GameHooksTests : IDisposable
         Assert.Equal("new", File.ReadAllText(Path.Combine(bin, "d3d12.dll")));
     }
 
+    [Fact] public void TurnsOffAgainWhenTheToolPutBackTheSameFile()
+    {
+        File.WriteAllText(Path.Combine(bin, "d3d12.dll.lotus-off"), "proxy 1.4.9");
+        File.WriteAllText(Path.Combine(bin, "d3d12.dll"), "proxy 1.4.9"); // SCSKiller opened and put the same file back
+        var store = new WindowsGameHooks();
+        Assert.Equal(HookChange.Done, store.Disable(Assert.Single(store.Find(Game))));
+        Assert.False(File.Exists(Path.Combine(bin, "d3d12.dll")));
+        Assert.Equal("proxy 1.4.9", File.ReadAllText(Path.Combine(bin, "d3d12.dll.lotus-off")));
+        Assert.True(Assert.Single(store.Find(Game)).Disabled);
+    }
+
+    [Fact] public void NeverOverwritesADifferentKeptFile()
+    {
+        File.WriteAllText(Path.Combine(bin, "d3d12.dll.lotus-off"), "proxy 1.4.8");
+        File.WriteAllText(Path.Combine(bin, "d3d12.dll"), "proxy 1.4.9 new");
+        var store = new WindowsGameHooks();
+        Assert.Equal(HookChange.Conflict, store.Disable(Assert.Single(store.Find(Game))));
+        Assert.Equal("proxy 1.4.8", File.ReadAllText(Path.Combine(bin, "d3d12.dll.lotus-off")));
+        Assert.Equal("proxy 1.4.9 new", File.ReadAllText(Path.Combine(bin, "d3d12.dll")));
+    }
+
     [Fact] public void IgnoresFoldersWithoutAnExecutableAndMissingFiles()
     {
         var other = Path.Combine(root, "Redist"); Directory.CreateDirectory(other);
