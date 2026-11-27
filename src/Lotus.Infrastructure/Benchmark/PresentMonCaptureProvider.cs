@@ -40,7 +40,23 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
             if (target.StartTime.ToUniversalTime() != request.Target.ProcessStartedUtc.UtcDateTime ||
                 !string.Equals(target.MainModule?.FileName, request.Target.Executable, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Target identity changed.");
+            // A session left open by a Lotus that crashed survives the process and can use up the provider's session
+            // slots: PresentMon then records nothing and says nothing (Stellar Blade study, 25/11/2026). Close those first.
+            var ledger = new EtwSessionLedger(root);
+            foreach (var stale in ledger.Pending())
+            {
+                try
+                {
+                    using var cleaner = Start(["--session_name", stale, "--terminate_existing_session"], request.Elevated);
+                    using var wait = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                    await cleaner.WaitForExitAsync(wait.Token);
+                    diagnostics.AppendLine($"Closed a session left open: {stale}.");
+                }
+                catch (Exception ex) when (ex is not System.ComponentModel.Win32Exception { NativeErrorCode: 1223 }) { logger.Warning(ex, "Stale ETW session not closed {Session}", stale); }
+                ledger.Remove(stale);
+            }
             var sessionName = "Lotus-" + id.ToString("N");
+            ledger.Add(sessionName);
             var args = new[] { "--process_id", request.Target.Pid.ToString(System.Globalization.CultureInfo.InvariantCulture),
                 "--output_file", raw, "--session_name", sessionName, "--timed", request.Seconds.ToString(),
                 "--terminate_after_timed", "--no_console_stats", "--no_track_input", "--no_track_gpu", "--track_frame_type" };
@@ -56,7 +72,7 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
                 output = Drain(collector.StandardOutput, diagnostics);
                 error = Drain(collector.StandardError, diagnostics);
             }
-            var stopped = false; var targetExited = false; var limitExceeded = false;
+            var stopped = false; var targetExited = false; var limitExceeded = false; var noFrames = false;
             while (!collector.HasExited)
             {
                 if (collectionClock.Elapsed.TotalSeconds >= samples + 1)
@@ -68,7 +84,9 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
                 }
                 targetExited = target.HasExited;
                 limitExceeded = File.Exists(raw) && new FileInfo(raw).Length > PresentMonCsv.MaximumBytes;
-                if (!stopped && (stop.IsCancellationRequested || targetExited || limitExceeded || collectionClock.Elapsed.TotalSeconds > request.Seconds + 15))
+                // No frame in the first 10 s: say so now instead of waiting for an empty result.
+                if (!stopped && collectionClock.Elapsed.TotalSeconds >= FirstFrameSeconds && !PresentMonCsv.HasRows(raw)) noFrames = true;
+                if (!stopped && (noFrames || stop.IsCancellationRequested || targetExited || limitExceeded || collectionClock.Elapsed.TotalSeconds > request.Seconds + 15))
                 {
                     stopped = true;
                     try
@@ -92,8 +110,9 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
                 lotusWs / samples, collectorSamples > 0 ? 100 * collectorCpu / sampleSeconds / Environment.ProcessorCount : null,
                 collectorSamples > 0 ? collectorWs / collectorSamples : null);
             logger.Information("Benchmark collector exited {Session} {ExitCode}", id, collector.ExitCode);
+            ledger.Remove(sessionName);
             exitCode = collector.ExitCode;
-            diagnostics.AppendLine($"ExitCode={collector.ExitCode}; StopRequested={stop.IsCancellationRequested}; TargetExited={targetExited}; SizeLimit={limitExceeded}");
+            diagnostics.AppendLine($"ExitCode={collector.ExitCode}; StopRequested={stop.IsCancellationRequested}; TargetExited={targetExited}; SizeLimit={limitExceeded}; NoFramesIn{FirstFrameSeconds}s={noFrames}");
             diagnostics.AppendLine("ETW loss counters unavailable in validated 2.6.0 CSV. Results are conditional on capture integrity.");
             if (request.Elevated) diagnostics.AppendLine("Elevated collector: console diagnostics unavailable.");
             if (File.Exists(raw) && new FileInfo(raw).Length > 0)
@@ -103,7 +122,7 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
             }
             diagnostics.AppendLine($"ETW: events={parsed?.LostEvents?.ToString() ?? "unavailable"}; buffers={parsed?.LostBuffers?.ToString() ?? "unavailable"}; overflow={parsed?.OverflowedPresents?.ToString() ?? "unavailable"}");
             var reportedLoss = parsed?.LostEvents > 0 || parsed?.LostBuffers > 0 || parsed?.OverflowedPresents > 0;
-            status = limitExceeded || parsed?.Truncated == true ? "LimitExceeded" : collector.ExitCode != 0 ? "Failed" :
+            status = noFrames ? "NoFrames" : limitExceeded || parsed?.Truncated == true ? "LimitExceeded" : collector.ExitCode != 0 ? "Failed" :
                 reportedLoss ? "EventLoss" : parsed?.Statistics is not null ? "Completed" : "InsufficientData";
             if (status is not ("Completed" or "EventLoss") && parsed is not null) parsed = parsed with { Statistics = null };
         }
@@ -125,6 +144,7 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
         await File.WriteAllTextAsync(Path.Combine(directory, "result.json"), JsonSerializer.Serialize(SqliteBenchmarkRepository.Preview(result)));
         return SqliteBenchmarkRepository.Preview(result);
     }
+    public const int FirstFrameSeconds = 10;
     private static Process Start(string[] arguments, bool elevated)
     {
         var info = new ProcessStartInfo(ToolPath) { UseShellExecute = elevated, CreateNoWindow = true,
@@ -138,5 +158,25 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
         var buffer = new char[1024]; int read;
         while ((read = await reader.ReadAsync(buffer)) > 0)
             lock (destination) { if (destination.Length < 16384) destination.Append(buffer, 0, Math.Min(read, 16384 - destination.Length)); }
+    }
+}
+
+// ETW sessions Lotus opened and has not seen close (one name per line). Whatever is still listed when the next capture
+// starts was left behind by a Lotus that crashed or was closed mid-capture. Only names Lotus created are ever listed.
+public sealed class EtwSessionLedger(string root)
+{
+    private string Path => System.IO.Path.Combine(root, "open-etw-sessions.txt");
+    private static readonly System.Text.RegularExpressions.Regex Name = new("^Lotus-[0-9a-f]{32}$");
+    public IReadOnlyList<string> Pending()
+    {
+        try { return File.Exists(Path) ? [.. File.ReadAllLines(Path).Select(l => l.Trim()).Where(l => Name.IsMatch(l)).Distinct()] : []; }
+        catch (IOException) { return []; }
+    }
+    public void Add(string name) => Write([.. Pending().Where(n => n != name), name]);
+    public void Remove(string name) => Write([.. Pending().Where(n => n != name)]);
+    private void Write(IReadOnlyList<string> names)
+    {
+        try { Directory.CreateDirectory(root); if (names.Count == 0) File.Delete(Path); else File.WriteAllLines(Path, names); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
     }
 }

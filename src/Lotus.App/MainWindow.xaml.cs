@@ -40,6 +40,7 @@ public sealed partial class MainWindow : Window
     private Lotus.Infrastructure.Catalog.SteamCatalog catalog = null!;
     public Lotus.Core.Catalog.IGameCatalog Catalog => catalog;
     public Lotus.Core.Games.GamesViewModel Games => games; // Steam store data shared by every page (one cache, one request gate)
+    public Lotus.Core.Games.IGameHookStore Hooks { get; } = new Lotus.Infrastructure.Games.WindowsGameHooks(); // hook DLLs in game folders (off/on by rename)
     private Lotus.Core.Games.PlayerPanelViewModel? player;
     private Lotus.Core.Diary.GameDiary diary = null!;
     private Lotus.Core.Diary.GameLengthLookup? pageLengths;
@@ -137,6 +138,7 @@ public sealed partial class MainWindow : Window
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
         games.Watch = sessionHub; // the light-mode check, shared (no second polling loop)
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
+        games.HitchContext = new Lotus.Infrastructure.Games.PdhHitchContextSampler(); // cause of each hitch in "Por que está travando?"
         games.Heat = cpuHeat;
         WatchCpuHeat();
         RecoverGpuTune(); // undo a GPU tune left unfinished by a crash
@@ -173,7 +175,8 @@ public sealed partial class MainWindow : Window
             new Lotus.Core.Maintenance.FeatureActions(id => powerProfiles.ApplyFeatureAsync(id, confirmed: true), id => powerProfiles.UndoFeatureAsync(id, confirmed: true),
                 powerProfiles.HasFeatureAction, powerProfiles.IsFeatureApplied, powerProfiles.RefreshFeaturesAsync, () => powerProfiles.FeatureMessage),
             text, tools.Journal, ex => Serilog.Log.Warning(ex, "Gaming setup"));
-        tools.Upkeep = new Lotus.Core.Maintenance.WindowsUpkeepViewModel(new Lotus.Infrastructure.Maintenance.WindowsUpkeepService(), text, tools.Journal, ex => Serilog.Log.Warning(ex, "Windows upkeep"));
+        tools.ShaderCacheReader = () => Lotus.Infrastructure.Games.NvidiaDriverVsync.ReadShaderCache() is { } c ? new Lotus.Core.Tools.ShaderCacheSize(c.Value, c.Predefined) : null;
+        tools.Upkeep = new Lotus.Core.Maintenance.WindowsUpkeepViewModel(new Lotus.Infrastructure.Maintenance.WindowsUpkeepService(), text, tools.Journal, ex => Serilog.Log.Warning(ex, "Windows upkeep"), new Lotus.Infrastructure.Maintenance.WindowsMemoryCompression());
         tools.Crashes = new Lotus.Core.Maintenance.GameCrashViewModel(new Lotus.Infrastructure.Maintenance.WindowsCrashLog(), text, ex => Serilog.Log.Warning(ex, "Game crashes"))
         {
             GameExes = GameExes,

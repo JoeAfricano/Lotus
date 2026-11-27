@@ -1,0 +1,68 @@
+using System.Diagnostics;
+using Lotus.Core.Games;
+
+namespace Lotus.Infrastructure.Games;
+
+// Finds hook DLLs (see GameHooks) in the game's folders that hold an executable, and turns one off/on by renaming it.
+// Bounded like GameTechScanner: 6 folder levels and 40 000 entries. Never deletes, never asks for administrator.
+public sealed class WindowsGameHooks : IGameHookStore
+{
+    public IReadOnlyList<GameHook> Find(GameEntry game)
+    {
+        if (game.InstallDir is not { Length: > 3 } root || !Directory.Exists(root)) return [];
+        var options = new EnumerationOptions { RecurseSubdirectories = true, MaxRecursionDepth = 6, IgnoreInaccessible = true, AttributesToSkip = FileAttributes.ReparsePoint };
+        var found = new List<GameHook>(); var seen = 0;
+        try
+        {
+            foreach (var file in new DirectoryInfo(root).EnumerateFiles("*", options))
+            {
+                if (++seen > 40_000) break;
+                if (GameHooks.Parse(file.Name) is not { } p || !HasExe(file.DirectoryName)) continue;
+                var (product, description, company) = Version(file.FullName);
+                if (!p.Disabled && !GameHooks.IsHook(company, description)) continue; // Windows' own copy shipped with the game
+                found.Add(new(file.FullName, p.Name, product, description, p.Disabled));
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+        // When a tool reinstalled its file over one Lotus turned off, the active one is what matters.
+        return [.. found.Where(h => !h.Disabled || !found.Any(a => !a.Disabled && SameSlot(a, h))).OrderBy(h => h.Disabled).ThenBy(h => h.FilePath, StringComparer.OrdinalIgnoreCase)];
+    }
+
+    public HookChange Disable(GameHook hook) => hook.Disabled ? HookChange.Done : Move(hook.FilePath, hook.FilePath + GameHooks.OffSuffix);
+
+    public HookChange Enable(GameHook hook)
+    {
+        if (!hook.Disabled) return HookChange.Done;
+        var original = Path.Combine(Path.GetDirectoryName(hook.FilePath)!, hook.Name);
+        return Move(hook.FilePath, original);
+    }
+
+    private static HookChange Move(string from, string to)
+    {
+        try
+        {
+            if (!File.Exists(from)) return HookChange.Missing;
+            if (File.Exists(to)) return HookChange.Conflict;
+            File.Move(from, to);
+            return HookChange.Done;
+        }
+        catch (UnauthorizedAccessException) { return HookChange.NoAccess; }
+        catch (FileNotFoundException) { return HookChange.Missing; }
+        catch (IOException) { return File.Exists(to) ? HookChange.Conflict : HookChange.GameRunning; } // in use by the running game
+    }
+
+    private static bool SameSlot(GameHook a, GameHook b) =>
+        a.Name.Equals(b.Name, StringComparison.OrdinalIgnoreCase) && string.Equals(Path.GetDirectoryName(a.FilePath), Path.GetDirectoryName(b.FilePath), StringComparison.OrdinalIgnoreCase);
+
+    private static bool HasExe(string? dir)
+    {
+        try { return dir is not null && Directory.EnumerateFiles(dir, "*.exe").Any(); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return false; }
+    }
+
+    private static (string? Product, string? Description, string? Company) Version(string path)
+    {
+        try { var v = FileVersionInfo.GetVersionInfo(path); return (v.ProductName, v.FileDescription, v.CompanyName); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or FileNotFoundException) { return (null, null, null); }
+    }
+}

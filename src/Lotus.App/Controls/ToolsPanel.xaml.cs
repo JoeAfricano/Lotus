@@ -164,6 +164,7 @@ public sealed partial class ToolsPanel : UserControl
         if (id is "monitor" or "features" && DataContext is ToolsViewModel { Gaming: { Monitor: null, Rows.Count: 0 } gm }) _ = gm.LoadAsync(); // reading only
         if (id == "crash" && DataContext is ToolsViewModel { Crashes: { Loaded: false } cr }) _ = cr.LoadAsync(); // reading only
         if (id == "windows" && DataContext is ToolsViewModel { Upkeep: { Loaded: false } up }) _ = up.LoadAsync(); // reading only
+        if (id == "drivers" && DataContext is ToolsViewModel tv) _ = tv.LoadShaderCacheAsync(); // reading only (NVIDIA driver settings)
         Motion.EnterPage(cards[id]);
     }
     private void OnBack(object sender, RoutedEventArgs e)
@@ -240,6 +241,17 @@ public sealed partial class ToolsPanel : UserControl
     {
         if (DataContext is ToolsViewModel { Upkeep: { } u } vm && await Confirm(vm.Text["WuRestoreConfirmTitle"], vm.Text["WuRestoreConfirmBody"], vm.Text["WuRestoreCreate"], vm))
             await u.CreateRestorePointAsync();
+    }
+
+    private async void OnMemoryEnable(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel { Upkeep: { } u } vm && await Confirm(vm.Text["MzConfirmTitle"], vm.Text["MzConfirmBody"], vm.Text["MzEnable"], vm))
+            await u.EnableMemoryAsync();
+    }
+    private async void OnMemoryUndo(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ToolsViewModel { Upkeep: { } u } vm && await Confirm(vm.Text["MzUndoConfirmTitle"], vm.Text["MzUndoConfirmBody"], vm.Text["MzUndo"], vm))
+            await u.UndoMemoryAsync();
     }
 
     // ---- Disk health and system ----

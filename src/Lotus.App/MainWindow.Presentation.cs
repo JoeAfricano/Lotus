@@ -28,13 +28,22 @@ public sealed partial class MainWindow
             presentation.Changed+=(_,state)=>DispatcherQueue.TryEnqueue(()=>
             {
                 PresentationChanged?.Invoke(this,EventArgs.Empty);
+                if(state=="rtss-closed") { _=OnRtssClosedAsync(); return; }
                 // Only when the Hz really had to change (or the restore is pending): a game already at its Hz stays quiet.
                 if(state is "restore-pending" || (state is "failed" or "rtss-changed" or "api-unsupported" or "prepare-again" && presentation?.SwitchNeeded == true))
                     ShowWarning(text["GpSession_"+state]);
             });
             Refresh();
             Closed+=(_,_)=>presentation.Dispose();
+            // RivaTuner open from the start, for games launched from Steam or a shortcut (after the library has loaded).
+            var startTimer=DispatcherQueue.CreateTimer(); startTimer.Interval=TimeSpan.FromSeconds(8); startTimer.IsRepeating=false;
+            startTimer.Tick+=async (_,_)=>await games.EnsureRtssAtStartAsync();
+            startTimer.Start();
         }
         catch(Exception ex) { Serilog.Log.Warning(ex,"Foreground display events unavailable"); }
+    }
+    private async Task OnRtssClosedAsync()
+    {
+        if(await games.OpenRtssForRunningGameAsync()) ShowWarning(text["GpSession_rtss-closed"]);
     }
 }
