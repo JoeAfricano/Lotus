@@ -42,13 +42,29 @@ public sealed class WindowsGameHooks : IGameHookStore
         try
         {
             if (!File.Exists(from)) return HookChange.Missing;
-            if (File.Exists(to)) return HookChange.Conflict;
-            File.Move(from, to);
+            // A tool such as SCSKiller puts its file back each time it opens. When the copy Lotus kept is the same file
+            // byte for byte, replacing it loses nothing; a different file (another version) is never overwritten.
+            if (File.Exists(to) && !SameBytes(from, to)) return HookChange.Conflict;
+            File.Move(from, to, overwrite: true);
             return HookChange.Done;
         }
         catch (UnauthorizedAccessException) { return HookChange.NoAccess; }
         catch (FileNotFoundException) { return HookChange.Missing; }
         catch (IOException) { return File.Exists(to) ? HookChange.Conflict : HookChange.GameRunning; } // in use by the running game
+    }
+
+    private static bool SameBytes(string a, string b)
+    {
+        var x = new FileInfo(a); var y = new FileInfo(b);
+        if (x.Length != y.Length) return false;
+        using var fa = x.OpenRead(); using var fb = y.OpenRead();
+        Span<byte> ba = stackalloc byte[8192], bb = stackalloc byte[8192];
+        while (true)
+        {
+            var n = fa.ReadAtLeast(ba, ba.Length, false);
+            if (fb.ReadAtLeast(bb, bb.Length, false) != n || !ba[..n].SequenceEqual(bb[..n])) return false;
+            if (n == 0) return true;
+        }
     }
 
     private static bool SameSlot(GameHook a, GameHook b) =>

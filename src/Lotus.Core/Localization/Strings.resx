@@ -3995,7 +3995,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="HkDoneOn" xml:space="preserve"><value>Voltou como estava. O jogo volta a carregar o {0}.</value></data>
   <data name="HkRunning" xml:space="preserve"><value>Feche o jogo antes: o arquivo está em uso. Nada foi alterado.</value></data>
   <data name="HkNoAccess" xml:space="preserve"><value>O Windows não deixou mudar esse arquivo (pasta protegida). Nada foi alterado.</value></data>
-  <data name="HkConflict" xml:space="preserve"><value>Já existe outro {0} nessa pasta (o programa pode ter instalado o dele de novo). Nada foi alterado.</value></data>
+  <data name="HkConflict" xml:space="preserve"><value>Já existe nessa pasta uma cópia guardada diferente do {0} (talvez de outra versão do programa). Para não perder nenhum dos dois, nada foi alterado.</value></data>
   <data name="HkMissing" xml:space="preserve"><value>O arquivo não está mais lá. Nada foi alterado.</value></data>
   <data name="MzTitle" xml:space="preserve"><value>Compressão de memória</value></data>
   <data name="MzWhat" xml:space="preserve"><value>Quando a RAM enche, o Windows guarda parte dela comprimida na própria memória em vez de mandar para o disco, que é bem mais lento. O serviço SysMain ajuda nisso. Alguns "otimizadores" desligam os dois.</value></data>
