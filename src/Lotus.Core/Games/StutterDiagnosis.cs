@@ -8,7 +8,8 @@ public sealed record StutterInputs(double AverageFps, double Low1Fps, int SpikeC
     ShaderState? Shaders, int PendingProfileSteps, double? MemoryLoadPercent, IReadOnlyList<string> TopMemoryApps, bool CanLowerQuality, IReadOnlyList<string>? Overlays = null, CpuHeat? Heat = null,
     double? FrameCap = null, // a frame limiter in force (RivaTuner), when known
     double RealRefreshHz = 0, bool AdaptiveSync = false, // the monitor's real rate (e.g. 74.973) and whether FreeSync/G-Sync is on
-    HitchBreakdown? Hitches = null); // likely cause of each frame above 50 ms (see HitchCauses); Detail is filled in by the caller
+    HitchBreakdown? Hitches = null, // likely cause of each frame above 50 ms (see HitchCauses); Detail is filled in by the caller
+    double? GpuFrameMs = null, bool ConsoleMode = false); // the card's own time per frame (Reflex) and whether Modo Console is set for this game
 
 public static class StutterDiagnosis
 {
@@ -28,7 +29,16 @@ public static class StutterDiagnosis
         if (!i.AdaptiveSync && i.FrameCap is { } limit && FramePacing.AboveRefresh(limit, i.RealRefreshHz))
             list.Add(new("WhyCapAboveRefresh", StutterFix.None, stutters ? 58 : 40,
                 string.Create(System.Globalization.CultureInfo.InvariantCulture, $"{limit:0.##} FPS / {i.RealRefreshHz:0.###} Hz")));
-        // Where the hitches came from, when there were enough to show a pattern. Memory as the main cause offers closing apps.
+        // A limit in the game below the monitor's rate, without FreeSync/G-Sync and without Modo Console: Wukong at 60 FPS on a
+        // 75 Hz screen repeated ~2,000 frames in 2 min (75% in rhythm). Two measured ways out: no limit in the game + RivaTuner
+        // just under 75 (99.8% in rhythm, 75 FPS) when the card holds it, or Modo Console at 60 Hz. 75 Hz needs under ~13 ms
+        // per frame; with the card's time known the advice names one of them, otherwise both.
+        if (GameCapBelowRefresh(i) is { } capped)
+        {
+            var key = i.GpuFrameMs is { } gpuMs ? (gpuMs < FastEnoughMs(i.RealRefreshHz) ? "WhyGameCapUncap" : "WhyGameCapConsole") : "WhyGameCapBoth";
+            list.Add(new(key, StutterFix.None, 62, string.Create(System.Globalization.CultureInfo.InvariantCulture, $"{capped:0} FPS / {i.RealRefreshHz:0.###} Hz")));
+            lowFps = false; // the game's own limit, not the processor or the card
+        }        // Where the hitches came from, when there were enough to show a pattern. Memory as the main cause offers closing apps.
         if (i.Hitches is { Total: >= HitchCauses.MinHitches } h)
             list.Add(new("WhyHitch" + h.Main, h.Main == HitchCause.Memory && i.TopMemoryApps.Count > 0 ? StutterFix.CloseApps : StutterFix.None, 85));
         // Sudden drops: shader compilation is the classic cause in modern DirectX 12 games.
@@ -48,6 +58,18 @@ public static class StutterDiagnosis
         if (list.Count == 0) list.Add(new("WhyAllGood", StutterFix.None, 0));
         return [.. list.OrderByDescending(f => f.Weight)];
     }
+
+    // Frames held steady clearly below the monitor's real rate, by the game itself (not a RivaTuner cap): the FPS it holds.
+    public static double? GameCapBelowRefresh(StutterInputs i)
+    {
+        if (i.AdaptiveSync || i.ConsoleMode || i.RealRefreshHz < 50 || i.AverageFps < 25) return null;
+        if (i.AverageFps > i.RealRefreshHz * 0.9) return null;                       // at the screen's rate (or close): fine
+        if (i.FrameCap is { } cap && cap < i.RealRefreshHz * 0.98) return null;        // a RivaTuner cap below the rate is Lotus's or the player's own plan
+        if (i.Low1Fps < i.AverageFps * 0.85) return null;                            // not steady: a hardware limit, not a cap
+        return i.AverageFps;
+    }
+    // Time per frame the screen's rate allows, with a little margin (74.973 Hz: 13.3 ms -> ~13 ms).
+    public static double FastEnoughMs(double refreshHz) => 1000 / refreshHz - 0.3;
 }
 
 // System memory load and the heaviest programs (names only), read without changing anything.

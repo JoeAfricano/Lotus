@@ -459,8 +459,36 @@ public static class LotusOverlayLayout
     // Set by the app: the active theme's colors and RivaTuner's global FPS limit, read when Pulse is (re)generated.
     public static LotusPulseLayout.Colors PulseColors { get; set; } = LotusPulseLayout.Default;
     public static Func<double?>? PulseCap { get; set; }
+    // ---- Latency line on the Neon card (opt-in, Settings of the overlay) ----
+    // RivaTuner's own Reflex reading, reflexlatency(0,12): from the game reading input to the card finishing the frame (the wait
+    // for the screen is not in it, so it reads a few ms below PresentMon's PC latency). One text in the Neon's style (Segoe UI,
+    // white, size 18: smaller than the values, José 28/11) in the free space under the frame time; "LAT —" when the game gives no Reflex markers, never a made-up
+    // number. Off = the shipped layout byte for byte. The player's file is never edited: the line is added on export.
+    public static bool LatencyLine { get; set; }
+    public const string LatencySource = "Lotus Latency", LatencyOk = "Lotus Latency Ok", LatencyMissing = "Lotus Latency Missing";
+    public static string WithLatency(string ovl)
+    {
+        var ini = new IniText(ovl);
+        int sources = int.Parse(ini.Get("General", "Sources") ?? "0", System.Globalization.CultureInfo.InvariantCulture);
+        int layers = int.Parse(ini.Get("General", "Layers") ?? "0", System.Globalization.CultureInfo.InvariantCulture);
+        var text = new System.Text.StringBuilder(ovl.TrimEnd('\r', '\n')).Append("\r\n");
+        void Source(int i, string name, string format, string formula) =>
+            text.Append($"[Source{i}]\r\nName={name}\r\nUnits=\r\nFormat={format}\r\nFormula={formula}\r\nProvider=HAL\r\nID=Stub\r\n");
+        void Layer(int i, string name, string content, string visibility) =>
+            text.Append($"[Layer{i}]\r\nName={name}\r\nVisibilitySource={visibility}\r\nText={content}\r\nPositionX=1789\r\nPositionY=101\r\nExtentX=70\r\nExtentY=15\r\nExtentOrigin=0\r\nFixedAlignment=1\r\nSize=18\r\nTextColor=FFFFFF\r\n");
+        Source(sources, LatencySource, "%.0f", "reflexlatency(0,12)");
+        Source(sources + 1, LatencyOk, "%.0f", "validate(reflexlatency(0,12))");
+        Source(sources + 2, LatencyMissing, "%.0f", "validate(reflexlatency(0,12)) ? 0 : 1");
+        Layer(layers, "Latency", $"LAT %{LatencySource}% ms", LatencyOk);
+        Layer(layers + 1, "Latency unavailable", "LAT \u0097", LatencyMissing); // 0x97 = em dash in the layout's ANSI code page
+        // Only the two counters change in the original text; every other byte stays as the player drew it.
+        var result = text.ToString();
+        result = new System.Text.RegularExpressions.Regex($@"(?m)^Sources={sources}(?=\r?$)").Replace(result, $"Sources={sources + 3}", 1);
+        return new System.Text.RegularExpressions.Regex($@"(?m)^Layers={layers}(?=\r?$)").Replace(result, $"Layers={layers + 2}", 1);
+    }
     private static byte[] Bytes(string variant)
     {
+        if (variant == PremiumNeon && LatencyLine) return System.Text.Encoding.Latin1.GetBytes(WithLatency(System.Text.Encoding.Latin1.GetString(Resource(FileFor(variant)))));
         if (variant is not (Pulse or Window)) return Resource(FileFor(variant));
         var neon = System.Text.Encoding.Latin1.GetString(Resource(FileFor(Neon)));
         var sources = neon[neon.IndexOf("[Source0]", StringComparison.Ordinal)..neon.IndexOf("[Layer0]", StringComparison.Ordinal)];

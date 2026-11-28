@@ -44,7 +44,10 @@ public sealed partial class GamesViewModel
             await Undo();
             return Finish(false,"GpSaveFailed");
         }
-        return Finish(true,"GpSaved");
+        Finish(true,"GpSaved");
+        // The plan follows the player's choice, checked against the last measurement of this game: a disagreement is said.
+        if(FrameGenCheck.Mismatch(info.UsesFrameGen,FrameGenMeasured(game)) is {} fgKey) PresentationStatus+=" "+Text[fgKey];
+        return true;
     }
 
     // "Modo Console" (José, 19/11/2026; 21/11/2026): the graphics for 60 FPS plus everything that keeps 60 steady, like a
@@ -86,5 +89,6 @@ public sealed partial class GamesViewModel
         return true;
     }
     public const double ConsoleCap=60;
-    public static string ConsoleLimiter(LowLatencyInfo? info)=>info is {UsesFrameGen:true} ? "auto" : "fluid";
+    // Automatic: Reflex on NVIDIA, front edge elsewhere (PresentationPlan.ResolveLimiter).
+    public static string ConsoleLimiter(LowLatencyInfo? info)=>"auto";
 }

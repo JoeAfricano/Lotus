@@ -43,6 +43,21 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
             // A session left open by a Lotus that crashed survives the process and can use up the provider's session
             // slots: PresentMon then records nothing and says nothing (Stellar Blade study, 25/11/2026). Close those first.
             var ledger = new EtwSessionLedger(root);
+            // Elevated recording: one helper run stops every stuck "Lotus*" session (logman), including ones the ledger never
+            // saw (study scripts, a ledger lost with a crash). Asked only when there is a reason: a pending ledger entry or the
+            // last recording got no frame / lost events.
+            if (request.Elevated && EtwSessionCleanup.NeedsCleanup(root, ledger.Pending()))
+            {
+                var code = await RunElevatedHelper(["--etw-clean"]);
+                if (code is >= 0 and <= 100)
+                {
+                    diagnostics.AppendLine($"Stuck Lotus ETW sessions stopped: {code}.");
+                    logger.Information("ETW cleanup: {Count} stuck Lotus sessions stopped", code);
+                    foreach (var stale in ledger.Pending()) ledger.Remove(stale);
+                    EtwSessionCleanup.ClearSuspect(root);
+                }
+                else logger.Warning("ETW cleanup did not run (exit {Code})", code);
+            }
             foreach (var stale in ledger.Pending())
             {
                 try
@@ -59,7 +74,7 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
             ledger.Add(sessionName);
             var args = new[] { "--process_id", request.Target.Pid.ToString(System.Globalization.CultureInfo.InvariantCulture),
                 "--output_file", raw, "--session_name", sessionName, "--timed", request.Seconds.ToString(),
-                "--terminate_after_timed", "--no_console_stats", "--no_track_input", "--no_track_gpu", "--track_frame_type" };
+                "--terminate_after_timed", "--no_console_stats", "--no_track_input", "--track_frame_type", "--track_pc_latency" }; // GPU tracking on: MsGPUBusy per frame (cause of each hitch)
             using var collector = Start(args, request.Elevated);
             var collectionClock = Stopwatch.StartNew();
             using var owner = Process.GetCurrentProcess(); var ownerCpu = owner.TotalProcessorTime.TotalSeconds;
@@ -125,6 +140,7 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
             status = noFrames ? "NoFrames" : limitExceeded || parsed?.Truncated == true ? "LimitExceeded" : collector.ExitCode != 0 ? "Failed" :
                 reportedLoss ? "EventLoss" : parsed?.Statistics is not null ? "Completed" : "InsufficientData";
             if (status is not ("Completed" or "EventLoss") && parsed is not null) parsed = parsed with { Statistics = null };
+            if (status is "NoFrames" or "EventLoss") EtwSessionCleanup.MarkSuspect(root, status); // the next recording cleans first
         }
         catch (OperationCanceledException) { status = "Cancelled"; }
         catch (Exception ex)
@@ -138,6 +154,8 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
             raw, hash, request.Conditions, request.HardwareJson, parsed, diagnostics.ToString())
         {
             ResourceUsage = usage, CollectorExitCode = exitCode,
+            // Reflex PC latency per frame (median and 95th percentile), only when the game gives the markers.
+            Extras = Lotus.Core.Games.LimiterTrial.Latency(parsed?.PcLatencies ?? []) is { Median: { } lm } lat ? new(null, lm, null, null, lat.P95) : null,
             EtwEvidence = new(parsed?.LostEvents, parsed?.LostBuffers, parsed?.OverflowedPresents,
                 "PresentMon 2.6.0 CSV; final console counters unavailable", false)
         };
@@ -145,6 +163,16 @@ public sealed class PresentMonCaptureProvider(string root, ILogger logger) : IFr
         return SqliteBenchmarkRepository.Preview(result);
     }
     public const int FirstFrameSeconds = 10;
+    // Tests replace it; otherwise Lotus relaunches itself elevated (UAC) for that one step. 1223 = UAC declined.
+    public Func<string[], Task<int>>? ElevatedRunner { get; init; }
+    private Task<int> RunElevatedHelper(string[] args) => ElevatedRunner?.Invoke(args) ?? Task.Run(() =>
+    {
+        if (Environment.ProcessPath is not { } exe || !exe.EndsWith("Lotus.App.exe", StringComparison.OrdinalIgnoreCase)) return 2;
+        var info = new ProcessStartInfo(exe) { UseShellExecute = true, Verb = "runas", WindowStyle = ProcessWindowStyle.Hidden };
+        foreach (var a in args) info.ArgumentList.Add(a);
+        try { using var p = Process.Start(info)!; return p.WaitForExit(30000) ? p.ExitCode : 3; }
+        catch (System.ComponentModel.Win32Exception) { return 1223; }
+    });
     private static Process Start(string[] arguments, bool elevated)
     {
         var info = new ProcessStartInfo(ToolPath) { UseShellExecute = elevated, CreateNoWindow = true,

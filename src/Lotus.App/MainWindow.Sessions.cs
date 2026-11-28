@@ -24,12 +24,29 @@ public sealed partial class MainWindow
             r => lastRelief = r, keepList: () => new Lotus.Infrastructure.Maintenance.JsonCloseList(KeepListFile).Load()),
     ], new Lotus.Infrastructure.Games.FileBoostJournal(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lotus", "game-boost.json")));
 
+    // Balloons wait while a game is open; quiet lines (crash, Modo Console) live in the tray icon's tooltip and menu.
+    private readonly TrayStatus trayStatus = new();
+    private NoticeQueue? notices;
+    private NoticeQueue Notices => notices ??= new((t, b) => tray?.Notify(t, b));
+    private void TrayNotify(string title, string body) => DispatcherQueue.TryEnqueue(() => Notices.Notify(title, body));
+    private string? crashReported;
+
     private async Task OnGameCheckAsync(GameEntry? running)
     {
         if (!initialized) return;
+        if (Notices.SetGameOpen(running is not null)) tray?.ClearBalloon(); // a game just opened: nothing stays over it
         sessionHub.Observe(running, DateTimeOffset.Now); // shared with "Preparar e jogar" (no second polling loop)
-        if (sessions.Update(running, DateTimeOffset.Now) is { } done) OnSessionFinished(done);
-        if (running is null) { ShowPendingResumePrompt(); ShowPendingRelief(); }
+        var crashed = running is null ? games.CrashedGame : null;
+        if (sessions.Update(running, DateTimeOffset.Now) is { } done)
+        {
+            // Ended by a crash: the play time up to the crash counts, the "Onde eu parei?" prompt does not come.
+            if (crashed is not null && string.Equals(crashed.Key, done.Game.Key, StringComparison.OrdinalIgnoreCase)) done = done with { End = SessionEnd.Crashed };
+            OnSessionFinished(done);
+        }
+        ReportCrash(crashed, running);
+        if (running is null) { trayStatus.Clear("console"); trayStatus.Clear("rtss"); } // no game open: nothing for Modo Console to do
+        if (running is null) { ShowPendingResumePrompt(); ShowPendingRelief(); ShowPendingAdvice(); }
+        StartLimiterTrial(running);
         await UpdateBoostAsync(running);
         await UpdateGameTuneAsync(running);
         await UpdateOverlayWindowAsync(running);
@@ -44,6 +61,22 @@ public sealed partial class MainWindow
             else if (priorityActive) { priorityActive = false; var back = await Task.Run(priority.Restore); Serilog.Log.Information("Game priority: {Count} processes restored", back); }
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Game priority"); }
+    }
+
+    // The game's crash reporter is the only thing left: said once in the tray (no game is open then), the line stays in the
+    // icon until the error window closes or a game opens.
+    private void ReportCrash(GameEntry? crashed, GameEntry? running)
+    {
+        if (crashed is null || running is not null)
+        {
+            if (crashReported is not null) { crashReported = null; trayStatus.Clear("crash"); }
+            return;
+        }
+        if (crashReported == crashed.Key) return;
+        crashReported = crashed.Key;
+        Serilog.Log.Warning("Game crashed: {Game} (only its crash reporter is open; not counted as play time)", crashed.Name);
+        trayStatus.Set("crash", text.Format("TrayGameCrashed", crashed.Name));
+        TrayNotify(text["TrayGameCrashedTitle"], text.Format("TrayGameCrashed", crashed.Name));
     }
 
     private async Task UpdateBoostAsync(GameEntry? running)
@@ -71,7 +104,7 @@ public sealed partial class MainWindow
             {
                 var back = await Task.Run(Boost.Stop);
                 Serilog.Log.Information("Perfil Jogo off: {Steps} restored", string.Join(", ", back));
-                if (pendingReliefNote is { } note) { pendingReliefNote = null; tray?.Notify(note.Title, note.Body); }
+                if (pendingReliefNote is { } note) { pendingReliefNote = null; TrayNotify(note.Title, note.Body); }
             }
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Perfil Jogo"); }
@@ -134,7 +167,7 @@ public sealed partial class MainWindow
         {
             diary.RecordSession(DiaryGames.FromGame(s.Game), s.Start.LocalDateTime, s.Minutes);
             Serilog.Log.Information("Play session: {Game} {Minutes} min", s.Game.Name, s.Minutes);
-            tray?.Notify(text["SessionSavedTitle"], text.Format("SessionSaved", DiaryText.Hours(s.Minutes), s.Game.Name));
+            TrayNotify(text["SessionSavedTitle"], text.Format("SessionSaved", DiaryText.Hours(s.Minutes), s.Game.Name));
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Play session"); }
     }
@@ -232,8 +265,8 @@ public sealed partial class MainWindow
         {
             if (!initialized || diaryPage.Deals is not { } deals) return;
             var fresh = await deals.RefreshAsync();
-            if (fresh.Count == 1) tray?.Notify(text["DlNotifyTitle"], text.Format("DlNotifyOne", fresh[0].Name, fresh[0].DiscountText, fresh[0].Final));
-            else if (fresh.Count > 1) tray?.Notify(text["DlNotifyTitle"], text.Format("DlNotifyMany", fresh.Count, fresh[0].Name, fresh[0].DiscountText));
+            if (fresh.Count == 1) TrayNotify(text["DlNotifyTitle"], text.Format("DlNotifyOne", fresh[0].Name, fresh[0].DiscountText, fresh[0].Final));
+            else if (fresh.Count > 1) TrayNotify(text["DlNotifyTitle"], text.Format("DlNotifyMany", fresh.Count, fresh[0].Name, fresh[0].DiscountText));
         };
         timer.Start();
     }

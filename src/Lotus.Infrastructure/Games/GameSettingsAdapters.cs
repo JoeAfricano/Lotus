@@ -196,7 +196,7 @@ public sealed class WindowsGameProcessCheck : IGameProcessCheck
             {
                 try
                 {
-                    if (p.MainModule?.FileName is { } f && f.StartsWith(dir, StringComparison.OrdinalIgnoreCase) && p.WorkingSet64 > bestMemory)
+                    if (p.MainModule?.FileName is { } f && f.StartsWith(dir, StringComparison.OrdinalIgnoreCase) && p.WorkingSet64 > bestMemory && CountsAsGame(f, dir))
                     { bestMemory = p.WorkingSet64; best = new(p.Id, Path.GetFileName(f), new DateTimeOffset(p.StartTime.ToUniversalTime(), TimeSpan.Zero)); }
                 }
                 catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException) { }
@@ -206,12 +206,14 @@ public sealed class WindowsGameProcessCheck : IGameProcessCheck
     }
     // One pass over the processes, reading each image path with the light query (no module enumeration): cheap enough
     // for the background watcher that puts Lotus in light mode while a game runs.
-    public GameEntry? FirstRunning(IReadOnlyList<GameEntry> games)
+    public GameEntry? FirstRunning(IReadOnlyList<GameEntry> games) => Scan(games).Running;
+    public GameScan Scan(IReadOnlyList<GameEntry> games)
     {
         var dirs = games.Where(g => g.InstallDir is { Length: > 3 }).Select(g => (Game: g, Dir: Path.GetFullPath(g.InstallDir!).TrimEnd('\\') + "\\"))
             .Where(d => !GameProcessRules.TooBroad(d.Dir)).ToList();
-        if (dirs.Count == 0) return null;
+        if (dirs.Count == 0) return new(null, null);
         var buffer = new StringBuilder(1024);
+        GameEntry? crashed = null;
         foreach (var p in Process.GetProcesses())
         {
             using (p)
@@ -225,13 +227,34 @@ public sealed class WindowsGameProcessCheck : IGameProcessCheck
                     if (!QueryFullProcessImageName(handle, 0, buffer, ref size)) continue;
                     var path = buffer.ToString();
                     if (GameProcessRules.AlwaysOn(path)) continue;
-                    foreach (var (game, dir) in dirs) if (path.StartsWith(dir, StringComparison.OrdinalIgnoreCase)) return game;
+                    foreach (var (game, dir) in dirs)
+                    {
+                        if (!path.StartsWith(dir, StringComparison.OrdinalIgnoreCase)) continue;
+                        var role = GameProcessRules.Role(path, p2 => IsStub(p2, dir));
+                        if (role == ProcessRole.Game) return new(game, null);
+                        if (role == ProcessRole.CrashReporter) crashed ??= game;
+                    }
                 }
                 finally { CloseHandle(handle); }
             }
         }
-        return null;
+        return new(null, crashed);
     }
+    // Answer kept per path: the folder walk runs once per executable, and only for small ones.
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, bool> stubs = new(StringComparer.OrdinalIgnoreCase);
+    private static bool IsStub(string path, string gameDir) => stubs.GetOrAdd(path, p =>
+    {
+        try
+        {
+            var size = new FileInfo(p).Length;
+            if (size >= GameProcessRules.StubBytes) return false;
+            var same = Directory.EnumerateFiles(gameDir, Path.GetFileName(p), new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = true, MaxRecursionDepth = 6 })
+                .Take(8).Select(f => (f, new FileInfo(f).Length));
+            return GameProcessRules.IsLauncherStub(p, size, same);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return false; }
+    });
+    private static bool CountsAsGame(string path, string dir) => GameProcessRules.Role(path, p => IsStub(p, dir)) == ProcessRole.Game;
     private const uint QueryLimited = 0x1000; // PROCESS_QUERY_LIMITED_INFORMATION
     [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)] private static extern IntPtr OpenProcess(uint access, bool inherit, int pid);
     [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
@@ -248,7 +271,7 @@ public sealed class WindowsGameProcessCheck : IGameProcessCheck
         {
             using (p)
             {
-                try { if (p.MainModule?.FileName is { } f && f.StartsWith(dir, StringComparison.OrdinalIgnoreCase)) return true; }
+                try { if (p.MainModule?.FileName is { } f && f.StartsWith(dir, StringComparison.OrdinalIgnoreCase) && CountsAsGame(f, dir)) return true; }
                 catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException) { }
             }
         }

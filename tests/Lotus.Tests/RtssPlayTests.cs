@@ -170,4 +170,41 @@ public sealed class RtssPlayTests : IDisposable
         var running = new Rtss(true, true, false);
         Assert.True(await Vm(running).OpenRtssForRunningGameAsync()); Assert.Equal(0, running.Starts); // already open: nothing started
     }
+
+    private sealed class OpeningRtss(bool opens) : IRtssIntegration
+    {
+        public int Starts; private bool open;
+        public ToolState State() => new(true, "7.3.7");
+        public bool? OverlayConfigured() => false; public bool HasBackup() => false;
+        public Task<bool> ApplyLotusOverlayAsync() => Task.FromResult(true); public Task<bool> RestoreAsync() => Task.FromResult(true);
+        public string ExportLayout(string variant = "top") => ""; public bool LayoutActive() => false; public string? ActiveLayoutName() => null; public bool HasLayoutBackup() => false;
+        public Task<bool> ActivateLayoutAsync(string variant = "top", bool restart = false) => Task.FromResult(true); public Task<bool> RestoreLayoutAsync() => Task.FromResult(true);
+        public string? LimiterMode(string exe) => exe == "game.exe" ? "fluid" : null;
+        public bool? Running() => open;
+        public Task<bool> StartAsync() { Starts++; open = opens; return Task.FromResult(opens); }
+    }
+
+    // After a restart the Afterburner opened without RivaTuner and Stellar Blade ran at 74 Hz with no cap (26/11/2026).
+    [Fact] public async Task A_detected_game_that_needs_RivaTuner_opens_it_and_asks_to_reopen_the_game()
+    {
+        var text = new TextCatalog(); var game = new GameEntry("Manual", "1", "Jogo", null, @"C:\Games\game.exe");
+        var rtss = new OpeningRtss(true); var vm = new GamesViewModel(new NoLibrary(), new NoStore(), new NoLauncher(), text, _ => { }) { Rtss = rtss };
+        var warnings = new List<string>(); vm.RtssWarning += (_, m) => warnings.Add(m);
+        Assert.True(await vm.EnsureRtssForDetectedGameAsync(game));
+        Assert.Equal(1, rtss.Starts); Assert.Equal([text["RtssOpenedReopen"]], warnings);
+        Assert.Null(await vm.EnsureRtssForDetectedGameAsync(game)); Assert.Equal(1, rtss.Starts); // open now: nothing more
+    }
+
+    [Fact] public async Task A_refused_opening_is_not_asked_again_for_half_an_hour()
+    {
+        var text = new TextCatalog(); var game = new GameEntry("Manual", "1", "Jogo", null, @"C:\Games\game.exe");
+        var now = DateTimeOffset.UnixEpoch; var rtss = new OpeningRtss(false);
+        var vm = new GamesViewModel(new NoLibrary(), new NoStore(), new NoLauncher(), text, _ => { }) { Rtss = rtss, Clock = () => now };
+        Assert.False(await vm.EnsureRtssForDetectedGameAsync(game));
+        Assert.Null(await vm.EnsureRtssForDetectedGameAsync(game));   // no second Windows prompt over the game
+        Assert.False(await vm.OpenRtssForRunningGameAsync());          // nor from the Modo Console path
+        Assert.Equal(1, rtss.Starts);
+        now += GamesViewModel.RtssRetryAfter;
+        Assert.False(await vm.EnsureRtssForDetectedGameAsync(game)); Assert.Equal(2, rtss.Starts);
+    }
 }

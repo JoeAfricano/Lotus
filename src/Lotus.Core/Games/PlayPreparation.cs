@@ -18,6 +18,10 @@ public sealed record GamePlayPrefs
     public bool Prefer60 { get; set; }         // Otimizar: lock 60 FPS with better graphics instead of lowering them to hold the monitor rate
     public GamePresentationPrefs? Before60 { get; set; } // per-game Hz/RivaTuner plan in place before "60 estilo console", restored when it is turned off
     public GamePresentationPrefs Presentation { get; set; } = new();
+    // Modo Console: each RivaTuner limiter measured once in this game (see LimiterTrial), by mode.
+    public Dictionary<string, LimiterTrialResult>? LimiterTrials { get; set; }
+    // "straight" (default: RivaTuner just under the screen's rate) or "latency" (the game's own limiter, RivaTuner without a cap).
+    public string PacingPreset { get; set; } = PacingPresets.Straight;
 }
 
 public sealed class GamePrefsData

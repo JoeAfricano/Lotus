@@ -46,9 +46,9 @@ public sealed class GamePresentationSaveTests : IDisposable
         var store=new Store();var vm=Vm(store);
         Assert.True(await vm.SavePresentationAsync(Game,Prefs,Info,false));
         var saved=store.Data.Games[Game.Key].Presentation;
-        Assert.Equal("fluid",saved.AppliedLimiter);Assert.Equal(59.93,saved.Cap);Assert.Equal(59.94,saved.PreparedRate);
+        Assert.Equal("responsive",saved.AppliedLimiter);Assert.Equal(59.93,saved.Cap); // NVIDIA: Reflex by default (28/11/2026)Assert.Equal(59.94,saved.PreparedRate);
         Assert.Equal(0,saved.RequestedCap);Assert.Equal("game.exe",saved.Exe);
-        Assert.Equal("fluid",vm.Rtss!.LimiterMode("game.exe"));
+        Assert.Equal("responsive",vm.Rtss!.LimiterMode("game.exe"));
     }
     [Fact] public async Task ConsoleSixtySwitchesTo60HzWithRtssAndRestoresWhenOff()
     {
@@ -59,8 +59,8 @@ public sealed class GamePresentationSaveTests : IDisposable
         var on=store.Data.Games[Game.Key];
         Assert.True(on.Prefer60);Assert.Equal("",vm.Console60Status);
         // Modo Console (21/11/2026): RivaTuner just under the real 60 Hz (a cap equal to it queued frames) and Fluidez pacing.
-        Assert.Equal((true,60,59.93,"fluid"),(on.Presentation.Enabled,on.Presentation.Hz,on.Presentation.Cap,on.Presentation.AppliedLimiter));
-        Assert.Equal(59.93,vm.Rtss!.LimiterCap("game.exe"));Assert.Equal("fluid",vm.Rtss.LimiterMode("game.exe"));
+        Assert.Equal((true,60,59.93,"responsive"),(on.Presentation.Enabled,on.Presentation.Hz,on.Presentation.Cap,on.Presentation.AppliedLimiter));
+        Assert.Equal(59.93,vm.Rtss!.LimiterCap("game.exe"));Assert.Equal("responsive",vm.Rtss.LimiterMode("game.exe"));
         Assert.False(on.Before60!.Enabled);
         Assert.True(await vm.SetConsole60Async(Game,false,Info,false));
         var off=store.Data.Games[Game.Key];
@@ -72,8 +72,8 @@ public sealed class GamePresentationSaveTests : IDisposable
     }
     [Fact] public void ConsoleModeKeepsTheFrameGenLimiterWhenThePlayerUsesFrameGen()
     {
-        Assert.Equal("fluid",GamesViewModel.ConsoleLimiter(Info));
-        Assert.Equal("fluid",GamesViewModel.ConsoleLimiter(null));
+        Assert.Equal("auto",GamesViewModel.ConsoleLimiter(Info)); // resolved later: Reflex on NVIDIA, front edge elsewhere
+        Assert.Equal("auto",GamesViewModel.ConsoleLimiter(null));
         Assert.Equal("auto",GamesViewModel.ConsoleLimiter(Info with {FrameGen=true,UsesFrameGen=true}));
         Assert.Equal(60,GamesViewModel.ConsoleCap);
     }

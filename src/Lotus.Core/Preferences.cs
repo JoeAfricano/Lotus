@@ -29,6 +29,10 @@ public sealed record InterfacePreferences
     public bool DiaryHeaderCompact { get; init; } = true; // diary profile header: compact band or the full layout
     public bool AutoSessions { get; init; } = true; // record play sessions (time, dates) in the diary while a library game is open
     public bool MinimizeForGames { get; init; } = true; // a game opened: Lotus minimizes; it closed: Lotus comes back
+    // The highest PC latency (ms, Reflex) the player accepts; 0 = no ceiling. Lotus never suggests a limiter or preset above it.
+    public int LatencyCeilingMs { get; init; }
+    // Neon overlay: the "LAT" line with RivaTuner's Reflex latency (off = the layout exactly as shipped).
+    public bool OverlayLatency { get; init; }
     public bool GamePriority { get; init; } // while a game is open: game above normal, known launchers/browsers below normal (restored after)
     // Perfil Jogo (game sessions only): tweaks applied while a game is open and undone when it closes (see GameBoost).
     // On when the player applies the Game profile, off with the Daily one. Each step can be turned off.
@@ -90,7 +94,8 @@ public sealed record InterfacePreferences
         AdaptiveSync = AdaptiveSync is "on" or "off" ? AdaptiveSync : null,
         DiaryView = DiaryView is "grid" or "list" or "table" ? DiaryView : "grid",
         Accent = Accents.Contains(Accent) ? Accent : "rose",
-        UiSoundVolume = Math.Clamp(UiSoundVolume, 0, 100)
+        UiSoundVolume = Math.Clamp(UiSoundVolume, 0, 100),
+        LatencyCeilingMs = LatencyCeilingMs is >= 20 and <= 200 ? LatencyCeilingMs : 0
     };
 }
 
@@ -150,6 +155,8 @@ public sealed class PreferencesViewModel : ObservableObject
     public bool PlayIntro { get => service.Current.PlayIntro; set { if (value != service.Current.PlayIntro) { service.Update(service.Current with { PlayIntro = value }); OnPropertyChanged(); } } }
     public bool AutoSessions { get => service.Current.AutoSessions; set { if (value != service.Current.AutoSessions) { service.Update(service.Current with { AutoSessions = value }); OnPropertyChanged(); } } }
     public bool MinimizeForGames { get => service.Current.MinimizeForGames; set { if (value != service.Current.MinimizeForGames) { service.Update(service.Current with { MinimizeForGames = value }); OnPropertyChanged(); } } }
+    public bool OverlayLatency { get => service.Current.OverlayLatency; set { if (value != service.Current.OverlayLatency) { service.Update(service.Current with { OverlayLatency = value }); OnPropertyChanged(); } } }
+    public int LatencyCeilingMs { get => service.Current.LatencyCeilingMs; set { var v = value is >= 20 and <= 200 ? value : 0; if (v != service.Current.LatencyCeilingMs) { service.Update(service.Current with { LatencyCeilingMs = v }); OnPropertyChanged(); } } }
     public bool GamePriority { get => service.Current.GamePriority; set { if (value != service.Current.GamePriority) { service.Update(service.Current with { GamePriority = value }); OnPropertyChanged(); } } }
     public bool GameBoost { get => service.Current.GameBoost; set { if (value != service.Current.GameBoost) { service.Update(service.Current with { GameBoost = value }); OnPropertyChanged(); } } }
     public bool BoostPower { get => service.Current.BoostPower; set { if (value != service.Current.BoostPower) { service.Update(service.Current with { BoostPower = value }); OnPropertyChanged(); } } }

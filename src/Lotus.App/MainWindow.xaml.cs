@@ -41,6 +41,8 @@ public sealed partial class MainWindow : Window
     public Lotus.Core.Catalog.IGameCatalog Catalog => catalog;
     public Lotus.Core.Games.GamesViewModel Games => games; // Steam store data shared by every page (one cache, one request gate)
     public Lotus.Core.Games.IGameHookStore Hooks { get; } = new Lotus.Infrastructure.Games.WindowsGameHooks(); // hook DLLs in game folders (off/on by rename)
+    public Lotus.Core.Maintenance.IMaintenanceJournal ToolsJournal => tools.Journal; // history of what the player changed
+    public PreferencesViewModel PreferencesModel => preferencesViewModel; // latency ceiling from the Modo Console card
     private Lotus.Core.Games.PlayerPanelViewModel? player;
     private Lotus.Core.Diary.GameDiary diary = null!;
     private Lotus.Core.Diary.GameLengthLookup? pageLengths;
@@ -137,6 +139,9 @@ public sealed partial class MainWindow : Window
         // Preparar e jogar: same Game profile and journal as Otimizar; the game is followed until it closes.
         games.GameProfile = new Lotus.Core.Optimization.GameProfileAdapter(powerProfiles);
         games.Watch = sessionHub; // the light-mode check, shared (no second polling loop)
+        games.LatencyCeiling = () => preferences.Current.LatencyCeilingMs;
+        Lotus.Infrastructure.Integrations.LotusOverlayLayout.LatencyLine = preferences.Current.OverlayLatency;
+        sessionHub.Stopped += (_, e) => DispatcherQueue.TryEnqueue(() => OfferLimiterAdvice(e.Game));
         games.Memory = new Lotus.Infrastructure.Games.WindowsMemoryPressure();
         games.HitchContext = new Lotus.Infrastructure.Games.PdhHitchContextSampler(); // cause of each hitch in "Por que está travando?"
         games.Heat = cpuHeat;
@@ -589,7 +594,8 @@ public sealed partial class MainWindow : Window
     private void SetUpBackground()
     {
         tray = new TrayIcon("Lotus", text["TrayOpen"], text["TrayExit"]);
-        tray.Open += (_, _) => DispatcherQueue.TryEnqueue(ShowFromTray);
+        trayStatus.Changed += (_, line) => DispatcherQueue.TryEnqueue(() => tray?.SetStatus(line));
+        tray.Open +=(_, _) => DispatcherQueue.TryEnqueue(ShowFromTray);
         tray.Exit += (_, _) => DispatcherQueue.TryEnqueue(() => { exiting = true; Close(); });
         tray.Hotkey += (_, _) => DispatcherQueue.TryEnqueue(() => _ = AnalyseRunningGameAsync());
         tray.Show();
@@ -606,7 +612,7 @@ public sealed partial class MainWindow : Window
     public void HideToTray(bool firstTime)
     {
         AppWindow.Hide();
-        if (firstTime) { toldAboutTray = true; tray?.Notify(text["TrayTitle"], text["TrayBody"]); }
+        if (firstTime) { toldAboutTray = true; TrayNotify(text["TrayTitle"], text["TrayBody"]); }
     }
     public void BringBack() => ShowFromTray(); // another launch asked for the window
     private void ShowFromTray()
@@ -616,7 +622,7 @@ public sealed partial class MainWindow : Window
         if (AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized } presenter) presenter.Restore();
         Activate();
         if (pendingReport is { } r && pendingGame is { } g) { pendingReport = null; _ = ShowReportAsync(g, r); }
-        ShowPendingRelief();
+        ShowPendingRelief(); ShowPendingAdvice();
     }
     private void ApplyStartup()
     {
@@ -659,7 +665,7 @@ public sealed partial class MainWindow : Window
                 if (report.LatencyMs is { } latency) numbers += string.Format(System.Globalization.CultureInfo.GetCultureInfo(text.Language), text["OsdLatency"], latency); // only when measured
                 osd.Show(string.Format(text["OsdResult"], text[top.Key + "Title"], numbers, text[top.Key + "Tip"])); UiSound.Play(UiSound.Cue.Done);
                 pendingGame = game; pendingReport = report;
-                tray?.Notify(text["TrayReportTitle"], text[top.Key + "Title"]);
+                TrayNotify(text["TrayReportTitle"], text[top.Key + "Title"]);
             }
             await Task.Delay(9000);
         }

@@ -40,7 +40,33 @@ public sealed partial class GamesViewModel
     public async Task<bool> OpenRtssForRunningGameAsync()
     {
         if (Rtss is not { } rtss) return false;
-        try { return await Task.Run(() => rtss.Running()) == true || await StartRtss(rtss, Text["RtssNotOpened"]) == true; }
+        try
+        {
+            if (await Task.Run(() => rtss.Running()) == true) return true;
+            if (RecentlyRefused()) return false;
+            return Remember(await StartRtss(rtss, Text["RtssNotOpened"])) == true;
+        }
+        catch (Exception ex) { log(ex); return false; }
+    }
+
+    // A game Lotus saw start on its own (Steam, a shortcut, its exe) needs RivaTuner and it is closed (after a restart the
+    // Afterburner may open without it: Stellar Blade, 26/11/2026). Opened and confirmed now; the player is told to reopen the
+    // game, because RivaTuner only hooks games started after it. A refused or failed opening is not asked again for 30 min.
+    public static readonly TimeSpan RtssRetryAfter = TimeSpan.FromMinutes(30);
+    private DateTimeOffset rtssRefused = DateTimeOffset.MinValue;
+    public Func<DateTimeOffset> Clock { get; set; } = () => DateTimeOffset.UtcNow;
+    private bool RecentlyRefused() => Clock() - rtssRefused < RtssRetryAfter;
+    private bool? Remember(bool? opened) { if (opened == false) rtssRefused = Clock(); return opened; }
+    public async Task<bool?> EnsureRtssForDetectedGameAsync(GameEntry game)
+    {
+        if (Rtss is not { } rtss || RecentlyRefused()) return null;
+        try
+        {
+            if (!await Task.Run(() => NeedsRtss(rtss, game))) return null;
+            var opened = Remember(await StartRtss(rtss, Text["RtssNotOpened"]));
+            if (opened == true) RtssWarning?.Invoke(this, Text["RtssOpenedReopen"]);
+            return opened;
+        }
         catch (Exception ex) { log(ex); return false; }
     }
 

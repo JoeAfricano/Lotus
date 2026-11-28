@@ -29,7 +29,7 @@ public sealed partial class GameTunePanel : UserControl
 
     public async void Open(GamesViewModel model, GameCard game, TuneActions acts)
     {
-        vm = model; card = game; actions = acts;
+        vm = model; card = game; actions = acts; customOpen = false;
         returnFocus = XamlRoot is { } root ? Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(root) as Control : null;
         Eyebrow.Text = model.Text["TuneOpen"].ToUpperInvariant(); GameName.Text = game.Name;
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(CloseButton, model.Text["PpClose"]); // screen readers: the X had no name
@@ -64,10 +64,17 @@ public sealed partial class GameTunePanel : UserControl
         if (tune is null) { Body.Children.Add(Caption(vm.Text["GsFailed"])); return; }
         BuildChips(tune);
         // Two columns when there is room (settings and tips | fluidity, last check and tools); one column on small windows.
+        if (customOpen) { Body.Children.Add(await CustomViewAsync(tune)); BuildFooter(tune); Motion.Settle(Body); return; }
+        // On top the graphics recommendations for this PC, then "Escolha seu tipo de jogo" (Modo PC / Console / Personalizado).
+        // José's sketch (28/11/2026): recommendations on the left of the top row, the game on the right; cards below; FrameGen as a strip.
+        var top = new Grid { ColumnSpacing = 18 };
+        top.ColumnDefinitions.Add(new ColumnDefinition()); top.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(260) });
+        top.Children.Add(Section(vm.Text["TuneRecommended"], RecommendedTiles(tune)));
+        var gameBox = GameBox(tune); Grid.SetColumn(gameBox, 1); top.Children.Add(gameBox);
+        Body.Children.Add(top);
+        Body.Children.Add(Section(vm.Text["PmHeading"], await PlayModesAsync(tune)));
         var left = new StackPanel { Spacing = 24 }; var right = new StackPanel { Spacing = 24 };
-        left.Children.Add(Section(vm.Text["TuneRecommended"], RecommendedTiles(tune)));
         left.Children.Add(Section(vm.Text["TuneTips"], TipList(tune)));
-        right.Children.Add(Section(vm.Text["LlTitle"], await PresentationAsync(tune)));
         right.Children.Add(Section(vm.Text["TuneLast"], LastCheck(tune)));
         right.Children.Add(Links());
         Body.Children.Add(Columns(left, right));
@@ -112,20 +119,6 @@ public sealed partial class GameTunePanel : UserControl
             s.Children.Add(new TextBlock { Text = tiles[i].Item1.ToUpperInvariant(), FontSize = 11.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, CharacterSpacing = 80, Foreground = Res("RoseBrush") });
             s.Children.Add(new TextBlock { Text = tiles[i].Item2, FontSize = 21, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap });
             tile.Child = s; Grid.SetColumn(tile, i % 2); Grid.SetRow(tile, i / 2); grid.Children.Add(tile);
-            // Optional extra (José, 19/11/2026; 21/11/2026): a small "Modo Console" toggle in the FPS limit card; the tooltip says what 60 gives here.
-            if (i == 3 && r.CanPrefer60 && card is { } c60)
-            {
-                var title = text[r.Why60 == "looks" ? "Gs60Choice" : "Gs60ChoicePlain"];
-                var hint = text[r.Why60 switch { "cant-hold" => "Gs60ChoiceHintCantHold", "lighter" => "Gs60ChoiceHintLighter", _ => r.AdaptiveSync ? "Gs60ChoiceHintVrr" : "Gs60ChoiceHint" }];
-                var lock60 = new Microsoft.UI.Xaml.Controls.Primitives.ToggleButton { Content = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 5,
-                    Children = { new FontIcon { Glyph = "\uE7FC", FontSize = 12 }, new TextBlock { Text = text["Gs60Badge"] } } }, IsChecked = r.Prefer60, FontSize = 11.5, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Padding = new Thickness(8, 2, 8, 2),
-                    MinWidth = 0, MinHeight = 0, CornerRadius = new CornerRadius(10), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, 10, 10, 0) };
-                AutomationProperties.SetAutomationId(lock60, "tune-prefer-60");
-                AutomationProperties.SetName(lock60, title);
-                ToolTipService.SetToolTip(lock60, new TextBlock { Text = title + "\n" + text["Gs60ChoiceWhat"] + "\n\n" + hint, TextWrapping = TextWrapping.Wrap, MaxWidth = 320 });
-                lock60.Click += async (_, _) => { lock60.IsEnabled = false; await vm.SetConsole60Async(c60.Game, lock60.IsChecked == true, t.LowLatency, r.AdaptiveSync); await Reload(); };
-                Grid.SetColumn(lock60, i % 2); Grid.SetRow(lock60, i / 2); grid.Children.Add(lock60);
-            }
         }
         // Lotus Score: the expected FPS of this game on this PC (from the player's own test), or an invitation to run it.
         var score = new Border { Padding = new Thickness(14, 10, 14, 10), CornerRadius = new CornerRadius(12), BorderThickness = new Thickness(1), Background = Res("AccentSoftBrush"), BorderBrush = Res("RoseBrush") };

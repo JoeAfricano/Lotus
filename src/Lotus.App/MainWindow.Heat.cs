@@ -33,7 +33,7 @@ public sealed partial class MainWindow
                 if (heatWatch.Feed(sample) && heatWatch.Last is { } last)
                 {
                     Serilog.Log.Information("CPU heat during {Game}: limit {Limit} zone {Zone}", game.Name, last.AveragePerformanceLimit, last.MaxZoneCelsius);
-                    tray?.Notify(text["HeatAlertTitle"], last.MaxZoneCelsius is >= CpuHeatWatch.AlertZone and var c
+                    TrayNotify(text["HeatAlertTitle"], last.MaxZoneCelsius is >= CpuHeatWatch.AlertZone and var c
                         ? text.Format("HeatAlertHot", Math.Round(c)) : text["HeatAlertLimited"]);
                     StopHeatWatch(); // once per session
                 }

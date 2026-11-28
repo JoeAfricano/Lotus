@@ -26,12 +26,9 @@ public static class LimiterChoice
         if (info.FrameGen && (info.UsesFrameGen || FrameGenFits(adaptiveSync, refreshHz)))
             return reflex ? ("responsive", info.UsesFrameGen && !FrameGenFits(adaptiveSync, refreshHz) ? "LlWhyFrameGenChosen" : "LlWhyFrameGen") : (null, "LlFrameGenOther");
         if (adaptiveSync) return reflex ? ("responsive", "LlWhyVrrReflex") : ("fluid", "LlWhyVrrFluid");
-        var headroom = refreshHz > 0 && lastAverageFps is { } fps && (lastGpuBusy is { } busy
-            ? busy <= MaxGpuBusyForScanline && fps >= refreshHz * 0.95
-            : fps >= refreshHz * HeadroomWithoutGpuData);
-        if (headroom) return ("scanline", "LlWhyScanline");
-        // Fixed refresh without headroom: on NVIDIA (Direct3D 11/12) Reflex with V-Sync answers faster than front edge
-        // sync at about the same steadiness (Wukong, 75 Hz: 27 ms vs 30 ms, 1% low 59 vs 61 FPS). Elsewhere, Fluidez.
+        // Fixed refresh: Reflex on NVIDIA (Direct3D 11/12) is the default (José, 28/11/2026: the study of 25-28/11 found it best in
+        // Wukong and Gothic; Wukong 12/11: 27 ms vs 30 ms against front edge). Elsewhere front edge sync. Scanline sync is no
+        // longer picked by itself (only by hand); a measured choice per game (LimiterTrial) can still move a game to front edge.
         if (reflex) return ("responsive", "LlWhyFixedReflex");
         return ("fluid", lastAverageFps is null ? "LlWhyFluidMeasure" : "LlWhyFluid");
     }

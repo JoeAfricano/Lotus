@@ -85,7 +85,7 @@ public sealed partial class GameHooksCard : UserControl
         if (shell.IsGameRunning(game)) result = HookChange.GameRunning; // the DLL is loaded; renaming it now would not take effect
         else
         {
-            try { result = await Task.Run(() => hook.Disabled ? shell.Hooks.Enable(hook) : shell.Hooks.Disable(hook)); }
+            try { result = await Task.Run(() => GameHooks.Toggle(shell.Hooks, shell.ToolsJournal, game, hook)); }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { result = HookChange.NoAccess; }
         }
         results[hook.Name + "|" + Path.GetDirectoryName(hook.FilePath)] = result switch

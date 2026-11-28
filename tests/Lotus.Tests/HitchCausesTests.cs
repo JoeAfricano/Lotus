@@ -17,6 +17,21 @@ public sealed class HitchCausesTests
     }
     private static List<HitchSecond> Quiet() => [.. Enumerable.Range(0, 10).Select(_ => new HitchSecond(20, 2, 60))];
 
+    // Each hitch's own busy times (PresentMon MsCPUBusy/MsGPUBusy): Xion in Stellar Blade was ~100% "processor/game".
+    [Fact] public void A_hitchs_own_busy_time_names_processor_or_card()
+    {
+        var frames = Frames(1.5, 3.5, 6.5, 8.5);
+        var busy = frames.Select(f => f.Milliseconds < 50 ? new FrameBusy(8, 10)
+            : f.TimeSeconds < 4 ? new FrameBusy(110, 30)      // processor busy almost the whole frame
+            : f.TimeSeconds < 7 ? new FrameBusy(20, 100)      // the card's own time
+            : new FrameBusy(null, null)).ToList();             // not given: the second's GPU load decides
+        var s = Quiet(); s[8] = s[8] with { GpuPercent = 99 };
+        var h = HitchCauses.Classify(frames, s, busy)!;
+        Assert.Equal((4, 2, 2), (h.Total, h.Cpu, h.Gpu));
+        var memory = Quiet(); memory[3] = memory[3] with { PageInsPerSecond = 900 }; // memory still comes first
+        Assert.Equal(1, HitchCauses.Classify(frames, memory, busy)!.Memory);
+        Assert.Equal(4, HitchCauses.Classify(frames, Quiet(), busy[..3])!.Total);   // a list that does not line up is ignored
+    }
     [Fact] public void EachHitchGetsTheCauseOfItsSecond()
     {
         var s = Quiet();

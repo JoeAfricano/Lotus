@@ -10,7 +10,13 @@ public sealed record FrameStatistics(int Count, double DurationSeconds, double A
     double P95Ms, double P99Ms, double MedianMs, int SpikeCount, double SpikeThresholdMs);
 public sealed record ParsedCapture(string SwapChain, int OtherSwapChains, int InvalidRows, int TotalRows,
     IReadOnlyList<FrameSample> Frames, FrameStatistics? Statistics, string FrameTypes, bool Truncated,
-    long? LostEvents = null, long? LostBuffers = null, long? OverflowedPresents = null, string? PresentMode = null); // PresentMode: the most frequent one of the measured swap chain
+    long? LostEvents = null, long? LostBuffers = null, long? OverflowedPresents = null, string? PresentMode = null) // PresentMode: the most frequent one of the measured swap chain
+{
+    // PC latency of each frame (PresentMon --track_pc_latency, MsPCLatency) when the game gives Reflex markers; empty otherwise.
+    public IReadOnlyList<double> PcLatencies { get; init; } = [];
+    // Processor and graphics card busy time of each frame in Frames (same order), when PresentMon gives them (MsCPUBusy, MsGPUBusy).
+    public IReadOnlyList<FrameBusy> Busy { get; init; } = [];
+}
 public sealed record BenchmarkSession(Guid Id, CaptureTarget Target, DateTimeOffset StartedUtc, double WallSeconds,
     string Status, string ProviderVersion, string AlgorithmVersion, string RawPath, string RawSha256,
     string Conditions, string HardwareJson, ParsedCapture? Data, string Diagnostics)
@@ -27,7 +33,9 @@ public sealed record BenchmarkSession(Guid Id, CaptureTarget Target, DateTimeOff
 }
 // GpuBusyPercent: median share of the GPU's frame time spent on the game; PcLatencyMs: median time from input sample to
 // GPU done (display not included); Api: the game's 3D API as RivaTuner reports it.
-public sealed record FrameExtras(double? GpuBusyPercent, double? PcLatencyMs, string? Api);
+// RealFps: real (rendered) frames per second from the Reflex GPU frame time; with frame generation it is below the frames shown.
+public sealed record FrameBusy(double? CpuMs, double? GpuMs);
+public sealed record FrameExtras(double? GpuBusyPercent, double? PcLatencyMs, string? Api, double? RealFps = null, double? PcLatencyP95Ms = null);
 public enum CaptureIntegrity { Unknown, Verified, LossDetected, Invalid }
 public sealed record EtwIntegrityEvidence(long? EventsLost, long? BuffersLost, long? OverflowedPresents,
     string Source, bool CompleteFinalCounters);

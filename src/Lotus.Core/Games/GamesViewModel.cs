@@ -274,7 +274,15 @@ public sealed partial class GamesViewModel : ObservableObject
     public GameEntry? LastPlayed() => InstalledGames().OrderByDescending(g => g.LastPlayed ?? DateTimeOffset.MinValue).FirstOrDefault();
     public bool HasFeatured => Featured.Count > 0;
     // The library game that is running now (used by the in-game hotkey), or null.
-    public GameEntry? RunningGame() => processCheck?.FirstRunning([.. all.Where(g => !hidden.Contains(g.Key))]);
+    public GameEntry? RunningGame() => ScanGames().Running;
+    // The latest check's game left with only its crash reporter open (see GameProcessRules), or null.
+    public GameEntry? CrashedGame { get; private set; }
+    public GameScan ScanGames()
+    {
+        var scan = processCheck?.Scan([.. all.Where(g => !hidden.Contains(g.Key))]) ?? new(null, null);
+        CrashedGame = scan.Crashed;
+        return scan;
+    }
     public RunningGame? GameProcess(GameEntry game) => processCheck?.Find(game);
     private GameCard Card(GameEntry g)
     {
@@ -416,9 +424,11 @@ public sealed partial class GamesViewModel : ObservableObject
             var target = (await RecommendFor(game, pc)).TargetFps;
             var decision = QualityTuner.Decide(s.AverageFps, s.Low1Fps, target, gpuBusy, canRaise, canLower);
             if (decision.Step != 0) pendingSteps[game.Key] = decision.Step; else pendingSteps.Remove(game.Key);
-            var summary = Text.Format("GsMeasureSummary", s.AverageFps, s.Low1Fps, gpuBusy is { } g ? $"{g:0}%" : "?", target);
+            var summary = Text.Format("GsMeasureSummary", s.AverageFps, s.Low1Fps, gpuBusy is { } g ? $"{g:0}%" : "?", target) + LatencyText(latencyMs, session.Extras?.PcLatencyP95Ms);
             // Kept as this game's last measurement (findings of an earlier analysis stay): it calibrates the per-game estimate.
-            SaveReport(game.Key, new StutterReport(summary, LastReport(game)?.Findings ?? [], s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now, gpuBusy, latencyMs));
+            var fgSeen = FrameGenCheck.Seen(s.AverageFps, session.Extras?.RealFps, session.Data?.FrameTypes);
+            if (FrameGenNote(game, fgSeen) is { } fgNote) summary += " · " + fgNote;
+            SaveReport(game.Key, new StutterReport(summary, LastReport(game)?.Findings ?? [], s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now, gpuBusy, latencyMs, fgSeen));
             status = summary; Notify();
             return new(summary, decision, Text[decision.ReasonKey], decision.Step != 0);
         }
@@ -544,6 +554,18 @@ public sealed partial class GamesViewModel : ObservableObject
         return info with { Recommended = mode, Why = why };
     }
 
+    // "Uso o gerador de quadros" checked against the measurement (FrameGenCheck): said in the result when they disagree.
+    // " · latência 46 ms (p95 52 ms)" when the game gave Reflex markers, plus a note above the player's ceiling; "" otherwise.
+    public string LatencyText(double? median, double? p95)
+    {
+        if (median is not { } m) return "";
+        var line = " · " + Text.Format("GsLatencyP95", Math.Round(m), Math.Round(p95 ?? m));
+        return CeilingMs > 0 && m > CeilingMs ? line + " · " + Text.Format("GsLatencyOverCeiling", CeilingMs) : line;
+    }
+    private string? FrameGenNote(GameEntry game, bool? seen) =>
+        FrameGenCheck.Mismatch(PrefsFor(game).UseFrameGen, seen) is { } key ? Text[key] : null;
+    // The latest measurement of this game, when it could tell (null = not measured or unknown).
+    public bool? FrameGenMeasured(GameEntry game) => LastReport(game)?.FrameGenSeen;
     // mode: "fluid" | "responsive" turns the limiter on (cap = exact paced cap), null restores that game's profile.
     // Frame generation is the player's call ("Uso o gerador de quadros"): Lotus only advises. When on, the limiter
     // recommendation follows it (Reflex on NVIDIA, the game's own limit elsewhere).
@@ -581,7 +603,7 @@ public sealed partial class GamesViewModel : ObservableObject
     public ICpuHeatSampler? Heat { get; set; } // processor held back by heat or power during the measurement
     // GpuBusy (%) and LatencyMs come from RivaTuner's Reflex timings when the game gives them; null = not measured.
     public sealed record StutterReport(string Summary, IReadOnlyList<StutterFinding> Findings, double AverageFps = 0, double Low1Fps = 0, int Spikes = 0, DateTimeOffset? When = null,
-        double? GpuBusy = null, double? LatencyMs = null);
+        double? GpuBusy = null, double? LatencyMs = null, bool? FrameGenSeen = null);
 
     // Measures the running game, then ranks likely causes. Changes nothing; fixes are offered separately.
     public async Task<StutterReport?> DiagnoseAsync(GameEntry game, int seconds = 30, int startDelaySeconds = 5, CancellationToken token = default)
@@ -611,15 +633,18 @@ public sealed partial class GamesViewModel : ObservableObject
             var pending = GameProfile is null ? 0 : (await GameProfile.PreviewAsync()).Count(p => !p.AlreadyApplied);
             var (load, apps) = Memory is null ? (0d, (IReadOnlyList<string>)[]) : await Task.Run(() => Memory.Read(game), token);
             IReadOnlyList<string> overlays = Overlays is null ? [] : await Task.Run(() => (IReadOnlyList<string>)[.. Overlays.Scan().Where(o => o.Heavy).Select(o => o.Name)], token);
-            var hitches = session.Data?.Frames is { Count: > 0 } frames ? HitchCauses.Classify(frames, perSecond) : null;
+            var hitches = session.Data?.Frames is { Count: > 0 } frames ? HitchCauses.Classify(frames, perSecond, session.Data?.Busy) : null;
             var findings = StutterDiagnosis.Analyze(new(s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds, gpuBusy, target,
                 ScsKillerOutput.Match(shaderStatuses, game)?.State, pending, load, apps, canLower, overlays, cpuHeat, await Task.Run(() => RtssCapFor(run.Executable), token),
-                FramePacing.RealRefresh(pc.RefreshHz, pc.ExactRefreshHz), vrr, hitches));
+                FramePacing.RealRefresh(pc.RefreshHz, pc.ExactRefreshHz), vrr, hitches,
+                gpuBusy is { } gb && s.AverageFps > 0 ? gb / 100 * 1000 / s.AverageFps : null, PrefsFor(game).Presentation.Enabled));
             findings = [.. findings.Select(f => f.Key.StartsWith("WhyHitch", StringComparison.Ordinal) && hitches is { } h ? f with { Detail = HitchSplit(h, f.Fix == StutterFix.CloseApps ? apps : []) } : f)];
             if (findings.Any(f => f.Fix == StutterFix.LowerQuality)) pendingSteps[game.Key] = -1; // ready for "Otimizar configurações" after closing
             var summary = Text.Format("WhySummary", s.AverageFps, s.Low1Fps, s.SpikeCount, s.DurationSeconds)
-                + (latencyMs is { } ms ? " · " + Text.Format("WhyLatency", ms) : "");
-            var report = new StutterReport(summary, findings, s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now, gpuBusy, latencyMs);
+                + LatencyText(latencyMs, session.Extras?.PcLatencyP95Ms);
+            var fgSeen = FrameGenCheck.Seen(s.AverageFps, session.Extras?.RealFps, session.Data?.FrameTypes);
+            if (FrameGenNote(game, fgSeen) is { } fgNote) summary += " · " + fgNote;
+            var report = new StutterReport(summary, findings, s.AverageFps, s.Low1Fps, s.SpikeCount, DateTimeOffset.Now, gpuBusy, latencyMs, fgSeen);
             SaveReport(game.Key, report);
             status = summary; Notify();
             return report;

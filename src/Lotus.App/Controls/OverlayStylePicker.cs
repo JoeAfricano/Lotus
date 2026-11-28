@@ -38,6 +38,9 @@ public sealed class OverlayStylePicker : UserControl
     private readonly Button hotkeySave = new() { MinHeight = 36, VerticalAlignment = VerticalAlignment.Bottom };
     private readonly TextBlock hotkeyNote = new() { FontSize = 12, TextWrapping = TextWrapping.Wrap };
     private string? hotkeyShown; // the choice the list was last filled with
+    // "LAT" line on the Neon card (RivaTuner's Reflex latency); off = the layout as shipped.
+    private readonly ToggleSwitch latencyLine = new();
+    private readonly TextBlock latencyNote = new() { FontSize = 12, TextWrapping = TextWrapping.Wrap };
     private readonly StackPanel windowPanel = new() { Spacing = 14 };
     private readonly Image windowPreview = new() { Stretch = Stretch.Uniform, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(14) };
     private readonly ProgressBar busy = new() { IsIndeterminate = true };
@@ -90,6 +93,17 @@ public sealed class OverlayStylePicker : UserControl
         body.Children.Add(windowPanel);
         body.Children.Add(actions);
         body.Children.Add(hotkeyPanel);
+        latencyNote.Foreground = (Brush)res["MutedBrush"];
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(latencyLine, "overlay-latency-line");
+        latencyLine.IsOn = MainWindow.Shell?.OverlayLatency == true;
+        latencyLine.Toggled += (_, _) =>
+        {
+            if (MainWindow.Shell is not { } shell || vm is null || shell.OverlayLatency == latencyLine.IsOn) return;
+            var rewritten = shell.SetOverlayLatency(latencyLine.IsOn);
+            latencyNote.Text = vm.Text[rewritten ? "OvLatencyRestart" : "OvLatencyHint"];
+            Render();
+        };
+        body.Children.Add(latencyLine); body.Children.Add(latencyNote);
         body.Children.Add(busy);
         body.Children.Add(message);
         Content = new Border { Style = (Style)res["CardStyle"], Child = body };
@@ -145,6 +159,7 @@ public sealed class OverlayStylePicker : UserControl
         stage.Children.Clear();
         stage.Children.Add(GameScene());
         previewDetail.OnContent=t["OsPreviewDetail"];previewDetail.OffContent=t["OsPreviewScreen"];
+        latencyLine.Header=t["OvLatencyTitle"]; if(latencyNote.Text.Length==0) latencyNote.Text=t["OvLatencyHint"];
         previewDetail.Visibility=selected=="window"?Visibility.Collapsed:Visibility.Visible;
         SizePreview(); stage.MinHeight = 300;
         if (selected == "window") { stage.Children.Add(windowPreview); _ = RenderWindowPreviewAsync(); }

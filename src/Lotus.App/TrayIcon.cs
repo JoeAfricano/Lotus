@@ -76,6 +76,27 @@ public sealed class TrayIcon : IDisposable
         Shell_NotifyIconW(1, ref n); // NIM_MODIFY
     }
 
+    // A quiet status line (Modo Console not active, the game crashed...): in the icon's tooltip and at the top of its menu,
+    // never a balloon, so nothing appears over a game. null clears it.
+    private string? status;
+    public string? Status => status;
+    public void SetStatus(string? line)
+    {
+        if (status == line) return;
+        status = line;
+        var tip = line is { Length: > 0 } ? data.szTip.Split('\n')[0] + "\n" + line : data.szTip.Split('\n')[0];
+        data.szTip = tip.Length > 127 ? tip[..127] : tip;
+        var n = data; n.uFlags = 0x4; // NIF_TIP
+        if (added) Shell_NotifyIconW(1, ref n);
+    }
+    // Takes away a balloon still on screen (a game just started).
+    public void ClearBalloon()
+    {
+        if (!added) return;
+        var n = data; n.uFlags = 0x10; n.szInfoTitle = ""; n.szInfo = ""; n.dwInfoFlags = 0;
+        Shell_NotifyIconW(1, ref n);
+    }
+
     private IntPtr Handle(IntPtr h, uint msg, IntPtr w, IntPtr l)
     {
         if (msg == WmHotkey && w.ToInt32() == HotkeyId) { Hotkey?.Invoke(this, EventArgs.Empty); return IntPtr.Zero; }
@@ -92,6 +113,7 @@ public sealed class TrayIcon : IDisposable
     private void ShowMenu()
     {
         var menu = CreatePopupMenu();
+        if (status is { Length: > 0 } line) { AppendMenuW(menu, 0x1 | 0x2, new UIntPtr(9), line); AppendMenuW(menu, 0x800, UIntPtr.Zero, ""); } // MF_GRAYED | MF_DISABLED
         AppendMenuW(menu, 0, new UIntPtr(1), openText); AppendMenuW(menu, 0x800, UIntPtr.Zero, ""); AppendMenuW(menu, 0, new UIntPtr(2), exitText);
         GetCursorPos(out var p); SetForegroundWindow(hwnd);
         var chosen = TrackPopupMenu(menu, 0x100 | 0x80, p.X, p.Y, 0, hwnd, IntPtr.Zero); // TPM_RETURNCMD | TPM_NONOTIFY
