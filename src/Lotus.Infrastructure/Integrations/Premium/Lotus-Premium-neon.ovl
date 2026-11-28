@@ -10,7 +10,7 @@ LockUserSettings=1
 RefreshPeriod=250
 EmbeddedImage=Lotus-atlas-neon.png
 [General]
-Sources=17
+Sources=16
 Tables=0
 Layers=16
 [Source0]
@@ -125,13 +125,6 @@ Format=%.0f
 Formula=1000/percentile(Frametime,99.9)
 Provider=HAL
 ID=Stub
-[Source16]
-Name=FpsShown
-Units=
-Format=%.0f
-Formula=
-Provider=PresentMon
-ID=FramerateDisplayed
 [Layer0]
 Name=Transparent origin
 Text=<B=1,1>
@@ -156,7 +149,7 @@ Size=100
 TextColor=FFFFFF
 [Layer2]
 Name=FPS
-Text=%FpsShown%
+Text=<FR>
 PositionX=1627
 PositionY=38
 ExtentX=115

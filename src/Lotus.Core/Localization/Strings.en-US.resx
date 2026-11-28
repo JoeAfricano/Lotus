@@ -4103,7 +4103,7 @@ Your games and Windows are not changed.</value></data>
   <data name="GsLatencyP95" xml:space="preserve"><value>latency {0} ms (p95 {1} ms)</value></data>
   <data name="GsLatencyOverCeiling" xml:space="preserve"><value>above your {0} ms ceiling</value></data>
   <data name="OvLatencyTitle" xml:space="preserve"><value>Show latency on the Neon style (LAT line)</value></data>
-  <data name="OvLatencyHint" xml:space="preserve"><value>Uses the game&apos;s Reflex, read by RivaTuner: from reading the controller until the card finishes the frame (the wait for the screen is not included, so it reads a few ms below PresentMon). A game without Reflex shows &quot;LAT —&quot;. Off, Neon stays exactly as it is.</value></data>
+  <data name="OvLatencyHint" xml:space="preserve"><value>Uses the game&apos;s Reflex, read by RivaTuner: from the start of the game&apos;s frame until the card finishes it (the wait for the screen is not included, so it reads a few ms below PresentMon). A game without Reflex shows &quot;LAT --&quot;. Off, Neon stays exactly as it is.</value></data>
   <data name="OvLatencyRestart" xml:space="preserve"><value>Done. The line shows (or goes away) the next time RivaTuner opens.</value></data>
   <data name="PmHeading" xml:space="preserve"><value>Choose how you play</value></data>
   <data name="PmIntro" xml:space="preserve"><value>Each mode prepares RivaTuner for this game now and changes the screen rate only while the game is in front. Nothing changes until you choose.</value></data>
@@ -4143,4 +4143,5 @@ Your games and Windows are not changed.</value></data>
   <data name="PmHeroCustom" xml:space="preserve"><value>You decide</value></data>
   <data name="PmHeroCustomSub" xml:space="preserve"><value>Rate, limiter and latency</value></data>
   <data name="PmFrameGenReapply" xml:space="preserve"><value>To apply it to the mode in use, press &quot;Apply again&quot; on its card.</value></data>
+  <data name="OvLatencyNextUse" xml:space="preserve"><value>Done. The line shows when you use the Neon style.</value></data>
 </root>

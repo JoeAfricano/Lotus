@@ -2,6 +2,13 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 2.0.9-beta "Lotus 1.0.9 Beta" (28/11/2026)
+
+### Corrigido
+- **FPS grande do overlay Neon voltou ao contador do RivaTuner.** Ele vinha da PresentMon (quadros mostrados na tela), que às vezes ficava sem número ou mostrava 61 e 76 alternando. Agora é o FPS padrão do RivaTuner, estável, e o RivaTuner não precisa mais abrir a PresentMon só para isso.
+- **Latência no Neon aparecia só como "LAT".** A leitura usava o marcador de entrada do Reflex, que muitos jogos (e a prévia do overlay) não enviam. Agora usa o início do quadro do jogo, que sempre vem com o Reflex: na prévia, "LAT 23 ms". Sem Reflex aparece "LAT --" (o travessão "—" não aparecia na fonte do RivaTuner).
+- **Ligar ou desligar a latência agora vale na hora.** O RivaTuner só lê o desenho do overlay quando abre, por isso era preciso trocar de estilo e voltar. Agora, com o Neon em uso, a chave reabre o RivaTuner sozinha (o Windows pede permissão uma vez).
+
 ## 2.0.8-beta "Lotus 1.0.8 Beta" (28/11/2026)
 
 ### Melhorado

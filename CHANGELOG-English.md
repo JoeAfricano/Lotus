@@ -2,6 +2,13 @@
 
 Release notes in English, shown on the What's new page when Lotus is in English. The full history (in Portuguese) is in [CHANGELOG.md](CHANGELOG.md).
 
+## 2.0.9-beta "Lotus 1.0.9 Beta" (11/28/2026)
+
+### Fixed
+- **The Neon overlay's big FPS is RivaTuner's counter again.** It came from PresentMon (frames shown on screen), which sometimes left it empty or flipped between 61 and 76. It is now RivaTuner's standard FPS, steady, and RivaTuner no longer opens PresentMon just for it.
+- **Latency on Neon showed only "LAT".** It read Reflex's input marker, which many games (and the overlay preview) do not send. It now uses the start of the game's frame, which always comes with Reflex: "LAT 23 ms" in the preview. Without Reflex it shows "LAT --" (RivaTuner's font did not draw the em dash).
+- **Turning latency on or off now applies at once.** RivaTuner reads the overlay layout only when it opens, so you had to switch styles and back. With Neon in use, the switch now reopens RivaTuner by itself (Windows asks for permission once).
+
 ## 2.0.8-beta "Lotus 1.0.8 Beta" (11/28/2026)
 
 ### Improved

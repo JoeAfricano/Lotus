@@ -96,11 +96,19 @@ public sealed class OverlayStylePicker : UserControl
         latencyNote.Foreground = (Brush)res["MutedBrush"];
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(latencyLine, "overlay-latency-line");
         latencyLine.IsOn = MainWindow.Shell?.OverlayLatency == true;
-        latencyLine.Toggled += (_, _) =>
+        latencyLine.Toggled += async (_, _) =>
         {
             if (MainWindow.Shell is not { } shell || vm is null || shell.OverlayLatency == latencyLine.IsOn) return;
-            var rewritten = shell.SetOverlayLatency(latencyLine.IsOn);
-            latencyNote.Text = vm.Text[rewritten ? "OvLatencyRestart" : "OvLatencyHint"];
+            shell.SetOverlayLatency(latencyLine.IsOn);
+            // RivaTuner reads a layout only when it opens: with Neon in use, the same step as "Usar" rewrites it and reopens
+            // RivaTuner (one Windows permission), so the line shows or goes away now, without switching styles (28/11/2026).
+            if (vm.ActiveVariant == Lotus.Infrastructure.Integrations.LotusOverlayLayout.PremiumNeon)
+            {
+                latencyLine.IsEnabled = false;
+                try { await vm.UseStyleAsync(Lotus.Infrastructure.Integrations.LotusOverlayLayout.PremiumNeon); latencyNote.Text = vm.Message ?? ""; }
+                finally { latencyLine.IsEnabled = true; }
+            }
+            else latencyNote.Text = vm.Text["OvLatencyNextUse"];
             Render();
         };
         body.Children.Add(latencyLine); body.Children.Add(latencyNote);

@@ -460,7 +460,8 @@ public static class LotusOverlayLayout
     public static LotusPulseLayout.Colors PulseColors { get; set; } = LotusPulseLayout.Default;
     public static Func<double?>? PulseCap { get; set; }
     // ---- Latency line on the Neon card (opt-in, Settings of the overlay) ----
-    // RivaTuner's own Reflex reading, reflexlatency(0,12): from the game reading input to the card finishing the frame (the wait
+    // RivaTuner's own Reflex reading, reflexlatency(1,12): from the start of the game's frame (simulation) to the card finishing it.
+    // The input-sample marker (0) is missing in many games and in the preview (tested 28/11/2026: empty there, 22.8 ms with 1). (The wait
     // for the screen is not in it, so it reads a few ms below PresentMon's PC latency). One text in the Neon's style (Segoe UI,
     // white, size 18: smaller than the values, José 28/11) in the free space under the frame time; "LAT —" when the game gives no Reflex markers, never a made-up
     // number. Off = the shipped layout byte for byte. The player's file is never edited: the line is added on export.
@@ -476,11 +477,11 @@ public static class LotusOverlayLayout
             text.Append($"[Source{i}]\r\nName={name}\r\nUnits=\r\nFormat={format}\r\nFormula={formula}\r\nProvider=HAL\r\nID=Stub\r\n");
         void Layer(int i, string name, string content, string visibility) =>
             text.Append($"[Layer{i}]\r\nName={name}\r\nVisibilitySource={visibility}\r\nText={content}\r\nPositionX=1789\r\nPositionY=101\r\nExtentX=70\r\nExtentY=15\r\nExtentOrigin=0\r\nFixedAlignment=1\r\nSize=18\r\nTextColor=FFFFFF\r\n");
-        Source(sources, LatencySource, "%.0f", "reflexlatency(0,12)");
-        Source(sources + 1, LatencyOk, "%.0f", "validate(reflexlatency(0,12))");
-        Source(sources + 2, LatencyMissing, "%.0f", "validate(reflexlatency(0,12)) ? 0 : 1");
+        Source(sources, LatencySource, "%.0f", "reflexlatency(1,12)");
+        Source(sources + 1, LatencyOk, "%.0f", "validate(reflexlatency(1,12))");
+        Source(sources + 2, LatencyMissing, "%.0f", "1-validate(reflexlatency(1,12))");
         Layer(layers, "Latency", $"LAT %{LatencySource}% ms", LatencyOk);
-        Layer(layers + 1, "Latency unavailable", "LAT \u0097", LatencyMissing); // 0x97 = em dash in the layout's ANSI code page
+        Layer(layers + 1, "Latency unavailable", "LAT --", LatencyMissing); // ASCII: RivaTuner's font drew nothing for the em dash (0x97), tested 28/11/2026
         // Only the two counters change in the original text; every other byte stays as the player drew it.
         var result = text.ToString();
         result = new System.Text.RegularExpressions.Regex($@"(?m)^Sources={sources}(?=\r?$)").Replace(result, $"Sources={sources + 3}", 1);
