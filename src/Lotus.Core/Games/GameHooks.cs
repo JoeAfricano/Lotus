@@ -22,8 +22,8 @@ public interface IGameHookStore
 
 public static class GameHooks
 {
-    // The names the study found worth checking (Direct3D, DXGI, DirectInput and the generic version.dll loader).
-    public static readonly string[] Names = ["d3d12.dll", "dxgi.dll", "d3d11.dll", "dinput8.dll", "version.dll"];
+    // The names the study found worth checking (Direct3D 9/11/12, DXGI, DirectInput and the generic version.dll/winmm.dll loaders).
+    public static readonly string[] Names = ["d3d12.dll", "dxgi.dll", "d3d11.dll", "d3d9.dll", "dinput8.dll", "version.dll", "winmm.dll"];
     public const string OffSuffix = ".lotus-off";
     // ".scsk-off" is how the Stellar Blade study turned SCSKiller off by hand; Lotus can turn that one back on too.
     public static readonly string[] OffSuffixes = [OffSuffix, ".scsk-off"];
@@ -47,4 +47,14 @@ public static class GameHooks
     }
 
     public static string? Clean(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    // The player pressed "desligar para testar" / "religar": one rename, written to the Tools history (journal) with the
+    // file, what it is and the result, so it can always be found and undone. Never called on Lotus's own initiative.
+    public static HookChange Toggle(IGameHookStore store, Lotus.Core.Maintenance.IMaintenanceJournal? journal, GameEntry game, GameHook hook)
+    {
+        var result = hook.Disabled ? store.Enable(hook) : store.Disable(hook);
+        try { journal?.Add(new(DateTimeOffset.Now, "games", hook.Disabled ? "hook-on" : "hook-off", $"{game.Name}: {hook.FilePath} ({hook.Label}) -> {result}", result == HookChange.Done)); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { } // the change stands even if the history could not be written
+        return result;
+    }
 }

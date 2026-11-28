@@ -31,7 +31,7 @@ public sealed partial class MainWindow
                     new(text["DriverOpenPage"], () => { Notice.Hide(); _ = Windows.System.Launcher.LaunchUriAsync(new Uri(notice.Url)); }, Primary: true),
                     new(text["DriverLater"], () => Notice.Hide()),
                 ], Seconds: 20));
-                tray?.Notify(text[notice.Kind == DriverNoticeKind.Newer ? "DriverNewTitle" : "DriverOldTitle"], body);
+                TrayNotify(text[notice.Kind == DriverNoticeKind.Newer ? "DriverNewTitle" : "DriverOldTitle"], body);
             }
             catch (Exception ex) { Serilog.Log.Warning(ex, "Driver check"); } // offline / NVIDIA changed: tried again next start
         };

@@ -24,7 +24,8 @@ public static class RtssLayoutPreview
     {
         ["CPU Load"]="38",["CPU Temp"]="58",["CPU Clock"]="4.2",["GPU Load"]="71",["GPU Temp"]="64",["GPU Clock"]="2730",
         ["VRAM Load"]="59",["VRAM Used"]="4.7",["VRAM Total"]="8",["RAM Load"]="61",["RAM Used"]="9.8",["RAM Total"]="16",
-        ["FPS Avg Live"]="142",["FPS Low1 Live"]="118",["FPS Low01 Live"]="96",["Lotus Pulse"]="0.2"
+        ["FPS Avg Live"]="142",["FPS Low1 Live"]="118",["FPS Low01 Live"]="96",["Lotus Pulse"]="0.2",
+        ["Lotus Latency"]="46",["Lotus Latency Ok"]="1",["Lotus Latency Missing"]="0"
     };
     public static Frame Render(string variant)
     {
@@ -52,6 +53,7 @@ public static class RtssLayoutPreview
             if(color.Length==6)color="FF"+color;
             var c=uint.TryParse(color,NumberStyles.HexNumber,CultureInfo.InvariantCulture,out var rgba)?Color.FromArgb(unchecked((int)rgba)):Color.White;
             if(c.A==0||content.Length==0)continue;
+            if(ini.Get(s,"VisibilitySource") is {Length:>0} visibility && Samples.TryGetValue(visibility,out var shown) && shown=="0")continue; // hidden with the sample data
             int x=Int(s,"PositionX",0),y=Int(s,"PositionY",0),w=Int(s,"ExtentX",0),h=Int(s,"ExtentY",0);
             float size=fontHeight*Int(s,"Size",100)/100f;
             if(Math.Abs(x)>8192||Math.Abs(y)>8192||w>8192||h>8192||size is <=0 or >512)throw new InvalidDataException("Invalid preview geometry.");

@@ -43,6 +43,8 @@ public partial class App : Application
         if (Lotus.Infrastructure.Integrations.AfterburnerElevatedHelper.TryRun(Environment.GetCommandLineArgs()) is { } abExit) { Environment.Exit(abExit); return; }
         // Short-lived elevated helper for the DNS switch (fixed provider list, backup in the user's Lotus folder).
         if (Lotus.Infrastructure.Tools.DnsElevatedHelper.TryRun(Environment.GetCommandLineArgs()) is { } dnsExit) { Environment.Exit(dnsExit); return; }
+        // Short-lived elevated helper that stops ETW sessions Lotus left stuck (names "Lotus*-<32 hex>" only) before a recording.
+        if (Lotus.Infrastructure.Benchmark.EtwElevatedHelper.TryRun(Environment.GetCommandLineArgs()) is { } etwExit) { Environment.Exit(etwExit); return; }
         // Uninstall from Windows' "Installed apps": asks first, keeps the player's data unless they choose otherwise.
         if (Environment.GetCommandLineArgs().Contains(Lotus.Infrastructure.Setup.LotusSetup.UninstallArgument))
         {

@@ -291,8 +291,11 @@ public interface IGameProcessCheck
     bool IsRunning(GameEntry game);
     RunningGame? Find(GameEntry game) => null; // main game process, used by the measurement loop
     // First library game with a process running; one pass over the process list when the implementation can.
-    GameEntry? FirstRunning(IReadOnlyList<GameEntry> games) => games.FirstOrDefault(IsRunning);
+    GameEntry? FirstRunning(IReadOnlyList<GameEntry> games) => Scan(games).Running;
+    // Same pass, also naming a game whose only process left is its crash reporter (the game crashed; not play time).
+    GameScan Scan(IReadOnlyList<GameEntry> games) => new(games.FirstOrDefault(IsRunning), null);
 }
+public sealed record GameScan(GameEntry? Running, GameEntry? Crashed);
 
 // ---- Measurement loop ----
 // One adjustment per measurement: lower quality only when the GPU is the bottleneck, raise it only with clear headroom.

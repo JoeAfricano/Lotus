@@ -161,8 +161,8 @@ public sealed class RtssPreferredCaptureProvider(IFrameCaptureProvider fallback,
             }
         }
         finally { reflexStop.Cancel(); }
-        var (busy, latency) = await reflex;
-        var extras = new FrameExtras(busy, latency, RtssSharedMemory.Read(mapName).FirstOrDefault(a => a.ProcessId == pid)?.Api);
+        var (busy, latency, realFps, latencyP95) = await reflex;
+        var extras = new FrameExtras(busy, latency, RtssSharedMemory.Read(mapName).FirstOrDefault(a => a.ProcessId == pid)?.Api, realFps, latencyP95);
         var data = new ParsedCapture("RTSS", 0, 0, count, frames, stats, algorithm == "rtss-pipe-v1" ? "rtss-pipe" : "rtss-polled", false);
         return new(Guid.NewGuid(), request.Target, started, (DateTimeOffset.UtcNow - started).TotalSeconds, stats is null ? "InsufficientData" : "Completed",
             "RTSS shared memory", algorithm, "", "", request.Conditions, request.HardwareJson, data, diagnostics) { Extras = extras };
@@ -213,9 +213,10 @@ public sealed class RtssPreferredCaptureProvider(IFrameCaptureProvider fallback,
     }
 
     // Medians over distinct frames (a new GPU end time = a new frame); null when the game gives no Reflex markers.
-    private async Task<(double? Busy, double? Latency)> SampleReflexAsync(int pid, CancellationToken stop)
+    // GPU frame time of the real frames (NVAPI gpuFrameTimeUs: end of one real frame's GPU work to the next) gives the real rate.
+    private async Task<(double? Busy, double? Latency, double? RealFps, double? LatencyP95)> SampleReflexAsync(int pid, CancellationToken stop)
     {
-        var busy = new List<double>(); var latency = new List<double>(); ulong last = 0;
+        var busy = new List<double>(); var latency = new List<double>(); var frame = new List<double>(); ulong last = 0;
         try
         {
             while (!stop.IsCancellationRequested)
@@ -225,12 +226,14 @@ public sealed class RtssPreferredCaptureProvider(IFrameCaptureProvider fallback,
                     last = f.GpuRenderEnd;
                     if (f.GpuBusyPercent is { } b) busy.Add(b);
                     if (f.PcLatencyMs is { } l) latency.Add(l);
+                    if (f.GpuFrameUs is > 1000 and < 1_000_000) frame.Add(f.GpuFrameUs / 1000.0);
                 }
                 await Task.Delay(50, stop);
             }
         }
         catch (OperationCanceledException) { }
         static double? Median(List<double> v) => v.Count < 10 ? null : v.Order().ElementAt(v.Count / 2);
-        return (Median(busy), Median(latency));
+        var (median, p95) = Lotus.Core.Games.LimiterTrial.Latency(latency);
+        return (Median(busy), median, Median(frame) is { } ms ? 1000 / ms : null, p95);
     }
 }

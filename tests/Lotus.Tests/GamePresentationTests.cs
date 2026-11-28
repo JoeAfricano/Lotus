@@ -104,7 +104,9 @@ public sealed class GamePresentationTests
     }
     [Theory]
     [InlineData(false,null,false,false,"fluid")]
-    [InlineData(true,null,false,false,"fluid")]
+    [InlineData(true,null,false,false,"responsive")] // NVIDIA, API not known yet: Reflex by default (28/11/2026)
+    [InlineData(true,"Direct3D 11",false,false,"responsive")]
+    [InlineData(true,"OpenGL",false,false,"fluid")]
     [InlineData(true,"Direct3D 12",true,true,"responsive")]
     [InlineData(true,"Direct3D 12",true,false,"fgvsync")]
     [InlineData(true,"Vulkan",true,false,"fluid")]
@@ -152,4 +154,53 @@ public sealed class GamePresentationTests
         }
         finally {if(Directory.Exists(root))Directory.Delete(root,true);}
     }
+
+    // ---- Modo Console: log, check of the real rate, no fight (Gothic, 27-28/11/2026) ----
+    [Fact] public void EverySwitchIsLoggedWithTheExactHz()
+    {
+        var lines=new List<string>(); var d=new Display(); var session=new FocusDisplaySession(d,new Store(),lines.Add);
+        Assert.True(session.Update("Gothic",Prefs()));
+        Assert.True(session.Restore("the game closed"));
+        Assert.Contains(lines,l=>l.Contains("requested 60 Hz") && l.Contains("74.973 Hz"));
+        Assert.Contains(lines,l=>l.Contains("screen now at 59.94 Hz"));
+        Assert.Contains(lines,l=>l.Contains("restored to 74.973 Hz (the game closed)"));
+    }
+    [Fact] public void ARateThatWentBackIsAskedAgain()
+    {
+        var lines=new List<string>(); var d=new Display(); var session=new FocusDisplaySession(d,new Store(),lines.Add);
+        Assert.True(session.Update("Gothic",Prefs()));
+        d.Mode=Original; // something put 75 Hz back
+        Assert.True(session.Reassert());
+        Assert.Equal(60,d.Mode!.Hz); Assert.Equal(new[]{60,60},d.Writes);
+        Assert.Contains(lines,l=>l.Contains("rate is 74.973 Hz, expected 59.94 Hz"));
+        Assert.True(session.Reassert()); Assert.Equal(2,d.Writes.Count); // holding: nothing written
+    }
+    [Fact] public void GivingUpLeavesTheScreenAsItIs()
+    {
+        var d=new Display(); var s=new Store(); var session=new FocusDisplaySession(d,s);
+        Assert.True(session.Update("Gothic",Prefs()));
+        d.Mode=Original; session.Release("contested");
+        Assert.False(session.Active); Assert.Null(s.Value); Assert.Equal("contested",session.Status);
+        Assert.False(session.Update("Gothic",Prefs())); // same game and plan: no new fight until focus changes
+        Assert.Single(d.Writes);
+    }
+    [Fact] public void RateGuardWaitsTenSecondsAndRetriesAtMostThreeTimes()
+    {
+        var t0=DateTimeOffset.UnixEpoch; var target=Original with {Hz=60,ExactHz=59.94};
+        var guard=new RateGuard(); guard.Start(target,t0);
+        Assert.Equal(RateCheck.Wait,guard.Check(target,t0.AddSeconds(5)));
+        Assert.Equal(RateCheck.Done,guard.Check(target,t0.AddSeconds(10)));
+        guard.Start(target,t0);
+        for(var i=1;i<=RateGuard.MaxRetries;i++) Assert.Equal(RateCheck.Retry,guard.Check(Original,t0.AddSeconds(i)));
+        Assert.Equal(RateCheck.GiveUp,guard.Check(Original,t0.AddSeconds(5)));
+        Assert.False(guard.Watching);
+        guard.Start(target,t0);
+        Assert.Equal(RateCheck.Retry,guard.Check(null,t0.AddSeconds(1))); // display briefly gone counts as not holding
+        Assert.Equal(RateCheck.Wait,guard.Check(target,t0.AddSeconds(10))); // the window restarted at the retry
+        Assert.Equal(RateCheck.Done,guard.Check(target,t0.AddSeconds(11)));
+    }
+    [Theory]
+    [InlineData("contested",false,true)][InlineData("rtss-closed",false,true)][InlineData("failed",true,true)]
+    [InlineData("failed",false,false)][InlineData("prepare-again",true,true)][InlineData("active",true,false)][InlineData("already",false,false)]
+    public void TrayLineOnlyWhenModoConsoleShouldBeOn(string state,bool needed,bool expected)=>Assert.Equal(expected,PresentationPlan.ConsoleModeShouldBeOn(state,needed));
 }

@@ -25,7 +25,7 @@ public sealed partial class MainWindow
         {
             diary.RecordSession(DiaryGames.FromGame(new GameEntry(GameStores.LotusPorts, key, title)), start.LocalDateTime, minutes);
             Serilog.Log.Information("Play session (Lotus Ports): {Game} {Minutes} min", title, minutes);
-            tray?.Notify(text["SessionSavedTitle"], text.Format("SessionSaved", DiaryText.Hours(minutes), title));
+            TrayNotify(text["SessionSavedTitle"], text.Format("SessionSaved", DiaryText.Hours(minutes), title));
         }
         catch (Exception ex) { Serilog.Log.Warning(ex, "Lotus Ports play session"); }
     }

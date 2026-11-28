@@ -71,4 +71,33 @@ public sealed class CpuHeatTests
         Assert.True(watch.Feed(new(100, 97))); Assert.Equal(97, watch.Last!.MaxZoneCelsius);
         Assert.False(new CpuHeatWatch().Feed(null));
     }
+
+}
+
+// Wukong benchmark, 26/11/2026: limit 60 in the game on a 74.973 Hz screen, ~2,000 repeated frames in 2 min.
+public sealed class GameCapBelowRefreshTests
+{
+    private static StutterInputs Inputs(double avg, double low, int spikes, double? gpu, int target) => new(avg, low, spikes, 30, gpu, target, ShaderState.Compiled, 0, 50, [], true);
+    private static string[] Keys(StutterInputs i) => [.. StutterDiagnosis.Analyze(i).Select(f => f.Key)];
+    private static StutterInputs Wukong(double? gpuMs, bool console = false, double? rtssCap = null, bool vrr = false, double low = 58) =>
+        Inputs(60, low, 0, 60, 75) with { RealRefreshHz = 74.973, GpuFrameMs = gpuMs, ConsoleMode = console, FrameCap = rtssCap, AdaptiveSync = vrr };
+
+    [Fact] public void GameLimitBelowTheScreenRateGetsTheMeasuredWayOut()
+    {
+        Assert.Equal("WhyGameCapUncap", Keys(Wukong(gpuMs: 10.4))[0]);      // the card has room for 75 Hz
+        Assert.Equal("WhyGameCapConsole", Keys(Wukong(gpuMs: 14.0))[0]);    // it does not: Modo Console at 60 Hz
+        Assert.Equal("WhyGameCapBoth", Keys(Wukong(gpuMs: null))[0]);       // card time unknown: both, no pick
+        Assert.Equal("60 FPS / 74.973 Hz", StutterDiagnosis.Analyze(Wukong(10.4)).First().Detail);
+        Assert.DoesNotContain("WhyCpuLimit", Keys(Wukong(10.4)));           // the game's own limit, not the processor
+    }
+
+    [Fact] public void NoGameLimitWarningWhereItDoesNotApply()
+    {
+        Assert.DoesNotContain(Keys(Wukong(10.4, console: true)), k => k.StartsWith("WhyGameCap"));     // Modo Console set
+        Assert.DoesNotContain(Keys(Wukong(10.4, rtssCap: 59.99)), k => k.StartsWith("WhyGameCap"));   // RivaTuner's own plan
+        Assert.DoesNotContain(Keys(Wukong(10.4, vrr: true)), k => k.StartsWith("WhyGameCap"));        // FreeSync/G-Sync
+        Assert.DoesNotContain(Keys(Wukong(10.4, low: 35)), k => k.StartsWith("WhyGameCap"));          // not steady: hardware
+        Assert.DoesNotContain(Keys(Inputs(74.9, 70, 0, 60, 75) with { RealRefreshHz = 74.973 }), k => k.StartsWith("WhyGameCap"));
+        Assert.Equal(13.04, StutterDiagnosis.FastEnoughMs(74.973), 2);
+    }
 }

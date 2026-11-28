@@ -21,6 +21,12 @@ public static class PresentMonCsv
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return true; } // unreadable now: do not cut the capture
     }
+    // PresentMon 2.6 with --date_time writes the clock with the time zone applied the wrong way round (study, 25/11/2026:
+    // 17:41 written at 20:41 local, UTC-3): written = local + offset, so local = written - offset. Lotus's own recordings use
+    // the relative TimeInSeconds column and never pass --date_time; this is for CSVs that carry "TimeInDateTime".
+    public static DateTime? LocalTime(string written, TimeSpan utcOffset) =>
+        DateTime.TryParse(written, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out var t) ? DateTime.SpecifyKind(t - utcOffset, DateTimeKind.Local) : null;
+
     public static ParsedCapture Read(string path, int pid, CancellationToken token = default)
     {
         if (new FileInfo(path).Length > MaximumBytes) throw new InvalidDataException("CSV exceeds 128 MiB.");
@@ -33,7 +39,9 @@ public static class PresentMonCsv
         if (time < 0) time = Column("TimeInSeconds");
         var interval = Column("MsBetweenPresents");
         if (interval < 0) interval = Column("msBetweenPresents");
-        var type = Column("FrameType"); var modeColumn = Column("PresentMode");
+        var type = Column("FrameType"); var modeColumn = Column("PresentMode"); var pcl = Column("MsPCLatency"); var cpuBusy = Column("MsCPUBusy"); var gpuBusy = Column("MsGPUBusy");
+        var busy = new Dictionary<string, List<FrameBusy>>(); // per swap chain, aligned with its frames
+        var latencies = new Dictionary<string, List<double>>(); // per swap chain
         var modes = new Dictionary<string, Dictionary<string, int>>(); // per swap chain: present mode → frames
         if (new[] { process, chain, time, interval }.Any(i => i < 0)) throw new InvalidDataException("Unsupported PresentMon CSV schema.");
         var streams = new Dictionary<string, List<FrameSample>>();
@@ -59,6 +67,11 @@ public static class PresentMonCsv
                 if (!modes.TryGetValue(row[chain], out var byMode)) modes[row[chain]] = byMode = [];
                 byMode[row[modeColumn]] = byMode.GetValueOrDefault(row[modeColumn]) + 1;
             }
+            if (pcl >= 0 && double.TryParse(row[pcl], NumberStyles.Float, CultureInfo.InvariantCulture, out var ms) && ms is > 0 and < 1000)
+            {
+                if (!latencies.TryGetValue(row[chain], out var list)) latencies[row[chain]] = list = [];
+                list.Add(ms);
+            }
             if (!streams.TryGetValue(row[chain], out var frames))
             {
                 if (streams.Count >= 64) { truncated = true; break; }
@@ -72,12 +85,24 @@ public static class PresentMonCsv
                 (frames.Count > 0 && seconds / (inMilliseconds ? 1000 : 1) <= frames[^1].TimeSeconds)) { invalid++; continue; }
             if (inMilliseconds) seconds /= 1000;
             frames.Add(new(seconds, dt));
+            if (cpuBusy >= 0 || gpuBusy >= 0)
+            {
+                if (!busy.TryGetValue(row[chain], out var b)) busy[row[chain]] = b = [];
+                while (b.Count < frames.Count - 1) b.Add(new(null, null)); // keep the lists aligned
+                b.Add(new(Number(row, cpuBusy), Number(row, gpuBusy)));
+            }
         }
         var dominant = streams.OrderByDescending(s => s.Value.Count).ThenBy(s => s.Key).FirstOrDefault();
         IReadOnlyList<FrameSample> samples = dominant.Value ?? [];
         return new(dominant.Key ?? "", Math.Max(0, streams.Count - 1), invalid, total, samples,
             invalid == 0 && !truncated && !losses.Any(v => v > 0) ? BenchmarkMath.Calculate(samples) : null,
             types.Count == 0 ? "Unavailable" : string.Join(", ", types.Order()), truncated, losses[0], losses[1], losses[2],
-            dominant.Key is { } key && modes.TryGetValue(key, out var found) ? found.OrderByDescending(m => m.Value).First().Key : null);
+            dominant.Key is { } key && modes.TryGetValue(key, out var found) ? found.OrderByDescending(m => m.Value).First().Key : null)
+        {
+            PcLatencies = dominant.Key is { } k2 && latencies.TryGetValue(k2, out var pl) ? pl : [],
+            Busy = dominant.Key is { } k3 && busy.TryGetValue(k3, out var bl) && bl.Count == samples.Count ? bl : [],
+        };
     }
+    private static double? Number(string[] row, int column) =>
+        column >= 0 && double.TryParse(row[column], NumberStyles.Float, CultureInfo.InvariantCulture, out var v) && double.IsFinite(v) && v >= 0 ? v : null;
 }

@@ -4,8 +4,8 @@ using Lotus.Core.Games;
 namespace Lotus.Core.Diary;
 
 // How a session ended: the game closed (normal), another game took its place, Lotus stopped seeing it for a while
-// (sleep, hang) or Lotus itself closed. Only a normal close counts as "the player just stopped playing".
-public enum SessionEnd { Closed, Switched, Gap, LotusClosing }
+// (sleep, hang), Lotus itself closed or the game crashed (only its crash reporter left). Only a normal close counts as "the player just stopped playing".
+public enum SessionEnd { Closed, Switched, Gap, LotusClosing, Crashed }
 public sealed record FinishedSession(GameEntry Game, DateTimeOffset Start, int Minutes, SessionEnd End = SessionEnd.Closed)
 {
     public bool EndedNormally => End == SessionEnd.Closed;

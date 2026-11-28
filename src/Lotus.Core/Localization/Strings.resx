@@ -3711,7 +3711,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="ScoreRequiresRelease" xml:space="preserve"><value>Para obter uma nota comparável, use a versão Release do Lotus. A compilação Debug serve apenas para diagnóstico.</value></data>
   <data name="GpTitle" xml:space="preserve"><value>Fluidez por jogo · opcional</value></data>
   <data name="GpIntro" xml:space="preserve"><value>Ajuste Hz e RivaTuner só para este jogo, mantendo a resolução.</value></data>
-  <data name="GpBeforeLaunch" xml:space="preserve"><value>Salve antes de abrir o jogo. O Hz muda com o jogo em primeiro plano e volta ao anterior no Alt+Tab ou ao fechar. Mantenha o Lotus aberto.</value></data>
+  <data name="GpBeforeLaunch" xml:space="preserve"><value>Salve antes de abrir o jogo. O Hz muda quando o jogo vem para a frente e só volta ao anterior quando o jogo fecha (Alt+Tab não mexe). Mantenha o Lotus aberto.</value></data>
   <data name="GpEnable" xml:space="preserve"><value>Usar Hz e RivaTuner personalizados neste jogo</value></data>
   <data name="GpMonitor" xml:space="preserve"><value>Monitor do jogo · resolução preservada</value></data>
   <data name="GpHz" xml:space="preserve"><value>Taxa de atualização durante o jogo</value></data>
@@ -3723,7 +3723,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GpMode_back" xml:space="preserve"><value>Back Edge Sync · início do próximo quadro</value></data>
   <data name="GpMode_async" xml:space="preserve"><value>Async · limite sem compensação após atrasos</value></data>
   <data name="GpMode_responsive" xml:space="preserve"><value>NVIDIA Reflex · limitador do RivaTuner</value></data>
-  <data name="GpWhy_auto" xml:space="preserve"><value>Prioriza cadência regular sem ignorar a resposta. Front Edge é a base; com geração de quadros NVIDIA, prefere Reflex com G-Sync/FreeSync e o V-Sync do driver sem eles.</value></data>
+  <data name="GpWhy_auto" xml:space="preserve"><value>Com placa NVIDIA, usa o Reflex do RivaTuner (o melhor no estudo de 25 a 28/11 na maioria dos jogos); com gerador de quadros e sem G-Sync/FreeSync, junta o V-Sync do driver. Com outras placas, Front Edge. Uma medição por jogo pode trocar.</value></data>
   <data name="GpWhy_fluid" xml:space="preserve"><value>Prioriza intervalos regulares entre chamadas Present. Não é V-Sync nem garante o menor atraso.</value></data>
   <data name="GpWhy_back" xml:space="preserve"><value>Sincroniza o fim de Present e o início do próximo quadro. Alternativa para comparar regularidade e resposta.</value></data>
   <data name="GpWhy_async" xml:space="preserve"><value>Mantém um intervalo mínimo entre quadros, sem compensar atrasos. Pode favorecer a resposta.</value></data>
@@ -4056,4 +4056,90 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="ScSmall" xml:space="preserve"><value>Cache de shaders da NVIDIA: {0}. É pouco para jogos atuais. No Painel de Controle da NVIDIA › Gerenciar configurações 3D › Tamanho do cache do shader, escolha 10 GB ou Ilimitado.</value></data>
   <data name="ScSize" xml:space="preserve"><value>Cache de shaders da NVIDIA: {0}.</value></data>
   <data name="ScDriverNote" xml:space="preserve"><value>Cada atualização do driver de vídeo zera esse cache: nas primeiras partidas depois dela, o jogo pode travar mais ao passar por cada área pela primeira vez.</value></data>
+  <data name="TrayGameCrashedTitle" xml:space="preserve"><value>O jogo travou</value></data>
+  <data name="TrayGameCrashed" xml:space="preserve"><value>{0} travou e só a janela de erro ficou aberta. O tempo dela não conta no diário.</value></data>
+  <data name="TrayConsoleOff_contested" xml:space="preserve"><value>Modo Console parado: outro programa insistia em mudar a taxa da tela.</value></data>
+  <data name="TrayConsoleOff_rtss-closed" xml:space="preserve"><value>Modo Console não está ativo: o RivaTuner estava fechado. Feche e abra o jogo de novo.</value></data>
+  <data name="TrayConsoleOff_other" xml:space="preserve"><value>Modo Console não está ativo neste jogo. Abra o Lotus para ver o motivo.</value></data>
+  <data name="RtssOpenedReopen" xml:space="preserve"><value>RivaTuner aberto agora. Feche e abra o jogo para o limite e o overlay funcionarem.</value></data>
+  <data name="FgChosenButOff" xml:space="preserve"><value>Você marcou que usa o gerador de quadros, mas na medição o jogo não estava gerando quadros. Se quer o gerador, ligue pelo menu do jogo (editar o arquivo de configuração não liga). Se não quer, pode deixar como está: o limitador escolhido continua valendo.</value></data>
+  <data name="FgOnButNotChosen" xml:space="preserve"><value>Na medição o jogo estava gerando quadros, mas a opção &quot;Uso o gerador de quadros neste jogo&quot; está desmarcada. Marque-a para o Lotus escolher o limitador certo.</value></data>
+  <data name="WhyGameCapUncapTitle" xml:space="preserve"><value>O limite do jogo está abaixo da taxa da tela</value></data>
+  <data name="WhyGameCapUncapBody" xml:space="preserve"><value>O jogo está preso em **{0}** sem FreeSync/G-Sync, então a tela repete quadros e a imagem dá trancos. A placa sobra para a taxa da tela: tire o limite de FPS no menu do jogo e, em Otimizar este jogo, ligue o limite do RivaTuner logo abaixo da taxa real. No Wukong, neste PC, isso levou de 75% para 99,8% dos quadros no ritmo. Se o FPS não segurar, use o Modo Console a 60 Hz.</value></data>
+  <data name="WhyGameCapUncapTip" xml:space="preserve"><value>Dica: sem limite no jogo e RivaTuner logo abaixo da taxa da tela.</value></data>
+  <data name="WhyGameCapConsoleTitle" xml:space="preserve"><value>O limite do jogo está abaixo da taxa da tela</value></data>
+  <data name="WhyGameCapConsoleBody" xml:space="preserve"><value>O jogo está preso em **{0}** sem FreeSync/G-Sync, então a tela repete quadros e a imagem dá trancos. A placa não tem folga para a taxa da tela, então o melhor é o **Modo Console**: a tela vai para 60 Hz enquanto você joga e os quadros ficam no ritmo. Ligue em Otimizar este jogo › Modo Console.</value></data>
+  <data name="WhyGameCapConsoleTip" xml:space="preserve"><value>Dica: Modo Console a 60 Hz.</value></data>
+  <data name="WhyGameCapBothTitle" xml:space="preserve"><value>O limite do jogo está abaixo da taxa da tela</value></data>
+  <data name="WhyGameCapBothBody" xml:space="preserve"><value>O jogo está preso em **{0}** sem FreeSync/G-Sync, então a tela repete quadros e a imagem dá trancos. Há duas saídas: tirar o limite no menu do jogo e ligar o limite do RivaTuner logo abaixo da taxa real (se o PC segurar), ou usar o **Modo Console** a 60 Hz. O tempo da placa por quadro não foi medido neste jogo, por isso o Lotus não escolhe uma delas.</value></data>
+  <data name="WhyGameCapBothTip" xml:space="preserve"><value>Dica: sem limite no jogo, ou Modo Console a 60 Hz.</value></data>
+  <data name="LtMode_responsive" xml:space="preserve"><value>Reflex do RivaTuner</value></data>
+  <data name="LtMode_fluid" xml:space="preserve"><value>Borda da frente do RivaTuner</value></data>
+  <data name="LtMode_game" xml:space="preserve"><value>Limitador do próprio jogo</value></data>
+  <data name="LtEyebrow" xml:space="preserve"><value>Modo Console</value></data>
+  <data name="LtResultLine" xml:space="preserve"><value>• {0}: {1} quadros fora do ritmo por minuto · {2}</value></data>
+  <data name="LtLatency" xml:space="preserve"><value>latência {0} ms (p95 {1} ms)</value></data>
+  <data name="LtNoLatency" xml:space="preserve"><value>latência não medida (o jogo não tem Reflex)</value></data>
+  <data name="LtNextTitle" xml:space="preserve"><value>Testar o {0} na próxima partida?</value></data>
+  <data name="LtNextBody" xml:space="preserve"><value>Nenhum limitador serve para todos os jogos. O Lotus mediu o atual durante a partida, sem mudar nada. Para comparar, ele pode usar o outro na próxima vez e medir de novo.</value></data>
+  <data name="LtBestTitle" xml:space="preserve"><value>{0} ficou melhor em {1}</value></data>
+  <data name="LtBestBody" xml:space="preserve"><value>Medido nas suas partidas: menos quadros fora do ritmo e, quando empata, menor latência. Usar este a partir da próxima partida?</value></data>
+  <data name="LtUseBest" xml:space="preserve"><value>Usar este</value></data>
+  <data name="LtTryNext" xml:space="preserve"><value>Testar na próxima</value></data>
+  <data name="LtLater" xml:space="preserve"><value>Agora não</value></data>
+  <data name="PpTitle" xml:space="preserve"><value>Linha reta ou menor latência</value></data>
+  <data name="PpChoose" xml:space="preserve"><value>Como o Modo Console limita este jogo</value></data>
+  <data name="PpStraight" xml:space="preserve"><value>Linha reta (padrão): RivaTuner logo abaixo da taxa da tela</value></data>
+  <data name="PpLatency" xml:space="preserve"><value>Menor latência: limitador do próprio jogo, RivaTuner sem limite</value></data>
+  <data name="PpMeasured" xml:space="preserve"><value>medida aqui: {0} ms (p95 {1} ms)</value></data>
+  <data name="PpNotMeasured" xml:space="preserve"><value>latência ainda não medida</value></data>
+  <data name="PpLatencyHint" xml:space="preserve"><value>Em &quot;Menor latência&quot;, ponha o limite de FPS do jogo em {0} no menu do jogo. No Gothic, neste PC, foi 36 ms em vez de 46, com alguns quadros dobrados a mais.</value></data>
+  <data name="PpSetLatency" xml:space="preserve"><value>Pronto: o RivaTuner não limita mais este jogo. Ponha o limite no menu do jogo.</value></data>
+  <data name="PpSetStraight" xml:space="preserve"><value>Pronto: o RivaTuner volta a limitar este jogo logo abaixo da taxa da tela.</value></data>
+  <data name="PpTrials" xml:space="preserve"><value>Medido nas suas partidas (uma vez por limitador):</value></data>
+  <data name="PpCeiling" xml:space="preserve"><value>Latência máxima que você aceita (ms)</value></data>
+  <data name="PpCeilingNone" xml:space="preserve"><value>sem teto</value></data>
+  <data name="PpCeilingHint" xml:space="preserve"><value>O Lotus não sugere limitadores nem presets que passem desse valor. 0 = sem teto. Vale para todos os jogos.</value></data>
+  <data name="GsLatencyP95" xml:space="preserve"><value>latência {0} ms (p95 {1} ms)</value></data>
+  <data name="GsLatencyOverCeiling" xml:space="preserve"><value>acima do seu teto de {0} ms</value></data>
+  <data name="OvLatencyTitle" xml:space="preserve"><value>Mostrar a latência no estilo Neon (linha LAT)</value></data>
+  <data name="OvLatencyHint" xml:space="preserve"><value>Usa o Reflex do jogo, lido pelo RivaTuner: da leitura do controle até a placa terminar o quadro (a espera pela tela não entra, por isso fica uns ms abaixo do que a PresentMon mede). Jogo sem Reflex mostra &quot;LAT —&quot;. Desligado, o Neon fica exatamente como está.</value></data>
+  <data name="OvLatencyRestart" xml:space="preserve"><value>Pronto. A linha aparece (ou some) da próxima vez que o RivaTuner abrir.</value></data>
+  <data name="PmHeading" xml:space="preserve"><value>Escolha seu tipo de jogo</value></data>
+  <data name="PmIntro" xml:space="preserve"><value>Cada modo prepara o RivaTuner para este jogo agora e troca a taxa da tela só enquanto o jogo estiver na frente. Nada muda até você escolher.</value></data>
+  <data name="PmTitle_pc" xml:space="preserve"><value>Modo PC</value></data>
+  <data name="PmTitle_console" xml:space="preserve"><value>Modo Console</value></data>
+  <data name="PmTitle_custom" xml:space="preserve"><value>Personalizado</value></data>
+  <data name="PmWhat_pc" xml:space="preserve"><value>A maior fluidez possível: a tela na taxa mais alta que ela tem.</value></data>
+  <data name="PmWhat_console" xml:space="preserve"><value>Como num console: 60 quadros sempre iguais, com a imagem estável e mais folga para o PC.</value></data>
+  <data name="PmWhat_custom" xml:space="preserve"><value>Você escolhe cada detalhe da fluidez deste jogo.</value></data>
+  <data name="PmLineHz" xml:space="preserve"><value>Tela em {0} Hz enquanto o jogo estiver na frente</value></data>
+  <data name="PmLineHzVrr" xml:space="preserve"><value>Tela em {0} Hz com G-Sync/FreeSync</value></data>
+  <data name="PmLineHzUnknown" xml:space="preserve"><value>Taxa da tela não encontrada nesta resolução</value></data>
+  <data name="PmLineFrontEdge" xml:space="preserve"><value>RivaTuner em {0} FPS, sincronia pela borda da frente</value></data>
+  <data name="PmLineReflex" xml:space="preserve"><value>RivaTuner em {0} FPS no modo Reflex</value></data>
+  <data name="PmLineFgVsync" xml:space="preserve"><value>V-Sync do driver NVIDIA e Reflex do RivaTuner, só neste jogo</value></data>
+  <data name="PmLineFrameGen" xml:space="preserve"><value>Gerador de quadros ligado no menu do jogo: mais fluidez, um pouco mais de atraso</value></data>
+  <data name="PmLineConsoleGraphics" xml:space="preserve"><value>Gráficos pensados para 60 FPS firmes</value></data>
+  <data name="PmLinePcGraphics" xml:space="preserve"><value>Exige mais do processador e da placa de vídeo</value></data>
+  <data name="PmCustom1" xml:space="preserve"><value>Taxa da tela e limite de FPS</value></data>
+  <data name="PmCustom2" xml:space="preserve"><value>Tipo de limitador do RivaTuner</value></data>
+  <data name="PmCustom3" xml:space="preserve"><value>Linha reta ou menor latência, e a latência máxima</value></data>
+  <data name="PmSelected" xml:space="preserve"><value>Em uso</value></data>
+  <data name="PmChoose" xml:space="preserve"><value>Usar este modo</value></data>
+  <data name="PmApplyAgain" xml:space="preserve"><value>Aplicar de novo</value></data>
+  <data name="PmOpenCustom" xml:space="preserve"><value>Personalizar</value></data>
+  <data name="PmBack" xml:space="preserve"><value>Voltar aos modos</value></data>
+  <data name="PmUseFrameGen" xml:space="preserve"><value>Desejo usar FrameGen (gerador de quadros) neste jogo</value></data>
+  <data name="PmFrameGenHint" xml:space="preserve"><value>Marcar só muda o que os cartões vão preparar. Ligue o gerador no menu do próprio jogo.</value></data>
+  <data name="PmConfirmTitle_pc" xml:space="preserve"><value>Usar o Modo PC neste jogo?</value></data>
+  <data name="PmConfirmTitle_console" xml:space="preserve"><value>Usar o Modo Console neste jogo?</value></data>
+  <data name="PmConfirmBody" xml:space="preserve"><value>O Lotus vai preparar o perfil deste jogo no RivaTuner (o Windows pede permissão) e trocar a taxa da tela só enquanto o jogo estiver na frente. Dá para voltar escolhendo outro modo.</value></data>
+  <data name="PmLastMeasured" xml:space="preserve"><value>Última medição: {0} FPS de média, 1% low {1}</value></data>
+  <data name="PmEyebrow_pc" xml:space="preserve"><value>Máxima fluidez</value></data>
+  <data name="PmEyebrow_console" xml:space="preserve"><value>Estabilidade</value></data>
+  <data name="PmEyebrow_custom" xml:space="preserve"><value>Do seu jeito</value></data>
+  <data name="PmHeroSub" xml:space="preserve"><value>RivaTuner em {0} FPS</value></data>
+  <data name="PmHeroCustom" xml:space="preserve"><value>Você decide</value></data>
+  <data name="PmHeroCustomSub" xml:space="preserve"><value>Taxa, limitador e latência</value></data>
 </root>

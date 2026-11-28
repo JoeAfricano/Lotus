@@ -22,7 +22,11 @@ public static class HitchCauses
     public const double HitchMs = 50, MinPageIns = 250, MinReadMBps = 20, GpuFull = 97;
     public const int MinHitches = 3; // fewer than this says nothing about a pattern
 
-    public static HitchBreakdown? Classify(IReadOnlyList<FrameSample> frames, IReadOnlyList<HitchSecond> seconds)
+    // busy (optional, aligned with frames): PresentMon's MsCPUBusy/MsGPUBusy of each frame. With it, a hitch whose own
+    // graphics card time covers most of the frame is the card's; one with the processor busy most of it is the processor's
+    // (the game itself); memory and disk still come first, because a processor waiting on them also shows as busy.
+    public const double BusyShare = 0.6;
+    public static HitchBreakdown? Classify(IReadOnlyList<FrameSample> frames, IReadOnlyList<HitchSecond> seconds, IReadOnlyList<FrameBusy>? busy = null)
     {
         if (frames.Count == 0 || seconds.Count == 0) return null;
         var start = frames[0].TimeSeconds - frames[0].Milliseconds / 1000;
@@ -30,15 +34,21 @@ public static class HitchCauses
         var pageBar = Math.Max(MinPageIns, 2 * Median(seconds.Select(s => s.PageInsPerSecond)));
         var readBar = Math.Max(MinReadMBps, 2 * Median(seconds.Select(s => s.GameReadMBps)));
         int cpu = 0, mem = 0, disk = 0, gpu = 0;
-        foreach (var f in frames.Where(f => f.Milliseconds > HitchMs))
+        var aligned = busy is { Count: > 0 } && busy.Count == frames.Count;
+        for (var index = 0; index < frames.Count; index++)
         {
+            var f = frames[index];
+            if (f.Milliseconds <= HitchMs) continue;
+            var own = aligned ? busy![index] : null;
             // The seconds the long frame covers (it ends at TimeSeconds and lasted Milliseconds).
             int from = (int)Math.Floor(f.TimeSeconds - f.Milliseconds / 1000 - start), to = (int)Math.Floor(f.TimeSeconds - start);
             from = Math.Clamp(from, 0, seconds.Count - 1); to = Math.Clamp(to, 0, seconds.Count - 1);
             var span = seconds.Skip(from).Take(to - from + 1).ToList();
             if (span.Max(s => s.PageInsPerSecond) >= pageBar) mem++;
             else if (span.Max(s => s.GameReadMBps) >= readBar) disk++;
-            else if (span.Max(s => s.GpuPercent ?? 0) >= GpuFull) gpu++;
+            else if (own?.GpuMs is { } g && g >= f.Milliseconds * BusyShare && g >= (own.CpuMs ?? 0)) gpu++;
+            else if (own?.CpuMs is { } c && c >= f.Milliseconds * BusyShare) cpu++;
+            else if (own?.GpuMs is null && span.Max(s => s.GpuPercent ?? 0) >= GpuFull) gpu++;
             else cpu++;
         }
         var total = cpu + mem + disk + gpu;

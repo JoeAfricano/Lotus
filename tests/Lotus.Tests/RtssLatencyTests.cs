@@ -66,14 +66,14 @@ public sealed class RtssLatencyTests(ITestOutputHelper output)
     [InlineData(true, true, true, 75, null, null, "responsive", "LlWhyVrrReflex")]   // VRR but slow monitor: same
     [InlineData(false, true, true, 144, null, null, "responsive", "LlWhyVrrReflex")]
     [InlineData(false, false, true, 144, null, null, "fluid", "LlWhyVrrFluid")]
-    [InlineData(false, true, false, 75, 74.0, 60.0, "scanline", "LlWhyScanline")]
+    [InlineData(false, true, false, 75, 74.0, 60.0, "responsive", "LlWhyFixedReflex")] // NVIDIA: Reflex by default, even with headroom (28/11/2026)
     [InlineData(false, true, false, 75, 74.0, 95.0, "responsive", "LlWhyFixedReflex")]
     [InlineData(false, false, false, 75, 74.0, 95.0, "fluid", "LlWhyFluid")]
-    [InlineData(false, true, false, 75, 95.0, null, "scanline", "LlWhyScanline")]
+    [InlineData(false, true, false, 75, 95.0, null, "responsive", "LlWhyFixedReflex")]
     [InlineData(false, true, false, 75, 80.0, null, "responsive", "LlWhyFixedReflex")]
     [InlineData(false, true, false, 75, null, null, "responsive", "LlWhyFixedReflex")]
     [InlineData(false, false, false, 75, null, null, "fluid", "LlWhyFluidMeasure")]
-    [InlineData(false, false, false, 75, 74.0, 60.0, "scanline", "LlWhyScanline")]
+    [InlineData(false, false, false, 75, 74.0, 60.0, "fluid", "LlWhyFluid")] // other cards: front edge, no scanline by itself
     public void OneButtonPicksTheMode(bool frameGen, bool nvidia, bool vrr, int hz, double? fps, double? busy, string? mode, string why)
     {
         var info = new GamesViewModel.LowLatencyInfo("ok", "game.exe", null, nvidia, FrameGen: frameGen, Api: "Direct3D 12");
@@ -89,7 +89,7 @@ public sealed class RtssLatencyTests(ITestOutputHelper output)
         Assert.Equal(("responsive", "LlWhyFrameGenChosen"), LimiterChoice.Pick(info, true, 75, 74, 60));  // VRR below 120 Hz, chosen anyway
         Assert.Equal(("responsive", "LlWhyFrameGen"), LimiterChoice.Pick(info, true, 144, null, null));   // where it fits
         Assert.Equal((null, "LlFrameGenOther"), LimiterChoice.Pick(info with { Nvidia = false }, false, 75, null, null));
-        Assert.Equal(("scanline", "LlWhyScanline"), LimiterChoice.Pick(info with { UsesFrameGen = false }, false, 75, 74, 60)); // not chosen: normal pick
+        Assert.Equal(("responsive", "LlWhyFixedReflex"), LimiterChoice.Pick(info with { UsesFrameGen = false }, false, 75, 74, 60)); // not chosen: normal pick
     }
 
     [Fact] public async Task PipeKeepsOnlyTheMeasuredGamesFrames()

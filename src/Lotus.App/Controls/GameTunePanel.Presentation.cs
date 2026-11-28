@@ -103,6 +103,7 @@ public sealed partial class GameTunePanel
             finally { apply.IsEnabled=true; }
         };
         s.Children.Add(apply); s.Children.Add(result);
+        if(saved.Enabled) s.Children.Add(Pacing(model,game,saved,t.Running));
         var live=Caption(""); s.Children.Add(live);
         void State() => live.Text=MainWindow.Shell?.PresentationActiveFor(game.Key)==true?text["GpActive"]:"";
         State();
@@ -116,5 +117,45 @@ public sealed partial class GameTunePanel
         if(!saved.Enabled && info?.On==true)
             s.Children.Add(new Expander {Header=text["GpExisting"],Content=LowLatency(t),HorizontalAlignment=HorizontalAlignment.Stretch});
         return box;
+    }
+
+    // "Linha reta" (default) or "Menor latência", with what was measured in this game, and the player's latency ceiling.
+    private UIElement Pacing(GamesViewModel model,GameEntry game,GamePresentationPrefs saved,bool running)
+    {
+        var text=model.Text; var prefs=model.PrefsFor(game); var trials=prefs.LimiterTrials??[];
+        var s=new StackPanel {Spacing=8};
+        s.Children.Add(new TextBlock {Text=text["PpTitle"],FontWeight=Microsoft.UI.Text.FontWeights.SemiBold,TextWrapping=TextWrapping.Wrap});
+        string Measured(params string[] modes) => modes.Select(m=>trials.GetValueOrDefault(m)).OfType<LimiterTrialResult>().FirstOrDefault() is {LatencyMs:{} l} r
+            ? text.Format("PpMeasured",Math.Round(l),Math.Round(r.LatencyP95Ms??l)) : text["PpNotMeasured"];
+        var choice=new RadioButtons {Header=text["PpChoose"]};
+        choice.Items.Add(new RadioButton {Content=text["PpStraight"]+" · "+Measured(saved.AppliedLimiter==PacingPresets.GameLimiter?[LimiterTrial.Reflex,LimiterTrial.FrontEdge]:[saved.AppliedLimiter,LimiterTrial.Reflex,LimiterTrial.FrontEdge]),Tag=PacingPresets.Straight});
+        choice.Items.Add(new RadioButton {Content=text["PpLatency"]+" · "+Measured(PacingPresets.GameLimiter),Tag=PacingPresets.LowLatency});
+        choice.SelectedIndex=prefs.PacingPreset==PacingPresets.LowLatency?1:0;
+        choice.IsEnabled=!running && !prefs.UseFrameGen; // frame generation: only the automatic Reflex plan fits
+        AutomationProperties.SetAutomationId(choice,"game-presentation-pacing"); s.Children.Add(choice);
+        s.Children.Add(Caption(text.Format("PpLatencyHint",Math.Round(saved.PreparedRate))));
+        var status=Caption(""); s.Children.Add(status);
+        choice.SelectionChanged+=async (_,_)=>
+        {
+            if((choice.SelectedItem as RadioButton)?.Tag is not string preset || preset==model.PrefsFor(game).PacingPreset) return;
+            choice.IsEnabled=false;
+            var ok=await model.UsePresetAsync(game,preset);
+            status.Text=ok?text[preset==PacingPresets.LowLatency?"PpSetLatency":"PpSetStraight"]:model.Status;
+            choice.IsEnabled=true;
+        };
+        if(trials.Count>0 && MainWindow.Shell is {} shell)
+        {
+            s.Children.Add(Caption(text["PpTrials"]));
+            foreach(var r in trials.Values.OrderBy(r=>r.Mode)) s.Children.Add(Caption(shell.TrialLine(r)));
+        }
+        if(MainWindow.Shell?.PreferencesModel is {} preferences)
+        {
+            var ceiling=new NumberBox {Header=text["PpCeiling"],Minimum=0,Maximum=200,Value=preferences.LatencyCeilingMs,SpinButtonPlacementMode=NumberBoxSpinButtonPlacementMode.Compact,
+                PlaceholderText=text["PpCeilingNone"],HorizontalAlignment=HorizontalAlignment.Left,MinWidth=220};
+            AutomationProperties.SetAutomationId(ceiling,"game-presentation-ceiling");
+            ceiling.ValueChanged+=(_,e)=>preferences.LatencyCeilingMs=double.IsNaN(e.NewValue)?0:(int)Math.Round(e.NewValue);
+            s.Children.Add(ceiling); s.Children.Add(Caption(text["PpCeilingHint"]));
+        }
+        return new Border {Padding=new Thickness(12),CornerRadius=new CornerRadius(10),Background=Res("CardBrush"),BorderBrush=Res("CardBorderBrush"),BorderThickness=new Thickness(1),Child=s};
     }
 }

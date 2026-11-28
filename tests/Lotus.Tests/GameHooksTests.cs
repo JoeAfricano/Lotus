@@ -27,6 +27,26 @@ public sealed class GameHooksTests : IDisposable
         Assert.Null(GameHooks.Parse("d3d12.dll.bak"));
     }
 
+    [Fact] public void Direct3D9AndWinmmLoadersAreCheckedToo()
+    {
+        Assert.Equal(("d3d9.dll", false), GameHooks.Parse("d3d9.dll"));
+        Assert.Equal(("winmm.dll", true), GameHooks.Parse("winmm.dll.lotus-off"));
+    }
+
+    [Fact] public void TurningAHookOffAndBackOnGoesToTheHistory()
+    {
+        var file = Path.Combine(bin, "d3d12.dll"); File.WriteAllText(file, "proxy");
+        var store = new WindowsGameHooks(); var journal = new Lotus.Core.Maintenance.MemoryMaintenanceJournal();
+        var hook = new GameHook(file, "d3d12.dll", "SCSKiller", "SCSKiller D3D12 proxy", false);
+        Assert.Equal(HookChange.Done, GameHooks.Toggle(store, journal, Game, hook));
+        Assert.True(File.Exists(file + GameHooks.OffSuffix)); Assert.False(File.Exists(file));
+        Assert.Equal(HookChange.Done, GameHooks.Toggle(store, journal, Game, hook with { FilePath = file + GameHooks.OffSuffix, Disabled = true }));
+        Assert.True(File.Exists(file));
+        var entries = journal.Recent(5);
+        Assert.Equal(["hook-on", "hook-off"], entries.Select(e => e.Action));
+        Assert.All(entries, e => { Assert.Equal("games", e.Tool); Assert.True(e.Success); Assert.Contains("Stellar Blade", e.Summary); Assert.Contains("SCSKiller", e.Summary); });
+    }
+
     [Fact] public void MicrosoftFilesAreNotHooksUnlessTheySayProxy()
     {
         Assert.False(GameHooks.IsHook("Microsoft Corporation", "Direct3D 12 Runtime"));
