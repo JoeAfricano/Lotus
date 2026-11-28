@@ -4131,7 +4131,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="PmOpenCustom" xml:space="preserve"><value>Personalizar</value></data>
   <data name="PmBack" xml:space="preserve"><value>Voltar aos modos</value></data>
   <data name="PmUseFrameGen" xml:space="preserve"><value>Desejo usar FrameGen (gerador de quadros) neste jogo</value></data>
-  <data name="PmFrameGenHint" xml:space="preserve"><value>Marcar só muda o que os cartões vão preparar. Ligue o gerador no menu do próprio jogo.</value></data>
+  <data name="PmFrameGenHint" xml:space="preserve"><value>Marcar não liga o gerador: ligue no menu do próprio jogo. Aqui o Lotus só ajusta o que os cartões preparam (V-Sync do driver + Reflex do RivaTuner na NVIDIA sem G-Sync/FreeSync) e deixa de mostrar a latência nas medições, porque com o gerador ela não reflete o atraso real.</value></data>
   <data name="PmConfirmTitle_pc" xml:space="preserve"><value>Usar o Modo PC neste jogo?</value></data>
   <data name="PmConfirmTitle_console" xml:space="preserve"><value>Usar o Modo Console neste jogo?</value></data>
   <data name="PmConfirmBody" xml:space="preserve"><value>O Lotus vai preparar o perfil deste jogo no RivaTuner (o Windows pede permissão) e trocar a taxa da tela só enquanto o jogo estiver na frente. Dá para voltar escolhendo outro modo.</value></data>
@@ -4142,4 +4142,5 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="PmHeroSub" xml:space="preserve"><value>RivaTuner em {0} FPS</value></data>
   <data name="PmHeroCustom" xml:space="preserve"><value>Você decide</value></data>
   <data name="PmHeroCustomSub" xml:space="preserve"><value>Taxa, limitador e latência</value></data>
+  <data name="PmFrameGenReapply" xml:space="preserve"><value>Para valer no modo em uso, aperte &quot;Aplicar de novo&quot; no cartão dele.</value></data>
 </root>

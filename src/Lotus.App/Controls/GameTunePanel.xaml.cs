@@ -73,6 +73,8 @@ public sealed partial class GameTunePanel : UserControl
         var gameBox = GameBox(tune); Grid.SetColumn(gameBox, 1); top.Children.Add(gameBox);
         Body.Children.Add(top);
         Body.Children.Add(Section(vm.Text["PmHeading"], await PlayModesAsync(tune)));
+        // "Desligar SCSKiller" and other hooks in the game folder, under the cards (moved from the game page, 28/11/2026).
+        var hooks = new GameHooksCard(); hooks.Show(card.Game, vm.Text); Body.Children.Add(hooks);
         var left = new StackPanel { Spacing = 24 }; var right = new StackPanel { Spacing = 24 };
         left.Children.Add(Section(vm.Text["TuneTips"], TipList(tune)));
         right.Children.Add(Section(vm.Text["TuneLast"], LastCheck(tune)));

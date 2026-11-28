@@ -2,6 +2,13 @@
 
 Todas as versões estão em [Releases](../../releases). Para atualizar, rode o instalador novo por cima do atual: seus jogos, diário, conquistas e configurações continuam como estão.
 
+## 2.0.8-beta "Lotus 1.0.8 Beta" (28/11/2026)
+
+### Melhorado
+- **"Desligar SCSKiller" agora fica em Otimizar este jogo,** logo abaixo dos cartões de modo, junto do resto do que ajuda o jogo a rodar liso (saiu da página do jogo).
+- **FrameGen explicado no cartão:** marcar a opção não liga o gerador no jogo; o texto diz o que o Lotus muda e, se um modo já está em uso, lembra de apertar "Aplicar de novo".
+- **O cartão em uso mostra o limitador que está salvo de verdade** para o jogo (um jogo configurado antes pode continuar na borda da frente).
+
 ## 2.0.7-beta "Lotus 1.0.7 Beta" (28/11/2026)
 
 Correções e novidades tiradas do estudo de fluidez de 25 a 28/11/2026 (Stellar Blade, Wukong e Gothic 1 Remake).

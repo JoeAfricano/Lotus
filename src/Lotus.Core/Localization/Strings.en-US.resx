@@ -4131,7 +4131,7 @@ Your games and Windows are not changed.</value></data>
   <data name="PmOpenCustom" xml:space="preserve"><value>Customize</value></data>
   <data name="PmBack" xml:space="preserve"><value>Back to the modes</value></data>
   <data name="PmUseFrameGen" xml:space="preserve"><value>I want to use FrameGen (frame generation) in this game</value></data>
-  <data name="PmFrameGenHint" xml:space="preserve"><value>Ticking only changes what the cards will prepare. Turn the generator on in the game&apos;s own menu.</value></data>
+  <data name="PmFrameGenHint" xml:space="preserve"><value>Ticking does not turn the generator on: do it in the game&apos;s own menu. Here Lotus only changes what the cards prepare (driver V-Sync + RivaTuner Reflex on NVIDIA without G-Sync/FreeSync) and stops showing latency in measurements, because with the generator it does not reflect the real delay.</value></data>
   <data name="PmConfirmTitle_pc" xml:space="preserve"><value>Use PC mode in this game?</value></data>
   <data name="PmConfirmTitle_console" xml:space="preserve"><value>Use Console mode in this game?</value></data>
   <data name="PmConfirmBody" xml:space="preserve"><value>Lotus will prepare this game&apos;s RivaTuner profile (Windows asks for permission) and change the screen rate only while the game is in front. Choosing another mode takes it back.</value></data>
@@ -4142,4 +4142,5 @@ Your games and Windows are not changed.</value></data>
   <data name="PmHeroSub" xml:space="preserve"><value>RivaTuner at {0} FPS</value></data>
   <data name="PmHeroCustom" xml:space="preserve"><value>You decide</value></data>
   <data name="PmHeroCustomSub" xml:space="preserve"><value>Rate, limiter and latency</value></data>
+  <data name="PmFrameGenReapply" xml:space="preserve"><value>To apply it to the mode in use, press &quot;Apply again&quot; on its card.</value></data>
 </root>
