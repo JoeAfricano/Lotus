@@ -2,6 +2,13 @@
 
 Release notes in English, shown on the What's new page when Lotus is in English. The full history (in Portuguese) is in [CHANGELOG.md](CHANGELOG.md).
 
+## 2.0.8-beta "Lotus 1.0.8 Beta" (11/28/2026)
+
+### Improved
+- **"Turn off SCSKiller" now lives in Optimize this game,** right under the mode cards, with the rest of what helps the game run smoothly (it left the game page).
+- **FrameGen explained on the card:** ticking it does not turn the generator on in the game; the text says what Lotus changes and, when a mode is already in use, reminds you to press "Apply again".
+- **The card in use shows the limiter really saved** for the game (a game set up earlier may stay on front edge).
+
 ## 2.0.7-beta "Lotus 1.0.7 Beta" (11/28/2026)
 
 Fixes and additions from the smoothness study of 11/25–11/28/2026 (Stellar Blade, Wukong and Gothic 1 Remake).

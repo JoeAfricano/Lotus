@@ -25,6 +25,7 @@ public sealed partial class GameTunePanel
         for (var i = 0; i < 3; i++) grid.ColumnDefinitions.Add(new ColumnDefinition());
         var fgBox = new CheckBox { Content = text["PmUseFrameGen"], IsChecked = model.PrefsFor(game).UseFrameGen, IsEnabled = !t.Running };
         AutomationProperties.SetAutomationId(fgBox, "tune-mode-framegen");
+        var fgNote = new TextBlock { FontSize = 12, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Foreground = Res("RoseBrush"), TextWrapping = TextWrapping.Wrap };
         void Fill()
         {
             grid.Children.Clear();
@@ -43,6 +44,8 @@ public sealed partial class GameTunePanel
             info = info is null ? null : info with { UsesFrameGen = fgBox.IsChecked == true };
             if (tune is not null) tune = tune with { LowLatency = info };
             Fill();
+            // A mode already in use keeps its RivaTuner/driver plan until it is applied again with the new choice.
+            fgNote.Text = current is not null ? text["PmFrameGenReapply"] : "";
         };
         Fill();
         Motion.SetStagger(grid, true);
@@ -53,7 +56,7 @@ public sealed partial class GameTunePanel
             var strip = new Grid { ColumnSpacing = 14 };
             strip.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); strip.ColumnDefinitions.Add(new ColumnDefinition());
             strip.Children.Add(new FontIcon { Glyph = "", FontSize = 18, Foreground = Res("RoseBrush"), VerticalAlignment = VerticalAlignment.Center });
-            var words = new StackPanel { Spacing = 2 }; words.Children.Add(fgBox); words.Children.Add(Caption(text["PmFrameGenHint"]));
+            var words = new StackPanel { Spacing = 2 }; words.Children.Add(fgBox); words.Children.Add(Caption(text["PmFrameGenHint"])); words.Children.Add(fgNote);
             Grid.SetColumn(words, 1); strip.Children.Add(words);
             root.Children.Add(new Border { Padding = new Thickness(18, 12, 18, 12), CornerRadius = new CornerRadius(14), BorderThickness = new Thickness(1),
                 Background = Res("AccentSoftBrush"), BorderBrush = Res("CardBorderBrush"), Child = strip });
@@ -81,6 +84,9 @@ public sealed partial class GameTunePanel
         var rose = A(C("RoseBrush"), 255); var gold = A(C("GoldBrush"), 255); var window = A(C("WindowBrush"), 255); var main = A(C("MainTextBrush"), 255);
         var surface = Mix(window, rose, 0.10); // the card body: the window color warmed by the theme's accent
         var plan = mode == PlayModes.Custom ? null : PlayModes.For(mode, maxHz, maxRate, frameGen, nvidia, vrr);
+        // The card in use describes the limiter really saved for this game (a game set before 1.0.7 may keep front edge).
+        if (selected && plan is not null && vm.PrefsFor(card!.Game).Presentation.AppliedLimiter is { Length: > 0 } applied)
+            plan = plan with { Pacing = applied switch { "responsive" => "reflex", "fgvsync" => "vsync-reflex", "fluid" => "front-edge", _ => plan.Pacing } };
         var layers = new Grid();
         // Soft glow in the top-right corner (stronger on the card in use).
         layers.Children.Add(new Microsoft.UI.Xaml.Shapes.Ellipse { Width = 260, Height = 260, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, -110, -90, 0), IsHitTestVisible = false,

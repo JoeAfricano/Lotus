@@ -12,6 +12,8 @@ namespace Lotus.App.Controls;
 public sealed partial class GameHooksCard : UserControl
 {
     private GameDetailsViewModel? page;
+    // Set by Show: the card used outside the game page (Otimizar este jogo, 28/11/2026).
+    private GameEntry? shownGame; private Lotus.Core.ITextCatalog? shownText;
     private readonly Dictionary<string, string> results = new(StringComparer.OrdinalIgnoreCase); // last outcome per file, shown under its row
     private int build;
 
@@ -27,18 +29,20 @@ public sealed partial class GameHooksCard : UserControl
         };
         Unloaded += (_, _) => { if (page is not null) page.PropertyChanged -= OnPage; };
     }
+    public void Show(GameEntry game, Lotus.Core.ITextCatalog text) { shownGame = game; shownText = text; results.Clear(); _ = BuildAsync(); }
     private void OnPage(object? sender, System.ComponentModel.PropertyChangedEventArgs e) { if (e.PropertyName is nameof(GameDetailsViewModel.Installed) or null or "") DispatcherQueue.TryEnqueue(() => { results.Clear(); _ = BuildAsync(); }); }
 
     private async Task BuildAsync()
     {
         var mine = ++build;
-        if (page?.Installed is not { } game || MainWindow.Shell is not { } shell) { Visibility = Visibility.Collapsed; return; }
+        var game = shownGame ?? page?.Installed; var text = shownText ?? page?.Text;
+        if (game is null || text is null || MainWindow.Shell is not { } shell) { Visibility = Visibility.Collapsed; return; }
         IReadOnlyList<GameHook> hooks;
         try { hooks = await Task.Run(() => shell.Hooks.Find(game)); }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { hooks = []; }
-        if (mine != build || page?.Installed?.Key != game.Key) return;
+        if (mine != build || (shownGame ?? page?.Installed)?.Key != game.Key) return;
         Rows.Children.Clear();
-        foreach (var hook in hooks) Rows.Children.Add(Row(page.Text, game, hook));
+        foreach (var hook in hooks) Rows.Children.Add(Row(text, game, hook));
         Visibility = hooks.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 

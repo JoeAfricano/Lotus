@@ -4,7 +4,7 @@ using Xunit;
 namespace Lotus.Tests;
 
 // Item 9 (28/11/2026): the latency line on the player's Neon card, smallest change possible, off by default.
-[Collection("OverlayLayoutStatics")]
+[Collection(OverlayLayoutStatics.Name)]
 public sealed class OverlayLatencyTests
 {
     [Fact]
@@ -44,3 +44,7 @@ public sealed class OverlayLatencyTests
         finally { LotusOverlayLayout.LatencyLine = false; Directory.Delete(dir, true); }
     }
 }
+
+// LotusOverlayLayout.LatencyLine is static: these tests switch it, so nothing else may export a layout at the same time.
+[CollectionDefinition(Name, DisableParallelization = true)]
+public sealed class OverlayLayoutStatics { public const string Name = "OverlayLayoutStatics"; }
