@@ -4103,7 +4103,7 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="GsLatencyP95" xml:space="preserve"><value>latência {0} ms (p95 {1} ms)</value></data>
   <data name="GsLatencyOverCeiling" xml:space="preserve"><value>acima do seu teto de {0} ms</value></data>
   <data name="OvLatencyTitle" xml:space="preserve"><value>Mostrar a latência no estilo Neon (linha LAT)</value></data>
-  <data name="OvLatencyHint" xml:space="preserve"><value>Usa o Reflex do jogo, lido pelo RivaTuner: da leitura do controle até a placa terminar o quadro (a espera pela tela não entra, por isso fica uns ms abaixo do que a PresentMon mede). Jogo sem Reflex mostra &quot;LAT —&quot;. Desligado, o Neon fica exatamente como está.</value></data>
+  <data name="OvLatencyHint" xml:space="preserve"><value>Usa o Reflex do jogo, lido pelo RivaTuner: do início do quadro do jogo até a placa terminar (a espera pela tela não entra, por isso fica uns ms abaixo do que a PresentMon mede). Jogo sem Reflex mostra &quot;LAT --&quot;. Desligado, o Neon fica exatamente como está.</value></data>
   <data name="OvLatencyRestart" xml:space="preserve"><value>Pronto. A linha aparece (ou some) da próxima vez que o RivaTuner abrir.</value></data>
   <data name="PmHeading" xml:space="preserve"><value>Escolha seu tipo de jogo</value></data>
   <data name="PmIntro" xml:space="preserve"><value>Cada modo prepara o RivaTuner para este jogo agora e troca a taxa da tela só enquanto o jogo estiver na frente. Nada muda até você escolher.</value></data>
@@ -4143,4 +4143,5 @@ Seus jogos e o Windows não são alterados.</value></data>
   <data name="PmHeroCustom" xml:space="preserve"><value>Você decide</value></data>
   <data name="PmHeroCustomSub" xml:space="preserve"><value>Taxa, limitador e latência</value></data>
   <data name="PmFrameGenReapply" xml:space="preserve"><value>Para valer no modo em uso, aperte &quot;Aplicar de novo&quot; no cartão dele.</value></data>
+  <data name="OvLatencyNextUse" xml:space="preserve"><value>Pronto. A linha aparece quando você usar o estilo Neon.</value></data>
 </root>
